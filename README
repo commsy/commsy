@@ -1,0 +1,20 @@
+Version 1.0 2007-JUL-11 bleek
+
+Dear user,
+
+thank you for your interest in the source of this project. We have moved to our own repository
+since we had problems storing our files at sourceforge. You will still find our releases at sourceforge 
+for the near future and you may access our repositories.
+
+PCommSy project: cvs.commsy.org  (CVS repository)
+                 :extssh:USERNAME@cvs.commsy.org:/home/cvsroot
+                 
+
+JCommSy project: svn.commsy.org  (SVN repository)
+                 svn+ssh://svn.commsy.org/home/svnroot_dev
+                 
+
+Please feel free to contact 
+   bleek@informatik.uni-hamburg.de
+   finck@informatik.uni-hamburg.de
+in order to get an account for these repositories.
