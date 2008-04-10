@@ -1159,8 +1159,6 @@ class cs_user_detail_view extends cs_detail_view {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
       if (!$this->_environment->inPrivateRoom()){
          $html .='</div>'.LF;
          $html .='</div>'.LF;
@@ -1175,6 +1173,8 @@ class cs_user_detail_view extends cs_detail_view {
            )
          ) {
 ############SQL-Statements reduzieren
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
          $html .= $this->_getSubItemsAsHTML($item);
       }
       unset($current_user);
