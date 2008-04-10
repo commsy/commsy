@@ -1,0 +1,339 @@
+<?PHP
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
+
+include_once('classes/cs_rubric_form.php');
+
+/** class for commsy form: group
+ * this class implements an interface for the creation of forms in the commsy style
+ */
+class cs_group_form extends cs_rubric_form {
+
+  /**
+   * string - containing the headline of the form
+   */
+   var $_headline = NULL;
+
+  /**
+   * array - containing the materials of a group
+   */
+   var $_material_array = array();
+
+  /**
+   * array - containing an array of groups in the context
+   */
+   var $_group_array = array();
+
+  /**
+   * array - containing an array of materials form the session
+   */
+   var $_session_material_array = array();
+
+   /*
+    * bool - does the group have a picture?
+    */
+   var $_has_picture;
+
+   /**
+   * array - containing the values for the edit status for the item (everybody or creator)
+   */
+   var $_public_array = array();
+
+   #############################################
+   # FLAG: group rooms
+   #############################################
+   private $_with_group_room = false;
+   private $_exists_group_room = false;
+
+  /** constructor
+    * the only available constructor
+    *
+    * @param object environment the environment object
+    */
+   function cs_group_form($environment) {
+      $this->cs_rubric_form($environment);
+   }
+
+   /** set materials from session
+    * set an array with the materials from the session
+    *
+    * @param array array of materials out of session
+    */
+   function setSessionMaterialArray ($value) {
+      $this->_session_material_array = (array)$value;
+   }
+
+   /** init data for form, INTERNAL
+    * this methods init the data for the form, for example groups
+    */
+   function _initForm () {
+
+      // public
+      if ( isset($this->_item) ) {
+         $creator_item = $this->_item->getCreatorItem();
+         $fullname = $creator_item->getFullname();
+      } elseif (!empty($this->_form_post['iid'])) {
+         $manager = $this->_environment->getManager(CS_GROUP_TYPE);
+         $item = $manager->getItem($this->_form_post['iid']);
+         $creator_item = $item->getCreatorItem();
+         $fullname = $creator_item->getFullname();
+      } else {
+         $current_user = $this->_environment->getCurrentUser();
+         $fullname = $current_user->getFullname();
+      }
+      $public_array = array();
+      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['value'] = 1;
+      $public_array[] = $temp_array;
+      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['value'] = 0;
+      $public_array[] = $temp_array;
+      $this->_public_array = $public_array;
+
+      if ( !empty($this->_item) ) {
+         $this->_has_picture = $this->_item->getPicture();
+      } elseif (!empty($this->_form_post['has_picture']) and $this->_form_post['has_picture'] == 'yes') {
+         $this->_has_picture = true;
+      } else {
+         $this->_has_picture = false;
+      }
+
+      if (!empty($this->_item)) {
+         $this->_headline = getMessage('GROUP_EDIT');
+      } elseif (!empty($this->_form_post)) {
+         if (!empty($this->_form_post['iid'])) {
+            $this->_headline = getMessage('GROUP_EDIT');
+         } else {
+            $this->_headline = getMessage('GROUP_ENTER_NEW');
+            $new='';
+            $context_item = $this->_environment->getCurrentContextItem();
+            $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
+            if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
+              $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+            }else{
+               $genus = $rubric_array['EN']['GENUS'];
+            }
+            if ($genus =='M'){
+               $new = getMessage('COMMON_NEW_M_BIG').' ';
+            }
+            elseif ($genus =='F'){
+               $new =  getMessage('COMMON_NEW_F_BIG').' ';
+            }
+            else {
+               $new = getMessage('COMMON_NEW_N_BIG').' ';
+            }
+
+            $this->_headline = $new.$this->_headline;
+         }
+      } else {
+         $this->_headline = getMessage('GROUP_ENTER_NEW');
+         $new='';
+         $context_item = $this->_environment->getCurrentContextItem();
+         $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
+         if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
+           $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+         } else {
+            $genus = $rubric_array['EN']['GENUS'];
+         }
+         if ($genus =='M'){
+            $new = getMessage('COMMON_NEW_M_BIG').' ';
+         }
+         elseif ($genus =='F'){
+            $new =  getMessage('COMMON_NEW_F_BIG').' ';
+         }
+         else {
+            $new = getMessage('COMMON_NEW_N_BIG').' ';
+         }
+         $this->_headline = $new.$this->_headline;
+      }
+      $this->setHeadline($this->_headline);
+
+      #############################################
+      # FLAG: group rooms
+      #############################################
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ( $context_item->showGrouproomFunctions() ) {
+         $this->_with_group_room = true;
+         if ( isset($this->_item) ) {
+            $this->_exists_group_room = $this->_item->isGroupRoomActivated();
+         } elseif ( !empty($this->_form_post['group_room_exists']) ) {
+            $this->_exists_group_room = $this->_form_post['group_room_exists'];
+         }
+      }
+   }
+
+   /** create the form, INTERNAL
+    * this methods creates the form with the form definitions
+    */
+   function _createForm () {
+
+      #############################################
+      # FLAG: group rooms
+      #############################################
+      $context_id = '';
+      if ( isset($this->_exists_group_room) and $this->_exists_group_room ) {
+         $context_id = $this->_item->getGroupRoomItemID();
+      }
+      #############################################
+      # FLAG: group rooms
+      #############################################
+
+      // group
+      $this->_form->addHidden('iid','');
+      $this->_form->addHidden('has_picture','');
+      if (isset($this->_item) and $this->_item->isSystemLabel()) {
+         $this->_form->addTitleField('system_name',getMessage('COMMON_NAME'),$this->_item->getName(),getMessage('GROUP_ALL_NAME_DESC'),200,'',true,'','','','left','','',false);
+      } else {
+         $this->_form->addTitleField('name','',getMessage('COMMON_NAME'),getMessage('COMMON_NAME_DESC'),200,45,true);
+      }
+      $this->_setFormElementsForConnectedRubrics();
+
+      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
+                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
+                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
+                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
+
+      $this->_form->addEmptyline();      // public radio-buttons
+      $this->_form->addImage('picture_upload','',getMessage('USER_PICTURE_UPLOADFILE'), getMessage('GROUP_PICTURE_FILE_DESC'),$context_id);
+
+      //delete picture
+      if ( $this->_has_picture ) {
+         $this->_form->combine();
+         $this->_form->addCheckbox('deletePicture',getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),getMessage('USER_DEL_PIC_BUTTON'),'');
+      }
+      $this->_form->addHidden('picture_hidden','');
+
+      #############################################
+      # FLAG: group rooms
+      #############################################
+      if ( !(isset($this->_item) and $this->_item->isSystemLabel()) ) {
+         if ( $this->_with_group_room ) {
+            $checked = false;
+            $dead = false;
+            if ( $this->_exists_group_room ) {
+               $checked = true;
+               $dead = true;
+            }
+            $this->_form->addCheckbox('group_room_activate','1',$checked,getMessage('GROUPROOM_FORM_CHECKBOX_TITLE'),getMessage('GROUPROOM_FORM_CHECKBOX_TEXT'),'','',$dead);
+         }
+      }
+      #############################################
+      # FLAG: group rooms
+      #############################################
+
+      // public radio-buttons
+      if ( !isset($this->_item) ) {
+         $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+      } else {
+         $current_user = $this->_environment->getCurrentUser();
+         $creator = $this->_item->getCreatorItem();
+         if ( ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) and !$this->_item->isSystemLabel() ) {
+            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+         } else {
+            $this->_form->addHidden('public','');
+         }
+      }
+
+      // buttons
+      $id = 0;
+      if (isset($this->_item)) {
+         $id = $this->_item->getItemID();
+      } elseif (isset($this->_form_post)) {
+         if (isset($this->_form_post['iid'])) {
+            $id = $this->_form_post['iid'];
+         }
+      }
+
+      if ( $id == 0 or (isset($this->_item) and $this->_item->isSystemLabel()) )  {
+         $this->_form->addButtonBar('option',getMessage('GROUP_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      } else {
+         $this->_form->addButtonBar('option',getMessage('GROUP_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+      }
+   }
+
+   /** loads the selected and given values to the form
+    * this methods loads the selected and given values to the form from the material item or the form_post data
+    *
+    * @author CommSy Development Group
+    */
+   function _prepareValues () {
+      $this->_values = array();
+      if ( !empty($this->_form_post) ) {
+         $this->_values = $this->_form_post;
+         if ( !isset($this->_values['public']) ) {
+            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }
+         if (!isset($this->_values['name'])) { //if group ist group for all members, we set name hier
+            $this->_values['name'] = getMessage('ALL_MEMBERS');
+         }
+		 if ( isset($this->_values['picture_hidden']) and !empty($this->_values['picture_hidden']) ) {
+			 $this->_values['picture_upload'] = $this->_values['picture_hidden'];
+		 }
+      } elseif (isset($this->_item)) {
+         $this->_values['iid'] = $this->_item->getItemID();
+         if (!$this->_item->isSystemLabel()) {
+            $this->_values['name'] = $this->_item->getName();
+         } else {
+            $this->_values['name'] = getMessage('ALL_MEMBERS');
+         }
+         if ( !isset($this->_exists_group_room) or ! $this->_exists_group_room ) {
+            $this->_values['description'] = $this->_item->getDescription();
+            $this->_values['picture_upload'] = $this->_item->getPicture();
+            $this->_values['picture_hidden'] = $this->_item->getPicture();
+            $picture = $this->_item->getPicture();
+            if ( !empty($picture) ) {
+               $this->_values['has_picture'] = 'yes';
+            } else {
+               $this->_values['has_picture'] = 'no';
+            }
+
+         #############################################
+         # FLAG: group rooms
+         #############################################
+         } else {
+            $grouproom = $this->_item->getGroupRoomItem();
+            if ( isset($grouproom) and !empty($grouproom) ) {
+               $this->_values['description'] = $grouproom->getDescription();
+               $picture = $grouproom->getLogoFileName();
+               $this->_values['picture_upload'] = $picture;
+               $this->_values['picture_hidden'] = $picture;
+               if ( !empty($picture) ) {
+                  $this->_values['has_picture'] = 'yes';
+               } else {
+                  $this->_values['has_picture'] = 'no';
+               }
+            }
+         }
+         #############################################
+         # FLAG: group rooms
+         #############################################
+
+         $this->_values['public'] = $this->_item->isPublic();
+         $this->_setValuesForRubricConnections();
+      } else {
+         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+      }
+   }
+}
+?>

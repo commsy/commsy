@@ -1,0 +1,11 @@
+In der CommSy Verison 5.3 sind folgende Features enthalten:
+
+    * Wochenansicht
+    * Indexierung von hochgeladenen Dateien
+    * E-Mail an beliebige Gruppe von Personen
+    * Performance, Performance, Performance
+    * Anzeige von kompletten HTML-Webseiten
+    * Sicherheit
+    * Authentifizierung: LDAP, Typo3, Joomla, ...
+    * Service E-Mail
+    * Import von Terminen
