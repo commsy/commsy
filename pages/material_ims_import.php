@@ -94,12 +94,13 @@ else {
             {
             include_once('include/inc_ims_upload.php');
             global $ims_content_connection_temp_folder;
+            $session = $environment->getSessionItem();
             if (isset($ims_content_connection_temp_folder)){
-               $target_directory = $ims_content_connection_temp_folder.'/'.$environment->getCurrentContextID().'/';
+               $target_directory = $ims_content_connection_temp_folder.'/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
             }else{
-               $target_directory = 'var/temp/ims_import/'.$environment->getCurrentContextID().'/';
+               $target_directory = 'var/temp/ims_import/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
             }
-            getMaterialListByIMSZip($_FILES['ims_upload']['name'],$_FILES['ims_upload']['tmp_name'],$target_directory);
+            getMaterialListByIMSZip($_FILES['ims_upload']['name'],$_FILES['ims_upload']['tmp_name'],$target_directory,$environment);
             redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index','');
          }
 
