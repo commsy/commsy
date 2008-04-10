@@ -89,14 +89,14 @@ class cs_date_short_view extends cs_home_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemDate($item);
+      $html .= '      <td '.$style.' style="font-size:10pt; width:65%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemDate($item);
       $time = $this->_getItemTime($item);
       if (!empty($time)) {
          $html .= ', '.$time;
       }
       $html .= '</td>'.LF;
-      $html .= '      <td colspan="3" '.$style.' style="font-size:8pt;">'.$this->_getItemPlace($item).'</td>'.LF; // layout hack, should be colspan="2" (TBD)
+      $html .= '      <td colspan="3" '.$style.' style="font-size:8pt; width:23%;">'.$this->_getItemPlace($item).'</td>'.LF; // layout hack, should be colspan="2" (TBD)
       $html .= '   </tr>'.LF;
 
       return $html;

@@ -49,7 +49,6 @@ class cs_todo_short_view extends cs_home_view {
       $this->setViewTitle($title);
    }
 
-
    /** get the description of the list view title as HTML
     * this method returns the description in HTML-Code
     *
@@ -58,13 +57,11 @@ class cs_todo_short_view extends cs_home_view {
     * @author CommSy Development Group
     */
    function _getDescriptionAsHTML() {
-
       $all = $this->getCountAll();
       $list = $this->getList();
       $shown = $list->getCount();
       $context = $this->_environment->getCurrentContextItem();
       $period = $context->getTimeSpread();
-
       return ' ('.$this->_translator->getMessage('TODO_SHORT_VIEW_DESCRIPTION',$shown,$all).')';
    }
 
@@ -89,10 +86,10 @@ class cs_todo_short_view extends cs_home_view {
          $fileicons = ' '.$fileicons;
       }
       $html  = '   <tr class="list">'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt; width: 48%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width: 53%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width: 12%;">'.$this->_getDateInLang($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width: 15%;">'.$this->_getStatus($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width: 25%;">'.$this->_getProcessors($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 20%;">'.$this->_getProcessors($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;

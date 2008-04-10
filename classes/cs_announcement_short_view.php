@@ -82,9 +82,9 @@ class cs_announcement_short_view extends cs_home_view {
          $fileicons = ' '.$fileicons;
       }
       $html  = '   <tr class="list">'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemDate($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;" colspan="2">'.$this->_getItemModificator($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:65%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:23%;" colspan="2">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;

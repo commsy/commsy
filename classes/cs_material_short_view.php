@@ -96,10 +96,10 @@ class cs_material_short_view extends cs_home_view {
       }
       $html  = '   <tr '.$style.'>'.LF;
       $this->_shown_entry_number ++;
-      $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+      $html .= '      <td '.$style.' style="width:65%;">'.$this->_getItemTitle($item).LF;
       $html .= '          '.$this->_getItemFiles($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemAuthor($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:23%;">'.$this->_getItemAuthor($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       unset($item);
       return $html;
