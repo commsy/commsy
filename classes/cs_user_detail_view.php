@@ -1122,13 +1122,13 @@ class cs_user_detail_view extends cs_detail_view {
          $html .='</div>'.LF;
 ############SQL-Statements reduzieren
          if ( $rubric != 'account' and !$this->_environment->inPrivateRoom()){
-	         $title_string .= '"'.getMessage('COMMON_NETNAVIGATION').'"';
-	         $desc_string .= '""';
-	         $size_string .= '"10"';
-	         $config_text .= 'true';
-	         $html .= '<div class="commsy_panel" style="margin-bottom:0px;">'.LF;
-	         $html .= $this->_getAllLinkedItemsAsHTML($item);
-	         $html .='</div>'.LF;
+            $title_string .= '"'.getMessage('COMMON_NETNAVIGATION').'"';
+            $desc_string .= '""';
+            $size_string .= '"10"';
+            $config_text .= 'true';
+            $html .= '<div class="commsy_panel" style="margin-bottom:0px;">'.LF;
+            $html .= $this->_getAllLinkedItemsAsHTML($item);
+            $html .='</div>'.LF;
          }
          $html .='</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;
@@ -1165,10 +1165,19 @@ class cs_user_detail_view extends cs_detail_view {
          $html .='</div>'.LF;
          $html .='</div>'.LF;
       }
-      if ($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom() ){
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ( ( $this->_environment->getCurrentModule() != 'user'
+             or !$this->_environment->inPrivateRoom()
+           )
+           and
+           ( $current_user->isModerator()
+             or $current_user->getItemID() == $item->getItemID()
+           )
+         ) {
 ############SQL-Statements reduzieren
          $html .= $this->_getSubItemsAsHTML($item);
       }
+      unset($current_user);
       if ($rubric != CS_GROUP_TYPE
       and $rubric != CS_USER_TYPE
       and $rubric != CS_DISCUSSION_TYPE
@@ -1180,7 +1189,5 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       return $html;
    }
-
-
 }
 ?>
