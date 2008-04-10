@@ -39,7 +39,7 @@ function _getMaterialByXMLArray($material_item, $values_array){
    $full_text = '';
 
    foreach($values_array as $key => $value){
-   	switch ($value['tag']){
+      switch ($value['tag']){
        case 'dc:title':
             if ($value['type'] == 'open'){
                 $title = $values_array[$key+1]['value'];
@@ -75,7 +75,7 @@ function _getMaterialByXMLArray($material_item, $values_array){
             if ($value['type'] == 'complete'){
                 if (isset($values_array[$key]['attributes']['dcx:valueURI'])){
                    if (!empty($full_text)){
-                   	 $full_text .= ', ';
+                       $full_text .= ', ';
                    }
                    $full_text .= $values_array[$key]['attributes']['dcx:valueURI'];
                 }
@@ -133,6 +133,8 @@ function _getMaterialListByXML($directory){
       }
    }
    foreach($file_array as $file){
+      $values = '';
+      $tags = '';
       $data = implode("", file($directory.$file));
       $parser = xml_parser_create();
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
