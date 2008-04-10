@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<enterprise>
+   <properties>
+      <datasource>${DATASOURCE}</datasource>
+      <datetime>${DATETIME}</datetime>
+      <extension>
+         <targets>${TARGET}</targets>
+      </extension>
+   </properties>
+   <membership recstatus="${OP}">
+      <sourcedid>
+         <source>${SOURCE}</source>
+         <id>${GROUPID}</id>
+      </sourcedid>
+      <member>
+         <sourcedid>
+            <source>${SOURCE}</source>
+            <id>${USERID}</id>
+         </sourcedid>
+         <idtype>1</idtype>
+         <role recstatus="${OP}" roletype="${ROLETYPE}">
+            <userid>${USERID}</userid>
+            <status>1</status>
+         </role>
+      </member>
+   </membership>
+</enterprise>

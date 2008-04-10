@@ -1,0 +1,3 @@
+<?php
+$message["MYROOM_INDEX"]["en"] = "My workspaces";
+?>

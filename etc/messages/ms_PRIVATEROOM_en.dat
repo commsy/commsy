@@ -1,0 +1,19 @@
+<?php
+$message["PRIVATEROOM_COMMON_NO_ENTRIES"]["en"] = "No workspaces available";
+$message["PRIVATEROOM_COMMON_NO_ENTRIES_FROM_ALL"]["en"] = "0 workspaces (of %1 total)";
+$message["PRIVATEROOM_COMMON_ONE_ENTRY"]["en"] = "one workspace";
+$message["PRIVATEROOM_COMMON_ONE_ENTRY_FROM_ALL"]["en"] = "1 workspace";
+$message["PRIVATEROOM_COMMON_X_ENTRIES"]["en"] = "%1 workspaces";
+$message["PRIVATEROOM_COMMON_X_ENTRIES_FROM_ALL"]["en"] = "%1 workspaces";
+$message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["en"] = "%1 of %1 workspaces";
+$message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["en"] = "%1 to %2 of %3 workspaces";
+$message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["en"] = "%1 to %2 of %3";
+$message["PRIVATEROOM_EXPORT"]["en"] = "Export private workspace";
+$message["PRIVATEROOM_LOCK"]["en"] = "Lock private workspace";
+$message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["en"] = "Daily CommSy newsletter";
+$message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["en"] = "You can unsubscribe this newsletter by switching off the according feature in  your private workspace on your CommSy portal.";
+$message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["en"] = "This newsletter is send by %1. It includes information about unread items of all open rooms (presented on the home of your private room) since yesterday.";
+$message["PRIVATEROOM_MAIL_SUBJECT_HEADER_WEEKLY"]["en"] = "This newsletter is send by %1. It includes information about unread items of all open rooms (presented on the home of your private room) since one week.";
+$message["PRIVATEROOM_MAIL_SUBJECT_WEEKLY"]["en"] = "Weekly CommSy newsletter";
+$message["PRIVATEROOM_UNLOCK"]["en"] = "Unlock private workspace";
+?>

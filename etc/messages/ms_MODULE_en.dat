@@ -1,0 +1,6 @@
+<?php
+$message["MODULE_CONFIG_NO"]["en"] = "hidden";
+$message["MODULE_CONFIG_NONE"]["en"] = "not available";
+$message["MODULE_CONFIG_SHORT"]["en"] = "expanded";
+$message["MODULE_CONFIG_TINY"]["en"] = "collapsed";
+?>

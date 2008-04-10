@@ -1,0 +1,9 @@
+<?php
+$message["CAMPUS_COMMSY_DESCRIPTION_HELP"]["de"] = "CommSy-Kurzbeschreibung";
+$message["CAMPUS_HANDBOOK_DESCRIPTION_HELP"]["de"] = "CommSy-Handbuch";
+$message["CAMPUS_INITIALIZE_FORM_TITLE"]["de"] = "CommSy initializieren";
+$message["CAMPUS_MODERATION_DESCRIPTION_HELP"]["de"] = "Moderationshandbuch";
+$message["CAMPUS_QUESTIONS_DESCRIPTION_HELP"]["de"] = "Fragen und Antworten";
+$message["CAMPUS_SEARCH_INDEX"]["de"] = "Suche im Raum";
+$message["CAMPUS_TITLE"]["de"] = "Name";
+?>

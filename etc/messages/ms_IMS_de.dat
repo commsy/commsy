@@ -1,0 +1,3 @@
+<?php
+$message["IMS_PASSWORD_ERROR"]["de"] = "Passworte sind nicht gleich oder leer!";
+?>

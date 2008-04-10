@@ -1,0 +1,5 @@
+<?php
+$message["ROOMS_ACCESS_NOT_GRANTED"]["en"] = "You are already signed in, but you are not member of this particular workspace yet.
+
+To get access to workspace %_PROJECT_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> please %2 here. The moderator/s of the workspace will probably approve your membership shortly.";
+?>

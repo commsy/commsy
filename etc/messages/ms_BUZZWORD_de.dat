@@ -1,0 +1,3 @@
+<?php
+$message["BUZZWORD_HEADER"]["de"] = "Schlagwörter";
+?>

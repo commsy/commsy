@@ -1,0 +1,9 @@
+<?php
+$message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["en"] = "archived";
+$message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["en"] = "blocked";
+$message["PRIVATE_ROOM_PROJECTROOM_TEMPLATE"]["en"] = "Template";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["en"] = "New items in the last %1 days";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["en"] = "New items since yesterday";
+$message["PRIVATE_ROOM_SHORT_VIEW_DESCRIPTION"]["en"] = "Activities in the last %1 days";
+$message["PRIVATE_ROOM_TITLE"]["en"] = "Private workspace of";
+?>

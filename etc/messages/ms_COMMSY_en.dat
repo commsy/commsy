@@ -1,0 +1,4 @@
+<?php
+$message["COMMSY_LINK_TITLE"]["en"] = "Homepage of CommSy";
+$message["COMMSY_WEBSITE"]["en"] = "CommSy-Website";
+?>

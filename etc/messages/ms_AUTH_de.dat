@@ -1,0 +1,12 @@
+<?php
+$message["AUTH_ACCOUNT"]["de"] = "Kennung";
+$message["AUTH_ERROR_ACCOUNT_EXIST"]["de"] = "Die Kennung wird schon in der Kombination [%1] genutzt. Bitte suchen Sie sich eine andere aus.";
+$message["AUTH_ERROR_ACCOUNT_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> existiert nicht.";
+$message["AUTH_ERROR_ACCOUNT_NOT_FREE"]["de"] = "Ihre Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> für das CommSy <span style=&quot;font-weight:bold;&quot;>%2</span> ist leider nocht nicht von der Moderation freigeschaltet worden. Haben Sie noch ein wenig Geduld. Sie erhalten eine E-Mail, sobald Ihre Kennung freigeschaltet wurde.";
+$message["AUTH_ERROR_ACCOUNT_OR_PASSWORD"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> konnte mit dem eingegebenen Passwort nicht angemeldet werden.";
+$message["AUTH_ERROR_ACCOUNT_REJECTED"]["de"] = "Ihre Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> ist von der Moderation <span style=&quot;font-weight:bold;&quot;>%2</span> gesperrt worden. Sie haben keinen Zugriff (mehr) auf das CommSy <span style=&quot;font-weight:bold;&quot;>%2</span>.";
+$message["AUTH_ERROR_ACCOUNT_TO_MANY"]["de"] = "Es ist eine Inkonsistenz in der Datenbank bezüglich Ihrer Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> aufgetreten. Bitte wenden Sie sich mit dieser Fehlermeldung an die Moderation des CommSy-Raumes <span style=&quot;font-weight:bold;&quot;>%2</span>.";
+$message["AUTH_ERROR_PASSWORD_WRONG"]["de"] = "Das eingegebene <span style=&quot;font-weight:bold;&quot;>Passwort</span> passt nicht zur Kennung %1.";
+$message["AUTH_NOT_AVAILABLE"]["de"] = "Diese Funktion steht über CommSy nicht zur Verfügung.";
+$message["AUTH_NOT_AVAILABLE2"]["de"] = "Diese Funktion steht nicht zur Verfügung. Bitten wenden Sie sich an die Portalmoderatoren.";
+?>

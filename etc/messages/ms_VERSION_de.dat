@@ -1,0 +1,3 @@
+<?php
+$message["VERSION_MAKE_NEW"]["de"] = "zu aktueller Version machen";
+?>

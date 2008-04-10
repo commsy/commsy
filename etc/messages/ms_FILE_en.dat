@@ -1,0 +1,4 @@
+<?php
+$message["FILE_ERROR_GET_FILE"]["en"] = "Sorry, you do not have sufficient permissions to download this file.";
+$message["FILE_ERROR_GET_FILE_NOT_EXISTS"]["en"] = "Sorry, this file does not exist.";
+?>

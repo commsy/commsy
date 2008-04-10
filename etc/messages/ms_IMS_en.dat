@@ -1,0 +1,3 @@
+<?php
+$message["IMS_PASSWORD_ERROR"]["en"] = "The password phrases you entered are not valid! Please enter valid, identical password phrases.";
+?>

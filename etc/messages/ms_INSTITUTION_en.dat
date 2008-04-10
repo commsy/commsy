@@ -1,0 +1,9 @@
+<?php
+$message["INSTITUTION_CHANGE_BUTTON"]["en"] = "Change %_INSTITUTION_SUB_NOMS_LOW";
+$message["INSTITUTION_EDIT"]["en"] = "Edit %_INSTITUTION_SUB_NOMS_LOW";
+$message["INSTITUTION_ENTER_NEW"]["en"] = "Enter %_INSTITUTION_SUB_NOMS_LOW";
+$message["INSTITUTION_INDEX"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["INSTITUTION_MAIL_NO_RECIPIENTS_ERROR"]["en"] = "There are no receipients for this mail because no persons joined the selected %_INSTITUTION_SUB_NOMPL_LOW haben .";
+$message["INSTITUTION_PICTURE_FILE_DESC"]["en"] = "You can add a picture for %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_LOW here.";
+$message["INSTITUTION_SAVE_BUTTON"]["en"] = "Save %_INSTITUTION_SUB_NOMS_LOW";
+?>

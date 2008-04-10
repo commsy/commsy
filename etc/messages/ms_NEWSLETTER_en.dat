@@ -1,0 +1,4 @@
+<?php
+$message["NEWSLETTER_NEW_ENTRIES"]["en"] = "items";
+$message["NEWSLETTER_NEW_SINGLE_ENTRY"]["en"] = "item";
+?>

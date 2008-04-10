@@ -1,0 +1,8 @@
+<?php
+$message["TAG_ACTIONS_AFTER"]["en"] = "after";
+$message["TAG_ACTIONS_BEFORE"]["en"] = "before";
+$message["TAG_ACTIONS_UNDER"]["en"] = "beneath";
+$message["TAG_EDIT_FORM_TITLE"]["en"] = "Edit categories";
+$message["TAG_FORM_ROOT_LEVEL"]["en"] = "top level";
+$message["TAG_SORT_BUTTON"]["en"] = "paste";
+?>

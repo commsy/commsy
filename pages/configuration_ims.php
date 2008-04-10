@@ -1,0 +1,123 @@
+<?PHP
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
+
+// get room item and current user
+$room_item = $environment->getCurrentContextItem();
+$current_user = $environment->getCurrentUserItem();
+$is_saved = false;
+
+// Check access rights
+if ($current_user->isGuest()) {
+   redirect($room_item->getItemID(),'home','index','');
+} elseif ( $room_item->isPortal() and !$room_item->isOpen() ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view( $environment,
+                                      true );
+   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $page->add($errorbox);
+} elseif ( ($room_item->isPortal() and !$current_user->isModerator())
+           or ($room_item->isServer() and !$current_user->isRoot())
+         ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view( $environment,
+                                      true );
+   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $page->add($errorbox);
+}
+// Access granted
+else {
+   // Find out what to do
+   if ( isset($_POST['option']) ) {
+      $command = $_POST['option'];
+   } else {
+      $command = '';
+   }
+
+   // Initialize the form
+   include_once('classes/cs_configuration_ims_form.php');
+   $form = new cs_configuration_ims_form($environment);
+   // Display form
+   include_once('classes/cs_configuration_form_view.php');
+   $form_view = new cs_configuration_form_view($environment);
+
+   // Load form data from postvars
+   if ( !empty($_POST) ) {
+      $form->setFormPost($_POST);
+   } else {
+      $form->setItem($room_item);
+   }
+   $form->prepareForm();
+   $form->loadValues();
+
+   if ( !empty($command) and ( isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) ) {
+      if ( $form->check() ) {
+         $auth_object = $environment->getAuthenticationObject();
+         $auth_manager = $auth_object->getCommSyAuthManager();
+         if (!empty($_POST['exist'])) {
+            if ($auth_manager->exists($_POST['user_id'])) {
+               //set new PW
+               $auth_manager->changePassword($_POST['user_id'],$_POST['password1']);
+            } else {
+               //create user
+               $auth_item = $auth_manager->getNewItem();
+               $auth_item->setPortalID(99);
+               $auth_item->setUserId($_POST['user_id']);
+               $auth_item->setPassword($_POST['password1']);
+               $auth_item->setAuthSourceID($auth_manager->getAuthSourceItemID());
+               $auth_object->save($auth_item,false);
+               $user = $auth_object->getUserItem();
+               $user->makeUser();
+               $user->save();
+            }
+         } else {
+            if ($auth_manager->exists($_POST['user_id'])) {
+               //delete ims user
+               $current_context = $environment->getCurrentContextItem();
+               $auth_object->deleteByUserId($_POST['user_id'],$current_context->getAuthDefault());
+            }
+         }
+         $form_view->setItemIsSaved();
+         $is_saved = true;
+      }
+   }
+
+   // upload ims paket
+   elseif ( !empty($command) and ( isOption($command, getMessage('COMMON_UPLOADFILE_BUTTON')) ) ) {
+      if ( !empty($_FILES['upload']['tmp_name']) ) {
+         $ims = file_get_contents($_FILES['upload']['tmp_name']);
+         include_once('classes/cs_connection_soap_ims.php');
+         $ims_connect = new cs_connection_soap_ims($environment);
+         $session_item = $environment->getSessionItem();
+         pr_xml($ims_connect->ims($session->getSessionID(),$ims));
+      }
+   }
+   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+   $form_view->setForm($form);
+   if ( $environment->inPortal() or $environment->inServer() ){
+      $page->addForm($form_view);
+   } else {
+      $page->add($form_view);
+   }
+}
+?>

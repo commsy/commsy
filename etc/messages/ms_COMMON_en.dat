@@ -1,0 +1,601 @@
+<?php
+$message["COMMON_ACCEPT"]["en"] = "accept";
+$message["COMMON_ACCESS_POINT"]["en"] = "Entry";
+$message["COMMON_ACCOUNT"]["en"] = "User ID";
+$message["COMMON_ACCOUNTS"]["en"] = "User IDs";
+$message["COMMON_ACCOUNT_ACTION_FORM_TITLE"]["en"] = "Edit accounts";
+$message["COMMON_ACCOUNT_PASSWORD_FORM_TITLE"]["en"] = "Change password";
+$message["COMMON_ACCOUNT_PREFERENCES_FORM_TITLE"]["en"] = "Edit preferences";
+$message["COMMON_ACCOUNT_STATUS_FORM_TITLE"]["en"] = "Change status";
+$message["COMMON_ACTIONS"]["en"] = "Actions";
+$message["COMMON_ACTIVATED"]["en"] = "Available";
+$message["COMMON_ACTIVITY"]["en"] = "Activity";
+$message["COMMON_ADDITIONAL_CONFIGURATION"]["en"] = "Additional settings / Extensions";
+$message["COMMON_ADDITIONAL_CONFIGURATION_TITLE"]["en"] = "Additional settings / Extensions";
+$message["COMMON_ADD_BUTTON"]["en"] = "add";
+$message["COMMON_ADD_BUZZWORD_BUTTON"]["en"] = "Add selected tag";
+$message["COMMON_ADD_INSTITUTION_ERROR"]["en"] = "%_INSTITUTION_ART_DEF_NOMS_BIG %_INSTITUTION_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> could not be found. Maybe:<br />
+<ul>
+<li>%1 does not yet exist in CommSy %2.</li>
+<li>You mistyped %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_LOW name.</li>
+</ul>";
+$message["COMMON_ADD_TAG_BUTTON"]["en"] = "Add selected category";
+$message["COMMON_ADD_TOPIC_ERROR"]["en"] = "%_TOPICS_ART_DEF_NOMS_BIG %_TOPICS_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> could not be found. Maybe:<br />
+<ul>
+<li>%1 does not yet exist in CommSy %2.</li>
+<li>You mistyped %_TOPICS_ART_DEF_NOMS_LOW %_TOPICS_SUB_NOMS_LOW name.</li>
+</ul>";
+$message["COMMON_ADMINISTRATION"]["en"] = "Administration";
+$message["COMMON_AGB_CONFIRMATION_LINK_INPUT"]["en"] = "Terms and Conditions";
+$message["COMMON_ALL_ATTRIBUTES"]["en"] = "Any (other) criteria";
+$message["COMMON_ALL_ENTRIES"]["en"] = "All";
+$message["COMMON_ALL_FOUND_ENTRIES"]["en"] = "Items found";
+$message["COMMON_ALL_LIST_ENTRIES"]["en"] = "%1 total";
+$message["COMMON_ALL_MODIFIERS"]["en"] = "edit by";
+$message["COMMON_ANNOTATIONS"]["en"] = "Comments";
+$message["COMMON_ANNOUNCEMENT"]["en"] = "Announcement";
+$message["COMMON_ANNOUNCEMENTS"]["en"] = "Announcements";
+$message["COMMON_ANNOUNCEMENT_INDEX"]["en"] = "Announcements";
+$message["COMMON_ANNOUNCEMENT_SHORT_VIEW_DESCRIPTION"]["en"] = "%1 active items out of %2 total";
+$message["COMMON_ASSIGN"]["en"] = "Add reference/s";
+$message["COMMON_ATTACHED_ANNOUNCEMENT_ID"]["en"] = "Reference number";
+$message["COMMON_ATTACH_BUTTON"]["en"] = "Add reference/s";
+$message["COMMON_ATTACH_LINK"]["en"] = "Add reference/s";
+$message["COMMON_ATTENTION"]["en"] = "Attention";
+$message["COMMON_AUTOMATIC_DELETE_DESCRIPTION"]["en"] = "This text replaces an item that has been removed by the CommSy system at the author's request. He or she asked us to remove all of his or her contributions to this workspace.</br>This replacement text can be deleted at any time if necessary.";
+$message["COMMON_AUTOMATIC_DELETE_TITLE"]["en"] = "Deleted item (for privacy reasons)";
+$message["COMMON_BACK"]["en"] = "Back";
+$message["COMMON_BACK_BUTTON"]["en"] = "Back";
+$message["COMMON_BODY"]["en"] = "Body";
+$message["COMMON_BROWSE_END_DESC"]["en"] = "last page";
+$message["COMMON_BROWSE_LEFT_DESC"]["en"] = "previous page";
+$message["COMMON_BROWSE_RIGHT_DESC"]["en"] = "next page";
+$message["COMMON_BROWSE_START_DESC"]["en"] = "first page";
+$message["COMMON_BUZZWORDS"]["en"] = "Tags";
+$message["COMMON_BUZZWORDS_EDIT_FORM_TITLE"]["en"] = "Edit tags";
+$message["COMMON_BUZZWORD_BOX"]["en"] = "Browse tags";
+$message["COMMON_BUZZWORD_BOX_EDIT"]["en"] = "Add tag/s";
+$message["COMMON_BUZZWORD_RESTRICTION"]["en"] = "Appl. tag";
+$message["COMMON_BY"]["en"] = "by";
+$message["COMMON_CANCEL_BUTTON"]["en"] = "Cancel";
+$message["COMMON_CHANGED"]["en"] = "Changed";
+$message["COMMON_CHANGED_ANNOTATION"]["en"] = "changed comment";
+$message["COMMON_CHANGED_MATERIAL"]["en"] = "changed material";
+$message["COMMON_CHANGE_BUTTON"]["en"] = "Save changes";
+$message["COMMON_CHANGE_LANGUAGE_WITH_FLAG"]["en"] = "change language to english";
+$message["COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED"]["en"] = "In this workspace only %1 is 	available.";
+$message["COMMON_CHOOSE_BUTTON"]["en"] = "choose";
+$message["COMMON_CLOSE"]["en"] = "archived";
+$message["COMMON_CLOSED"]["en"] = "archived";
+$message["COMMON_CLOSED_SINCE"]["en"] = "archived since";
+$message["COMMON_CLOSE_PARTICIPATION"]["en"] = "Quit membership";
+$message["COMMON_COLOR_1"]["en"] = "Menu bar";
+$message["COMMON_COLOR_10"]["en"] = "Even list entries";
+$message["COMMON_COLOR_11"]["en"] = "Odd list entries";
+$message["COMMON_COLOR_13"]["en"] = "Date";
+$message["COMMON_COLOR_14"]["en"] = "System text";
+$message["COMMON_COLOR_15"]["en"] = "'Inactive' text";
+$message["COMMON_COLOR_16"]["en"] = "Text warnings";
+$message["COMMON_COLOR_2"]["en"] = "Menu selection";
+$message["COMMON_COLOR_4"]["en"] = "Menu font";
+$message["COMMON_COLOR_5"]["en"] = "Menu font";
+$message["COMMON_COLOR_6"]["en"] = "Hyperlink";
+$message["COMMON_COLOR_8"]["en"] = "Box background";
+$message["COMMON_COLOR_9"]["en"] = "Background";
+$message["COMMON_COLOR_DEFAULT"]["en"] = "Standard";
+$message["COMMON_COLOR_EXAMPLE"]["en"] = "Preview";
+$message["COMMON_COLOR_SCHEMA_1"]["en"] = "A dream in pink";
+$message["COMMON_COLOR_SCHEMA_10"]["en"] = "5th floor";
+$message["COMMON_COLOR_SCHEMA_11"]["en"] = "Lilac trumps";
+$message["COMMON_COLOR_SCHEMA_2"]["en"] = "Deep as the ocean";
+$message["COMMON_COLOR_SCHEMA_3"]["en"] = "Living room from the 70ies";
+$message["COMMON_COLOR_SCHEMA_4"]["en"] = "Black and white";
+$message["COMMON_COLOR_SCHEMA_5"]["en"] = "Everything set to green";
+$message["COMMON_COLOR_SCHEMA_6"]["en"] = "Just like a sunny day";
+$message["COMMON_COLOR_SCHEMA_7"]["en"] = "Blue as the sky";
+$message["COMMON_COLOR_SCHEMA_8"]["en"] = "Autumn foliage";
+$message["COMMON_COLOR_SCHEMA_9"]["en"] = "Fade to grey";
+$message["COMMON_COLOR_SCHEMA_OWN"]["en"] = "Self-defined color theme";
+$message["COMMON_COMMSY_CONFIGURE"]["en"] = "Settings - Main menu";
+$message["COMMON_COMMSY_CONFIGURE_HOME"]["en"] = "Settings - Main menu";
+$message["COMMON_COMMSY_LINK_TITLE"]["en"] = "Homepage of CommSy";
+$message["COMMON_COMMUNITY"]["en"] = "%_COMMUNITY_SUB_NOMS_BIG";
+$message["COMMON_COMMUNITY_INDEX"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["COMMON_COMMUNITY_PL"]["en"] = "%_COMMUNITY_SUB_GENPL_BIG";
+$message["COMMON_COMMUNITY_ROOM_TITLE"]["en"] = "%_COMMUNITY_SUB_NOMS_BIG";
+$message["COMMON_CONFIGURATION"]["en"] = "Settings";
+$message["COMMON_CONFIGURATION_ADMIN_OPTIONS"]["en"] = "User management / administration";
+$message["COMMON_CONFIGURATION_AGB_FORM_TITLE"]["en"] = "Edit Terms and Conditions";
+$message["COMMON_CONFIGURATION_ARCHIVE_DESC"]["en"] = "You can archive this workspace in a freezed condition, additionaly, you have an option to extract a workspace template from it for further use.";
+$message["COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE"]["en"] = "Configure authentification";
+$message["COMMON_CONFIGURATION_BACKUP_FORM_TITLE"]["en"] = "Upload workspace backup";
+$message["COMMON_CONFIGURATION_CHAT_FORM_TITLE"]["en"] = "Edit workspace chat options";
+$message["COMMON_CONFIGURATION_COLOR_FORM_TITLE"]["en"] = "Configure color theme";
+$message["COMMON_CONFIGURATION_DATES_FORM_TITLE"]["en"] = "Configure events";
+$message["COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE"]["en"] = "Choose workspace preset";
+$message["COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE"]["en"] = "Configure discussions";
+$message["COMMON_CONFIGURATION_EXPORT_FORM_TITLE"]["en"] = "Export workspace";
+$message["COMMON_CONFIGURATION_EXTRA_FORM_TITLE"]["en"] = "Edit extras";
+$message["COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE"]["en"] = "Group workspaces";
+$message["COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE"]["en"] = "Edit workspace website options";
+$message["COMMON_CONFIGURATION_HOME_FORM_TITLE"]["en"] = "Configue Home / notice board";
+$message["COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE"]["en"] = "Configure text editor";
+$message["COMMON_CONFIGURATION_IMS_FORM_TITLE"]["en"] = "IMS-account configuration";
+$message["COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE"]["en"] = "Available languages";
+$message["COMMON_CONFIGURATION_MAIL_FORM_TITLE"]["en"] = "Edit e-mail texts";
+$message["COMMON_CONFIGURATION_MOVE_FORM_TITLE"]["en"] = "Move workspace to another portal";
+$message["COMMON_CONFIGURATION_NEWS_FORM_TITLE"]["en"] = "Edit news";
+$message["COMMON_CONFIGURATION_PLUGIN_FORM_TITLE"]["en"] = "Sponsoring and ads";
+$message["COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE"]["en"] = "Portal overview configuration";
+$message["COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE"]["en"] = "Edit general settings";
+$message["COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE"]["en"] = "E-mail newsletter";
+$message["COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE"]["en"] = "New workspaces";
+$message["COMMON_CONFIGURATION_ROOM_OPTIONS"]["en"] = "Workspace configuration";
+$message["COMMON_CONFIGURATION_RUBRIC_FORM_TITLE"]["en"] = "Choose workspace rubrics";
+$message["COMMON_CONFIGURATION_RUBRIC_OPTIONS"]["en"] = "Workspace rubrics options";
+$message["COMMON_CONFIGURATION_SERVICE_FORM_TITLE"]["en"] = "Configure service links";
+$message["COMMON_CONFIGURATION_TIME_FORM_TITLE"]["en"] = "Edit portal term scheme";
+$message["COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE"]["en"] = "Edit user notices";
+$message["COMMON_CONFIGURATION_WIKI"]["en"] = "Wiki link";
+$message["COMMON_CONFIGURATION_WIKI_FORM_TITLE"]["en"] = "Wiki settings";
+$message["COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE"]["en"] = "Show link on Home";
+$message["COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE"]["en"] = "Show link in portal description";
+$message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX"]["en"] = "Login-box";
+$message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE"]["en"] = "Display a CommSy login-box on the wiki navigation";
+$message["COMMON_CONFINGURATION_ARCHIVE"]["en"] = "Archive workspace / set up template";
+$message["COMMON_CONFINGURATION_ARCHIVE_SHORT"]["en"] = "Archive workspace / template";
+$message["COMMON_CONTENT"]["en"] = "Content";
+$message["COMMON_CONTENT_DESC"]["en"] = "You can write here what ever and as much as you like.<br /><br />
+The text can be formatted in multiple ways, for a complete description look here: %1.";
+$message["COMMON_CONTINUOUS"]["en"] = "continuous";
+$message["COMMON_CREATED_BY"]["en"] = "created by";
+$message["COMMON_CREATE_ANNOTATION"]["en"] = "Add comment";
+$message["COMMON_DATES"]["en"] = "Event";
+$message["COMMON_DATES_PL"]["en"] = "Events";
+$message["COMMON_DATE_APRIL_LONG"]["en"] = "April";
+$message["COMMON_DATE_APRIL_SHORT"]["en"] = "Apr";
+$message["COMMON_DATE_AUGUST_LONG"]["en"] = "August";
+$message["COMMON_DATE_AUGUST_SHORT"]["en"] = "Aug";
+$message["COMMON_DATE_DECEMBER_LONG"]["en"] = "December";
+$message["COMMON_DATE_DECEMBER_SHORT"]["en"] = "Dec";
+$message["COMMON_DATE_FEBRUARY_LONG"]["en"] = "February";
+$message["COMMON_DATE_FEBRUARY_SHORT"]["en"] = "Feb";
+$message["COMMON_DATE_FRIDAY"]["en"] = "Friday";
+$message["COMMON_DATE_IMPORT_FORM_TITLE"]["en"] = "Import events from external calendar";
+$message["COMMON_DATE_INDEX"]["en"] = "Events";
+$message["COMMON_DATE_JANUARY_LONG"]["en"] = "January";
+$message["COMMON_DATE_JANUARY_SHORT"]["en"] = "Jan";
+$message["COMMON_DATE_JULY_LONG"]["en"] = "July";
+$message["COMMON_DATE_JULY_SHORT"]["en"] = "Jul";
+$message["COMMON_DATE_JUNE_LONG"]["en"] = "June";
+$message["COMMON_DATE_JUNE_SHORT"]["en"] = "Jun";
+$message["COMMON_DATE_MARCH_LONG"]["en"] = "March";
+$message["COMMON_DATE_MARCH_SHORT"]["en"] = "Mar";
+$message["COMMON_DATE_MAY_LONG"]["en"] = "May";
+$message["COMMON_DATE_MAY_SHORT"]["en"] = "May";
+$message["COMMON_DATE_MONDAY"]["en"] = "Monday";
+$message["COMMON_DATE_NOVEMBER_LONG"]["en"] = "November";
+$message["COMMON_DATE_NOVEMBER_SHORT"]["en"] = "Nov";
+$message["COMMON_DATE_OCTOBER_LONG"]["en"] = "October";
+$message["COMMON_DATE_OCTOBER_SHORT"]["en"] = "Oct";
+$message["COMMON_DATE_SATURDAY"]["en"] = "Saturday";
+$message["COMMON_DATE_SEPTEMBER_LONG"]["en"] = "September";
+$message["COMMON_DATE_SEPTEMBER_SHORT"]["en"] = "Sept";
+$message["COMMON_DATE_STATUS"]["en"] = "Event type";
+$message["COMMON_DATE_SUNDAY"]["en"] = "Sunday";
+$message["COMMON_DATE_THURSDAY"]["en"] = "Thursday";
+$message["COMMON_DATE_TUESDAY"]["en"] = "Tuesday";
+$message["COMMON_DATE_WEDNESDAY"]["en"] = "Wednesday";
+$message["COMMON_DATE_WEEKVIEW_FRIDAY"]["en"] = "Fri, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_MONDAY"]["en"] = "Mon, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_SATURDAY"]["en"] = "Sat, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_SUNDAY"]["en"] = "Sun, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_THURSDAY"]["en"] = "Thu, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_TUESDAY"]["en"] = "Tue, %2 %1";
+$message["COMMON_DATE_WEEKVIEW_WEDNESDAY"]["en"] = "Wed, %2 %1";
+$message["COMMON_DEFAULT"]["en"] = "Default";
+$message["COMMON_DELETED_USER"]["en"] = "deleted account";
+$message["COMMON_DELETE_BOX_DESCRIPTION"]["en"] = "You are about to delete an item from the workspace.
+Please note that deleted items cannot be undeleted afterwards, so be cautious.
+Do you really want to delete this item irrecoverably?";
+$message["COMMON_DELETE_BOX_DESCRIPTION_MODERATOR"]["en"] = "<span class=&quot;bold&quot;>Please note:</span> Moderators are able to delete third party entries.";
+$message["COMMON_DELETE_BOX_DESCRIPTION_PORTAL"]["en"] = "You are about to delete a portal.
+Please note that deleted portal cannot be undeleted afterwards, so be cautious.
+Do you really want to delete this portal irrecoverably?";
+$message["COMMON_DELETE_BOX_DESCRIPTION_ROOM"]["en"] = "You are about to delete a workspace.
+Please note that deleted workspaces cannot be undeleted afterwards, so be cautious.
+Do you really want to delete this workspace irrecoverably?";
+$message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["en"] = "You are about to delete <span class=&quot;bold&quot;>own and third party items</span> from the workspace. This is an option that is accessible for moderators only.
+Please note that deleted items cannot be undeleted afterwards, so be cautious.
+Do you really want to delete the <span style=&quot;font-weight:bold&quot;>%1 selected items</span>  irrecoverably?";
+$message["COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY"]["en"] = "You are about to delete <span class=&quot;bold&quot;>own and third party items</span> from the workspace. This is an option that is accessible for moderators only.
+Please note that deleted items cannot be undeleted afterwards, so be cautious.
+Do you really want to delete <span style=&quot;font-weight:bold&quot;>this selected item</span>   irrecoverably?";
+$message["COMMON_DELETE_BOX_INDEX_TITLE"]["en"] = "Deleting multiple items";
+$message["COMMON_DELETE_BOX_TITLE"]["en"] = "Deleting items";
+$message["COMMON_DELETE_BOX_TITLE_PORTAL"]["en"] = "Deleting portal";
+$message["COMMON_DELETE_BOX_TITLE_ROOM"]["en"] = "Deleting workspaces";
+$message["COMMON_DELETE_BUTTON"]["en"] = "Delete";
+$message["COMMON_DELETE_ITEM"]["en"] = "Delete";
+$message["COMMON_DELETE_RESTRICTIONS"]["en"] = "Unset reduction";
+$message["COMMON_DELETE_ROOM"]["en"] = "Delete workspace";
+$message["COMMON_DESCRIPTION"]["en"] = "Description";
+$message["COMMON_DISCUSSION"]["en"] = "Discussion";
+$message["COMMON_DISCUSSIONS"]["en"] = "Discussions";
+$message["COMMON_DISCUSSION_INDEX"]["en"] = "Discussions";
+$message["COMMON_DOWNLOAD"]["en"] = "Download this page";
+$message["COMMON_EDIT"]["en"] = "Edit";
+$message["COMMON_EDIT_AS_MODERATOR"]["en"] = "Please note that you are able to edit this piece of content only because you are a moderator in this workspace. The creator restricted edit privileges to himself. So, please be careful not to infringe any personal or copyrights.";
+$message["COMMON_EDIT_AT"]["en"] = "Last edit date";
+$message["COMMON_EDIT_BY"]["en"] = "Last edit by";
+$message["COMMON_EDIT_ITEM"]["en"] = "Edit";
+$message["COMMON_EMAIL_TO"]["en"] = "Send via e-mail";
+$message["COMMON_EMAIL_TO_TITLE"]["en"] = "Send e-mail";
+$message["COMMON_ENTERED_BY"]["en"] = "by";
+$message["COMMON_ENTER_NEW_PROJECT"]["en"] = "%_PROJECT_SUB_AKKS_LOW";
+$message["COMMON_ENTRIES"]["en"] = "Items";
+$message["COMMON_ENTRY"]["en"] = "Item";
+$message["COMMON_ENTRY_NEW"]["en"] = "This is a new item.";
+$message["COMMON_ERROR_BUZZWORD_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>tag</span> or create a new one.";
+$message["COMMON_ERROR_COMMUNITY_ROOM_ENTRY"]["en"] = "Please fill in the field <b>Association</b>.";
+$message["COMMON_ERROR_DATABASE"]["en"] = "Sorry, a database error occured. The  item you entered has not been saved. Please contact moderator/s oder support service.";
+$message["COMMON_ERROR_FIELD"]["en"] = "Please fill in field <span style=&quot;font-weight:bold;&quot;>%1</span>.";
+$message["COMMON_ERROR_FIELD_DATE_INVALID"]["en"] = "Please provide valid date format MM/DD/YYYY.";
+$message["COMMON_ERROR_INFORMATION_BOX_ID_ENTRY"]["en"] = "Please select a correct content ID number. To get the referring content ID number, view the piece of content you want to highlight in your browser, and click on the &quot;+&quot; where CommSy gives &quot;Last edit&quot; and versioning information.  You can simply copy and paste the content ID number here.";
+$message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style=&quot;font-weight:bold;&quot;>%1</span>.";
+$message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
+$message["COMMON_FACTS"]["en"] = "Basics";
+$message["COMMON_FADE_IN"]["en"] = "Show left panel";
+$message["COMMON_FADE_OUT"]["en"] = "Hide left panel";
+$message["COMMON_FILE"]["en"] = "File";
+$message["COMMON_FILES_ERROR_MISSING"]["en"] = "%1: file %2 is missing.";
+$message["COMMON_FILES_ERROR_OTHERS_SUCCESSFULL"]["en"] = "All the other copies were successfully transferred.";
+$message["COMMON_FOREIGN_ROOM"]["en"] = "My private workspace";
+$message["COMMON_FORWARD_BUTTON"]["en"] = "Forward";
+$message["COMMON_FOR_GROUP"]["en"] = "for";
+$message["COMMON_FOR_GROUPS"]["en"] = "for";
+$message["COMMON_FROM2"]["en"] = "from";
+$message["COMMON_FULL_TEXT"]["en"] = "Full text";
+$message["COMMON_GO_BUTTON"]["en"] = "Goto workspace";
+$message["COMMON_GO_BUTTON2"]["en"] = "go";
+$message["COMMON_GROUP"]["en"] = "Group";
+$message["COMMON_GROUPROOM"]["en"] = "Group workspace";
+$message["COMMON_GROUPS"]["en"] = "Groups";
+$message["COMMON_GROUP_INDEX"]["en"] = "Groups";
+$message["COMMON_HELP"]["en"] = "Help";
+$message["COMMON_HELP_COMMON_FORMAT_TITLE"]["en"] = "Text format options";
+$message["COMMON_HINTS"]["en"] = "Hints";
+$message["COMMON_HOME_INDEX"]["en"] = "Home";
+$message["COMMON_IMPORT_DATES"]["en"] = "Import events";
+$message["COMMON_IMS"]["en"] = "IMS Default";
+$message["COMMON_IN"]["en"] = "in the";
+$message["COMMON_INFOBOX_FURTHER_INFORMATION"]["en"] = "Whole entry ...";
+$message["COMMON_INFORMATION_BOX"]["en"] = "Notice on Home / notice board";
+$message["COMMON_INFORMATION_BOX_DESC"]["en"] = "Highlight important information at the top of the Home / notice board page.";
+$message["COMMON_INFORMATION_BOX_ID_ENTRY"]["en"] = "By entering the correct content ID number above, you can highlight a material, a task, an event or an announcement on top of the Home / noticeboard with an abbreviated feature text.<br/> To get the refering content ID number, view the piece of content you want to highlight in your browser, and click on the &quot;+&quot; where CommSy gives &quot;Last edit&quot; and versioning information. You can simply copy and paste the content ID number here.";
+$message["COMMON_INFORMATION_BOX_SHORT"]["en"] = "Notice on Home";
+$message["COMMON_INFORMATION_INDEX"]["en"] = "Urgent information";
+$message["COMMON_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["COMMON_INSTITUTIONS"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["COMMON_INSTITUTION_INDEX"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["COMMON_IN_FUTURE"]["en"] = "in the future";
+$message["COMMON_ITEM_COPY_TO_CLIPBOARD"]["en"] = "Copy to online clipboard";
+$message["COMMON_ITEM_SAVED"]["en"] = "Changes saved!";
+$message["COMMON_LABELS_EDIT_FORM_TITLE"]["en"] = "Edit labels";
+$message["COMMON_LANGUAGE"]["en"] = "Language";
+$message["COMMON_LANGUAGE_CHOOSE_BUTTON"]["en"] = "Choose language";
+$message["COMMON_LAST_CHANGE"]["en"] = "last changed";
+$message["COMMON_LAST_MODIFIED_BY"]["en"] = "Last edit by";
+$message["COMMON_LINK_CREATOR"]["en"] = "assigned by";
+$message["COMMON_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
+$message["COMMON_LIST_ACTION_COPY"]["en"] = "Copy selected to online clipboard";
+$message["COMMON_LIST_ACTION_DELETE"]["en"] = "Delete items";
+$message["COMMON_LIST_ACTION_MARK_AS_READ"]["en"] = "Mark selected as read";
+$message["COMMON_LIST_ACTION_NO"]["en"] = "Select action";
+$message["COMMON_LIST_PRINTVIEW"]["en"] = "Print this page";
+$message["COMMON_LIST_SHOWN_ENTRIES"]["en"] = "Items displayed:";
+$message["COMMON_LIST_VIEW"]["en"] = "List view";
+$message["COMMON_LOGIN"]["en"] = "login";
+$message["COMMON_LOGO"]["en"] = "logo";
+$message["COMMON_LOOK_AT"]["en"] = "have a look at";
+$message["COMMON_MAIL_ALL_IN_ROOM"]["en"] = "Total members in workspace (%1 persons)";
+$message["COMMON_MAIL_ALL_ONE_IN_ROOM"]["en"] = "Total members in workspace (%1 person)";
+$message["COMMON_MAIL_CONTENT"]["en"] = "Content";
+$message["COMMON_MAIL_CONTENT_DESC"]["en"] = "Please enter your e-mail message body in this text field.";
+$message["COMMON_MAIL_FORM_TITLE"]["en"] = "Send e-mail";
+$message["COMMON_MAIL_RECEIVER"]["en"] = "Addressee";
+$message["COMMON_MAIL_RECEIVER_DESC"]["en"] = "The e-mail will be addressed to the persons selected.";
+$message["COMMON_MAIL_SEND_BUTTON"]["en"] = "Send";
+$message["COMMON_MAIL_SUBJECT"]["en"] = "Subject";
+$message["COMMON_MAIL_SUBJECT_DESC"]["en"] = "Enter a subject line.";
+$message["COMMON_MAIL_TO_MODERATOR"]["en"] = "Contact moderator/s";
+$message["COMMON_MAIL_TO_SERVICE"]["en"] = "Contact";
+$message["COMMON_MANDATORY_FIELDS"]["en"] = "Mandatory fields";
+$message["COMMON_MATERIAL"]["en"] = "Material";
+$message["COMMON_MATERIALS"]["en"] = "Materials";
+$message["COMMON_MATERIAL_INDEX"]["en"] = "Materials";
+$message["COMMON_MATERIAL_NOT_PUBLISH"]["en"] = "Publish to workspace only";
+$message["COMMON_MATERIAL_PUBLISH"]["en"] = "Publish to www";
+$message["COMMON_MESSAGETAG_ERROR"]["en"] = "Please notify a message-tag error to development!";
+$message["COMMON_MODIFICATOR"]["en"] = "Modified by";
+$message["COMMON_MODIFIED_AT"]["en"] = "Last edit date";
+$message["COMMON_MODIFIED_BY"]["en"] = "Last edit by";
+$message["COMMON_MODIFIED_LIST"]["en"] = "on";
+$message["COMMON_MONTH"]["en"] = "Month";
+$message["COMMON_MORE"]["en"] = "more";
+$message["COMMON_MYROOM_INDEX"]["en"] = "My private workspace";
+$message["COMMON_MY_USER_DESCRIPTION"]["en"] = "My profile";
+$message["COMMON_NAME"]["en"] = "Name";
+$message["COMMON_NAME_DESC"]["en"] = "Please enter a short and pithy name.";
+$message["COMMON_NETNAVIGATION"]["en"] = "Related contents";
+$message["COMMON_NETNAVIGATION_LATEST_ENTRIES"]["en"] = "Latest added references";
+$message["COMMON_NEW"]["en"] = "New";
+$message["COMMON_NEWS"]["en"] = "News";
+$message["COMMON_NEW_ANNOTATION"]["en"] = "New comment";
+$message["COMMON_NEW_BUZZWORD_BUTTON"]["en"] = "Create new tag";
+$message["COMMON_NEW_COMMUNITY"]["en"] = "new %_COMMUNITY_SUB_NOMS_LOW";
+$message["COMMON_NEW_DATE"]["en"] = "new event";
+$message["COMMON_NEW_DISCUSSION"]["en"] = "Add new discussion";
+$message["COMMON_NEW_F"]["en"] = "new";
+$message["COMMON_NEW_F_BIG"]["en"] = "new";
+$message["COMMON_NEW_ITEM"]["en"] = "Add new item";
+$message["COMMON_NEW_M"]["en"] = "new";
+$message["COMMON_NEW_MATERIAL"]["en"] = "Add material";
+$message["COMMON_NEW_M_BIG"]["en"] = "new";
+$message["COMMON_NEW_N"]["en"] = "new";
+$message["COMMON_NEW_N_BIG"]["en"] = "new";
+$message["COMMON_NEW_PROJECT"]["en"] = "new %_PROJECT_SUB_NOMS_LOW";
+$message["COMMON_NEW_VERSION_MATERIAL"]["en"] = "new version of material";
+$message["COMMON_NO"]["en"] = "No";
+$message["COMMON_NONE"]["en"] = "(none)";
+$message["COMMON_NOTHING_ATTACHED"]["en"] = "not linked";
+$message["COMMON_NOT_LINKED"]["en"] = "Not linked";
+$message["COMMON_NO_ANNOTATIONS"]["en"] = "No comments";
+$message["COMMON_NO_BUZZWORDS"]["en"] = "Select tag from list";
+$message["COMMON_NO_CONTACTS"]["en"] = "None available";
+$message["COMMON_NO_CONTACT_MODERATOR"]["en"] = "No contact person defined";
+$message["COMMON_NO_CONTENT"]["en"] = "No items there.";
+$message["COMMON_NO_COPIES"]["en"] = "Nothing on clipboard";
+$message["COMMON_NO_CURRENT_CONTENT"]["en"] = "There are no current items.";
+$message["COMMON_NO_DESCRIPTION"]["en"] = "No description available";
+$message["COMMON_NO_ENTRIES"]["en"] = "No items";
+$message["COMMON_NO_ENTRIES_FROM_ALL"]["en"] = "Listed: 0 items (out of %1 total)";
+$message["COMMON_NO_GROUPS"]["en"] = "No Groups available";
+$message["COMMON_NO_INSTITUTIONS"]["en"] = "No %_INSTITUTION_SUB_NOMPL_LOW available";
+$message["COMMON_NO_NEW_ENTRIES"]["en"] = "No new items";
+$message["COMMON_NO_SELECTION"]["en"] = "Please select";
+$message["COMMON_NO_TAGS"]["en"] = "Select category from list";
+$message["COMMON_NO_TOPICS"]["en"] = "No %_TOPICS_SUB_NOMPL_LOW available";
+$message["COMMON_NUMBER_OF_MEMBERS"]["en"] = "%_PROJECT_SUB_NOMS_LOW members";
+$message["COMMON_NUMBER_OF_MEMBERS_SINGULAR"]["en"] = "%_PROJECT_SUB_NOMS_LOW member";
+$message["COMMON_OFF"]["en"] = "off";
+$message["COMMON_ON"]["en"] = "on";
+$message["COMMON_ONE_ANNOTATION"]["en"] = "1 item";
+$message["COMMON_ONE_ANNOUNCEMENT"]["en"] = "Announcement";
+$message["COMMON_ONE_DATE"]["en"] = "Event";
+$message["COMMON_ONE_DISCUSSION"]["en"] = "Discussion";
+$message["COMMON_ONE_ENTRY"]["en"] = "one item";
+$message["COMMON_ONE_ENTRY_FROM_ALL"]["en"] = "Listed: 1 item (of %1 total)";
+$message["COMMON_ONE_GROUP"]["en"] = "Group";
+$message["COMMON_ONE_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMS_BIG";
+$message["COMMON_ONE_MATERIAL"]["en"] = "Material";
+$message["COMMON_ONE_PROJECT"]["en"] = "%_PROJECT_SUB_NOMS_BIG";
+$message["COMMON_ONE_SHOWN_ENTRY"]["en"] = "Shown: one item";
+$message["COMMON_ONE_TODO"]["en"] = "Todo";
+$message["COMMON_ONE_TOPIC"]["en"] = "%_TOPIC_SUB_NOMS_BIG";
+$message["COMMON_ONE_USER"]["en"] = "User";
+$message["COMMON_ONLY_FILES"]["en"] = "only with files";
+$message["COMMON_OPENED_SINCE"]["en"] = "open since";
+$message["COMMON_PAGE"]["en"] = "Page";
+$message["COMMON_PAGETITLE_ACCOUNT"]["en"] = "Accounts";
+$message["COMMON_PAGETITLE_AGB"]["en"] = "Terms and Conditions";
+$message["COMMON_PAGETITLE_ANNOTATION"]["en"] = "Comments";
+$message["COMMON_PAGETITLE_ANNOUNCEMENT"]["en"] = "Announcements";
+$message["COMMON_PAGETITLE_BUZZWORDS"]["en"] = "Tags";
+$message["COMMON_PAGETITLE_CAMPUS_SEARCH"]["en"] = "Search (workspace)";
+$message["COMMON_PAGETITLE_CHAT"]["en"] = "Chat";
+$message["COMMON_PAGETITLE_CONFIGURATION"]["en"] = "Configuration";
+$message["COMMON_PAGETITLE_DATE"]["en"] = "Events";
+$message["COMMON_PAGETITLE_DISCARTICLE"]["en"] = "Discussions";
+$message["COMMON_PAGETITLE_DISCUSSION"]["en"] = "Discussions";
+$message["COMMON_PAGETITLE_GROUP"]["en"] = "Groups";
+$message["COMMON_PAGETITLE_HELP"]["en"] = "Help";
+$message["COMMON_PAGETITLE_HOME"]["en"] = "Home";
+$message["COMMON_PAGETITLE_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
+$message["COMMON_PAGETITLE_LABELS"]["en"] = "Labels";
+$message["COMMON_PAGETITLE_LANGUAGE"]["en"] = "Translation interface";
+$message["COMMON_PAGETITLE_MAIL"]["en"] = "E-mail";
+$message["COMMON_PAGETITLE_MATERIAL"]["en"] = "Materials";
+$message["COMMON_PAGETITLE_MATERIALTYPE"]["en"] = "Material types";
+$message["COMMON_PAGETITLE_MATERIAL_ADMIN"]["en"] = "Materials";
+$message["COMMON_PAGETITLE_MYROOM"]["en"] = "My workspaces";
+$message["COMMON_PAGETITLE_PROJECT"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["COMMON_PAGETITLE_SECTION"]["en"] = "Section";
+$message["COMMON_PAGETITLE_TODO"]["en"] = "Tasks";
+$message["COMMON_PAGETITLE_TOPIC"]["en"] = "%_TOPIC_SUB_NOMPL_BIG";
+$message["COMMON_PAGETITLE_USER"]["en"] = "Members";
+$message["COMMON_PAGE_ENTRIES"]["en"] = "Max. items per page";
+$message["COMMON_PAGE_ENTRIES_ALL"]["en"] = "all";
+$message["COMMON_PASSWORD"]["en"] = "Password";
+$message["COMMON_PICTURE_DOWNLOADFILE"]["en"] = "Download picture";
+$message["COMMON_PORTAL"]["en"] = "Portal";
+$message["COMMON_PORTAL_LINKS"]["en"] = "Links";
+$message["COMMON_PORTAL_NEWS"]["en"] = "Portal message";
+$message["COMMON_PRIVATEROOM"]["en"] = "My private workspace";
+$message["COMMON_PRIVATEROOM_DESC"]["en"] = "private workspace";
+$message["COMMON_PRIVATEROOM_INDEX"]["en"] = "%_PRIVATEROOM_SUB_NOMPL_BIG";
+$message["COMMON_PRIVATE_ROOM"]["en"] = "Private workspace";
+$message["COMMON_PROJECT"]["en"] = "%_PROJECT_SUB_NOMS_LOW";
+$message["COMMON_PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["COMMON_PROJECT_PL"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
+$message["COMMON_READ"]["en"] = "Members having viewed this item";
+$message["COMMON_READABLE_ONLY_USER"]["en"] = "visible only for %1";
+$message["COMMON_READ_SINCE_MODIFICATION"]["en"] = "since then viewed by";
+$message["COMMON_REFNUMBER"]["en"] = "Reference number";
+$message["COMMON_REGISTER_HERE"]["en"] = "apply for membership";
+$message["COMMON_REJECT"]["en"] = "decline";
+$message["COMMON_RELEVANT_FOR"]["en"] = "Relevant for";
+$message["COMMON_RELEVANT_FOR_DESC"]["en"] = "Please select groups as addressees.";
+$message["COMMON_RELEVANT_FOR_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMPL_LOW";
+$message["COMMON_RELEVANT_FOR_INSTITUTION_DESC"]["en"] = "Relevant for the following %_INSTITUTION_SUB_NOMPL_LOW.";
+$message["COMMON_RELEVANT_FOR_TOPIC"]["en"] = "%_TOPICS_SUB_NOMPL_LOW";
+$message["COMMON_RELEVANT_FOR_TOPIC_DESC"]["en"] = "Relevant for the following %_TOPICS_SUB_NOMPL_LOW";
+$message["COMMON_RESET"]["en"] = "Reset";
+$message["COMMON_RESET_SEARCH"]["en"] = "reset";
+$message["COMMON_RESET_SEARCH_DESC"]["en"] = "Reset search. All items will be displayed.";
+$message["COMMON_ROOM"]["en"] = "workspace";
+$message["COMMON_ROOMS"]["en"] = "Workspaces";
+$message["COMMON_ROOM_META"]["en"] = "Administer workspace basics";
+$message["COMMON_ROOM_META_DESC"]["en"] = "Basic configuration for this workspace (e.g. title, logo, language, approval policy).";
+$message["COMMON_ROOM_OVERVIEW"]["en"] = "My joined workspaces";
+$message["COMMON_ROOM_SEARCH"]["en"] = "Search for workspace";
+$message["COMMON_ROOM_SEARCH_DESCRIPTION"]["en"] = "Search in the list of all workspaces";
+$message["COMMON_RUBRIC"]["en"] = "Workspace rubric";
+$message["COMMON_SAVE_AT_TIME"]["en"] = "save at";
+$message["COMMON_SAVE_BUTTON"]["en"] = "Save";
+$message["COMMON_SCHOOL_CONTEXT"]["en"] = "School";
+$message["COMMON_SEARCH"]["en"] = "Search";
+$message["COMMON_SEARCHFIELD"]["en"] = "Search workspace rubric";
+$message["COMMON_SEARCH_BOX"]["en"] = "Search";
+$message["COMMON_SEARCH_BUTTON"]["en"] = "Search";
+$message["COMMON_SEARCH_EASY"]["en"] = "basic search";
+$message["COMMON_SEARCH_RESTRICTION"]["en"] = "Appl. search term";
+$message["COMMON_SELECTED"]["en"] = "%1 items selected";
+$message["COMMON_SELECTED_ONE"]["en"] = "%1 item selected";
+$message["COMMON_SERVER_NEWS"]["en"] = "System information";
+$message["COMMON_SHORT_CONTACT_VIEW_DESCRIPTION"]["en"] = "The newest %1 member, %2 total";
+$message["COMMON_SHORT_MATERIAL_VIEW_DESCRIPTION"]["en"] = "The newest %1 materials, %2 total";
+$message["COMMON_SHORT_VIEW_DESCRIPTION"]["en"] = "%1 in the last %2 days out of %3 total";
+$message["COMMON_SHORT_VIEW_DESCRIPTION_CR"]["en"] = "the latest %1, %2 total";
+$message["COMMON_SHORT_VIEW_DESCRIPTION_CR_ONE"]["en"] = "the latest, %2 total";
+$message["COMMON_SHOW"]["en"] = "show";
+$message["COMMON_SHOW_ARCHIVED_ROOMS"]["en"] = "Include archived workspaces";
+$message["COMMON_SHOW_BUTTON"]["en"] = "Search";
+$message["COMMON_SHOW_INFORMATION_BOX"]["en"] = "Appearance";
+$message["COMMON_SHOW_INFORMATION_BOX_NO"]["en"] = "Do not show at the top of Home / Notice board";
+$message["COMMON_SHOW_INFORMATION_BOX_YES"]["en"] = "Show at the top of Home / notice board";
+$message["COMMON_SKIN"]["en"] = "Skin";
+$message["COMMON_SORT_BOX"]["en"] = "Sort";
+$message["COMMON_SORT_BUTTON"]["en"] = "Sort";
+$message["COMMON_STATUS"]["en"] = "Status";
+$message["COMMON_STEP_END"]["en"] = "last step";
+$message["COMMON_SUBJECT"]["en"] = "Subject";
+$message["COMMON_SUCCESSBOX_TITLE"]["en"] = "Attention";
+$message["COMMON_TABLE_OF_CONTENT"]["en"] = "Table of contents";
+$message["COMMON_TAGS"]["en"] = "Categories";
+$message["COMMON_TAG_BOX"]["en"] = "Browse categories";
+$message["COMMON_TAG_BOX_EDIT"]["en"] = "Add category/ies";
+$message["COMMON_TAG_RESTRICTION"]["en"] = "Appl. category";
+$message["COMMON_TEMPLATE_DESCRIPTION"]["en"] = "Template description";
+$message["COMMON_TEXT_FORMATING_FORMAT_TEXT"]["en"] = "<span style=&quot;font-weight:bold;&quot;>Lists:</span> <span style=&quot;font-weight:normal;&quot;>- for bulleted, # for numbered lists</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Emphasis:</span> <span style=&quot;font-weight:normal;&quot;>*text* becomes </span> <span style=&quot;font-weight:bold;&quot;>text</span>, <span style=&quot;font-weight:normal;&quot;>_text_ becomes </span><span style=&quot;font-weight:normal;font-style:italic;&quot;>text</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Headings: </span><span style=&quot;font-weight:normal;&quot;>!Text,!!Text or !!!Text for headings</span><br/>
+<span style=&quot;font-weight:bold;&quot;>Separators: </span><span style=&quot;font-weight:normal;&quot;>--- for horizontal line</span><br/><hr/><br/>";
+$message["COMMON_TEXT_FORMATING_HELP_FULL"]["en"] = "How to format text and include links, images, videos etc.";
+$message["COMMON_TEXT_FORMATING_HELP_SHORT"]["en"] = "How to include links, images, videos etc.";
+$message["COMMON_TEXT_INCLUDING_MEDIA"]["en"] = "Embedding media";
+$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<span style=&quot;font-weight:bold&quot;>Links:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:link ADRESS text=TEXT:) for hyperlinks</li>
+    <li>(:item NUMBER text=TEXT:) for links to entries in CommSy</li>
+    <li>(:file FILENAME text=TEXT:) for links to uploaded files</li>
+    <li>Arguments:
+    <ul>
+        <li>newwin: open a new window</li>
+        <li>text=TEXT: description</li>
+        <li>text='LONG TEXT': longer description</li>
+    </ul>
+    </li>
+    <li>e.g.(:file file.pdf text='My file' newwin:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Images:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:image IMAGENAME alt=TEXT rfloat width=WIDTH:)</li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat/rfloat: text float left/right</li>
+        <li>alt=TEXT: description</li>
+        <li>alt='LONG TEXT': longer description</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>http://www.url.de/IMAGE: embedding external images</li>
+    </ul>
+    </li>
+    <li>e.g. (:image picture.jpg width=150 alt=Text lfloat:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Videos:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:wmplayer FILEINAME play=true width=ZAHL:) for wma,wmv, avi, ...</li>
+    <li>(:quicktime FILEINAME play=true width=ZAHL:) for mov, wav, mpeg, ...</li>
+    <li>(:flash FILEINAME play=true width=ZAHL:) for swf, flv</li>
+    <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) for youtube videos</li>
+    <li>(:googlevideo FILM-ID:) for google videos</li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat / rfloat: text float left/right</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>play=true/false: automatic play (default: false)</li>
+        <li>http://www.url.de/FILEINAME: embedding external videos</li>
+        <li>FILM-ID: ID (part of the URL, e.g.http://de.youtube.com/watch?v==FILM-ID)</li>
+    </ul>
+    </li>
+    <li>e.g. (:quicktime video.mpeg width=150 play=true:)</li>
+    <li>e.g. (:youtube pQHX-SjgQvQ play=false:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Music:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:mp3 FILENAME.mp3:) for mp3</li>
+    <li>Arguments:
+    <ul>
+        <li>lfloat / rfloat: text float left/right</li>
+        <li>width=WIDTH / height=HEIGHT: width / height in px</li>
+        <li>play=true/false: automatic play (default: false)</li>
+        <li>http://www.url.de/FILEINAME: embedding external videos</li>
+    </ul>
+    </li>
+    <li>e.g. (:mp3 mymusic.mp3 width=150 play=true:)</li>
+</ul><br/>
+";
+$message["COMMON_TIME"]["en"] = "Time";
+$message["COMMON_TIME_NAME"]["en"] = "%_TIME_SUB_NOMPL_BIG";
+$message["COMMON_TINY_VIEW_DESCRIPTION"]["en"] = "%1 altogether";
+$message["COMMON_TITLE"]["en"] = "Title";
+$message["COMMON_TITLE_DESC"]["en"] = "/A beautiful life/";
+$message["COMMON_TITLE_OR_NAME"]["en"] = "Title or name";
+$message["COMMON_TO"]["en"] = "to";
+$message["COMMON_TODO"]["en"] = "Task";
+$message["COMMON_TODOS"]["en"] = "Tasks";
+$message["COMMON_TODO_INDEX"]["en"] = "Tasks";
+$message["COMMON_TOPIC"]["en"] = "%_TOPICS_SUB_NOMS_BIG";
+$message["COMMON_TOPICS"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["COMMON_TOPIC_INDEX"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
+$message["COMMON_TOP_OF_PAGE"]["en"] = "Go to top";
+$message["COMMON_UNIVERSITY_CONTEXT"]["en"] = "University";
+$message["COMMON_UNKNOWN"]["en"] = "Unknown";
+$message["COMMON_UNREAD"]["en"] = "unread";
+$message["COMMON_USAGE_INFO_BODY"]["en"] = "Description (list view)";
+$message["COMMON_USAGE_INFO_FORM_BODY"]["en"] = "Description (form)";
+$message["COMMON_USER"]["en"] = "Member";
+$message["COMMON_USERS"]["en"] = "Members";
+$message["COMMON_USER_AND_ENTRIES_DELETE_BUTTON"]["en"] = "delete all";
+$message["COMMON_USER_CLOSE_FORM_TITLE"]["en"] = "Quit membership";
+$message["COMMON_USER_EMAIL_SEND_FORM_TITLE"]["en"] = "Send e-mail";
+$message["COMMON_USER_INDEX"]["en"] = "Members";
+$message["COMMON_USER_PREFERENCES_FORM_TITLE"]["en"] = "Preferences";
+$message["COMMON_USER_REJECT_BUTTON"]["en"] = "Quit membership";
+$message["COMMON_USER_TINY_VIEW_DESCRIPTION"]["en"] = "%1 visible, %2 total";
+$message["COMMON_VERSION_DELETE"]["en"] = "Delete version";
+$message["COMMON_WEEK"]["en"] = "Week";
+$message["COMMON_WIKI_ADMIN_PW"]["en"] = "password (admin)";
+$message["COMMON_WIKI_EDIT_PW"]["en"] = "password (edit)";
+$message["COMMON_WIKI_LINK"]["en"] = "Wiki";
+$message["COMMON_WIKI_READ_PW"]["en"] = "password (read)";
+$message["COMMON_X_ANNOTATIONS"]["en"] = "%1 total";
+$message["COMMON_X_ENTRIES"]["en"] = "%1";
+$message["COMMON_X_ENTRIES_FROM_ALL"]["en"] = "Listed: %1 items (of %2 total)";
+$message["COMMON_X_FROM_Z"]["en"] = "listed: %1 of %1";
+$message["COMMON_X_FROM_Z_FROM_ALL"]["en"] = "Listed: %1 of %1 items (of %2 total)";
+$message["COMMON_X_FROM_Z_SHOWN"]["en"] = "Listed: %1 of %1";
+$message["COMMON_X_SHOWN_ENTRIES"]["en"] = "Shown: %1";
+$message["COMMON_X_TO_Y_FROM_Z"]["en"] = "%1 to %2 of %3";
+$message["COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["en"] = "Listed: %1 to %2 of %3 items (of %4 total)";
+$message["COMMON_X_TO_Y_FROM_Z_SHOWN"]["en"] = "Listed: %1 to %2 of %3";
+$message["COMMON_YEAR"]["en"] = "Year";
+$message["COMMON_YES"]["en"] = "Yes";
+?>

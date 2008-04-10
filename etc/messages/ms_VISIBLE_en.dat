@@ -1,0 +1,10 @@
+<?php
+$message["VISIBLE_ALWAYS"]["en"] = "public";
+$message["VISIBLE_NEVER"]["en"] = "not visible for others";
+$message["VISIBLE_ONLY_LOGGED"]["en"] = "visible within workspace";
+$message["VISIBLE_PROPERTY"]["en"] = "Visibility";
+$message["VISIBLE_PROPERTY_DESC"]["en"] = "<ul>
+<li>visible within workspace = only members of this room can see your personal contact information</li>
+<li>public = every web-user can see your personal contact information</li>
+</ul>";
+?>

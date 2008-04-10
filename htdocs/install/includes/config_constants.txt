@@ -1,0 +1,248 @@
+/** Authentication setup **/
+$c_auth['domain']              = '';                           // for cookie management
+$c_auth['cookiepath']          = '';                           // for cookie management
+// use html-textarea FCKeditor
+// ---------------------------
+// if you want to use the html-textarea FCKeditor, you must do the following:
+// 1. download the FCKeditor from http://www.fckeditor.net/
+// 2. install the FCKeditor at your server
+// 3. set url path to the installation of the FCKeditor (main folder)
+//    http://www.xyz.de/FCKeditor -> http://www.xyz.de[$c_fckeditor_url_path]
+//    $c_fckeditor_url_path = '/FCKeditor';
+// 4. set file path to the installation of the FCKeditor (main folder)
+//    start at the commsy main folder
+//    $c_fckeditor_file_path = '../FCKeditor';
+// 5. set enable FCKeditor in CommSy with setting $c_html_textarea = true;
+//    $c_html_textarea = true;
+//
+// you can use the following versions of the FCKEditor with CommSy
+// - 2.3.1 or higher:
+// - 2.3.1 tested: okay
+// - 2.3.2 tested: okay
+// - 2.4.2 tested: okay
+
+// use virus scanning at uploading files
+// ----------------------------------------------------
+// OPTION 1: there are performance lacks
+// scan file on upload
+// 1. installation
+//    on debian linux
+//    # apt-get install php5-clamavlib
+//    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+//    # /etc/init.d/apache2 restart
+// 2. enable virus scan at uploading files
+//    $c_virus_scan = true;
+// 3. enable virus scan by php clamav library
+//    $c_virus_use_php = true;
+//
+// if you want to use another viren scanning tool
+// you must set the following variables
+// - only testet with clamav on linux
+//    $c_virus_scan = true;
+//    $c_virus_use_php = false;
+//    $c_virus_scan_path = '/usr/bin';
+//    $c_virus_scan_bin  = 'clamscan';
+// ----------------------------------------------------
+// OPTION 2: scan files with commsy cron
+// scan files every 24 hours
+// 1. installation
+//    on debian linux
+//    # apt-get install php5-clamavlib
+//    maybe you must edit /etc/php5/apache2/php.ini to active the clamavlib
+//    # /etc/init.d/apache2 restart
+// 2. enable virus scan at uploading files
+//    $c_virus_scan_cron = true;
+// 3. enable virus scan by php clamav library
+//    $c_virus_use_php = true;
+//
+// if you want to use another viren scanning tool
+// you must set the following variables
+// - only testet with clamav on linux
+//    $c_virus_scan_cron = true;
+//    $c_virus_use_php = false;
+//    $c_virus_scan_path = '/usr/bin';
+//    $c_virus_scan_bin  = 'clamscan';
+
+/** error reporting and debugging **/
+// Log errors to this database.
+// Only errors that are reported through the CommSy
+// error handler go to this log database.
+$c_error_log_db = true;
+
+// Support for debugging message-tags
+// if set, message-tags will not be resolved
+//$dont_resolve_messagetags = true;
+// if set, message-tag-usage will be logged to the db
+//$log_messagetags = true;
+
+// message tags in configuration (default == false) --- only for developers !!!!
+$c_message_management = true;
+
+// send emails (default == true) --- only for developers !!!!
+// true = send emails
+// false = don't send emails
+// print = don't end emails but echo them in the htmlpage (usefull for debugging)
+$c_send_email = true;
+
+// support for debugging
+$c_show_debug_infos = false;
+
+//Export of Contents
+//Where to store the temporary files
+$export_temp_folder = 'var/temp/zip_export';
+
+// JCommSy migration
+//
+// specify the url of the tomcat application, e.g.
+// $jcommsy['Servlet-URL'] = "localhost/commsy/Commsy";
+// or
+// $jcommsy['Servlet-URL'] = "localhost:8080/commsy/Commsy";
+//
+// $java_enabled_for = array(8099);         // id of project room, community room or portal
+//
+// for each migrated module set an array element 'true'
+$jcommsy['announcement'] = false;
+$jcommsy['date']         = false;
+$jcommsy['discussion']   = false;
+$jcommsy['group']        = false;
+$jcommsy['todo']         = false;
+$jcommsy['topic']        = false;
+$jcommsy['material']     = false;
+$jcommsy['user']         = false;
+
+// plugins
+// attention: this is very, very experimental
+// copy your plugin to the plugin directory
+// and activate the plugin here
+// name of the plugin directory = PLUGIN_NAME
+#$c_plugin_array = array();
+#$c_plugin_array['SPECIAL_PLUGIN_PLACE'] = 'PLUGIN_NAME';
+
+
+/** IMS Soap setup*/
+
+//Where to store reference packages to test pathxml for correctness
+//Testpackages are packages to add a group/user/membership. All pathes executed must
+//return a value, not an empty string! The example packages in the "GOLEM-Handbuch"
+//under 9.3 work fine. Three files have to be present, named add_group.xml, add_person.xml
+//and add_membership.xml
+$test_package_folder = 'var/IMS_test_packages';
+
+//Where to get new *.pathxml files (Path of GOLEM-Server)
+$path_file_url = 'http://path/to/golem/server';
+
+//Where to get a specific pathxml file (person, group, membership)
+//On GOLEM Server
+$url_for_path_file_person = $path_file_url.'/person.pathxml';
+$url_for_path_file_group = $path_file_url.'/group.pathxml';
+$url_for_path_file_membership = $path_file_url.'/membership.pathxml';
+
+//Backups of pathxml
+//Where to store backups of *.pathxml files
+$path_xml_backup_folder = 'var/pathxml_backup';
+$url_for_fallback_path_file_person = $path_xml_backup_folder.'/person.pathxml';
+$url_for_fallback_path_file_group = $path_xml_backup_folder.'/group.pathxml';
+$url_for_fallback_path_file_membership = $path_xml_backup_folder.'/membership.pathxml';
+
+//When a user is assigned to a room as moderator,
+//what is the number of the roletype this is represented by?
+$ims_number_roletype_moderator = '02';
+
+//write IMS-XML-package to disc
+$c_ims_log_package = false;
+
+/** swish-e fulltext search setup */
+# experimental
+
+# installation
+# please install swish-e
+# please install catdoc
+# xpdf for the converter pdftotext
+# mkdir /tmp/swish-e
+# user of webserver must have write access in temp-folder
+
+$ftsearch_enabled = false;
+$search_engine = "/usr/bin/swish-e";
+$searchsite_base = '/FILEPATH/TO/COMMSY/ROOT';
+
+# specially for searching...
+$maxhits_offset = 1000;
+
+# specially for indexing
+$background_mode = true;
+# --- only available if '$background_mode = true'
+$bgm_log = false;
+$bgm_appendtolog = false;
+
+// new config for indexing
+$c_ftsearch_indexing = $ftsearch_enabled;
+$c_ftsearch_indexing_cron = true; // false = indexing on upload (experimental and performance problems)
+
+/** pmwiki */
+// for activating pmwiki please set the following variable on true
+// $c_pmwiki = true;
+$c_pmwiki = true;
+
+// set url path to the installation of the pmwiki (main folder)
+// http://www.xyz.de/pmwiki -> [http://www.xyz.de/pmwiki]/pmwiki.php
+$c_pmwiki_path_url = 'http://localhost/commsy_cvs/htdocs/commsy_wiki';
+
+// set file path to the installation of the pmwiki (main folder)
+// start at the commsy main folder
+$c_pmwiki_path_file = 'htdocs/commsy_wiki';
+$c_pmwiki_absolute_path_file = '/Library/WebServer/Documents/commsy_cvs/htdocs/commsy_wiki';
+
+/** session management */
+# session life time in hours
+$c_session_lifetime = 6;
+
+/** autosave */
+// mode: 0 -> unvisible, 1 -> verbose / silent, 2 -> verbose / counter
+$c_autosave_mode = 2;
+// autosave limit in minutes
+$c_autosave_limit = 6*60;
+if ( !empty($c_session_lifetime) ) {
+   $c_autosave_limit = $c_session_lifetime*60-0.2;
+}
+
+// use jsMath
+// ---------------------------
+// if you want to use jsMath for mathematical formulas, you must do the following:
+// 1. download the jsMath from http://www.math.union.edu/~dpvc/jsMath/
+//    - you must download two packages (source and one font package)
+// 2. install the jsMath at your server
+// 3. set url to the installation of jsMath (main folder)
+//    e.g. http://www.xyz.de/jsMath
+//    $c_jsmath_url = $c_commsy_domain.$c_commsy_url_path.'/jsMath'; // if jsMath is in htdocs folder of commsy
+//    $c_jsmath_url = $c_pmwiki_path_url.'/pub/jsMath'; // if you are using commsy_wiki with jsMath
+//    $c_jsmath_url = 'http://www.xyz.de/jsMath';
+// 4. enable jsMath in CommSy with setting $c_jsmath_enable = true;
+//    $c_jsmath_enable = true;
+//
+// you can use the following versions of the jsMath with CommSy
+// - 3.4f or higher:
+// - 3.4f tested: okay
+
+// use etchat (only with mysql)
+// ---------------------------
+// if you want to use etchat, you must do the following:
+// 1. download the etchat from http://www.math.union.edu/~dpvc/jsMath/
+// 2. install the etchat on your server
+//    change in etchat_rooms etchat_id_room from int(3) to int(11)
+// 3. set url to the installation of etchat (main folder)
+//    e.g. http://www.xyz.de/etchat
+//    $c_etchat_url = $c_commsy_domain.$c_commsy_url_path.'/etchat'; // if etchat is in htdocs folder of commsy
+//    $c_etchat_url = 'http://www.xyz.de/etchat';
+    $c_etchat_url = 'http://localhost/jackewit/et_chat_v3';
+// 4. enable etchat in CommSy with setting $c_etchat_enable = true;
+    $c_etchat_enable = true;
+// 5. database connection to etchat
+$db['etchat']['host']          = 'localhost';
+$db['etchat']['user']          = 'etchat';
+$db['etchat']['password']      = 'etchat';
+$db['etchat']['database']      = 'etchat';
+//
+// you can use the following versions of the etchat with CommSy
+// - 3.0.0 or higher:
+// - 3.0.0 tested: okay
+// - 3.0.1 tested: okay

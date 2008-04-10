@@ -1,0 +1,8 @@
+<?php
+$message["EMAIL_CONTACT_MODERATOR"]["de"] = "E-Mail senden";
+$message["EMAIL_CONTACT_MODERATOR_TEXT"]["de"] = "E-Mail an die AnsprechpartnerInnen senden.";
+$message["EMAIL_CONTACT_MODERATOR_TEXT_DESC"]["de"] = "Text";
+$message["EMAIL_TO_INSTITUTION_TITLE"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW &quot;%1&quot;";
+$message["EMAIL_TO_INSTITUTION_TITLE_WITHOUT"]["de"] = "Email an die Mitglieder %_INSTITUTION_ART_DEF_GENS_LOW %_INSTITUTION_SUB_GENS_LOW";
+$message["EMAIL_TO_TOPIC_TITLE"]["de"] = "Email an die Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG &quot;%1&quot; zugeordneten haben.";
+?>

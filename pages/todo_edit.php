@@ -1,0 +1,636 @@
+<?PHP
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
+
+include_once('classes/cs_todo_form.php');
+include_once('classes/cs_form_view.php');
+
+// Function used for redirecting to connected rubrics
+function attach_redirect ($rubric_type, $current_iid) {
+   global $session, $environment;
+   $infix = '_'.$rubric_type;
+   $session->setValue($current_iid.'_post_vars', $_POST);
+   if ( isset($_POST[$rubric_type]) ) {
+      $session->setValue($current_iid.$infix.'_attach_ids', $_POST[$rubric_type]);
+   } else {
+      $session->setValue($current_iid.$infix.'_attach_ids', array());
+   }
+   $session->setValue($current_iid.$infix.'_back_module', 'todo');
+   $params = array();
+   $params['ref_iid'] = $current_iid;
+   $params['mode'] = 'formattach';
+   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params);
+}
+
+function attach_return ($rubric_type, $current_iid) {
+   global $session;
+   $infix = '_'.$rubric_type;
+   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
+   $session->unsetValue($current_iid.'_post_vars');
+   $session->unsetValue($current_iid.$infix.'_attach_ids');
+   $session->unsetValue($current_iid.$infix.'_back_module');
+   return $attach_ids;
+}
+
+// Function used for cleaning up the session. This function
+// deletes ALL session variables this page writes.
+function cleanup_session ($current_iid) {
+   global $session,$environment;
+   $session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
+   $session->unsetValue($environment->getCurrentModule().'_add_tags');
+   $session->unsetValue($environment->getCurrentModule().'_add_files');
+   $session->unsetValue($current_iid.'_post_vars');
+   $session->unsetValue($current_iid.'_material_attach_ids');
+   $session->unsetValue($current_iid.'_group_attach_ids');
+   $session->unsetValue($current_iid.'_topic_attach_ids');
+   $session->unsetValue($current_iid.'_material_back_module');
+   $session->unsetValue($current_iid.'_group_back_module');
+   $session->unsetValue($current_iid.'_topic_back_module');
+}
+
+
+// Get the current user and context
+$current_user = $environment->getCurrentUserItem();
+$context_item = $environment->getCurrentContextItem();
+
+$with_anchor = false;
+// Get item to be edited
+if ( !empty($_GET['iid']) ) {
+   $current_iid = $_GET['iid'];
+} elseif ( !empty($_POST['iid']) ) {
+   $current_iid = $_POST['iid'];
+} else {
+   $current_iid = 'NEW';
+}
+
+// Coming back from attaching something
+if ( !empty($_GET['backfrom']) ) {
+   $backfrom = $_GET['backfrom'];
+} else {
+   $backfrom = false;
+}
+
+// Load item from database
+if ( $current_iid == 'NEW' ) {
+   $todo_item = NULL;
+} else {
+   $todo_manager = $environment->getToDosManager();
+   $todo_item = $todo_manager->getItem($current_iid);
+}
+
+// Check access rights
+if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $page->add($errorbox);
+} elseif ( $current_iid != 'NEW' and !isset($todo_item) ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
+   $page->add($errorbox);
+} elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
+             ($current_iid != 'NEW' and isset($todo_item) and
+              $todo_item->mayEdit($current_user))) ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+   $page->add($errorbox);
+}
+
+// Access granted
+else {
+
+   // Find out what to do
+   if ( isset($_POST['option']) ) {
+      $command = $_POST['option'];
+   } else {
+      $command = '';
+   }
+
+   // Cancel editing
+   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      cleanup_session($current_iid);
+      if ( $current_iid == 'NEW' ) {
+         redirect($environment->getCurrentContextID(), 'todo', 'index', '');
+      } else {
+         $params = array();
+         $params['iid'] = $current_iid;
+         redirect($environment->getCurrentContextID(), 'todo', 'detail', $params);
+      }
+   }
+
+   // Show form and/or save item
+   else {
+
+      // Initialize the form
+      $form = new cs_todo_form($environment);
+
+      // files
+      include_once('include/inc_fileupload_edit_page_handling.php');
+
+      // Redirect to attach material
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON')) ) {
+         attach_redirect(CS_MATERIAL_TYPE, $current_iid);
+      }
+
+      // Redirect to attach TODO
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON')) ) {
+         attach_redirect(CS_TODO_TYPE, $current_iid);
+      }
+
+      // Redirect to attach DATE
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON')) ) {
+         attach_redirect(CS_DATE_TYPE, $current_iid);
+      }
+
+      // Redirect to attach ANNOUNCEMENT
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON')) ) {
+         attach_redirect(CS_ANNOUNCEMENT_TYPE, $current_iid);
+      }
+
+      // Redirect to attach DISCUSSION
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON')) ) {
+         attach_redirect(CS_DISCUSSION_TYPE, $current_iid);
+      }
+
+      // Redirect to attach PROJECT
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON')) ) {
+         attach_redirect(CS_PROJECT_TYPE, $current_iid);
+      }
+
+
+      // Redirect to attach groups
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
+         attach_redirect(CS_GROUP_TYPE, $current_iid);
+      }
+
+      // Redirect to attach topics
+      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
+         attach_redirect(CS_TOPIC_TYPE, $current_iid);
+      }
+
+      // Add a new buzzword
+      if ( isOption($command, getMessage('COMMON_ADD_BUZZWORD_BUTTON')) or isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
+         $focus_element_onload = 'buzzword';
+         $post_buzzword_ids = array();
+         $new_buzzword_ids = array();
+         if ( isset($_POST['buzzwordlist']) ) {
+            $post_buzzword_ids = $_POST['buzzwordlist'];
+         }
+         if ( $session->issetValue($environment->getCurrentModule().'_add_buzzwords') ) {
+            $buzzword_array = $session->getValue($environment->getCurrentModule().'_add_buzzwords');
+         } else {
+            $buzzword_array = array();
+         }
+         if ( !empty($_POST['buzzword']) and $_POST['buzzword']!=-1 and $_POST['buzzword']!=-2 and !in_array($_POST['buzzword'],$post_buzzword_ids) ) {
+            $temp_array = array();
+            $buzzword_manager = $environment->getLabelManager();
+            $buzzword_manager->reset();
+            $buzzword_item = $buzzword_manager->getItem($_POST['buzzword']);
+
+            $temp_array['name'] = $buzzword_item->getTitle();
+            $temp_array['id'] = $buzzword_item->getItemID();
+            $buzzword_array[] = $temp_array;
+            $new_buzzword_ids[] = $temp_array['id'];
+         }
+         if ( !empty($_POST['new_buzzword']) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
+            $focus_element_onload  = 'new_buzzword';
+            $buzzword_manager = $environment->getLabelManager();
+            $buzzword_manager->reset();
+            $buzzword_manager->setContextLimit($environment->getCurrentContextID());
+            $buzzword_manager->setTypeLimit('buzzword');
+            $buzzword_manager->select();
+            $buzzword_list = $buzzword_manager->get();
+            $exist = NULL;
+            if ( !empty($buzzword_list) ){
+               $buzzword = $buzzword_list->getFirst();
+               while ( $buzzword ){
+                  if ( strcmp($buzzword->getName(), ltrim($_POST['new_buzzword'])) == 0 ){
+                     $exist = $buzzword->getItemID();
+                  }
+                  $buzzword = $buzzword_list->getNext();
+               }
+            }
+            if ( !isset($exist) ) {
+               $temp_array = array();
+               $buzzword_manager = $environment->getLabelManager();
+               $buzzword_manager->reset();
+               $buzzword_item = $buzzword_manager->getNewItem();
+               $buzzword_item->setLabelType('buzzword');
+               $buzzword_item->setTitle(ltrim($_POST['new_buzzword']));
+               $buzzword_item->setContextID($environment->getCurrentContextID());
+               $user = $environment->getCurrentUserItem();
+               $buzzword_item->setCreatorItem($user);
+               $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
+               $buzzword_item->save();
+               $temp_array['name'] = $buzzword_item->getTitle();
+               $temp_array['id'] = $buzzword_item->getItemID();
+               $buzzword_array[] = $temp_array;
+               $new_buzzword_ids[] = $temp_array['id'];
+            } elseif ( isset($exist) and !in_array($exist,$post_buzzword_ids) ) {
+               $temp_array = array();
+               $buzzword_manager = $environment->getLabelManager();
+               $buzzword_manager->reset();
+               $buzzword_item = $buzzword_manager->getItem($exist);
+               $temp_array['name'] = $buzzword_item->getTitle();
+               $temp_array['id'] = $buzzword_item->getItemID();
+               $buzzword_array[] = $temp_array;
+               $new_buzzword_ids[] = $temp_array['id'];
+            }
+         }
+         if ( count($buzzword_array) > 0 ) {
+            $session->setValue($environment->getCurrentModule().'_add_buzzwords', $buzzword_array);
+         } else {
+            $session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
+         }
+         $post_buzzword_ids = array_merge($post_buzzword_ids, $new_buzzword_ids);
+      }
+
+
+      // Add a new tag
+      if ( isOption($command, getMessage('COMMON_ADD_TAG_BUTTON')) ) {
+         $focus_element_onload = 'tag';
+         $new_tag_ids = array();
+         $post_tag_ids = array();
+         if ( isset($_POST['taglist']) ) {
+            $post_tag_ids = $_POST['taglist'];
+         }
+         if ( $session->issetValue($environment->getCurrentModule().'_add_tags') ) {
+            $tag_array = $session->getValue($environment->getCurrentModule().'_add_tags');
+         } else {
+            $tag_array = array();
+         }
+         if ( !empty($_POST['tag']) and $_POST['tag']!=-1 and $_POST['tag']!=-2 and !in_array($_POST['tag'],$post_tag_ids) ) {
+            $temp_array = array();
+            $tag_manager = $environment->getTagManager();
+            $tag_manager->reset();
+            $tag_item = $tag_manager->getItem($_POST['tag']);
+
+            $temp_array['name'] = $tag_item->getTitle();
+            $temp_array['id'] = $tag_item->getItemID();
+            $tag_array[] = $temp_array;
+            $new_tag_ids[] = $temp_array['id'];
+         }
+         if ( count($tag_array) > 0 ) {
+            $session->setValue($environment->getCurrentModule().'_add_tags', $tag_array);
+         } else {
+            $session->unsetValue($environment->getCurrentModule().'_add_tags');
+         }
+         $post_tag_ids = array_merge($post_tag_ids, $new_tag_ids);
+      }
+
+      // Load form data from postvars
+      if ( !empty($_POST) ) {
+         $session_post_vars = $_POST;
+         if ( !empty($command) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
+            $session_post_vars['new_buzzword']='';
+         }
+          if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+            $session_post_vars['filelist'] = $post_file_ids;
+         }
+         if ( isset($post_buzzword_ids) AND !empty($post_buzzword_ids) ) {
+            $session_post_vars['buzzwordlist'] = $post_buzzword_ids;
+         }
+         if ( isset($post_tag_ids) AND !empty($post_tag_ids) ) {
+            $session_post_vars['taglist'] = $post_tag_ids;
+         }
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from multi upload
+      elseif ( $from_multiupload ) {
+         $session_post_vars = array();
+         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+            $session_post_vars['filelist'] = $post_file_ids;
+         }
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching material
+      elseif ( $backfrom == CS_MATERIAL_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching PROJECT
+      elseif ( $backfrom == CS_PROJECT_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching DISCUSSION
+      elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching TODO
+      elseif ( $backfrom == CS_TODO_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_TODO_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching DATE
+      elseif ( $backfrom == CS_DATE_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_DATE_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching ANNOUNCEMENT
+      elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching groups
+      elseif ( $backfrom == CS_GROUP_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_GROUP_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_GROUP_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Back from attaching topics
+      elseif ( $backfrom == CS_TOPIC_TYPE ) {
+         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
+         $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
+         $with_anchor = true;
+         $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
+         $form->setFormPost($session_post_vars);
+      }
+
+      // Load form data from database
+      elseif ( isset($todo_item) ) {
+         $form->setItem($todo_item);
+
+         // Buzzwords
+         $buzzword_list = $todo_item->getBuzzwordList();
+         $buzzword_list->sortby('title');
+         if ( !$buzzword_list->isEmpty() ) {
+            $buzzword_array = array();
+            $buzzword_item = $buzzword_list->getFirst();
+            while ( $buzzword_item ) {
+               $temp_array = array();
+               $temp_array['name'] = $buzzword_item->getTitle();
+               $temp_array['id'] = (int)$buzzword_item->getItemID();
+               $buzzword_array[] = $temp_array;
+               $buzzword_item = $buzzword_list->getNext();
+            }
+            if ( !empty($buzzword_array)) {
+               $session->setValue($environment->getCurrentModule().'_add_buzzwords', $buzzword_array);
+            }
+         }
+         // Tags
+         $tag_list = $todo_item->getTagList();
+         if ( !$tag_list->isEmpty() ) {
+            $tag_array = array();
+            $tag_item = $tag_list->getFirst();
+            while ( $tag_item ) {
+               $temp_array = array();
+               $temp_array['name'] = $tag_item->getTitle();
+               $temp_array['id'] = (int)$tag_item->getItemID();
+               $tag_array[] = $temp_array;
+               $tag_item = $tag_list->getNext();
+            }
+            if ( !empty($tag_array)) {
+               $session->setValue($environment->getCurrentModule().'_add_tags', $tag_array);
+            }
+         }
+         // Files
+         $file_list = $todo_item->getFileList();
+         if ( !$file_list->isEmpty() ) {
+            $file_array = array();
+            $file_item = $file_list->getFirst();
+            while ( $file_item ) {
+               $temp_array = array();
+               $temp_array['name'] = $file_item->getDisplayName();
+               $temp_array['file_id'] = (int)$file_item->getFileID();
+               $file_array[] = $temp_array;
+               $file_item = $file_list->getNext();
+            }
+            if ( !empty($file_array)) {
+               $session->setValue($environment->getCurrentModule().'_add_files', $file_array);
+            }
+         }
+      }
+
+      // Create data for a new item
+      elseif ( $current_iid == 'NEW' ) {
+         cleanup_session($current_iid);
+      }
+
+      else {
+         include_once('functions/error_functions.php');trigger_error('todo_edit was called in an unknown manner', E_USER_ERROR);
+      }
+
+      if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
+         $form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
+      }
+      if ($session->issetValue($environment->getCurrentModule().'_add_buzzwords')) {
+         $form->setSessionBuzzwordArray($session->getValue($environment->getCurrentModule().'_add_buzzwords'));
+      }
+      if ($session->issetValue($environment->getCurrentModule().'_add_tags')) {
+         $form->setSessionTagArray($session->getValue($environment->getCurrentModule().'_add_tags'));
+      }
+      $form->prepareForm();
+      $form->loadValues();
+
+      // Save item
+      if ( !empty($command) and
+           (isOption($command, getMessage('TODO_SAVE_BUTTON'))
+            or isOption($command, getMessage('TODO_CHANGE_BUTTON'))) ) {
+
+         $correct = $form->check();
+         if ( $correct ) {
+
+            // Create new item
+            if ( !isset($todo_item) ) {
+               $todo_manager = $environment->getTodosManager();
+               $todo_item = $todo_manager->getNewItem();
+               $todo_item->setContextID($environment->getCurrentContextID());
+               $user = $environment->getCurrentUserItem();
+               $todo_item->setCreatorItem($user);
+               $todo_item->setCreationDate(getCurrentDateTimeInMySQL());
+            }
+
+            // Set modificator and modification date
+            $user = $environment->getCurrentUserItem();
+            $todo_item->setModificatorItem($user);
+            $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+            // Set attributes
+            if ( isset($_POST['title']) ) {
+               $todo_item->setTitle($_POST['title']);
+            }
+            if ( isset($_POST['description']) ) {
+               $todo_item->setDescription($_POST['description']);
+            }
+
+            if ( isset($_POST['public']) ) {
+               $todo_item->setPublic($_POST['public']);
+            }
+            if ( isset($_POST['status']) ) {
+               $todo_item->setStatus($_POST['status']);
+            }
+
+            if (isset($_POST['dayEnd'])) {
+               $date2 = convertDateFromInput($_POST['dayEnd'],$environment->getSelectedLanguage());
+               if (!empty($_POST['timeEnd'])) {
+                  $time_end = $_POST['timeEnd'];
+               } else {
+                  $time_end = '0:00';
+               }
+               if (!ereg("(([2][0-3])|([01][0-9])):([0-5][0-9])",$time_end)) { //test if end_time is in a valid timeformat
+                  $time_end='0:00';
+               }
+               $time2 = convertTimeFromInput($time_end);   // convertTimeFromInput
+               if ($date2['conforms'] == TRUE and $time2['conforms'] == TRUE) {
+                  $todo_item->setDate($date2['datetime']. ' '.$time2['datetime']);
+               } else {
+                  $todo_item->setDate($date2['display']. ' '.$time2['display']);
+               }
+            }
+
+            // Set links to connected rubrics
+            if ( isset($_POST[CS_MATERIAL_TYPE]) ) {
+               $todo_item->setMaterialListByID($_POST[CS_MATERIAL_TYPE]);
+            } else {
+               $todo_item->setMaterialListByID(array());
+            }
+
+            if ( isset($_POST[CS_ANNOUNCEMENT_TYPE]) ) {
+               $todo_item->setLinkedItemsByID(CS_ANNOUNCEMENT_TYPE,$_POST[CS_ANNOUNCEMENT_TYPE]);
+            } else {
+               $todo_item->setLinkedItemsByID(CS_ANNOUNCEMENT_TYPE,array());
+            }
+
+            if ( isset($_POST[CS_DATE_TYPE]) ) {
+               $todo_item->setLinkedItemsByID(CS_DATE_TYPE,$_POST[CS_DATE_TYPE]);
+            } else {
+               $todo_item->setLinkedItemsByID(CS_DATE_TYPE,array());
+            }
+
+            if ( isset($_POST[CS_TODO_TYPE]) ) {
+               $todo_item->setLinkedItemsByID(CS_TODO_TYPE,$_POST[CS_TODO_TYPE]);
+            } else {
+               $todo_item->setLinkedItemsByID(CS_TODO_TYPE,array());
+            }
+
+            if ( isset($_POST[CS_DISCUSSION_TYPE]) ) {
+               $todo_item->setLinkedItemsByID(CS_DISCUSSION_TYPE,$_POST[CS_DISCUSSION_TYPE]);
+            } else {
+               $todo_item->setLinkedItemsByID(CS_DISCUSSION_TYPE,array());
+            }
+
+            if ( isset($_POST[CS_PROJECT_TYPE]) ) {
+               $todo_item->setLinkedItemsByID(CS_PROJECT_TYPE,$_POST[CS_PROJECT_TYPE]);
+            } else {
+               $todo_item->setLinkedItemsByID(CS_PROJECT_TYPE,array());
+            }
+
+            if ( isset($_POST[CS_GROUP_TYPE]) ) {
+               $todo_item->setGroupListByID($_POST[CS_GROUP_TYPE]);
+            } else {
+               $todo_item->setGroupListByID(array());
+            }
+            if ( isset($_POST[CS_TOPIC_TYPE]) ) {
+               $todo_item->setTopicListByID($_POST[CS_TOPIC_TYPE]);
+            } else {
+               $todo_item->setTopicListByID(array());
+            }
+
+            // buzzwords
+            $buzzword_array = array();
+            if ( isset($_POST['buzzwordlist']) ) {
+               $buzzword_array = $_POST['buzzwordlist'];
+            }
+            if ( isset($_POST['buzzword']) and !in_array($_POST['buzzword'],$buzzword_array) and $_POST['buzzword'] > 0) {
+               $buzzword_array[] = $_POST['buzzword'];
+            }
+            $todo_item->setBuzzwordListByID($buzzword_array);
+
+            // tags
+            $tag_array = array();
+            if ( isset($_POST['taglist']) ) {
+               $tag_array = $_POST['taglist'];
+            }
+            if ( isset($_POST['tag']) and !in_array($_POST['tag'],$tag_array) and $_POST['tag'] > 0) {
+               $tag_array[] = $_POST['tag'];
+            }
+            $todo_item->setTagListByID($tag_array);
+            // files
+            $item_files_upload_to = $todo_item;
+            include_once('include/inc_fileupload_edit_page_save_item.php');
+
+            // Save item
+            $todo_item->save();
+
+            // Reset id array
+            $session->setValue('cid'.$environment->getCurrentContextID().'_todo_index_ids',
+                               array($todo_item->getItemID()));
+
+            // Redirect
+            cleanup_session($current_iid);
+            $params = array();
+            $params['iid'] = $todo_item->getItemID();
+            redirect($environment->getCurrentContextID(), 'todo', 'detail', $params);
+         }
+      }
+
+      // Display form
+      $form_view = new cs_form_view($environment,'');
+      if ($with_anchor){
+         $form_view->withAnchor();
+      }
+      if (!mayEditRegular($current_user, $todo_item)) {
+        $form_view->warnChanger();
+        include_once('classes/cs_errorbox_view.php');
+        $errorbox = new cs_errorbox_view($environment, true, 500);
+        $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+        $page->add($errorbox);
+      }
+      $form_view->setAction(curl($environment->getCurrentContextID(),'todo','edit',''));
+      $form_view->setForm($form);
+      $page->add($form_view);
+   }
+}
+?>

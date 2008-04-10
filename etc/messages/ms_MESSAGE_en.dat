@@ -1,0 +1,11 @@
+<?php
+$message["MESSAGE_BOX_TITLE"]["en"] = "Translation";
+$message["MESSAGE_EDIT_LINK"]["en"] = "Edit";
+$message["MESSAGE_INDEX"]["en"] = "Complete overview";
+$message["MESSAGE_INDEX_DESC"]["en"] = "General survey of all message tags";
+$message["MESSAGE_INDEX_LINK"]["en"] = "Overview";
+$message["MESSAGE_LANGUAGE_DEFAULT_LINK"]["en"] = "Select language";
+$message["MESSAGE_LANGUAGE_TITLE_LINK"]["en"] = "Languages";
+$message["MESSAGE_TITLE_LINK"]["en"] = "Message tags";
+$message["MESSAGE_UNUSED_LINK"]["en"] = "unused tags";
+?>

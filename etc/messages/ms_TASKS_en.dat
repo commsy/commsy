@@ -1,0 +1,4 @@
+<?php
+$message["TASKS_TITLE"]["en"] = "System Messages";
+$message["TASKS_TITLE_SHORT_DESC"]["en"] = "tasks to be done";
+?>

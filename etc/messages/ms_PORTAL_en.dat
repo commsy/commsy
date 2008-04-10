@@ -1,0 +1,31 @@
+<?php
+$message["PORTAL_ADMINISTRATION_DESC"]["en"] = "of this portal";
+$message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"]["en"] = "from the most active %_COMMUNITY_SUB_NOMPL_LOW";
+$message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
+$message["PORTAL_CONFIGURATION_ACTION"]["en"] = "Configure Portal";
+$message["PORTAL_COUNT_ROOMS"]["en"] = "%1 workspaces, %2 members";
+$message["PORTAL_DELETED_ROOMS"]["en"] = "Deleted workspaces";
+$message["PORTAL_EDIT_ROOM"]["en"] = "Edit workspace";
+$message["PORTAL_ENTER_COMMUNITY"]["en"] = "Create new %_COMMUNITY_SUB_NOMS_LOW";
+$message["PORTAL_ENTER_NEW"]["en"] = "Init portal";
+$message["PORTAL_ENTER_PROJECT"]["en"] = "Create new %_PROJECT_SUB_NOMS_LOW";
+$message["PORTAL_ENTER_ROOM"]["en"] = "Create new workspace";
+$message["PORTAL_ERROR_DELETED"]["en"] = "You can not use the commsy portal <span class=&quot;bold&quot;>%1</span>, because it is deleted.";
+$message["PORTAL_ERROR_DELETED_ROOM"]["en"] = "Sorry, you cannot access CommSy workspace <span class=&quot;bold&quot;>%2</span>, because CommSy portal <span class=&quot;bold&quot;>%1</span> has been deleted entirely.";
+$message["PORTAL_EXPORT_ROOM"]["en"] = "Export workspace";
+$message["PORTAL_EXPORT_ROOM_BUTTON"]["en"] = "Export workspace";
+$message["PORTAL_MOVE_ROOM"]["en"] = "Move workspace";
+$message["PORTAL_MOVE_ROOM_DESC"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW %1 want to move to your portal.";
+$message["PORTAL_MOVE_ROOM_DESC_WITH_LINKED_ROOMS"]["en"] = "%_COMMUNITY_ART_DEF_NOMS_BIG %_COMMUNITY_SUB_NOMS_LOW %1 want to move to your portal with all linked %_PROJECT_SUB_NOMPL_LOW.";
+$message["PORTAL_MOVE_ROOM_REGISTER_BUTTON"]["en"] = "Register";
+$message["PORTAL_MY_COMMUNITY_ROOMS"]["en"] = "My %_COMMUNITY_SUB_NOMPL_LOW";
+$message["PORTAL_MY_ROOMS"]["en"] = "My workspaces";
+$message["PORTAL_NEWS_LINK"]["en"] = "Portal news";
+$message["PORTAL_NEWS_LINK_DESC"]["en"] = "Options for portal-wide announcements.";
+$message["PORTAL_NO_ANNOUNCEMENTS"]["en"] = "No current announcement";
+$message["PORTAL_ROOM_DESCRIPTION"]["en"] = "Workspace description";
+$message["PORTAL_ROOM_LIST_ROOMS"]["en"] = "Workspaces";
+$message["PORTAL_ROOM_MOVE_REQUESTED"]["en"] = "Move";
+$message["PORTAL_ROOM_OVERVIEW"]["en"] = "Workspaces";
+$message["PORTAL_SEARCH_FIELD"]["en"] = "Full-text search";
+?>

@@ -1,0 +1,374 @@
+<?PHP
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
+
+$context_item = $environment->getCurrentContextItem();
+
+if ( $context_item->isLocked() ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   if ( $context_item->isPrivateRoom() ) {
+      $room_name = $translator->getMessage('PRIVATEROOM');
+   } else {
+      $room_name = $context_item->getTitle();
+   }
+   $errorbox->setText(getMessage('CONTEXT_IS_LOCKED',$room_name));
+   $page->add($errorbox);
+} elseif ( $context_item->isDeleted() and !$context_item->isPortal() ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   if ( $context_item->isPrivateRoom() ) {
+      $room_name = $translator->getMessage('PRIVATEROOM');
+   } else {
+      $room_name = $context_item->getTitle();
+   }
+   $errorbox->setText(getMessage('CONTEXT_IS_DELETED',$room_name));
+   $page->add($errorbox);
+} elseif ( $context_item->isDeleted() and $context_item->isPortal() ) {
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   $errorbox->setText(getMessage('PORTAL_ERROR_DELETED',$context_item->getTitle()));
+   $page->add($errorbox);
+} elseif ( $context_item->isProjectroom()
+           or $context_item->isCommunityRoom()
+           or $context_item->isPrivateRoom()
+           or $context_item->isGroupRoom()
+         ) {
+   $session_item = $environment->getSessionItem();
+   $history = $session_item->getValue('history');
+   if ( isset($history[0]['context']) ) {
+      if ( $history[0]['context'] != $environment->getCurrentContextID() ) {
+         $history_context_id = $history[0]['context'];
+         $manager = $environment->getItemManager();
+         $history_context_item = $manager->getItem($history_context_id);
+         $type = $history_context_item->getItemType();
+         $item_manager = $environment->getManager($type);
+         $history_context_item = $item_manager->getItem($history_context_id);
+         if ( $history_context_item->isPortal() ) {
+            $session_item->setValue('leave_home_context','portal');
+         } else {
+            $session_item->setValue('leave_home_context','community');
+            $session_item->setValue('leave_home_context_iid',$history_context_id);
+            $session_item->setValue('leave_home_context_room_id',$environment->getCurrentContextID());
+         }
+      }
+   }
+
+   if (!$context_item->isPrivateRoom()){
+      include_once('classes/cs_homepagetitle_view.php');
+      $title_view = new cs_homepagetitle_view($environment,$context_item->isOpen());
+      $page->add($title_view);
+   }
+
+   $conf = $context_item->getHomeConf();
+   if ( !empty($conf) ) {
+      $rubrics = explode(',', $conf);
+   } else {
+      $rubrics = array();
+   }
+
+   $context_user = $environment->getCurrentUserItem();
+   array_unshift($rubrics, 'activity_short');
+   if ( $context_item->isProjectroom()
+        or $context_item->isCommunityRoom()
+        or $context_item->isGroupRoom()
+      ) {
+
+      include_once('pages/activity_short.php');
+      $id_array = array();
+      $v_id_array = array();
+      $sub_id_array = array();
+      $disc_id_array = array();
+
+      if ($context_item->withInformationBox()){
+         include_once('classes/cs_homepage_informationbox_short_view.php');
+         $information_view = new cs_homepage_informationbox_short_view($environment,$context_item->isOpen());
+         $page->addLeft($information_view);
+      }
+
+      foreach ( $rubrics as $rubric ) {
+         $rubric_array = explode('_', $rubric);
+         if ( $rubric_array[1] != 'none' and  $rubric_array[1] != 'nodisplay') {
+            if ( $rubric_array[0] != 'activity') {
+               if ( file_exists('classes/cs_'.$rubric_array[0].'_short_view.php') ) {
+                  include_once('classes/cs_'.$rubric_array[0].'_short_view.php');
+                  $list = new cs_list();
+                  $rubric = '';
+                  switch ($rubric_array[0]){
+                     case CS_ANNOUNCEMENT_TYPE:
+                          $short_list_view = new cs_announcement_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getAnnouncementManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $count_all = $manager->getCountAll();
+                           $manager->setDateLimit(getCurrentDateTimeInMySQL());
+                           $manager->setSortOrder('modified');
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_DATE_TYPE:
+                           $short_list_view = new cs_date_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getDatesManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $manager->setDateModeLimit(2);
+                           $count_all = $manager->getCountAll();
+                           $manager->setFutureLimit();
+                           $manager->setDateModeLimit(3);
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                           $rubric = 'dates';
+                        break;
+                     case CS_PROJECT_TYPE:
+                           $room_type = CS_PROJECT_TYPE;
+                           $short_list_view = new cs_project_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getProjectManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentPortalID());
+                           $manager->setCommunityRoomLimit($environment->getCurrentContextID());
+                           $count_all = $manager->getCountAll();
+                           $manager->setSortOrder('activity_rev');
+                           if ( $interval > 0 ) {
+                              $manager->setIntervalLimit(0,5);
+                           }
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_GROUP_TYPE:
+                           $short_list_view = new cs_group_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getGroupManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $manager->select();
+                           $list = $manager->get();
+                           $count_all = $list->getCount();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_TODO_TYPE:
+                           $short_list_view = new cs_todo_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getTodoManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $count_all = $manager->getCountAll();
+                           $manager->setStatusLimit(4);
+                           $manager->setSortOrder('date');
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_TOPIC_TYPE:
+                           $short_list_view = new cs_topic_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getTopicManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $manager->select();
+                           $list = $manager->get();
+                           $count_all = $list->getCount();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_INSTITUTION_TYPE:
+                           $short_list_view = new cs_institution_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getInstitutionManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $manager->select();
+                           $list = $manager->get();
+                           $count_all = $list->getCount();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_USER_TYPE:
+                           $short_list_view = new cs_user_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getUserManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $manager->setUserLimit();
+                           $count_all = $manager->getCountAll();
+                           if (!$current_user->isGuest()){
+                              $manager->setVisibleToAllAndCommsy();
+                           } else {
+                              $manager->setVisibleToAll();
+                           }
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                        break;
+                     case CS_MATERIAL_TYPE:
+                           $short_list_view = new cs_material_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getMaterialManager();
+                           $manager->reset();
+                           $manager->create_tmp_table($environment->getCurrentContextID());
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           $count_all = $manager->getCountAll();
+                           $manager->setOrder('date');
+                           if ($environment->inProjectRoom()){
+                              $manager->setAgeLimit($context_item->getTimeSpread());
+                           } else {
+                              $manager->setIntervalLimit(0, 5);
+                           }
+                           $manager->select();
+                           $list = $manager->get();
+                           $manager->delete_tmp_table();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                           $item = $list->getFirst();
+                           $tmp_id_array = array();
+                           while ($item){
+                              $tmp_id_array[] = $item->getItemID();
+                              $item = $list->getNext();
+                           }
+                           $section_manager = $environment->getSectionManager();
+                           $section_list = $section_manager->getAllSectionItemListByIDArray($tmp_id_array);
+                           $item = $section_list->getFirst();
+                           while ($item){
+                              $sub_id_array[] = $item->getItemID();
+                              $v_id_array[$item->getItemID()] = $item->getVersionID();
+                              $item = $section_list->getNext();
+                           }
+                        break;
+                     case CS_DISCUSSION_TYPE:
+                           $short_list_view = new cs_discussion_short_view($environment,$context_item->isOpen());
+                           $manager = $environment->getDiscussionManager();
+                           $manager->reset();
+                           $manager->setContextLimit($environment->getCurrentContextID());
+                           if ($context_item->withOnlyThreadedDiscussionType()){
+                              $manager->setDiscussionTypeLimit('threaded');
+                           }elseif($context_item->withOnlySimpleDiscussionType()){
+                              $manager->setDiscussionTypeLimit('simple');
+                           }
+                           $count_all = $manager->getCountAll();
+                           if ($environment->inProjectRoom()) {
+                              $manager->setAgeLimit($context_item->getTimeSpread());
+                           } elseif ($environment->inCommunityRoom()) {
+                              $manager->setIntervalLimit(0,5);
+                           }
+                           $manager->select();
+                           $list = $manager->get();
+                           $short_list_view->setList($list);
+                           $short_list_view->setCountAll($count_all);
+                           $item = $list->getFirst();
+                           $disc_id_array = array();
+                           while ($item){
+                              $disc_id_array[] = $item->getItemID();
+                              $item = $list->getNext();
+                           }
+                           $discarticle_manager = $environment->getDiscussionArticleManager();
+                           $discarticle_list = $discarticle_manager->getAllDiscArticlesItemListByIDArray($disc_id_array);
+                           $item = $discarticle_list->getFirst();
+                           while ($item){
+                              $disc_id_array[] = $item->getItemID();
+                              $item = $discarticle_list->getNext();
+                           }
+                        break;
+                     }
+                  $item = $list->getFirst();
+                  $ids = array();
+                  while ($item){
+                     $id_array[] = $item->getItemID();
+                     if ($rubric_array[0] == CS_MATERIAL_TYPE){
+                        $v_id_array[$item->getItemID()] = $item->getVersionID();
+                     }
+                     $ids[] = $item->getItemID();
+                     $item = $list->getNext();
+                  }
+                  if (empty($rubric)){
+                     $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric_array[0].'_index_ids', $ids);
+                  }else{
+                     $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $ids);
+                  }
+                  $page->addLeft($short_list_view);
+               } else {
+                 include_once('classes/cs_errorbox_view.php');
+                 $errorbox = new cs_errorbox_view($environment,$context_item->isOpen());
+                 $errorbox->setText('The page '.$rubric.' cannot be found!');
+                 $page->add($errorbox);
+               }
+             }
+         }
+      }
+      $noticed_manager = $environment->getNoticedManager();
+      $id_array = array_merge($id_array, $disc_id_array);
+      $noticed_manager->getLatestNoticedByIDArray($id_array);
+      $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+      $id_array = array_merge($id_array, $sub_id_array);
+      $link_manager = $environment->getLinkManager();
+      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $v_id_array);
+      $file_manager = $environment->getFileManager();
+      $file_manager->setIDArrayLimit($file_id_array);
+      $file_manager->select();
+   } else {
+      include('pages/private_room_short.php');
+   }
+
+
+   include_once('classes/cs_homepage_action_view.php');
+   $action_view = new cs_homepage_action_view($environment,$context_item->isOpen());
+   $page->addRight($action_view);
+
+   $current_context = $environment->getCurrentContextItem();
+   include('pages/campus_search_short.php');
+   if ( $current_context->withBuzzwords() ){
+      include_once('classes/cs_homepage_buzzword_view.php');
+      $buzzword_view = new cs_homepage_buzzword_view($environment,$context_item->isOpen());
+      $page->addRight($buzzword_view);
+   }
+   if ( $current_context->withTags() ){
+      include_once('classes/cs_homepage_tag_view.php');
+      $tag_view = new cs_homepage_tag_view($environment,$context_item->isOpen());
+      $page->addRight($tag_view);
+   }
+   include_once('classes/cs_homepage_usage_info_view.php');
+   $usage_info_view = new cs_homepage_usage_info_view($environment,$context_item->isOpen());
+   $page->addRight($usage_info_view);
+
+   if ( $current_context->showHomepageLink()
+       or $current_context->showChatLink()
+       or  ($current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink())
+       ) {
+      include_once('classes/cs_homepage_extension_view.php');
+      $homepage_extension_view = new cs_homepage_extension_view($environment,$context_item->isOpen());
+      $page->addRight($homepage_extension_view);
+   }
+
+   $context_user = $environment->getCurrentUserItem();
+   if ($context_user->isModerator()){
+      include_once('classes/cs_homepage_configuration_view.php');
+      $configuration_view = new cs_homepage_configuration_view($environment,$context_item->isOpen());
+      $page->addRight($configuration_view);
+   }
+} elseif ( $context_item->isServer() or $context_item->isPortal() ) {
+   include_once('pages/home_index_guide.php');
+} else {
+   include_once('functions/error_functions.php');trigger_error('no context',E_USER_ERROR);
+}
+?>

@@ -1,0 +1,3 @@
+<?php
+$message["ALL_MEMBERS"]["en"] = "All members";
+?>

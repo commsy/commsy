@@ -1,0 +1,5 @@
+<?php
+$message["TASK_MATERIAL_CANCELED"]["de"] = "wurde von der weltweiten Veröffentlichung zurück gezogen";
+$message["TASK_MATERIAL_NEW_VERSION_REQUESTED"]["de"] = "wurde in einer neuen Version zur weltweiten Veröffentlichung beantragt";
+$message["TASK_MATERIAL_REQUESTED"]["de"] = "wurde zur weltweiten Veröffentlichung beantragt";
+?>

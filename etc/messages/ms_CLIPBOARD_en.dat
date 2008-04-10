@@ -1,0 +1,5 @@
+<?php
+$message["CLIPBOARD_DELETE_BUTTON"]["en"] = "Delete selected from clipboard";
+$message["CLIPBOARD_HEADER"]["en"] = "My online clipboard";
+$message["CLIPBOARD_PASTE_BUTTON"]["en"] = "Paste selected to workspace";
+?>

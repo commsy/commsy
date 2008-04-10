@@ -1,0 +1,228 @@
+<?php
+$message["USAGE_INFO_COMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_COMMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_FORM_COMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_FORM_COMMING_SOON"]["de"] = "Keine Nutzungshinweise vorhanden.";
+$message["USAGE_INFO_HEADER"]["de"] = "Nutzungshinweise";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX"]["de"] = "<span style=&quot;font-style:italic&quot;>TeilnehmerInnen </span>mit gesperrten Kennungen können den Raum nicht mehr betreten, bei Bedarf jedoch wieder freigeschaltet werden.
+<span style=&quot;font-style:italic&quot;>ModeratorInnen </span>stehen sämtliche Konfigurationsmöglichkeiten offen, <span style=&quot;font-style:italic&quot;>AnsprechpartnerInnen </span>werden zusätzlich bei der Außendarstellung des Raumes aufgeführt.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX"]["de"] = "Um Einträge in andere Räume zu kopieren,
+
+(1) wechseln Sie in den Raum, in dem Sie die Kopien ablegen wollen,
+
+(2) wählen die entsprechenden Kopien aus und
+
+(3) fügen diese durch Knopfdruck ein.
+
+<span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX"]["de"] = "Mit einer Ankündigung können Sie wie an einem Schwarzen Brett aktuelle Informationen für einen selbst gewählten Zeitraum auf der Einstiegsseite veröffentlichen. 
+Nach älteren Ankündigungen können Sie mit einem Suchbegriff gezielt suchen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_BUZZWORDS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Schlagwörter beliebig zu ändern, zu löschen oder auch ähnliche Schlagwörter zu einem zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Schlagwörter aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen des neuen Schlagworts ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einem der ursprünglichen Schlagwörter zugeordnet waren, erhalten automatisch das neue Schlagwort zugewiesen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_AGB_FORM"]["de"] = "Legen Sie Nutzungsvereinbarungen (auf Wunsch mehrsprachig) für Ihren Raum fest, denen neue TeilnehmerInnen bei der Beantragung einer Mitgliedschaft zustimmen müssen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_CHAT_FORM"]["de"] = "Bei Aktivierung dieser Funktion können Sie eine separate Chat-Funktionalität nutzen. Hierzu erscheint ein Link auf der Einstiegsseite des Raums.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_COLOR_FORM"]["de"] = "Sie haben die Möglichkeit, zwischen verschiedenen vorgegebenen Farbschemata auszuwählen oder ein eigenes Farbschema (z.B. passend zum Logo Ihres Raumes) anzulegen. In diesem Fall geben Sie die gewünschten Farben als HTML-HEX-Code an.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DATES_FORM"]["de"] = "Wählen Sie zwischen der Listen- und der Kalenderansicht als Standarddarstellung der Termine in Ihrem Raum fest. Ein manueller Wechsel zwischen den beiden Ansichten ist nach wie vor möglich.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DEFAULTS_FORM"]["de"] = "Je nach ausgewähltem Nutzungskontext unterscheiden sich einige Voreinstellungen und Benennungen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DISCUSSION_FORM"]["de"] = "Wenn Sie eine Art der Diskussion auswählen, werden eventuell vorhandene der anderen Art nicht dargestellt.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_FORM"]["de"] = "Legen Sie den Namen des Raums, eine Beschreibung (auf Wunsch mehrsprachig) sowie ggf. ein Logo fest. 
+Der Status „archiviert“ bedeutet, dass keine Änderungen mehr im Raum vorgenommen werden können. Auf die Inhalte kann jedoch weiterhin zugegriffen werden.
+Sie können außerdem festlegen, ob TeilnehmerInnen, die sich neu anmelden, automatisch Zugang bekommen oder ob Sie die Anmeldungen erst prüfen und dann selbst freischalten möchten. 
+Ordnen Sie zudem %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG ggf. %_COMMUNITY_SUB_DATPL_BIG zu.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HOMEPAGE_FORM"]["de"] = "Wenn die Funktion „Raum-Webseite“ aktiviert ist, können Sie und Ihre TeilnehmerInnen eine einfache Webseite zur Außendarstellung Ihres Raums gestalten. Hierzu erscheint ein Link auf der Einstiegsseite des Raums.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HOME_FORM"]["de"] = "Bei <span style=&quot;font-style:italic;&quot;>ausgeklappten </span>Rubriken werden neue und bearbeitete Einträge direkt auf der Einstiegsseite dargestellt; bei <span style=&quot;font-style:italic;&quot;>zugeklappten</span> Rubriken wird nur ein Balken präsentiert.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HTMLTEXTAREA_FORM"]["de"] = "Um die Möglichkeiten zur Textformatierung erweitern, können Sie einen Texteditor aktivieren und zwischen unterschiedlichen Funktionsumfängen wählen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_MAIL_FORM"]["de"] = "CommSy verschickt zu verschiedenen Anlässen E-Mails, deren Texte hier verändert werden können. Dazu ist zunächst ein Textbaustein auszuwählen, der im Feld darunter beliebig verändert werden kann.
+Mit „speichern“ werden die Änderungen übernommen und sind sofort wirksam.
+Um wieder den Standardtext zu erhalten, wählen Sie den entsprechenden Textbaustein aus, klicken unter „Zurücksetzen?“ auf „Ja“ und anschließend auf „speichern“.
+<span style=&quot;font-style:italic;&quot;>Ausdrücke wie z. B. %2 dienen als Platzhalter für Texte wie Kennung, Raumname, etc.</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_NEWSLETTER_FORM"]["de"] = "Setzen Sie das Häkchen, um wöchentlich einen E-Mail-Newsletter mit den Aktivitäten der letzten Woche per E-Mail zu erhalten.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_PREFERENCES_FORM"]["de"] = "Legen Sie den Namen des Raums, eine Beschreibung (auf Wunsch mehrsprachig) sowie ggf. ein Logo fest. 
+Der Status „archiviert“ bedeutet, dass keine Änderungen mehr im Raum vorgenommen werden können. Auf die Inhalte kann jedoch weiterhin zugegriffen werden.
+Sie können außerdem festlegen, ob TeilnehmerInnen, die sich neu anmelden, automatisch Zugang bekommen oder ob Sie die Anmeldungen erst prüfen und dann selbst freischalten möchten. 
+Entscheiden Sie, ob Sie Gästen den Zugang zu Ihrem Raum gewähren möchten und ob für die Sortierung der Räume Zeittakte (je nach Kontext Semester, Schuljahre etc.) angeboten werden sollen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_RUBRIC_FORM"]["de"] = "Wählen Sie hier die Rubriken aus, die Ihr Raum enthalten soll, sowie die Reihenfolge, in der sie auf der Einstiegsseite sowie in der Navigationsleiste erscheinen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_SERVICE_FORM"]["de"] = "Bei Aktivierung dieser Funktion erscheint am unteren Ende jeder Seite ein Link, über den Sie bei Nutzungsproblemen jederzeit eine Anfrage an den CommSy-Service richten können.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_USAGEINFO_FORM"]["de"] = "Ersetzen Sie hier bei Bedarf die vorgegebenen Standardtexte durch eigene Nutzungshinweise oder blenden Sie Hinweise auf einzelnen Seiten ganz aus.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX"]["de"] = "Um Einträge in andere Räume zu kopieren,
+
+(1) wechseln Sie in den Raum, in dem Sie die Kopien ablegen wollen,
+
+(2) wählen die entsprechenden Kopien aus und
+
+(3) fügen diese durch Knopfdruck ein.
+
+<span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX"]["de"] = "Tragen Sie hier allgemeine Termine für die Gruppe oder Ihre privaten Termine (z.B. Abwesenheiten) ein (Letztere werden nicht auf der Einstiegsseite dargestellt).
+Sie können zwischen einer Listen- und einer Kalenderdarstellung wählen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX"]["de"] = "Um Einträge in andere Räume zu kopieren,
+
+(1) wechseln Sie in den Raum, in dem Sie die Kopien ablegen wollen,
+
+(2) wählen die entsprechenden Kopien aus und
+
+(3) fügen diese durch Knopfdruck ein.
+
+<span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_DETAIL_FORM"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
+Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
+Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX"]["de"] = "Auf der Einstiegsseite werden jeweils die aktuellsten Beiträge aus den Rubriken sowie die aktivsten Räume dargestellt. Ältere Beiträge sind über die einzelnen Rubriken aufrufbar.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX"]["de"] = "In dieser Rubrik können sich die verschiedenen %_INSTITUTION_SUB_AKKPL_BIG präsentieren, die diesen Raum nutzen. Um sich  %_INSTITUTION_ART_UNDEF_DATS_LOW %_INSTITUTION_SUB_DATS_BIG zuzuordnen, klicken Sie auf deren Detailseite auf „beitreten“, um dies wieder rückgängig zu machen, auf „austreten“.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_LABELS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Materialarten beliebig zu ändern, zu löschen oder auch ähnliche Materialarten zu einer zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Materialarten aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen der neuen Materialart ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einer der ursprünglichen Materialarten zugeordnet waren, erhalten automatisch die neue Materialart zugewiesen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX"]["de"] = "Um Einträge in andere Räume zu kopieren,
+
+(1) wechseln Sie in den Raum, in dem Sie die Kopien ablegen wollen,
+
+(2) wählen die entsprechenden Kopien aus und
+
+(3) fügen diese durch Knopfdruck ein.
+
+<span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
+In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
+Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.
+Sie können die <span style=&quot;font-style:italic&quot;>weltweite</span> Veröffentlichung eines Materials beantragen, das dann auch für Gäste zugänglich ist. Hierüber entscheidet allerdings die Redaktion des CommSys.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX"]["de"] = "Um Einträge in andere Räume zu kopieren,
+
+(1) wechseln Sie in den Raum, in dem Sie die Kopien ablegen wollen,
+
+(2) wählen die entsprechenden Kopien aus und
+
+(3) fügen diese durch Knopfdruck ein.
+
+<span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX"]["de"] = "Hier können Sie Aufgaben, die in der Gruppe anfallen, und deren Bearbeitungsstatus dokumentieren. Um eine Aufgabe zu übernehmen, klicken Sie auf deren Detailseite auf „Zuständigkeit signalisieren“, um dies rückgängig zu machen, auf „Zuständigkeit abgeben“.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG  anlegen und diesen dann andere, relevante Beiträge zuordnen. Um Ihre Mitarbeit/Ihr Interesse an %_TOPIC_ART_UNDEF_DATS_LOW %_TOPIC_SUB_DATS_BIG zu bekunden, klicken Sie auf dessen Detailseite auf „beitreten“, um dies wieder rückgängig zu machen, auf „austreten“.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_CLOSE_FORM"]["de"] = "Hinweis zum Datenschutz: Wenn Sie auf „alles löschen“ klicken, werden sämtliche Ihrer Beiträge in diesem Raum gelöscht und ggf. durch einen Platzhalter ersetzt, falls sich andere Beiträge darauf beziehen.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihrer Beschreibung.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX"]["de"] = "Für jedes Mitglied wird automatisch eine persönliche Seite angelegt, die nach eigenen Wünschen gestaltet werden kann. Außerdem werden hier alle Beiträge einer Person aufgelistet.";
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_PREFERENCES_FORM"]["de"] = "Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich ein neues Mitglied für diesen Raum anmeldet.
+
+Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich der Status dieses Raumes oder Räume die mit diesem Raum verknüpft sind ändern.";
+$message["USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM"]["de"] = "Diese Message Tags sind zwar definiert, werden aber im CommSy- Code nicht (mehr) verwendet.";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM"]["de"] = "CommSy verschickt zu verschiedenen Anlässen E-Mails, deren Texte hier verändert werden können. Dazu ist zunächst ein Textbaustein auszuwählen, der im Feld darunter beliebig verändert werden kann.
+Mit „speichern“ werden die Änderungen übernommen und sind sofort wirksam.
+Um wieder den Standardtext zu erhalten, wählen Sie den entsprechenden Textbaustein aus, klicken unter „Zurücksetzen?“ auf „Ja“ und anschließend auf „speichern“.
+<span style=&quot;font-style:italic;&quot;>Ausdrücke wie z. B. %2 dienen als Platzhalter für Texte wie Kennung, Raumname, etc.</span>";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM"]["de"] = "Bitte verwenden Sie folgende Bildformate:
+
+Logo: 171x53 px
+
+Portalbild: 200x160 px 
+(bzw. 300x268 px ohne Ankündigungen)";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM"]["de"] = "Platzhalter für 4-stellige Jahreszahlen:
+- %1 = aktuelles Jahr
+- %2 = zukünftiges Jahr
+- %3 = vergangenes Jahr
+Platzhalter für 2-stellige Jahreszahlen:
+- %4 = aktuelles Jahr
+- %5 = zukünftiges Jahr
+- %6 = vergangenes Jahr
+Format bei &quot;von bis&quot;: TT.MM";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_BUZZWORDS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Schlagwörter beliebig zu ändern, zu löschen oder auch ähnliche Schlagwörter zu einem zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Schlagwörter aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen des neuen Schlagworts ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einem der ursprünglichen Schlagwörter zugeordnet waren, erhalten automatisch das neue Schlagwort zugewiesen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_COLOR_FORM"]["de"] = "Sie haben die Möglichkeit, zwischen verschiedenen vorgegebenen Farbschemata auszuwählen oder ein eigenes Farbschema (z.B. passend zum Logo Ihres Raumes) anzulegen. In diesem Fall geben Sie die gewünschten Farben als HTML-HEX-Code an.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_DATES_FORM"]["de"] = "Wählen Sie zwischen der Listen- und der Kalenderansicht als Standarddarstellung der Termine in Ihrem Raum fest. Ein manueller Wechsel zwischen den beiden Ansichten ist nach wie vor möglich.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_HOME_FORM"]["de"] = "Legen Sie die Zeitspanne zur Anzeige der Aktivitäten in Ihren Räumen fest.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_INFORMATIOBOX_FORM"]["de"] = "Gestalten Sie einen Text inklusive angehängter Dateien und platzieren Sie ihn direkt auf der Einstiegsseite (Home).
+
+Tipp: Wenn Sie zusätzlich alle Rubriken bei der &quot;Konfiguration der Home&quot; ausblenden, so können Sie die Einstiegsseite komplett selbst gestalten.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_PREFERENCES_FORM"]["de"] = "Legen Sie die Sprache Ihres Raumes fest.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_RUBRIC_FORM"]["de"] = "Wählen Sie hier die Rubriken aus, die Ihr Raum enthalten soll, sowie die Reihenfolge, in der sie auf der Einstiegsseite sowie in der Navigationsleiste erscheinen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_SERVICE_FORM"]["de"] = "Bei Aktivierung dieser Funktion erscheint am unteren Ende jeder Seite ein Link, über den Sie bei Nutzungsproblemen jederzeit eine Anfrage an den CommSy-Service richten können.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_USAGEINFO_FORM"]["de"] = "Ersetzen Sie hier bei Bedarf die vorgegebenen Standardtexte durch eigene Nutzungshinweise oder blenden Sie Hinweise auf einzelnen Seiten ganz aus.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_IMPORT_FORM"]["de"] = "Sie können Ihre Termine aus anderen Kalender-Tools importieren, indem Sie die gewünschten Termine als csv-Datei speichern und diese Datei hier hochladen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_INDEX"]["de"] = "Die Terminrubrik können Sie als persönlichen Terminkalender verwenden und bei Bedarf ausgewählte oder alle Termine in andere Räume übernehmen. Auch ein Import von Terminen aus anderen Kalender-Tools ist möglich.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_INDEX"]["de"] = "Hier wird eine Übersicht über Aktivitäten in den Räumen, in denen Sie Mitglied sind, präsentiert. In der Rubrik „Meine Räume“ können Sie Räume von der Einstiegsseite entfernen bzw. hinzufügen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_LABELS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Materialarten beliebig zu ändern, zu löschen oder auch ähnliche Materialarten zu einer zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Materialarten aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen der neuen Materialart ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einer der ursprünglichen Materialarten zugeordnet waren, erhalten automatisch die neue Materialart zugewiesen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
+In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
+Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.
+Sie können in Ihrem persönlichen Raum beliebige Sammlungen von Materialien anlegen und diese bei Bedarf in andere Räume kopieren.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG anlegen und diesen dann andere, relevante Beiträge zuordnen.";
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihrer Beschreibung.";
+$message["USAGE_INFO_TEXT_PRIVATE_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PRIVATE_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ACCOUNT_INDEX"]["de"] = "<span style=&quot;font-style:italic&quot;>TeilnehmerInnen </span>mit gesperrten Kennungen können den Raum nicht mehr betreten, bei Bedarf jedoch wieder freigeschaltet werden.
+<span style=&quot;font-style:italic&quot;>ModeratorInnen </span>stehen sämtliche Konfigurationsmöglichkeiten offen, <span style=&quot;font-style:italic&quot;>AnsprechpartnerInnen </span>werden zusätzlich bei der Außendarstellung des Raumes aufgeführt.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_INDEX"]["de"] = "Mit einer Ankündigung können Sie wie an einem Schwarzen Brett aktuelle Informationen für einen selbst gewählten Zeitraum auf der Einstiegsseite veröffentlichen. 
+Nach älteren Ankündigungen können Sie mit einem Suchbegriff gezielt suchen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_BUZZWORDS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Schlagwörter beliebig zu ändern, zu löschen oder auch ähnliche Schlagwörter zu einem zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Schlagwörter aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen des neuen Schlagworts ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einem der ursprünglichen Schlagwörter zugeordnet waren, erhalten automatisch das neue Schlagwort zugewiesen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_AGB_FORM"]["de"] = "Legen Sie Nutzungsvereinbarungen (auf Wunsch mehrsprachig) für Ihren Raum fest, denen neue TeilnehmerInnen bei der Beantragung einer Mitgliedschaft zustimmen müssen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_CHAT_FORM"]["de"] = "Bei Aktivierung dieser Funktion können Sie eine separate Chat-Funktionalität nutzen. Hierzu erscheint ein Link auf der Einstiegsseite des Raums.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_COLOR_FORM"]["de"] = "Sie haben die Möglichkeit, zwischen verschiedenen vorgegebenen Farbschemata auszuwählen oder ein eigenes Farbschema (z.B. passend zum Logo Ihres Raumes) anzulegen. In diesem Fall geben Sie die gewünschten Farben als HTML-HEX-Code an.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_DATES_FORM"]["de"] = "Wählen Sie zwischen der Listen- und der Kalenderansicht als Standarddarstellung der Termine in Ihrem Raum fest. Ein manueller Wechsel zwischen den beiden Ansichten ist nach wie vor möglich.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_DEFAULTS_FORM"]["de"] = "Je nach ausgewähltem Nutzungskontext unterscheiden sich einige Voreinstellungen und Benennungen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_DISCUSSION_FORM"]["de"] = "Wenn Sie eine Art der Diskussion auswählen, werden eventuell vorhandene der anderen Art nicht dargestellt.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_HOMEPAGE_FORM"]["de"] = "Wenn die Funktion „Raum-Webseite“ aktiviert ist, können Sie und Ihre TeilnehmerInnen eine einfache Webseite zur Außendarstellung Ihres Raums gestalten. Hierzu erscheint ein Link auf der Einstiegsseite des Raums.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_HOME_FORM"]["de"] = "Bei <span style=&quot;font-style:italic;&quot;>ausgeklappten </span>Rubriken werden neue und bearbeitete Einträge direkt auf der Einstiegsseite dargestellt; bei <span style=&quot;font-style:italic;&quot;>zugeklappten</span> Rubriken wird nur ein Balken präsentiert.
+Legen Sie außerdem fest, wie lange neue Einträge auf der Einstiegsseite dargestellt werden (max. 99 Tage).";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_INFORMATIOBOX_FORM"]["de"] = "Gestalten Sie einen Text inklusive angehängter Dateien und platzieren Sie ihn direkt auf der Einstiegsseite (Home).
+
+Tipp: Wenn Sie zusätzlich alle Rubriken bei der &quot;Konfiguration der Home&quot; ausblenden, so können Sie die Einstiegsseite komplett selbst gestalten.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_MAIL_FORM"]["de"] = "CommSy verschickt zu verschiedenen Anlässen E-Mails, deren Texte hier verändert werden können. Dazu ist zunächst ein Textbaustein auszuwählen, der im Feld darunter beliebig verändert werden kann.
+Mit „speichern“ werden die Änderungen übernommen und sind sofort wirksam.
+Um wieder den Standardtext zu erhalten, wählen Sie den entsprechenden Textbaustein aus, klicken unter „Zurücksetzen?“ auf „Ja“ und anschließend auf „speichern“.
+<span style=&quot;font-style:italic;&quot;>Ausdrücke wie z. B. %2 dienen als Platzhalter für Texte wie Kennung, Raumname, etc.</span>";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_PREFERENCES_FORM"]["de"] = "Legen Sie den Namen des Raums, eine Beschreibung (auf Wunsch mehrsprachig) sowie ggf. ein Logo fest. 
+Der Status „archiviert“ bedeutet, dass keine Änderungen mehr im Raum vorgenommen werden können. Auf die Inhalte kann jedoch weiterhin zugegriffen werden.
+Sie können außerdem festlegen, ob TeilnehmerInnen, die sich neu anmelden, automatisch Zugang bekommen oder ob Sie die Anmeldungen erst prüfen und dann selbst freischalten möchten. 
+Ordnen Sie zudem %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG ggf. %_COMMUNITY_SUB_DATPL_BIG zu.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_RUBRIC_FORM"]["de"] = "Wählen Sie hier die Rubriken aus, die Ihr Raum enthalten soll, sowie die Reihenfolge, in der sie auf der Einstiegsseite sowie in der Navigationsleiste erscheinen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_SERVICE_FORM"]["de"] = "Bei Aktivierung dieser Funktion erscheint am unteren Ende jeder Seite ein Link, über den Sie bei Nutzungsproblemen jederzeit eine Anfrage an den CommSy-Service richten können.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_USAGEINFO_FORM"]["de"] = "Ersetzen Sie hier bei Bedarf die vorgegebenen Standardtexte durch eigene Nutzungshinweise oder blenden Sie Hinweise auf einzelnen Seiten ganz aus.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_INDEX"]["de"] = "Tragen Sie hier allgemeine Termine für die Gruppe oder Ihre privaten Termine (z.B. Abwesenheiten) ein (Letztere werden nicht auf der Einstiegsseite dargestellt).
+Sie können zwischen einer Listen- und einer Kalenderdarstellung wählen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_DETAIL_FORM"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
+Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_INDEX"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
+Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_GROUP_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_GROUP_INDEX"]["de"] = "Sie können beliebige Gruppen anlegen und diesen dann andere, relevante Beiträge zuordnen. Um Mitglied einer Gruppe zu werden, klicken Sie auf deren Detailseite auf „beitreten“, um sie wieder zu verlassen, auf „austreten“.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_HOME_INDEX"]["de"] = "Auf der Einstiegsseite werden neue und geänderte Beiträge innerhalb der gewählten Zeitspanne dargestellt. Ältere Beiträge sind über die einzelnen Rubriken aufrufbar.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_LABELS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Materialarten beliebig zu ändern, zu löschen oder auch ähnliche Materialarten zu einer zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Materialarten aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen der neuen Materialart ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einer der ursprünglichen Materialarten zugeordnet waren, erhalten automatisch die neue Materialart zugewiesen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
+In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
+Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_INDEX"]["de"] = "Hier können Sie Aufgaben, die in der Gruppe anfallen, und deren Bearbeitungsstatus dokumentieren. Um eine Aufgabe zu übernehmen, klicken Sie auf deren Detailseite auf „Zuständigkeit signalisieren“, um dies rückgängig zu machen, auf „Zuständigkeit abgeben“.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG  anlegen und diesen dann andere, relevante Beiträge zuordnen. Um Ihre Mitarbeit/Ihr Interesse an %_TOPIC_ART_UNDEF_DATS_LOW %_TOPIC_SUB_DATS_BIG zu bekunden, klicken Sie auf dessen Detailseite auf „beitreten“, um dies wieder rückgängig zu machen, auf „austreten“.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_CLOSE_FORM"]["de"] = "Hinweis zum Datenschutz: Wenn Sie auf „alles löschen“ klicken, werden sämtliche Ihrer Beiträge in diesem Raum gelöscht und ggf. durch einen Platzhalter ersetzt, falls sich andere Beiträge darauf beziehen.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+Tipps zu <i>%1</i> Ihrer Beschreibung.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_INDEX"]["de"] = "Für jedes Mitglied wird automatisch eine persönliche Seite angelegt, die nach eigenen Wünschen gestaltet werden kann. Außerdem werden hier alle Beiträge einer Person aufgelistet.";
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_PREFERENCES_FORM"]["de"] = "Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich ein neues Mitglied für diesen Raum anmeldet.
+
+Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich der Status dieses Raumes oder Räume die mit diesem Raum verknüpft sind ändern.";
+$message["USAGE_INFO_TEXT_ROOM_ACCOUNT_EDIT_FORM"]["de"] = "Sofern Sie mehrere Personen ausgewählt haben, erscheinen Platzhalter (%1, %2, usw.) im E-Mail-Text, die bei der Verschickung durch entsprechende Inhalte (Name, Kennung, usw.) ersetzt werden.";
+$message["USAGE_INFO_TEXT_ROOM_MAIL_PROCESS_FORM"]["de"] = "Mit dieser E-Mail informieren Sie über Ihre Aktion.";
+$message["USAGE_INFO_TEXT_ROOM_TAG_EDIT_FORM"]["de"] = "Achtung: Löschen Sie eine Kategorie, werden auch alle an dieser Kategorie angehängten Kategorien gelöscht.";
+$message["USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM"]["de"] = "Welche Sprachen sollen auf Ihrem Server zur Verfügung stehen?";
+$message["USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM"]["de"] = "Hier können Sie eine Wartungsseite aktivieren und damit die Nutzung von CommSy unterbrechen, um z.B. Updates einzuspielen.";
+?>

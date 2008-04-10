@@ -1,0 +1,19 @@
+<?php
+$message["PRIVATEROOM_COMMON_NO_ENTRIES"]["de"] = "Keine Räume vorhanden";
+$message["PRIVATEROOM_COMMON_NO_ENTRIES_FROM_ALL"]["de"] = "0 Räume (%1 insgesamt)";
+$message["PRIVATEROOM_COMMON_ONE_ENTRY"]["de"] = "ein Raum";
+$message["PRIVATEROOM_COMMON_ONE_ENTRY_FROM_ALL"]["de"] = "1 Raum";
+$message["PRIVATEROOM_COMMON_X_ENTRIES"]["de"] = "%1 Räume";
+$message["PRIVATEROOM_COMMON_X_ENTRIES_FROM_ALL"]["de"] = "%1 Räume";
+$message["PRIVATEROOM_COMMON_X_FROM_Z_FROM_ALL"]["de"] = "%1 von %1 Räumen";
+$message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z"]["de"] = "%1 bis %2 von %3 Räumen";
+$message["PRIVATEROOM_COMMON_X_TO_Y_FROM_Z_FROM_ALL"]["de"] = "%1 bis %2 von %3";
+$message["PRIVATEROOM_EXPORT"]["de"] = "Persönlichen Raum exportieren";
+$message["PRIVATEROOM_LOCK"]["de"] = "Persönlichen Raum sperren";
+$message["PRIVATEROOM_MAIL_SUBJECT_DAILY"]["de"] = "Täglicher CommSy-Newsletter";
+$message["PRIVATEROOM_MAIL_SUBJECT_FOOTER"]["de"] = "Falls Sie den Newsletter nicht mehr erhalten möchten, bestellen Sie ihn bitte im Konfigurationsbereich Ihres persönlichen Raumes ab.";
+$message["PRIVATEROOM_MAIL_SUBJECT_HEADER_DAILY"]["de"] = "Dieser tägliche Newsletter listet neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals %1 auf. Berücksichtigt werden bisher ungelesene Beiträge aus allen Räumen, die auf der Startseite Ihres persönlichen Raums angezeigt werden.";
+$message["PRIVATEROOM_MAIL_SUBJECT_HEADER_WEEKLY"]["de"] = "Dieser wöchentliche Newsletter listet neue oder geänderte Einträge in Ihren Räumen des CommSy-Portals %1 auf. Berücksichtigt werden bisher ungelesene Beiträge aus allen Räumen, die auf der Startseite Ihres persönlichen Raums angezeigt werden.";
+$message["PRIVATEROOM_MAIL_SUBJECT_WEEKLY"]["de"] = "Wöchentlicher CommSy-Newsletter";
+$message["PRIVATEROOM_UNLOCK"]["de"] = "Persönlichen Raum entsperren";
+?>

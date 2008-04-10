@@ -1,0 +1,4 @@
+<?php
+$message["DISCUSSIONS_CHANGE_BUTTON"]["de"] = "Diskussion speichern";
+$message["DISCUSSIONS_SAVE_BUTTON"]["de"] = "Diskussion anlegen";
+?>

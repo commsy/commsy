@@ -1,0 +1,5 @@
+<?php
+$message["ITEM_DOES_NOT_EXIST"]["de"] = "Die Daten, auf die Sie zu greifen wollen, existieren nicht.";
+$message["ITEM_NOT_AVAILABLE"]["de"] = "Sie haben versucht, auf einen bereits gelöschten Eintrag zuzugreifen.";
+$message["ITEM_TITLE_SHORT"]["de"] = "Aktuelle Einträge";
+?>

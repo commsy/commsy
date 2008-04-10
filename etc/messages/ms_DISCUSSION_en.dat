@@ -1,0 +1,21 @@
+<?php
+$message["DISCUSSION_ARTICLE"]["en"] = "Post";
+$message["DISCUSSION_ARTICLES"]["en"] = "Posts";
+$message["DISCUSSION_CLOSE"]["en"] = "Close discussion";
+$message["DISCUSSION_CLOSE_ALL_ARTICLES"]["en"] = "display all posts";
+$message["DISCUSSION_CLOSE_BUTTON"]["en"] = "Close discussion";
+$message["DISCUSSION_CLOSE_NO_ARTICLES"]["en"] = "display closing summary post only";
+$message["DISCUSSION_CLOSE_TITLE"]["en"] = "Closing summary post";
+$message["DISCUSSION_DISCARTICLE_COUNT"]["en"] = "Number of items";
+$message["DISCUSSION_EDIT"]["en"] = "Edit discussion";
+$message["DISCUSSION_ENTER_NEW"]["en"] = "Add new discussion";
+$message["DISCUSSION_FORM_TYPE_1"]["en"] = "Discussion";
+$message["DISCUSSION_FORM_TYPE_2"]["en"] = "style";
+$message["DISCUSSION_HEADER"]["en"] = "Discussions";
+$message["DISCUSSION_INDEX"]["en"] = "Discussions";
+$message["DISCUSSION_INIT_ARTICLE"]["en"] = "initial post";
+$message["DISCUSSION_IS_CLOSED"]["en"] = "closed";
+$message["DISCUSSION_LAST_ENTRY"]["en"] = "last item";
+$message["DISCUSSION_SIMPLE"]["en"] = "flat";
+$message["DISCUSSION_THREADED"]["en"] = "threaded";
+?>

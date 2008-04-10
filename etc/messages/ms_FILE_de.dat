@@ -1,0 +1,4 @@
+<?php
+$message["FILE_ERROR_GET_FILE"]["de"] = "Die von Ihnen angeforderte Datei konnte nicht ausgeliefert werden, da nicht genügend Zugriffsrechte auf die Datei bestehen.";
+$message["FILE_ERROR_GET_FILE_NOT_EXISTS"]["de"] = "Die von Ihnen angeforderte Datei konnte nicht ausgeliefert werden, da die Datei nicht existiert.";
+?>

@@ -1,0 +1,3 @@
+<?php
+$message["CONTACT_MAIL_SEND_BUTTON"]["en"] = "Send request";
+?>

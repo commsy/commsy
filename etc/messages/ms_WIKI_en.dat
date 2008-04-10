@@ -1,0 +1,9 @@
+<?php
+$message["WIKI_CONFIGURATION_DESC"]["en"] = "Wiki settings";
+$message["WIKI_CONFIGURATION_LINK"]["en"] = "Workspace wiki";
+$message["WIKI_CONFIGURATION_SECTION_EDIT"]["en"] = "SectionEdit<br/>(Addon)";
+$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["en"] = "activate";
+$message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["en"] = "Recognize headlines as sections";
+$message["WIKI_DELETE_BUTTON"]["en"] = "Delete wiki";
+$message["WIKI_SAVE_BUTTON"]["en"] = "Create wiki";
+?>
