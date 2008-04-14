@@ -354,8 +354,10 @@ class cs_environment {
       if (!empty($array)) {
          foreach ( $array as $current_parameter ) {
             if (stristr($current_parameter,$parameter.'=')) {
-               $value = strstr($current_parameter,'=');
-               $value = substr($value,1,strlen($value));
+               $temp_array = explode('=',$current_parameter);
+               if ( $temp_array[0] == $parameter ) {
+                  $value = $temp_array[1];
+               }
             }
          }
       }
