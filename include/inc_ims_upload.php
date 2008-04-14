@@ -63,11 +63,6 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
                 $abstract = $values_array[$key+1]['value'];
             }
             break;
-       case 'dcterms:abstract':
-            if ($value['type'] == 'open'){
-                $abstract = $values_array[$key+1]['value'];
-            }
-            break;
        case 'dcterms:tableOfContents':
             $table_of_content = $values_array[$key]['attributes']['dcx:valueURI'];
             break;
@@ -180,7 +175,7 @@ function _getMaterialListByXML($directory){
       }
       if (!empty($xsl_filename)){
          $xsl = new DOMDocument;
-         $xsl->load($directory.$xsl_filename);
+         $xsl->load(utf8_encode($directory.$xsl_filename));
          $proc->importStyleSheet($xsl);
          $xml_doc = $proc->transformToXML($xml);
          $material_item->setBibliographicValues($xml_doc);
