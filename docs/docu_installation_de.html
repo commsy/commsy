@@ -238,6 +238,17 @@
           der R&auml;ume</li>
       <li>... verschickt einen Newsletter, sofern dieser eingeschaltet ist.</li>
    </ul>
+   <p><b>Achtung</b>: Sofern Sie mehrere Portal mit einer CommSy-Installation (CommSy-Server) mit unterschiedlichen
+      URLs nutzen wollen, ist es besser, den Cron-Mechanismus für Server und Portale einzeln aufzurufen.
+      So wird z.B. der E-Mail-Newsletter unter der richtigen URL verschickt. In diesem Fall müssen die
+      Aufrufe des Cron-Mechanismus wie folgt aussehen:
+   </p>
+   <ul>
+      <li>Server mit Item-ID 99: <code>http://www.COMMSY-SERVER-URL.de/<I>&lt;Ihr_Webserver_Verzeichnis&gt;</I>/commsy/htdocs/cron.php?cid=99</code></li>
+      <li>Portal 1 mit Item-ID 101: <code>http://www.COMMSY-PORTAL-1-URL.de/<I>&lt;Ihr_Webserver_Verzeichnis&gt;</I>/commsy/htdocs/cron.php?cid=101</code></li>
+      <li>Portal n mit Item-ID XYZ: <code>http://www.COMMSY-PORTAL-n-URL.de/<I>&lt;Ihr_Webserver_Verzeichnis&gt;</I>/commsy/htdocs/cron.php?cid=XYZ</code></li>
+   </ul>
+   <p>Sofern Sie derart verfahren, muss für jedes neue Portal dieser Cron-Mechanismus eingerichtet werden.</p>
 
    <h4><A NAME="additional_software"></A>Zus&auml;tzliche Software</h4>
    <p>
@@ -249,10 +260,12 @@
           spezielle Version</li>
       <li>HTML Textarea: <a href="http://www.fckeditor.net/" target="_blank">FCKeditor</a>
           - 2.5.0 oder h&ouml;her</li>
-      <li>Darstellung von Formlen: <a href="http://www.math.union.edu/~dpvc/jsmath/" target="_blank">jsMath</a>
+      <li>Mathematische Formlen: <a href="http://www.math.union.edu/~dpvc/jsmath/" target="_blank">jsMath</a>
           - 3.4f oder h&ouml;her</li>
       <li>Chat: <a href="http://www.et-world.de/sedesign/index.php?option=com_content&amp;task=view&amp;id=21&amp;Itemid=39#" target="_blank">ET-Chat</a> von <a href="http://www.et-world.de/sedesign/index.php" target="_blank">SEDesign</a>
           - 3.0.0 oder h&ouml;her</li>
+      <li>Wiki: <a href="http://www.commsy.net/Software/Download" target="_blank">CommSyWiki</a>
+          - keine spezielle Version</li>
    </ul>
 
 </div>

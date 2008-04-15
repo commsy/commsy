@@ -35,6 +35,9 @@ include_once('etc/cs_config.php');
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
 $result_array = array();
+if ( !empty($_GET['cid']) ) {
+   $context_id = $_GET['cid'];
+}
 
 // server
 // cron for server are:
@@ -42,11 +45,15 @@ $result_array = array();
 // - handle activity
 // - handle logs
 $server_item = $environment->getServerItem();
-$temp_array = array();
-$temp_array['crons'] = $server_item->runCron();
-$temp_array['title'] = $server_item->getTitle();
-$result_array['server'][0] = $temp_array;
-unset($temp_array);
+if ( !isset($context_id)
+     or ($context_id == $environment->getServerID())
+   ) {
+   $temp_array = array();
+   $temp_array['crons'] = $server_item->runCron();
+   $temp_array['title'] = $server_item->getTitle();
+   $result_array['server'][0] = $temp_array;
+   unset($temp_array);
+}
 
 if ( !empty($result_array) ) {
    $view = new cs_cron_view();
@@ -65,75 +72,80 @@ unset($server_item);
 $portal = $portal_list->getFirst();
 while ($portal) {
 
-   $temp_array['crons'] = $portal->runCron();
-   $temp_array['title'] = $portal->getTitle();
-   $result_array['portal'][] = $temp_array;
-   unset($temp_array);
+   if ( !isset($context_id)
+        or ($context_id == $portal->getItemID())
+      ) {
 
-   if ( !empty($result_array) ) {
-      $view = new cs_cron_view();
-      $view->setCronResult($result_array);
-      echo($view->asHTML());
-      flush();
-      unset($view);
-      unset($result_array);
-      $result_array = array();
-   }
+      $temp_array['crons'] = $portal->runCron();
+      $temp_array['title'] = $portal->getTitle();
+      $result_array['portal'][] = $temp_array;
+      unset($temp_array);
 
-   $room_list = $portal->getRoomList();
-   if (isset($room_list) and $room_list->isNotEmpty()) {
-      $room = $room_list->getFirst();
-      while ($room) {
-         $temp_array['crons'] = $room->runCron();
-         $temp_array['title'] = $room->getTitle();
-         $result_array['room'][] = $temp_array;
-         unset($temp_array);
-         unset($room);
-         $room = $room_list->getNext();
-      }
-      unset($room_list);
-
-      // display results
       if ( !empty($result_array) ) {
          $view = new cs_cron_view();
          $view->setCronResult($result_array);
          echo($view->asHTML());
          flush();
          unset($view);
+         unset($result_array);
          $result_array = array();
       }
-   }
 
-   // crons for private rooms are:
-   // - personal newsletter
-   $room_list = $portal->getPrivateRoomList();
-   if (isset($room_list) and $room_list->isNotEmpty()) {
-      $room = $room_list->getFirst();
-      while ($room) {
-         $temp_array['crons'] = $room->runCron();
-         $user = $room->getOwnerUserItem();
-         if (isset($user) and $user->isUser()){
-            $temp_array['title'] = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName().': '.$portal->getTitle();
-         } else {
-            $temp_array['title'] = getMessage('COMMON_PRIVATE_ROOM').': '.$room->getItemID().': '.$portal->getTitle();
+      $room_list = $portal->getRoomList();
+      if (isset($room_list) and $room_list->isNotEmpty()) {
+         $room = $room_list->getFirst();
+         while ($room) {
+            $temp_array['crons'] = $room->runCron();
+            $temp_array['title'] = $room->getTitle();
+            $result_array['room'][] = $temp_array;
+            unset($temp_array);
+            unset($room);
+            $room = $room_list->getNext();
          }
-         unset($user);
-         $result_array['room'][] = $temp_array;
-         unset($temp_array);
+         unset($room_list);
 
-         unset($room);
-         $room = $room_list->getNext();
+         // display results
+         if ( !empty($result_array) ) {
+            $view = new cs_cron_view();
+            $view->setCronResult($result_array);
+            echo($view->asHTML());
+            flush();
+            unset($view);
+            $result_array = array();
+         }
       }
-      unset($room_list);
 
-      // display results
-      if ( !empty($result_array) ) {
-         $view = new cs_cron_view();
-         $view->setCronResult($result_array);
-         echo($view->asHTML());
-         flush();
-         unset($view);
-         $result_array = array();
+      // crons for private rooms are:
+      // - personal newsletter
+      $room_list = $portal->getPrivateRoomList();
+      if (isset($room_list) and $room_list->isNotEmpty()) {
+         $room = $room_list->getFirst();
+         while ($room) {
+            $temp_array['crons'] = $room->runCron();
+            $user = $room->getOwnerUserItem();
+            if (isset($user) and $user->isUser()){
+               $temp_array['title'] = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName().': '.$portal->getTitle();
+            } else {
+               $temp_array['title'] = getMessage('COMMON_PRIVATE_ROOM').': '.$room->getItemID().': '.$portal->getTitle();
+            }
+            unset($user);
+            $result_array['room'][] = $temp_array;
+            unset($temp_array);
+
+            unset($room);
+            $room = $room_list->getNext();
+         }
+         unset($room_list);
+
+         // display results
+         if ( !empty($result_array) ) {
+            $view = new cs_cron_view();
+            $view->setCronResult($result_array);
+            echo($view->asHTML());
+            flush();
+            unset($view);
+            $result_array = array();
+         }
       }
    }
 

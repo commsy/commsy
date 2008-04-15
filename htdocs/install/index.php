@@ -242,15 +242,26 @@ if (!isset($action)) {
         <br/>- magic_quotes_gpc = off (default = on)
         <br/>- register_globals = off (default = off)
         <br/>- memory_limit = 24M (default = 8M)
-   </p></td>";
+   </p>";
+   echo "<p>CommSy CronJobs" .
+        "<br/>".$language[$lang]['commsycron'].
+        "</p>";
+   echo "</td>";
    echo "<td width=\"50%\" style=\"vertical-align:top;\">";
    echo "<p><strong>".$language[$lang]['reqoptional']."</strong>";
    echo "<br/>OpenSSL";
-   echo "<br/>CronJobs</p>";
    echo "<p>".$language[$lang]['phpmodules'].":
          <br/>- OpenSSL Library - php_openssl
          <br/>- Clamav Virusscanning Library - clamavlib
-         </p></td>
+         </p>";
+   echo "<p>".$language[$lang]['addsoftware'].":
+         <br/>- ".$language[$lang]['addsoftware_clamav']."
+         <br/>- ".$language[$lang]['addsoftware_fck']."
+         <br/>- ".$language[$lang]['addsoftware_jsmath']."
+         <br/>- ".$language[$lang]['addsoftware_chat']."
+         <br/>- ".$language[$lang]['addsoftware_commsywiki']."
+         </p>";
+   echo "</td>
          </tr></table>";
 
    echo "<p><strong>".$language[$lang]['newdatabase']."</strong></p>";

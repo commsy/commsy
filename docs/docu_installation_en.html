@@ -219,6 +219,16 @@
                <li>... counts page impressions for activity statistics</li>
                <li>... sends email newletters, if newsletters are enabled</li>
             </ul>
+   <p><b>Attention</b>: If you run more than one portal on the commsy installation (CommSy Server) with
+      different URLs, you should better run the cron mechanism for each portal and the server separately.
+      In this case the cron-Urls looks like this:
+   </p>
+   <ul>
+      <li>Server with Item-ID 99: <code>http://www.COMMSY-SERVER-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=99</code></li>
+      <li>Portal 1 with Item-ID 101: <code>http://www.COMMSY-PORTAL-1-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=101</code></li>
+      <li>Portal n with Item-ID XYZ: <code>http://www.COMMSY-PORTAL-n-URL.de/<I>&lt;your_document_root&gt;</I>/commsy/htdocs/cron.php?cid=XYZ</code></li>
+   </ul>
+   <p>Don't forget to configure a cron job for each new portal.</p>
          <h4><A NAME="additional_software"></A>Additional software</h4>
          <p>
             Requirements for additional software:
@@ -228,6 +238,7 @@
                <li>HTML Textarea: <a href="http://www.fckeditor.net/" target="_blank">FCKeditor</a> - 2.5.0 or higher</li>
                <li>mathematic formula: <a href="http://www.math.union.edu/~dpvc/jsmath/" target="_blank">jsMath</a> - 3.4f or higher</li>
                <li>Chat: <a href="http://www.et-world.de/sedesign/index.php?option=com_content&amp;task=view&amp;id=21&amp;Itemid=39#" target="_blank">ET-Chat</a> from <a href="http://www.et-world.de/sedesign/index.php" target="_blank">SEDesign</a> - 3.0.0 or higher</li>
+               <li>Wiki: <a href="http://www.commsy.net/Software/Download" target="_blank">CommSyWiki</a> - no version limitation</li>
             </ul>
 </div>
 <div style="float:right; margin-right: 5px;">

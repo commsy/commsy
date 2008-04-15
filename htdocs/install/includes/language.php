@@ -118,12 +118,32 @@ $language['en']['pathtext'] = 'The paths above have to end with a <strong>/</str
 $language['de']['done'] = 'Installation abgeschlossen!';
 $language['en']['done'] = 'Installation successful!';
 
-$language['de']['donetext'] = 'Die Datenbank wurde erfolgreich installiert und CommSy ist nun einsatzbereit.<br/>	
-								<strong>Loggen Sie sich mit der Kennung root und dem Passwort root ein.</strong>';
+$language['de']['donetext'] = 'Die Datenbank wurde erfolgreich installiert und CommSy ist nun einsatzbereit.<br/>
+                        <strong>Loggen Sie sich mit der Kennung root und dem Passwort root ein.</strong>';
 $language['en']['donetext'] = 'The database was installed sucessfully and CommSy is now ready to user.<br/>
-								<strong>Please log in with the username root and the password root</strong>';
+                        <strong>Please log in with the username root and the password root</strong>';
 
 $language['de']['toportal'] = 'Zum CommSy-Portal';
 $language['en']['toportal'] = 'To the CommSy portal';
 
+$language['de']['commsycron'] = 'Für Informationen siehe die <a href="../../docs/docu_installation_de.html" class="link_in_text" target="_blank">Installationsanweisungen</a>.';
+$language['en']['commsycron'] = 'For information see the <a href="../../docs/docu_installation_en.html" class="link_in_text" target="_blank">installation guide</a>.';
+
+$language['de']['addsoftware'] = 'Zusätzliche Software';
+$language['en']['addsoftware'] = 'Additional software';
+
+$language['de']['addsoftware_clamav'] = 'Anti Virus: <a href="http://www.clamav.net/" class="link_in_text" target="_blank">ClamAV</a> - keine spezielle Version';
+$language['en']['addsoftware_clamav'] = 'Anti Virus: <a href="http://www.clamav.net/" class="link_in_text" target="_blank">ClamAV</a> - no version limitation';
+
+$language['de']['addsoftware_fck'] = 'HTML Textarea: <a href="http://www.fckeditor.net/" class="link_in_text" target="_blank">FCKeditor</a> - 2.5.0 oder h&ouml;her';
+$language['en']['addsoftware_fck'] = 'HTML Textarea: <a href="http://www.fckeditor.net/" class="link_in_text" target="_blank">FCKeditor</a> - 2.5.0 or higher';
+
+$language['de']['addsoftware_jsmath'] = 'Mathe-Formlen: <a href="http://www.math.union.edu/~dpvc/jsmath/" class="link_in_text" target="_blank">jsMath</a> - 3.4f oder h&ouml;her';
+$language['en']['addsoftware_jsmath'] = 'math formula: <a href="http://www.math.union.edu/~dpvc/jsmath/" class="link_in_text" target="_blank">jsMath</a> - 3.4f or higher';
+
+$language['de']['addsoftware_chat'] = 'Chat: <a href="http://www.et-world.de/sedesign/index.php?option=com_content&amp;task=view&amp;id=21&amp;Itemid=39#" class="link_in_text" target="_blank">ET-Chat</a> von <a href="http://www.et-world.de/sedesign/index.php" class="link_in_text" target="_blank">SEDesign</a> - 3.0.0 oder h&ouml;her';
+$language['en']['addsoftware_chat'] = 'Chat: <a href="http://www.et-world.de/sedesign/index.php?option=com_content&amp;task=view&amp;id=21&amp;Itemid=39#" class="link_in_text" target="_blank">ET-Chat</a> from <a href="http://www.et-world.de/sedesign/index.php" class="link_in_text" target="_blank">SEDesign</a> - 3.0.0 or higher';
+
+$language['de']['addsoftware_commsywiki'] = 'Wiki: <a href="http://www.commsy.net/Software/Download" class="link_in_text" target="_blank">CommSyWiki</a> - keine spezielle Version';
+$language['en']['addsoftware_commsywiki'] = 'Wiki: <a href="http://www.commsy.net/Software/Download" class="link_in_text" target="_blank">CommSyWiki</a> - no version limitation';
 ?>
