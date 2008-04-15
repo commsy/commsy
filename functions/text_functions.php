@@ -447,14 +447,26 @@ function _preserve_whitespaces($text) {
  * @return array retour_array the prepared array
  */
 function chunkText ($text, $length) {
+   $first_tag = '(:';
+   $last_tag  = ':)';
+
    $text = trim($text);
    $mySubstring = preg_replace('/^(.{1,$length})[ .,].*/', '\\1', $text); // ???
    if (strlen($mySubstring) > $length) {
       $mySubstring = substr($text, 0, $length);
+      if ( strstr($text,$first_tag)
+           and strstr($text,$last_tag)
+         ) {
+         if ( strrpos($mySubstring,$last_tag) < strrpos($mySubstring,$first_tag) ) {
+            $mySubstring2 = substr($text, $length);
+            $mySubstring .= substr($mySubstring2,0,strpos($mySubstring2,$last_tag)+2);
+            $mySubstring .= ' ';
+         }
+      }
       if ( strstr($mySubstring,' ') ) {
          $mySubstring = substr($mySubstring,0,strrpos($mySubstring,' '));
       }
-      $mySubstring .= '...';
+      $mySubstring .= ' ...';
    }
    $mySubstring = preg_replace('/\n/', ' ', $mySubstring);
    return $mySubstring;
