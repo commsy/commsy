@@ -123,6 +123,7 @@ $new_room->setDetailBoxConf($old_room->getDetailBoxConf());
 $new_room->setListBoxConf($old_room->getListBoxConf());
 $new_room->setHomeRightConf($old_room->getHomeRightConf());
 $new_room->setDatesPresentationStatus($old_room->getDatesPresentationStatus());
+$new_room->setHtmlTextAreaStatus($old_room->getHtmlTextAreaStatus());
 
 // config of buzzwords
 if ( $old_room->isBuzzwordMandatory() ) {
