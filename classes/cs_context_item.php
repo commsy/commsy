@@ -2247,10 +2247,25 @@ class cs_context_item extends cs_item {
       $this->_addExtra('PATH',0);
    }
 
+   function InformationBoxWithExistingObject(){
+   	$retour = false;
+      $id = $this->getInformationBoxEntryID();
+      $manager = $this->_environment->getItemManager();
+      $item = $manager->getItem($id);
+      if (is_object($item) and !$item->isDeleted()){
+         $entry_manager = $this->_environment->getManager($item->getItemType());
+         $entry = $entry_manager->getItem($id);
+         if (is_object($entry) and !$entry->isDeleted()){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
    function withInformationBox(){
       $retour = false;
       if ($this->_issetExtra('WITHINFORMATIONBOX')) {
-         if( $this->_getExtra('WITHINFORMATIONBOX') == 'yes'){
+         if( $this->_getExtra('WITHINFORMATIONBOX') == 'yes' and $this->InformationBoxWithExistingObject()){
             $retour = true;
          }
       }
