@@ -350,7 +350,7 @@ class cs_material_form extends cs_rubric_form {
             case 'incollection':
                $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
                $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
-               $this->_form->addTextField('editor','',getMessage('MATERIAL_EDITOR'),getMessage('MATERIAL_EDITOR_DESC'),200,35);
+               $this->_form->addTextField('editor','',getMessage('MATERIAL_EDITOR'),getMessage('MATERIAL_EDITOR_DESC'),200,35,true);
                $this->_form->addTextField('booktitle','',getMessage('MATERIAL_BOOKTITLE'),getMessage('MATERIAL_BOOKTITLE_DESC'),200,35,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),200,35,true);
                $this->_form->addTextField('publisher','',getMessage('MATERIAL_PUBLISHER'),getMessage('MATERIAL_PUBLISHER_DESC'),200,35,true);

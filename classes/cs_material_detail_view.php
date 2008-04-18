@@ -361,10 +361,13 @@ class cs_material_detail_view extends cs_detail_view {
                }
                break;
             case 'incollection':
-              $biblio .= $this->_translator->getMessage('MATERIAL_BIB_IN').': '.
-                      $this->_translator->getMessage('MATERIAL_BIB_EDITOR', $item->getEditor()).': '.
-                      $item->getBooktitle().'. '.
-                      $item->getAddress().': '.$item->getPublisher();
+               $editor = $item->getEditor();
+               if ( !empty($editor) ) {
+                  $biblio .= $this->_translator->getMessage('MATERIAL_BIB_IN').': ';
+                  $biblio .= $this->_translator->getMessage('MATERIAL_BIB_EDITOR', $item->getEditor()).': ';
+               }
+               $biblio .= $item->getBooktitle().'. ';
+               $biblio .= $item->getAddress().': '.$item->getPublisher();
                if ( $item->getEdition() ) {
                   $biblio .= ', '.$this->_translator->getMessage('MATERIAL_BIB_EDITION', $item->getEdition());
                }
