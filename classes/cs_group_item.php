@@ -40,7 +40,7 @@ class cs_group_item extends cs_label_item {
    public function __construct ( $environment ) {
       $this->cs_label_item($environment,CS_GROUP_TYPE);
    }
-   
+
    public function isGroupRoomActivated () {
       $retour = false;
       $value = $this->_getGroupRoomActive();
@@ -49,7 +49,7 @@ class cs_group_item extends cs_label_item {
       }
       return $retour;
    }
-   
+
    private function _getGroupRoomActive () {
       $retour = '';
       if ( $this->_issetExtra('GROUP_ROOM_ACTIVE') ) {
@@ -57,25 +57,25 @@ class cs_group_item extends cs_label_item {
       }
       return $retour;
    }
-   
+
    public function setGroupRoomActive () {
       $this->_setExtra('GROUP_ROOM_ACTIVE','1');
    }
-   
+
    public function unsetGroupRoomActive () {
       $this->_setExtra('GROUP_ROOM_ACTIVE','-1');
    }
-   
+
    public function setGroupRoomItemID ( $value ) {
       if ( !empty($value) ) {
          $this->_setExtra('GROUP_ROOM_ID',(int)$value);
       }
    }
-   
+
    public function unsetGroupRoomItemID () {
       $this->_unsetExtra('GROUP_ROOM_ID');
    }
-   
+
    public function getGroupRoomItemID () {
       $retour = '';
       if ( $this->_issetExtra('GROUP_ROOM_ID') ) {
@@ -83,7 +83,7 @@ class cs_group_item extends cs_label_item {
       }
       return $retour;
    }
-   
+
    public function getGroupRoomItem () {
       $retour = NULL;
       if ( $this->_issetGroupRoomItemID() ) {
@@ -96,7 +96,7 @@ class cs_group_item extends cs_label_item {
       }
       return $retour;
    }
-   
+
    private function _issetGroupRoomItemID () {
       $retour = false;
       $item_id = $this->getGroupRoomItemID();
@@ -105,7 +105,7 @@ class cs_group_item extends cs_label_item {
       }
       return $retour;
    }
-   
+
    /** save news item
     * this methode save the news item into the database
     */
@@ -134,25 +134,25 @@ class cs_group_item extends cs_label_item {
          $grouproom_item->setDescriptionByLanguage($this->getDescription(),$language);
          $grouproom_item->open();
          $grouproom_item->setHtmlTextAreaStatus($current_context->getHtmlTextAreaStatus());
-         
+
          $item_id = $this->getItemID();
          if ( !empty($item_id) ) {
             $grouproom_item->setLinkedGroupItemID($item_id);
          } else {
             $save2 = true;
          }
-         
+
          // picture / logo
          $logo = $this->getPicture();
-         
+
          // Zeitpunkte
          $portal_item = $this->_environment->getCurrentPortalItem();
          if ( $portal_item->showTime() ) {
             $save_time = true;
          }
-         
+
          $grouproom_item->saveOnlyItem();
-         
+
          // add member of group to the group room
          $current_user_item = $this->_environment->getCurrentUserItem();
          $member_list = $this->getMemberItemList();
@@ -164,7 +164,7 @@ class cs_group_item extends cs_label_item {
                   $new_member_item = $private_room_user_item->cloneData();
                   $new_member_item->setContextID($grouproom_item->getItemID());
                   $new_member_item->makeUser();
-            
+
                   $picture = $private_room_user_item->getPicture();
                   if ( !empty($picture) ) {
                      $value_array = explode('_',$picture);
@@ -176,17 +176,17 @@ class cs_group_item extends cs_label_item {
                   }
 
                   $new_member_item->save();
-	               $new_member_item->setCreatorID2ItemID();	   
+                  $new_member_item->setCreatorID2ItemID();
                }
                $member_item = $member_list->getNext();
             }
          }
-         
+
          // add current user to the group as a member
          if ( !$this->isMember($current_user_item) ) {
-            $this->addMember($current_user_item);
+            $add_member = true;
          }
-                  
+
       } elseif ( $this->isGroupRoomActivated()
                  and $this->_issetGroupRoomItemID()
                  and $save_other
@@ -194,7 +194,7 @@ class cs_group_item extends cs_label_item {
          $grouproom_item = $this->getGroupRoomItem();
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
             $grouproom_item->setTitle($this->getTitle());
-      
+
             // desctiption
             $current_context = $this->_environment->getCurrentContextItem();
             $language = $current_context->getLanguage();
@@ -208,7 +208,7 @@ class cs_group_item extends cs_label_item {
             if ( empty($logo) ) {
                $grouproom_item->setLogoFilename('');
             }
-            $save2 = true;         
+            $save2 = true;
          }
       }
       ##########END#############
@@ -217,7 +217,7 @@ class cs_group_item extends cs_label_item {
 
       $label_manager = $this->_environment->getLabelManager();
       $this->_save($label_manager);
-      
+
       ##########################
       # FLAG: group room
       #########BEGIN############
@@ -247,11 +247,17 @@ class cs_group_item extends cs_label_item {
          $this->setGroupRoomItemID($grouproom_item->getItemID());
          $this->_save($label_manager);
       }
+      // add current user to the group as a member
+      if ( isset($add_member) and $add_member ) {
+         $this->addMember($current_user_item);
+      }
       ##########END#############
       # FLAG: group room
       ##########################
+
+      unset($current_user_item);
    }
-   
+
    /** save news item
     * this methode save the news item into the database
     */

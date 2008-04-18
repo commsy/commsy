@@ -178,8 +178,6 @@ else {
          attach_redirect(CS_PROJECT_TYPE, $current_iid);
       }
 
-
-
       // Redirect to attach groups
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
          attach_redirect(CS_GROUP_TYPE, $current_iid);
@@ -214,7 +212,7 @@ else {
       elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -223,7 +221,7 @@ else {
       elseif ( $backfrom == CS_PROJECT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -232,7 +230,7 @@ else {
       elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -241,7 +239,7 @@ else {
       elseif ( $backfrom == CS_TODO_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_TODO_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -250,7 +248,7 @@ else {
       elseif ( $backfrom == CS_DATE_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_DATE_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -259,20 +257,16 @@ else {
       elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
-
-
-
-
 
       // Back from attaching groups
       elseif ( $backfrom == CS_GROUP_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_GROUP_TYPE, $current_iid);
-		 $with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_GROUP_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -281,7 +275,7 @@ else {
       elseif ( $backfrom == CS_TOPIC_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
-		 $with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -290,7 +284,7 @@ else {
       elseif ( $backfrom == CS_INSTITUTION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_INSTITUTION_TYPE, $current_iid);
-		 $with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_INSTITUTION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -440,13 +434,13 @@ else {
             } else {
                $group_item->setLinkedItemsByID(CS_TOPIC_TYPE,array());
             }
-	   if ($environment->inCommunityRoom()) {
+      if ($environment->inCommunityRoom()) {
                if ( isset($_POST[CS_INSTITUTION_TYPE]) ) {
                   $group_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,$_POST[CS_INSTITUTION_TYPE]);
                } else {
                   $group_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
-	   }
+      }
             // Save item
             $group_item->save();
 
