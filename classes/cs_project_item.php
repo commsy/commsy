@@ -181,7 +181,10 @@ class cs_project_item extends cs_room_item {
            or !empty($diff_array2)
          ) {
          $this->_old_community_id_array = $community_array_old;
-         $this->_changed_room_link = true;
+         $item_id = $this->getItemID();
+         if ( !empty($item_id) ) {
+            $this->_changed_room_link = true;
+         }
       }
    }
 
@@ -215,10 +218,13 @@ class cs_project_item extends cs_room_item {
       $diff_array1 = array_diff($this->_new_community_id_array,$community_array_old);
       $diff_array2 = array_diff($community_array_old,$this->_new_community_id_array);
       if ( !empty($diff_array1)
-           or !empty($diff_array2)
+        or !empty($diff_array2)
          ) {
          $this->_old_community_id_array = $community_array_old;
-         $this->_changed_room_link = true;
+         $item_id = $this->getItemID();
+         if ( !empty($item_id) ) {
+            $this->_changed_room_link = true;
+         }
       }
    }
 
@@ -275,6 +281,7 @@ class cs_project_item extends cs_room_item {
          $this->_sendMailRoomOpen();
          if ( $this->_changed_room_link ){
             $this->_sendMailRoomLink();
+            $this->_changed_room_link = false;
          }
       }
 
@@ -293,6 +300,7 @@ class cs_project_item extends cs_room_item {
          }
          if ( $this->_changed_room_link ){
             $this->_sendMailRoomLink();
+            $this->_changed_room_link = false;
          }
       }
       unset($new_room_user);
@@ -1109,6 +1117,7 @@ class cs_project_item extends cs_room_item {
       $this->_sendMailRoomOpenToProjectModeration();
       $this->_sendMailRoomOpenToCommunityModeration();
       $this->_sendMailRoomOpenToPortalModeration();
+      exit();
    }
 
    function _sendMailRoomArchive () {
@@ -1214,8 +1223,16 @@ class cs_project_item extends cs_room_item {
                      $language = $default_language;
                   }
                }
-               $receiver_array[$language][] = $mod_item->getEmail();
-               $moderator_name_array[] = $mod_item->getFullname();
+#               if( $room_item->isCommunityRoom() or $room_item->isPortal()
+#                      and $current_user->getUserID() == $mod_item->getUserID()
+#                      and $current_user->getItemID() != $mod_item->getItemID()
+#                      and $current_user->getOpenRoomWantMail()
+#               ){
+
+#               }else{
+                  $receiver_array[$language][] = $mod_item->getEmail();
+                  $moderator_name_array[] = $mod_item->getFullname();
+#               }
             }
             $mod_item = $moderator_list->getNext();
          }
