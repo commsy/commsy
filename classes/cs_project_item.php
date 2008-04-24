@@ -1117,7 +1117,6 @@ class cs_project_item extends cs_room_item {
       $this->_sendMailRoomOpenToProjectModeration();
       $this->_sendMailRoomOpenToCommunityModeration();
       $this->_sendMailRoomOpenToPortalModeration();
-      exit();
    }
 
    function _sendMailRoomArchive () {
