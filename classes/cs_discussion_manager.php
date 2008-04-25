@@ -172,11 +172,6 @@ class cs_discussion_manager extends cs_manager {
      }
      $query .= ' FROM discussions';
 
-     // join to user database table
-     if ((isset($this->_search_array) AND !empty($this->_search_array)) OR isset($this->_sort_order)) {
-        // join to user database table
-        $query .= ' LEFT JOIN user AS people ON (people.item_id=discussions.creator_id )'; // modificator_id (TBD)
-     }
      if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
           or isset($this->_sort_order)
           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
@@ -187,6 +182,15 @@ class cs_discussion_manager extends cs_manager {
            $query .= ' LEFT JOIN labels AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
         }
 
+     }
+     // join to user database table
+     if ((isset($this->_search_array) AND !empty($this->_search_array)) OR isset($this->_sort_order)) {
+        // join to user database table
+        $query .= ' LEFT JOIN user AS people ON (people.item_id=discussions.creator_id )'; // modificator_id (TBD)
+     }
+     if ((isset($this->_search_array) AND !empty($this->_search_array))) {
+        // join to user database table
+        $query .= ' LEFT JOIN user AS people2 ON (people2.item_id=discussionarticles.creator_id )'; // modificator_id (TBD)
      }
      if ( isset($this->_topic_limit) ) {
         $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=discussions.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
@@ -305,7 +309,7 @@ class cs_discussion_manager extends cs_manager {
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','discussions.title','discussions.modification_date','discussionarticles.subject','discussionarticles.description');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','TRIM(CONCAT(people2.firstname," ",people2.lastname))','discussions.title','discussions.modification_date','discussionarticles.subject','discussionarticles.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
