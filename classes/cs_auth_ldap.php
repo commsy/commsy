@@ -133,6 +133,30 @@ class cs_auth_ldap extends cs_auth_manager {
     *                 false, account is not granted in MySQL
     */
    function checkAccount ($uid, $password) {
+
+    /*
+    $basedn="CN=Users,DC=domain,DC=de";
+    $server="active_directory";
+    $port=389;
+    $anmelduser="CN=leseuser,CN=Users,DC=domain,DC=de";
+    $passwort="start";
+
+    $connect=ldap_connect($server,$port);
+
+    $suchfilter="(sAMAccountName=*)";
+    $bind=@ldap_bind($connect,$anmelduser,$passwort) or die ("Bindung mit Server nicht möglich.");
+    $search=@ldap_search($connect,$basedn,$suchfilter);
+    $result=ldap_get_entries($connect,$search);
+    $unbind=ldap_unbind($connect);
+
+    $connect=ldap_connect($server,$port);
+
+    $user=$_POST["anmeldename"];
+    $kennwort=$_POST["kennwort"];
+    $newsuchfilter="(sAMAccountName=$user)";
+    $newbind=ldap_bind($connect,$user,$kennwort);
+    */
+
       $granted = false;
       /** check if password is correct */
       if ( empty($password) || strlen($password) == 0 ) {
