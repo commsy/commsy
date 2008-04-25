@@ -1233,22 +1233,26 @@ class cs_project_item extends cs_room_item {
       foreach ($receiver_array as $key => $value) {
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($key);
+         $subject = '';
+         if ( $room_item->isCommunityRoom() or $room_item->isPortal() ){
+          $subject .= $room_item->getTitle().': ';
+         }
          if ( $room_change == 'open' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_OPEN',$this->getTitle());
          } elseif ( $room_change == 'reopen' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_REOPEN',$this->getTitle());
          } elseif ( $room_change == 'delete' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_DELETE',$this->getTitle());
          } elseif ( $room_change == 'undelete' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNDELETE',$this->getTitle());
          } elseif ( $room_change == 'archive' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_ARCHIVE',$this->getTitle());
          } elseif ( $room_change == 'link' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LINK',$this->getTitle());
          } elseif ( $room_change == 'lock' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_LOCK',$this->getTitle());
          } elseif ( $room_change == 'unlock' ) {
-            $subject = $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK',$this->getTitle());
+            $subject .= $translator->getMessage('PROJECT_MAIL_SUBJECT_UNLOCK',$this->getTitle());
          }
          $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
          $body .= LF.LF;
