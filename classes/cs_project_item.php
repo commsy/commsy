@@ -218,7 +218,7 @@ class cs_project_item extends cs_room_item {
       $diff_array1 = array_diff($this->_new_community_id_array,$community_array_old);
       $diff_array2 = array_diff($community_array_old,$this->_new_community_id_array);
       if ( !empty($diff_array1)
-        or !empty($diff_array2)
+           or !empty($diff_array2)
          ) {
          $this->_old_community_id_array = $community_array_old;
          $item_id = $this->getItemID();
@@ -260,8 +260,6 @@ class cs_project_item extends cs_room_item {
             $disc_manager->copyImageFromRoomToRoom($picture,$new_room_user->getContextID());
             $new_room_user->setPicture($new_picture_name);
          }
-
-
 
          // save group all
          $group_manager = $this->_environment->getLabelManager();
@@ -1082,7 +1080,6 @@ class cs_project_item extends cs_room_item {
          }
          $retour = $tempMessage;
          if ( $retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour =='tbd' ) {
-         // if ($retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp.'_EDIT_FORM' or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
       }
@@ -1191,7 +1188,8 @@ class cs_project_item extends cs_room_item {
             }
          }
       } else {
-         include_once('functions/error_functions.php');trigger_error('lost room moderation',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('lost room moderation',E_USER_WARNING);
       }
    }
 
