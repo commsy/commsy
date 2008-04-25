@@ -1222,16 +1222,16 @@ class cs_project_item extends cs_room_item {
                      $language = $default_language;
                   }
                }
-#               if( $room_item->isCommunityRoom() or $room_item->isPortal()
-#                      and $current_user->getUserID() == $mod_item->getUserID()
-#                      and $current_user->getItemID() != $mod_item->getItemID()
-#                      and $current_user->getOpenRoomWantMail()
-#               ){
-
-#               }else{
+               if( !(
+                      $room_item->isCommunityRoom() or $room_item->isPortal()
+                      and $current_user->getUserID() == $mod_item->getUserID()
+                      and $current_user->getItemID() != $mod_item->getItemID()
+                      and $current_user->getOpenRoomWantMail()
+                     )
+               ){
                   $receiver_array[$language][] = $mod_item->getEmail();
                   $moderator_name_array[] = $mod_item->getFullname();
-#               }
+               }
             }
             $mod_item = $moderator_list->getNext();
          }
