@@ -460,17 +460,19 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $current_user = $this->_environment->getCurrentUser();
             if ( $default_id != '-1'  ){
                $default_item = $room_manager->getItem($default_id);
-               $template_availability = $default_item->getCommunityTemplateAvailability();
-               if( ($template_availability == '0') and $default_item->isClosed() ){
-                  $temp_array['text'] = '*'.$default_item->getTitle();
-                  $temp_array['value'] = $default_item->getItemID();
-                  $this->_community_template_array[] = $temp_array;
-                  $temp_array = array();
-                  $temp_array['text'] = '------------------------';
-                  $temp_array['value'] = 'disabled';
-                  $this->_with_template_form_element2 = true;
-                  $this->_community_template_array[] = $temp_array;
-                  $this->_javascript_array[$default_item->getItemID()] = $default_item->getTemplateDescription();
+               if ( isset($default_item) ) {
+                  $template_availability = $default_item->getCommunityTemplateAvailability();
+                  if( ($template_availability == '0') and $default_item->isClosed() ){
+                     $temp_array['text'] = '*'.$default_item->getTitle();
+                     $temp_array['value'] = $default_item->getItemID();
+                     $this->_community_template_array[] = $temp_array;
+                     $temp_array = array();
+                     $temp_array['text'] = '------------------------';
+                     $temp_array['value'] = 'disabled';
+                     $this->_with_template_form_element2 = true;
+                     $this->_community_template_array[] = $temp_array;
+                     $this->_javascript_array[$default_item->getItemID()] = $default_item->getTemplateDescription();
+                  }
                }
             }
             $item = $room_list->getFirst();
