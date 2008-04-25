@@ -220,12 +220,12 @@ class cs_manager {
       $limit = cs_strtoupper($limit);
 
       //find all occurances of quoted text and store them in an array
-       preg_match_all('/(\\"(.+?)\\\")/',$limit,$literal_array);
+      preg_match_all('/(\\"(.+?)\\\")/',$limit,$literal_array);
       //delete this occurances from the original string
       $limit = preg_replace('/(\\\"(.+?)\\\")/','',$limit);
 
-      preg_match_all('/\s-(\w+)/',$limit,$this->_search_negative_array);
-      $limit = preg_replace('/\s-(\w+)/','',$limit);
+      preg_match_all('/\s-([\w'.SPECIAL_CHARS.']+)/',$limit,$this->_search_negative_array);
+      $limit = preg_replace('/\s-([\w'.SPECIAL_CHARS.']+)/','',$limit);
 
       //clean up the resulting array from quots
       $literal_array = str_replace('"','',$literal_array[2]);
@@ -254,7 +254,11 @@ class cs_manager {
       for ($i = 0; $i < count($this->_search_array); $i++) {
          $search_limit_query .= '(';
          for($j = 0; $j < count($field_array); $j++) {
+            $search_limit_query .= '(';
             $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,$this->_search_array[$i]).'%"';
+            $search_limit_query .= ' OR ';
+            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,strtoupper(htmlentities($this->_search_array[$i]))).'%"';
+            $search_limit_query .= ')';
             if ($j+1 < count($field_array)) {
                $search_limit_query .= ' OR ';
             }
@@ -270,7 +274,11 @@ class cs_manager {
          for ($i = 0; $i < count($this->_search_negative_array[1]); $i++) {
             $search_limit_query .= '(';
             for ($j = 0; $j < count($field_array); $j++) {
+               $search_limit_query .= '(';
                $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,$this->_search_negative_array[1][$i]).'%"';
+               $search_limit_query .= ' AND ';
+               $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,strtoupper(htmlentities($this->_search_negative_array[1][$i]))).'%"';
+               $search_limit_query .= ')';
                if ($j+1 < count($field_array)) {
                   $search_limit_query .= ' AND ';
                }
