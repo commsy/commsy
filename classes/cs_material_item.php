@@ -1554,6 +1554,7 @@ function _copySectionList ($copy_id) {
       }
       unset($section_list_item);
       unset($section_item_list);
+      $file_list->sortby('filename');
       return $file_list;
    }
 }

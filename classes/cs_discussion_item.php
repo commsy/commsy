@@ -500,6 +500,7 @@ class cs_discussion_item extends cs_item {
       }
       unset($section_item);
       unset($section_list);
+      $file_list->sortby('filename');
       return $file_list;
    }
 }
