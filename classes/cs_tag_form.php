@@ -113,6 +113,16 @@ class cs_tag_form extends cs_rubric_form {
    }
 
    private function _createFormForChildren ( $item, $depth ) {
+      $session = $this->_environment->getSession();
+      if ( !empty($_GET['module']) ) {
+         $linked_rubric = $_GET['module'];
+         $session->setValue($this->_environment->getCurrentModule().'_linked_rubric',$linked_rubric);
+      } elseif ( $session->issetValue($this->_environment->getCurrentModule().'_linked_rubric') ) {
+         $linked_rubric = $session->getValue($this->_environment->getCurrentModule().'_linked_rubric');
+      } else {
+         $linked_rubric = '';
+      }
+      unset($session);
       if ( isset($item) ) {
          $children_list = $item->getChildrenList();
          if ( isset($children_list) and $children_list->isNotEmpty() ) {
@@ -130,8 +140,10 @@ class cs_tag_form extends cs_rubric_form {
             while ( $child ) {
                $this->_form->addTextField('tag'.'#'.$child->getItemID(),$child->getTitle(),'','','',$len_text_field,false,$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'),'option'.'#'.$child->getItemID(),'','',$arrows);
                $this->_form->combine('horizontal');
-               $this->_form->addButton('option'.'#'.$child->getItemID(),getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
-               $this->_form->combine('horizontal');
+               if ($linked_rubric != 'home'){
+                  $this->_form->addButton('option'.'#'.$child->getItemID(),getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
+                  $this->_form->combine('horizontal');
+               }
                $this->_form->addButton('option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_DELETE_BUTTON'));
                $this->_createFormForChildren($child,$depth+1);
                unset($child);

@@ -86,20 +86,21 @@ class cs_homepage_tag_view extends cs_view {
       $father_id_array = array();
       $html_text = '';
       $html_text .= $this->_getTagContentAsHTML($root_item,0);
-/*      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';
+      if ( empty($html_text) ){
+         $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+      }
+      $html .= $html_text;
+      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';
       if ( ($current_user->isUser() and $this->_with_modifying_actions)
           and ($current_context->isTagEditedByAll() or $current_user->isModerator() ) ) {
          $params = array();
+         $params['module'] = $this->_environment->getCurrentModule();
          $html .= ahref_curl($this->_environment->getCurrentContextID(),'tag','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).BRLF;
          unset($params);
       } else {
          $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.BRLF;
       }
-      $html .= '</div>'.LF;*/
-      if ( empty($html_text) ){
-         $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
-      }
-      $html .= $html_text;
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 

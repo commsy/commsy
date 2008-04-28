@@ -92,6 +92,16 @@ class cs_buzzwords_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
+      // Get linked rubric
+      $session = $this->_environment->getSession();
+      if ( !empty($_GET['module']) ) {
+         $linked_rubric = $_GET['module'];
+         $session->setValue($this->_environment->getCurrentModule().'_linked_rubric',$linked_rubric);
+      } elseif ( $session->issetValue($this->_environment->getCurrentModule().'_linked_rubric') ) {
+         $linked_rubric = $session->getValue($this->_environment->getCurrentModule().'_linked_rubric');
+      } else {
+         $linked_rubric = '';
+      }
       // news
       $i = 0;
       $this->_form->addSubHeadline('headline1',ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')),'','',3);
@@ -112,8 +122,10 @@ class cs_buzzwords_form extends cs_rubric_form {
          $this->_form->addTextField('buzzword'.'#'.$buzzword['value'],$buzzword['text'],$i.'.','','',32);
          $this->_form->combine('horizontal');
          $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('BUZZWORDS_CHANGE_BUTTON'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'))*9));
-         $this->_form->combine('horizontal');
-         $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
+         if ($linked_rubric != 'home'){
+            $this->_form->combine('horizontal');
+            $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
+         }
          $this->_form->combine('horizontal');
          $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('COMMON_DELETE_BUTTON'),'','',(strlen($this->_translator->getMessage('COMMON_DELETE_BUTTON'))*9));
       }

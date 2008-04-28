@@ -91,15 +91,16 @@ class cs_homepage_buzzword_view extends cs_view {
          }
          $buzzword = $buzzword_list->getNext();
       }
-/*      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px;">';
+      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px;">';
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();
+         $params['module'] = $this->_environment->getCurrentModule();
          $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_EDIT')).LF;
          unset($params);
       } else {
          $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
       }
-      $html .= '</div>'.LF; */
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       unset($current_user);
