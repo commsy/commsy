@@ -529,7 +529,7 @@ class cs_label_item extends cs_item {
       $link_member_item = $link_member_list->getFirst();
       while ( $link_member_item ) {
          $linked_user_id = $link_member_item->getLinkedItemID($this);
-         if ( $user->getItemID() == $linked_user_id ) {
+         if ( is_object($user) and $user->isA(CS_USER_TYPE) and $user->getItemID() == $linked_user_id ) {
             $link_member_item->delete();
          }
          $link_member_item = $link_member_list->getNext();
