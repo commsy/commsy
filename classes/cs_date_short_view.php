@@ -89,8 +89,8 @@ class cs_date_short_view extends cs_home_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      $html .= '      <td '.$style.' style="font-size:10pt; width:55%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:22%;">'.$this->_getItemDate($item);
+      $html .= '      <td '.$style.' style="font-size:10pt; width:60%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:17%;">'.$this->_getItemDate($item);
       $time = $this->_getItemTime($item);
       if (!empty($time)) {
          $html .= ', '.$time;
