@@ -474,8 +474,8 @@ class cs_detail_view extends cs_view {
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params,
-                                $this->_text_as_html_short($father_tag_item->getTitle()),
-                                $this->_text_as_html_short($father_tag_item->getTitle()),
+                                $father_tag_item->getTitle(),
+                                $father_tag_item->getTitle(),
                                 '',
                                 '',
                                 '',
@@ -500,8 +500,8 @@ class cs_detail_view extends cs_view {
                              $this->_environment->getCurrentModule(),
                              'index',
                              $params,
-                             $this->_text_as_html_short($tag_item->getTitle()),
-                             $this->_text_as_html_short($tag_item->getTitle()),
+                             $tag_item->getTitle(),
+                             $tag_item->getTitle(),
                              '',
                              '',
                              '',
@@ -547,7 +547,7 @@ class cs_detail_view extends cs_view {
       if($rubric == CS_DISCUSSION_TYPE){
          $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($this->_getTitleAsHTML());
       }elseif ($rubric != CS_USER_TYPE ){
-        $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($item->getTitle());
+         $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($item->getTitle());
       }else{
         $html .= '<h2 class="pagetitle">'.$item->getFullName();
       }
