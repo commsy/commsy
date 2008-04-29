@@ -261,11 +261,19 @@ span.formcounter{
    color: <?php echo($color['myarea_section_title'])?>;
 }
 
-div.form_checkbox_dhtml{
+#MySortable{
+	 list-style: none;
+    padding-left:0px;
+    margin-left:0px;
+    width:400px;
+}
+
+li.form_checkbox_dhtml{
    margin-top:2px;
    border: 1px dotted <?php echo($color['tabs_background'])?>;
    background-color: <?php echo($color['boxes_background'])?>;
    cursor: move;
+   width:400px;
 }
 
 

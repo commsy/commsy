@@ -1,7 +1,7 @@
 <?php
 $message["TOPIC_ACTIVATE_PATH"]["en"] = "Activate path feature";
 $message["TOPIC_ACTIVATE_PATH_DESCRIPTION"]["en"] = "When path feature is active, you can arrange the contents referred to into voluntary order as a &quot;path&quot;. This path  will be displayed in the content area of this topic.";
-$message["TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION"]["en"] = "You can arrange the contents referred to into voluntary order by using drag & drop. Only the selected entries will be shown as a path.";
+$message["TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION"]["en"] = "You can arrange the contents referred to into voluntary order by using drag &amp; drop. Only the selected entries will be shown as a path.";
 $message["TOPIC_CHANGE_BUTTON"]["en"] = "Save %_TOPICS_SUB_AKKS_LOW";
 $message["TOPIC_DEACTIVATE_PATH"]["en"] = "Deactivate path";
 $message["TOPIC_EDIT"]["en"] = "Edit %_TOPICS_SUB_NOMS_LOW";

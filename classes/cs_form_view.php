@@ -785,7 +785,7 @@ class cs_form_view extends cs_view {
       } else {
          $counter = 1;
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
-            $html .= '<ul id="dhtml_list" style="width:100%; list-style-type:none; text-align:left; padding-left:0px; padding-top:0px; margin-top:0px">'.LF;
+            $html .= '<ul id="MySortable">'.LF;
          }
          while ($option) {
             $option['name'] = $form_element['name'].'[]';
@@ -823,19 +823,13 @@ class cs_form_view extends cs_view {
                }
                $html .= "\n";
             }else{
-               $html .='<li id="dhtml_list_dhtml_list'.$counter.'">'.LF;
-               $html .='<div  class="handle"> '.LF;
+               $html .='<li class="form_checkbox_dhtml">'.LF;
                if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
                   $option['ischecked'] = true;
                } else {
                   $option['ischecked'] = false;
                }
-               $html .= '<div class="form_checkbox_dhtml" >';
                $html .= '         '.$this->_getCheckboxAsHTML($option,10);
-               $html .= '</div>';
-               if (!$form_element['horizontal'] and !empty($option)) {
-                  $html .= '</div>';
-               }
                $html .='</li>'.LF;
             }
             $option = next($options);
@@ -843,10 +837,33 @@ class cs_form_view extends cs_view {
          }
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
             $html .= '</ul>'.LF;
-            $html .= '   <script type="text/javascript" src="javascript/CommSySortable.js"></script>'.LF;
             $html .= '<script type="text/javascript">'.LF;
-            $html .= 'initSortable("dhtml_list");'.LF;
-            $html .= '</script>'.LF;
+
+            $html .='var MySortables = Sortables.extend({
+                        start: function(event, element) {
+                           if (event.target.tagName != \'A\'
+                               && event.target.tagName != \'INPUT\'
+                               && event.target.tagName != \'SELECT\'
+                               && event.target.tagName != \'TEXTAREA\'
+                           ) {
+                              this.parent(event, element);
+                           }
+                        }
+                     });
+                     window.addEvent(\'domready\', function(){
+                        new MySortables($(\'MySortable\'), {
+                           initialize: function(){
+                              var step = 0;
+                              this.elements.each(function(element, i){
+                              element.setStyle(\'width\', \'400px\');
+                           });
+                        },
+                        onDragStart: function(element, ghost){
+                           ghost.setStyle(\'width\', \'395px\');
+                           ghost.setStyle(\'list-style\', \'none\');
+                        }
+                        });
+                     });'.'</script>';
          }
 
       }
