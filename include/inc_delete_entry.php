@@ -25,7 +25,8 @@
 if (!empty($_GET['iid'])) {
    $current_item_iid = $_GET['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('A material item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('A material item id must be given.', E_USER_ERROR);
 }
 // Find out what to do
 if ( isset($_POST['delete_option']) ) {
@@ -105,6 +106,4 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
    }
 }
-
-
 ?>
