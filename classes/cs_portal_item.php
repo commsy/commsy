@@ -1201,6 +1201,9 @@ class cs_portal_item extends cs_guide_item {
                case 'MAIL_TO_MODERATOR':      //
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_MAIL_TO_MODERATOR_FORM',$link);
                   break;
+               case 'MAIL_PROCESS':      //
+                  $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON');
+                  break;
                case 'LANGUAGE_UNUSED':      //
                   $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
                   break;
