@@ -987,8 +987,8 @@ class cs_detail_view extends cs_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($this->_text_as_html_short($linked_item->getTitle()),27),
-                                       $this->_text_as_html_short($link_creator_text),
+                                       chunkText($linked_item->getTitle(),27),
+                                       $link_creator_text,
                                        '_self',
                                        $fragment);
                unset($params);
@@ -1208,8 +1208,8 @@ class cs_detail_view extends cs_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($this->_text_as_html_short($linked_item->getTitle()),27),
-                                       $this->_text_as_html_short($link_creator_text),
+                                       chunkText($linked_item->getTitle(),27),
+                                       $link_creator_text,
                                        '_self',
                                        $fragment);
                   unset($params);
