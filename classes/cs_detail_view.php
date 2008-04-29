@@ -545,9 +545,9 @@ class cs_detail_view extends cs_view {
       $detail_box_conf = $current_context->getDetailBoxConf();
 
       if($rubric == CS_DISCUSSION_TYPE){
-         $html .= '<h2 class="pagetitle">'.$this->_getTitleAsHTML();
+         $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($this->_getTitleAsHTML());
       }elseif ($rubric != CS_USER_TYPE ){
-        $html .= '<h2 class="pagetitle">'.$item->getTitle();
+        $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($item->getTitle());
       }else{
         $html .= '<h2 class="pagetitle">'.$item->getFullName();
       }
@@ -801,7 +801,7 @@ class cs_detail_view extends cs_view {
          while( $annotation_item ){
             $html .='<div style="width:100%; margin-top:10px;">'.LF;
             $html .= '<a id="anchor'.$annotation_item->getItemID().'" name="anchor'.$annotation_item->getItemID().'"></a>'.LF;
-            $html .= '<h3 class="annotationtitle">'.$annotation_item->getTitle();
+            $html .= '<h3 class="annotationtitle">'.$this->_text_as_html_short($annotation_item->getTitle());
             $html .= '</h3>'.LF;
             $html .= '</div>';
             if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
