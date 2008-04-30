@@ -1515,7 +1515,11 @@ class cs_page_view extends cs_view {
                   $html .= '<div class="myarea_content">'.LF;
                }
                unset($current_user_item);
-               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest') ){
+               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
+######### HACK ######
+#                 and strtolower($this->_current_user->getUSerID()) != 'bep'
+######### HACK ######
+               ){
                   $private_room_manager = $this->_environment->getPrivateRoomManager();
                   $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
                   if ( isset($own_room) ) {
@@ -1578,29 +1582,30 @@ class cs_page_view extends cs_view {
             }
 
             if (!$this->_environment->inServer() ) {
-               if ( !$this->_current_user->isRoot() ) {
+               if ( !$this->_current_user->isRoot()
+######### HACK ######
+#                 and strtolower($this->_current_user->getUSerID()) != 'bep'
+######### HACK ######
+
+               ) {
                   $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
                   $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
-                  ######### HACK ######
-                  #if ( strtolower($this->_current_user->getUSerID()) != 'bep' ) {
-                  ######### HACK ######
                   $private_room_manager = $this->_environment->getPrivateRoomManager();
                   $own_room = $private_room_manager->getRelatedOwnRoomForUser($this->_current_user,$this->_environment->getCurrentPortalID());
                   if ( isset($own_room) ) {
                      $html .= '<span>> '.ahref_curl($own_room->getItemID(),'user','index',array(),$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
                   }
-                  ######### HACK ######
-                  #}
-                  ######### HACK ######
                }
+######### HACK ######
+#                else{$html .= '<div>'.LF;}
+######### HACK ######
             }
             // @segment-end 67550
             // @segment-begin 1467 no-cs_modus/user-status><0:link-become_member-in-room("Teilnahme beantragen")
-            if ( !$this->_current_user->isRoot()
-                 ######### HACK ######
-                 #and strtolower($this->_current_user->getUSerID()) != 'bep'
-                 ######### HACK ######
-               ) {
+            if ( !$this->_current_user->isRoot()               ) {
+######### HACK ######
+#                if( strtolower($this->_current_user->getUSerID()) != 'bep'){
+######### HACK ######
                if ($this->_environment->inCommunityRoom() and !$this->_current_user->isUser()){
                   $params['cs_modus'] = 'become_member';
                   $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
@@ -1618,7 +1623,8 @@ class cs_page_view extends cs_view {
                }
                $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                unset($current_portal_item);
-               if ((isset($current_auth_source_item) and $current_auth_source_item->allowChangePassword()) or $this->_current_user->isRoot()) {
+               if ((isset($current_auth_source_item) and $current_auth_source_item->allowChangePassword()) or $this->_current_user->isRoot()
+               ) {
                       $params = array();
                       $params = $this->_environment->getCurrentParameterArray();
                       $params['cs_modus'] = 'password_change';
@@ -1633,7 +1639,8 @@ class cs_page_view extends cs_view {
                // @segment-begin 42457 no-cs_modus/user-status><0:links-change_account/my_profile
                if (!$this->_environment->inServer() ) {
                // auth source
-                  if ( (isset($current_auth_source_item) and $current_auth_source_item->allowChangeUserID()) or $this->_current_user->isRoot()) {
+                  if ( (isset($current_auth_source_item) and $current_auth_source_item->allowChangeUserID()) or $this->_current_user->isRoot()
+                  ) {
                      $params = array();
                      $params = $this->_environment->getCurrentParameterArray();
                      $params['cs_modus'] = 'account_change';
@@ -1643,6 +1650,9 @@ class cs_page_view extends cs_view {
                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
                    }
                }
+######## HACK ######
+#               }
+######### HACK ######
             }else{
                // @segment-end 1467
                // @segment-begin 89153 no-cs_modus/user-status><0:links-change_password

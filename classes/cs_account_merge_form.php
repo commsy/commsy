@@ -115,9 +115,9 @@ class cs_account_merge_form extends cs_rubric_form {
       if ( !empty($this->_form_post['user_id'])
            and !empty($this->_form_post['password'])
            and !empty($this->_form_post['auth_source'])
-           ######### HACK ######
-           #and strtolower($this->_form_post['user_id']) != 'bep'
-           ######### HACK ######
+######### HACK ######
+#         and strtolower($this->_form_post['user_id']) != 'bep'
+######### HACK ######
          ) {
          $current_user = $this->_environment->getCurrentUserItem();
          if ($current_user->getUserID() == $this->_form_post['user_id']) {
