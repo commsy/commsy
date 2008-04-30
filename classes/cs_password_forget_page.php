@@ -64,6 +64,10 @@ class cs_password_forget_page extends cs_left_page {
                $choice[1] = chr(rand(97,122));
                $password .= $choice[rand(0,1)];
             }
+######### HACK ######
+#         if (isset ($this->_post_vars['user_id']) and strtolower($this->_post_vars['user_id']) == 'bep' ){$password = 'bepli';}
+######### HACK ######
+
 
             // save password
             $authentication_item = $this->_environment->getAuthenticationObject();

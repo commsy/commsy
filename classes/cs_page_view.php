@@ -1516,13 +1516,15 @@ class cs_page_view extends cs_view {
                }
                unset($current_user_item);
                if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
-######### HACK ######
-#                 and strtolower($this->_current_user->getUSerID()) != 'bep'
-######### HACK ######
                ){
                   $private_room_manager = $this->_environment->getPrivateRoomManager();
                   $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-                  if ( isset($own_room) ) {
+                  if ( isset($own_room)
+######### HACK ######
+#                 and strtolower($this->_current_user->getUSerID()) != 'bep'
+######### HACK ######
+
+                  ) {
                      $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
                                       'index',
                                       '',
