@@ -1599,7 +1599,7 @@ class cs_page_view extends cs_view {
                   }
                }
 ######### HACK ######
-#                else{$html .= '<div>'.LF;}
+#                elseif( !$this->_current_user->isRoot()){$html .= '<div>'.LF;}
 ######### HACK ######
             }
             // @segment-end 67550
