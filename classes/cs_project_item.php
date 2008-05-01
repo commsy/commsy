@@ -285,12 +285,18 @@ class cs_project_item extends cs_room_item {
 
       else {
          $new_status = $this->getStatus();
+         $creation_date = $this->getCreationDate();
+         $timestamp  = strtotime($creation_date);
+         $show_time = true;
+         if( ($timestamp+60) <= time() ){
+            $show_time = false;
+         }
          if ( $new_status != $this->_old_status ) {
             if ( $this->_old_status == CS_ROOM_LOCK ) {
                $this->_sendMailRoomUnlock();
             } elseif ( $new_status == CS_ROOM_CLOSED ) {
                $this->_sendMailRoomArchive();
-            } elseif ( $new_status == CS_ROOM_OPEN ) {
+            } elseif ( $new_status == CS_ROOM_OPEN and !$show_time) {
                $this->_sendMailRoomReOpen();
             } elseif ( $new_status == CS_ROOM_LOCK ) {
                $this->_sendMailRoomLock();
