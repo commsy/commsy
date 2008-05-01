@@ -1169,7 +1169,10 @@ class cs_community_item extends cs_room_item {
       }
 
       // now email information
-                foreach ($receiver_array as $key => $value) {
+     foreach ($receiver_array as $key => $value) {
+         if ( $room_item->isPortal() ){
+             $subject .= $room_item->getTitle().': ';
+         }
          $save_language = $translator->getSelectedLanguage();
          $translator->setSelectedLanguage($key);
          if ( $room_change == 'open' ) {
