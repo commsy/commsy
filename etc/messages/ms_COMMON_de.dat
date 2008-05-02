@@ -248,6 +248,7 @@ $message["COMMON_FOR_GROUP"]["de"] = "für";
 $message["COMMON_FOR_GROUPS"]["de"] = "für";
 $message["COMMON_FROM2"]["de"] = "von";
 $message["COMMON_FULL_TEXT"]["de"] = "Volltext";
+$message["COMMON_GET_FLASH"]["de"] = "Zur Darstellung benötigen Sie das Flash-Plugin des Browsers.";
 $message["COMMON_GO_BUTTON"]["de"] = "Raum wechseln";
 $message["COMMON_GO_BUTTON2"]["de"] = "go";
 $message["COMMON_GROUP"]["de"] = "Gruppe";

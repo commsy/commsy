@@ -1586,7 +1586,7 @@ class cs_view {
                $image_text .= '</div>'.LF;
             } else {
                $div_number = $this->_getDivNumber();
-               $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">TBD</div>'.LF;
+               $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
                $image_text .= '<script type="text/javascript">'.LF;
                $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
                $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
@@ -1676,7 +1676,7 @@ class cs_view {
          $source = str_replace('&amp;','&',$source);
          $source = urlencode($source);
          $div_number = $this->_getDivNumber();
-         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">TBD</div>'.LF;
+         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
          $image_text .= '<script type="text/javascript">'.LF;
          $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
          $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
