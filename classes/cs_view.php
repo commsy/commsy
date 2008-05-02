@@ -1620,8 +1620,9 @@ class cs_view {
       if ($this->_environment->getCurrentBrowser() == 'MSIE' ) {
          // der IE7 unter Windows Vista verkleinert das Flash-Fenster von unten
          // so dass die Steuerelemente nicht mehr zu sehen sind
-         // daher wird hier auf Quicktime ausgewichen
-         return $this->_format_quicktime($text, $array);
+         // daher wird hier auf den Mediaplayer ausgewichen
+         return $this->_format_wmplayer($text, $array);
+//         return $this->_format_quicktime($text, $array); Alte Ausweichoption, die nicht funktioniert hat.
       }
 
       $retour = '';
