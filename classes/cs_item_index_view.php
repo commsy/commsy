@@ -445,9 +445,8 @@ var $_selected_restriction = NULL;
     * @author CommSy Development Group
     */
    function _getItemArticleCount ($item) {
-     $all_articles = $item->getAllArticlesCount();
-     $unread_articles = $item->getUnreadArticles();
-     return $all_articles.' ('.$unread_articles.' <span class="desc">'.$this->_translator->getMessage('COMMON_UNREAD').'</span>)';
+     $array = $item->getAllAndUnreadArticles();
+     return $array['count'].' ('.$array['unread'].' <span class="desc">'.$this->_translator->getMessage('COMMON_UNREAD').'</span>)';
    }
 
    /** get the date of last added article
