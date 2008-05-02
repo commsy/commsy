@@ -270,6 +270,8 @@ class cs_material_index_view extends cs_index_view {
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'.LF;
             } elseif( $sort_room->isCommunityRoom() ){
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_COMMUNITYROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
+            }elseif( $sort_room->isGroupRoom() ){
+               $html .= '                        '.$this->_translator->getMessage('COPY_FROM_GROUPROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
             }else {
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PROJECTROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
             }

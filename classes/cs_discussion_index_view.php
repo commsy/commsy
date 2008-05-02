@@ -234,6 +234,8 @@ class cs_discussion_index_view extends cs_room_index_view {
             } elseif( $sort_room->isPrivateRoom() ){
                $user = $this->_environment->getCurrentUserItem();
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'."\n";
+            }elseif( $sort_room->isGroupRoom() ){
+              $html .= '                        '.$this->_translator->getMessage('COPY_FROM_GROUPROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
             }else {
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PROJECTROOM').'&nbsp;"'.$sort_room->getTitle().'"'."\n";
             }

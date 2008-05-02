@@ -146,7 +146,6 @@ $material_list = $material_manager->getItemList($material_id_array);
 
 // Sort the material_list By context and than like in session
 $material_item = $material_list->getFirst();
-#$material_array = array();
 
 $mat_roomIds = array();
 
@@ -165,10 +164,14 @@ $communities = $community_manager->getSortedItemList($mat_roomIds,'title');
 $private_room_manager = $environment->getPrivateRoomManager();
 $private_rooms = $private_room_manager->getSortedItemList($mat_roomIds,'title');
 
+$group_room_manager = $environment->getGroupRoomManager();
+$group_rooms = $group_room_manager->getSortedItemList($mat_roomIds,'title');
+
 $rooms = new cs_list();
 $rooms->addList($projects);
 $rooms->addList($communities);
 $rooms->addList($private_rooms);
+$rooms->addList($group_rooms);
 
 
 // Materialien des Gemeinschaftsraumes

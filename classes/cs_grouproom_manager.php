@@ -282,7 +282,7 @@ class cs_grouproom_manager extends cs_context_manager {
       if (empty($id_array)) {
          return new cs_list();
       } else {
-         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->_db_table.'.type LIKE "project"';
+         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id IN ("'.implode('", "',encode(AS_DB,$id_array)).'") AND '.$this->_db_table.'.type LIKE "grouproom"';
          $query .= " ORDER BY ".$sortBy;
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {

@@ -232,6 +232,8 @@ class cs_announcement_index_view extends cs_campus_index_view {
             } elseif( $sort_room->isPrivateRoom() ){
                $user = $this->_environment->getCurrentUserItem();
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'.LF;
+            }elseif( $sort_room->isGroupRoom() ){
+              $html .= '                        '.$this->_translator->getMessage('COPY_FROM_GROUPROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
             }else {
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PROJECTROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
             }
