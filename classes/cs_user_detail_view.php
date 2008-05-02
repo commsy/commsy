@@ -1159,14 +1159,10 @@ class cs_user_detail_view extends cs_detail_view {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
-      if (!$this->_environment->inPrivateRoom()){
-         $html .='</div>'.LF;
-         $html .='</div>'.LF;
-      }
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
-      if ( ( $this->_environment->getCurrentModule() != 'user'
-             or !$this->_environment->inPrivateRoom()
-           )
+      if ( $this->_environment->getCurrentModule() == 'user'
            and
            ( $current_user->isModerator()
              or $current_user->getItemID() == $item->getItemID()
