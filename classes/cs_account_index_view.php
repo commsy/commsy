@@ -291,7 +291,7 @@ class cs_account_index_view extends cs_campus_index_view {
          }elseif ($params['selstatus'] == 8){
             $status_text = $this->_translator->getMessage('USER_USER');
          }elseif ($params['selstatus'] == 6){
-            $status_text = $this->_translator->getMessage('USER_CLOSED');
+            $status_text = $this->_translator->getMessage('USER_STATUS_REJECTED');
          }elseif ($params['selstatus'] == 1){
             $status_text = $this->_translator->getMessage('USER_REQUEST');
          }elseif ($params['selstatus'] == 2){
@@ -781,7 +781,7 @@ class cs_account_index_view extends cs_campus_index_view {
       if ( isset($selstatus) and $selstatus == 6 ) {
          $html .= ' selected="selected"';
       }
-      $html .= '>'.$this->_translator->getMessage('USER_CLOSED').'</option>'.LF;
+      $html .= '>'.$this->_translator->getMessage('USER_STATUS_REJECTED').'</option>'.LF;
 
       $html .= '      <option value="1"';
       if ( isset($selstatus) and $selstatus == 1 ) {
