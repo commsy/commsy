@@ -570,13 +570,21 @@ class cs_tag_manager extends cs_manager {
      $user = $item->getCreatorItem();
      $modificator = $item->getModificatorItem();
      $current_datetime = getCurrentDateTimeInMySQL();
+     $user_id = $user->getItemID();
+     if ( empty($user_id) ) {
+        $user_id = $this->_environment->getRootUserItemID();
+     }
+     $modificator_id = $modificator->getItemID();
+     if ( empty($modificator_id) ) {
+        $modificator_id = $this->_environment->getRootUserItemID();
+     }
 
      $query  = 'INSERT INTO '.$this->_db_table.' SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
+               'creator_id="'.encode(AS_DB,$user_id).'",'.
                'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+               'modifier_id="'.encode(AS_DB,$modificator_id).'",'.
                'modification_date="'.$current_datetime.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'"';
      $result = $this->_db_connector->performQuery($query);

@@ -163,7 +163,8 @@ class cs_disc_manager {
       if (!empty($this->_first_id)) {
          $target_file .= $this->_first_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('first_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('first_id is not set',E_USER_ERROR);
       }
       $target_file .= $new_room_id.'/'.$new_picture_name;
 
@@ -187,7 +188,12 @@ class cs_disc_manager {
       $first_folder_string = $this->_file_path_basic.$first_id;
       $first_folder = @opendir($first_folder_string);
       if (!$first_folder) {
-         mkdir($first_folder_string);
+         @mkdir($first_folder_string);
+         $first_folder = @opendir($first_folder_string);
+         if (!$first_folder) {
+            include_once('functions/error_functions.php');
+            trigger_error('can not make directory '.$first_folder_string.' - abort executing',E_USER_ERROR);
+         }
       }
       $second_folder_string = $first_folder_string.'/'.$second_id;
       $second_folder = @opendir($second_folder_string);

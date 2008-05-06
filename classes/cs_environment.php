@@ -1425,6 +1425,19 @@ class cs_environment {
       return $user_manager->getRootUser();
    }
 
+   function getRootUserItemID () {
+      $retour = NULL;
+      $root_user = $this->getRootUserItem();
+      if ( isset($root_user) ) {
+         $item_id = $root_user->getItemID();
+         if ( !empty($item_id) ) {
+            $retour = $item_id;
+         }
+         unset($root_user);
+      }
+      return $retour;
+   }
+
    function getPluginClass ($plugin) {
       $retour = NULL;
       if (empty($this->_plugin_class_array[$plugin])) {
