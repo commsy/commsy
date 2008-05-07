@@ -1162,12 +1162,7 @@ class cs_user_detail_view extends cs_detail_view {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
-      if ( $this->_environment->getCurrentModule() == 'user'
-           and
-           ( $current_user->isModerator()
-             or $current_user->getItemID() == $item->getItemID()
-           )
-         ) {
+      if ( $current_user->isModerator() or $current_user->getItemID() == $item->getItemID() ) {
 ############SQL-Statements reduzieren
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
