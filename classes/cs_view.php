@@ -1947,8 +1947,15 @@ class cs_view {
                $name = $file->getDisplayName();
             }
 
+            if ( !empty($args['target']) ) {
+               $target = ' target="'.$args['target'].'"';
+            } elseif ( !empty($args['newwin']) ) {
+               $target = ' target=_blank;';
+            } else {
+               $target = '';
+            }
             $source = $file->getUrl();
-            $image_text = '<a href="'.$source.'">'.$icon.$name.'</a>'.$kb;
+            $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
          }
       }
 
