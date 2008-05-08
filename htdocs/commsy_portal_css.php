@@ -44,96 +44,96 @@ if (!empty($_GET['cid'])) {
 
 /*General Settings */
 body {
-	margin: 0px;
-	padding: 0px;
-	font-family: Arial, "Nimbus Sans L", sans-serif;
-	font-size: 10pt;
-	background-color: white;
+   margin: 0px;
+   padding: 0px;
+   font-family: Arial, "Nimbus Sans L", sans-serif;
+   font-size: 10pt;
+   background-color: white;
 }
 
 img {
-	border: 0px;
+   border: 0px;
 }
 
 
 /*Hyperlinks*/
 a {
-	color: <?php echo($color['hyperlink'])?>;
-	text-decoration: none;
+   color: <?php echo($color['hyperlink'])?>;
+   text-decoration: none;
 }
 
 a:hover, a:active {
-	text-decoration: underline;
+   text-decoration: underline;
 }
 
 a.portal_link, a.portal_link:hover{
-	font-weight: bold;
-	color: <?php echo($color['myarea_section_title'])?>;
+   font-weight: bold;
+   color: <?php echo($color['myarea_section_title'])?>;
 }
 
 
 /* Font-Styles */
 .infocolor{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 .disabled, .key .infocolor{
-	color: <?php echo($color['disabled'])?>;
+   color: <?php echo($color['disabled'])?>;
 }
 
 .changed {
-	color: <?php echo($color['warning'])?>;
-	font-size: 8pt;
+   color: <?php echo($color['warning'])?>;
+   font-size: 8pt;
 }
 
 .infoborder{
-	border-top: 1px solid <?php echo($color['info_color'])?>;
-	padding-top:10px;
+   border-top: 1px solid <?php echo($color['info_color'])?>;
+   padding-top:10px;
 }
 
 .required {
-	color: <?php echo($color['warning'])?>;
-	font-weight: bold;
+   color: <?php echo($color['warning'])?>;
+   font-weight: bold;
 }
 
 .normal{
-	font-size: 10pt;
+   font-size: 10pt;
 }
 
 .desc, .desc_usage {
-	font-size: 8pt;
+   font-size: 8pt;
 }
 
 .bold{
-	font-size: 10pt;
-	font-weight: bold;
+   font-size: 10pt;
+   font-weight: bold;
 }
 
 .small_font{
-	font-weight:normal;
-	font-size:8pt;
+   font-weight:normal;
+   font-size:8pt;
 }
 
 .portal_system_link{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 
 /* Portal Layout */
 div.portal_tabs_frame {
-	position:relative;
-	margin:2px 5px 5px 6px;
-	padding:0px;
-	background:url(images/layout/tab_menu_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-	background-color: <?php echo($color['tabs_background'])?>;
+   position:relative;
+   margin:2px 5px 5px 6px;
+   padding:0px;
+   background:url(images/layout/tab_menu_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background-color: <?php echo($color['tabs_background'])?>;
 }
 
 div.tabs {
-	position:relative;
-	width: 100%;
-	margin:0px;
-	padding:4px 0px 3px 0px;
-	border-bottom: 1px solid <?php echo($color['tabs_title'])?>;
+   position:relative;
+   width: 100%;
+   margin:0px;
+   padding:4px 0px 3px 0px;
+   border-bottom: 1px solid <?php echo($color['tabs_title'])?>;
 }
 
 div.portal_content{
@@ -459,13 +459,3 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
    padding:4px 6px 3px 3px;
    text-decoration:none;
 }
-
-
-
-
-
-
-
-
-
-

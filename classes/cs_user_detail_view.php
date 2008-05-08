@@ -1162,19 +1162,25 @@ class cs_user_detail_view extends cs_detail_view {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
-      if ( $current_user->isModerator() or $current_user->getItemID() == $item->getItemID() ) {
+      if ( $current_user->isModerator()
+           or $current_user->getItemID() == $item->getItemID()
+         ) {
 ############SQL-Statements reduzieren
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= $this->_getSubItemsAsHTML($item);
       }
       unset($current_user);
-      if ($rubric != CS_GROUP_TYPE
-      and $rubric != CS_USER_TYPE
-      and $rubric != CS_DISCUSSION_TYPE
-      and $this->_environment->getCurrentModule() !='account'){
+      if ( $rubric != CS_GROUP_TYPE
+          and $rubric != CS_USER_TYPE
+          and $rubric != CS_DISCUSSION_TYPE
+          and $this->_environment->getCurrentModule() !='account'
+         ) {
          $html .= $this->_getAnnotationsAsHTML();
-      } elseif ($rubric == CS_DISCUSSION_TYPE and !$item->isClosed() and $this->_with_modifying_actions ) {
+      } elseif ( $rubric == CS_DISCUSSION_TYPE
+                 and !$item->isClosed()
+                 and $this->_with_modifying_actions
+               ) {
          $html .= $this->_getDiscussionFormAsHTML();
       }
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;

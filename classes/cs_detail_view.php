@@ -1762,23 +1762,23 @@ class cs_detail_view extends cs_view {
       }
       $html .= '>'.LF;
       foreach ($data as $value) {
-         $html .= $prefix.'   <tr>'."\n";
-         $html .= $prefix.'      <td class="key">'."\n";
+         $html .= $prefix.'   <tr>'.LF;
+         $html .= $prefix.'      <td class="key">'.LF;
          if ( !empty($value[0]) ) {
-            $html .= $prefix.'         '.$value[0].':&nbsp;'."\n";
+            $html .= $prefix.'         '.$value[0].':&nbsp;'.LF;
          } else {
             $html .= $prefix.'         &nbsp;';
          }
-         $html .= $prefix.'      </td><td class="value">'."\n";
+         $html .= $prefix.'      </td><td class="value">'.LF;
          if ( !empty($value[1]) ) {
             if ( !empty($value[0])) {
-               $html .= $prefix.'         '.$value[1]."\n";
+               $html .= $prefix.'         '.$value[1].LF;
             }
          }
-         $html .= $prefix.'      </td>'."\n";
-         $html .= $prefix.'   </tr>'."\n";
+         $html .= $prefix.'      </td>'.LF;
+         $html .= $prefix.'   </tr>'.LF;
       }
-      $html .= $prefix.'</table>'."\n";
+      $html .= $prefix.'</table>'.LF;
       return $html;
    }
 
