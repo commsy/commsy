@@ -73,6 +73,7 @@ class cs_etchat_manager extends cs_manager {
       $sql = 'SELECT etchat_username AS count FROM etchat_user WHERE etchat_user_id="'.$user->getItemID().'";';
       $result = $this->_db_connector->performQuery($sql);
       if ( empty($result[0])
+           or empty($result[0]['etchat_username'])
            or $result[0]['etchat_username'] != htmlentities($user->getFullname())
          ) {
          // no -> enter user
