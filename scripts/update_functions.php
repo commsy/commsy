@@ -23,6 +23,10 @@
 //    along with CommSy.
 include_once('../../functions/misc_functions.php');
 
+function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
+   return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
+}
+
 function init_progress_bar($count) {
    echo "<br />Total entries to be processed: ".$count."\n";
    echo "<br />|....................................................................................................|100%"."\n";
@@ -69,9 +73,9 @@ return $retour;
  *
  * @param   $value
 
-	function pr ($value) {
-		echo('<pre>');
-		print_r($value);
-		echo('</pre>'."\n\n");
-	}*/
+   function pr ($value) {
+      echo('<pre>');
+      print_r($value);
+      echo('</pre>'."\n\n");
+   }*/
 ?>
