@@ -125,23 +125,24 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronPageImpression();
       $cron_array[] = $this->_cronLog();
       $cron_array[] = $this->_cronRoomActivity();
-      #$cron_array[] = $this->_cronReallyDelete();
+      $cron_array[] = $this->_cronReallyDelete();
+      $cron_array[] = $this->_cronRemoveTempExportDirectory();
       return $cron_array;
    }
 
    function _cronRemoveTempExportDirectory () {
       global $export_temp_folder;
-      if(!isset($export_temp_folder)) {
-           $export_temp_folder = 'var/temp/zip_export';
+      if ( !isset($export_temp_folder) ) {
+         $export_temp_folder = 'var/temp/zip_export';
       }
       $handle = opendir($export_temp_folder);
       //delete sourcefiles from harddisk
       while (false !== ($dir = readdir($handle))) {
-           if (($dir != '.') and ($dir != '..')) {
-              if ( is_dir('./'.$export_temp_folder.'/'.$dir) ) {
-                 $handle2 = opendir('./'.$export_temp_folder.'/'.$dir);
+         if (($dir != '.') and ($dir != '..')) {
+            if ( is_dir('./'.$export_temp_folder.'/'.$dir) ) {
+               $handle2 = opendir('./'.$export_temp_folder.'/'.$dir);
                while (false !== ($file = readdir($handle2))) {
-                    if (($file != '.') and ($file != '..')) {
+                  if (($file != '.') and ($file != '..')) {
                      unlink('./'.$export_temp_folder.'/'.$dir.'/'.$file);
                   }
                }
@@ -304,24 +305,29 @@ class cs_server_item extends cs_guide_item {
    function _cronReallyDelete () {
       $cron_array = array();
       $cron_array['title'] = 'delete items';
-      $cron_array['description'] = 'delete items older than 1 month deleted in CommSy';
+      $cron_array['description'] = 'delete items older than 1 month';
       $cron_array['success'] = true;
       $cron_array['success_text'] = '';
 
       $item_type_array = array();
+      $item_type_array[] = CS_ANNOTATION_TYPE;
       $item_type_array[] = CS_ANNOUNCEMENT_TYPE;
       $item_type_array[] = CS_DATE_TYPE;
       $item_type_array[] = CS_DISCUSSION_TYPE;
+      #$item_type_array[] = CS_DISCARTICLE_TYPE; // NO NO NO -> because of closed discussions
+      $item_type_array[] = CS_FILE_TYPE; // include item_link_file
+      $item_type_array[] = CS_ITEM_TYPE;
       $item_type_array[] = CS_LABEL_TYPE;
-      $item_type_array[] = CS_MATERIAL_TYPE;
-      $item_type_array[] = CS_TODO_TYPE;
-      $item_type_array[] = CS_ANNOTATION_TYPE;
-      #$item_type_array[] = CS_DISCARTICLE_TYPE;
-      $item_type_array[] = CS_SECTION_TYPE;
       $item_type_array[] = CS_LINK_TYPE;
       $item_type_array[] = CS_LINKITEM_TYPE;
-      $item_type_array[] = CS_ITEM_TYPE;
-      $item_type_array[] = CS_FILE_TYPE;
+      $item_type_array[] = CS_MATERIAL_TYPE;
+      #$item_type_array[] = CS_PORTAL_TYPE; // not implemented yet because than all data (rooms, data in rooms) should be deleted too
+      #$item_type_array[] = CS_ROOM_TYPE; // not implemented yet because than all data in rooms should be deleted too
+      $item_type_array[] = CS_SECTION_TYPE;
+      $item_type_array[] = CS_TAG_TYPE;
+      $item_type_array[] = CS_TAG2TAG_TYPE;
+      $item_type_array[] = CS_TODO_TYPE;
+      #$item_type_array[] = CS_USER_TYPE; // NO NO NO -> because of old entries of user
 
       foreach ($item_type_array as $item_type) {
          $manager = $this->_environment->getManager($item_type);

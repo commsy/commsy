@@ -125,17 +125,17 @@ class cs_file_manager extends cs_manager {
       $this->_mime['dot']     = 'application/msword';
       $this->_mime['rtf']     = 'application/rtf';
 
-		// open office
-		$this->_mime['odf']     = 'application/smath';
-		$this->_mime['odg']     = 'application/sdraw';
-		$this->_mime['ods']     = 'application/scalc';
-		$this->_mime['odp']     = 'application/simpress';
-		$this->_mime['odt']     = 'application/swriter';
+      // open office
+      $this->_mime['odf']     = 'application/smath';
+      $this->_mime['odg']     = 'application/sdraw';
+      $this->_mime['ods']     = 'application/scalc';
+      $this->_mime['odp']     = 'application/simpress';
+      $this->_mime['odt']     = 'application/swriter';
 
-	   // Flash / Shockwave
+      // Flash / Shockwave
       $this->_mime['swf']      = 'application/x-shockwave-flash';
 
-	   $this->_mime['js'] = 'application/x-javascript';
+      $this->_mime['js'] = 'application/x-javascript';
       $this->_type = 'file';
    }
 
@@ -178,8 +178,8 @@ class cs_file_manager extends cs_manager {
    function updateHasHTML($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-     	$query = 'UPDATE '.$this->_db_table.' SET'.
-	       	   ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"'.
+        $query = 'UPDATE '.$this->_db_table.' SET'.
+                ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"'.
                     ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -195,23 +195,23 @@ class cs_file_manager extends cs_manager {
    function saveItem($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-     	$query = 'INSERT INTO '.$this->_db_table.' SET'.
-		         ' context_id="'.encode(AS_DB,$file_item->getContextID()).'",'.
-	    	      ' creation_date="'.getCurrentDateTimeInMySQL().'", '.
-	       	   ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
-	       	   ' filename="'.encode(AS_DB,$file_item->getFileName()).'", ' .
-	       	   ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ' .
-	       	   ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"';
-	   unset($current_user);
+        $query = 'INSERT INTO '.$this->_db_table.' SET'.
+               ' context_id="'.encode(AS_DB,$file_item->getContextID()).'",'.
+                ' creation_date="'.getCurrentDateTimeInMySQL().'", '.
+                ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
+                ' filename="'.encode(AS_DB,$file_item->getFileName()).'", ' .
+                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ' .
+                ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"';
+      unset($current_user);
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
          $file_item->setFileID($result);
          $saved = $this->_saveOnDisk($file_item);
          if ($saved) {
-		      $query = 'UPDATE '.$this->_db_table.' SET'.
-		               ' size="'.encode(AS_DB,filesize($file_item->getDiskFileName())).'"'.
-		               ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
-		      $result = $this->_db_connector->performQuery($query);
+            $query = 'UPDATE '.$this->_db_table.' SET'.
+                     ' size="'.encode(AS_DB,filesize($file_item->getDiskFileName())).'"'.
+                     ' WHERE files_id="'.encode(AS_DB,$file_item->getFileID()).'"';
+            $result = $this->_db_connector->performQuery($query);
          }
        } else {
           include_once('functions/error_functions.php');
@@ -221,40 +221,40 @@ class cs_file_manager extends cs_manager {
        return $saved;
     }
 
-	function _saveOnDisk($file_item) {
-	   $success = false;
-		$tempname = $file_item->_getTempName();
-		if ( !empty($tempname) ) {
-			$disc_manager = $this->_environment->getDiscManager();
-			$disc_manager->setContextID($file_item->getContextID());
-			$portal_id = $file_item->getPortalID();
-			if ( isset($portal_id) and !empty($portal_id) ) {
-				$disc_manager->setPortalID($portal_id);
-			}
-			// Currently, the file manager does not unlink a file here, because it is also used for copying files when copying material between rooms.
-			$success = $disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(),false);
-			if (!$success) {
-	         // Fehlerbehandlung jetzt in RUBRIK_clipboard_index.php
-				// include_once('functions/error_functions.php');
-				// trigger_error('Filemanager: Could not save (temporary) file: "'.$file_item->_getTempName().'" to disk as: "'.$file_item->getDiskFileName().'"', E_USER_ERROR);
-			} else {
-				if (function_exists('gd_info')) {
-					$size_info = @getImageSize($file_item->getDiskFileName());
-					if (is_array($size_info)) {
-						if ($size_info[0] > $this->_MAX_PICTURE_SIDE OR $size_info[1] > $this->_MAX_PICTURE_SIDE) {
-							//create Filename: origname.xxx -> origname_thumb.png
-							$destination = $this->_create_thumb_name_from_image_name($file_item->getDiskFileNameWithoutFolder());
-							$this->_miniatur($file_item->getDiskFileName(),$destination);
-						}
-					}
-				}
-			}
-			$disc_manager->setContextID($this->_environment->getCurrentContextID());
-		}
-		unset($file_item);
-		unset($disc_manager);
+   function _saveOnDisk($file_item) {
+      $success = false;
+      $tempname = $file_item->_getTempName();
+      if ( !empty($tempname) ) {
+         $disc_manager = $this->_environment->getDiscManager();
+         $disc_manager->setContextID($file_item->getContextID());
+         $portal_id = $file_item->getPortalID();
+         if ( isset($portal_id) and !empty($portal_id) ) {
+            $disc_manager->setPortalID($portal_id);
+         }
+         // Currently, the file manager does not unlink a file here, because it is also used for copying files when copying material between rooms.
+         $success = $disc_manager->copyFile($tempname, $file_item->getDiskFileNameWithoutFolder(),false);
+         if (!$success) {
+            // Fehlerbehandlung jetzt in RUBRIK_clipboard_index.php
+            // include_once('functions/error_functions.php');
+            // trigger_error('Filemanager: Could not save (temporary) file: "'.$file_item->_getTempName().'" to disk as: "'.$file_item->getDiskFileName().'"', E_USER_ERROR);
+         } else {
+            if (function_exists('gd_info')) {
+               $size_info = @getImageSize($file_item->getDiskFileName());
+               if (is_array($size_info)) {
+                  if ($size_info[0] > $this->_MAX_PICTURE_SIDE OR $size_info[1] > $this->_MAX_PICTURE_SIDE) {
+                     //create Filename: origname.xxx -> origname_thumb.png
+                     $destination = $this->_create_thumb_name_from_image_name($file_item->getDiskFileNameWithoutFolder());
+                     $this->_miniatur($file_item->getDiskFileName(),$destination);
+                  }
+               }
+            }
+         }
+         $disc_manager->setContextID($this->_environment->getCurrentContextID());
+      }
+      unset($file_item);
+      unset($disc_manager);
       return $success;
-	}
+   }
 
 
    function setIDArrayLimit($id_array) {
@@ -308,7 +308,7 @@ class cs_file_manager extends cs_manager {
          $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$this->_room_limit).'"';
       }
       if ( !empty($this->_limit_newer) ) {
-      	 $query .= ' AND '.$this->_db_table.'.creation_date>"'.encode(AS_DB,$this->_limit_newer).'"';
+          $query .= ' AND '.$this->_db_table.'.creation_date>"'.encode(AS_DB,$this->_limit_newer).'"';
       }
 
       if (isset($this->_order)) {
@@ -369,7 +369,7 @@ class cs_file_manager extends cs_manager {
          trigger_error('Problems deleting files from query: "'.$query.'"',E_USER_WARNING);
       } else {
          // Uploaded files are never deleted from harddisk...
-			// If we want to do this, we can unlink files here and delete the db record really
+         // If we want to do this, we can unlink files here and delete the db record really
       }
    }
 
@@ -392,64 +392,74 @@ class cs_file_manager extends cs_manager {
       unset($file_item);
    }
 
-   function _miniatur($pict, $dest_pict){
-		$image_in_info = GetImageSize ($pict);
-		$x_orig= $image_in_info[0];
-		$y_orig= $image_in_info[1];
-		$file_type = $image_in_info[2];
-
-		//Depending of image format, use the corrct function to read the image
-		switch ($file_type) {
-			case 1: //Gif
-				$image_in = ImageCreateFromGIF ($pict);
-				break;
-			case 2: //Jpeg
-				$image_in = ImageCreateFromJPEG ($pict);
-				break;
-			case 3: //Png
-				$image_in = ImageCreateFromPNG ($pict);
-		}
-
-		if (isset($image_in)) {
-
-	        //scale the image- the longest side is _MAX_PICTURE_SIDE px long
-			$scale = $this->_MAX_PICTURE_SIDE/$x_orig;
-			if ($x_orig < $y_orig) {
-				$scale = $this->_MAX_PICTURE_SIDE/$y_orig;
-			}
-
-			$horizontal=round($x_orig*$scale);
-			$vertikal=round($y_orig*$scale);
-
-			$x0=0;
-			$y0=0;
-			$xw=$horizontal;
-			$yw=$vertikal;
-
-			//create pitput picture
-			if ($file_type != 1) { //all but gif
-				$image_out = imagecreatetruecolor($horizontal, $vertikal);
-			} else {
-				$image_out = imagecreate($horizontal, $vertikal);
-			}
-			$color = imagecolorallocate( $image_out, 255, 128, 255); //magenta
-			imagefill($image_out, 0, 0, $color);
-			imagecolortransparent ( $image_out , $color);
-			imagecopyresampled ($image_out, $image_in, $x0, $y0, 0, 0, $xw, $yw, $x_orig, $y_orig);
-		    $disc_manager = $this->_environment->getDiscManager();
-			ImagePNG($image_out, $disc_manager->getFilePath().$dest_pict);
-			imagedestroy($image_in);
-			imagedestroy($image_out);
-		}
+   private function _deleteReallyByFileIDOnlyDB ($file_id) {
+      $query = 'DELETE FROM '.$this->_db_table.
+               ' WHERE files_id="'.encode(AS_DB,$file_id).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting links of a file item from query: "'.$query.'"',E_USER_WARNING);
+      }
    }
 
-	//create Filename: origname.xxx -> origname_thumb.png
-	function _create_thumb_name_from_image_name($name) {
-	   $thumb_name = $name;
-		$point_position = strrpos($thumb_name,'.');
-		$thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , strlen($thumb_name));
-		return $thumb_name;
-	}
+   function _miniatur($pict, $dest_pict){
+      $image_in_info = GetImageSize ($pict);
+      $x_orig= $image_in_info[0];
+      $y_orig= $image_in_info[1];
+      $file_type = $image_in_info[2];
+
+      //Depending of image format, use the corrct function to read the image
+      switch ($file_type) {
+         case 1: //Gif
+            $image_in = ImageCreateFromGIF ($pict);
+            break;
+         case 2: //Jpeg
+            $image_in = ImageCreateFromJPEG ($pict);
+            break;
+         case 3: //Png
+            $image_in = ImageCreateFromPNG ($pict);
+      }
+
+      if (isset($image_in)) {
+
+           //scale the image- the longest side is _MAX_PICTURE_SIDE px long
+         $scale = $this->_MAX_PICTURE_SIDE/$x_orig;
+         if ($x_orig < $y_orig) {
+            $scale = $this->_MAX_PICTURE_SIDE/$y_orig;
+         }
+
+         $horizontal=round($x_orig*$scale);
+         $vertikal=round($y_orig*$scale);
+
+         $x0=0;
+         $y0=0;
+         $xw=$horizontal;
+         $yw=$vertikal;
+
+         //create pitput picture
+         if ($file_type != 1) { //all but gif
+            $image_out = imagecreatetruecolor($horizontal, $vertikal);
+         } else {
+            $image_out = imagecreate($horizontal, $vertikal);
+         }
+         $color = imagecolorallocate( $image_out, 255, 128, 255); //magenta
+         imagefill($image_out, 0, 0, $color);
+         imagecolortransparent ( $image_out , $color);
+         imagecopyresampled ($image_out, $image_in, $x0, $y0, 0, 0, $xw, $yw, $x_orig, $y_orig);
+          $disc_manager = $this->_environment->getDiscManager();
+         ImagePNG($image_out, $disc_manager->getFilePath().$dest_pict);
+         imagedestroy($image_in);
+         imagedestroy($image_out);
+      }
+   }
+
+   //create Filename: origname.xxx -> origname_thumb.png
+   function _create_thumb_name_from_image_name($name) {
+      $thumb_name = $name;
+      $point_position = strrpos($thumb_name,'.');
+      $thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , strlen($thumb_name));
+      return $thumb_name;
+   }
 
    function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='') {
       $retour = array();
@@ -539,45 +549,57 @@ class cs_file_manager extends cs_manager {
       return $retour;
    }
 
-	function deleteReallyOlderThanOneMonth () {
-		$disc_manager = $this->_environment->getDiscManager();
-		$retour = true;
-		$days = 30;
-		$timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-		$query = 'SELECT files_id, context_id, filename FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
+   function deleteReallyOlderThanOneMonth () {
+      $disc_manager = $this->_environment->getDiscManager();
+      $retour = true;
+      $days = 30;
+      $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
+
+      // include item_link_file: BEGIN
+      $query = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' INNER JOIN `item_link_file` ON '.$this->_db_table.'.files_id = item_link_file.file_id WHERE (item_link_file.deletion_date IS NOT NULL and item_link_file.deletion_date < "'.$timestamp.'") OR ('.$this->_db_table.'.deletion_date IS NOT NULL and '.$this->_db_table.'.deletion_date < "'.$timestamp.'");';
+      // include item_link_file: END
+
       $result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-			include_once('functions/error_functions.php');
-			trigger_error('Problem selecting items from query: "'.$query.'"',E_USER_ERROR);
-			$retour = false;
-		} else {
-			$retour = $retour and parent::deleteReallyOlderThanOneMonth();
-			foreach ($result as $query_result) {
-				$query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problem selecting items from query: "'.$query.'"',E_USER_ERROR);
+         $retour = false;
+      } else {
+         $retour = $retour and parent::deleteReallyOlderThanOneMonth();
+         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
+         foreach ($result as $query_result) {
+
+            // include item_link_file: BEGIN
+            $link_item_file_manager->deleteByFileReally($query_result['files_id']);
+            $this->_deleteReallyByFileIDOnlyDB($query_result['files_id']);
+            // include item_link_file: END
+
+            $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
             $result2 = $this->_db_connector->performQuery($query2);
-				if ( !isset($result2) ) {
-					include_once('functions/error_functions.php');trigger_error('Problem selecting items from query: "'.$query.'"',E_USER_ERROR);
-					$retour = false;
-				} elseif ( !empty($result2[0]) ) {
-					$query_result2 = $result2[0];
-					if (!empty($query_result2['portal_id'])) {
-						$filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
-						$disc_manager->setPortalID($query_result2['portal_id']);
-						$disc_manager->setContextID($query_result['context_id']);
-						if ($disc_manager->existsFile($filename)) {
-							$retour = $retour and $disc_manager->unlinkFile($filename);
-						}
-					}
-				}
-			}
-		}
-		return $retour;
-	}
+            if ( !isset($result2) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problem selecting items from query: "'.$query.'"',E_USER_ERROR);
+               $retour = false;
+            } elseif ( !empty($result2[0]) ) {
+               $query_result2 = $result2[0];
+               if (!empty($query_result2['portal_id'])) {
+                  $filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
+                  $disc_manager->setPortalID($query_result2['portal_id']);
+                  $disc_manager->setContextID($query_result['context_id']);
+                  if ($disc_manager->existsFile($filename)) {
+                     $retour = $retour and $disc_manager->unlinkFile($filename);
+                  }
+               }
+            }
+         }
+      }
+      return $retour;
+   }
 
    public function updateScanned($file_item) {
       $saved = false;
-     	$query = 'UPDATE '.$this->_db_table.' SET'.
-	       	   ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
+        $query = 'UPDATE '.$this->_db_table.' SET'.
+                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
                ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
