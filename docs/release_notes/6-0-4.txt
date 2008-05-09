@@ -2,7 +2,6 @@ CommSy Version 6.0.4
 
 Features (Nummern von SourceForge):
 -----
-1960857		Kontextlose Dateien löschen
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/
 
 
