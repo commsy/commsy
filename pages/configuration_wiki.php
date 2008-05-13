@@ -180,6 +180,38 @@ else {
          } else {
             $item->unsetWikiShowCommSyLogin();
          }
+         
+         //  new features
+         if ( isset($_POST['enable_fckeditor']) ) {
+            $item->setWikiEnableFCKEditor();
+         } else {
+            $item->unsetWikiEnableFCKEditor();
+         }
+         
+         if ( isset($_POST['enable_sitemap']) ) {
+            $item->setWikiEnableSitemap();
+         } else {
+            $item->unsetWikiEnableSitemap();
+         }
+         
+         if ( isset($_POST['enable_statistic']) ) {
+            $item->setWikiEnableStatistic();
+         } else {
+            $item->unsetWikiEnableStatistic();
+         }
+         
+         if ( isset($_POST['enable_search']) ) {
+            $item->setWikiEnableSearch();
+         } else {
+            $item->unsetWikiEnableSearch();
+         }
+         
+         if ( isset($_POST['enable_rss']) ) {
+            $item->setWikiEnableRss();
+         } else {
+            $item->unsetWikiEnableRss();
+         }
+         // /new features
 
          // section edit
          if ( isset($_POST['wiki_section_edit']) ) {

@@ -2152,6 +2152,92 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   //  new features
+   function setWikiEnableFCKEditor(){
+      $this->_addExtra('WIKIENABLEFCKEDITOR','1');
+   }
+
+   function unsetWikiEnableFCKEditor(){
+      $this->_addExtra('WIKIENABLEFCKEDITOR','0');
+   }
+
+   function WikiEnableFCKEditor(){
+      if ( $this->_issetExtra('WIKIENABLEFCKEDITOR') ) {
+         $retour = $this->_getExtra('WIKIENABLEFCKEDITOR');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableSitemap(){
+      $this->_addExtra('WIKIENABLESITEMAP','1');
+   }
+
+   function unsetWikiEnableSitemap(){
+      $this->_addExtra('WIKIENABLESITEMAP','0');
+   }
+
+   function WikiEnableSitemap(){
+      if ( $this->_issetExtra('WIKIENABLESITEMAP') ) {
+         $retour = $this->_getExtra('WIKIENABLESITEMAP');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableStatistic(){
+      $this->_addExtra('WIKIENABLESTATISTIC','1');
+   }
+
+   function unsetWikiEnableStatistic(){
+      $this->_addExtra('WIKIENABLESTATISTIC','0');
+   }
+
+   function WikiEnableStatistic(){
+      if ( $this->_issetExtra('WIKIENABLESTATISTIC') ) {
+         $retour = $this->_getExtra('WIKIENABLESTATISTIC');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableSearch(){
+      $this->_addExtra('WIKIENABLESEARCH','1');
+   }
+
+   function unsetWikiEnableSearch(){
+      $this->_addExtra('WIKIENABLESEARCH','0');
+   }
+
+   function WikiEnableSearch(){
+      if ( $this->_issetExtra('WIKIENABLESEARCH') ) {
+         $retour = $this->_getExtra('WIKIENABLESEARCH');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableRss(){
+      $this->_addExtra('WIKIENABLERSS','1');
+   }
+
+   function unsetWikiEnableRss(){
+      $this->_addExtra('WIKIENABLERSS','0');
+   }
+
+   function WikiEnableRss(){
+      if ( $this->_issetExtra('WIKIENABLERSS') ) {
+         $retour = $this->_getExtra('WIKIENABLERSS');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   // /new features
 
    function setWikiEditPW($pw){
       $this->_addExtra('WIKIEDITPW',$pw);

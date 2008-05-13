@@ -120,6 +120,15 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_form->addCheckbox('wikilink2',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE'),'');
       }
       $this->_form->addCheckbox('show_login_box',1,'',getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX'),getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE'),'');
+        
+      //  new features
+      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),'');
+      $this->_form->addCheckbox('enable_sitemap',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE'),'');
+      $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
+      $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),'');
+      $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
+      
+      // /new features
 
       // buttons
       if ( isset($this->_item) and $this->_item->existWiki() )  {
