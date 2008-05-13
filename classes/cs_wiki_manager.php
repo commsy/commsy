@@ -190,6 +190,24 @@ class cs_wiki_manager extends cs_manager {
          $str .= '@include_once("$FarmD/cookbook/sectionedit.php");'.LF;
       }
 
+      // Additional features for mediweb - not activated by default.
+      // modify in comsy_config.php to activate.
+      $str .= LF.'$SHOW_FCKEDITOR = "0";'.LF;
+      $str .= '$SHOW_SEARCH = "0";'.LF;
+      $str .= '$SHOW_SITEMAP = "0";'.LF.LF;
+      
+      $str .= "include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
+      $str .= "include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
+      $str .= '$SHOW_STATISTIC_ACTION = "0";'.LF.LF;
+
+      $str .= '$EnableRssLink  = 0;'.LF;
+      $str .= '$EnableSitewideFeed = 1;'.LF;
+      $str .= '$EnableAtomLink = 0;'.LF;
+      $str .= 'include_once("$FarmD/cookbook/feedlinks.php");'.LF;
+      $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
+      $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+      $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF;
+      
       $str .= '?>';
 
       file_put_contents('commsy_config.php',$str);
