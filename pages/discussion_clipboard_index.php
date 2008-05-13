@@ -168,10 +168,14 @@ $communities = $community_manager->getSortedItemList($mat_roomIds,'title');
 $private_room_manager = $environment->getPrivateRoomManager();
 $private_rooms = $private_room_manager->getSortedItemList($mat_roomIds,'title');
 
+$group_room_manager = $environment->getGroupRoomManager();
+$group_rooms = $group_room_manager->getSortedItemList($mat_roomIds,'title');
+
 $rooms = new cs_list();
 $rooms->addList($projects);
 $rooms->addList($communities);
 $rooms->addList($private_rooms);
+$rooms->addList($group_rooms);
 
 
 // Termine des Gemeinschaftsraumes
