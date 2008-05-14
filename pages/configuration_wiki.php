@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -211,6 +211,31 @@ else {
          } else {
             $item->unsetWikiEnableRss();
          }
+         
+         if ( isset($_POST['enable_swf']) ) {
+            $item->setWikiEnableSwf();
+         } else {
+            $item->unsetWikiEnableSwf();
+         }
+         
+         if ( isset($_POST['enable_wmplayer']) ) {
+            $item->setWikiEnableWmplayer();
+         } else {
+            $item->unsetWikiEnableWmplayer();
+         }
+         
+         if ( isset($_POST['enable_quicktime']) ) {
+            $item->setWikiEnableQuicktime();
+         } else {
+            $item->unsetWikiEnableQuicktime();
+         }
+         
+         if ( isset($_POST['enable_youtube_google_vimeo']) ) {
+            $item->setWikiEnableYoutubeGoogleVimeo();
+         } else {
+            $item->unsetWikiEnableYoutubeGoogleVimeo();
+         }
+         
          // /new features
 
          // section edit

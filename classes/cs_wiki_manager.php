@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -207,6 +207,24 @@ class cs_wiki_manager extends cs_manager {
       $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
       $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
       $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF;
+      
+      if($item->WikiEnableSwf() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF.LF;
+      }
+      
+      if($item->WikiEnableWmplayer() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/wmplayer.php");'.LF;
+        $str .= "\$UploadExts['wma'] = 'audio/wma';".LF;
+        $str .= "\$UploadExts['wmv'] = 'video/wmv';".LF.LF;
+      }
+      
+      if($item->WikiEnableQuicktime() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/quicktime.php");'.LF.LF;
+      }
+      
+      if($item->WikiEnableYoutubeGoogleVimeo() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/swf-sites2.php");'.LF.LF;
+      }
       
       $str .= '?>';
 

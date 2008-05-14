@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -127,6 +127,12 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
       $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),'');
       $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
+      
+      // already available features - added to form
+      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),'');
+      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'');
+      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'');
+      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');  
       
       // /new features
 

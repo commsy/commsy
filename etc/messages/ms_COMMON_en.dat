@@ -154,6 +154,16 @@ $message["COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE"]["en"] = "Enable a sear
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS"]["en"] = "RSS";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE"]["en"] = "Enable an RSS-feed for the Wiki";
 
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF"]["de"] = "SWF";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE"]["de"] = "Enable embedding of SWF-files";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER"]["de"] = "WMP";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE"]["de"] = "Enable Embedding of WMP-files";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME"]["de"] = "Quicktime";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE"]["de"] = "Enable Embedding of Quicktime-files";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO"]["de"] = "Youtube, Google-Video, Vimeo";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE"]["de"] = "Enable Embedding of Youtube-, Google-Video- & Vimeo-files";
+
+
 $message["COMMON_CONFINGURATION_ARCHIVE"]["en"] = "Archive workspace / set up template";
 $message["COMMON_CONFINGURATION_ARCHIVE_SHORT"]["en"] = "Archive workspace / template";
 $message["COMMON_CONTENT"]["en"] = "Content";

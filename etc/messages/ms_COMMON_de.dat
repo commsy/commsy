@@ -154,6 +154,15 @@ $message["COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE"]["de"] = "Suchfeld im W
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS"]["de"] = "RSS";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE"]["de"] = "RSS-Feed für das Wiki benutzen";
 
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF"]["de"] = "SWF";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE"]["de"] = "Einbindung von SWF-Dateien";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER"]["de"] = "WMP";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE"]["de"] = "Einbindung von WMP-Dateien";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME"]["de"] = "Quicktime";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE"]["de"] = "Einbindung von Quicktime-Dateien";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO"]["de"] = "Youtube, Google-Video, Vimeo";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE"]["de"] = "Einbindung von Youtube-, Google-Video- & Vimeo-Dateien";
+
 $message["COMMON_CONFINGURATION_ARCHIVE"]["de"] = "Raum archivieren / Vorlage erstellen";
 $message["COMMON_CONFINGURATION_ARCHIVE_SHORT"]["de"] = "Raum archivieren / Vorlage";
 $message["COMMON_CONTENT"]["de"] = "Inhalt";

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -2237,6 +2237,75 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setWikiEnableSwf(){
+      $this->_addExtra('WIKIENABLESWF','1');
+   }
+
+   function unsetWikiEnableSwf(){
+      $this->_addExtra('WIKIENABLESWF','0');
+   }
+
+   function WikiEnableSwf(){
+      if ( $this->_issetExtra('WIKIENABLESWF') ) {
+         $retour = $this->_getExtra('WIKIENABLESWF');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableWmplayer(){
+      $this->_addExtra('WIKIENABLEWMPLAYER','1');
+   }
+
+   function unsetWikiEnableWmplayer(){
+      $this->_addExtra('WIKIENABLEWMPLAYER','0');
+   }
+
+   function WikiEnableWmplayer(){
+      if ( $this->_issetExtra('WIKIENABLEWMPLAYER') ) {
+         $retour = $this->_getExtra('WIKIENABLEWMPLAYER');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableQuicktime(){
+      $this->_addExtra('WIKIENABLEQUICKTIME','1');
+   }
+
+   function unsetWikiEnableQuicktime(){
+      $this->_addExtra('WIKIENABLEQUICKTIME','0');
+   }
+
+   function WikiEnableQuicktime(){
+      if ( $this->_issetExtra('WIKIENABLEQUICKTIME') ) {
+         $retour = $this->_getExtra('WIKIENABLEQUICKTIME');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableYoutubeGoogleVimeo(){
+      $this->_addExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO','1');
+   }
+
+   function unsetWikiEnableYoutubeGoogleVimeo(){
+      $this->_addExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO','0');
+   }
+
+   function WikiEnableYoutubeGoogleVimeo(){
+      if ( $this->_issetExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO') ) {
+         $retour = $this->_getExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
    // /new features
 
    function setWikiEditPW($pw){
