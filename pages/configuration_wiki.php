@@ -212,6 +212,12 @@ else {
             $item->unsetWikiEnableRss();
          }
          
+         if ( isset($_POST['enable_calendar']) ) {
+            $item->setWikiEnableCalendar();
+         } else {
+            $item->unsetWikiEnableCalendar();
+         }
+         
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();
          } else {

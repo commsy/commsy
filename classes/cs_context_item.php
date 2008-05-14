@@ -2238,6 +2238,23 @@ class cs_context_item extends cs_item {
       return $retour;
    }
    
+   function setWikiEnableCalendar(){
+      $this->_addExtra('WIKIENABLECALENDAR','1');
+   }
+
+   function unsetWikiEnableCalendar(){
+      $this->_addExtra('WIKIENABLECALENDAR','0');
+   }
+
+   function WikiEnableCalendar(){
+      if ( $this->_issetExtra('WIKIENABLECALENDAR') ) {
+         $retour = $this->_getExtra('WIKIENABLECALENDAR');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');
    }

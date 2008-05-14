@@ -206,7 +206,11 @@ class cs_wiki_manager extends cs_manager {
       $str .= 'include_once("$FarmD/cookbook/feedlinks.php");'.LF;
       $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
       $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
-      $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF;
+      $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF.LF;
+      
+      $str .= 'include_once("$FarmD/cookbook/wikilog.php");'.LF;
+      $str .= 'include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
+      $str .= '$SHOW_CALENDAR = "' . $item->WikiEnableCalendar() . '";'.LF.LF;
       
       if($item->WikiEnableSwf() == "1"){
         $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF.LF;

@@ -128,6 +128,8 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
       $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),'');
       $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
+      $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
+      
       
       // already available features - added to form
       $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),'');
