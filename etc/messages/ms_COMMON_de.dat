@@ -155,6 +155,8 @@ $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS"]["de"] = "RSS";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE"]["de"] = "RSS-Feed für das Wiki benutzen";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR"]["de"] = "Kalender";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE"]["de"] = "Kalender für das Wiki anzeigen";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY"]["de"] = "Gallerie";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE"]["de"] = "Bilder-Gallerie im Wiki benutzen";
 
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF"]["de"] = "SWF";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE"]["de"] = "Einbindung von SWF-Dateien";

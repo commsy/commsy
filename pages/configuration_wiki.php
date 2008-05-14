@@ -218,6 +218,12 @@ else {
             $item->unsetWikiEnableCalendar();
          }
          
+         if ( isset($_POST['enable_gallery']) ) {
+            $item->setWikiEnableGallery();
+         } else {
+            $item->unsetWikiEnableGallery();
+         }
+         
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();
          } else {

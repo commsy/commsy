@@ -212,6 +212,11 @@ class cs_wiki_manager extends cs_manager {
       $str .= 'include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
       $str .= '$SHOW_CALENDAR = "' . $item->WikiEnableCalendar() . '";'.LF.LF;
       
+      if($item->WikiEnableGallery() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/gallery.php");'.LF;
+        $str .= '$SHOW_GALLERY = "' . $item->WikiEnableGallery() . '";'.LF.LF;
+      }
+      
       if($item->WikiEnableSwf() == "1"){
         $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF.LF;
       }

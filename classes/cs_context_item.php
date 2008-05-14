@@ -2255,6 +2255,23 @@ class cs_context_item extends cs_item {
       return $retour;
    }
    
+   function setWikiEnableGallery(){
+      $this->_addExtra('WIKIENABLEGALLERY','1');
+   }
+
+   function unsetWikiEnableGallery(){
+      $this->_addExtra('WIKIENABLEGALLERY','0');
+   }
+
+   function WikiEnableGallery(){
+      if ( $this->_issetExtra('WIKIENABLEGALLERY') ) {
+         $retour = $this->_getExtra('WIKIENABLEGALLERY');
+      } else {
+         $retour ='0';
+      }
+      return $retour;
+   }
+   
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');
    }
