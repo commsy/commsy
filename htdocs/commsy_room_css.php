@@ -67,7 +67,7 @@ a:hover, a:active {
 }
 
 .infoborder_display_content{
-    width: 71%;
+    width: 70%;
     border-top: 1px solid <?php echo($color['info_color'])?>;
     padding-top:10px;
 }
@@ -79,6 +79,10 @@ a:hover, a:active {
 
 .normal{
 	font-size: 10pt;
+}
+
+.handle_width{
+	overflow:auto;
 }
 
 .desc {
