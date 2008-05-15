@@ -717,7 +717,7 @@ class cs_detail_view extends cs_view {
             }else{
                $html .='<div class="infoborder_display_content" style="margin-top:5px; padding-top:10px; vertical-align:bottom;">'.LF;
             }
-            $html .='<div style="margin-bottom:10px;">'.LF;
+            $html .='<div style="margin-bottom:10px; ">'.LF;
             $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
             $html .='</div>'.LF;
             $html .='<div style="margin-top:5px; margin-bottom:0px; padding-top:10px; padding-bottom:50px; vertical-align:top;">';

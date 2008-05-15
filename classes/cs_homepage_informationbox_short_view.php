@@ -155,10 +155,11 @@ class cs_homepage_informationbox_short_view extends cs_view {
       $item = $manager->getItem($id);
       $entry_manager = $this->_environment->getManager($item->getItemType());
       $entry = $entry_manager->getItem($id);
-      $desc = chunkText($entry->getDescription(),500);
+#      $desc = chunkText($entry->getDescription(),500);
+      $desc = $entry->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
-         $html .= $desc.LF;
+         $html .= '<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto;">'.$desc.'</div>'.LF;
       }
       $html .= '<div style="clear:both;">'.LF;
       $html .= '</div>'.LF;

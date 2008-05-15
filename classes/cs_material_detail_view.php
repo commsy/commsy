@@ -533,10 +533,10 @@ class cs_material_detail_view extends cs_detail_view {
       if ( !$this->_section_list->isEmpty() ){
          $temp_array = array();
          $temp_array[]   = $this->_translator->getMessage('MATERIAL_ABSTRACT');
-         $description = $item->getDescription().'<br/><br/>';
+         $description = $item->getDescription();
          if ( !empty($description) ) {
             $temp_string = $this->_text_as_html_long($description);
-            $temp_array[]   =  $this->_show_images($temp_string,$this->_item, $with_links);
+            $temp_array[]   =  '<div class="handle_width">'.$this->_show_images($temp_string,$this->_item, $with_links).'</div>'.'<br/><br/>';
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
          }
@@ -675,7 +675,7 @@ class cs_material_detail_view extends cs_detail_view {
          $desc = $item->getDescription();
          if ( !empty($desc) ) {
             $temp_string = $this->_text_as_html_long($desc);
-            $html .= $this->_show_images($temp_string,$this->_item,$with_links).LF;
+            $html .= '<div class="handle_width">'.$this->_show_images($temp_string,$this->_item,$with_links).'</div>'.LF;
          }
       }
 
@@ -787,7 +787,7 @@ class cs_material_detail_view extends cs_detail_view {
       if ( !empty($section_description) ) {
          $section_description = $this->_text_as_html_long($section_description);
          $section_description = $this->_show_images($section_description, $item, $with_links);
-         $html .= '<div style="margin-left: 3px;">'.$section_description.'</div>';
+         $html .= '<div class="handle_width" style="margin-left: 3px;">'.$section_description.'</div>';
       }
 
       // files
