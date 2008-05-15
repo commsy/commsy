@@ -218,21 +218,25 @@ class cs_wiki_manager extends cs_manager {
       }
       
       if($item->WikiEnableSwf() == "1"){
-        $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF.LF;
+        $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF;
+        $str .= '$ENABLE_SWF = "1";'.LF.LF;
       }
       
       if($item->WikiEnableWmplayer() == "1"){
         $str .= 'include_once("$FarmD/cookbook/wmplayer.php");'.LF;
         $str .= "\$UploadExts['wma'] = 'audio/wma';".LF;
-        $str .= "\$UploadExts['wmv'] = 'video/wmv';".LF.LF;
+        $str .= "\$UploadExts['wmv'] = 'video/wmv';".LF;
+        $str .= '$ENABLE_WMPLAYER = "1";'.LF.LF;
       }
       
       if($item->WikiEnableQuicktime() == "1"){
-        $str .= 'include_once("$FarmD/cookbook/quicktime.php");'.LF.LF;
+        $str .= 'include_once("$FarmD/cookbook/quicktime.php");'.LF;
+        $str .= '$ENABLE_QUICKTIME = "1";'.LF.LF;
       }
       
       if($item->WikiEnableYoutubeGoogleVimeo() == "1"){
-        $str .= 'include_once("$FarmD/cookbook/swf-sites2.php");'.LF.LF;
+        $str .= 'include_once("$FarmD/cookbook/swf-sites2.php");'.LF;
+        $str .= '$ENABLE_YOUTUBEGOOGLEVIMEO = "1";'.LF.LF;
       }
       
       $str .= '?>';
