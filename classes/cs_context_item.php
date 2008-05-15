@@ -2272,6 +2272,23 @@ class cs_context_item extends cs_item {
       return $retour;
    }
    
+   function setWikiEnablePdf(){
+      $this->_addExtra('WIKIENABLEPDF','1');
+   }
+
+   function unsetWikiEnablePdf(){
+      $this->_addExtra('WIKIENABLEPDF','-1');
+   }
+
+   function WikiEnablePdf(){
+      if ( $this->_issetExtra('WIKIENABLEPDF') ) {
+         $retour = $this->_getExtra('WIKIENABLEPDF');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+   
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');
    }

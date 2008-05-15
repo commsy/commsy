@@ -224,6 +224,12 @@ else {
             $item->unsetWikiEnableGallery();
          }
          
+         if ( isset($_POST['enable_pdf']) ) {
+            $item->setWikiEnablePdf();
+         } else {
+            $item->unsetWikiEnablePdf();
+         }
+         
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();
          } else {

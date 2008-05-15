@@ -232,7 +232,13 @@ class cs_wiki_manager extends cs_manager {
       
       if($item->WikiEnableGallery() == "1"){
         $str .= 'include_once("$FarmD/cookbook/gallery.php");'.LF;
-        $str .= '$SHOW_GALLERY = "' . $item->WikiEnableGallery() . '";'.LF.LF;
+        $str .= '$SHOW_GALLERY = "1";'.LF.LF;
+      }
+      
+      if($item->WikiEnablePdf() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/pmwiki2pdf/pmwiki2pdf.php");'.LF;
+        $str .= 'include_once("$FarmD/cookbook/pmwiki2pdflink.php");'.LF;
+        $str .= '$SHOW_PDF = "1";'.LF.LF;
       }
       
       if($item->WikiEnableSwf() == "1"){

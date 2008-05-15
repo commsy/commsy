@@ -130,6 +130,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
       $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
       $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),''); 
+      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),''); 
       
       // already available features - added to form
       $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),'');
@@ -189,6 +190,9 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          }
          if ($this->_item->WikiEnableGallery() == "1"){
             $this->_values['enable_gallery'] = 1;
+         }
+         if ($this->_item->WikiEnablePdf() == "1"){
+            $this->_values['enable_pdf'] = 1;
          }
          
          if ($this->_item->WikiEnableSwf() == "1"){
