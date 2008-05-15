@@ -157,6 +157,8 @@ $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR"]["de"] = "Calendar";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE"]["de"] = "Enable a calendar for the Wiki";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY"]["de"] = "Gallery";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE"]["de"] = "Enable a picture-gallerie for the Wiki";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_PDF"]["de"] = "PDF";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE"]["de"] = "Convert Wiki-pages to PDF";
 
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF"]["de"] = "SWF";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE"]["de"] = "Enable embedding of SWF-files";
