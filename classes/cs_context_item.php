@@ -2158,14 +2158,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableFCKEditor(){
-      $this->_addExtra('WIKIENABLEFCKEDITOR','0');
+      $this->_addExtra('WIKIENABLEFCKEDITOR','-1');
    }
 
    function WikiEnableFCKEditor(){
       if ( $this->_issetExtra('WIKIENABLEFCKEDITOR') ) {
          $retour = $this->_getExtra('WIKIENABLEFCKEDITOR');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2175,14 +2175,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableSitemap(){
-      $this->_addExtra('WIKIENABLESITEMAP','0');
+      $this->_addExtra('WIKIENABLESITEMAP','-1');
    }
 
    function WikiEnableSitemap(){
       if ( $this->_issetExtra('WIKIENABLESITEMAP') ) {
          $retour = $this->_getExtra('WIKIENABLESITEMAP');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2192,14 +2192,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableStatistic(){
-      $this->_addExtra('WIKIENABLESTATISTIC','0');
+      $this->_addExtra('WIKIENABLESTATISTIC','-1');
    }
 
    function WikiEnableStatistic(){
       if ( $this->_issetExtra('WIKIENABLESTATISTIC') ) {
          $retour = $this->_getExtra('WIKIENABLESTATISTIC');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2209,14 +2209,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableSearch(){
-      $this->_addExtra('WIKIENABLESEARCH','0');
+      $this->_addExtra('WIKIENABLESEARCH','-1');
    }
 
    function WikiEnableSearch(){
       if ( $this->_issetExtra('WIKIENABLESEARCH') ) {
          $retour = $this->_getExtra('WIKIENABLESEARCH');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2226,14 +2226,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableRss(){
-      $this->_addExtra('WIKIENABLERSS','0');
+      $this->_addExtra('WIKIENABLERSS','-1');
    }
 
    function WikiEnableRss(){
       if ( $this->_issetExtra('WIKIENABLERSS') ) {
          $retour = $this->_getExtra('WIKIENABLERSS');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2243,14 +2243,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableCalendar(){
-      $this->_addExtra('WIKIENABLECALENDAR','0');
+      $this->_addExtra('WIKIENABLECALENDAR','-1');
    }
 
    function WikiEnableCalendar(){
       if ( $this->_issetExtra('WIKIENABLECALENDAR') ) {
          $retour = $this->_getExtra('WIKIENABLECALENDAR');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2260,14 +2260,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableGallery(){
-      $this->_addExtra('WIKIENABLEGALLERY','0');
+      $this->_addExtra('WIKIENABLEGALLERY','-1');
    }
 
    function WikiEnableGallery(){
       if ( $this->_issetExtra('WIKIENABLEGALLERY') ) {
          $retour = $this->_getExtra('WIKIENABLEGALLERY');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2277,14 +2277,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableSwf(){
-      $this->_addExtra('WIKIENABLESWF','0');
+      $this->_addExtra('WIKIENABLESWF','-1');
    }
 
    function WikiEnableSwf(){
       if ( $this->_issetExtra('WIKIENABLESWF') ) {
          $retour = $this->_getExtra('WIKIENABLESWF');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2294,14 +2294,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableWmplayer(){
-      $this->_addExtra('WIKIENABLEWMPLAYER','0');
+      $this->_addExtra('WIKIENABLEWMPLAYER','-1');
    }
 
    function WikiEnableWmplayer(){
       if ( $this->_issetExtra('WIKIENABLEWMPLAYER') ) {
          $retour = $this->_getExtra('WIKIENABLEWMPLAYER');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2311,14 +2311,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableQuicktime(){
-      $this->_addExtra('WIKIENABLEQUICKTIME','0');
+      $this->_addExtra('WIKIENABLEQUICKTIME','-1');
    }
 
    function WikiEnableQuicktime(){
       if ( $this->_issetExtra('WIKIENABLEQUICKTIME') ) {
          $retour = $this->_getExtra('WIKIENABLEQUICKTIME');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }
@@ -2328,14 +2328,14 @@ class cs_context_item extends cs_item {
    }
 
    function unsetWikiEnableYoutubeGoogleVimeo(){
-      $this->_addExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO','0');
+      $this->_addExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO','-1');
    }
 
    function WikiEnableYoutubeGoogleVimeo(){
       if ( $this->_issetExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO') ) {
          $retour = $this->_getExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO');
       } else {
-         $retour ='0';
+         $retour ='-1';
       }
       return $retour;
    }

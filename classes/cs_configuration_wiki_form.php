@@ -165,9 +165,45 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          if ($portal_link=='1'){
             $this->_values['wikilink2'] = 1;
          }
-         if ($this->_item->WikiShowCommSyLogin()){
+         if ($this->_item->WikiShowCommSyLogin() == "1"){
             $this->_values['show_login_box'] = 1;
          }
+         //  new features
+         if ($this->_item->WikiEnableFCKEditor() == "1"){
+            $this->_values['enable_fckeditor'] = 1;
+         }
+         if ($this->_item->WikiEnableSitemap() == "1"){
+            $this->_values['enable_sitemap'] = 1;
+         }
+         if ($this->_item->WikiEnableStatistic() == "1"){
+            $this->_values['enable_statistic'] = 1;
+         }
+         if ($this->_item->WikiEnableSearch() == "1"){
+            $this->_values['enable_search'] = 1;
+         }
+         if ($this->_item->WikiEnableRss() == "1"){
+            $this->_values['enable_rss'] = 1;
+         }
+         if ($this->_item->WikiEnableCalendar() == "1"){
+            $this->_values['enable_calendar'] = 1;
+         }
+         if ($this->_item->WikiEnableGallery() == "1"){
+            $this->_values['enable_gallery'] = 1;
+         }
+         
+         if ($this->_item->WikiEnableSwf() == "1"){
+            $this->_values['enable_swf'] = 1;
+         }
+         if ($this->_item->WikiEnableWmplayer() == "1"){
+            $this->_values['enable_wmplayer'] = 1;
+         }
+         if ($this->_item->WikiEnableQuicktime() == "1"){
+            $this->_values['enable_quicktime'] = 1;
+         }
+         if ($this->_item->WikiEnableYoutubeGoogleVimeo() == "1"){
+            $this->_values['enable_youtube_google_vimeo'] = 1;
+         }
+         // /new features
          if ( $this->_item->wikiWithSectionEdit() ) {
             $this->_values['wiki_section_edit'] = 1;
          }

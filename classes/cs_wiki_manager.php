@@ -172,7 +172,11 @@ class cs_wiki_manager extends cs_manager {
       $str .= '$COMMSY_UPLOAD_PASSWD = "'.$item->getWikiEditPW().'";'.LF;
       $str .= '$COMMSY_READ_PASSWD = "'.$item->getWikiReadPW().'";'.LF;
       $str .= '$COMMSY_WIKI_TITLE = "'.addslashes($item->getWikiTitle()).'";'.LF;
-      $str .= '$SHOW_COMMSY_LOGIN = "'.$item->WikiShowCommSyLogin().'";'.LF;
+      if($item->WikiShowCommSyLogin() == "1"){
+        $str .= '$SHOW_COMMSY_LOGIN = "1";'.LF;
+      } else {
+        $str .= '$SHOW_COMMSY_LOGIN = "0";'.LF;
+      }
       $language = $item->getLanguage();
       if (!empty($language) and strtoupper($language)!='USER'){
          $str .= '$COMMSY_LANGUAGE = "'.strtolower($item->getLanguage()).'";'.LF;
@@ -192,25 +196,39 @@ class cs_wiki_manager extends cs_manager {
 
       // Additional features for mediweb - not activated by default.
       // modify in comsy_config.php to activate.
-      $str .= LF.'$SHOW_FCKEDITOR = "' . $item->WikiEnableFCKEditor() . '";'.LF;
-      $str .= '$SHOW_SEARCH = "' . $item->WikiEnableSearch() . '";'.LF;
-      $str .= '$SHOW_SITEMAP = "' . $item->WikiEnableSitemap() . '";'.LF.LF;
+      if($item->WikiEnableFCKEditor() == "1"){
+        $str .= LF.'$SHOW_FCKEDITOR = "1";'.LF;
+      }
       
-      $str .= "include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
-      $str .= "include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
-      $str .= '$SHOW_STATISTIC_ACTION = "' . $item->WikiEnableStatistic() . '";'.LF.LF;
+      if($item->WikiEnableSearch() == "1"){
+        $str .= '$SHOW_SEARCH = "1";'.LF;
+      }
+      
+      if($item->WikiEnableSitemap() == "1"){
+        $str .= '$SHOW_SITEMAP = "1";'.LF.LF;
+      }
+      
+      if($item->WikiEnableStatistic() == "1"){
+        $str .= "include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
+        $str .= "include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
+        $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF.LF;
+      }
 
-      $str .= '$EnableRssLink  = ' . $item->WikiEnableRss() . ';'.LF;
-      $str .= '$EnableSitewideFeed = 1;'.LF;
-      $str .= '$EnableAtomLink = 0;'.LF;
-      $str .= 'include_once("$FarmD/cookbook/feedlinks.php");'.LF;
-      $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
-      $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
-      $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF.LF;
+      if($item->WikiEnableRss() == "1"){
+        $str .= '$EnableRssLink  = "1";'.LF;
+        $str .= '$EnableSitewideFeed = 1;'.LF;
+        $str .= '$EnableAtomLink = 0;'.LF;
+        $str .= 'include_once("$FarmD/cookbook/feedlinks.php");'.LF;
+        $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
+        $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+        $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF.LF;
+      }
       
-      $str .= 'include_once("$FarmD/cookbook/wikilog.php");'.LF;
-      $str .= 'include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
-      $str .= '$SHOW_CALENDAR = "' . $item->WikiEnableCalendar() . '";'.LF.LF;
+      if($item->WikiEnableCalendar() == "1"){
+        $str .= 'include_once("$FarmD/cookbook/wikilog.php");'.LF;
+        $str .= 'include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
+        $str .= '$SHOW_CALENDAR = "1";'.LF.LF;
+      }
       
       if($item->WikiEnableGallery() == "1"){
         $str .= 'include_once("$FarmD/cookbook/gallery.php");'.LF;
