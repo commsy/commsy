@@ -220,8 +220,8 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$EnableAtomLink = 0;'.LF;
         $str .= 'include_once("$FarmD/cookbook/feedlinks.php");'.LF;
         $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
-        $str .= '$change = "Auf der Seite ... hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
-        $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary}';".LF.LF;
+//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+        $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary} - ge&auml;ndert von: {\$LastModifiedBy}';".LF.LF;
       }
       
       if($item->WikiEnableCalendar() == "1"){
