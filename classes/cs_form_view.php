@@ -1417,6 +1417,7 @@ class cs_form_view extends cs_view {
       }
 
       $first = true;
+      $show_drop_down = false;
       foreach ($form_element_array as $form_element) {
          if ($form_element['type'] == 'titlefield') {
             $html .= '         '.$this->_getTitleFieldAsHTML($form_element);
@@ -1435,6 +1436,18 @@ class cs_form_view extends cs_view {
             }
          } else {
             if ($first) {
+               if (isset($form_element['drop_down']) and $form_element['drop_down']){
+                 $title = '&nbsp;'.$form_element['example'];
+                 $html .= '<div style="padding-left:5px;">';
+                 $text = '<div class="bold" style="padding-bottom:5px;">'.$form_element['example'].':</div>';
+                 $html .='<img id="toggle'.$form_element['name'].'" src="images/more.gif"/>';
+                 $html .= $title;
+                 $html .= '<div id="creator_information'.$form_element['name'].'">'.LF;
+                 $html .= '<div style="padding:2px;">'.LF;
+                 $html .= '<div id="form_formatting_checkbox_box" style="width:400px">'.LF;
+                 $show_drop_down = true;
+                 $drop_down_name = $form_element['name'];
+               }
                $html .= '<div style="font-size:10pt; text-align:left;">';
                $first = false;
             } else {
@@ -1494,6 +1507,13 @@ class cs_form_view extends cs_view {
                $html .= '</div><div style="padding-top: 3px;">';
             }
          }
+      }
+      if ($show_drop_down){
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",false)</script>';
       }
       if (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline'){
          $html .= '</td>'.LF;

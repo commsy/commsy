@@ -280,6 +280,12 @@ h1{
    border: 1px #B0B0B0 dashed;
    background-color:<?php echo($color['boxes_background'])?>;
 }
+#form_formatting_checkbox_box{
+   margin-top:0px;
+   margin-bottom:0px;
+   width:300px;
+   padding:5px 10px;
+}
 
 #template_information_box{
    margin-top:5px;

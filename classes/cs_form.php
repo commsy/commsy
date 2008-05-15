@@ -530,7 +530,8 @@ class cs_form {
                               $isMandatory = false,
                               $isDisabled = false,
                               $extention = '',
-                              $before_form_text = '' ) {
+                              $before_form_text = '',
+                              $drop_down = false ) {
 
                 $element['type']  = 'checkbox';
                 $element['name']  = $name;
@@ -545,6 +546,7 @@ class cs_form {
                 $element['is_disabled'] = $isDisabled;
                 $element['extention']   = $extention;
                 $element['before_form_text'] = $before_form_text;
+                $element['drop_down'] = $drop_down;
 
                 $this -> _formElements -> addElement($element);
         }

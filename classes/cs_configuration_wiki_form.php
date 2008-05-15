@@ -66,6 +66,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       // form fields
       $this->_form->addHidden('iid','');
       $this->_form->addTextfield('wikititle','',getMessage('COMMON_TITLE'),getMessage('DATES_TITLE_DESC'),200,28,true);
+
       $this->_form->addTextField('admin','',getMessage('COMMON_WIKI_ADMIN_PW'),'',200,10,true);
       $this->_form->addTextField('edit','',getMessage('COMMON_WIKI_EDIT_PW'),'',200,10,false);
       $this->_form->addTextField('read','',getMessage('COMMON_WIKI_READ_PW'),'',200,10,false);
@@ -120,7 +121,18 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_form->addCheckbox('wikilink2',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE'),'');
       }
       $this->_form->addCheckbox('show_login_box',1,'',getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX'),getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE'),'');
-        
+
+
+      $this->_form->addEmptyline();
+      // already available features - added to form
+      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true);
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'',false,false,'','',true);
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');
+
       //  new features
       $this->_form->addEmptyline();
       $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),'');
@@ -129,15 +141,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),'');
       $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
       $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
-      $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),''); 
-      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),''); 
-      
-      // already available features - added to form
-      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),'');
-      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'');
-      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'');
-      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');  
-      
+      $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),'');
+      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),'');
+
+
       // /new features
 
       // buttons
@@ -147,6 +154,40 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_form->addButtonBar('option',getMessage('WIKI_SAVE_BUTTON'));
       }
    }
+
+   function _getTextFormatingInformationAsHTML($form_element){
+      $show_text = true;
+      if ( isset($form_element['help_text']) ){
+         $show_text = $form_element['help_text'];
+      }
+      global $c_html_textarea;
+      $html = '';
+      $item = $this->_environment->getCurrentContextItem();
+      $with_htmltextarea = $item->withHtmlTextArea();
+      $text = '';
+         $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+         $html .= '<div style="padding-top:5px;">';
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+         $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+         $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+         $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+         $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+         $html .= $title;
+         $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+         $html .= '<div style="padding:2px;">'.LF;
+         $html .= '<div id="form_formatting_box" style="width:480px">'.LF;
+         $html .= $text;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+      $html .='<script type="text/javascript">initTextFormatingInformation("'.$item->getItemID().'",false)</script>';
+   }
+
+
+
+
+
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the context item or the form_post data
@@ -194,7 +235,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          if ($this->_item->WikiEnablePdf() == "1"){
             $this->_values['enable_pdf'] = 1;
          }
-         
+
          if ($this->_item->WikiEnableSwf() == "1"){
             $this->_values['enable_swf'] = 1;
          }
