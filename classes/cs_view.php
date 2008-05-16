@@ -965,6 +965,7 @@ class cs_view {
       $reg_exp_array['(:googlevideo'] = '/\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -1035,6 +1036,9 @@ class cs_view {
                      break;
                   } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
                      $value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
+                     break;
+                  } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
+                     $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
                   } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
                      $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -1208,7 +1212,7 @@ class cs_view {
       return $retour;
    }
 
-   function _format_youtube ($text, $array){
+   function _format_youtube ($text, $array){ 
       $retour = '';
       if ( !empty($array[1]) ) {
          $source = $array[1];
@@ -1694,6 +1698,72 @@ class cs_view {
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
+      return $retour;
+   }
+   
+   function _format_office ($text, $array){ 
+      $retour = '';
+      if ( !empty($array[1]) ) {
+         $source = $array[1];
+      }
+      if ( !empty($array[2]) ) {
+         $args = $this->_parseArgs($array[2]);
+      } else {
+         $args = array();
+      }
+
+      if ( !empty($args['float'])
+           and ( $args['float'] == 'left'
+                 or $args['float'] == 'right'
+               )
+         ) {
+         $float = 'float:'.$args['float'].';';
+      } elseif ( !empty($args['lfloat']) ) {
+         $float = 'float:left;';
+      } elseif ( !empty($args['rfloat']) ) {
+         $float = 'float:right;';
+      } else {
+         $float = '';
+      }
+
+      if ( !empty($source) ) {
+        global $c_commsy_path_file;
+        include_once($c_commsy_path_file . '/classes/external_classes/scribd/scribd.php');
+    
+        $scribd_api_key = "6eudgpd7ipx10b78nkt0c";
+        $scribd_secret = "sec-bhal9rifk8n9hulohqdkxqhasl"; 
+
+        $scribd = new Scribd($scribd_api_key, $scribd_secret);
+        
+        $file = '';
+        $doc_type = null;
+        $access = "private";
+        $rev_id = null;
+//        $result = $scribd->upload($file, $doc_type, $access, $rev_id);
+        $result['doc_id'] = "2991339";
+        $result['access_key'] = "key-76v4rxr74xgwth733k6";
+        
+        $office_text = '';
+    
+        $office_text .= '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" id="-630673958" name="-630673958" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" align="middle"    height="500" width="100%">'.LF;
+        $office_text .= '<param name="movie" value="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true">'.LF;
+        $office_text .= '<param name="quality" value="high">'.LF;
+        $office_text .= '<param name="play" value="true">'.LF;
+        $office_text .= '<param name="loop" value="true">'.LF;
+        $office_text .= '<param name="scale" value="showall">'.LF;
+        $office_text .= '<param name="wmode" value="opaque">'.LF;
+        $office_text .= '<param name="devicefont" value="false">'.LF;
+        $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
+        $office_text .= '<param name="menu" value="true">'.LF;
+        $office_text .= '<param name="allowFullScreen" value="true">'.LF;
+        $office_text .= '<param name="allowScriptAccess" value="always">'.LF;
+        $office_text .= '<param name="salign" value="">'.LF;
+        $office_text .= '<embed src="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" play="true" loop="true" scale="showall" wmode="opaque" devicefont="false" bgcolor="#ffffff" name="-630673958_object" menu="true" allowfullscreen="true" allowscriptaccess="always" salign="" type="application/x-shockwave-flash" align="middle" height="500" width="100%"></embed>'.LF;
+        $office_text .= '</object>'.LF;
+         
+      }
+      
+      $retour = $office_text;
       return $retour;
    }
 
