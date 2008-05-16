@@ -130,6 +130,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $topic_item = $topic_list->getNext();
          }
          $user_manager->resetLimits();
+         $user_manager->setUserLimit();
          $label_manager = $environment->getLabelManager();
          $group_list = new cs_list();
          if ( isset($_POST['groups']) and !empty($_POST['groups']) ){
@@ -155,6 +156,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $group_item = $group_list->getNext();
          }
          $user_manager->resetLimits();
+         $user_manager->setUserLimit();
          $label_manager = $environment->getLabelManager();
          $institution_list = new cs_list();
          if ( isset($_POST['institutions']) and !empty($_POST['institutions']) ){
