@@ -97,12 +97,12 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
          $material_manager = $environment->getMaterialManager();
          $material_version_list = $material_manager->getVersionList($current_item_iid);
          $item = $material_version_list->getFirst();
-
+         $item->delete(CS_ALL); // CS_ALL -> delete all versions of the material
       }else{
          $manager = $environment->getManager(module2type($environment->getCurrentModule()));
          $item = $manager->getItem($current_item_id);
+         $item->delete();
       }
-      $item->delete();
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
    }
 }

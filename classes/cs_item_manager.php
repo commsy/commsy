@@ -426,9 +426,25 @@ class cs_item_manager extends cs_manager {
       $query = 'UPDATE '.$this->_db_table.' SET deleter_id='.encode(AS_DB,$current_user->getItemID()).', deletion_date=NOW() WHERE context_id='.encode(AS_DB,$context_id).' AND type="'.encode(AS_DB,$type).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems deleting items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting items from query: "'.$query.'"',E_USER_WARNING);
       }
    }
 
+   function deleteReallyOlderThanOneMonth () {
+      $retour = false;
+      $days = 30;
+      $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
+      $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != '.CS_DISCARTICLE_TYPE.' AND type != '.CS_USER_TYPE.';'; // user und discarticle werden noch gebraucht
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problem deleting items.',E_USER_ERROR);
+      } else {
+         unset($result);
+         $retour = true;
+      }
+      return $retour;
+   }
 }
 ?>

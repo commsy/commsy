@@ -78,13 +78,13 @@ class cs_section_item extends cs_item {
    }
 
    function getLinkedItem () {
-	  $retour = NULL;
-	  $item_id = $this->getLinkedItemID();
-	  if (!empty($item_id)) {
-		 $type_manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
-		 $retour = $type_manager->getItem($item_id);
-	  }
-	  return $retour;
+     $retour = NULL;
+     $item_id = $this->getLinkedItemID();
+     if (!empty($item_id)) {
+       $type_manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
+       $retour = $type_manager->getItem($item_id);
+     }
+     return $retour;
    }
 
    /** set id of a linked material
@@ -248,21 +248,27 @@ class cs_section_item extends cs_item {
       $section_manager = $this->_environment->getSectionManager();
       if ( !empty($version) and $version == 'current' ) {
          $section_manager->delete($this->getItemID(),$this->getVersionID());
-      } elseif ( isset($version) and is_int((int)$version) ) {
+      } elseif ( isset($version)
+                 and $version != CS_ALL
+                 and is_int((int)$version)
+               ) {
          $section_manager->delete($this->getItemID(),$version);
       } else {
          $section_manager->delete($this->getItemID());
       }
-      
+
       // delete links
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->deleteLinksBecauseItemIsDeleted($this->getItemID());
-      
+
       // delete links to files
       $link_manager = $this->_environment->getLinkItemFileManager();
       if ( !empty($version) and $version == 'current' ) {
          $link_manager->deleteByItem($this->getItemID(),$this->getVersionID());
-      } elseif ( isset($version) and is_int((int)$version) ) {
+      } elseif ( isset($version)
+                 and $version != CS_ALL
+                 and is_int((int)$version)
+               ) {
          $link_manager->deleteByItem($this->getItemID(),$version);
       } else {
          $link_manager->deleteByItem($this->getItemID());

@@ -498,9 +498,12 @@ class cs_section_manager extends cs_manager {
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems deleting section from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting section from query: "'.$query.'"',E_USER_WARNING);
       } else {
-         parent::delete($item_id);
+         if ( is_null($version_id) ) {
+            parent::delete($item_id);
+         }
       }
    }
 

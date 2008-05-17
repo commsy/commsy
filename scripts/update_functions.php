@@ -21,6 +21,8 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+include_once('../../etc/cs_constants.php');
+include_once('../../functions/text_functions.php');
 include_once('../../functions/misc_functions.php');
 
 function getCurrentDateTimeMinusDaysInMySQL ( $days ) {

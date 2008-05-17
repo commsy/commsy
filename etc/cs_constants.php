@@ -34,6 +34,7 @@ for($i=0;$i<40;$i++){
    $text.='&nbsp;';
 }
 define('CS_WITDH_CONSTANT',$text);
+define('CS_ALL','all');
 
 define('CS_ITEM_TYPE','item');
 

@@ -1017,7 +1017,8 @@ class cs_material_manager extends cs_manager {
      $current_user = $this->_environment->getCurrentUserItem();
      $user_id = $current_user->getItemID();
      if ( !isset($current_user) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems deleting material: Deleter is not set',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems deleting material: Deleter is not set',E_USER_ERROR);
      } else {
         $query = 'UPDATE materials SET '.
                  'deletion_date="'.$current_datetime.'",'.
@@ -1028,9 +1029,12 @@ class cs_material_manager extends cs_manager {
         }
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) or !$result ) {
-           include_once('functions/error_functions.php');trigger_error('Problems deleting material: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
+           include_once('functions/error_functions.php');
+           trigger_error('Problems deleting material: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
         } else {
-           parent::delete($material_id);
+           if ( is_null($version_id) ) {
+              parent::delete($material_id);
+           }
         }
      }
      unset($current_user);
