@@ -119,7 +119,7 @@ class cs_homepage_informationbox_short_view extends cs_view {
       $item = $manager->getItem($id);
       $entry_manager = $this->_environment->getManager($item->getItemType());
       $entry = $entry_manager->getItem($id);
-      $this->setViewTitle(chunkText($entry->getTitle(),50));
+      $this->setViewTitle($this->_text_as_html_long(chunkText($entry->getTitle(),50)));
       $this->_view_name = getMessage('COMMON_INFORMATION_INDEX');
    }
 
