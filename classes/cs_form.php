@@ -165,7 +165,9 @@ class cs_form {
                           $width='',
                           $disabled=false,
                           $after_form_text = '',
-                          $font_size = 10 ) {
+                          $font_size = 10,
+                          $drop_down = false,
+                          $show_drop_down = false ) {
 
       if ( empty($maxlength) ) {
         $maxlength = 255;
@@ -204,6 +206,8 @@ class cs_form {
          $element['after_form_text'] = $after_form_text;
       }
       $element['is_disabled'] = $disabled;
+      $element['drop_down'] = $drop_down;
+      $element['show_drop_down'] = $show_drop_down;
 
       $this -> _formElements -> addElement($element);
    }
@@ -531,7 +535,9 @@ class cs_form {
                               $isDisabled = false,
                               $extention = '',
                               $before_form_text = '',
-                              $drop_down = false ) {
+                              $drop_down = false,
+                              $show_drop_down = false
+                               ) {
 
                 $element['type']  = 'checkbox';
                 $element['name']  = $name;
@@ -547,6 +553,7 @@ class cs_form {
                 $element['extention']   = $extention;
                 $element['before_form_text'] = $before_form_text;
                 $element['drop_down'] = $drop_down;
+                $element['show_drop_down'] = $show_drop_down;
 
                 $this -> _formElements -> addElement($element);
         }

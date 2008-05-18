@@ -1439,12 +1439,12 @@ class cs_form_view extends cs_view {
                if (isset($form_element['drop_down']) and $form_element['drop_down']){
                  $title = '&nbsp;'.$form_element['example'];
                  $html .= '<div style="padding-left:5px;">';
-                 $text = '<div class="bold" style="padding-bottom:5px;">'.$form_element['example'].':</div>';
+                 $text = '<div class="bold" style="padding:0px 0px 5px 0px;">'.$form_element['example'].':</div>';
                  $html .='<img id="toggle'.$form_element['name'].'" src="images/more.gif"/>';
                  $html .= $title;
                  $html .= '<div id="creator_information'.$form_element['name'].'">'.LF;
-                 $html .= '<div style="padding:2px;">'.LF;
-                 $html .= '<div id="form_formatting_checkbox_box" style="width:400px">'.LF;
+                 $html .= '<div style="padding:0px 0px 5px 0px;">'.LF;
+                 $html .= '<div class="form_formatting_checkbox_box" style="width:400px">'.LF;
                  $show_drop_down = true;
                  $drop_down_name = $form_element['name'];
                }

@@ -2169,7 +2169,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableSitemap(){
       $this->_addExtra('WIKIENABLESITEMAP','1');
    }
@@ -2186,7 +2186,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableStatistic(){
       $this->_addExtra('WIKIENABLESTATISTIC','1');
    }
@@ -2203,7 +2203,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableSearch(){
       $this->_addExtra('WIKIENABLESEARCH','1');
    }
@@ -2220,7 +2220,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableRss(){
       $this->_addExtra('WIKIENABLERSS','1');
    }
@@ -2237,7 +2237,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableCalendar(){
       $this->_addExtra('WIKIENABLECALENDAR','1');
    }
@@ -2254,7 +2254,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableGallery(){
       $this->_addExtra('WIKIENABLEGALLERY','1');
    }
@@ -2271,7 +2271,24 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
+   function setWikiEnableNotice(){
+      $this->_addExtra('WIKIENABLENOTICE','1');
+   }
+
+   function unsetWikiEnableNotice(){
+      $this->_addExtra('WIKIENABLENOTICE','-1');
+   }
+
+   function WikiEnableNotice(){
+      if ( $this->_issetExtra('WIKIENABLENOTICE') ) {
+         $retour = $this->_getExtra('WIKIENABLENOTICE');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+
    function setWikiEnablePdf(){
       $this->_addExtra('WIKIENABLEPDF','1');
    }
@@ -2288,7 +2305,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');
    }
@@ -2305,7 +2322,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableWmplayer(){
       $this->_addExtra('WIKIENABLEWMPLAYER','1');
    }
@@ -2322,7 +2339,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableQuicktime(){
       $this->_addExtra('WIKIENABLEQUICKTIME','1');
    }
@@ -2339,7 +2356,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableYoutubeGoogleVimeo(){
       $this->_addExtra('WIKIENABLEYOUTUBEGOOGLEVIMOEO','1');
    }
@@ -2356,7 +2373,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    // /new features
 
    function setWikiEditPW($pw){

@@ -199,15 +199,15 @@ class cs_wiki_manager extends cs_manager {
       if($item->WikiEnableFCKEditor() == "1"){
         $str .= LF.'$SHOW_FCKEDITOR = "1";'.LF;
       }
-      
+
       if($item->WikiEnableSearch() == "1"){
         $str .= '$SHOW_SEARCH = "1";'.LF;
       }
-      
+
       if($item->WikiEnableSitemap() == "1"){
         $str .= '$SHOW_SITEMAP = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnableStatistic() == "1"){
         $str .= "include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
         $str .= "include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
@@ -223,46 +223,53 @@ class cs_wiki_manager extends cs_manager {
 //        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
         $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary} - ge&auml;ndert von: {\$LastModifiedBy}';".LF.LF;
       }
-      
+
       if($item->WikiEnableCalendar() == "1"){
         $str .= 'include_once("$FarmD/cookbook/wikilog.php");'.LF;
         $str .= 'include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
         $str .= '$SHOW_CALENDAR = "1";'.LF.LF;
       }
-      
+
+      if($item->WikiEnableNotice() == "1"){
+        $str .= '$GUIButtons["stickyNote"] = array(700, "(:note Comment: |", ":)\\n", "$[Text]",'.LF;
+        $str .= '"$GUIButtonDirUrlFmt/sticky.gif\"$[Yellow Sticky Note]\"");'.LF;
+        $str .= 'include_once("$FarmD/cookbook/postitnotes.php");'.LF.LF;
+        $str .= '$SHOW_NOTICE = "1";'.LF.LF;
+      }
+
       if($item->WikiEnableGallery() == "1"){
         $str .= 'include_once("$FarmD/cookbook/gallery.php");'.LF;
         $str .= '$SHOW_GALLERY = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnablePdf() == "1"){
         $str .= 'include_once("$FarmD/cookbook/pmwiki2pdf/pmwiki2pdf.php");'.LF;
         $str .= 'include_once("$FarmD/cookbook/pmwiki2pdflink.php");'.LF;
         $str .= '$SHOW_PDF = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnableSwf() == "1"){
         $str .= 'include_once("$FarmD/cookbook/swf.php");'.LF;
         $str .= '$ENABLE_SWF = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnableWmplayer() == "1"){
         $str .= 'include_once("$FarmD/cookbook/wmplayer.php");'.LF;
         $str .= "\$UploadExts['wma'] = 'audio/wma';".LF;
         $str .= "\$UploadExts['wmv'] = 'video/wmv';".LF;
         $str .= '$ENABLE_WMPLAYER = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnableQuicktime() == "1"){
         $str .= 'include_once("$FarmD/cookbook/quicktime.php");'.LF;
         $str .= '$ENABLE_QUICKTIME = "1";'.LF.LF;
       }
-      
+
       if($item->WikiEnableYoutubeGoogleVimeo() == "1"){
         $str .= 'include_once("$FarmD/cookbook/swf-sites2.php");'.LF;
         $str .= '$ENABLE_YOUTUBEGOOGLEVIMEO = "1";'.LF.LF;
       }
-      
+
       $str .= '?>';
 
       file_put_contents('commsy_config.php',$str);
