@@ -103,7 +103,7 @@ else {
               and $dir != '..'
               and $dir != '.'
               and $dir != 'print'
-              and $dir != 'svs'
+#              and $dir != 'svs'
               and $dir != 'CVS'
             ) {
             $skin_array[] = $dir;
@@ -180,80 +180,86 @@ else {
          } else {
             $item->unsetWikiShowCommSyLogin();
          }
-         
+
          //  new features
          if ( isset($_POST['enable_fckeditor']) ) {
             $item->setWikiEnableFCKEditor();
          } else {
             $item->unsetWikiEnableFCKEditor();
          }
-         
+
          if ( isset($_POST['enable_sitemap']) ) {
             $item->setWikiEnableSitemap();
          } else {
             $item->unsetWikiEnableSitemap();
          }
-         
+
          if ( isset($_POST['enable_statistic']) ) {
             $item->setWikiEnableStatistic();
          } else {
             $item->unsetWikiEnableStatistic();
          }
-         
+
          if ( isset($_POST['enable_search']) ) {
             $item->setWikiEnableSearch();
          } else {
             $item->unsetWikiEnableSearch();
          }
-         
+
          if ( isset($_POST['enable_rss']) ) {
             $item->setWikiEnableRss();
          } else {
             $item->unsetWikiEnableRss();
          }
-         
+
          if ( isset($_POST['enable_calendar']) ) {
             $item->setWikiEnableCalendar();
          } else {
             $item->unsetWikiEnableCalendar();
          }
-         
+
          if ( isset($_POST['enable_gallery']) ) {
             $item->setWikiEnableGallery();
          } else {
             $item->unsetWikiEnableGallery();
          }
-         
+
+         if ( isset($_POST['enable_notice']) ) {
+            $item->setWikiEnableNotice();
+         } else {
+            $item->unsetWikiEnableNotice();
+         }
+
          if ( isset($_POST['enable_pdf']) ) {
             $item->setWikiEnablePdf();
          } else {
             $item->unsetWikiEnablePdf();
          }
-         
+
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();
          } else {
             $item->unsetWikiEnableSwf();
          }
-         
+
          if ( isset($_POST['enable_wmplayer']) ) {
             $item->setWikiEnableWmplayer();
          } else {
             $item->unsetWikiEnableWmplayer();
          }
-         
+
          if ( isset($_POST['enable_quicktime']) ) {
             $item->setWikiEnableQuicktime();
          } else {
             $item->unsetWikiEnableQuicktime();
          }
-         
+
          if ( isset($_POST['enable_youtube_google_vimeo']) ) {
             $item->setWikiEnableYoutubeGoogleVimeo();
          } else {
             $item->unsetWikiEnableYoutubeGoogleVimeo();
          }
-         
+
          // /new features
 
          // section edit
