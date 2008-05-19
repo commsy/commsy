@@ -73,8 +73,14 @@ foreach ( $table as $tbl ) {
       }
       $query = "SELECT * FROM ".$tbl;
       if ( !empty($item_ids) ) {
-         $query .= " WHERE item_id NOT IN (".implode(',',$item_ids).");";
+         $query .= " WHERE item_id NOT IN (".implode(',',$item_ids).")";
       }
+      if ( $tbl == 'materials'
+           or $tbl == 'section'
+         ) {
+         $query .= ' ORDER BY '.$tbl.'.version_id DESC';
+      }
+      $query .= ';';
       $result = select($query);
       $saved_item_ids = array();
       while ($row = mysql_fetch_assoc($result) ) {
