@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -1745,21 +1745,39 @@ class cs_view {
         
         $office_text = '';
     
-        $office_text .= '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" id="-630673958" name="-630673958" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" align="middle"    height="500" width="100%">'.LF;
-        $office_text .= '<param name="movie" value="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true">'.LF;
-        $office_text .= '<param name="quality" value="high">'.LF;
-        $office_text .= '<param name="play" value="true">'.LF;
-        $office_text .= '<param name="loop" value="true">'.LF;
-        $office_text .= '<param name="scale" value="showall">'.LF;
-        $office_text .= '<param name="wmode" value="opaque">'.LF;
-        $office_text .= '<param name="devicefont" value="false">'.LF;
-        $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
-        $office_text .= '<param name="menu" value="true">'.LF;
-        $office_text .= '<param name="allowFullScreen" value="true">'.LF;
-        $office_text .= '<param name="allowScriptAccess" value="always">'.LF;
-        $office_text .= '<param name="salign" value="">'.LF;
-        $office_text .= '<embed src="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" play="true" loop="true" scale="showall" wmode="opaque" devicefont="false" bgcolor="#ffffff" name="-630673958_object" menu="true" allowfullscreen="true" allowscriptaccess="always" salign="" type="application/x-shockwave-flash" align="middle" height="500" width="100%"></embed>'.LF;
-        $office_text .= '</object>'.LF;
+        $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
+        $office_text .= "<div id='embedded_flash' >".LF;
+        $office_text .= "<a href='http://www.scribd.com'>Scribd</a>".LF;
+        $office_text .= "</div>".LF;
+        
+        $office_text .= '<script type="text/javascript">'.LF;
+        $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
+        $office_text .= "scribd_doc.addParam('height', 500);".LF;
+        $office_text .= "scribd_doc.addParam('width', 400);".LF;
+        $office_text .= "scribd_doc.addParam('page', 10);".LF;
+        $office_text .= "scribd_doc.addParam('public', true);".LF;
+        $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
+        $office_text .= "scribd_doc.write('embedded_flash');".LF;
+        $office_text .= "</script>".LF;
+    
+    
+// Umgestellt auf JavaScript -> Auswahl von mode (book, slideshow, etc.) sonst nicht moeglich   
+//        $office_text .= '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" id="-630673958" name="-630673958" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" align="middle"    height="500" width="100%">'.LF;
+//        $office_text .= '<param name="movie" value="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true">'.LF;
+//        $office_text .= '<param name="quality" value="high">'.LF;
+//        $office_text .= '<param name="play" value="true">'.LF;
+//        $office_text .= '<param name="loop" value="true">'.LF;
+//        $office_text .= '<param name="scale" value="showall">'.LF;
+//        $office_text .= '<param name="wmode" value="opaque">'.LF;
+//        $office_text .= '<param name="devicefont" value="false">'.LF;
+//        $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
+//        $office_text .= '<param name="menu" value="true">'.LF;
+//        $office_text .= '<param name="mode" value="slideshow">'.LF;
+//        $office_text .= '<param name="allowFullScreen" value="true">'.LF;
+//        $office_text .= '<param name="allowScriptAccess" value="always">'.LF;
+//        $office_text .= '<param name="salign" value="">'.LF;
+//        $office_text .= '<embed src="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" play="true" loop="true" scale="showall" wmode="opaque" devicefont="false" bgcolor="#ffffff" name="-630673958_object" menu="true" allowfullscreen="true" allowscriptaccess="always" salign="" mode="slideshow" type="application/x-shockwave-flash" align="middle" height="500" width="100%"></embed>'.LF;
+//        $office_text .= '</object>'.LF;
          
       }
       
