@@ -2,7 +2,7 @@
 $message["WIKI_CONFIGURATION_DESC"]["de"] = "Einstellungen für das angebundene Wiki.";
 $message["WIKI_CONFIGURATION_LINK"]["de"] = "Raum-Wiki";
 $message["WIKI_CONFIGURATION_SECTION_EDIT"]["de"] = "SectionEdit<br/>(Erweiterung)";
-$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["de"] = "aktivieren";
+$message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["de"] = "Abschnittsfunktionen aktivieren.";
 $message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["de"] = "Überschriften automatisch als Beginn neuer Abschnitte erkennen";
 $message["WIKI_DELETE_BUTTON"]["de"] = "Wiki löschen";
 $message["WIKI_SAVE_BUTTON"]["de"] = "Wiki anlegen";
