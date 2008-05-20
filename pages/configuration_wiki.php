@@ -103,6 +103,7 @@ else {
               and $dir != '..'
               and $dir != '.'
               and $dir != 'print'
+              and $dir != 'jsMath'
 #              and $dir != 'svs'
               and $dir != 'CVS'
             ) {
