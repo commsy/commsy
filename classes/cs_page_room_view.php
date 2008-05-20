@@ -815,13 +815,6 @@ class cs_page_room_view extends cs_page_view {
                } else {
                   $rubrics = array();
                }
-               if ($context_item->withInformationBox()){
-                   if (empty($config_text)){
-                      $config_text .='true';
-                   }else{
-                      $config_text .= ',true';
-                   }
-               }
                foreach ( $rubrics as $rubric ) {
                   $rubric_array = explode('_', $rubric);
                   if ( $rubric_array[1] != 'none' and $rubric_array[1] != 'nodisplay') {
@@ -842,8 +835,11 @@ class cs_page_room_view extends cs_page_view {
                }
                foreach ($this->_views_left as $view) {
                   if (!$this->_environment->inPrivateRoom()){
-                     $html .= '<div class="commsy_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
-                     $desc = $view->_getDescriptionAsHTML();
+                     if ($view->getViewName() != getMessage('COMMON_INFORMATION_INDEX')){
+                        $html .= '<div class="commsy_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
+                     }else{
+                        $html .= '<div id="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
+                     }$desc = $view->_getDescriptionAsHTML();
                      $noscript_title = $view->getViewTitle();
                      $title = addslashes($view->getViewTitle());
                      if ($view->getViewName() != getMessage('COMMON_INFORMATION_INDEX')){
@@ -872,16 +868,6 @@ class cs_page_room_view extends cs_page_view {
                           $title_string .= ',"'.$title.'"';
                           $desc_string  .= ',"'.$desc.'"';
                           $size_string  .= ',"'.$size.'"';
-                       }
-                     }else{
-                       if (empty($title_string)){
-                          $title_string .= '"'.addslashes($view->getViewTitle()).'"';
-                          $desc_string  .= '"'.$desc.'"';
-                          $size_string  .= '" "';
-                       }else{
-                          $title_string .= ',"'.addslashes($view->getViewTitle()).'"';
-                          $desc_string  .= ',"'.$desc.'"';
-                          $size_string  .= '," "';
                        }
                      }
                      $html .= '<div>';

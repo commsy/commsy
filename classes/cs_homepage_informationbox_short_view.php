@@ -146,26 +146,29 @@ class cs_homepage_informationbox_short_view extends cs_view {
    }
 
    function _getContentAsHTML() {
-      $html = '<div class="right_box">';
-      $current_context = $this->_environment->getCurrentContextItem();
-      $html .= '<div class="right_box_main">'.LF;
       $current_context = $this->_environment->getCurrentContextItem();
       $id = $current_context->getInformationBoxEntryID();
       $manager = $this->_environment->getItemManager();
       $item = $manager->getItem($id);
       $entry_manager = $this->_environment->getManager($item->getItemType());
       $entry = $entry_manager->getItem($id);
-#      $desc = chunkText($entry->getDescription(),500);
+      $html = '<div class="right_box">';
+      $current_context = $this->_environment->getCurrentContextItem();
+      $html .= '<div class="right_box_title">';
+      $html .= '<div id="right_box_title_link" style="float:right;">';
+      $params = array();
+      $params['iid'] = $id;
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, getMessage('COMMON_INFOBOX_FURTHER_INFORMATION'), '', '', '','','','','class="right_box_title"');
+      $html .= '</div>';
+      $html .= '<div>'.$this->getViewTitle().'</div></div>';
+      $html .= '<div class="right_box_main" style="padding:0px 0px 0px 5px;">'.LF;
+      $desc = '';
       $desc = $entry->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
-         $html .= '<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto;">'.$desc.'</div>'.LF;
       }
-      $html .= '<div style="clear:both;">'.LF;
-      $html .= '</div>'.LF;
-      $html .= '<div style="padding-top:5px;">'.LF;
-      $html .= $this->_text_as_html_long('(:item '.$entry->getItemID().' text=\''.getMessage('COMMON_INFOBOX_FURTHER_INFORMATION').'\' :)');
-      $html .= '</div>'.LF;
+      $html .= '<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto;">';
+      $html .= '<div style="padding:3px;">'.$desc.'</div></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>';
       unset($current_context);

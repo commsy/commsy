@@ -79,7 +79,7 @@ class cs_institution_detail_view extends cs_detail_view {
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
-         $html .= $desc.LF;
+         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
       // Members
       $html .= '<h3>'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;

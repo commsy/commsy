@@ -999,7 +999,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
          $desc = $this->_show_images($desc,$item,true);
-         $retour .= $desc.LF;
+         $retour .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
       $retour  = '<div style="margin-left: 3px;">'.$retour.'</div>'.LF;
 

@@ -208,7 +208,7 @@ var $_clipboard_id_array=array();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
          $desc = $this->_show_images($desc,$item,true);
-         $html .= $desc.LF;
+         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
       $html  .= '<!-- END OF DATE ITEM DETAIL -->'."\n\n";

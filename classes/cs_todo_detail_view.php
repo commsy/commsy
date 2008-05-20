@@ -138,7 +138,7 @@ class cs_todo_detail_view extends cs_detail_view {
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
          $desc = $this->_show_images($desc,$item,true);
-         $html .= $desc.LF;
+         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
       $html  .= '<!-- END OF TODO ITEM DETAIL -->'.LF.LF;

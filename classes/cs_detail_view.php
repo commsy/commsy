@@ -283,6 +283,52 @@ class cs_detail_view extends cs_view {
       return $html;
    }
 
+   function getScrollableContent($text,$item,$width,$width_link = true){
+   	$html = '';
+      if (empty($width)){
+      	$session = $this->_environment->getSession();
+         $left_menue_status = $session->getValue('left_menue_status');
+         if ($left_menue_status != 'disapear') {
+            if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
+               $width = '536';
+            }else{
+               $width = '524';
+            }
+         }else{
+         	$width = '655';
+         }
+      }
+      $params = $this->_environment->getCurrentParameterArray();
+      if (!isset($params['mode']) or $params['mode'] != 'print'){
+      $params['mode']='print';
+      $anchor = '';
+      if ($item->getType()=='section' or $item->getType()=='annotation' or $item->getType()=='discarticle'){
+      	$anchor = 'anchor'.$item->getItemID();
+      }
+      $link = '&gt; '.ahref_curl($this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 'detail',
+                                 $params,
+                                 $this->_translator->getMessage('COMMON_LIST_WHOLE_CONTENT'),
+                                 '',
+                                 'help',
+                                 $anchor,
+                                 '',
+                                 'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=500\');"',
+                                 '',
+                                 ''
+                                 );
+      $link = addslashes($link);
+      $link = str_replace('</','&COMMSYDHTMLTAG&',$link);
+      $html .= '<div id="handle_width_'.$item->getItemID().'"><div id="inner_handle_width_'.$item->getItemID().'" class="handle_width">'.$this->_show_images($text,$this->_item,$width_link).'</div></div>'.LF;
+      $html .= '<script type="text/javascript"> handleWidth("handle_width_'.$item->getItemID().'","'.$width.'","'.$link.'");</script>';
+
+      }else{
+      	$html .= $text;
+      }
+      return $html;
+   }
+
    function _getAdditionalActionsAsHTML($item){
       $html = '';
       return $html;
@@ -1806,7 +1852,7 @@ class cs_detail_view extends cs_view {
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
-         $html .= $desc.LF;
+         $html .= $this->getScrollableContent($desc,$item,'',true);
       }
       // Show info about the version the annotation refers to
       $current_version = $annotated_item->getVersionID();

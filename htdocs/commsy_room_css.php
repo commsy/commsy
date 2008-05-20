@@ -82,7 +82,13 @@ a:hover, a:active {
 }
 
 .handle_width{
-	overflow:auto;
+#    overflow:auto;
+}
+
+.handle_width_border{
+    overflow:auto;
+    padding:3px;
+    border: 1px solid <?php echo($color['info_color'])?>;
 }
 
 .desc {

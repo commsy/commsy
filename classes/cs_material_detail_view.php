@@ -675,7 +675,7 @@ class cs_material_detail_view extends cs_detail_view {
          $desc = $item->getDescription();
          if ( !empty($desc) ) {
             $temp_string = $this->_text_as_html_long($desc);
-            $html .= '<div class="handle_width">'.$this->_show_images($temp_string,$this->_item,$with_links).'</div>'.LF;
+            $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          }
       }
 
@@ -787,7 +787,8 @@ class cs_material_detail_view extends cs_detail_view {
       if ( !empty($section_description) ) {
          $section_description = $this->_text_as_html_long($section_description);
          $section_description = $this->_show_images($section_description, $item, $with_links);
-         $html .= '<div class="handle_width" style="margin-left: 3px;">'.$section_description.'</div>';
+         $html .= $this->getScrollableContent($section_description,$item,'',$with_links);
+#         $html .= '<div class="handle_width" style="margin-left: 3px;">'.$section_description.'</div>';
       }
 
       // files

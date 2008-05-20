@@ -49,6 +49,12 @@ if (!empty($_GET['cid'])) {
    font-size:10pt;
 }
 
+a.right_box_title {
+   color:<?php echo($color['headline_text'])?>;
+   font-weight:bold;
+   font-size: 8pt;
+}
+
 div.right_box_title{
    background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color:<?php echo($color['tabs_background'])?>;

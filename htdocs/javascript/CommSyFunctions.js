@@ -46,4 +46,17 @@
       buildRoomLayer();
    }
 
+   function handleWidth(id,max_width,link_name){
+      var div = document.getElementById(id);
+      var inner_div = document.getElementById('inner_'+id);
+      var width = inner_div.offsetWidth;
+      var outer_width = div.offsetWidth;
+       if (width > max_width){
+         var link = document.createElement('A');
+         link.innerHTML = link_name.replace(/&COMMSYDHTMLTAG&/g,'</');
+         div.appendChild(link);
+         inner_div.className = 'handle_width_border';
+      }
+   }
+
 

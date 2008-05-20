@@ -105,7 +105,7 @@ class cs_group_detail_view extends cs_detail_view {
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
-         $html .= $desc.LF;
+         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
       #########################################
