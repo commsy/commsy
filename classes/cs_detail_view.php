@@ -290,12 +290,12 @@ class cs_detail_view extends cs_view {
          $left_menue_status = $session->getValue('left_menue_status');
          if ($left_menue_status != 'disapear') {
             if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
-               $width = '536';
+               $width = '540';
             }else{
-               $width = '524';
+               $width = '530';
             }
          }else{
-         	$width = '655';
+         	$width = '660';
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
@@ -319,7 +319,7 @@ class cs_detail_view extends cs_view {
                                  ''
                                  );
       $link = addslashes($link);
-      $link = str_replace('</','&COMMSYDHTMLTAG&',$link);
+      $link = str_replace('</','COMMSYDHTMLTAG',$link);
       $html .= '<div id="handle_width_'.$item->getItemID().'"><div id="inner_handle_width_'.$item->getItemID().'" class="handle_width">'.$this->_show_images($text,$this->_item,$width_link).'</div></div>'.LF;
       $html .= '<script type="text/javascript"> handleWidth("handle_width_'.$item->getItemID().'","'.$width.'","'.$link.'");</script>';
 
