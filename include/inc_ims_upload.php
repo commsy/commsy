@@ -41,44 +41,44 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
    foreach($values_array as $key => $value){
      switch ($value['tag']){
        case 'dc:title':
-            if ($value['type'] == 'open'){
-                $title = $values_array[$key+1]['value'];
-            }
+            $title = $values_array[$key]['value'];
             break;
        case 'dc:creator':
             if (!empty ($author)){
                 $author .= ', ';
             }
-            if ($value['type'] == 'open'){
-                $author = $values_array[$key+1]['value'];
-            }
-             break;
-       case 'dcterms:issued':
-            if ($value['type'] == 'open'){
-                $pub_date = $values_array[$key+1]['value'];
+            if (isset($values_array[$key]['value'])){
+               $author = $values_array[$key]['value'];
             }
             break;
+       case 'dcterms:issued':
+           if (isset($values_array[$key]['value'])){
+               $pub_date = $values_array[$key]['value'];
+           }
+           break;
        case 'dcterms:abstract':
-            if ($value['type'] == 'open'){
-                $abstract = $values_array[$key+1]['value'];
+            if (isset($values_array[$key]['value'])){
+               $abstract = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:tableOfContents':
-            $table_of_content = $values_array[$key]['attributes']['dcx:valueURI'];
+            if (isset($values_array[$key]['value'])){
+               $table_of_content = $values_array[$key]['value'];
+            }
             break;
        case 'dc:identifier':
             if ($value['type'] == 'complete'){
-                if (isset($values_array[$key]['attributes']['dcx:valueURI'])){
+                if (isset($values_array[$key]['value'])){
                    if (!empty($full_text)){
                       $full_text .= ', ';
                    }
-                   $full_text .= $values_array[$key]['attributes']['dcx:valueURI'];
-                   if (strstr($values_array[$key]['attributes']['dcx:valueURI'],'files/')
-                       and !strstr($values_array[$key]['attributes']['dcx:valueURI'],'http:')
-                        and !strstr($values_array[$key]['attributes']['dcx:valueURI'],'www.')
-                        and !strstr($values_array[$key]['attributes']['dcx:valueURI'],'ftp:')
+                   $full_text .= $values_array[$key]['value'];
+                   if (strstr($values_array[$key]['value'],'files/')
+                       and !strstr($values_array[$key]['value'],'http:')
+                        and !strstr($values_array[$key]['value'],'www.')
+                        and !strstr($values_array[$key]['value'],'ftp:')
                       ){
-                         $files[]=$values_array[$key]['attributes']['dcx:valueURI'];
+                         $files[]=$values_array[$key]['value'];
                       }
                 }
             }
@@ -103,13 +103,15 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
       foreach($values_array as $key => $value){
          switch ($value['tag']){
               case 'dc:contributor':
-               if ($value['type'] == 'open'){
-                   if (!empty ($author)){
-                      $author .= ', ';
-                   }
-                   $author = $values_array[$key+1]['value'];
-                }
-                break;
+                 if (isset($values_array[$key]['value'])){
+                    $author = $values_array[$key]['value'];
+                 }
+                 break;
+              case 'dc:author':
+                 if (isset($values_array[$key]['value'])){
+                    $author = $values_array[$key]['value'];
+                 }
+                 break;
          }
       }
    }
@@ -141,13 +143,22 @@ function _getMaterialListByXML($directory){
    global $environment;
    $xml_file_array = array();
    $xsl_file_array = array();
-   if (is_dir($directory)) {
-      if ($dh = opendir($directory)) {
+   $xml_directory = $directory.'/data/';
+   if (is_dir($xml_directory)) {
+      if ($dh = opendir($xml_directory)) {
          while (($file = readdir($dh)) !== false) {
             if ( strstr($file,'.xml') and $file != 'imsmanifest.xml' and $file != 'meta.xml'){
                $xml_file_array[] = $file;
             }
-            if ( strstr($file,'.xsl') ){
+         }
+         closedir($dh);
+      }
+    }
+    $xsl_directory = $directory.'/styles/';
+    if (is_dir($xsl_directory)) {
+      if ($dh = opendir($xsl_directory)) {
+         while (($file = readdir($dh)) !== false) {
+          if ( strstr($file,'.xsl') ){
                $xsl_file_array[] = $file;
             }
          }
@@ -155,17 +166,20 @@ function _getMaterialListByXML($directory){
       }
    }
    foreach($xml_file_array as $file){
-      $data = implode("", file($directory.$file));
+      $data = implode("", file($xml_directory.$file));
       $parser = xml_parser_create();
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
       xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
       xml_parse_into_struct($parser, $data, $values, $tags);
       $material_manager = $environment->getMaterialManager();
       $material_item = $material_manager->getNewItem();
-      $material_item = _getMaterialByXMLArray($material_item,$values,$directory);
+      $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
       xml_parser_free($parser);
       $proc = new XSLTProcessor;
       $xml = new DOMDocument;
+
+      //Datensätze vernünftig aufbereiten!!!
+      $data = utf8_decode($data);
       $xml->loadXML(utf8_encode($data));
       $xsl_filename = '';
       foreach($xsl_file_array as $xsl_file){
@@ -175,7 +189,7 @@ function _getMaterialListByXML($directory){
       }
       if (!empty($xsl_filename)){
          $xsl = new DOMDocument;
-         $xsl->load(utf8_encode($directory.$xsl_filename));
+         $xsl->load(utf8_encode($xsl_directory.$xsl_filename));
          $proc->importStyleSheet($xsl);
          $xml_doc = $proc->transformToXML($xml);
          $material_item->setBibliographicValues($xml_doc);
@@ -199,7 +213,7 @@ function getMaterialListByIMSZip($filename,$file_tmp_name, $target_directory,$en
       if($has_manifest) {
          $filename = str_replace('.zip','',strtolower($filename));
          $zip->extractTo($target_directory.$filename);
-         _getMaterialListByXML($target_directory.$filename.'/data/');
+         _getMaterialListByXML($target_directory.$filename);
       }
       _full_rmdir($target_directory);
       $zip->close();
