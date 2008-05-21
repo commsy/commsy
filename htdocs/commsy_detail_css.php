@@ -242,3 +242,7 @@ li.path_list{
    background-color: #dddddd;
 }
 
+#detail_content{
+#	width:520px;
+}
+
