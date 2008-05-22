@@ -70,6 +70,6 @@ $message["DATES_TITLE_DESC"]["en"] = "Event title <i>(private events will be hig
 $message["DATES_UPLOADFILE"]["en"] = "external file";
 $message["DATES_UPLOADFILE_DESC"]["en"] = "Choose a CSV file (*.csv).";
 $message["DATES_WEEK_TIPP_FOR_ENTRIES"]["en"] = "Tip: Click on an hour of the day to enter an event.";
-$message["DATES_WRONG_DATE_FORMAT"]["en"] = "Please enter the date in MM/TT/JJJJ format!";
+$message["DATES_WRONG_DATE_FORMAT"]["en"] = "Please enter the date in MM/DD/YYYY format!";
 $message["DATES_WRONG_FILE_FORMAT"]["en"] = "The file format has to be csv.";
 ?>
