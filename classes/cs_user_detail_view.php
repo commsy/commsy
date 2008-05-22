@@ -1013,39 +1013,41 @@ class cs_user_detail_view extends cs_detail_view {
          foreach ($ids as $id){
             if ( $show ){
                $item = $manager->getItem($id);
-               $type = $item->getItemType();
-               $rubric_manager = $this->_environment->getManager($type);
-               $rubric_item = $rubric_manager->getItem($id);
-               // Get link creator
-               $link_creator = $rubric_item->getCreatorItem();
-               $link_created = $this->_translator->getDateInLang($rubric_item->getCreationDate());
-               $link_creator_text = $this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
-                                    $this->_text_as_html_short($link_creator->getFullname()).', '.
-                                    $this->_text_as_html_short($link_created);
+               if ( isset($item) ) {
+                  $type = $item->getItemType();
+                  $rubric_manager = $this->_environment->getManager($type);
+                  $rubric_item = $rubric_manager->getItem($id);
+                  // Get link creator
+                  $link_creator = $rubric_item->getCreatorItem();
+                  $link_created = $this->_translator->getDateInLang($rubric_item->getCreationDate());
+                  $link_creator_text = $this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
+                                       $this->_text_as_html_short($link_creator->getFullname()).', '.
+                                       $this->_text_as_html_short($link_created);
 
-               switch ( $connection ) {
-                  case CS_DISCARTICLE_TYPE:
-                     $linked_iid = $rubric_item->getDiscussionID();
-                     break;
-                  default:
-                     $linked_iid = $rubric_item->getItemID();
-               }
-               $html .= '   <li>';
-               $params = array();
-               $params['iid'] = $linked_iid;
-               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                    $module,
-                                    'detail',
-                                    $params,
-                                    chunkText($this->_text_as_html_short($rubric_item->getTitle()),27),
-                                    $link_creator_text);
-               unset($params);
-               $html .= '</li>'.LF;
-               if ( $limit > 0 ) {
-                  $count_shown++;
-               }
-               if ( $count_shown > $limit ){
-                  $show = false;
+                  switch ( $connection ) {
+                     case CS_DISCARTICLE_TYPE:
+                        $linked_iid = $rubric_item->getDiscussionID();
+                        break;
+                     default:
+                        $linked_iid = $rubric_item->getItemID();
+                  }
+                  $html .= '   <li>';
+                  $params = array();
+                  $params['iid'] = $linked_iid;
+                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       chunkText($this->_text_as_html_short($rubric_item->getTitle()),27),
+                                       $link_creator_text);
+                  unset($params);
+                  $html .= '</li>'.LF;
+                  if ( $limit > 0 ) {
+                     $count_shown++;
+                  }
+                  if ( $count_shown > $limit ) {
+                     $show = false;
+                  }
                }
             }
          }
