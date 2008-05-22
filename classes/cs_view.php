@@ -1703,6 +1703,7 @@ class cs_view {
    
    function _format_office ($text, $array){ 
       $retour = '';
+      
       if ( !empty($array[1]) ) {
          $source = $array[1];
       }
@@ -1729,25 +1730,46 @@ class cs_view {
       if ( !empty($source) ) {
         global $c_commsy_path_file;
         include_once($c_commsy_path_file . '/classes/external_classes/scribd/scribd.php');
-    
-        $scribd_api_key = "6eudgpd7ipx10b78nkt0c";
-        $scribd_secret = "sec-bhal9rifk8n9hulohqdkxqhasl"; 
-
-        $scribd = new Scribd($scribd_api_key, $scribd_secret);
+     
+        $file_name_array = $this->_getItemFileListForView();
+        $file = $file_name_array[$source];
         
-        $file = '';
-        $doc_type = null;
-        $access = "private";
-        $rev_id = null;
-//        $result = $scribd->upload($file, $doc_type, $access, $rev_id);
-        $result['doc_id'] = "2991339";
-        $result['access_key'] = "key-76v4rxr74xgwth733k6";
+//        echo $file->getScribdDocId() . "--- <br/>";
+//        echo $file->getScribdAccessKey() . "--- <br/>";
+        
+//        pr($file);
+        
+        if ( isset($file) ) {
+            if(($file->getScribdDocId() == '') && ($file->getScribdAccessKey() == '')){
+            	 $scribd_api_key = "6eudgpd7ipx10b78nkt0c";
+                $scribd_secret = "sec-bhal9rifk8n9hulohqdkxqhasl";
+                $scribd = new Scribd($scribd_api_key, $scribd_secret);
+                $filename = $c_commsy_path_file . "/var/" . $this->_environment->getCurrentPortalID() . "/" . $file->getContextID() . "/" . $file->getDiskFileNameWithoutFolder();
+//                pr($filename);
+                $doc_type = null;
+                $access = "private";
+                $rev_id = null;
+        	       $result = $scribd->upload($filename, $doc_type, $access, $rev_id);
+                $file->setScribdDocId($result['doc_id']);
+                $file->setScribdAccessKey($result['access_key']);
+                $file->saveExtras();
+                $result['doc_id'] = $file->getScribdDocId();
+                $result['access_key'] = $file->getScribdAccessKey();
+//                $result['doc_id'] = "2991339";
+//                $result['access_key'] = "key-76v4rxr74xgwth733k6";
+            } else {
+                $result['doc_id'] = $file->getScribdDocId();
+                $result['access_key'] = $file->getScribdAccessKey();
+//                $result['doc_id'] = "2991339";
+//                $result['access_key'] = "key-76v4rxr74xgwth733k6";
+            }
+        }
         
         $office_text = '';
     
         $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
         $office_text .= "<div id='embedded_flash' >".LF;
-        $office_text .= "<a href='http://www.scribd.com'>Scribd</a>".LF;
+//        $office_text .= "<a href='http://www.scribd.com'>Scribd</a>".LF;
         $office_text .= "</div>".LF;
         
         $office_text .= '<script type="text/javascript">'.LF;

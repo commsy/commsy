@@ -191,6 +191,23 @@ class cs_file_manager extends cs_manager {
        unset($file_item);
        return $saved;
     }
+    
+    function updateExtras($file_item) {
+      $saved = false;
+      $current_user = $this->_environment->getCurrentUser();
+        $query = 'UPDATE '.$this->_db_table.' SET'.
+                ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"'.
+                    ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+          include_once('functions/error_functions.php');
+          trigger_error("Filemanager: Problem creating file entry: ".$query, E_USER_ERROR);
+      } else {
+         $saved = true;
+      }
+       unset($file_item);
+       return $saved;
+    }
 
    function saveItem($file_item) {
       $saved = false;
@@ -201,7 +218,8 @@ class cs_file_manager extends cs_manager {
                 ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
                 ' filename="'.encode(AS_DB,$file_item->getFileName()).'", ' .
                 ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ' .
-                ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'"';
+                ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'", ' .
+                ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"';
       unset($current_user);
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
@@ -283,7 +301,7 @@ class cs_file_manager extends cs_manager {
    }
 
    function _performQuery ($count = false) {
-      $query  = 'SELECT  files.files_id, files.creator_id, files.deleter_id, files.creation_date, files.modification_date, files.deletion_date, files.filename, files.context_id, files.size, files.has_html, files.scan';
+      $query  = 'SELECT  files.files_id, files.creator_id, files.deleter_id, files.creation_date, files.modification_date, files.deletion_date, files.filename, files.context_id, files.size, files.has_html, files.scan, files.extras';
       $query .= ' FROM '.$this->_db_table;
       $query .= ' WHERE 1';
 
@@ -610,6 +628,18 @@ class cs_file_manager extends cs_manager {
       }
       unset($file_item);
       return $saved;
+   }
+   
+   /** Prepares the db_array for the item
+    *
+    * @param $db_array Contains the data from the database
+    *
+    * @return array Contains prepared data ( textfunctions applied etc. )
+    */
+   function _buildItem($db_array) {
+      include_once('functions/text_functions.php');
+      $db_array['extras'] = cs_unserialize($db_array['extras']);
+      return parent::_buildItem($db_array);
    }
 }
 ?>

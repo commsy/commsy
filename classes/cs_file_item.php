@@ -385,6 +385,13 @@ class cs_file_item extends cs_item {
       $saved = $manager->updateHasHTML($this);
       return $saved;
    }
+   
+   function saveExtras() {
+      $saved = false;
+      $manager = $this->_environment->getFileManager();
+      $saved = $manager->updateExtras($this);
+      return $saved;
+   }
 
    public function getDataAsXML ($with_file_data = false) {
       $retour  = '<file_item>';
@@ -508,6 +515,20 @@ class cs_file_item extends cs_item {
 
    public function getVirusName () {
       return $this->_virus_name;
+   }
+   
+   function setScribdDocId($value) {
+      $this->_setExtra('SCRIBD_DOC_ID', (string)$value);
+   }
+   function getScribdDocId() {
+      return (string) $this->_getExtra('SCRIBD_DOC_ID');
+   }
+   
+   function setScribdAccessKey($value) {
+      $this->_setExtra('SCRIBD_ACCESS_KEY', (string)$value);
+   }
+   function getScribdAccessKey() {
+      return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
    }
 }
 ?>
