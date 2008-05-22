@@ -660,6 +660,9 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_OUTOFSERVICE':
                $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM',$link);
                break;
+            case 'CONFIGURATION_SCRIBD':
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM',$link);
+               break;
             default:
                $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item _FORM";
                break;
@@ -825,6 +828,29 @@ class cs_server_item extends cs_guide_item {
 
    function setShowOutOfService () {
       $this->_setOutOfServiceShow(1);
+   }
+   
+
+   function getScribdApiKey () {
+      $retour = '';
+      if ($this->_issetExtra('SCRIBD_API_KEY')) {
+         $retour = $this->_getExtra('SCRIBD_API_KEY');
+      }
+      return $retour;
+   }
+   function setScribdApiKey ($value) {
+      $this->_addExtra('SCRIBD_API_KEY',$value);
+   }
+   
+   function getScribdSecret () {
+      $retour = '';
+      if ($this->_issetExtra('SCRIBD_SECRET')) {
+         $retour = $this->_getExtra('SCRIBD_SECRET');
+      }
+      return $retour;
+   }
+   function setScribdSecret ($value) {
+      $this->_addExtra('SCRIBD_SECRET',$value);
    }
 }
 ?>

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -1469,6 +1469,21 @@ class cs_environment {
    public function getCurrentCommSyVersion () {
       $server_item = $this->getServerItem();
       return $server_item->getCurrentCommSyVersion();
+   }
+   
+   public function isScribdAvailable(){
+        if(!function_exists("curl_init")){
+            return false;
+        }
+        $scribd_api_key = $this->getServerItem()->getScribdApiKey();
+        $scribd_secret = $this->getServerItem()->getScribdSecret();
+        if ($scribd_api_key == ''){
+            return false;
+        }
+        if ($scribd_secret == ''){
+            return false;
+        }
+        return true;
    }
 }
 ?>

@@ -305,6 +305,9 @@ class cs_configuration_form_view extends cs_form_view {
             case 'CONFIGURATION_ARCHIVE':
                $tempMessage = getMessage('COMMON_CONFINGURATION_ARCHIVE');
                break;
+            case 'CONFIGURATION_SCRIBD':
+               $tempMessage = getMessage('COMMON_CONFIGURATION_SCRIBD_FORM_TITLE');
+               break;
             default:
                $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view";	// "Bitte Messagetag-Fehler melden"
                break;

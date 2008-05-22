@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -54,6 +54,18 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setFunction('service');
    #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
    $addon_link_list->add($link_item);
+
+   if ( $environment->inServer() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle(getMessage('CONFIGURATION_SCRIBD_LINK'));
+      $link_item->setIconPath('images/cs_config/CONFIGURATION_SCRIBD_IMAGE.gif');
+      $link_item->setDescription(getMessage('CONFIGURATION_SCRIBD_LINK_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('scribd');
+      $link_item->setParameter(array());
+      $addon_link_list->add($link_item);
+   }
 
    #########################################
    # Homepage - Raum-Webseite

@@ -965,7 +965,9 @@ class cs_view {
       $reg_exp_array['(:googlevideo'] = '/\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
+      if($this->_environment->isScribdAvailable()){
+        $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
+      }
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -1733,14 +1735,13 @@ class cs_view {
       if ( !empty($source) ) {
         global $c_commsy_path_file;
         include_once($c_commsy_path_file . '/classes/external_classes/scribd/scribd.php');
-     
         $file_name_array = $this->_getItemFileListForView();
         $file = $file_name_array[$source];
-        
+
         if ( isset($file) ) {
             if(($file->getScribdDocId() == '') && ($file->getScribdAccessKey() == '')){
-            	 $scribd_api_key = "6eudgpd7ipx10b78nkt0c";
-                $scribd_secret = "sec-bhal9rifk8n9hulohqdkxqhasl";
+                $scribd_api_key = $this->_environment->getServerItem()->getScibdApiKey();
+                $scribd_secret = $this->_environment->getServerItem()->getScibdSecret();
                 $scribd = new Scribd($scribd_api_key, $scribd_secret);
                 $filename = $c_commsy_path_file . "/" . $file->getDiskFileName(); 
                 $doc_type = null;
@@ -1773,6 +1774,7 @@ class cs_view {
         $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
         $office_text .= "scribd_doc.write('embedded_flash');".LF;
         $office_text .= "</script>".LF;
+        
       }
       
       $retour = $office_text;
