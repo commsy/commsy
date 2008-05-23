@@ -55,7 +55,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
    $addon_link_list->add($link_item);
 
-   if ( $environment->inServer() ) {
+   if ( $environment->inServer() && $environment->isCurlForPHPAvailable()) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_SCRIBD_LINK'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_SCRIBD_IMAGE.gif');

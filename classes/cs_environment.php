@@ -1471,8 +1471,13 @@ class cs_environment {
       return $server_item->getCurrentCommSyVersion();
    }
    
+   public function isCurlForPHPAvailable(){
+//   	return function_exists("curl_init");
+    return false;
+   }
+   
    public function isScribdAvailable(){
-        if(!function_exists("curl_init")){
+        if(!$this->isCurlForPHPAvailable()){
             return false;
         }
         $scribd_api_key = $this->getServerItem()->getScribdApiKey();

@@ -62,6 +62,7 @@ class cs_configuration_scribd_form extends cs_rubric_form {
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->setHeadline($this->_headline);
 
+      $this->_form->addText('text',$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_TITLE'),$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_DESC',getCommSyVersion()));
       $this->_form->addTextfield('scribd_api_key','',getMessage('API Key'),'',200,'40',false);
       $this->_form->addTextfield('scribd_secret','',getMessage('Secret'),'',200,'40',false);
 
