@@ -934,8 +934,11 @@ class cs_project_item extends cs_room_item {
             case 'CONFIGURATION_ARCHIVE':      //
                $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
+            case 'MAIL_PROCESS':      //
+               $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
+               break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item _FORM(911) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item _FORM(".__LINE__.") ";
                break;
          }
          $retour = $tempMessage;
