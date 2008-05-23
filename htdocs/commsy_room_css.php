@@ -83,6 +83,7 @@ a:hover, a:active {
 
 .handle_width{
     overflow:auto;
+    padding-bottom:3px;
 }
 
 .handle_width_border{
