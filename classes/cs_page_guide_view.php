@@ -1391,6 +1391,9 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div>';
       $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
       $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
+      if ( $type != 'portal' ) {
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
+      }
       $html .= '</div>';
       $html .= '</form>';
       $html .= '</div>';

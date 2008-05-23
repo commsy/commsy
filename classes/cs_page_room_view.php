@@ -579,7 +579,12 @@ class cs_page_room_view extends cs_page_view {
             $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION',$count);
             $html .= '</p>';
          }
-      }elseif($this->_environment->getCurrentFunction() == 'preferences' ){
+      } elseif ( $this->_environment->getCurrentFunction() == 'preferences'
+                 or
+                 ( $this->_environment->getCurrentModule() == 'project'
+                   and $this->_environment->getCurrentFunction() == 'detail'
+                 )
+               ) {
          $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
          $html .= '</h2>';
          $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
@@ -598,6 +603,16 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<div>';
       $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
       $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
+      if ( ( $this->_environment->getCurrentModule() == 'configuration'
+             and $this->_environment->getCurrentFunction() == 'preferences'
+           )
+           or
+           ( $this->_environment->getCurrentModule() == 'project'
+             and $this->_environment->getCurrentFunction() == 'detail'
+           )
+         ) {
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
+      }
       $html .= '</div>';
       $html .= '</form>';
       $html .= '</div>';

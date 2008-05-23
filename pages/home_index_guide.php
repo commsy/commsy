@@ -80,16 +80,27 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
    unset($params['action']);
    unset($params['iid']);
    redirect($environment->getCurrentContextID(), 'home', 'index', $params);
-}// Delete item
+}
+// Delete item
 elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
     $manager = $environment->getRoomManager();
     $item = $manager->getItem($current_item_id);
     $item->delete();
     redirect($environment->getCurrentContextID(), 'home', 'index', '');
 }
-
-
-
+// Archiv item
+elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
+    $manager = $environment->getRoomManager();
+    $item = $manager->getItem($current_item_id);
+    $item->close();
+    $item->save();
+    $params = $environment->getCurrentParameterArray();
+    $anchor = '';
+    $params['room_id'] = $current_item_id;
+    unset($params['action']);
+    unset($params['iid']);
+    redirect($environment->getCurrentContextID(), 'home', 'index', $params);
+}
 
 // get translation object
 $translator = $environment->getTranslationObject();
