@@ -104,7 +104,7 @@ else {
               and $dir != '.'
               and $dir != 'print'
               and $dir != 'jsMath'
-#              and $dir != 'svs'
+              and $dir != 'svs'
               and $dir != 'CVS'
             ) {
             $skin_array[] = $dir;
