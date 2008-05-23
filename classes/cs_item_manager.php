@@ -435,7 +435,7 @@ class cs_item_manager extends cs_manager {
       $retour = false;
       $days = 30;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
-      $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != '.CS_DISCARTICLE_TYPE.' AND type != '.CS_USER_TYPE.';'; // user und discarticle werden noch gebraucht
+      $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'" AND type != "'.CS_DISCARTICLE_TYPE.'" AND type != "'.CS_USER_TYPE.'";'; // user und discarticle werden noch gebraucht
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
