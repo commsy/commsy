@@ -158,7 +158,7 @@ class cs_homepage_informationbox_short_view extends cs_view {
       $html .= '<div id="right_box_title_link" style="float:right;">';
       $params = array();
       $params['iid'] = $id;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, getMessage('COMMON_INFOBOX_FURTHER_INFORMATION'), '', '', '','','','','class="right_box_title"');
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, '&gt; '.getMessage('COMMON_INFOBOX_FURTHER_INFORMATION'), '', '', '','','','','class="right_box_title"');
       $html .= '</div>';
       $html .= '<div>'.$this->getViewTitle().'</div></div>';
       $html .= '<div class="right_box_main" style="padding:0px 0px 0px 5px;">'.LF;
