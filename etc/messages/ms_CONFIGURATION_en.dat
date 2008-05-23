@@ -136,6 +136,8 @@ $message["CONFIGURATION_RUBRIC_DESC"]["en"] = "Use the following select boxes to
 </li><li><b>arrange</b> these workspace rubrics in the correct order</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["en"] = "Please remember: workspace rubrics cannot be selected twice.";
+$message["CONFIGURATION_SCRIBD_LINK"]["en"] = "Office-documents";
+$message["CONFIGURATION_SCRIBD_LINK_DESC"]["en"] = "Account information for Scribd integration.";
 $message["CONFIGURATION_SELECTION"]["en"] = "Workspace appearance";
 $message["CONFIGURATION_SERVICE_DESC"]["en"] = "Configure service links to ease user contact to support service and moderator/s.";
 $message["CONFIGURATION_SERVICE_EMAIL"]["en"] = "Service e-mail address";
@@ -146,8 +148,6 @@ $message["CONFIGURATION_SERVICE_EMAIL_ROOM"]["en"] = "throughout the workspace";
 $message["CONFIGURATION_SERVICE_EMAIL_SERVER"]["en"] = "throughout the server";
 $message["CONFIGURATION_SERVICE_LINK"]["en"] = "Configure service links";
 $message["CONFIGURATION_SERVICE_TITLE"]["en"] = "User support";
-$message["CONFIGURATION_SCRIBD_LINK"]["en"] = "Office-documents";
-$message["CONFIGURATION_SCRIBD_LINK_DESC"]["en"] = "Account information for Scribd integration.";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["en"] = "display announcements (default)";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["en"] = "do not display announcements";
 $message["CONFIGURATION_SKIN_FORM_CHOOSE_TEXT"]["en"] = "Appearance";

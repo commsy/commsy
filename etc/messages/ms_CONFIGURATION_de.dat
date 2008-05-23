@@ -135,6 +135,8 @@ $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt 
 </li><li>in <b>welcher Reihenfolge</b> diese Rubriken dargestellt werden sollen.</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewählen.";
+$message["CONFIGURATION_SCRIBD_LINK"]["de"] = "Office-Dokumente";
+$message["CONFIGURATION_SCRIBD_LINK_DESC"]["de"] = "Zugangsdaten für die Integration von Scribd.";
 $message["CONFIGURATION_SELECTION"]["de"] = "Raumanzeige";
 $message["CONFIGURATION_SERVICE_DESC"]["de"] = "Einstellungen zum Handhabungssupport des CommSyService.";
 $message["CONFIGURATION_SERVICE_EMAIL"]["de"] = "Service E-Mail";
@@ -145,8 +147,6 @@ $message["CONFIGURATION_SERVICE_EMAIL_ROOM"]["de"] = "raumweit";
 $message["CONFIGURATION_SERVICE_EMAIL_SERVER"]["de"] = "serverweit";
 $message["CONFIGURATION_SERVICE_LINK"]["de"] = "Handhabungssupport";
 $message["CONFIGURATION_SERVICE_TITLE"]["de"] = "Handhabungssupport";
-$message["CONFIGURATION_SCRIBD_LINK"]["de"] = "Office-Dokumente";
-$message["CONFIGURATION_SCRIBD_LINK_DESC"]["de"] = "Zugangsdaten für die Integration von Scribd.";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["de"] = "als Bereich anzeigen (Standard)";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["de"] = "keine Ankündigungen anzeigen";
 $message["CONFIGURATION_SKIN_FORM_CHOOSE_TEXT"]["de"] = "Darstellung";

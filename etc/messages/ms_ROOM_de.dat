@@ -1,6 +1,7 @@
 <?php
 $message["ROOM_ADMINISTRATION_DESC"]["de"] = "dieses Raums";
 $message["ROOM_ARCHIVE_STATUS"]["de"] = "Raum archivieren";
+$message["ROOM_ARCHIV_BUTTON"]["de"] = "Archivieren";
 $message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <ul>
 <li>Ankündigungen</li>

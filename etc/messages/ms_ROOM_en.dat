@@ -1,6 +1,7 @@
 <?php
 $message["ROOM_ADMINISTRATION_DESC"]["en"] = "of this workspace";
 $message["ROOM_ARCHIVE_STATUS"]["en"] = "Archive room";
+$message["ROOM_ARCHIV_BUTTON"]["en"] = "Archive";
 $message["ROOM_BUSINESS_CONTEXT_DESCRIPTION"]["en"] = "This is a workspace preset with the following workspace rubrics setup:
 <ul>
 <li>Announcements</li>
