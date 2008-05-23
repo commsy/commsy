@@ -188,22 +188,27 @@ class cs_environment {
          if (is_null($this->current_context) or $this->current_context->getItemID() != $this->current_context_id) {
             $item_manager = $this->getItemManager();
             $item = $item_manager->getItem($this->current_context_id);
-            $type = $item->getItemType();
-            if ($type == CS_PROJECT_TYPE) {
-               $manager = $this->getRoomManager(); // room_manager for caching
-            } elseif ($type == CS_COMMUNITY_TYPE) {
-               $manager = $this->getRoomManager(); // room_manager for caching
-            } elseif ($type == CS_PRIVATEROOM_TYPE) {
-               $manager = $this->getRoomManager(); // room_manager for caching
-            } elseif ($type == CS_GROUPROOM_TYPE) {
-               $manager = $this->getRoomManager(); // room_manager for caching
-            } elseif ($type == CS_PORTAL_TYPE) {
-               $manager = $this->getPortalManager();
-            } elseif ($type == CS_SERVER_TYPE) {
-               $manager = $this->getServerManager();
+            if ( isset($item) ) {
+               $type = $item->getItemType();
+               if ($type == CS_PROJECT_TYPE) {
+                  $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == CS_COMMUNITY_TYPE) {
+                  $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == CS_PRIVATEROOM_TYPE) {
+                  $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == CS_GROUPROOM_TYPE) {
+                  $manager = $this->getRoomManager(); // room_manager for caching
+               } elseif ($type == CS_PORTAL_TYPE) {
+                  $manager = $this->getPortalManager();
+               } elseif ($type == CS_SERVER_TYPE) {
+                  $manager = $this->getServerManager();
+               } else {
+                  include_once('functions/error_functions.php');
+                  trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
+               }
             } else {
                include_once('functions/error_functions.php');
-               trigger_error('wrong type of room ['.$type.']',E_USER_ERROR);
+               trigger_error(' can not initiate room -> bug in item table',E_USER_ERROR);
             }
             $this->current_context = $manager->getItem($this->current_context_id);
          }
@@ -1470,12 +1475,12 @@ class cs_environment {
       $server_item = $this->getServerItem();
       return $server_item->getCurrentCommSyVersion();
    }
-   
+
    public function isCurlForPHPAvailable(){
 //   	return function_exists("curl_init");
     return false;
    }
-   
+
    public function isScribdAvailable(){
         if(!$this->isCurlForPHPAvailable()){
             return false;
