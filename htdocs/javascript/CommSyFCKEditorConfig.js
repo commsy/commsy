@@ -41,8 +41,8 @@ FCKConfig.ToolbarStartExpanded  = true ;
 FCKConfig.GeckoUseSPAN          = true ;
 
 FCKConfig.ToolbarSets["CommSy"] = [
-   ['FontFormat','FontSize','-','Table','Link','Rule','PasteWord','-','Smiley','-','About'],
-   ['Bold','Italic','Underline','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-','OrderedList','UnorderedList','-','Outdent','Indent','-','TextColor','BGColor','-','FitWindow']
+   ['FontFormat','FontSize','-','Table','Link','Rule','PasteWord','-','Smiley','-','FitWindow','-','About'],
+   ['Bold','Italic','Underline','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyFull','-','OrderedList','UnorderedList','-','Outdent','Indent','-','TextColor','BGColor','-','Subscript','Superscript']
 ];
 
 FCKConfig.ToolbarSets["MinCommSy"] = [
@@ -72,6 +72,8 @@ FCKConfig.ToolbarSets["Default"] = [
 ] ;
 
 FCKConfig.FontFormats	= 'p;h1;h2;h3' ;
+FCKConfig.FontSizes		= 'xx-small;x-small;small;medium;large;x-large' ;
+
 FCKConfig.ContextMenu = ['Generic','Link','Anchor','Image','Flash','Select','Textarea','Checkbox','Radio','TextField','HiddenField','ImageButton','Button','BulletedList','NumberedList','TableCell','Table','Form'];
 
 FCKConfig.LinkBrowser = false;
