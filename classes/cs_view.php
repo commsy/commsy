@@ -1214,7 +1214,7 @@ class cs_view {
       return $retour;
    }
 
-   function _format_youtube ($text, $array){ 
+   function _format_youtube ($text, $array){
       $retour = '';
       if ( !empty($array[1]) ) {
          $source = $array[1];
@@ -1702,13 +1702,13 @@ class cs_view {
       $retour = $text;
       return $retour;
    }
-   
-   function _format_office ($text, $array){ 
-      
+
+   function _format_office ($text, $array){
+
       // Abfrage auf curl-Funktionen einbauen.
-      
+
       $retour = '';
-      
+
       if ( !empty($array[1]) ) {
          $source = $array[1];
       }
@@ -1743,11 +1743,11 @@ class cs_view {
                 $scribd_api_key = $this->_environment->getServerItem()->getScibdApiKey();
                 $scribd_secret = $this->_environment->getServerItem()->getScibdSecret();
                 $scribd = new Scribd($scribd_api_key, $scribd_secret);
-                $filename = $c_commsy_path_file . "/" . $file->getDiskFileName(); 
+                $filename = $c_commsy_path_file . "/" . $file->getDiskFileName();
                 $doc_type = null;
                 $access = "private";
                 $rev_id = null;
-        	       $result = $scribd->upload($filename, $doc_type, $access, $rev_id);
+                $result = $scribd->upload($filename, $doc_type, $access, $rev_id);
                 $file->setScribdDocId($result['doc_id']);
                 $file->setScribdAccessKey($result['access_key']);
                 $file->saveExtras();
@@ -1758,13 +1758,13 @@ class cs_view {
                 $result['access_key'] = $file->getScribdAccessKey();
             }
         }
-        
+
         $office_text = '';
-    
+
         $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
         $office_text .= "<div id='embedded_flash' >".LF;
         $office_text .= "</div>".LF;
-        
+
         $office_text .= '<script type="text/javascript">'.LF;
         $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
         $office_text .= "scribd_doc.addParam('height', 500);".LF;
@@ -1774,9 +1774,9 @@ class cs_view {
         $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
         $office_text .= "scribd_doc.write('embedded_flash');".LF;
         $office_text .= "</script>".LF;
-        
+
       }
-      
+
       $retour = $office_text;
       return $retour;
    }
@@ -1823,7 +1823,9 @@ class cs_view {
                   unset($params);
                } else {
                   $width_auto = 200;
-                  if (function_exists('gd_info')) {
+                  if ( function_exists('gd_info')
+                       and file_exists($file->getDiskFileName())
+                     ) {
                      $image_in_info = GetImageSize($file->getDiskFileName());
                      $x_orig= $image_in_info[0];
                      if ( $x_orig < $width_auto ) {

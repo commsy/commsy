@@ -50,7 +50,7 @@ class cs_discussion_detail_view extends cs_detail_view {
 
    function _getTitleAsHTML() {
       $item = $this->getItem();
-      $html = $item->getTitle();
+      $html = $this->_text_as_html_short($item->getTitle());
       if ( $item->isClosed() ) {
          $html .= ' <span style="font-size:smaller">('.$this->_translator->getMessage('DISCUSSION_IS_CLOSED').')</span>';
       }
@@ -65,8 +65,6 @@ class cs_discussion_detail_view extends cs_detail_view {
    function _getClipboardIDArray() {
       return $this->_clipboard_id_array;
    }
-
-
 
    function _getDiscussionFormAsHTML(){
         if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {

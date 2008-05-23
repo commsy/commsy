@@ -284,9 +284,9 @@ class cs_detail_view extends cs_view {
    }
 
    function getScrollableContent($text,$item,$width,$width_link = true){
-   	$html = '';
+      $html = '';
       if (empty($width)){
-      	$session = $this->_environment->getSession();
+         $session = $this->_environment->getSession();
          $left_menue_status = $session->getValue('left_menue_status');
          if ($left_menue_status != 'disapear') {
             if ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE){
@@ -295,7 +295,7 @@ class cs_detail_view extends cs_view {
                $width = '530';
             }
          }else{
-         	$width = '660';
+            $width = '660';
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
@@ -303,7 +303,7 @@ class cs_detail_view extends cs_view {
       $params['mode']='print';
       $anchor = '';
       if ($item->getType()=='section' or $item->getType()=='annotation' or $item->getType()=='discarticle'){
-      	$anchor = 'anchor'.$item->getItemID();
+         $anchor = 'anchor'.$item->getItemID();
       }
       $link = '&gt; '.ahref_curl($this->_environment->getCurrentContextID(),
                                  $this->_environment->getCurrentModule(),
@@ -324,7 +324,7 @@ class cs_detail_view extends cs_view {
       $html .= '<script type="text/javascript"> handleWidth("handle_width_'.$item->getItemID().'","'.$width.'","'.$link.'");</script>';
 
       }else{
-      	$html .= $text;
+         $html .= $text;
       }
       return $html;
    }
@@ -591,7 +591,7 @@ class cs_detail_view extends cs_view {
       $detail_box_conf = $current_context->getDetailBoxConf();
 
       if($rubric == CS_DISCUSSION_TYPE){
-         $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($this->_getTitleAsHTML());
+         $html .= '<h2 class="pagetitle">'.$this->_getTitleAsHTML();
       }elseif ($rubric != CS_USER_TYPE ){
          $html .= '<h2 class="pagetitle">'.$this->_text_as_html_short($item->getTitle());
       }else{
