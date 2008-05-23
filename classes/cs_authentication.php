@@ -260,7 +260,11 @@ class cs_authentication {
       } else {
          $auth_manager = $this->_getAuthManagerByAuthSourceItem($auth_source_item);
          $current_context = $this->_environment->getCurrentContextItem();
-         if ( $auth_source_item->getItemID() == $current_context->getAuthDefault() ) {
+         if ( ( $current_context->isPortal()
+                or $current_context->isServer()
+              )
+              and $auth_source_item->getItemID() == $current_context->getAuthDefault()
+            ) {
             $this->setDefaultAuthManager($auth_manager);
          }
          $this->_auth_manager[$auth_source_item->getItemID()] = $auth_manager;
