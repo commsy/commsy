@@ -54,7 +54,7 @@
       if (width > max_width){
          var link = document.createElement('DIV');
          link.innerHTML = link_name.replace('COMMSYDHTMLTAG','</');
-//         div.appendChild(link);
+         div.appendChild(link);
 //         inner_div.className = 'handle_width_border';
       }
       });
