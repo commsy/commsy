@@ -82,7 +82,7 @@ a:hover, a:active {
 }
 
 .handle_width{
-#    overflow:auto;
+    overflow:auto;
 }
 
 .handle_width_border{
