@@ -799,6 +799,7 @@ class cs_portal_item extends cs_guide_item {
 
       if ( $this->showTime() and $this->isOpen() ) {
          $cron_array[] = $this->_cronCheckTimeLabels();
+         $cron_array[] = $this->_cronRenewContinuousLinks();
       }
 
       return $cron_array;
@@ -847,22 +848,11 @@ class cs_portal_item extends cs_guide_item {
          $time_label->setTitle($title);
          $time_label->save();
 
-         $cont_room_list = $this->getContinuousRoomList();
-         if ($cont_room_list->isNotEmpty()) {
-            $cont_room_item = $cont_room_list->getFirst();
-            while ($cont_room_item) {
-              $cont_room_item->setContinuous();
-              $cont_room_item->saveWithoutChangingModificationInformation();
-              unset($cont_room_item);
-              $cont_room_item = $cont_room_list->getNext();
-            }
-         }
          unset($time_label);
          unset($time_manager);
          unset($last_time_item);
          $retour['success'] = true;
-         $retour['success_text'] = 'insert new time label: '.$title.BR;
-         $retour['success_text'] .= 'renew links between continuous rooms and time labels';
+         $retour['success_text'] = 'insert new time label: '.$title;
       } else {
          $retour['success'] = true;
          $retour['success_text'] = 'nothing to do';
@@ -871,6 +861,46 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   function _cronRenewContinuousLinks () {
+      $retour = array();
+      $retour['title'] = 'renew links';
+      $retour['description'] = 'renew links between continuous rooms and current time label';
+      $retour['success'] = false;
+      $retour['success_text'] = 'cron failed';
+
+      $count = 0;
+
+      $current_time = $this->getCurrentTimeItem();
+      if ( isset($current_time) ) {
+         $cont_room_list = $this->getContinuousRoomList();
+         if ( isset($cont_room_list) and $cont_room_list->isNotEmpty()) {
+            $cont_room_item = $cont_room_list->getFirst();
+            while ($cont_room_item) {
+               $time_list = $cont_room_item->getTimeList();
+               if ( isset($time_list)
+                    and !$time_list->inList($current_time)
+                  ) {
+                  $cont_room_item->setContinuous();
+                  $cont_room_item->saveWithoutChangingModificationInformation();
+                  $count++;
+               }
+               unset($time_list);
+               unset($cont_room_item);
+               $cont_room_item = $cont_room_list->getNext();
+            }
+         }
+         unset($cont_room_list);
+         unset($current_time);
+         if ( $count > 0 ) {
+            $retour['success'] = true;
+            $retour['success_text'] = 'renew links between '.$count.' continuous rooms and current time label';
+         } else {
+            $retour['success'] = true;
+            $retour['success_text'] = 'nothing to do';
+         }
+      }
+      return $retour;
+   }
 
    /** get UsageInfos
     * this method returns the usage infos
