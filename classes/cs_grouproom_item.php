@@ -769,11 +769,20 @@ class cs_grouproom_item extends cs_room_item {
             case 'ANNOUNCEMENT_INDEX':         // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_INDEX',$link);
                break;
+            case 'ANNOUNCEMENT_CLIPBOARD_INDEX':         // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
+               break;
             case 'DATE_INDEX':                 // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_INDEX',$link);
                break;
+            case 'DATE_CLIPBOARD_INDEX':                 // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
+               break;
             case 'DISCUSSION_INDEX':           // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_INDEX',$link);
+               break;
+            case 'DISCUSSION_CLIPBOARD_INDEX':           // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
                break;
             case 'HOME_INDEX':                 // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_HOME_INDEX',$link);
@@ -784,8 +793,14 @@ class cs_grouproom_item extends cs_room_item {
             case 'MATERIAL_INDEX':             // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_INDEX',$link);
                break;
+            case 'MATERIAL_CLIPBOARD_INDEX':             // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
+               break;
             case 'TODO_INDEX':                 // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_INDEX',$link);
+               break;
+            case 'TODO_CLIPBOARD_INDEX':                 // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
                break;
             case 'TOPIC_INDEX':                // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_INDEX',$link);
