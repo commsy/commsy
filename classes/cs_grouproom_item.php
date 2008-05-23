@@ -809,7 +809,7 @@ class cs_grouproom_item extends cs_room_item {
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_INDEX',$link);
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_grouproom_item(804) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_grouproom_item(812) ";
                break;
          }
          $retour = $tempMessage;
@@ -970,12 +970,18 @@ class cs_grouproom_item extends cs_room_item {
             case 'LANGUAGE_UNUSED':      //
                $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
                break;
+            case 'USER_ACTION':      //
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_USER_ACTION_FORM');
+               break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_grouproom_item.php(959) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_grouproom_item.php(977) ";
                break;
          }
          $retour = $tempMessage;
-         if ($retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp.'_FORM' or $retour == 'tbd') {
+         if ( $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp.'_FORM'
+              or $retour == 'tbd'
+              or $retour == $tempMessage
+            ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
       }
@@ -995,7 +1001,7 @@ class cs_grouproom_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
-    $link = ahref_curl($this->_environment->getCurrentContextID(),
+         $link = ahref_curl($this->_environment->getCurrentContextID(),
                        'help',
                        'context',
                        array('module'=>$this->_environment->getCurrentModule(),
@@ -1050,7 +1056,7 @@ class cs_grouproom_item extends cs_room_item {
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_INDEX',$link);
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_grouproom_item(1043) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_grouproom_item(1059) ";
                break;
          }
          $retour = $tempMessage;
