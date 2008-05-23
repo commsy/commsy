@@ -974,7 +974,7 @@ class cs_grouproom_item extends cs_room_item {
                $tempMessage      = getMessage('USAGE_INFO_TEXT_USER_ACTION_FORM');
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_grouproom_item.php(977) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_grouproom_item.php(".__LINE__.") ";
                break;
          }
          $retour = $tempMessage;
