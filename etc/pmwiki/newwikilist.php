@@ -8,21 +8,20 @@ if ($handle = opendir('.')) {
     while (false !== ($file = readdir($handle))) {
         if ($file != "." and $file != ".." and is_dir($file) and is_numeric($file) ) {
           chdir($file.'/local');
+          $temp_array = array();
+          $temp_array['dir'] = $file;
+          $temp_array['time'] = filemtime($file);
           if ( file_exists('inc_config.php') ){
              include('inc_config.php');
-             $temp_array = array();
              $temp_array['title'] = $WIKI_WIKI_TITLE;
-             $temp_array['dir'] = $file;
-             $temp_array['time'] = filemtime($file);
              $wiki_array[] = $temp_array;
-          }elseif ( file_exists('commsy_config.php') ){
+             $wiki_array[] = $temp_array;
+          } elseif ( file_exists('commsy_config.php') ) {
              include('commsy_config.php');
-             $temp_array = array();
              $temp_array['title'] = $COMMSY_WIKI_TITLE;
-             $temp_array['dir'] = $file;
-             $temp_array['time'] = filemtime($file);
              $wiki_array[] = $temp_array;
           }
+          unset($temp_array);
           chdir('../..');
         }
     }
