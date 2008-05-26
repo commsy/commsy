@@ -1740,8 +1740,8 @@ class cs_view {
 
         if ( isset($file) ) {
             if(($file->getScribdDocId() == '') && ($file->getScribdAccessKey() == '')){
-                $scribd_api_key = $this->_environment->getServerItem()->getScibdApiKey();
-                $scribd_secret = $this->_environment->getServerItem()->getScibdSecret();
+                $scribd_api_key = $this->_environment->getServerItem()->getScribdApiKey();
+                $scribd_secret = $this->_environment->getServerItem()->getScribdSecret();
                 $scribd = new Scribd($scribd_api_key, $scribd_secret);
                 $filename = $c_commsy_path_file . "/" . $file->getDiskFileName();
                 $doc_type = null;
