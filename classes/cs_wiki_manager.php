@@ -227,7 +227,11 @@ class cs_wiki_manager extends cs_manager {
 
       if ( $item->WikiEnableCalendar() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/wikilog.php");'.LF;
-         $str .= '@include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
+         if($this->_environment->getCurrentContextItem()->getLanguage() == "de"){
+            $str .= '@include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
+         } else if ($this->_environment->getCurrentContextItem()->getLanguage() == "en") {
+         	$str .= '@include_once("$FarmD/cookbook/wikilog-i18n-en.php");'.LF;
+         }
          $str .= '$SHOW_CALENDAR = "1";'.LF.LF;
       }
 

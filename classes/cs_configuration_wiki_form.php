@@ -119,21 +119,53 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       $this->_form->addEmptyline();
       // already available features - added to form
-      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'',false,false,'','',true);
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');
+      
+      global $c_pmwiki_path_file;
+      
+      $features_media_available = array();
+      
+      if (file_exists($c_pmwiki_path_file.'/cookbook/swf.php')) {
+        // SWF
+        $features_media_available[] = array('enable_swf',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/wmplayer.php')) {
+        // WMPlayer
+        $features_media_available[] = array('enable_wmplayer',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/quicktime.php')) {
+        // Quicktime
+        $features_media_available[] = array('enable_quicktime',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/swf-sites2.php')) {
+        // Google, Youtube, Vimeo
+        $features_media_available[] = array('enable_youtube_google_vimeo',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+      }
+      
+      for ($index = 0; $index < sizeof($features_media_available); $index++) {
+            $array_element = $features_media_available[$index];
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);   
+            if($index < sizeof($features_media_available)-1){
+                $this->_form->combine();
+            }
+       }
+       if(sizeof($features_media_available) > 0){
+            $this->_form->addEmptyline();
+       }
+      
+//      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'',false,false,'','',true);
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');
 
       //  new features
-      $this->_form->addEmptyline();
       $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS_DESC'),false,false,'','',true,false);
       $this->_form->combine();
       $this->_form->addCheckbox('enable_sitemap',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE'),'');
       // extension: section_edit
-      global $c_pmwiki_path_file;
+
       if (file_exists($c_pmwiki_path_file.'/cookbook/sectionedit.php')) {
          $this->_form->combine();
          $this->_form->addCheckbox('wiki_section_edit',1,'',getMessage('WIKI_CONFIGURATION_SECTION_EDIT'),getMessage('WIKI_CONFIGURATION_SECTION_EDIT_VALUE'),'');
@@ -142,19 +174,61 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       }
       $this->_form->addEmptyline();
 
-      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),'');
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_notice',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE'),'');
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),'');
+      $features_available = array();
+
+      if (file_exists($c_pmwiki_path_file.'/cookbook/edit_fckeditor.php')) {
+        // FCKEditor
+        $features_available[] = array('enable_fckeditor',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if ((file_exists($c_pmwiki_path_file.'/cookbook/totalcounter.php')) && (file_exists($c_pmwiki_path_file.'/cookbook/totalcounterlink.php'))) {
+        // Statistic
+        $features_available[] = array('enable_statistic',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/feedlinks.php')) {
+        // RSS
+        $features_available[] = array('enable_rss',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/wikilog.php')) {
+        // Calendar
+        if((($this->_environment->getCurrentContextItem()->getLanguage() == "de") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-de.php'))) ||
+           (($this->_environment->getCurrentContextItem()->getLanguage() == "en") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-en.php')))){
+        	   $features_available[] = array('enable_calendar',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        }
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/gallery.php')) {
+        // Gallery
+        $features_available[] = array('enable_gallery',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/postitnotes.php')) {
+        // Notice
+        $features_available[] = array('enable_notice',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if ((file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdf/pmwiki2pdf.php')) && (file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdflink.php'))) {
+        // PDF
+        $features_available[] = array('enable_pdf',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      
+      for ($index = 0; $index < sizeof($features_available); $index++) {
+		      $array_element = $features_available[$index];
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);	
+            if($index < sizeof($features_available)-1){
+            	$this->_form->combine();
+            }
+	   }
+      
+//      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),'');
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_notice',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE'),'');
+//      $this->_form->combine();
+//      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),'');
 
 
       // /new features
