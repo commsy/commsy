@@ -209,12 +209,10 @@ class cs_wiki_manager extends cs_manager {
       }
 
       if ( $item->WikiEnableStatistic() == "1" ) {
-         $str .= "chdir('..');".LF;
          $str .= 'global $WorkDir;'.LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
          $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF;
-         $str .= "chdir('local');".LF.LF;
       }
 
       if ( $item->WikiEnableRss() == "1" ) {
