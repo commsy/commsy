@@ -515,7 +515,9 @@ class cs_detail_view extends cs_view {
                      $text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
                   }
                   $params['seltag'] = 'yes';
-                  $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
+                  if ( isset($father_tag_item) ) {
+                     $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
+                  }
                   $title_link = ahref_curl($this->_environment->getCurrentContextID(),
                                 $this->_environment->getCurrentModule(),
                                 'index',

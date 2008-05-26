@@ -261,6 +261,34 @@ class cs_tag2tag_manager extends cs_manager {
       }
    }
 
+   public function deleteTagLinksForTag ( $item_id ) {
+
+      $father_id = $this->getFatherItemID($item_id);
+      $children_array = $this->getChildrenItemIDArray($item_id);
+
+      include_once('functions/date_functions.php');
+      $current_datetime = getCurrentDateTimeInMySQL();
+      $user_id = $this->_current_user->getItemID();
+      $query = 'UPDATE '.$this->_db_table.' SET '.
+               'deletion_date="'.$current_datetime.'",'.
+               'deleter_id="'.encode(AS_DB,$user_id).'"'.
+               ' WHERE from_item_id="'.encode(AS_DB,$item_id).'" OR to_item_id="'.encode(AS_DB,$item_id).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting tag2tag link from query: "'.$query.'"',E_USER_WARNING);
+      } else {
+         $this->_cleanSortingPlaces($father_id);
+         if ( !empty($children_array) ) {
+            $tag_manager = $this->_environment->getTagManager();
+            foreach ($children_array as $child_id) {
+               $tag_manager->delete($child_id);
+            }
+            unset($tag_manager);
+         }
+      }
+   }
+
    public function getFatherItemID ($item_id) {
       $retour = '';
       if ( count($this->_cached_father_id_array) == 0 ) {

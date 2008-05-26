@@ -650,9 +650,12 @@ class cs_tag_manager extends cs_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems deleting '.$this->_db_table.'.',E_USER_WARNING);
      } else {
-        $link_manager = $this->_environment->getLinkManager();
+        $link_manager = $this->_environment->getLinkItemManager();
         $link_manager->deleteLinksBecauseItemIsDeleted($item_id);
         unset($link_manager);
+        $tag2tag_manager = $this->_environment->getTag2TagManager();
+        $tag2tag_manager->deleteTagLinksForTag($item_id);
+        unset($tag2tag_manager);
         parent::delete($item_id);
      }
   }

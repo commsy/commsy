@@ -344,7 +344,7 @@ else {
       elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -353,7 +353,7 @@ else {
       elseif ( $backfrom == CS_PROJECT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -362,7 +362,7 @@ else {
       elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -371,7 +371,7 @@ else {
       elseif ( $backfrom == CS_TODO_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_TODO_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -380,7 +380,7 @@ else {
       elseif ( $backfrom == CS_DATE_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_DATE_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -389,7 +389,7 @@ else {
       elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
-	$with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -516,7 +516,7 @@ else {
                $announcement_manager = $environment->getAnnouncementManager();
                $announcement_item = $announcement_manager->getNewItem();
                $announcement_item->setContextID($environment->getCurrentContextID());
-         $current_user = $environment->getCurrentUserItem();
+               $current_user = $environment->getCurrentUserItem();
                $announcement_item->setCreatorItem($current_user);
                $announcement_item->setCreationDate(getCurrentDateTimeInMySQL());
             }

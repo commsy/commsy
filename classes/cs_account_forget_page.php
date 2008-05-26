@@ -43,18 +43,18 @@ class cs_account_forget_page extends cs_left_page {
 
       // cancel
       if ( !empty($this->_command)
-	  and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
-	        or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON')))
-	) {
+     and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
+           or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON')))
+   ) {
          $this->_redirect_back();
       }
 
       // get accounts
       if ( !empty($this->_command)
-	  and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_SEND_BUTTON'))
-	) {
-	$correct = $form->check();
-	if ( $correct ) {
+     and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_SEND_BUTTON'))
+   ) {
+   $correct = $form->check();
+   if ( $correct ) {
             $user_manager = $this->_environment->getUserManager();
             $user_manager->resetLimits();
             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -80,7 +80,7 @@ class cs_account_forget_page extends cs_left_page {
 
             $user_email = $this->_post_vars['email'];
 
-	   // send email
+      // send email
             $context_item = $this->_environment->getCurrentPortalItem();
             $mod_text = '';
             $mod_list = $context_item->getContactModeratorList();
@@ -98,16 +98,16 @@ class cs_account_forget_page extends cs_left_page {
             }
 
             $translator = $this->_environment->getTranslationObject();
-	   include_once('classes/cs_mail.php');
+      include_once('classes/cs_mail.php');
             $mail = new cs_mail();
             $mail->set_to($user_email);
-	   $server_item = $this->_environment->getServerItem();
-	   $default_sender_address = $server_item->getDefaultSenderAddress();
-	   if (!empty($default_sender_address)) {
+      $server_item = $this->_environment->getServerItem();
+      $default_sender_address = $server_item->getDefaultSenderAddress();
+      if (!empty($default_sender_address)) {
                $mail->set_from_email($default_sender_address);
-	   } else {
-	      $mail->set_from_email('@');
-	   }
+      } else {
+         $mail->set_from_email('@');
+      }
             if (isset($contact_moderator)) {
                $mail->set_reply_to_email($contact_moderator->getEmail());
                $mail->set_reply_to_name($contact_moderator->getFullname());
@@ -131,13 +131,13 @@ class cs_account_forget_page extends cs_left_page {
             $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
             $mail->set_message($body);
             if ($mail->send()) {
-   	      // show little status page that mail was sent successful
+            // show little status page that mail was sent successful
                $form->showMailSent($user_email);
             } else {
-   	      // show little status page that mail was not sent successful
+            // show little status page that mail was not sent successful
                $form->showMailFailure();
             }
-	}
+         }
       }
       return $this->_show_form($form);
    }
