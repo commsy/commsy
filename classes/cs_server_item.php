@@ -326,6 +326,7 @@ class cs_server_item extends cs_guide_item {
       $item_type_array[] = CS_SECTION_TYPE;
       $item_type_array[] = CS_TAG_TYPE;
       $item_type_array[] = CS_TAG2TAG_TYPE;
+      $item_type_array[] = CS_TASK_TYPE;
       $item_type_array[] = CS_TODO_TYPE;
       #$item_type_array[] = CS_USER_TYPE; // NO NO NO -> because of old entries of user
 
@@ -829,7 +830,7 @@ class cs_server_item extends cs_guide_item {
    function setShowOutOfService () {
       $this->_setOutOfServiceShow(1);
    }
-   
+
 
    function getScribdApiKey () {
       $retour = '';
@@ -841,7 +842,7 @@ class cs_server_item extends cs_guide_item {
    function setScribdApiKey ($value) {
       $this->_addExtra('SCRIBD_API_KEY',$value);
    }
-   
+
    function getScribdSecret () {
       $retour = '';
       if ($this->_issetExtra('SCRIBD_SECRET')) {
