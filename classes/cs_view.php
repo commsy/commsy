@@ -1769,7 +1769,7 @@ class cs_view {
         $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
         $office_text .= "scribd_doc.addParam('height', 500);".LF;
         $office_text .= "scribd_doc.addParam('width', 400);".LF;
-        $office_text .= "scribd_doc.addParam('page', 10);".LF;
+        $office_text .= "scribd_doc.addParam('page', 1);".LF;
         $office_text .= "scribd_doc.addParam('public', true);".LF;
         $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
         $office_text .= "scribd_doc.write('embedded_flash');".LF;
