@@ -10,7 +10,6 @@ $message["ADS_IMAGE_FORM_ELEMENT_TITLE"]["de"] = "Bild";
 $message["ADS_SHOW_ADS_CHOICE_FORM_TITLE"]["de"] = "Sponsoren anzeigen?";
 $message["ADS_SHOW_AMAZON_ADS_CHOICE_FORM_TITLE"]["de"] = "Amazon anzeigen?";
 $message["ADS_SHOW_GOOGLE_ADS_CHOICE_FORM_TITLE"]["de"] = "Werbung anzeigen?";
-$message["ADS_TITLE_GOOGLE_ADS"]["de"] = "Werbung";
 $message["ADS_UP_BUTTON"]["de"] = "nach oben";
 $message["ADS_URL_FORM_ELEMENT_TITLE"]["de"] = "Bild-URL";
 ?>

@@ -10,7 +10,6 @@ $message["ADS_IMAGE_FORM_ELEMENT_TITLE"]["en"] = "Image";
 $message["ADS_SHOW_ADS_CHOICE_FORM_TITLE"]["en"] = "Show sponsors?";
 $message["ADS_SHOW_AMAZON_ADS_CHOICE_FORM_TITLE"]["en"] = "Show amazon?";
 $message["ADS_SHOW_GOOGLE_ADS_CHOICE_FORM_TITLE"]["en"] = "Show advertisement?";
-$message["ADS_TITLE_GOOGLE_ADS"]["en"] = "Advertisement ";
 $message["ADS_UP_BUTTON"]["en"] = "one up";
 $message["ADS_URL_FORM_ELEMENT_TITLE"]["en"] = "Image-URL";
 ?>

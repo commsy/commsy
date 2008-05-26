@@ -17,7 +17,6 @@ $message["USER_CELLULARPHONE"]["en"] = "Mobile";
 $message["USER_CHANGE_BUTTON"]["en"] = "Save profile";
 $message["USER_CHANGE_IN_ALL_ROOMS"]["en"] = "change in all workspaces";
 $message["USER_CITY"]["en"] = "City";
-$message["USER_CLOSED"]["en"] = "Account locked";
 $message["USER_CLOSE_FORM"]["en"] = "Quit membership";
 $message["USER_CLOSE_FORM_DESCRIPTION"]["en"] = "Your choice is between two options:
 <ul>

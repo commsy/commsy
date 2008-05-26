@@ -17,7 +17,6 @@ $message["USER_CELLULARPHONE"]["de"] = "Handy";
 $message["USER_CHANGE_BUTTON"]["de"] = "Personendaten speichern";
 $message["USER_CHANGE_IN_ALL_ROOMS"]["de"] = "in allen Räumen ändern";
 $message["USER_CITY"]["de"] = "Stadt";
-$message["USER_CLOSED"]["de"] = "geschlossen";
 $message["USER_CLOSE_FORM"]["de"] = "Teilnahme beenden";
 $message["USER_CLOSE_FORM_DESCRIPTION"]["de"] = "Sie haben zwei Möglichkeiten:
 <ul><li>
