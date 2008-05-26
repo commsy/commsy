@@ -17,9 +17,15 @@ if ($handle = opendir('.')) {
              $wiki_array[] = $temp_array;
              $wiki_array[] = $temp_array;
           } elseif ( file_exists('commsy_config.php') ) {
-             include('commsy_config.php');
-             $temp_array['title'] = $COMMSY_WIKI_TITLE;
-             $wiki_array[] = $temp_array;
+             $commsy_config = file_get_contents('commsy_config.php');
+             if ( !empty($commsy_config) ) {
+                $treffer = array();
+                preg_match('§COMMSY_WIKI_TITLE[ ]*=[ ]*["|\'](.*)["|\']§',$commsy_config,$treffer);
+                if ( !empty($treffer[1]) ) {
+                   $temp_array['title'] = stripslashes($treffer[1]);
+                   $wiki_array[] = $temp_array;
+                }
+             }
           }
           unset($temp_array);
           chdir('../..');

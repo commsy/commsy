@@ -115,12 +115,12 @@ class cs_wiki_manager extends cs_manager {
       }
       if ($item->isPortal()){
          $str = "<?php include('../../pmwiki.php');?>";
-      }else{
-         $str ="<?php include('../../../pmwiki.php');?>";
+      } else {
+         $str = "<?php include('../../../pmwiki.php');?>";
       }
       file_put_contents('index.php',$str);
 
-      if ($item->isPortal()){
+      if ( $item->isPortal() ) {
          $directory_handle = @opendir('wiki.d');
          if (!$directory_handle) {
             mkdir('wiki.d');
@@ -140,6 +140,11 @@ class cs_wiki_manager extends cs_manager {
             copy($c_commsy_path_file.'/etc/pmwiki/wikilist.php','wikilist.php');
             copy($c_commsy_path_file.'/etc/pmwiki/newwikilist.php','newwikilist.php');
             chdir('..');
+         }
+      } else {
+         $directory_handle = @opendir('wiki.d');
+         if (!$directory_handle) {
+            mkdir('wiki.d');
          }
       }
       $directory_handle = @opendir('local');
@@ -181,7 +186,7 @@ class cs_wiki_manager extends cs_manager {
       if (!empty($language) and strtoupper($language)!='USER'){
          $str .= '$COMMSY_LANGUAGE = "'.strtolower($item->getLanguage()).'";'.LF;
       }
-      $str .= 'global $FarmD;'.LF;
+      $str .= LF.'global $FarmD;'.LF.LF;
       if ( $item->isPortal() ) {
          $str .= '@require_once("$FarmD/cookbook/phpinc-markup.php");'.LF;
       }
@@ -212,7 +217,7 @@ class cs_wiki_manager extends cs_manager {
          $str .= 'global $WorkDir;'.LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
-         $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF;
+         $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF.LF;
       }
 
       if ( $item->WikiEnableRss() == "1" ) {
@@ -230,7 +235,7 @@ class cs_wiki_manager extends cs_manager {
          if($this->_environment->getCurrentContextItem()->getLanguage() == "de"){
             $str .= '@include_once("$FarmD/cookbook/wikilog-i18n-de.php");'.LF;
          } else if ($this->_environment->getCurrentContextItem()->getLanguage() == "en") {
-         	$str .= '@include_once("$FarmD/cookbook/wikilog-i18n-en.php");'.LF;
+            $str .= '@include_once("$FarmD/cookbook/wikilog-i18n-en.php");'.LF;
          }
          $str .= '$SHOW_CALENDAR = "1";'.LF.LF;
       }
