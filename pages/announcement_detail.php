@@ -41,9 +41,6 @@ if (!empty($_GET['creator_info_max'])) {
 
 include_once('include/inc_delete_entry.php');
 
-
-
-
 $item_manager = $environment->getItemManager();
 $type = $item_manager->getItemType($_GET['iid']);
 if ($type != CS_ANNOUNCEMENT_TYPE) {
@@ -63,12 +60,12 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
    if ( !isset($announcement_item) ) {
       include_once('functions/error_functions.php');trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
    } elseif ( $announcement_item->isDeleted() ) {
-            include_once('classes/cs_errorbox_view.php');
+      include_once('classes/cs_errorbox_view.php');
       $errorbox = new cs_errorbox_view($environment, true);
       $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$announcement_item->maySee($current_user) ) {
-            include_once('classes/cs_errorbox_view.php');
+      include_once('classes/cs_errorbox_view.php');
       $errorbox = new cs_errorbox_view($environment, true);
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
