@@ -51,10 +51,15 @@
       var div = document.getElementById(id);
       var inner_div = document.getElementById('inner_'+id);
       var width = inner_div.scrollWidth;
+      var height = inner_div.scrollHeight;
       if (width > max_width){
          var link = document.createElement('DIV');
          link.innerHTML = link_name.replace('COMMSYDHTMLTAG','</');
-         div.appendChild(link);
+//         div.appendChild(link);
+         inner_div.style.width = max_width+'px';
+         if (navigator.userAgent.indexOf("MSIE") != -1){
+            inner_div.style.height = (height+50)+'px';
+         }
 //         inner_div.className = 'handle_width_border';
       }
       });
