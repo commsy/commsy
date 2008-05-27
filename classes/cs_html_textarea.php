@@ -24,7 +24,7 @@
 
 class cs_html_textarea {
 
-	function getAsHTML ($name,$value='',$hsize='',$html_status=1,$tabindex='',$vsize='') {
+	function getAsHTML ($name,$value='',$hsize='',$html_status=1,$tabindex='',$vsize='',$no_discussion = true) {
 
 		// some configurations
 		global $c_commsy_url_path;
@@ -52,11 +52,13 @@ class cs_html_textarea {
 		$oFCKeditor->BasePath = $c_fckeditor_url_path.'/';
 		$oFCKeditor->Config["CustomConfigurationsPath"] = $c_commsy_url_path.'/javascript/CommSyFCKEditorConfig.js';
 		$oFCKeditor->Value    = $value;
-		if ( empty($vsize) ) {
-			$oFCKeditor->Width    = '504px';
-		} else {
-			$oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
-		}
+		if ($no_discussion){
+         if ( empty($vsize) ) {
+			   $oFCKeditor->Width    = '504px';
+		   } else {
+			   $oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
+		   }
+      }
 		$oFCKeditor->Height   = round($hsize*13.5,0);
 		$oFCKeditor->TabIndex = $tabindex;
 		if ( $html_status == '2' ) {

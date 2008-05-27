@@ -138,6 +138,9 @@ class cs_discussion_detail_view extends cs_detail_view {
                     and $current_browser != 'firefox'
                     and $current_browser != 'netscape'
                     and $current_browser != 'mozilla')
+                    and $current_browser != 'camino'
+                    and $current_browser != 'opera'
+                    and $current_browser != 'safari'
                ) {
                $html .= $normal;
                $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
@@ -164,12 +167,13 @@ class cs_discussion_detail_view extends cs_detail_view {
                      include_once('classes/cs_html_textarea.php');
                      $html_area = new cs_html_textarea();
                      $html .= $html_area->getAsHTML( 'description',
-                     '',
-                     '20',
-                     $html_status,
-                     '',
-                     ''
-                     );
+                                              '',
+                                              20,
+                                              $html_status,
+                                              '',
+                                              '',
+                                              false
+                                            );
                      $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
                      $html .= '<div style="padding-top:0px;">';
                      $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
