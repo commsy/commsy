@@ -676,15 +676,6 @@ class cs_detail_view extends cs_view {
 #         $html .= $this->_getPluginInfosForNetNavigationAsHTML();
 #         $html .='</div>'.LF;
          $html .='</div>'.LF;
-         $html .= '<script type="text/javascript">'.LF;
-         $current_browser = strtolower($this->_environment->getCurrentBrowser());
-         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-         if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
-#            $html .= 'preInitCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
-         }else{
-            $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
-         }
-         $html .= '</script>'.LF;
          $html .='</div>'.LF;
       }
       if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
@@ -723,6 +714,15 @@ class cs_detail_view extends cs_view {
          $html .= $this->_getDiscussionFormAsHTML();
       }
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
+         $html .= '<script type="text/javascript">'.LF;
+         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
+            $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+         }else{
+            $html .= 'preInitCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+         }
+         $html .= '</script>'.LF;
       return $html;
    }
 
