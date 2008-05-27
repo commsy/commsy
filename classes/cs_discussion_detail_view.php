@@ -74,17 +74,20 @@ class cs_discussion_detail_view extends cs_detail_view {
          if ( $discussion_type == 'simple') {
             $html .='</div>'.LF;
             $html .='</div>'.LF;
-            $html .='<div class="detail_sub_items_title">'.LF;
+            $html .='<div class="detail_sub_items_title" >'.LF;
             $html .= '<span class="sub_item_pagetitle">'.getMessage('DISCARTICLE_ENTER_NEW');
             $html .= '</span>'.LF;
             $html .='</div>'.LF;
-            $html .='<div class="sub_item_main">'.LF;
-            $html .='<div>'.LF;
+            $html .='<div class="sub_item_main" style="padding-top:5px;">'.LF;
+            $html .= '<div style="float:right; width:27%; margin-bottom:10px; margin-left:10px;">'.LF;
+            $html .= $this->_getRubricFormInfoAsHTML($this->_environment->getCurrentModule());
+            $html .= '</div>'.LF;
+            $html .='<div style="width:71%;" >'.LF;
             $html .= '<a name="form"></a>'.LF;
             $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'discarticle', 'edit','').'" method="post" enctype="multipart/form-data" name="f">'.LF;
             $html .= '   <input type="hidden" name="iid" value=""/>'.LF;
             $html .= '   <input type="hidden" name="discussion_id" value="'.$item->getItemID().'"/>'.LF;
-            $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
+            $html .= '<table style="width:100%; border-collapse:collapse; margin-bottom:0px; padding-bottom:0px;" summary="Layout">'.LF;
             $html .= '<tr>'.LF;
             $html .= '<td class="key" style="width:10%; padding-top:5px; vertical-align:top; ">'.LF;
             $html .= getMessage('COMMON_SUBJECT').' <span class="required">*</span>:';
@@ -93,17 +96,15 @@ class cs_discussion_detail_view extends cs_detail_view {
             $html .= '<input name="subject" style="font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" size="37" tabindex="8" type="text"/>';
             $html .= '</td>'.LF;
             $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= '<div style="margin-bottom:10px; margin-left:10px;">'.LF;
-            $html .= $this->_getRubricFormInfoAsHTML($this->_environment->getCurrentModule());
-            $html .= '</div>'.LF;
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
             $html .= '<tr>'.LF;
             $html .= '<td colspan="2" class="key" style="padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= getMessage('DISCUSSION_ARTICLE').':'.BRLF;
+            $html .= getMessage('DISCUSSION_ARTICLE').':'.LF;
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
             $html .= '</table>'.LF;
+            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
             $normal = '<textarea style="font-size:10pt;" name="description" cols="57" rows="10" tabindex="8"></textarea>';
             $text = '';
             global $c_html_textarea;
@@ -222,7 +223,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .= '</div>'.LF;
                }
             }
-
+            $html .= '</div>';
             // files
             $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
             $html .= '<tr>'.LF;
