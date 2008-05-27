@@ -718,9 +718,9 @@ class cs_detail_view extends cs_view {
          $current_browser = strtolower($this->_environment->getCurrentBrowser());
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
-            $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
-         }else{
             $html .= 'preInitCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+         }else{
+            $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
          }
          $html .= '</script>'.LF;
       return $html;

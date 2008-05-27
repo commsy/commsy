@@ -113,6 +113,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $html_status = $current_context->getHtmlTextAreaStatus();
             $current_browser = strtolower($this->_environment->getCurrentBrowser());
             $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+            pr($current_browser_version);
             if ( !isset($c_html_textarea)
                  or !$c_html_textarea
                  or !$with_htmltextarea
@@ -137,10 +138,11 @@ class cs_discussion_detail_view extends cs_detail_view {
             } elseif ( ($current_browser != 'msie'
                     and $current_browser != 'firefox'
                     and $current_browser != 'netscape'
-                    and $current_browser != 'mozilla')
+                    and $current_browser != 'mozilla'
                     and $current_browser != 'camino'
                     and $current_browser != 'opera'
-                    and $current_browser != 'safari'
+                    and $current_browser != 'safari')
+                    or ($current_browser == 'msie' and strstr($current_browser_version,'6.0'))
                ) {
                $html .= $normal;
                $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
