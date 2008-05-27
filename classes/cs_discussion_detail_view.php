@@ -164,7 +164,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                      '20',
                      $html_status,
                      '',
-                     '57'
+                     '58'
                      );
                      $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
                      $html .= '<div style="padding-top:0px;">';
