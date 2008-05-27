@@ -250,9 +250,11 @@
 
             if(!panelDisplayed[commsy_panel_index]){
                outerContentDiv.style.height = '0px';
-               contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
-               if(document.all){
-                  outerContentDiv.style.display='none';
+               if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
+                  contentDiv.style.top = 0 - contentDiv.offsetHeight + 'px';
+                  if(document.all){
+                     outerContentDiv.style.display='none';
+                  }
                }
                img.src = 'images/arrow_down.gif';
             }
