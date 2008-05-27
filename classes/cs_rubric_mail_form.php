@@ -34,7 +34,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
    */
    var $_headline = NULL;
    var $_description = NULL;
-#   var $_topic_names = NULL;
    var $_group_names = NULL;
    var $_institution_names = NULL;
    var $_topics = array();
@@ -63,12 +62,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $this->cs_rubric_form($environment);
    }
 
-#   function setTopicNames($array){
-#      if( !empty($array['string']) ){
-#         $this->_topic_names = $array;
-#      }
-#   }
-
    function setGroupNames($array){
       if( !empty($array['string']) ){
          $this->_group_names = $array;
@@ -80,12 +73,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
          $this->_institution_names = $array;
       }
    }
-
-#   function setTopics($array){
-#      if( !empty($array) ){
-#         $this->_topics = $array;
-#      }
-#   }
 
    function setGroups($array){
       if( !empty($array) ){
@@ -110,9 +97,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
       // context name
       $context = $this->_environment->getCurrentContextItem();
       $this->_context_name = $context->getTitle();
-
-      //get all topics in context
-#      $this->_topic_array = $this->_getAllLabelsByType('topic');
 
       //get all groups in context
       $this->_group_array = $this->_getAllLabelsByType('group');
@@ -288,9 +272,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
           if ($module== 'group' or $module== 'groups') {
              $group_content = getMessage('COMMON_GROUP').': '.$item->getTitle().LF;
              $content = $group_content;
-#          }elseif ($module== CS_TOPIC_TYPE) {
-#             $topic_content = getMessage('COMMON_TOPIC').': '.$item->getTitle().LF;
-#             $content = $topic_content;
           } elseif ($module== 'institution' or $module== 'institutions') {
              $institution_content = getMessage('INSTITUTION').': '.$item->getTitle().LF;
              $content = $institution_content;
@@ -348,6 +329,17 @@ class cs_rubric_mail_form extends cs_rubric_form {
          $this->_form->addHidden('send_to_all',true);
       }
 
+      // send to all members in group rooms
+      if ( $context_item->isGroupRoom() ) {
+         $cid = $this->_environment->getCurrentContextID();
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setUserLimit();
+         $user_manager->setContextLimit($cid);
+         $count = $user_manager->getCountAll();
+         $this->_form->addText('receiver_text', getMessage('COMMON_MAIL_RECEIVER'), getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+         $this->_form->addHidden('send_to_all',true);
+      }
+
       $yesno[][] = array();
       $yesno['0']['text']  = getMessage('COMMON_YES');
       $yesno['0']['value'] = getMessage('COMMON_YES');
@@ -368,7 +360,6 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $this->_values = array();
       if (empty($this->_form_post)) {
          $this->_values['groups'] = $this->_groups;
-#         $this->_values[CS_TOPIC_TYPE] = $this->_topics;
          $this->_values['institutions'] = $this->_institutions;
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post; // no encode here - encode in form-views
@@ -382,7 +373,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
     */
    function _initCheckBoxGroup () {
       if (isset($this->_group_array)) {
-            $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',getMessage('COMMON_RELEVANT_FOR'),getMessage('COMMON_RELEVANT_FOR_DESC'), false, false);
+         $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',getMessage('COMMON_RELEVANT_FOR'),getMessage('COMMON_RELEVANT_FOR_DESC'), false, false);
       }
    }
 
@@ -393,7 +384,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
     */
    function _initCheckBoxInstitution () {
       if (isset($this->_institution_array)) {
-            $this->_form->addCheckBoxGroup('institutions',$this->_institution_array,'',getMessage('COMMON_RELEVANT_FOR_INSTITUTION'),getMessage('COMMON_RELEVANT_FOR_INSTITUTION_DESC'), false, false);
+         $this->_form->addCheckBoxGroup('institutions',$this->_institution_array,'',getMessage('COMMON_RELEVANT_FOR_INSTITUTION'),getMessage('COMMON_RELEVANT_FOR_INSTITUTION_DESC'), false, false);
       }
    }
 
@@ -420,7 +411,5 @@ class cs_rubric_mail_form extends cs_rubric_form {
       }
       return $label_array;
    }
-
-
 }
 ?>

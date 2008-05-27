@@ -96,12 +96,12 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $user_list = $user_manager->get();
             $user_item = $user_list->getFirst();
             while($user_item) {
-               if ($user_item->isEmailVisible()) {
-                     $recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-                     $recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
+               if ( $user_item->isEmailVisible()) {
+                  $recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
+                  $recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
                } else {
-                     $recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
-                     $recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
+                  $recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
+                  $recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
                }
                $user_item = $user_list->getNext();
             }
