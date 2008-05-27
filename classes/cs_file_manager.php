@@ -567,10 +567,9 @@ class cs_file_manager extends cs_manager {
       return $retour;
    }
 
-   function deleteReallyOlderThanOneMonth () {
+   function deleteReallyOlderThan ($days) {
       $disc_manager = $this->_environment->getDiscManager();
       $retour = true;
-      $days = 30;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
       $query = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'";';
@@ -581,7 +580,7 @@ class cs_file_manager extends cs_manager {
          trigger_error('Problem selecting items from query: "'.$query.'"',E_USER_ERROR);
          $retour = false;
       } else {
-         $retour = $retour and parent::deleteReallyOlderThanOneMonth();
+         $retour = $retour and parent::deleteReallyOlderThan($days);
          foreach ($result as $query_result) {
             $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
             $result2 = $this->_db_connector->performQuery($query2);

@@ -16,10 +16,8 @@ $c_auth['cookiepath']          = '';                           // for cookie man
 //    $c_html_textarea = true;
 //
 // you can use the following versions of the FCKEditor with CommSy
-// - 2.3.1 or higher:
-// - 2.3.1 tested: okay
-// - 2.3.2 tested: okay
-// - 2.4.2 tested: okay
+//    - 2.5.1 tested: okay
+//    - 2.6.0 tested: okay
 
 // use virus scanning at uploading files
 // ----------------------------------------------------
@@ -87,40 +85,24 @@ $c_send_email = true;
 // support for debugging
 $c_show_debug_infos = false;
 
-//Export of Contents
-//Where to store the temporary files
+// export of Contents
+// where to store the temporary files
 $export_temp_folder = 'var/temp/zip_export';
 
-// JCommSy migration
-//
-// specify the url of the tomcat application, e.g.
-// $jcommsy['Servlet-URL'] = "localhost/commsy/Commsy";
-// or
-// $jcommsy['Servlet-URL'] = "localhost:8080/commsy/Commsy";
-//
-// $java_enabled_for = array(8099);         // id of project room, community room or portal
-//
-// for each migrated module set an array element 'true'
-$jcommsy['announcement'] = false;
-$jcommsy['date']         = false;
-$jcommsy['discussion']   = false;
-$jcommsy['group']        = false;
-$jcommsy['todo']         = false;
-$jcommsy['topic']        = false;
-$jcommsy['material']     = false;
-$jcommsy['user']         = false;
+// delete entries in database marked as deleted $c_delete_days old
+// $c_delete_days = 31;
+// $c_delete_days = 182;
+// $c_delete_days = 365;
 
 // plugins
 // attention: this is very, very experimental
 // copy your plugin to the plugin directory
 // and activate the plugin here
 // name of the plugin directory = PLUGIN_NAME
-#$c_plugin_array = array();
-#$c_plugin_array['SPECIAL_PLUGIN_PLACE'] = 'PLUGIN_NAME';
-
+$c_plugin_array = array();
+$c_plugin_array['HTML'] = 'ads';
 
 /** IMS Soap setup*/
-
 //Where to store reference packages to test pathxml for correctness
 //Testpackages are packages to add a group/user/membership. All pathes executed must
 //return a value, not an empty string! The example packages in the "GOLEM-Handbuch"
@@ -246,3 +228,6 @@ $db['etchat']['database']      = 'etchat';
 // - 3.0.0 or higher:
 // - 3.0.0 tested: okay
 // - 3.0.1 tested: okay
+
+//$with_ims_content_connection = false;
+//$ims_content_connection_temp_folder = 'var/temp/ims_import';

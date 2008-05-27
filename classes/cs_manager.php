@@ -1033,9 +1033,8 @@ class cs_manager {
       return $retour;
    }
 
-   function deleteReallyOlderThanOneMonth () {
+   function deleteReallyOlderThan ($days) {
       $retour = false;
-      $days = 30;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
       $query = 'DELETE FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'"';
       $result = $this->_db_connector->performQuery($query);

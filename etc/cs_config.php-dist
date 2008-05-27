@@ -87,6 +87,7 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 //
 // 7. These FCKeditor Versions are tested:
 //    - 2.5.1 tested: okay
+//    - 2.6.0 tested: okay
 
 // use virus scanning at uploading files
 //
@@ -156,28 +157,14 @@ $c_send_email = true;
 // support for debugging
 $c_show_debug_infos = false;
 
-//Export of Contents
-//Where to store the temporary files
+// export of Contents
+// where to store the temporary files
 $export_temp_folder = 'var/temp/zip_export';
 
-// JCommSy migration
-//
-// specify the url of the tomcat application
-// $jcommsy['Servlet-URL'] = "localhost/commsy/Commsy";
-// or
-// $jcommsy['Servlet-URL'] = "localhost:8080/commsy/Commsy";
-//
-// $java_enabled_for = array(8099);         // id of project room, community room or portal
-//
-// for each migrated module set an array element 'true'
-$jcommsy['announcement'] = false;
-$jcommsy['date']         = false;
-$jcommsy['discussion']   = false;
-$jcommsy['group']        = false;
-$jcommsy['todo']         = false;
-$jcommsy['topic']        = false;
-$jcommsy['material']     = false;
-$jcommsy['user']         = false;
+// delete entries in database marked as deleted $c_delete_days old
+// $c_delete_days = 31;
+// $c_delete_days = 182;
+// $c_delete_days = 365;
 
 // plugins
 // attention: this is very, very experimental
