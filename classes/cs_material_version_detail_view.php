@@ -53,7 +53,7 @@ class cs_material_version_detail_view extends cs_material_detail_view {
       $current_user = &$this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
+      $html .= '<noscript><div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div></noscript>';
       $html .= '<div class="right_box_main" >'.LF;
       if ( $item->mayEdit($current_user) ) {
          $params = array();
@@ -70,9 +70,11 @@ class cs_material_version_detail_view extends cs_material_detail_view {
       }
 
       if ( $current_user->isUser() ) {
-         $params = array();
+//         $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
          $params['iid'] = $this->_item->getItemID();
          $params['del_version'] = $this->_item->getVersionID();
+         $params['action'] = 'delete';
          $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
                                    'material',
                                    'detail',

@@ -111,20 +111,20 @@ if ($type != CS_MATERIAL_TYPE) {
       }
 
       // Delete old version
-      elseif ( isset($_GET['del_version']) ) {
-         $latest_version_item = $material_version_list->getFirst();
-         $old_version_item = $material_version_list->getNext();
-         while ($old_version_item ) {
-            if ( $_GET['del_version'] == $old_version_item->getVersionID() ) {
-               $old_version_item->delete();
-               break;
-            }
-            $old_version_item = $material_version_list->getNext();
-         }
-         $params = array();
-         $params['iid'] = $current_item_iid;
-         redirect($environment->getCurrentContextID(), 'material', 'detail', $params);
-      }
+//      elseif ( isset($_GET['del_version']) ) {
+//         $latest_version_item = $material_version_list->getFirst();
+//         $old_version_item = $material_version_list->getNext();
+//         while ($old_version_item ) {
+//            if ( $_GET['del_version'] == $old_version_item->getVersionID() ) {
+//               $old_version_item->delete();
+//               break;
+//            }
+//            $old_version_item = $material_version_list->getNext();
+//         }
+//         $params = array();
+//         $params['iid'] = $current_item_iid;
+//         redirect($environment->getCurrentContextID(), 'material', 'detail', $params);
+//      }
 
       // Show the material
       else {

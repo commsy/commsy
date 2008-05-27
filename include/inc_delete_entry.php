@@ -60,6 +60,10 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       unset($params['action']);
       unset($params['discarticle_action']);
       unset($params['discarticle_iid']);
+   }elseif ( isset($_GET['del_version']) ) {
+   	unset($params['action']);
+//      $params['version_id'] = $_GET['del_version'];
+      unset($params['del_version']);
    }else{
       $params['iid'] = $current_item_iid;
    }
@@ -94,10 +98,27 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'detail', $params);
     }else{
       if ( $environment->getCurrentModule() == CS_MATERIAL_TYPE){
-         $material_manager = $environment->getMaterialManager();
-         $material_version_list = $material_manager->getVersionList($current_item_iid);
-         $item = $material_version_list->getFirst();
-         $item->delete(CS_ALL); // CS_ALL -> delete all versions of the material
+          if ( isset($_GET['del_version']) ) {
+             $material_manager = $environment->getMaterialManager();
+             $material_version_list = $material_manager->getVersionList($current_item_iid);
+             $latest_version_item = $material_version_list->getFirst();
+             $old_version_item = $material_version_list->getNext();
+             while ($old_version_item ) {
+                if ( $_GET['del_version'] == $old_version_item->getVersionID() ) {
+                   $old_version_item->delete();
+                   break;
+                }
+                $old_version_item = $material_version_list->getNext();
+             }
+             $params = array();
+             $params['iid'] = $current_item_iid;
+             redirect($environment->getCurrentContextID(), 'material', 'detail', $params);
+          } else {
+             $material_manager = $environment->getMaterialManager();
+             $material_version_list = $material_manager->getVersionList($current_item_iid);
+             $item = $material_version_list->getFirst();
+             $item->delete(CS_ALL); // CS_ALL -> delete all versions of the material
+          }
       }else{
          $manager = $environment->getManager(module2type($environment->getCurrentModule()));
          $item = $manager->getItem($current_item_id);

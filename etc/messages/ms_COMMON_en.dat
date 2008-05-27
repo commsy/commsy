@@ -224,6 +224,9 @@ $message["COMMON_DELETED_USER"]["en"] = "deleted account";
 $message["COMMON_DELETE_BOX_DESCRIPTION"]["en"] = "You are about to delete an item from the workspace.
 Please note that deleted items cannot be undeleted afterwards, so be cautious.
 Do you really want to delete this item irrecoverably?";
+$message["COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION"]["en"] = "You are about to delete a version from the workspace.
+Please note that deleted versions cannot be undeleted afterwards, so be cautious.
+Do you really want to delete this version irrecoverably?";
 $message["COMMON_DELETE_BOX_DESCRIPTION_MODERATOR"]["en"] = "<span class=&quot;bold&quot;>Please note:</span> Moderators are able to delete third party entries.";
 $message["COMMON_DELETE_BOX_DESCRIPTION_PORTAL"]["en"] = "You are about to delete a portal.
 Please note that deleted portal cannot be undeleted afterwards, so be cautious.
@@ -247,6 +250,7 @@ $message["COMMON_DELETE_BUTTON"]["en"] = "Delete";
 $message["COMMON_DELETE_ITEM"]["en"] = "Delete";
 $message["COMMON_DELETE_RESTRICTIONS"]["en"] = "Unset reduction";
 $message["COMMON_DELETE_ROOM"]["en"] = "Delete workspace";
+$message["COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION"]["en"] = "Deleting versions";
 $message["COMMON_DESCRIPTION"]["en"] = "Description";
 $message["COMMON_DISCUSSION"]["en"] = "Discussion";
 $message["COMMON_DISCUSSIONS"]["en"] = "Discussions";
