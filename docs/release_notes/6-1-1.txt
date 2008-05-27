@@ -1,0 +1,14 @@
+CommSy Version 6.1.1
+
+Features (Nummern von SourceForge):
+-----
+Detailliertere Informationen: http://sourceforge.net/projects/commsy/
+
+
+Bugs (Nummern von SourceForge):
+-----
+Bugfix-Release:
+1958456  	Gruppenraum: Mail
+1966166 	Version löschen
+1972582 	Tags: löschung nicht vollständig
+Detailliertere Informationen: http://sourceforge.net/projects/commsy/
