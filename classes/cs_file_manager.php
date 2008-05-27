@@ -191,7 +191,7 @@ class cs_file_manager extends cs_manager {
        unset($file_item);
        return $saved;
     }
-    
+
     function updateExtras($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
@@ -573,9 +573,7 @@ class cs_file_manager extends cs_manager {
       $days = 30;
       $timestamp = getCurrentDateTimeMinusDaysInMySQL($days);
 
-      // include item_link_file: BEGIN
-      $query = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' INNER JOIN `item_link_file` ON '.$this->_db_table.'.files_id = item_link_file.file_id WHERE (item_link_file.deletion_date IS NOT NULL and item_link_file.deletion_date < "'.$timestamp.'") OR ('.$this->_db_table.'.deletion_date IS NOT NULL and '.$this->_db_table.'.deletion_date < "'.$timestamp.'");';
-      // include item_link_file: END
+      $query = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' WHERE deletion_date IS NOT NULL and deletion_date < "'.$timestamp.'";';
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -584,14 +582,7 @@ class cs_file_manager extends cs_manager {
          $retour = false;
       } else {
          $retour = $retour and parent::deleteReallyOlderThanOneMonth();
-         $link_item_file_manager = $this->_environment->getLinkItemFileManager();
          foreach ($result as $query_result) {
-
-            // include item_link_file: BEGIN
-            $link_item_file_manager->deleteByFileReally($query_result['files_id']);
-            $this->_deleteReallyByFileIDOnlyDB($query_result['files_id']);
-            // include item_link_file: END
-
             $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
             $result2 = $this->_db_connector->performQuery($query2);
             if ( !isset($result2) ) {
@@ -614,10 +605,47 @@ class cs_file_manager extends cs_manager {
       return $retour;
    }
 
-   public function updateScanned($file_item) {
+   function deleteUnneededFiles () {
+      $retour = true;
+      $sql = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' LEFT JOIN item_link_file ON item_link_file.file_id='.$this->_db_table.'.files_id WHERE item_link_file.file_id IS NULL;';
+      $result = $this->_db_connector->performQuery($sql);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problem selecting items from query: "'.$sql.'"',E_USER_ERROR);
+         $retour = false;
+      } else {
+         $disc_manager = $this->_environment->getDiscManager();
+         foreach ($result as $query_result) {
+            $sql = 'DELETE FROM '.$this->_db_table.' WHERE files_id="'.$query_result['files_id'].'";';
+            $result_delete = $this->_db_connector->performQuery($sql);
+
+            $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
+            $result2 = $this->_db_connector->performQuery($query2);
+            if ( !isset($result2) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problem selecting items from query: "'.$query2.'"',E_USER_ERROR);
+               $retour = false;
+            } elseif ( !empty($result2[0]) ) {
+               $query_result2 = $result2[0];
+               if (!empty($query_result2['portal_id'])) {
+                  $filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
+                  $disc_manager->setPortalID($query_result2['portal_id']);
+                  $disc_manager->setContextID($query_result['context_id']);
+                  if ($disc_manager->existsFile($filename)) {
+                     $retour = $retour and $disc_manager->unlinkFile($filename);
+                  }
+               }
+            }
+         }
+         unset($disc_manager);
+      }
+      return $retour;
+   }
+
+   public function updateScanned ($file_item) {
       $saved = false;
-        $query = 'UPDATE '.$this->_db_table.' SET'.
-                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
+      $query = 'UPDATE '.$this->_db_table.' SET'.
+               ' scan="'.encode(AS_DB,$file_item->getScanValue()).'"'.
                ' WHERE files_id = "'.encode(AS_DB,$file_item->getFileID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
@@ -629,7 +657,7 @@ class cs_file_manager extends cs_manager {
       unset($file_item);
       return $saved;
    }
-   
+
    /** Prepares the db_array for the item
     *
     * @param $db_array Contains the data from the database

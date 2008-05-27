@@ -127,6 +127,7 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronRoomActivity();
       $cron_array[] = $this->_cronReallyDelete();
       $cron_array[] = $this->_cronRemoveTempExportDirectory();
+      $cron_array[] = $this->_cronUnlinkFiles();
       return $cron_array;
    }
 
@@ -315,7 +316,8 @@ class cs_server_item extends cs_guide_item {
       $item_type_array[] = CS_DATE_TYPE;
       $item_type_array[] = CS_DISCUSSION_TYPE;
       #$item_type_array[] = CS_DISCARTICLE_TYPE; // NO NO NO -> because of closed discussions
-      $item_type_array[] = CS_FILE_TYPE; // include item_link_file
+      $item_type_array[] = CS_LINKITEMFILE_TYPE;
+      $item_type_array[] = CS_FILE_TYPE;
       $item_type_array[] = CS_ITEM_TYPE;
       $item_type_array[] = CS_LABEL_TYPE;
       $item_type_array[] = CS_LINK_TYPE;
@@ -340,6 +342,25 @@ class cs_server_item extends cs_guide_item {
 
       return $cron_array;
    }
+
+   private function _cronUnlinkFiles () {
+      $cron_array = array();
+      $cron_array['title'] = 'unlink files';
+      $cron_array['description'] = 'unlink files not needed anymore';
+      $cron_array['success'] = false;
+      $cron_array['success_text'] = 'cron failed';
+
+      $file_manager = $this->_environment->getFileManager();
+      if ( $file_manager->deleteUnneededFiles() ) {
+         $cron_array['success'] = true;
+         $cron_array['success_text'] = 'cron done';
+      }
+      return $cron_array;
+   }
+
+   ####################################################################
+   # CRON END
+   ####################################################################
 
    /** get UsageInfos
     * this method returns the usage infos

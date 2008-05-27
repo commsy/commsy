@@ -22,23 +22,25 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+/** upper class of the material manager
+ */
+include_once('classes/cs_manager.php');
+
 /** class for database connection to the database table "link_material_file"
  * this class implements a database manager for the table "link_material_file",
  * in which we store the links between materials and files
  */
-class cs_link_father_manager {
+class cs_link_father_manager extends cs_manager {
 
-  var $_db_table = NULL;
+   var $_db_table = NULL;
 
   /**
    * object cs_user_item - containing the current user
    */
-  var $_current_user = NULL;
-  var $_current_user_id = NULL;
+   var $_current_user = NULL;
+   var $_current_user_id = NULL;
 
    public $_context_limit = NULL;
-
-   private $_output_limit = '';
 
    /**
     * Environment - the environment of the CommSy
