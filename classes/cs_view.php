@@ -1718,18 +1718,14 @@ class cs_view {
          $args = array();
       }
 
-      if ( !empty($args['float'])
-           and ( $args['float'] == 'left'
-                 or $args['float'] == 'right'
+      if ( !empty($args['orientation'])
+           and ( $args['orientation'] == 'portrait'
+                 or $args['orientation'] == 'landscape'
                )
          ) {
-         $float = 'float:'.$args['float'].';';
-      } elseif ( !empty($args['lfloat']) ) {
-         $float = 'float:left;';
-      } elseif ( !empty($args['rfloat']) ) {
-         $float = 'float:right;';
+         $orientation = $args['orientation'];
       } else {
-         $float = '';
+         $orientation = 'portrait';
       }
 
       if ( !empty($source) ) {
@@ -1767,8 +1763,13 @@ class cs_view {
 
         $office_text .= '<script type="text/javascript">'.LF;
         $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
-        $office_text .= "scribd_doc.addParam('height', 500);".LF;
-        $office_text .= "scribd_doc.addParam('width', 400);".LF;
+        if($orientation == 'portrait'){
+            $office_text .= "scribd_doc.addParam('height', 740);".LF;
+            $office_text .= "scribd_doc.addParam('width', 520);".LF;
+        } else if ($orientation == 'landscape') {
+        	$office_text .= "scribd_doc.addParam('height', 420);".LF;
+            $office_text .= "scribd_doc.addParam('width', 520);".LF;
+        }
         $office_text .= "scribd_doc.addParam('page', 1);".LF;
         $office_text .= "scribd_doc.addParam('public', true);".LF;
         $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
