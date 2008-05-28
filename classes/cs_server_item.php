@@ -127,7 +127,7 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronRoomActivity();
       $cron_array[] = $this->_cronReallyDelete();
       $cron_array[] = $this->_cronRemoveTempExportDirectory();
-      $cron_array[] = $this->_cronUnlinkFiles();
+      #$cron_array[] = $this->_cronUnlinkFiles();
       return $cron_array;
    }
 
