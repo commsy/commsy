@@ -1758,7 +1758,7 @@ class cs_view {
         $office_text = '';
 
         $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
-        $office_text .= "<div id='embedded_flash' >".LF;
+        $office_text .= "<div id='embedded_flash_" . $result['doc_id'] . "' >".LF;
         $office_text .= "</div>".LF;
 
         $office_text .= '<script type="text/javascript">'.LF;
@@ -1773,7 +1773,7 @@ class cs_view {
         $office_text .= "scribd_doc.addParam('page', 1);".LF;
         $office_text .= "scribd_doc.addParam('public', true);".LF;
         $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
-        $office_text .= "scribd_doc.write('embedded_flash');".LF;
+        $office_text .= "scribd_doc.write('embedded_flash_" . $result['doc_id'] . "');".LF;
         $office_text .= "</script>".LF;
 
       }
