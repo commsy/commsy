@@ -613,7 +613,7 @@ class cs_page_view extends cs_view {
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       $retour  = '';
-#      $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional/EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.LF;
+#      $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.LF;
 #      $retour .= '<html xmlns="http://www.w3.org/1999/xhtml">'.LF;
       $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.LF;
       $retour .= '<html>'.LF;
