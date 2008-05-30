@@ -604,34 +604,40 @@ class cs_file_manager extends cs_manager {
       return $retour;
    }
 
-   function deleteUnneededFiles () {
-      $retour = true;
-      $sql = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' LEFT JOIN item_link_file ON item_link_file.file_id='.$this->_db_table.'.files_id WHERE item_link_file.file_id IS NULL;';
-      $result = $this->_db_connector->performQuery($sql);
-      if ( !isset($result) ) {
+   function deleteUnneededFiles ( $context_id ) {
+      if ( !isset($context_id) or empty($context_id) ) {
          include_once('functions/error_functions.php');
-         trigger_error('Problem selecting items from query: "'.$sql.'"',E_USER_ERROR);
+         trigger_error('deleteUnneededFiles: no context_id given',E_USER_ERROR);
          $retour = false;
       } else {
-         $disc_manager = $this->_environment->getDiscManager();
-         foreach ($result as $query_result) {
-            $sql = 'DELETE FROM '.$this->_db_table.' WHERE files_id="'.$query_result['files_id'].'";';
-            $result_delete = $this->_db_connector->performQuery($sql);
+         $retour = true;
+         $sql = 'SELECT '.$this->_db_table.'.files_id, '.$this->_db_table.'.context_id, '.$this->_db_table.'.filename FROM '.$this->_db_table.' LEFT JOIN item_link_file ON item_link_file.file_id='.$this->_db_table.'.files_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'" AND item_link_file.file_id IS NULL;';
+         $result = $this->_db_connector->performQuery($sql);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problem selecting items from query: "'.$sql.'"',E_USER_ERROR);
+            $retour = false;
+         } else {
+            $disc_manager = $this->_environment->getDiscManager();
+            foreach ($result as $query_result) {
+               $sql = 'DELETE FROM '.$this->_db_table.' WHERE files_id="'.$query_result['files_id'].'";';
+               $result_delete = $this->_db_connector->performQuery($sql);
 
-            $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
-            $result2 = $this->_db_connector->performQuery($query2);
-            if ( !isset($result2) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problem selecting items from query: "'.$query2.'"',E_USER_ERROR);
-               $retour = false;
-            } elseif ( !empty($result2[0]) ) {
-               $query_result2 = $result2[0];
-               if (!empty($query_result2['portal_id'])) {
-                  $filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
-                  $disc_manager->setPortalID($query_result2['portal_id']);
-                  $disc_manager->setContextID($query_result['context_id']);
-                  if ($disc_manager->existsFile($filename)) {
-                     $retour = $retour and $disc_manager->unlinkFile($filename);
+               $query2 = 'SELECT context_id as portal_id FROM room WHERE item_id="'.$query_result['context_id'].'"';
+               $result2 = $this->_db_connector->performQuery($query2);
+               if ( !isset($result2) ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problem selecting items from query: "'.$query2.'"',E_USER_ERROR);
+                  $retour = false;
+               } elseif ( !empty($result2[0]) ) {
+                  $query_result2 = $result2[0];
+                  if (!empty($query_result2['portal_id'])) {
+                     $filename = 'cid'.$query_result['context_id'].'_'.$query_result['files_id'].'_'.$query_result['filename'];
+                     $disc_manager->setPortalID($query_result2['portal_id']);
+                     $disc_manager->setContextID($query_result['context_id']);
+                     if ($disc_manager->existsFile($filename)) {
+                        $retour = $retour and $disc_manager->unlinkFile($filename);
+                     }
                   }
                }
             }

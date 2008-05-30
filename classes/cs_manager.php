@@ -1206,5 +1206,21 @@ class cs_manager {
          return '';
       }
    }
+
+   public function existsItem ( $item_id ) {
+      $retour = false;
+      if ( !empty($item_id) ) {
+         $query = 'SELECT item_id FROM '.$this->_db_table;
+         $query .= ' WHERE item_id = "'.encode(AS_DB,$item_id).'"';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting one label.',E_USER_WARNING);
+         } elseif ( !empty($result[0]) ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
 }
 ?>

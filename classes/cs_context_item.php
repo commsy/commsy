@@ -2471,7 +2471,7 @@ class cs_context_item extends cs_item {
    }
 
    function InformationBoxWithExistingObject(){
-   	$retour = false;
+      $retour = false;
       $id = $this->getInformationBoxEntryID();
       $manager = $this->_environment->getItemManager();
       $item = $manager->getItem($id);
@@ -3435,6 +3435,21 @@ class cs_context_item extends cs_item {
     */
    function _getTimestampCronWeekly () {
       return $this->_getExtra('CRON_WEEKLY');
+   }
+
+   public function _cronUnlinkFiles () {
+      $cron_array = array();
+      $cron_array['title'] = 'unlink files';
+      $cron_array['description'] = 'unlink files not needed anymore';
+      $cron_array['success'] = false;
+      $cron_array['success_text'] = 'cron failed';
+
+      $file_manager = $this->_environment->getFileManager();
+      if ( $file_manager->deleteUnneededFiles($this->getItemID()) ) {
+         $cron_array['success'] = true;
+         $cron_array['success_text'] = 'cron done';
+      }
+      return $cron_array;
    }
 
    ############### BEGIN ####################

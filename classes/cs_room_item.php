@@ -756,6 +756,7 @@ class cs_room_item extends cs_context_item {
       // you can link daily cron jobs here like this
       // $cron_array[] = $this->_sendEmailNewsLetter();
       $cron_array = array();
+      $cron_array[] = $this->_cronUnlinkFiles();
       global $c_virus_scan_cron;
       if ( isset($c_virus_scan_cron)
            and !empty($c_virus_scan_cron)

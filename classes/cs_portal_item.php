@@ -797,6 +797,7 @@ class cs_portal_item extends cs_guide_item {
       // $cron_array[] = $this->_sendEmailNewsLetter();
       $cron_array = array();
 
+      $cron_array[] = $this->_cronUnlinkFiles();
       if ( $this->showTime() and $this->isOpen() ) {
          $cron_array[] = $this->_cronCheckTimeLabels();
          $cron_array[] = $this->_cronRenewContinuousLinks();

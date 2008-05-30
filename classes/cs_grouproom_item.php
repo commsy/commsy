@@ -501,11 +501,17 @@ class cs_grouproom_item extends cs_room_item {
          if ( $this->_issetExtra('GROUP_ITEM_ID') ) {
             $item_id = $this->_getExtra('GROUP_ITEM_ID');
             $manager = $this->_environment->getGroupManager();
-            $group_item = $manager->getItem($item_id);
-            if ( isset($group_item) and !$group_item->isDeleted() ) {
-               $this->_group_item = $group_item;
+            if ( $manager->existsItem($item_id) ) {
+               $group_item = $manager->getItem($item_id);
+               if ( isset($group_item) and !$group_item->isDeleted() ) {
+                  $this->_group_item = $group_item;
+               }
+               $retour = $this->_group_item;
+            } else {
+               $this->_unsetExtra('GROUP_ITEM_ID');
+               $this->saveWithoutChangingModificationInformation();
+               $this->save();
             }
-            $retour = $this->_group_item;
          }
       } else {
          $retour = $this->_group_item;

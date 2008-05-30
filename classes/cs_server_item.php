@@ -127,7 +127,7 @@ class cs_server_item extends cs_guide_item {
       $cron_array[] = $this->_cronRoomActivity();
       $cron_array[] = $this->_cronReallyDelete();
       $cron_array[] = $this->_cronRemoveTempExportDirectory();
-      #$cron_array[] = $this->_cronUnlinkFiles();
+      $cron_array[] = $this->_cronUnlinkFiles();
       return $cron_array;
    }
 
@@ -346,21 +346,6 @@ class cs_server_item extends cs_guide_item {
       }
       unset($item_type_array);
 
-      return $cron_array;
-   }
-
-   private function _cronUnlinkFiles () {
-      $cron_array = array();
-      $cron_array['title'] = 'unlink files';
-      $cron_array['description'] = 'unlink files not needed anymore';
-      $cron_array['success'] = false;
-      $cron_array['success_text'] = 'cron failed';
-
-      $file_manager = $this->_environment->getFileManager();
-      if ( $file_manager->deleteUnneededFiles() ) {
-         $cron_array['success'] = true;
-         $cron_array['success_text'] = 'cron done';
-      }
       return $cron_array;
    }
 
