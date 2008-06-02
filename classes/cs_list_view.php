@@ -1085,42 +1085,6 @@ class cs_list_view extends cs_view {
       return $mod_date;
    }
 
-   /** get the linked groups of an item
-    * Can be used in derived classes _getItemAsHTML()-methods
-    * to display the linked groups of an item in a
-    * standardized manner.
-    *
-    * @return string groups
-    *
-    * @author CommSy Development Group
-    */
-   function _getGroups($item){
-      $groups_list = $item->getGroupList();
-      if ( $groups_list->getCount() > 0 ) {
-         $groups_array = array();
-         $group_item = $groups_list->getFirst();
-         while ( $group_item ) {
-            $groups_array[] = $group_item->getName();
-            $group_item = $groups_list->getNext();
-         }
-         natsort($groups_array);
-         $groups_text = implode(', ',$groups_array);
-         $groups_text = $this->_compareWithSearchText($groups_text);
-         if ( $groups_list->getCount() > 1 ) {
-            $fronttext = $this->_translator->getMessage('COMMON_FOR_GROUPS');
-         } else {
-            $fronttext = $this->_translator->getMessage('COMMON_FOR_GROUP');
-         }
-         $groups_text = '<span class="list_view_description">'.
-                        $fronttext.
-                        ': </span>'.
-                        $groups_text."\n";
-      } else {
-        $groups_text = '';
-      }
-      return $this->_text_as_html_short($groups_text);
-   }
-
    /** get the whole navigation of the list view as HTML
     * this method returns the navigation in HTML-Code
     *

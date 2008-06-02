@@ -617,6 +617,18 @@ class cs_project_item extends cs_room_item {
    # configured to run cron.php in /htdocs
    #########################################################
 
+   function _cronDaily () {
+      // you can link daily cron jobs here like this
+      // $cron_array[] = $this->_sendEmailNewsLetter();
+      $cron_array   = array();
+      $cron_array[] = $this->_cleanLinksToGroupAll();
+
+      $father_cron_array = parent::_cronDaily();
+      $cron_array = array_merge($father_cron_array,$cron_array);
+
+      return $cron_array;
+   }
+
    /** cron weekly, INTERNAL
     * here you can link weekly cron jobs
     *
@@ -629,6 +641,37 @@ class cs_project_item extends cs_room_item {
 
       return $cron_array;
    }
+
+   private function _cleanLinksToGroupAll () {
+      $retour = array();
+      $retour['title'] = 'control links to group all';
+      $retour['description'] = '';
+      $retour['success'] = false;
+      $retour['success_text'] = 'cron failed';
+
+      $group_manager = $this->_environment->getGroupManager();
+      $count = $group_manager->cleanLinkToGroupAll($this->getItemID());
+      if ( !isset($count) ) {
+         $retour['success_text'] = 'cron failed';
+      } elseif ( !empty($count) ) {
+         $retour['success'] = true;
+         if ( $count == 1 ) {
+            $retour['success_text'] = 're-insert '.$count.' link';
+         } else {
+            $retour['success_text'] = 're-insert '.$count.' links';
+         }
+      } else {
+         $retour['success'] = true;
+         $retour['success_text'] = 'nothing to do';
+      }
+
+      return $retour;
+
+   }
+
+   #########################################################
+   # COMMSY CRON JOBS - END
+   #########################################################
 
    function getUsageInfoTextForRubric($rubric){
       $funct = $this->_environment->getCurrentFunction();

@@ -1308,6 +1308,8 @@ class cs_item {
       } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
          // müsste dies nicht für alle Fälle gelten ???
          $link_item_manager->setRoomLimit($this->getContextID());
+      } elseif ( $this->isA(CS_USER_TYPE) ) {
+         $link_item_manager->setRoomLimit($this->getContextID());
       } else {
          $link_item_manager->setRoomLimit($this->_environment->getCurrentContextID() );
       }

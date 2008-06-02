@@ -96,9 +96,10 @@ class cs_user_item extends cs_item {
    * @return object cs_list a list of groups (cs_label_item)
    */
    function getGroupList () {
-      $group_manager = $this->_environment->getLabelManager();
-      $group_manager->setTypeLimit(CS_GROUP_TYPE);
-      return $this->_getLinkedItems($group_manager, CS_GROUP_TYPE);
+      #$group_manager = $this->_environment->getLabelManager();
+      #$group_manager->setTypeLimit(CS_GROUP_TYPE);
+      #return $this->_getLinkedItems($group_manager, CS_GROUP_TYPE);
+      return $this->getLinkedItemList(CS_GROUP_TYPE);
    }
 
    /** set groups of a user
@@ -1671,6 +1672,15 @@ class cs_user_item extends cs_item {
             $result = $this->_getExtra('YAHOO');
       }
     return $result;
+   }
+
+   public function isInGroup ( $group_item ) {
+      $retour = false;
+      $group_list = $this->getGroupList();
+      $retour = $group_list->inList($group_item);
+      unset($group_list);
+      unset($group_item);
+      return $retour;
    }
 }
 ?>

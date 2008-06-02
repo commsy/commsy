@@ -31,24 +31,24 @@ include_once('classes/cs_labels_manager.php');
  */
 class cs_group_manager extends cs_labels_manager {
 
-	/** constructor
-	* the only available constructor, initial values for internal variables
-	*
-	* @param object cs_environment the environment
-	*/
-	public function __construct ($environment) {
-		$this->cs_labels_manager($environment);
-	}
+   /** constructor
+   * the only available constructor, initial values for internal variables
+   *
+   * @param object cs_environment the environment
+   */
+   public function __construct ($environment) {
+      $this->cs_labels_manager($environment);
+   }
 
-	/** resetLimits
-	*  reset limits of this manager
-	*/
-	public function resetLimits () {
-		parent::resetLimits();
-		$this->_type_limit = CS_GROUP_TYPE;
-		$this->_context_limit = $this->_environment->getCurrentContextID();
-	}
-	
+   /** resetLimits
+   *  reset limits of this manager
+   */
+   public function resetLimits () {
+      parent::resetLimits();
+      $this->_type_limit = CS_GROUP_TYPE;
+      $this->_context_limit = $this->_environment->getCurrentContextID();
+   }
+
   /** get an empty group item
     *  get an empty label (group) item
     *
@@ -58,6 +58,56 @@ class cs_group_manager extends cs_labels_manager {
       include_once('classes/cs_group_item.php');
       $item = new cs_group_item($this->_environment);
       return $item;
+   }
+
+   public function cleanLinkToGroupAll ( $context_id ) {
+      $retour = NULL;
+
+      // rename group all
+      $this->setContextLimit($context_id);
+      $group_all_item = $this->getItemByName('ALL');
+      if ( !isset($group_all_item) ) {
+         $this->_renameGroupAll($context_id);
+         $group_all_item = $this->getItemByName('ALL');
+      }
+
+      // re-insert links
+      if ( !empty($group_all_item) ) {
+         $retour = 0;
+
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserLimit();
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         unset($user_manager);
+         if ( isset($user_list) and $user_list->isNotEmpty() ) {
+            $user_item = $user_list->getFirst();
+            while ( $user_item ) {
+               if ( !$user_item->isInGroup($group_all_item) ) {
+                  $user_item->setGroup($group_all_item);
+                  $user_item->setChangeModificationOnSave(false);
+                  $user_item->save();
+                  $retour++;
+               }
+               unset($user_item);
+               $user_item = $user_list->getNext();
+            }
+            unset($user_item);
+            unset($user_list);
+         }
+         unset($group_all_item);
+      } else {
+         unset($group_all_item);
+         $retour = 0;
+      }
+      return $retour;
+   }
+
+   private function _renameGroupall ($context_id) {
+      $query  = 'UPDATE '.$this->_db_table.' SET name="ALL" WHERE type="group" and (name="Alle Mitglieder" or name="All members") and context_id="'.$context_id.'";';
+      $result = $this->_db_connector->performQuery($query);
+      $this->resetCache();
    }
 }
 ?>

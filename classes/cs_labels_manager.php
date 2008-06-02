@@ -1091,5 +1091,9 @@ class cs_labels_manager extends cs_manager {
          }
       }
    }
+
+   public function resetCache () {
+      $this->_internal_data = array();
+   }
 }
 ?>

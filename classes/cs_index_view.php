@@ -1147,69 +1147,69 @@ EOD;
             $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('ASSIGNED_ITEMS_LISTVIEW_SEPERATOR').'</span> ';
             $ref_item = $this->getRefItem();
             $ref_item_type = $ref_item->getItemType();
-   	        if ( $ref_item_type == CS_ANNOTATION_TYPE ) {
-	           $ref_item2 = $ref_item->getLinkedItem();
-	           $module = type2module($ref_item2->getItemType());
-	           $link_params = array();
-	           $link_params['iid'] = $ref_item2->getItemID();
-	           $title = ahref_curl($this->_environment->getCurrentContextID(),
-	                               $module,
-	                               'detail',
-	                               $link_params,
-	                               chunkText($ref_item->getTitle(),13),
-	                               '',
-	                               '',
-	                               $ref_item->getItemID()
-	                              );
-	           unset($link_params);
-	           $html .= '</span>'.LF;
-	        } elseif ( $ref_item_type == CS_SECTION_TYPE ) {
-	           $ref_item2 = $ref_item->getLinkedItem();
-	           $link_params = array();
-	           $link_params['iid'] = $ref_item2->getItemID();
-	           $title = ahref_curl($this->_environment->getCurrentContextID(),
-	                               CS_MATERIAL_TYPE,
-	                               'detail',
-	                               $link_params,
-	                               chunkText($ref_item->getTitle(),13),
-	                               '',
-	                               '',
-	                               $ref_item->getItemID()
-	                              );
-	           unset($link_params);
-	           $html .= '</span>'.LF;
-	        } elseif ( $ref_item_type == CS_DISCARTICLE_TYPE ) {
-	           $ref_item2 = $ref_item->getLinkedItem();
-	           $link_params = array();
-	           $link_params['iid'] = $ref_item2->getItemID();
-	           $title = ahref_curl($this->_environment->getCurrentContextID(),
-	                               CS_DISCUSSION_TYPE,
-	                               'detail',
-	                               $link_params,
-	                               chunkText($ref_item->getTitle(),13),
-	                               '',
-	                               '',
-	                               $ref_item->getItemID()
-	                              );
-	           unset($link_params);
-	           $html .= '</span>'.LF;
-	        } else {
-	           $module = type2module($ref_item_type);
-	           $link_params = array();
-	           $link_params['iid'] = $ref_iid;
-	           $title = ahref_curl($this->_environment->getCurrentContextID(),
-	                               $module,
-	                               'detail',
-	                               $link_params,
-	                               chunkText($ref_item->getTitle(),13),
-	                               '',
-	                               '',
-	                               $this->getFragment()
-	                              );
-	           unset($link_params);
-	           $html .= '</span>'.LF;
-	        }
-	        $html_text .= '<span><a title="'.$ref_item->getTitle().'">'.$title.'</a></span>';
+            if ( $ref_item_type == CS_ANNOTATION_TYPE ) {
+              $ref_item2 = $ref_item->getLinkedItem();
+              $module = type2module($ref_item2->getItemType());
+              $link_params = array();
+              $link_params['iid'] = $ref_item2->getItemID();
+              $title = ahref_curl($this->_environment->getCurrentContextID(),
+                                  $module,
+                                  'detail',
+                                  $link_params,
+                                  chunkText($ref_item->getTitle(),13),
+                                  '',
+                                  '',
+                                  $ref_item->getItemID()
+                                 );
+              unset($link_params);
+              $html .= '</span>'.LF;
+           } elseif ( $ref_item_type == CS_SECTION_TYPE ) {
+              $ref_item2 = $ref_item->getLinkedItem();
+              $link_params = array();
+              $link_params['iid'] = $ref_item2->getItemID();
+              $title = ahref_curl($this->_environment->getCurrentContextID(),
+                                  CS_MATERIAL_TYPE,
+                                  'detail',
+                                  $link_params,
+                                  chunkText($ref_item->getTitle(),13),
+                                  '',
+                                  '',
+                                  $ref_item->getItemID()
+                                 );
+              unset($link_params);
+              $html .= '</span>'.LF;
+           } elseif ( $ref_item_type == CS_DISCARTICLE_TYPE ) {
+              $ref_item2 = $ref_item->getLinkedItem();
+              $link_params = array();
+              $link_params['iid'] = $ref_item2->getItemID();
+              $title = ahref_curl($this->_environment->getCurrentContextID(),
+                                  CS_DISCUSSION_TYPE,
+                                  'detail',
+                                  $link_params,
+                                  chunkText($ref_item->getTitle(),13),
+                                  '',
+                                  '',
+                                  $ref_item->getItemID()
+                                 );
+              unset($link_params);
+              $html .= '</span>'.LF;
+           } else {
+              $module = type2module($ref_item_type);
+              $link_params = array();
+              $link_params['iid'] = $ref_iid;
+              $title = ahref_curl($this->_environment->getCurrentContextID(),
+                                  $module,
+                                  'detail',
+                                  $link_params,
+                                  chunkText($ref_item->getTitle(),13),
+                                  '',
+                                  '',
+                                  $this->getFragment()
+                                 );
+              unset($link_params);
+              $html .= '</span>'.LF;
+           }
+           $html_text .= '<span><a title="'.$ref_item->getTitle().'">'.$title.'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['ref_iid']);
@@ -2362,34 +2362,6 @@ EOD;
    }
    // @segment-end 82455
 
-
-
-   /** get the linked groups of an item
-    * Can be used in derived classes _getItemAsHTML()-methods
-    * to display the linked groups of an item in a
-    * standardized manner.
-    *
-    * @return string groups
-    *
-    * @author CommSy Development Group
-    */
-   function _getItemGroups($item){
-      $groups_list = $item->getGroupList();
-      if ( $groups_list->getCount() > 0 ) {
-         $groups_array = array();
-         $group_item = $groups_list->getFirst();
-         while ( $group_item ) {
-            $groups_array[] = $group_item->getName();
-            $group_item = $groups_list->getNext();
-         }
-         natsort($groups_array);
-         $groups_text = implode(', ',$groups_array);
-         $groups_text = $this->_compareWithSearchText($groups_text);
-      } else {
-        $groups_text = '';
-      }
-      return $groups_text;
-   }
 
    // @segment-begin 53255 _compareWithSearchText($value):format-string
    /** compare the item text and the search criteria
