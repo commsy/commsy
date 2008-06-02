@@ -757,6 +757,8 @@ class cs_room_item extends cs_context_item {
       // $cron_array[] = $this->_sendEmailNewsLetter();
       $cron_array = array();
       $cron_array[] = $this->_cronUnlinkFiles();
+      $cron_array[] = $this->_cronControlLinkItems();
+      $cron_array[] = $this->_cronControlLinks();
       global $c_virus_scan_cron;
       if ( isset($c_virus_scan_cron)
            and !empty($c_virus_scan_cron)
@@ -896,6 +898,58 @@ class cs_room_item extends cs_context_item {
       } else {
          $retour['success_text'] = 'indexing is not enabled';
       }
+      return $retour;
+   }
+
+   public function _cronControlLinkItems () {
+      $retour = array();
+      $retour['title'] = 'control link-items';
+      $retour['description'] = 'delete link items, if first or second item doen\'t exists';
+      $retour['success'] = false;
+      $retour['success_text'] = 'cron failed';
+
+      $link_item_manager = $this->_environment->getLinkItemManager();
+      $count = $link_item_manager->deleteUnneededLinkItems($this->getItemID());
+      if ( !isset($count) ) {
+         $retour['success_text'] = 'cron failed';
+      } elseif ( !empty($count) ) {
+         $retour['success'] = true;
+         if ( $count == 1 ) {
+            $retour['success_text'] = 'delete '.$count.' link item';
+         } else {
+            $retour['success_text'] = 'delete '.$count.' link items';
+         }
+      } else {
+         $retour['success'] = true;
+         $retour['success_text'] = 'nothing to do';
+      }
+
+      return $retour;
+   }
+
+   public function _cronControlLinks () {
+      $retour = array();
+      $retour['title'] = 'control links';
+      $retour['description'] = 'delete links, if from or to item doen\'t exists';
+      $retour['success'] = false;
+      $retour['success_text'] = 'cron failed';
+
+      $link_item_manager = $this->_environment->getLinkManager();
+      $count = $link_item_manager->deleteUnneededLinks($this->getItemID());
+      if ( !isset($count) ) {
+         $retour['success_text'] = 'cron failed';
+      } elseif ( !empty($count) ) {
+         $retour['success'] = true;
+         if ( $count == 1 ) {
+            $retour['success_text'] = 'delete '.$count.' link';
+         } else {
+            $retour['success_text'] = 'delete '.$count.' links';
+         }
+      } else {
+         $retour['success'] = true;
+         $retour['success_text'] = 'nothing to do';
+      }
+
       return $retour;
    }
 

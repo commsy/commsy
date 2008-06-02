@@ -903,5 +903,39 @@ class cs_link_manager extends cs_manager {
      // reset cache
      $this->_resetCache();
   }
+
+   public function deleteUnneededLinkItems ( $context_id ) {
+      $retour = NULL;
+      $id_array = array();
+
+      $sql1 = 'SELECT '.$this->_db_table.'.item_id AS item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.first_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $result = $this->_db_connector->performQuery($sql1);
+      if ( !empty($result) ) {
+         foreach ( $result as $row ) {
+            $id_array[] = $row['item_id'];
+         }
+      }
+
+      $sql2 = 'SELECT '.$this->_db_table.'.item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.second_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $result = $this->_db_connector->performQuery($sql2);
+      if ( !empty($result) ) {
+         foreach ( $result as $row ) {
+            $id_array[] = $row['item_id'];
+         }
+      }
+
+      $id_array = array_unique($id_array);
+      if ( !empty($id_array) ) {
+         $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE item_id IN ('.implode(',',$id_array).');';
+         $result = $this->_db_connector->performQuery($sql3);
+         $sql3 = 'DELETE FROM items WHERE item_id IN ('.implode(',',$id_array).');';
+         $result = $this->_db_connector->performQuery($sql3);
+         $retour = count($id_array);
+      } else {
+         $retour = 0;
+      }
+
+      return $retour;
+   }
 }
 ?>

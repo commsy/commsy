@@ -954,5 +954,39 @@ class cs_links_manager extends cs_manager {
          $this->save($temp_array);
       }
    }
+
+   public function deleteUnneededLinks ( $context_id ) {
+      $retour = NULL;
+      $rows = array();
+
+      $sql1 = 'SELECT '.$this->_db_table.'.* AS item_id FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.to_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $result = $this->_db_connector->performQuery($sql1);
+      if ( !empty($result) ) {
+         foreach ( $result as $row ) {
+            $rows[] = $row;
+         }
+      }
+
+      $sql2 = 'SELECT '.$this->_db_table.'.* FROM '.$this->_db_table.' LEFT JOIN items ON '.$this->_db_table.'.from_item_id=items.item_id WHERE '.$this->_db_table.'.context_id="'.$context_id.'"AND items.context_id IS NULL;';
+      $result = $this->_db_connector->performQuery($sql2);
+      if ( !empty($result) ) {
+         foreach ( $result as $row ) {
+            $rows[] = $row;
+         }
+      }
+
+      $rows = array_unique($rows);
+      if ( !empty($rows) ) {
+         foreach ( $rows as $row ) {
+            $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE to_item_id="'.$row['to_from_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
+            $result = $this->_db_connector->performQuery($sql3);
+         }
+         $retour = count($rows);
+      } else {
+         $retour = 0;
+      }
+
+      return $retour;
+   }
 }
 ?>
