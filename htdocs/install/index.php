@@ -31,6 +31,7 @@ if (file_exists($filename)) {
     // Wenn CommSy schon installiert wurde -->
 
    header("Location: ../commsy.php");
+   header('HTTP/1.0 302 Found');
    exit;
 
 } else {
@@ -51,9 +52,14 @@ if (file_exists($filename)) {
    } else {
 
       $port = ( $_SERVER['SERVER_PORT'] == 80 ) ? '' : ":".$_SERVER['SERVER_PORT'];
-      $root = $_SERVER['SERVER_NAME'].$port.$_SERVER['PHP_SELF'];
+      if ( $port == 443 ) {
+         $domain = 'https://'.$_SERVER['SERVER_NAME'];
+      } else {
+         $domain = 'http://'.$_SERVER['SERVER_NAME'].$port;
+      }
+      $root = $_SERVER['PHP_SELF'];
       $root = str_replace("install.php","",$root);
-      $url = "http://".$root;
+      $url = $root;
       $path = $_SERVER['SCRIPT_FILENAME'];
 
    }
@@ -238,7 +244,7 @@ if (!isset($action)) {
          <br/>- GD Graphics Library - gd2
          <br/>- MySQL Database Library - mysql
          </p>";
-   echo "<p>".$language[$lang]['phpsettings'].":
+   echo "<p>".$language[$lang]['phpsettings_title'].":
         <br/>- magic_quotes_gpc = off (default = on)
         <br/>- register_globals = off (default = off)
         <br/>- memory_limit = 24M (default = 8M)
@@ -246,6 +252,8 @@ if (!isset($action)) {
    echo "<p>CommSy CronJobs" .
         "<br/>".$language[$lang]['commsycron'].
         "</p>";
+   echo "<p><strong>".$language[$lang]['newdatabase']."</strong></p>";
+   echo "<p>".$language[$lang]['newdatabasetext']."</p><br />";
    echo "</td>";
    echo "<td width=\"50%\" style=\"vertical-align:top;\">";
    echo "<p><strong>".$language[$lang]['reqoptional']."</strong>";
@@ -261,23 +269,16 @@ if (!isset($action)) {
          <br/>- ".$language[$lang]['addsoftware_chat']."
          <br/>- ".$language[$lang]['addsoftware_commsywiki']."
          </p>";
-   echo "</td>
-         </tr></table>";
-
-   echo "<p><strong>".$language[$lang]['newdatabase']."</strong></p>";
-   echo "<p>".$language[$lang]['newdatabasetext']."</p><br />";
-
    // Buttons
 
+   echo '<br/>';
    echo '<form name="installation" method="post" action="index.php">';
    echo '<input type="hidden" name="page" value="start" />';
-   echo '<table width="100%" cellspacing="0" cellpadding="0"><tr>';
-
-   echo '<td align="left"><p>&nbsp;</p></td>';
-   echo '<td align="right"><p><input type="submit" name="submit" value="&nbsp;&nbsp;'.$language[$lang]['buttonstart'].'&nbsp;&nbsp;&raquo;&nbsp;&nbsp;" /></p></td>';
-
-   echo '</tr></table>';
+   echo '<input type="submit" name="submit" value="&nbsp;&nbsp;'.$language[$lang]['buttonstart'].'&nbsp;&nbsp;&raquo;&nbsp;&nbsp;" />';
    echo '</form>';
+   echo "</td>
+         </tr>";
+   echo "</table>";
 
    // Buttons
 
@@ -329,6 +330,108 @@ if (!isset($action)) {
    // CHMOD
 
    echo "<div id=\"text\">";
+   echo "<h1>".$language[$lang]['version']."</h1>";
+
+   $php_version = phpversion();
+   if ( $php_version >= 5 ) {
+      $checkphp = "<font style=\"color: #32C040;\"><strong>".$php_version."</strong></font>\n";
+   } else {
+      $checkphp = "<font style=\"color: #FF0030;\"><strong>".$php_version."</strong></font>\n";
+   }
+
+   echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+   echo "<tr>";
+   echo "<td width=\"40%\">PHP</td>";
+   echo "<td width=\"20%\">> 5</td>";
+   echo "<td width=\"40%\" align=\"right\">".$checkphp."</td>";
+   echo "</tr>";
+   echo "</table>";
+   echo "<br/>";
+   echo "<h1>".$language[$lang]['phpmodules']."</h1>";
+
+   if ( !function_exists('mysql_connect') )
+   {
+      $mysql_php = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $mysql_php = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   if ( !function_exists('gd_info') )
+   {
+      $gd_php = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $gd_php = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   if ( !function_exists('mb_encode_mimeheader') )
+   {
+      $mb_php = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $mb_php = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+   echo "<tr>";
+   echo "<td width=\"40%\">mysql</td>";
+   echo "<td width=\"20%\"></td>";
+   echo "<td width=\"40%\" align=\"right\">".$mysql_php."</td>";
+   echo "</tr>";
+   echo "<tr>";
+   echo "<td width=\"40%\">gd2</td>";
+   echo "<td width=\"20%\"></td>";
+   echo "<td width=\"40%\" align=\"right\">".$gd_php."</td>";
+   echo "</tr>";
+   echo "<tr>";
+   echo "<td width=\"40%\">mbstring</td>";
+   echo "<td width=\"20%\"></td>";
+   echo "<td width=\"40%\" align=\"right\">".$mb_php."</td>";
+   echo "</tr>";
+   echo "</table>";
+   echo "<br/>";
+   echo "<h1>".$language[$lang]['phpsettings']."</h1>";
+
+   if(get_magic_quotes_gpc() > 0)
+   {
+      $mqgpc = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $mqgpc = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   if(ini_get('register_global') == 1)
+   {
+      $regglobals = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $regglobals = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   $memory_limit = ini_get('memory_limit');
+   $memory_limit = str_replace("M",'',$memory_limit);
+   if($memory_limit < 24)
+   {
+      $memlimit = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+   } else {
+      $memlimit = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
+   }
+
+   echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+   echo "<tr>";
+   echo "<td width=\"40%\">magic_quotes_gpc</td>";
+   echo "<td width=\"20%\">Off</td>";
+   echo "<td width=\"40%\" align=\"right\">".$mqgpc."</td>";
+   echo "</tr>";
+   echo "<tr>";
+   echo "<td width=\"40%\">register_globals</td>";
+   echo "<td width=\"20%\">Off</td>";
+   echo "<td width=\"40%\" align=\"right\">".$regglobals."</td>";
+   echo "</tr>";
+   echo "<tr>";
+   echo "<td>memory_limit</td>";
+   echo "<td>&ge; 24M</td>";
+   echo "<td align=\"right\">".$memlimit."</td>";
+   echo "</tr>";
+   echo "</table>";
+   echo "<br/>";
+
    echo "<h1>".$language[$lang]['chmod']."</h1>";
 
    if (is_writable("../../etc")) {
@@ -376,66 +479,21 @@ if (!isset($action)) {
       }
    }
 
-   echo "<br />";
-
    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
    echo "<tr>";
    echo "<td width=\"40%\">../etc/</td>";
-   echo "<td width=\"20%\">CHMOD 770</td>";
+   echo "<td width=\"20%\">&nbsp;</td>";
    echo "<td width=\"40%\" align=\"right\">".$checketc."</td>";
    echo "</tr>";
    echo "<tr>";
    echo "<td width=\"40%\">../var/</td>";
-   echo "<td width=\"20%\">CHMOD 770</td>";
+   echo "<td width=\"20%\">&nbsp;</td>";
    echo "<td width=\"40%\" align=\"right\">".$checkvar."</td>";
    echo "</tr>";
    echo "<tr>";
    echo "<td>../var/temp/</td>";
-   echo "<td>CHMOD 770</td>";
+   echo "<td>&nbsp;</td>";
    echo "<td align=\"right\">".$checkvartemp."</td>";
-   echo "</tr>";
-   echo "</table>";
-   echo "<br/>";
-   echo "<h1>".$language[$lang]['phpsettings']."</h1>";
-
-   if(get_magic_quotes_gpc() > 0)
-   {
-      $mqgpc = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
-   } else {
-      $mqgpc = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
-   }
-
-   if(ini_get('register_global') == 1)
-   {
-      $regglobals = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
-   } else {
-      $regglobals = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
-   }
-
-   $memory_limit = ini_get('memory_limit');
-   $memory_limit = str_replace("M",'',$memory_limit);
-   if($memory_limit < 24)
-   {
-      $memlimit = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
-   } else {
-      $memlimit = "<font style=\"color: #32C040;\"><strong>".$language[$lang]['ok']."</strong></font>\n";
-   }
-
-   echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
-   echo "<tr>";
-   echo "<td width=\"40%\">magic_quotes_gpc</td>";
-   echo "<td width=\"20%\">Off</td>";
-   echo "<td width=\"40%\" align=\"right\">".$mqgpc."</td>";
-   echo "</tr>";
-   echo "<tr>";
-   echo "<td width=\"40%\">register_globals</td>";
-   echo "<td width=\"20%\">Off</td>";
-   echo "<td width=\"40%\" align=\"right\">".$regglobals."</td>";
-   echo "</tr>";
-   echo "<tr>";
-   echo "<td>memory_limit</td>";
-   echo "<td>&ge; 24M</td>";
-   echo "<td align=\"right\">".$memlimit."</td>";
    echo "</tr>";
    echo "</table>";
 
@@ -494,8 +552,24 @@ if (!isset($action)) {
          $databasekcheck1 = 1;
       }
 
+      $mysql_version = @mysql_get_server_info();
+      if ( empty($mysql_version) ) {
+         $checkmysql = "<font style=\"color: #FF0030;\"><strong>".$language[$lang]['error']."</strong></font>\n";
+         $success = false;
+      } elseif ( !empty($mysql_version) and $mysql_version >= 5 ) {
+         $checkmysql = "<font style=\"color: #32C040;\"><strong>".$mysql_version."</strong></font>\n";
+         $databasekcheck2 = 1;
+      } else {
+         $checkmysql = "<font style=\"color: #FF0030;\"><strong>".$mysql_version."</strong></font>\n";
+         $success = false;
+      }
+
       echo '<form name="installation" method="post" action="index.php">';
       echo "<table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
+      echo "<tr>";
+      echo "<td>MySQL (> 5)</td>";
+      echo "<td>".$checkmysql."</td>";
+      echo "</tr>";
       echo "<tr>";
       echo "<td>".$language[$lang]['connection'].":&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>";
       echo "<td><strong>".$sqlcheck."</strong></td>";
@@ -560,7 +634,7 @@ if (!isset($action)) {
       echo '<td width="33%" align="left"><p><input name="submit" type="submit" value="&nbsp;&nbsp;&laquo;&nbsp;&nbsp;'.$language[$lang]['buttonprev'].'&nbsp;&nbsp;" /></p></td>';
       echo '<td align="center" width="33%">';
 
-      if(isset($_POST['test']) and (!isset($sqlcheck1) or !isset($databasekcheck1)))
+      if(isset($_POST['test']) and (!isset($sqlcheck1) or !isset($databasekcheck1) or !isset($databasekcheck2)))
       {
          echo '
          <input type="hidden" name="test" value="do" />
@@ -571,7 +645,7 @@ if (!isset($action)) {
       if(!isset($_POST['test']))
       {
          echo '<p><input name="submit" type="submit" value="&nbsp;&nbsp;'.$language[$lang]['buttonnext'].'&nbsp;&nbsp;&raquo;&nbsp;&nbsp;" /></p>';
-      } elseif(isset($_POST['test']) and isset($sqlcheck1) and isset($databasekcheck1))
+      } elseif(isset($_POST['test']) and isset($sqlcheck1) and isset($databasekcheck1) and isset($databasekcheck2))
       {
          echo '
          <input type="hidden" name="checkdone" value="yes" />
@@ -599,7 +673,11 @@ if (!isset($action)) {
    echo '<p>'.$language[$lang]['basedatatext'].'</p>';
    echo '<table cellspacing="0" cellpadding="0" border="0">';
    echo '<tr>';
-   echo '<td>URL *:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+   echo '<td>Domain:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+   echo "<td><input type=\"text\" name=\"domain\" value=\"".$domain."\" class=\"formular\" /></td>";
+   echo '</tr>';
+   echo '<tr>';
+   echo '<td>'.$language[$lang]['urlpath'].' *:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
    echo "<td><input type=\"text\" name=\"urlpath\" value=\"".substr($url, 0, -17)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '<tr>';
@@ -631,22 +709,22 @@ if (!isset($action)) {
    $abspath = $_POST['abspath'];
 
    // MY SQL DATEI ERSTELLEN UND DATEN EINTRAGEN
-   $schreibe1 = '$db["normal"]["host"]';
-   $schreibe2 = '$db["normal"]["user"]';
-   $schreibe3 = '$db["normal"]["password"]';
-   $schreibe4 = '$db["normal"]["database"]';
-   $schreibe5 = '$c_commsy_url_path';
-   $schreibe6 = '$c_commsy_path_file';
-   $schreibe7 = file_get_contents('includes/config_constants.txt');
+   $schreibe1  = '$db["normal"]["host"]';
+   $schreibe2  = '$db["normal"]["user"]';
+   $schreibe3  = '$db["normal"]["password"]';
+   $schreibe4  = '$db["normal"]["database"]';
+   $schreibe5  = '$c_commsy_url_path';
+   $schreibe6  = '$c_commsy_path_file';
 
    $schreibe8  = '$_SERVER["HTTP_HOST"]';
    $schreibe9  = '$_SERVER["SERVER_PORT"]';
    $schreibe10 = '$c_commsy_domain';
 
+   $schreibe11  = '// include first special commsy settings'."\n";
+   $schreibe11 .= '@include_once("etc/commsy/settings.php");'."\n";
+
    $daten = "<?php
-// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Blössl
 //
 //    This file is part of CommSy.
 //
@@ -664,12 +742,12 @@ if (!isset($action)) {
 //    along with CommSy.
 
 /** Database setup **/
-
 $schreibe1 = \"".$_SESSION['host']."\";
 $schreibe2 = \"".$_SESSION['dbuser']."\";
 $schreibe3 = \"".$_SESSION['dbpass']."\";
 $schreibe4 = \"".$_SESSION['dbname']."\";
 
+/** Path setup **/
 if ( !empty($schreibe8) ) {
    if ( !empty($schreibe9)
         and $schreibe9 == 443
@@ -680,14 +758,26 @@ if ( !empty($schreibe8) ) {
    }
    $schreibe10 .= $schreibe8;
 } else {
-// $schreibe10 = \"http://www.meinserver.de\";
+   $schreibe10 = \"".$_POST['domain']."\";
 }
 $schreibe5 = \"".$_POST['urlpath']."\";
 $schreibe6 = \"".$_POST['abspath']."\";
 
+/** include first special commsy settings **/
+@include_once('etc/commsy/settings.php');
 
-$schreibe7
-
+/** include then special config files **/
+@include_once('etc/commsy/cookie.php');
+@include_once('etc/commsy/etchat.php');
+@include_once('etc/commsy/jsmath.php');
+@include_once('etc/commsy/pmwiki.php');
+@include_once('etc/commsy/swish-e.php');
+@include_once('etc/commsy/ims.php');
+@include_once('etc/commsy/fckeditor.php');
+@include_once('etc/commsy/clamscan.php');
+@include_once('etc/commsy/development.php');
+@include_once('etc/commsy/autosave.php');
+@include_once('etc/commsy/plugin.php');
 ?>";
    $mysqlfile = "../../etc/cs_config.php";
    $datei = fopen($mysqlfile,"w");

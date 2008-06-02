@@ -56,8 +56,8 @@ $language['en']['php5'] = 'PHP 5.x - support';
 $language['de']['mysql5'] = 'MySQL-Datenbank Version 5';
 $language['en']['mysql5'] = 'MySQL 5.0 database';
 
-$language['de']['phpmodules'] = 'PHP-Module';
-$language['en']['phpmodules'] = 'PHP modules';
+$language['de']['phpmodules'] = 'PHP-Funktionen';
+$language['en']['phpmodules'] = 'PHP functions';
 
 $language['de']['phpsettings'] = 'PHP-Einstellungen';
 $language['en']['phpsettings'] = 'PHP settings';
@@ -76,11 +76,17 @@ $language['de']['licenseaccept'] = 'Ich habe die Lizenzbestimmungen gelesen und 
 $language['en']['licenseaccept'] = 'I have read the license and accept them!';
 
 //CHMOD Seite
-$language['de']['chmod'] = 'Überprüfung der richtigen CHMOD Rechte';
-$language['en']['chmod'] = 'Checking the CHMOD rights';
+$language['de']['chmod'] = 'Überprüfung der Schreibrechte';
+$language['en']['chmod'] = 'Checking writing rights';
 
 $language['de']['phpsettings'] = 'Überprüfung der richtigen PHP-Einstellungen';
 $language['en']['phpsettings'] = 'Checking the PHP settings';
+
+$language['de']['phpsettings_title'] = 'PHP-Einstellungen';
+$language['en']['phpsettings_title'] = 'PHP settings';
+
+$language['de']['version'] = 'Überprüfung der PHP-Version';
+$language['en']['version'] = 'Checking php version';
 
 $language['de']['ok'] = 'Okay';
 $language['en']['ok'] = 'OK';
@@ -108,8 +114,11 @@ $language['en']['basedata'] = 'Master data';
 $language['de']['basedatatext'] = 'Diese Angaben werden unbedingt benötigt!<br/>Achten Sie auf genaue Angaben dieser Daten!';
 $language['en']['basedatatext'] = 'These settings are required!<br/>Please check, if they are correct!';
 
-$language['de']['abspath'] = 'Absoluter Pfad';
-$language['en']['abspath'] = 'Absolute path';
+$language['de']['abspath'] = 'Datei-Pfad';
+$language['en']['abspath'] = 'File path';
+
+$language['de']['urlpath'] = 'URL-Pfad';
+$language['en']['urlpath'] = 'URL path';
 
 $language['de']['pathtext'] = 'Die Pfade müssen unbedingt mit <strong>/</strong> enden!';
 $language['en']['pathtext'] = 'The paths above have to end with a <strong>/</strong>!';
@@ -126,8 +135,8 @@ $language['en']['donetext'] = 'The database was installed sucessfully and CommSy
 $language['de']['toportal'] = 'Zum CommSy-Portal';
 $language['en']['toportal'] = 'To the CommSy portal';
 
-$language['de']['commsycron'] = 'Für Informationen siehe die <a href="../../docs/docu_installation_de.html" class="link_in_text" target="_blank">Installationsanweisungen</a>.';
-$language['en']['commsycron'] = 'For information see the <a href="../../docs/docu_installation_en.html" class="link_in_text" target="_blank">installation guide</a>.';
+$language['de']['commsycron'] = 'Siehe <a href="../../docs/docu_installation_de.html" class="link_in_text" target="_blank">Installationsanweisungen</a>.';
+$language['en']['commsycron'] = 'See <a href="../../docs/docu_installation_en.html" class="link_in_text" target="_blank">installation guide</a>.';
 
 $language['de']['addsoftware'] = 'Zusätzliche Software';
 $language['en']['addsoftware'] = 'Additional software';

@@ -869,14 +869,14 @@ class cs_view {
                      $width_string ='';
                   } else {
 
-                            $width_string = 'width:200px;';
-                                                    if (function_exists('gd_info')) {
-                     $image_in_info = GetImageSize($file->getDiskFileName());
-                                                         $x_orig= $image_in_info[0];
-                                                         if ($x_orig < 200) {
-                                                            $width_string = '';
-                                                         }
-                                                    }
+                     $width_string = 'width:200px;';
+                     if (function_exists('gd_info')) {
+                        $image_in_info = GetImageSize($file->getDiskFileName());
+                        $x_orig= $image_in_info[0];
+                        if ($x_orig < 200) {
+                           $width_string = '';
+                        }
+                     }
                      $image_text = '<img src="'.$file->getUrl().'" alt="'.$name.'"/>';
                   }
                   //images can have links to their original file, or be  just images in a page...
@@ -1763,12 +1763,12 @@ class cs_view {
 
         $office_text .= '<script type="text/javascript">'.LF;
         $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
-        if($orientation == 'portrait'){
-            $office_text .= "scribd_doc.addParam('height', 740);".LF;
-            $office_text .= "scribd_doc.addParam('width', 520);".LF;
-        } else if ($orientation == 'landscape') {
-        	$office_text .= "scribd_doc.addParam('height', 420);".LF;
-            $office_text .= "scribd_doc.addParam('width', 520);".LF;
+        if ( $orientation == 'portrait' ) {
+           $office_text .= "scribd_doc.addParam('height', 740);".LF;
+           $office_text .= "scribd_doc.addParam('width', 520);".LF;
+        } elseif ( $orientation == 'landscape' ) {
+           $office_text .= "scribd_doc.addParam('height', 420);".LF;
+           $office_text .= "scribd_doc.addParam('width', 520);".LF;
         }
         $office_text .= "scribd_doc.addParam('page', 1);".LF;
         $office_text .= "scribd_doc.addParam('public', true);".LF;

@@ -59,7 +59,12 @@ function cleanupSession($session, $environment){
 
 // include base-config
 include_once('etc/cs_constants.php');
-include_once('etc/cs_config.php');
+@include_once('etc/cs_config.php');
+if ( !isset($db) ) {
+   header('Location: install');
+   header('HTTP/1.0 302 Found');
+   exit();
+}
 include_once('functions/misc_functions.php');
 
 // start of execution time

@@ -219,7 +219,11 @@ class cs_ftsearch_manager extends cs_manager {
       // search configuration in etc/cs_config.php
       // check if ftsearch is enabled
       global $ftsearch_enabled;
-      $this->_ftsearch_enabled = $ftsearch_enabled;
+      if ( isset($ftsearch_enabled) ) {
+         $this->_ftsearch_enabled = $ftsearch_enabled;
+      } else {
+         $this->_ftsearch_enabled = false;
+      }
 
       if ($this->_ftsearch_enabled) {
          $ft_cids = NULL;
@@ -244,6 +248,9 @@ class cs_ftsearch_manager extends cs_manager {
 
       // create new or update existing fulltext index
       global $ftsearch_enabled;
+      if ( !isset($ftsearch_enabled) ) {
+         $ftsearch_enabled = false;
+      }
       if ($ftsearch_enabled) {
 
          $folder_string = '/tmp/swish-e';

@@ -937,7 +937,7 @@ class cs_environment {
    * @access public
    */
    function getSessionManager() {
-      global $c_auth; // unschï¿½n (TBD)
+      global $c_auth; // unschön (TBD)
       if (!isset($this->instance['cs_session_manager'])) {
          require_once('classes/cs_session_manager.php');
          $this->instance['cs_session_manager'] = new cs_session_manager($this->getDBConnector(),$c_auth);
@@ -1477,7 +1477,7 @@ class cs_environment {
    }
 
    public function isCurlForPHPAvailable(){
-   	return function_exists("curl_init");
+      return function_exists("curl_init");
 //      return false; //-> Scribd not available in release 6.1.0
    }
 

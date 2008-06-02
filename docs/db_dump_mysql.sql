@@ -256,6 +256,7 @@ CREATE TABLE `files` (
   `size` int(30) NOT NULL,
   `has_html` enum('0','1','2') collate latin1_german1_ci NOT NULL default '0',
   `scan` tinyint(1) NOT NULL default '-1',
+  `extras` text collate latin1_german1_ci,
   PRIMARY KEY  (`files_id`),
   KEY `room_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
