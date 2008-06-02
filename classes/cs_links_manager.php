@@ -978,14 +978,13 @@ class cs_links_manager extends cs_manager {
       $rows = array_unique($rows);
       if ( !empty($rows) ) {
          foreach ( $rows as $row ) {
-            $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE to_item_id="'.$row['to_from_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
+            $sql3 = 'DELETE FROM '.$this->_db_table.' WHERE to_item_id="'.$row['to_item_id'].'" AND to_version_id="'.$row['to_version_id'].'" AND from_item_id="'.$row['from_item_id'].'" AND from_version_id="'.$row['from_version_id'].'";';
             $result = $this->_db_connector->performQuery($sql3);
          }
          $retour = count($rows);
       } else {
          $retour = 0;
       }
-
       return $retour;
    }
 }
