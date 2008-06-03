@@ -340,7 +340,7 @@ class cs_server_item extends cs_guide_item {
             $cron_array['success'] = $success and $cron_array['success'];
             $cron_array['success_text'] = 'delete entries in database marked as deleted older than '.$c_delete_days.' days';
          } else {
-            $cron_array['success_text'] = 'nothing to do - please activate in cs_config.php -> c_delete_days if needed';
+            $cron_array['success_text'] = 'nothing to do - please activate etc/commsy/settings.php -> c_delete_days if needed';
          }
          unset($manager);
       }
