@@ -1757,25 +1757,49 @@ class cs_view {
 
         $office_text = '';
 
-        $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
-        $office_text .= "<div id='embedded_flash_" . $result['doc_id'] . "' >".LF;
-        $office_text .= "</div>".LF;
+//        $office_text .= "<script type='text/javascript' src='http://www.scribd.com/javascripts/view.js'></script>".LF;
+//        $office_text .= "<div id='embedded_flash_" . $result['doc_id'] . "' >".LF;
+//        $office_text .= "</div>".LF;
+//
+//        $office_text .= '<script type="text/javascript">'.LF;
+//        $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
+//        if ( $orientation == 'portrait' ) {
+//           $office_text .= "scribd_doc.addParam('height', 740);".LF;
+//           $office_text .= "scribd_doc.addParam('width', 520);".LF;
+//        } elseif ( $orientation == 'landscape' ) {
+//           $office_text .= "scribd_doc.addParam('height', 420);".LF;
+//           $office_text .= "scribd_doc.addParam('width', 520);".LF;
+//        }
+//        $office_text .= "scribd_doc.addParam('page', 1);".LF;
+//        $office_text .= "scribd_doc.addParam('public', true);".LF;
+//        $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
+//        $office_text .= "scribd_doc.write('embedded_flash_" . $result['doc_id'] . "');".LF;
+//        $office_text .= "</script>".LF;
 
-        $office_text .= '<script type="text/javascript">'.LF;
-        $office_text .= "var scribd_doc = scribd.Document.getDoc(" . $result['doc_id'] . ", '" . $result['access_key'] . "');".LF;
+//            $office_text .= '<object codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9,0,0,0" id="doc_539262106603200" name="doc_539262106603200" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" align="middle"  height="500" width="100%">'.LF;
+//            $office_text .= '<param name="movie" value="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true">'.LF;
+//            $office_text .= '<param name="quality" value="high">'.LF;
+//            $office_text .= '<param name="play" value="true">'.LF;
+//            $office_text .= '<param name="loop" value="true">'.LF;
+//            $office_text .= '<param name="scale" value="showall">'.LF;
+//            $office_text .= '<param name="wmode" value="opaque">'.LF;
+//            $office_text .= '<param name="devicefont" value="false">'.LF;
+//            $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
+//            $office_text .= '<param name="menu" value="true">'.LF;
+//            $office_text .= '<param name="allowFullScreen" value="true">'.LF;
+//            $office_text .= '<param name="allowScriptAccess" value="always">'.LF;
+//            $office_text .= '<param name="salign" value="">'.LF;
+
         if ( $orientation == 'portrait' ) {
-           $office_text .= "scribd_doc.addParam('height', 740);".LF;
-           $office_text .= "scribd_doc.addParam('width', 520);".LF;
+           $scribdHeight = 740;
+           $scribdWidth = 520;
         } elseif ( $orientation == 'landscape' ) {
-           $office_text .= "scribd_doc.addParam('height', 420);".LF;
-           $office_text .= "scribd_doc.addParam('width', 520);".LF;
+           $scribdHeight = 420;
+           $scribdWidth = 520;
         }
-        $office_text .= "scribd_doc.addParam('page', 1);".LF;
-        $office_text .= "scribd_doc.addParam('public', true);".LF;
-        $office_text .= "scribd_doc.addParam('mode', 'slideshow');".LF;
-        $office_text .= "scribd_doc.write('embedded_flash_" . $result['doc_id'] . "');".LF;
-        $office_text .= "</script>".LF;
+        $office_text .= '<embed src="http://documents.scribd.com/ScribdViewer.swf?document_id=' . $result['doc_id'] . '&access_key=' . $result['access_key'] . '&page=&version=1&auto_size=true" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" play="true" loop="true" scale="showall" wmode="opaque" devicefont="false" bgcolor="#ffffff" name="doc_' . $result['doc_id'] . '_object" menu="false" allowfullscreen="true" allowscriptaccess="always" salign="" type="application/x-shockwave-flash" align="middle" height="' . $scribdHeight . '" width="' . $scribdWidth . '"></embed>'.LF;
 
+//            $office_text .= '</object>'.LF;
       }
 
       $retour = $office_text;
