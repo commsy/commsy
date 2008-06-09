@@ -428,6 +428,10 @@ if ($command != 'error') { // only if user is allowed to edit user
                }
             }
 
+            #########################################################
+            # Gruppen können im Formular nicht mehr gesetzt werden
+            #########################################################
+            /*
             // group
             $group_array = array();
 
@@ -451,17 +455,10 @@ if ($command != 'error') { // only if user is allowed to edit user
             }
 
             $user_item->setGroupListByID($group_array);
-
-#            // topic
-#            $topic_array = array();
-
-#            // now form post
-#            if (isset($_POST[CS_TOPIC_TYPE])) {
-#               $topic_array = $_POST[CS_TOPIC_TYPE];
-#            }
-
-#            $user_item->setTopicListByID($topic_array);
-
+            */
+            #########################################################
+            # Gruppen können im Formular nicht mehr gesetzt werden
+            #########################################################
 
             if (isset($_POST['want_mail_get_account'])) {
                $user_item->setAccountWantMail($_POST['want_mail_get_account']);
