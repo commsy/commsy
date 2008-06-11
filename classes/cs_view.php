@@ -1738,7 +1738,7 @@ class cs_view {
             if(($file->getScribdDocId() == '') && ($file->getScribdAccessKey() == '')){
                 $scribd_api_key = $this->_environment->getServerItem()->getScribdApiKey();
                 $scribd_secret = $this->_environment->getServerItem()->getScribdSecret();
-                $scribd = new Scribd($scribd_api_key, $scribd_secret);
+                $scribd = new Scribd($scribd_api_key, $scribd_secret, "CommSy");
                 $filename = $c_commsy_path_file . "/" . $file->getDiskFileName();
                 $doc_type = null;
                 $access = "private";

@@ -8,12 +8,13 @@ class Scribd {
 	public $secret;
 	private $url;
 	public $session_key;
-  public $my_user_id;
+    public $my_user_id;
 	private $error;
 
-	public function __construct($api_key, $secret) {
+	public function __construct($api_key, $secret, $my_user_id = null) {
 		$this->api_key = $api_key;
 		$this->secret = $secret;
+        $this->my_user_id = $my_user_id;
 		$this->url = "http://api.scribd.com/api?api_key=" . $api_key;
 	 }
 
@@ -179,7 +180,7 @@ class Scribd {
 	private function postRequest($method, $params){
 		$params['method'] = $method;
 		$params['session_key'] = $this->session_key;
-    $params['my_user_id'] = $this->my_user_id;
+        $params['my_user_id'] = $this->my_user_id;
 
 
 		$post_params = array();
@@ -197,13 +198,14 @@ class Scribd {
 		$secret = $this->secret;
 		$post_params['api_sig'] = $this->generate_sig($params, $secret);
 		$request_url = $this->url;
-       
+
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, $request_url );       
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
 		curl_setopt($ch, CURLOPT_POST, 1 );
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $post_params );
-		$xml = curl_exec( $ch );
+		
+        $xml = curl_exec( $ch );
 		$result = simplexml_load_string($xml); 
 		curl_close($ch);
 
