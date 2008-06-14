@@ -657,6 +657,9 @@ class cs_project_item extends cs_room_item {
          $retour['success'] = true;
          if ( $count == 1 ) {
             $retour['success_text'] = 're-insert '.$count.' link';
+         } elseif ( $count == -1 ) {
+            $retour['success_text'] = 'can not find group all';
+            $retour['success'] = false;
          } else {
             $retour['success_text'] = 're-insert '.$count.' links';
          }
@@ -664,9 +667,7 @@ class cs_project_item extends cs_room_item {
          $retour['success'] = true;
          $retour['success_text'] = 'nothing to do';
       }
-
       return $retour;
-
    }
 
    #########################################################

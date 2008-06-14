@@ -306,7 +306,7 @@ class cs_server_item extends cs_guide_item {
    function _cronReallyDelete () {
       $cron_array = array();
       $cron_array['title'] = 'delete items';
-      $cron_array['description'] = 'delete items older than 1 month';
+      $cron_array['description'] = 'delete items older than x days';
       $cron_array['success'] = true;
       $cron_array['success_text'] = '';
 

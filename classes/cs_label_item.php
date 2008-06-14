@@ -84,7 +84,7 @@ class cs_label_item extends cs_item {
     */
    function cs_label_item ($environment, $label_type = '') {
       $this->cs_item($environment);
-      $this->_type = 'label';
+      $this->_type = CS_LABEL_TYPE;
       $this->_data['type'] = $label_type;
    }
 

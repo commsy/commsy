@@ -68,11 +68,15 @@ class cs_group_manager extends cs_labels_manager {
       $group_all_item = $this->getItemByName('ALL');
       if ( !isset($group_all_item) ) {
          $this->_renameGroupAll($context_id);
+         sleep(2);
          $group_all_item = $this->getItemByName('ALL');
       }
 
       // re-insert links
-      if ( !empty($group_all_item) ) {
+      if ( isset($group_all_item)
+           and !empty($group_all_item)
+           and $group_all_item->getItemID() > 0
+         ) {
          $retour = 0;
 
          $user_manager = $this->_environment->getUserManager();
@@ -99,7 +103,7 @@ class cs_group_manager extends cs_labels_manager {
          unset($group_all_item);
       } else {
          unset($group_all_item);
-         $retour = 0;
+         $retour = -1;
       }
       return $retour;
    }

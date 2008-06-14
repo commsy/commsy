@@ -139,7 +139,14 @@ class cs_user_item extends cs_item {
    * @param object cs_label group
    */
    function setGroup ($value) {
-      $this->setGroupByID($value->getItemID());
+      if ( isset($value)
+           and $value->isA(CS_LABEL_TYPE)
+           and $value->getLabelType() == CS_GROUP_TYPE
+           and $value->getItemID() > 0
+         ) {
+         $this->setGroupByID($value->getItemID());
+         unset($value);
+      }
    }
 
    /** get topics of a user
