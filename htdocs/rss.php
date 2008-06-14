@@ -105,6 +105,7 @@ if ( isset($_GET['cid']) ) {
    } else {
       $maintitle = $context_item->getTitle();
    }
+   $maintitle = str_replace('&','&amp;',$maintitle);
 
    //RSS File Header
    $rss = '<?xml version="1.0" encoding="utf-8"?>
@@ -115,13 +116,13 @@ if ( isset($_GET['cid']) ) {
       <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
       <link>'.$path.'commsy.php</link>
       <ttl>60</ttl>
-      <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION', $maintitle)).'</description>
+      <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
       <language>'.$context_item->getLanguage().'</language>
       <copyright>-</copyright>
       <pubDate>'.$date.'</pubDate>
       <image>
         <url>'.$path.'images/commsy_logo_transparent.gif</url>
-        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$context_item->getTitle())).'</title>
+        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
         <link>'.$path.'commsy.php</link>
       </image>';
    $type_limit_array = array();
