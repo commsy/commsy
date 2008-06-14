@@ -440,7 +440,16 @@ class cs_label_item extends cs_item {
     * @author CommSy Development Group
     */
    function isSystemLabel () {
-      return $this->_is_system_label;
+      $retour = false;
+      if ( $this->_issetExtra('SYSTEM_LABEL')) {
+         $value = $this->_getExtra('SYSTEM_LABEL');
+         if ( $value == 1 ) {
+            $retour = true;
+         }
+      } else {
+         $retour = $this->_is_system_label;
+      }
+      return $retour;
    }
 
    /** make label a system generated label
@@ -453,6 +462,11 @@ class cs_label_item extends cs_item {
     */
    function makeSystemLabel ($value = true) {
       $this->_is_system_label = $value;
+      if ( $value ) {
+         $this->_addExtra('SYSTEM_LABEL',1);
+      } else {
+         $this->_addExtra('SYSTEM_LABEL',-1);
+      }
    }
 
    /** save news item

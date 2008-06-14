@@ -268,6 +268,7 @@ class cs_project_item extends cs_room_item {
          $group->setDescription('GROUP_ALL_DESC');
          $group->setContextID($this->getItemID());
          $group->setCreatorID($new_room_user->getItemID());
+         $group->makeSystemLabel();
          $group->save();
 
          // link moderator 2 group all

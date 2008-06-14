@@ -346,8 +346,6 @@ else {
             // Set attributes
             if (isset($_POST['name'])) {
                $group_item->setName($_POST['name']);
-            } else {
-               $group_item->setName('ALL');
             }
             if (isset($_POST['description'])) {
                $group_item->setDescription($_POST['description']);

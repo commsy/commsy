@@ -713,18 +713,20 @@ class cs_labels_manager extends cs_manager {
 
      if ($item->isPublic()) {
         $public = 1;
-      } else {
+     } else {
         $public = 0;
-      }
+     }
 
-     $query = 'UPDATE labels SET '.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'name="'.encode(AS_DB,$item->getTitle()).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'",'.
-              'public="'.encode(AS_DB,$public).'",'.
-              "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'".
-              ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+     $query =  'UPDATE labels SET '.
+               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+               'modification_date="'.$current_datetime.'",';
+     if ( !($item->getLabelType() == CS_GROUP_TYPE AND $item->isSystemLabel()) ) {
+        $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",';
+     }
+     $query .= 'description="'.encode(AS_DB,$item->getDescription()).'",'.
+               'public="'.encode(AS_DB,$public).'",'.
+               "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'".
+               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
         include_once('functions/error_functions.php');trigger_error('Problems updating label: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
@@ -744,7 +746,8 @@ class cs_labels_manager extends cs_manager {
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating label.', E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating label.', E_USER_ERROR);
         $this->_create_id = NULL;
      } else {
         $this->_create_id = $result;
@@ -765,11 +768,11 @@ class cs_labels_manager extends cs_manager {
      $modificator = $item->getModificatorItem();
      $current_datetime = getCurrentDateTimeInMySQL();
 
-          if ($item->isPublic()) {
+     if ($item->isPublic()) {
         $public = 1;
-      } else {
+     } else {
         $public = 0;
-      }
+     }
 
      $query  = 'INSERT INTO labels SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
@@ -779,14 +782,14 @@ class cs_labels_manager extends cs_manager {
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$current_datetime.'",'.
                'name="'.encode(AS_DB,$item->getTitle()).'",'.
-#               'name="'.encode(AS_DB,$item->getName()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'type="'.encode(AS_DB,$item->getLabelType()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating label.',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating label.',E_USER_WARNING);
      }
   }
 
@@ -807,6 +810,8 @@ class cs_labels_manager extends cs_manager {
      //Add modifier to all users who ever edited this item
      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
      $link_modifier_item_manager->markEdited($label_item->getItemID());
+     unset($link_modifier_item_manager);
+     unset($label_item);
   }
 
 
@@ -820,27 +825,31 @@ class cs_labels_manager extends cs_manager {
       $modificator = $item->getModificatorItem();
       $current_datetime = getCurrentDateTimeInMySQL();
 
-          if ($item->isPublic()) {
-        $public = 1;
+      if ($item->isPublic()) {
+         $public = 1;
       } else {
-        $public = 0;
+         $public = 0;
       }
 
-      $query = 'UPDATE labels SET '.
-               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-               'creation_date="'.$current_datetime.'",'.
-               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
-               'name="'.encode(AS_DB,$item->getName()).'",'.
-               'description="'.encode(AS_DB,$item->getDescription()).'",'.
-               'public="'.encode(AS_DB,$public).'",'.
-               "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'".
-               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+      $query =  'UPDATE labels SET '.
+                'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
+                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
+                'creation_date="'.$current_datetime.'",'.
+                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+                'modification_date="'.$current_datetime.'",';
+      if ( !($item->getLabelType() == CS_GROUP_TYPE AND $item->isSystemLabel()) ) {
+        $query .= 'name="'.encode(AS_DB,$item->getTitle()).'",';
+      }
+      $query .= 'description="'.encode(AS_DB,$item->getDescription()).'",'.
+                'public="'.encode(AS_DB,$public).'",'.
+                "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'".
+                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems updating label.',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems updating label.',E_USER_WARNING);
       }
+      unset($item);
    }
 
   function delete ($label_id) {
@@ -853,7 +862,8 @@ class cs_labels_manager extends cs_manager {
               ' WHERE item_id="'.encode(AS_DB,$label_id).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems deleting label.',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems deleting label.',E_USER_WARNING);
      } else {
         $link_manager = $this->_environment->getLinkManager();
         $link_manager->deleteLinksBecauseItemIsDeleted($label_id);
