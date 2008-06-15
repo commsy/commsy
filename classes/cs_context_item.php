@@ -101,6 +101,12 @@ class cs_context_item extends cs_item {
       $this->_default_colors = $cs_color['DEFAULT'];
    }
 
+/* zum debuggen
+   function __destruct() {
+       echo ("Zerstoere ".$this->getTitle().BRLF);
+   }
+*/
+
    function isOpenForGuests () {
       if ($this->_getValue('is_open_for_guests') == 1) {
          return true;
