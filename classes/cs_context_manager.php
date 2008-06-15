@@ -63,6 +63,7 @@ class cs_context_manager extends cs_manager {
    var $_id_array_limit = NULL;
    var $_cache_object = array();
    var $_cache_list = array();
+   var $_cache_on = true;
 
    /** constructor: cs_room_manager
     * the only available constructor, initial values for internal variables
@@ -85,6 +86,10 @@ class cs_context_manager extends cs_manager {
       $this->_topic_limit = NULL;
       $this->_sort_order = NULL;
       $this->_id_array_limit = NULL;
+   }
+
+   public function setCacheOut () {
+      $this->_cache_on = false;
    }
 
    /** set limit to array of announcement item_ids
@@ -448,7 +453,11 @@ class cs_context_manager extends cs_manager {
          } elseif ( !empty($result[0]) ) {
             $data_array = $result[0];
             if ( !empty($data_array) ) {
-               $this->_cache_object[$item_id] = $this->_buildItem($data_array);
+               if ( $this->_cache_on ) {
+                  $this->_cache_object[$item_id] = $this->_buildItem($data_array);
+               } else {
+                  return $this->_buildItem($data_array);
+               }
             }
             unset($result);
          } else {

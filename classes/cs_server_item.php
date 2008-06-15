@@ -67,6 +67,19 @@ class cs_server_item extends cs_guide_item {
       $this->_addExtra('DEFAULT_SENDER_ADDRESS',$value);
    }
 
+   public function getPortalIDArray () {
+      $retour = array();
+      $portal_manager = $this->_environment->getPortalManager();
+      $portal_manager->setContextLimit($this->getItemID());
+      $portal_manager->select();
+      $portal_id_array = $portal_manager->getIDArray();
+      unset($portal_manager);
+      if ( is_array($portal_id_array) ) {
+         $retour = $portal_id_array;
+      }
+      return $retour;
+   }
+
    /** get portal list
     * this function returns a list of all portals
     * existing on this commsy server
@@ -78,6 +91,7 @@ class cs_server_item extends cs_guide_item {
       $portal_manager->setContextLimit($this->getItemID());
       $portal_manager->select();
       $portal_list = $portal_manager->get();
+      unset($portal_manager);
       return $portal_list;
    }
 

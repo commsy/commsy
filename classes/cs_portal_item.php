@@ -184,8 +184,57 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   public function getCommunityIDArray () {
+      $retour = array();
+      $manager = $this->_environment->getCommunityManager();
+      $manager->setContextLimit($this->getItemID());
+      $manager->select();
+      $id_array = $manager->getIDArray();
+      unset($manager);
+      if ( is_array($id_array) ) {
+         $retour = $id_array;
+      }
+      return $retour;
+   }
 
+   public function getProjectIDArray () {
+      $retour = array();
+      $manager = $this->_environment->getProjectManager();
+      $manager->setContextLimit($this->getItemID());
+      $manager->select();
+      $id_array = $manager->getIDArray();
+      unset($manager);
+      if ( is_array($id_array) ) {
+         $retour = $id_array;
+      }
+      return $retour;
+   }
 
+   public function getGroupIDArray () {
+      $retour = array();
+      $manager = $this->_environment->getGrouproomManager();
+      $manager->setContextLimit($this->getItemID());
+      $manager->select();
+      $id_array = $manager->getIDArray();
+      unset($manager);
+      if ( is_array($id_array) ) {
+         $retour = $id_array;
+      }
+      return $retour;
+   }
+
+   public function getPrivateIDArray () {
+      $retour = array();
+      $manager = $this->_environment->getPrivateroomManager();
+      $manager->setContextLimit($this->getItemID());
+      $manager->select();
+      $id_array = $manager->getIDArray();
+      unset($manager);
+      if ( is_array($id_array) ) {
+         $retour = $id_array;
+      }
+      return $retour;
+   }
 
    /** get community list
     * this function returns a list of all community rooms

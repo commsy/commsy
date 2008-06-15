@@ -652,6 +652,7 @@ class cs_project_item extends cs_room_item {
 
       $group_manager = $this->_environment->getGroupManager();
       $count = $group_manager->cleanLinkToGroupAll($this->getItemID());
+      unset($group_manager);
       if ( !isset($count) ) {
          $retour['success_text'] = 'cron failed';
       } elseif ( !empty($count) ) {

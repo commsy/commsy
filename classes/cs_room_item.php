@@ -910,6 +910,7 @@ class cs_room_item extends cs_context_item {
 
       $link_item_manager = $this->_environment->getLinkItemManager();
       $count = $link_item_manager->deleteUnneededLinkItems($this->getItemID());
+      unset($link_item_manager);
       if ( !isset($count) ) {
          $retour['success_text'] = 'cron failed';
       } elseif ( !empty($count) ) {
@@ -936,6 +937,7 @@ class cs_room_item extends cs_context_item {
 
       $link_item_manager = $this->_environment->getLinkManager();
       $count = $link_item_manager->deleteUnneededLinks($this->getItemID());
+      unset($link_item_manager);
       if ( !isset($count) ) {
          $retour['success_text'] = 'cron failed';
       } elseif ( !empty($count) ) {
