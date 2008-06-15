@@ -28,6 +28,10 @@ set_time_limit(0);
 // giving include files without "../" prefix all the time.
 chdir('..');
 
+// start of execution time
+include_once('functions/misc_functions.php');
+$time_start = getmicrotime();
+
 // setup commsy-environment
 include_once('classes/cs_cron_view.php');
 include_once('etc/cs_constants.php');
@@ -153,4 +157,12 @@ while ($portal) {
    $portal = $portal_list->getNext();
 }
 unset($portal_list);
+
+$time_end = getmicrotime();
+$time = round($time_end - $time_start,3);
+echo('<hr/>'.LF);
+echo('<h1>CRON END</h1>'.LF);
+echo('Total execution time: '.$time.' seconds'.BRLF);
+echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
+echo('Current of memory allocated: '.memory_get_usage().BRLF);
 ?>
