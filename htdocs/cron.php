@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-/*
 function performRoomIDArray ($id_array,$portal_name) {
    global $environment;
    $room_manager = $environment->getRoomManager();
@@ -50,45 +49,48 @@ function performRoomIDArray ($id_array,$portal_name) {
          unset($user);
       }
       echo('<h4>'.$title.' - '.$type.' - '.$portal_name.'<h4>'.LF);
-      $array = $room->runCron();
-      $html = '';
-      foreach ($array as $cron_status => $crons) {
-         $html .= '<table border="0" summary="Layout">'.LF;
-         $html .= '<tr>'.LF;
-         $html .= '<td style="vertical-align:top; width: 4em;">'.LF;
-         $html .= '<span style="font-weight: bold;">'.$cron_status.'</span>'.LF;
-         $html .= '</td>'.LF;
-         $html .= '<td>'.LF;
-         if ( !empty($crons) ) {
-            foreach ($crons as $cron) {
-               $html .= '<div>'.LF;
-               $html .= '<span style="font-weight: bold;">'.$cron['title'].'</span>'.BRLF;
-               if (!empty($cron['description'])) {
-                  $html .= $cron['description'];
-                  if ($cron['success']) {
-                     $html .= ' [<font color="#00ff00">done</font>]'.BRLF;
-                  } else {
-                     $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
-                  }
-               }
-               if ( !empty($cron['success_text']) ) {
-                  $html .= $cron['success_text'].BRLF;
-               }
-               $html .= '</div>'.LF;
-            }
-         } else {
-            $html .= 'no crons defined';
-         }
-         $html .= '</td>'.LF;
-         $html .= '</tr>'.LF;
-         $html .= '</table>'.LF;
-      }
-      echo($html.BRLF);
+      displayCronResults($room->runCron());
       unset($room);
    }
    unset($room_manager);
 }
-*/
+
+function displayCronResults ( $array ) {
+   $html = '';
+   foreach ($array as $cron_status => $crons) {
+      $html .= '<table border="0" summary="Layout">'.LF;
+      $html .= '<tr>'.LF;
+      $html .= '<td style="vertical-align:top; width: 4em;">'.LF;
+      $html .= '<span style="font-weight: bold;">'.$cron_status.'</span>'.LF;
+      $html .= '</td>'.LF;
+      $html .= '<td>'.LF;
+      if ( !empty($crons) ) {
+         foreach ($crons as $cron) {
+            $html .= '<div>'.LF;
+            $html .= '<span style="font-weight: bold;">'.$cron['title'].'</span>'.BRLF;
+            if (!empty($cron['description'])) {
+               $html .= $cron['description'];
+               if ($cron['success']) {
+                  $html .= ' [<font color="#00ff00">done</font>]'.BRLF;
+               } else {
+                  $html .= ' [<font color="#ff0000>failed</font>]'.BRLF;
+               }
+            }
+            if ( !empty($cron['success_text']) ) {
+               $html .= $cron['success_text'].BRLF;
+            }
+            $html .= '</div>'.LF;
+         }
+      } else {
+         $html .= 'no crons defined';
+      }
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
+      $html .= '</table>'.LF;
+   }
+   echo($html.BRLF);
+   flush();
+}
 
 set_time_limit(0);
 
@@ -111,6 +113,8 @@ if ( !empty($_GET['cid']) ) {
    $context_id = $_GET['cid'];
 }
 
+echo('<h1>CommSy Cron Jobs</h1>'.LF);
+
 // server
 // cron for server are:
 // - handle page impressions
@@ -120,27 +124,14 @@ $server_item = $environment->getServerItem();
 if ( !isset($context_id)
      or ($context_id == $environment->getServerID())
    ) {
-   $temp_array = array();
-   $temp_array['crons'] = $server_item->runCron();
-   $temp_array['title'] = $server_item->getTitle();
-   $result_array['server'][0] = $temp_array;
-   unset($temp_array);
-}
-
-if ( !empty($result_array) ) {
-   $view = new cs_cron_view();
-   $view->setCronResult($result_array);
-   echo($view->asHTML());
-   flush();
-   unset($view);
-   unset($result_array);
-   $result_array = array();
+   echo('<h4>'.$server_item->getTitle().' - Server<h4>'.LF);
+   displayCronResults($server_item->runCron());
+   echo('<hr/>'.BRLF);
 }
 
 // portals and rooms
 $result_array['portal'] = array();
 
-/*
 $portal_id_array = $server_item->getPortalIDArray();
 unset($server_item);
 
@@ -153,39 +144,36 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // portal
       $portal = $portal_manager->getItem($portal_id);
-      $temp_array['crons'] = $portal->runCron();
-      $temp_array['title'] = $portal->getTitle();
-      $result_array['portal'][] = $temp_array;
-      unset($temp_array);
-
-      if ( !empty($result_array) ) {
-         $view = new cs_cron_view();
-         $view->setCronResult($result_array);
-         echo($view->asHTML());
-         flush();
-         unset($view);
-         unset($result_array);
-         $result_array = array();
-      }
+      echo('<h4>'.$portal->getTitle().' - Portal<h4>'.LF);
+      displayCronResults($portal->runCron());
+      echo('<hr/>'.LF);
 
       // community rooms
+      echo('<h4>Community Rooms</h4>'.LF);
       performRoomIDArray($portal->getCommunityIDArray(),$portal->getTitle());
+      echo('<hr/>'.LF);
 
       // project rooms
+      echo('<h4>Project Rooms</h4>'.LF);
       performRoomIDArray($portal->getProjectIDArray(),$portal->getTitle());
+      echo('<hr/>'.LF);
 
       // group rooms
+      echo('<h4>Group Rooms</h4>'.LF);
       performRoomIDArray($portal->getGroupIDArray(),$portal->getTitle());
+      echo('<hr/>'.LF);
 
       // private rooms
+      echo('<h4>Private Rooms</h4>'.LF);
       performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle());
+      echo('<hr/>'.LF);
 
       // unset
       unset($portal);
    }
 }
-*/
 
+/*
 $portal_list = $server_item->getPortalList();
 unset($server_item);
 $portal = $portal_list->getFirst();
@@ -272,7 +260,7 @@ while ($portal) {
    $portal = $portal_list->getNext();
 }
 unset($portal_list);
-
+*/
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
 echo('<hr/>'.LF);
