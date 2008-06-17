@@ -290,5 +290,12 @@ class cs_section_item extends cs_item {
       // TBD: check data before setting
        $this->_data = $data_array;
    }
+
+   public function getDataAsXML () {
+      $retour  = '<section_item>';
+      $retour .= $this->_getDataAsXML();
+      $retour .= '</section_item>'.LF;
+      return $retour;
+   }
 }
 ?>

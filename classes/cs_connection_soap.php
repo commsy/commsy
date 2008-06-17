@@ -212,13 +212,13 @@ class cs_connection_soap {
    private function _isSessionActive ($user_id, $portal_id) {
       $retour = false;
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
-			$retour = true;
+         $retour = true;
       } else {
          $session_id = $this->_getActiveSessionID($user_id,$portal_id);
-			if ( !empty($session_id) ) {
-				$retour = true;
-			}
-		}
+         if ( !empty($session_id) ) {
+            $retour = true;
+         }
+      }
       return $retour;
    }
 
@@ -330,7 +330,7 @@ class cs_connection_soap {
       $material_manager = $this->_environment->getMaterialManager();
       $material_manager->resetLimits();
       $material_manager->setContextLimit($room_id);
-    	// set limits
+       // set limits
       $session_manager = $this->_environment->getSessionManager();
       $session = $session_manager->get($session_id);
       $this->_material_limit_array = $session->getValue('material_limit_array');
@@ -365,58 +365,194 @@ class cs_connection_soap {
       $session_id = $this->_encode_input($session_id);
       $material_id = $this->_encode_input($material_id);
       if ($this->_isSessionValid($session_id)) {
-   $this->_environment->setSessionID($session_id);
-   $session = $this->_environment->getSessionItem();
-   $user_id = $session->getValue('user_id');
-   $portal_id = $session->getValue('commsy_id');
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
          $this->_environment->setCurrentPortalID($portal_id);
          $auth_source = $session->getValue('auth_source');
-   $material_manager = $this->_environment->getMaterialManager();
+         $material_manager = $this->_environment->getMaterialManager();
          $material_item = $material_manager->getItem($material_id);
-   if ( isset($material_item) and !empty($material_item) ) {
-      $context_id = $material_item->getContextID();
-      if ( !empty($context_id) ) {
+         if ( isset($material_item) and !empty($material_item) ) {
+            $context_id = $material_item->getContextID();
+            if ( !empty($context_id) ) {
                $this->_environment->setCurrentContextID($context_id);
-         $room_manager = $this->_environment->getRoomManager();
-         $room_item = $room_manager->getItem($context_id);
-         if ( isset($room_item) and !empty($room_item) ) {
-       if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
-          $result  = '<file_list>';
-          $file_list = $material_item->getFileList();
-          if (!$file_list->isEmpty()) {
-             $file_item = $file_list->getFirst();
-             while ($file_item) {
-                $result .= $file_item->getDataAsXML();
-           $file_item = $file_list->getNext();
-             }
-          }
-          $result .= '</file_list>';
-          $result = $this->_encode_output($result);
-       } else {
-          $info = 'ERROR: GET MATERIAL LIST';
-          $info_text = 'user_id ('.$user_id.') don\'t have the permission to get the material ('.$material_id.')';
-          $result = new SoapFault($info,$info_text);
-       }
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($context_id);
+               if ( isset($room_item) and !empty($room_item) ) {
+                  if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
+                     $result  = '<file_list>';
+                     $file_list = $material_item->getFileList();
+                     if (!$file_list->isEmpty()) {
+                        $file_item = $file_list->getFirst();
+                        while ($file_item) {
+                           $result .= $file_item->getDataAsXML();
+                           $file_item = $file_list->getNext();
+                        }
+                     }
+                     $result .= '</file_list>';
+                     $result = $this->_encode_output($result);
+                  } else {
+                     $info = 'ERROR: GET MATERIAL LIST';
+                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to get the material ('.$material_id.')';
+                     $result = new SoapFault($info,$info_text);
+                  }
+               } else {
+                  $info = 'ERROR: GET MATERIAL LIST';
+                  $info_text = 'context ('.$context_id.') of material ('.$material_id.') does not exits';
+                  $result = new SoapFault($info,$info_text);
+               }
+            } else {
+               $info = 'ERROR: GET MATERIAL LIST';
+               $info_text = 'context of material ('.$material_id.') lost';
+               $result = new SoapFault($info,$info_text);
+            }
          } else {
-       $info = 'ERROR: GET MATERIAL LIST';
-       $info_text = 'context ('.$context_id.') of material ('.$material_id.') does not exits';
-       $result = new SoapFault($info,$info_text);
+            $info = 'ERROR: GET MATERIAL LIST';
+            $info_text = 'material id ('.$material_id.') does not exist';
+            $result = new SoapFault($info,$info_text);
          }
+         $this->_updateSessionCreationDate($session_id);
       } else {
          $info = 'ERROR: GET MATERIAL LIST';
-         $info_text = 'context of material ('.$material_id.') lost';
+         $info_text = 'session id ('.$session_id.') is not valid';
          $result = new SoapFault($info,$info_text);
       }
-   } else {
-      $info = 'ERROR: GET MATERIAL LIST';
-      $info_text = 'material id ('.$material_id.') does not exist';
-      $result = new SoapFault($info,$info_text);
+      return $result;
    }
-   $this->_updateSessionCreationDate($session_id);
+
+   public function getFileListFromItem ($session_id, $item_id) {
+      $session_id = $this->_encode_input($session_id);
+      $item_id = $this->_encode_input($item_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentPortalID($portal_id);
+         $auth_source = $session->getValue('auth_source');
+         $item_manager = $this->_environment->getItemManager();
+         $commsy_item = $item_manager->getItem($item_id);
+         if ( isset($commsy_item) and !empty($commsy_item) ) {
+            $context_id = $commsy_item->getContextID();
+            if ( !empty($context_id) ) {
+               $this->_environment->setCurrentContextID($context_id);
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($context_id);
+               if ( isset($room_item) and !empty($room_item) ) {
+                  if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
+                     $real_manager = $this->_environment->getManager($commsy_item->getItemType());
+                     if ( isset($real_manager) and !empty($real_manager) ) {
+                        $real_item = $real_manager->getItem($item_id);
+                        if ( isset($real_item) and !empty($real_item) ) {
+                           $result  = '<file_list>';
+                           if ( method_exists($real_item,'getFileList') ) {
+                              $file_list = $real_item->getFileList();
+                              if (!$file_list->isEmpty()) {
+                                 $file_item = $file_list->getFirst();
+                                 while ($file_item) {
+                                    $result .= $file_item->getDataAsXML();
+                                    $file_item = $file_list->getNext();
+                                 }
+                              }
+                           }
+                           $result .= '</file_list>';
+                           $result = $this->_encode_output($result);
+                        } else {
+                           $info = 'ERROR: GET FILE LIST';
+                           $info_text = 'item ('.$item_id.') does not exists';
+                           $result = new SoapFault($info,$info_text);
+                        }
+                     } else {
+                        $info = 'ERROR: GET FILE LIST';
+                        $info_text = 'lost item type of the item ('.$item_id.')';
+                        $result = new SoapFault($info,$info_text);
+                     }
+                  } else {
+                     $info = 'ERROR: GET FILE LIST';
+                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to get the item ('.$item_id.')';
+                     $result = new SoapFault($info,$info_text);
+                  }
+               } else {
+                  $info = 'ERROR: GET FILE LIST';
+                  $info_text = 'context ('.$context_id.') of item ('.$item_id.') does not exits';
+                  $result = new SoapFault($info,$info_text);
+               }
+            } else {
+               $info = 'ERROR: GET FILE LIST';
+               $info_text = 'context of item ('.$item_id.') lost';
+               $result = new SoapFault($info,$info_text);
+            }
+         } else {
+            $info = 'ERROR: GET MATERIAL LIST';
+            $info_text = 'material id ('.$item_id.') does not exist';
+            $result = new SoapFault($info,$info_text);
+         }
+         $this->_updateSessionCreationDate($session_id);
       } else {
          $info = 'ERROR: GET MATERIAL LIST';
-   $info_text = 'session id ('.$session_id.') is not valid';
-   $result = new SoapFault($info,$info_text);
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
+
+   public function getSectionListFromMaterial ($session_id, $material_id) {
+      $session_id = $this->_encode_input($session_id);
+      $material_id = $this->_encode_input($material_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentPortalID($portal_id);
+         $auth_source = $session->getValue('auth_source');
+         $material_manager = $this->_environment->getMaterialManager();
+         $material_item = $material_manager->getItem($material_id);
+         if ( isset($material_item) and !empty($material_item) ) {
+            $context_id = $material_item->getContextID();
+            if ( !empty($context_id) ) {
+               $this->_environment->setCurrentContextID($context_id);
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($context_id);
+               if ( isset($room_item) and !empty($room_item) ) {
+                  if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
+                     $result  = '<section_list>';
+                     $section_list = $material_item->getSectionList();
+                     if (!$section_list->isEmpty()) {
+                        $section_item = $section_list->getFirst();
+                        while ($section_item) {
+                           $result .= $section_item->getDataAsXML();
+                           $section_item = $section_list->getNext();
+                        }
+                     }
+                     $result .= '</section_list>';
+                     $result = $this->_encode_output($result);
+                  } else {
+                     $info = 'ERROR: GET MATERIAL LIST';
+                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to get the material ('.$material_id.')';
+                     $result = new SoapFault($info,$info_text);
+                  }
+               } else {
+                  $info = 'ERROR: GET MATERIAL LIST';
+                  $info_text = 'context ('.$context_id.') of material ('.$material_id.') does not exits';
+                  $result = new SoapFault($info,$info_text);
+               }
+            } else {
+               $info = 'ERROR: GET MATERIAL LIST';
+               $info_text = 'context of material ('.$material_id.') lost';
+               $result = new SoapFault($info,$info_text);
+            }
+         } else {
+            $info = 'ERROR: GET MATERIAL LIST';
+            $info_text = 'material id ('.$material_id.') does not exist';
+            $result = new SoapFault($info,$info_text);
+         }
+         $this->_updateSessionCreationDate($session_id);
+      } else {
+         $info = 'ERROR: GET MATERIAL LIST';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
       }
       return $result;
    }

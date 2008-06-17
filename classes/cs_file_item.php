@@ -385,7 +385,7 @@ class cs_file_item extends cs_item {
       $saved = $manager->updateHasHTML($this);
       return $saved;
    }
-   
+
    function saveExtras() {
       $saved = false;
       $manager = $this->_environment->getFileManager();
@@ -412,6 +412,11 @@ class cs_file_item extends cs_item {
             $session_manager->save($session_item);
             $this->_environment->setSessionItem($session_item);
          }
+         $params = array();
+         $params['iid'] = $this->getFileID();
+         $params['SID'] = $session_item->getSessionID();
+         global $c_commsy_domain,$c_commsy_url_path;
+         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.curl($this->getContextID(),'material','getfile',$params).']]></resource_link>';
       }
       $retour .= '</file_item>';
       return $retour;
@@ -516,14 +521,14 @@ class cs_file_item extends cs_item {
    public function getVirusName () {
       return $this->_virus_name;
    }
-   
+
    function setScribdDocId($value) {
       $this->_setExtra('SCRIBD_DOC_ID', (string)$value);
    }
    function getScribdDocId() {
       return (string) $this->_getExtra('SCRIBD_DOC_ID');
    }
-   
+
    function setScribdAccessKey($value) {
       $this->_setExtra('SCRIBD_ACCESS_KEY', (string)$value);
    }

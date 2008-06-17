@@ -73,6 +73,20 @@
 <message name='getFileListFromMaterialOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='getSectionListFromMaterialIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='material_id' type='xsd:integer'/>
+</message>
+<message name='getSectionListFromMaterialOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
+<message name='getFileListFromItemIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:integer'/>
+</message>
+<message name='getFileListFromItemOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getFileItemIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='file_id' type='xsd:integer'/>
@@ -174,9 +188,17 @@
     <input message='tns:getPrivateRoomMaterialListIN'/>
     <output message='tns:getPrivateRoomMaterialListOUT'/>
   </operation>
+  <operation name='getSectionListFromMaterial'>
+    <input message='tns:getSectionListFromMaterialIN'/>
+    <output message='tns:getSectionListFromMaterialOUT'/>
+  </operation>
   <operation name='getFileListFromMaterial'>
     <input message='tns:getFileListFromMaterialIN'/>
     <output message='tns:getFileListFromMaterialOUT'/>
+  </operation>
+  <operation name='getFileListFromItem'>
+    <input message='tns:getFileListFromItemIN'/>
+    <output message='tns:getFileListFromItemOUT'/>
   </operation>
   <operation name='getFileItem'>
     <input message='tns:getFileItemIN'/>
@@ -307,8 +329,30 @@
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
     </output>
   </operation>
+  <operation name='getSectionListFromMaterial'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getSectionListFromMaterial'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
   <operation name='getFileListFromMaterial'>
     <soap:operation soapAction='urn:xmethodsCommSy#getFileListFromMaterial'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getFileListFromItem'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getFileListFromItem'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
