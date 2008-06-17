@@ -417,7 +417,9 @@ class cs_file_item extends cs_item {
          $params['SID'] = $session_item->getSessionID();
          global $c_commsy_domain,$c_commsy_url_path;
          include_once('functions/curl_functions.php');
-         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.curl($this->getContextID(),'material','getfile',$params).']]></resource_link>';
+         $url = curl($this->getContextID(),'material','getfile',$params);
+         $url = str_replace('soap.php','commsy.php',$url);
+         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.$url.']]></resource_link>';
       }
       $retour .= '</file_item>';
       return $retour;
