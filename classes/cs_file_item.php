@@ -416,6 +416,7 @@ class cs_file_item extends cs_item {
          $params['iid'] = $this->getFileID();
          $params['SID'] = $session_item->getSessionID();
          global $c_commsy_domain,$c_commsy_url_path;
+         include_once('functions/curl_functions.php');
          $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.curl($this->getContextID(),'material','getfile',$params).']]></resource_link>';
       }
       $retour .= '</file_item>';
