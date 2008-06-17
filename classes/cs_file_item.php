@@ -394,18 +394,18 @@ class cs_file_item extends cs_item {
    }
 
    public function getDataAsXML ($with_file_data = false) {
-      $retour  = '<file_item>';
+      $retour  = '<file_item>'.LF;
       $retour .= $this->_getDataAsXML();
       if ($with_file_data) {
-         $retour .= '<base64>'.$this->_getFileAsBase64().'</base64>';
+         $retour .= '<base64>'.$this->_getFileAsBase64().'</base64>'.LF;
       } else {
          $session_item = $this->_environment->getSessionItem();
          $file_md5_array = $session_item->getValue('file_md5_array');
          if ( isset($file_md5_array[$this->getFileID()]) and !empty($file_md5_array[$this->getFileID()]) ) {
-            $retour .= '<md5>'.$file_md5_array[$this->getFileID()].'</md5>';
+            $retour .= '<md5>'.$file_md5_array[$this->getFileID()].'</md5>'.LF;
          } else {
             $md5 = md5($this->_getFileAsString());
-            $retour .= '<md5>'.$md5.'</md5>';
+            $retour .= '<md5>'.$md5.'</md5>'.LF;
             $file_md5_array[$this->getFileID()] = $md5;
             $session_item->setValue('file_md5_array',$file_md5_array);
             $session_manager = $this->_environment->getSessionManager();
@@ -419,9 +419,9 @@ class cs_file_item extends cs_item {
          include_once('functions/curl_functions.php');
          $url = _curl(false,$this->getContextID(),'material','getfile',$params);
          $url = str_replace('soap.php','commsy.php',$url);
-         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.$url.']]></resource_link>';
+         $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.$url.']]></resource_link>'.LF;
       }
-      $retour .= '</file_item>';
+      $retour .= '</file_item>'.LF;
       return $retour;
    }
 
