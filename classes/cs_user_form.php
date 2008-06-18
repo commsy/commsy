@@ -264,7 +264,7 @@ class cs_user_form extends cs_rubric_form {
       $context_item = $this->_environment->getCurrentContextItem();
 
       // rubric connections
-      $this->_setFormElementsForConnectedRubrics();
+//      $this->_setFormElementsForConnectedRubrics();
 
       // buttons
       $id = 0;
