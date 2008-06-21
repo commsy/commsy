@@ -64,6 +64,57 @@ class cs_material_index_view extends cs_index_view {
    }
 
 
+   function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $left_menue_status = $session->getValue('left_menue_status');
+      $selected_value = $this->_attribute_limit;
+      if ($left_menue_status !='disapear'){
+         $width = '190';
+      }else{
+         $width = '220';
+      }
+      $context_item = $this->_environment->getCurrentContextItem();
+      $html = '';
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
+#      $html .= $this->_translator->getMessage('COMMON_RESTRICT_SEARCH').'<br />'.LF;
+      if (isset($this->_search_text) and !empty($this->_search_text) ){
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      }else{
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1">'.LF;
+      }
+      $html .= '      <option value="0"';
+      if ( !isset($selected_value) || $selected_value == 0 ) {
+          $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('MATERIAL_FULL_SEARCH').'</option>'.LF;
+      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '      <option value="1"';
+      if ( isset($selected_value) and $selected_value == 'title' ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_TITLE').'</option>'.LF;
+      $html .= '      <option value="2"';
+      if ( isset($selected_value) and $selected_value == 'author' ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
+      $html .= '   </select>'.LF;
+
+      global $c_ftsearch_indexing;
+      if ($c_ftsearch_indexing){
+         $html .= '      <option value="3"';
+         if ( isset($selected_value) and $selected_value == 'file' ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_FILE').'</option>'.LF;
+         $html .= '   </select>'.LF;
+      }
+      $html .='</div>';
+      return $html;
+   }
+
+
    function _getListActionsAsHTML () {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -93,6 +144,8 @@ class cs_material_index_view extends cs_index_view {
 
      return $html;
    }
+
+
 
 
    function _getTableheadAsHTML($with_links=TRUE) {

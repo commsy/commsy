@@ -76,6 +76,17 @@ else {
       $command = '';
    }
 
+    // Find out what to do
+    if ( isset($_POST['delete_option']) ) {
+       $delete_command = $_POST['delete_option'];
+    }elseif ( isset($_GET['delete_option']) ) {
+       $delete_command = $_GET['delete_option'];
+    } else {
+       $delete_command = '';
+    }
+
+
+
    // Initialize the form
    include_once('classes/cs_configuration_wiki_form.php');
    $form = new cs_configuration_wiki_form($environment);
@@ -91,6 +102,32 @@ else {
     // Load form data from database
    elseif ( isset($item) ) {
       $form->setItem($item);
+   }
+
+    if ( !empty($delete_command) and
+        isOption($delete_command, getMessage('COMMON_DELETE_BUTTON'))   ) {
+
+      $current_user = $environment->getCurrentUserItem();
+      $item->setModificatorItem($current_user);
+      $item->setModificationDate(getCurrentDateTimeInMySQL());
+      $item->unsetWikiExists();
+      $item->setWikiInActive();
+      $item->setWikiSkin('pmwiki');
+      $item->setWikiTitle($item->getTitle());
+      // Save item
+      $item->save();
+
+      // delete wiki
+      $wiki_manager = $environment->getWikiManager();
+      $wiki_manager->deleteWiki($item);
+      $form_view->setItemIsSaved();
+      $form->setDeletionValues();
+      $is_saved = true;
+   }
+      // Cancel editing
+   elseif ( !empty($delete_command) and
+        isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON'))    ) {
+        redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
    }
 
    $skin_array = array();
@@ -112,28 +149,17 @@ else {
       }
    }
 
-   $form->setSkinArray($skin_array);
-   $form->prepareForm();
-   $form->loadValues();
+
+
+      // delete item
+      if ( !empty($command) and isOption($command, getMessage('WIKI_DELETE_BUTTON')) ) {
+         $params = $environment->getCurrentParameterArray();
+         $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
+      }
+
 
    // Save item
-   if ( !empty($command) and
-        isOption($command, getMessage('WIKI_DELETE_BUTTON'))   ) {
-
-      $current_user = $environment->getCurrentUserItem();
-      $item->setModificatorItem($current_user);
-      $item->setModificationDate(getCurrentDateTimeInMySQL());
-      $item->unsetWikiExists();
-      $item->setWikiInActive();
-      // Save item
-      $item->save();
-
-      // delete wiki
-      $wiki_manager = $environment->getWikiManager();
-      $wiki_manager->deleteWiki($item);
-      $form_view->setItemIsSaved();
-      $is_saved = true;
-   } elseif ( !empty($command) and
+    elseif ( !empty($command) and
         (isOption($command, getMessage('WIKI_SAVE_BUTTON'))
          or isOption($command, getMessage('COMMON_CHANGE_BUTTON')) ) ) {
 
@@ -288,6 +314,9 @@ else {
          $is_saved = true;
       }
    }
+   $form->setSkinArray($skin_array);
+   $form->prepareForm();
+   $form->loadValues();
 
    if (isset($item) and !$item->mayEditRegular($current_user)) {
       $form_view->warnChanger();

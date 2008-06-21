@@ -122,6 +122,7 @@ if ( isset($_GET['sort']) ) {
 // Search / select form
 if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
    $search = '';
+   $restrict_search = '';
    $selbuzzword = '';
    if ( $context_item->isProjectRoom() ) {
       $selgroup = '';
@@ -142,6 +143,24 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $search = $_GET['search'];
    } else {
       $search = '';
+   }
+
+   // Find current search text
+   if ( isset($_GET['attribute_limit']) ) {
+      $attribute_limit = $_GET['attribute_limit'];
+      switch( $attribute_limit  ){
+        case 1 :
+            $attribute_limit = 'title';
+            break;
+        case 2 :
+            $attribute_limit = 'author';
+            break;
+        case 2 :
+            $attribute_limit = 'file';
+            break;
+      }
+   } else {
+      $attribute_limit = '';
    }
 
    // Find current buzzword selection
@@ -371,6 +390,9 @@ if ( !empty($sort) ) {
 if ( !empty($search) ) {
    $material_manager->setSearchLimit($search);
 }
+if ( !empty($attribute_limit) ) {
+   $material_manager->setAttributeLimit($attribute_limit);
+}
 if ( !empty($selbuzzword) ) {
    $material_manager->setBuzzwordLimit($selbuzzword);
 }
@@ -507,6 +529,7 @@ $view->setFrom($from);
 $view->setInterval($interval);
 $view->setSortKey($sort);
 $view->setSearchText($search);
+$view->setAttributeLimit($attribute_limit);
 $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setClipboardIDArray($clipboard_id_array);

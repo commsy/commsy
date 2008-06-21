@@ -126,6 +126,7 @@ class cs_index_view extends cs_view {
    var $_last_sort_criteria = -1;
    var $_count_headlines = 0;
    var $_additional_selects = false;
+   var $_attribute_limit = Null;
 
    var $_colspan = 4;
 
@@ -364,6 +365,11 @@ class cs_index_view extends cs_view {
     function setSortKey ($sort_key) {
        $this->_sort_key = (string)$sort_key;
     }
+
+    function setAttributeLimit ($attribute_limit) {
+       $this->_attribute_limit = (string)$attribute_limit;
+    }
+
 
     function getSortKey () {
        return $this->_sort_key;
@@ -1855,6 +1861,9 @@ EOD;
       if ( isset($params['seltopic']) ){
          $html .= '   <input type="hidden" name="seltopic" value="'.$params['seltopic'].'"/>'.LF;
       }
+      if ( isset($params['attribute_limit']) ){
+         $html .= '   <input type="hidden" name="attribute_limit" value="'.$params['attribute_limit'].'"/>'.LF;
+      }
       if ( $this->hasCheckboxes() ) {
          $html .= '   <input type="hidden" name="mode" value="'.$this->_text_as_form($this->_has_checkboxes).'"/>'.LF;
       }
@@ -2515,6 +2524,11 @@ EOD;
       }
    }
 
+
+   function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
+      return '';
+   }
+
    function _getAdditionalFormFieldsAsHTML ($field_length=14.5) {
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
@@ -2531,7 +2545,8 @@ EOD;
       } else {
          $room_modules =  array();
       }
-      $html ='';
+      $html = '';
+      $html .= $this->_getAdditionalRestrictionBoxAsHTML($field_length).LF;
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' ) {

@@ -663,13 +663,18 @@ class cs_material_manager extends cs_manager {
          $id_string = implode(', ',$this->_id_limit);
          $query .= ' AND materials.item_id IN ('.encode(AS_DB,$id_string).')';
       }
-      if (isset($this->_attribute_limit) and !($this->_attribute_limit=='all')){
+      if (isset($this->_attribute_limit) and !($this->_attribute_limit=='all')
+      and isset($this->_search_array) and !empty($this->_search_array)){
          if ( 'modificator'== $this->_attribute_limit ) {
             $query .= ' AND '.$this->_generateSearchLimitCode(array('TRIM(CONCAT(creator.firstname," ",creator.lastname))'));
          } elseif ( 'title'==$this->_attribute_limit ) {
             $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.title'));
+         }elseif ( 'author'==$this->_attribute_limit ) {
+            $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.author'));
          } elseif ( 'description'==$this->_attribute_limit ) {
             $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.description'));
+         }elseif ( 'file'==$this->_attribute_limit ){
+              $query .= $this->initFTSearch();
          }
       }
       // restrict sql-statement by search limit, create wheres
@@ -682,7 +687,9 @@ class cs_material_manager extends cs_manager {
       }
 
       // init and perform ft search action
-      if (!empty($this->_search_array)) {
+      if (!empty($this->_search_array) and
+          !(isset($this->_attribute_limit) and !($this->_attribute_limit=='all'))
+         ) {
          $query .= $this->initFTSearch();
       }
 

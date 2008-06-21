@@ -30,6 +30,8 @@ $_skin_array = array();
  */
 class cs_configuration_wiki_form extends cs_rubric_form {
 
+   var $_set_deletion_values = false;
+
    /** constructor
     * the only available constructor
     *
@@ -37,6 +39,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
     */
    function __construct ($environment) {
       $this->cs_rubric_form($environment);
+   }
+
+   function setDeletionValues(){
+   	$this->_set_deletion_values = true;
    }
 
    function setSkinArray($array){
@@ -87,7 +93,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       if ( !empty($this->_form_post['skin_choice']) ) {
          $desc = '<img src="images/wiki/'.$this->_form_post['skin_choice'].'.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
          $this->_form->addText('example','',$desc);
-      }elseif( isset($this->_item) ) {
+      }elseif( isset($this->_item) and !$this->_set_deletion_values) {
          $skin = $this->_item->getWikiSkin();
          if (!empty ($skin) ){
             $desc = '<img src="images/wiki/'.$this->_item->getWikiSkin().'.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
@@ -119,11 +125,11 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       $this->_form->addEmptyline();
       // already available features - added to form
-      
+
       global $c_pmwiki_path_file;
-      
+
       $features_media_available = array();
-      
+
       if (file_exists($c_pmwiki_path_file.'/cookbook/swf.php')) {
         // SWF
         $features_media_available[] = array('enable_swf',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
@@ -140,10 +146,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         // Google, Youtube, Vimeo
         $features_media_available[] = array('enable_youtube_google_vimeo',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
       }
-      
+
       for ($index = 0; $index < sizeof($features_media_available); $index++) {
             $array_element = $features_media_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);   
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);
             if($index < sizeof($features_media_available)-1){
                 $this->_form->combine();
             }
@@ -151,7 +157,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
        if(sizeof($features_media_available) > 0){
             $this->_form->addEmptyline();
        }
-      
+
 //      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
 //      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
@@ -207,15 +213,15 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         // PDF
         $features_available[] = array('enable_pdf',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
       }
-      
+
       for ($index = 0; $index < sizeof($features_available); $index++) {
 		      $array_element = $features_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);	
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);
             if($index < sizeof($features_available)-1){
             	$this->_form->combine();
             }
 	   }
-      
+
 //      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
 //      $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
@@ -248,9 +254,9 @@ class cs_configuration_wiki_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
-      if (isset($this->_form_post)) {
+      if (isset($this->_form_post) and !$this->_set_deletion_values) {
          $this->_values = $this->_form_post;
-      } elseif (isset($this->_item)) {
+      } elseif (isset($this->_item) and !$this->_set_deletion_values) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['wikititle'] = $this->_item->getWikiTitle();
          $home_link = $this->_item->getWikiHomeLink();
@@ -317,6 +323,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_values['edit'] = $this->_item->getWikiEditPW();
          $this->_values['read'] = $this->_item->getWikiReadPW();
       } else {
+         $this->_values['wikititle'] = $this->_item->getWikiTitle();
          $this->_values['skin_choice'] = 'pmwiki';
          $this->_values['admin'] = 'admin';
          $this->_values['edit'] = 'edit';

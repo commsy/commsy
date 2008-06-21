@@ -597,6 +597,13 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>';
          $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION');
          $html .= '</p>';
+      }elseif ( $this->_environment->getCurrentModule() == 'configuration'
+                   and $this->_environment->getCurrentFunction() == 'wiki'
+               ) {
+         $html .= '<h2>'.getMessage('COMMON_DELETE_WIKI_TITLE');
+         $html .= '</h2>';
+         $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
+         $html .= '</p>';
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
          $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE');
