@@ -351,14 +351,14 @@ class cs_rubric_form {
                      $temp_array['text'] = chunkText($linked_item->getTitle(),50);
                   }
                   if ( isset($link_item) and
-                       $user->getItemID() != $link_item->getCreatorID() ) {
+                     $user->getItemID() != $link_item->getCreatorID() ) {
                      $link_creator = $link_item->getCreatorItem();
                      $temp_array['text'] .= '<BR><SPACE><SPACE><SPACE><SPACE><SPACE><DISABLED>('.
                                             getMessage('COMMON_LINK_CREATOR').': '.
                                             $link_creator->getFullname().')</DISABLED>';
                   }
                   $item_array[] = $temp_array;
-               unset($temp_array);
+                  unset($temp_array);
                   $linked_item = $linked_item_list->getNext();
                }
             }

@@ -69,4 +69,5 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 @include_once('etc/commsy/development.php');
 @include_once('etc/commsy/autosave.php');
 @include_once('etc/commsy/plugin.php');
+@include_once('etc/commsy/beluga.php');
 ?>

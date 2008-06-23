@@ -55,6 +55,22 @@ else {
    }
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index',$params);
+   }elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url'){
+      include_once('include/inc_ims_upload.php');
+      global $ims_content_connection_temp_folder;
+      global $url_for_beluga_upload;
+      $session = $environment->getSessionItem();
+      if (isset($ims_content_connection_temp_folder)){
+         $target_directory = $ims_content_connection_temp_folder.'/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
+      }else{
+         $target_directory = 'var/temp/ims_import/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
+      }
+      $file_name = 'ims'.$session->getSessionID().'.zip';
+      $file_url = $url_for_beluga_upload.$file_name;
+      $destination_dir = $ims_content_connection_temp_folder.$file_name;
+      copy($file_url,$destination_dir);
+      getMaterialListByIMSZip($file_name,$destination_dir,$target_directory,$environment);
+      redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index','');
    }else {
       // Initialize the form
       $form = new cs_material_ims_import_form($environment);

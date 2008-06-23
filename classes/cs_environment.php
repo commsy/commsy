@@ -1481,6 +1481,7 @@ class cs_environment {
 //      return false; //-> Scribd not available in release 6.1.2
    }
 
+
    public function isScribdAvailable(){
         if(!$this->isCurlForPHPAvailable()){
             return false;
@@ -1495,5 +1496,28 @@ class cs_environment {
         }
         return true;
    }
+
+   public function withBelugaConnection(){
+      global $url_for_beluga_system;
+      $retour = false;
+      if (isset($url_for_beluga_system) and !empty($url_for_beluga_system)){
+      	$retour = true;
+      }
+      return $retour;
+   }
+
+   public function getBelugaConnectionLink(){
+      global $url_for_beluga_system;
+      $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+      if (!stristr($commsy_link,'SID')) {
+         $commsy_link .='&'.substr($_SERVER['HTTP_COOKIE'],'0',strpos($_SERVER['HTTP_COOKIE'],';'));
+      }
+      $commsy_link = str_replace('SID','CSID',$commsy_link);
+      $link = $url_for_beluga_system;
+      $params = $this->getCurrentParameterArray();
+      $link .='?commsy_url='.urldecode($commsy_link);
+   	return $link;
+   }
+
 }
 ?>

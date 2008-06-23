@@ -64,6 +64,16 @@ class cs_material_ims_import_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addImage('ims_upload','',getMessage('MATERIAL_UPLOADFILE'), getMessage('MATERIAL_UPLOADFILE_DESC'),'',false);
+      $this->_form->combine('vertical');
+      $this->_form->addText('ims_upload_description','',getMessage('IMS_UPLOAD_DESCRIPTION'));
+      if ($this->_environment->withBelugaConnection()){
+         $link = $this->_environment->getBelugaConnectionLink();
+
+         $this->_form->addEmptyLine();
+         $this->_form->addText('import','Direktimport','<a href="'.$link.'">Link zu Beluga</a>');
+         $this->_form->combine('vertical');
+         $this->_form->addText('import_description','',getMessage('BELUGA_IMPORT_DESCRIPTION'));
+      }
       $this->_form->addButtonBar('option',getMessage('MATERIAL_IMS_IMPORT_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
    }
 
