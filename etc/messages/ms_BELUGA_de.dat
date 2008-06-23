@@ -1,0 +1,3 @@
+<?php
+$message["BELUGA_IMPORT_DESCRIPTION"]["de"] = "Hier können Sie direkt in das angeschlossene Recherchesystem wechseln und sich eine Liste zusammenstellen.";
+?>

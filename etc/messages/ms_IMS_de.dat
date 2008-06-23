@@ -1,3 +1,4 @@
 <?php
 $message["IMS_PASSWORD_ERROR"]["de"] = "Passworte sind nicht gleich oder leer!";
+$message["IMS_UPLOAD_DESCRIPTION"]["de"] = "Hier können Sie ein lokales IMS-Paket hochladen.";
 ?>
