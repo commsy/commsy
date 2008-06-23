@@ -1510,11 +1510,12 @@ class cs_environment {
       global $url_for_beluga_system;
       $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
       if (!stristr($commsy_link,'SID')) {
-         $commsy_link .='&'.substr($_SERVER['HTTP_COOKIE'],'0',strpos($_SERVER['HTTP_COOKIE'],';'));
+         $session = $this->getSessionItem();
+         $commsy_link .='&CSID='.$session->getSessionID();
+      }else{
+         $commsy_link = str_replace('SID','CSID',$commsy_link);
       }
-      $commsy_link = str_replace('SID','CSID',$commsy_link);
       $link = $url_for_beluga_system;
-      $params = $this->getCurrentParameterArray();
       $link .='?commsy_url='.urldecode($commsy_link);
    	return $link;
    }
