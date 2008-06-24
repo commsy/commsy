@@ -99,7 +99,6 @@ class cs_material_index_view extends cs_index_view {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
-      $html .= '   </select>'.LF;
 
       global $c_ftsearch_indexing;
       if ($c_ftsearch_indexing){
@@ -108,8 +107,8 @@ class cs_material_index_view extends cs_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_FILE').'</option>'.LF;
-         $html .= '   </select>'.LF;
       }
+      $html .= '   </select>'.LF;
       $html .='</div>';
       return $html;
    }
