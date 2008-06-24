@@ -622,7 +622,7 @@ class cs_project_item extends cs_room_item {
       // you can link daily cron jobs here like this
       // $cron_array[] = $this->_sendEmailNewsLetter();
       $cron_array   = array();
-      $cron_array[] = $this->_cleanLinksToGroupAll();
+      #$cron_array[] = $this->_cleanLinksToGroupAll();
 
       $father_cron_array = parent::_cronDaily();
       $cron_array = array_merge($father_cron_array,$cron_array);
@@ -642,7 +642,7 @@ class cs_project_item extends cs_room_item {
 
       return $cron_array;
    }
-
+/*
    private function _cleanLinksToGroupAll () {
       $retour = array();
       $retour['title'] = 'control links to group all';
@@ -671,7 +671,7 @@ class cs_project_item extends cs_room_item {
       }
       return $retour;
    }
-
+*/
    #########################################################
    # COMMSY CRON JOBS - END
    #########################################################
