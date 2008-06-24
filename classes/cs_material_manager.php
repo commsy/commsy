@@ -674,7 +674,7 @@ class cs_material_manager extends cs_manager {
          } elseif ( 'description'==$this->_attribute_limit ) {
             $query .= ' AND '.$this->_generateSearchLimitCode(array('materials.description'));
          }elseif ( 'file'==$this->_attribute_limit ){
-              $query .= ' AND ( 1=0 OR '.$this->initFTSearch().' ) ';
+              $query .= $this->initFTSearch();
          }
       }
       // restrict sql-statement by search limit, create wheres
