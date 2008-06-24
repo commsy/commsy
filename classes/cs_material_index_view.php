@@ -100,14 +100,14 @@ class cs_material_index_view extends cs_index_view {
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
 
-      global $c_ftsearch_indexing;
+/*      global $c_ftsearch_indexing;
       if ($c_ftsearch_indexing){
          $html .= '      <option value="3"';
          if ( isset($selected_value) and $selected_value == 'file' ) {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_FILE').'</option>'.LF;
-      }
+      }*/
       $html .= '   </select>'.LF;
       $html .='</div>';
       return $html;
