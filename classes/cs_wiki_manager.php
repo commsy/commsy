@@ -217,7 +217,8 @@ class cs_wiki_manager extends cs_manager {
          $str .= 'global $WorkDir;'.LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounter.php');".LF;
          $str .= "@include_once(\$FarmD.'/cookbook/totalcounterlink.php');".LF;
-         $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF.LF;
+         $str .= '$SHOW_STATISTIC_ACTION = "1";'.LF;
+         $str .= '$TotalCounterTimeBins["LastYears"]["max"] = 5;'.LF.LF;
       }
 
       if ( $item->WikiEnableRss() == "1" ) {
