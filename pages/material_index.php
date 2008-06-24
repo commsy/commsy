@@ -155,7 +155,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
         case 2 :
             $attribute_limit = 'author';
             break;
-        case 2 :
+        case 3 :
             $attribute_limit = 'file';
             break;
       }
