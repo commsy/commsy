@@ -353,7 +353,7 @@ class cs_topic_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
           $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
       } elseif (isset($this->_item)) {
          $this->_values['iid'] = $this->_item->getItemID();
@@ -362,7 +362,7 @@ class cs_topic_form extends cs_rubric_form {
          $this->_values['public'] = $this->_item->isPublic();
          $this->_setValuesForRubricConnections();
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
       }
    }
 }

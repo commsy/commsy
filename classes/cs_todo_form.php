@@ -494,7 +494,7 @@ class cs_todo_form extends cs_rubric_form {
          unset($this->_form_post['timeEnd']);
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
          if ( !isset($this->_values['status']) ) {
             $this->_values['status'] = '1'; //In projectrooms everybody can edit the item by default, else default is creator only
@@ -563,7 +563,7 @@ class cs_todo_form extends cs_rubric_form {
             $this->_values['filelist'] = $file_array;
          }
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          $this->_values['status'] = '1';
       }
    }

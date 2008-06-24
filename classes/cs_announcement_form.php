@@ -522,7 +522,7 @@ class cs_announcement_form extends cs_rubric_form {
          unset($this->_form_post['timeEnd']);
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
@@ -593,7 +593,7 @@ class cs_announcement_form extends cs_rubric_form {
 
 
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          if ( $this->_environment->inProjectRoom() ) {
             $context_item = $this->_environment->getCurrentContextItem();
             $time = $context_item->getTimeSpread();

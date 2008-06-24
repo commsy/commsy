@@ -228,7 +228,7 @@ class cs_institution_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
 		 if ( isset($this->_values['picture_hidden']) and !empty($this->_values['picture_hidden']) ) {
 			 $this->_values['picture_upload'] = $this->_values['picture_hidden'];
@@ -242,7 +242,7 @@ class cs_institution_form extends cs_rubric_form {
          $this->_values['public'] = $this->_item->isPublic();
          $this->_setValuesForRubricConnections();
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
       }
    }
 }

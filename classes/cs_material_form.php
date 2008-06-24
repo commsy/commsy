@@ -695,7 +695,7 @@ class cs_material_form extends cs_rubric_form {
          }
       }
       if ( !isset($this->_values['public']) ) {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
       }
    }
 

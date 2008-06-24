@@ -452,7 +452,7 @@ class cs_discussion_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
 
          if ( !isset($this->_values['discussion_type']) ) {
@@ -494,7 +494,7 @@ class cs_discussion_form extends cs_rubric_form {
             $this->_values['taglist'] = $tag_array;
          }
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          $this->_values['discussion_type'] = '1';
          $this->_values['subject'] = $this->_translator->getMessage('INITIALARTICLE');
       }
