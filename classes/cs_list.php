@@ -259,9 +259,13 @@ class cs_list {
 
    function inList ($item) {
       $boolean = false;
-      foreach($this->_data as $pos => $list_item){
-         if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
-            $boolean = true;
+      if ( isset($item)
+           and $item->getItemID() > 0
+         ) {
+         foreach($this->_data as $pos => $list_item){
+            if ($list_item->getItemID()==$item->getItemID() AND $list_item->getVersionID()==$item->getVersionID()) {
+               $boolean = true;
+            }
          }
       }
       return $boolean;

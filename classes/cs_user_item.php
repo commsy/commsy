@@ -1683,10 +1683,14 @@ class cs_user_item extends cs_item {
 
    public function isInGroup ( $group_item ) {
       $retour = false;
-      $group_list = $this->getGroupList();
-      $retour = $group_list->inList($group_item);
-      unset($group_list);
-      unset($group_item);
+      if ( isset($group_item)
+           and $group_item->getItemID() > 0
+         ) {
+         $group_list = $this->getGroupList();
+         $retour = $group_list->inList($group_item);
+         unset($group_list);
+         unset($group_item);
+      }
       return $retour;
    }
 }
