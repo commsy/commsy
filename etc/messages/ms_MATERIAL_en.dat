@@ -74,6 +74,7 @@ $message["MATERIAL_NOT_PUBLISHED"]["en"] = "not public world-wide";
 $message["MATERIAL_NO_BUZZWORDS"]["en"] = "Select tag from list";
 $message["MATERIAL_NO_TAGS"]["en"] = "Select category from list";
 $message["MATERIAL_ONLY_AUTHOR"]["en"] = "Restrict search to &quot;author&quot;";
+$message["MATERIAL_ONLY_FILE"]["en"] = "Restrict search to files";
 $message["MATERIAL_ONLY_TITLE"]["en"] = "Restrict search to &quot;title&quot;";
 $message["MATERIAL_PAGES"]["en"] = "Pages";
 $message["MATERIAL_PAGES_DESC"]["en"] = "/312-320/";

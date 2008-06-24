@@ -74,6 +74,7 @@ $message["MATERIAL_NOT_PUBLISHED"]["de"] = "nicht weltweit öffentlich";
 $message["MATERIAL_NO_BUZZWORDS"]["de"] = "Kein weiteres Schlagwort";
 $message["MATERIAL_NO_TAGS"]["de"] = "Keine weitere Kategorie";
 $message["MATERIAL_ONLY_AUTHOR"]["de"] = "Nur in &quot;AutorInnen&quot; suchen";
+$message["MATERIAL_ONLY_FILE"]["de"] = "Nur in Dateien suchen";
 $message["MATERIAL_ONLY_TITLE"]["de"] = "Nur in &quot;Titel&quot; suchen";
 $message["MATERIAL_PAGES"]["de"] = "Seiten";
 $message["MATERIAL_PAGES_DESC"]["de"] = "/312-320/";
