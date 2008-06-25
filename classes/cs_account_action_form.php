@@ -76,6 +76,9 @@ class cs_account_action_form extends cs_rubric_form {
          $translator = $this->_environment->getTranslationObject();
          $user_manager = $this->_environment->getUserManager();
          $admin = $user_manager->getItem($this->_action_array['user_item_id']);
+         if ( !isset($admin) ) {
+            $admin = $this->_environment->getCurrentUserItem();
+         }
          $room = $this->_environment->getCurrentContextItem();
          $url_to_room = LF.LF;
          $url_to_room .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
@@ -275,6 +278,8 @@ class cs_account_action_form extends cs_rubric_form {
             $this->_content .= $translator->getEmailMessage('MAIL_BODY_CIAO',$admin->getFullname(),$room->getTitle());
             $this->_content .= $url_to_room;
          }
+      } else {
+         $admin = $this->_environment->getCurrentUserItem();
       }
 
       // cc / bcc - values
