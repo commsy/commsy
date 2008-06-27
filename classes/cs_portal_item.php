@@ -1349,13 +1349,19 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function getAuthSourceList () {
+      $retour = NULL;
       if ( !isset($this->_cache_auth_source_list) ) {
          $manager = $this->_environment->getAuthSourceManager();
          $manager->setContextLimit($this->getItemID());
          $manager->select();
-         $this->_cache_auth_source_list = $manager->get();
+         $retour = $manager->get();
+         if ( $this->_cache_on ) {
+            $this->_cache_auth_source_list = $retour;
+         }
+      } else {
+         $retour = $this->_cache_auth_source_list;
       }
-      return $this->_cache_auth_source_list;
+      return $retour;
    }
 
    function getAuthSourceListEnabled () {

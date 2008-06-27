@@ -78,7 +78,7 @@ class cs_announcement_index_view extends cs_campus_index_view {
 
    // @segment-begin 25662 _getListActionsAsHTML():Announcement-Action-Box-right-top
    function _getListActionsAsHTML () {
-	   $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<div class="right_box">'.LF;
@@ -86,20 +86,20 @@ class cs_announcement_index_view extends cs_campus_index_view {
       $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
-	   $current_user = $this->_environment->getCurrentUserItem();
-	   if ($current_user->isUser() and $this->_with_modifying_actions ) {
-	     $params = array();
-	     $params['iid'] = 'NEW';
-	     $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_ANNOUNCEMENT_TYPE,'edit',$params,$this->_translator->getMessage('COMMON_NEW_ITEM')).BRLF;
-	     unset($params);
-	  } else {
-	     $html .= '> <span class="disabled">'.$this->_translator->getMessage('COMMON_NEW_ITEM').'</span>'.BRLF;
-	  }
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+        $params = array();
+        $params['iid'] = 'NEW';
+        $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_ANNOUNCEMENT_TYPE,'edit',$params,$this->_translator->getMessage('COMMON_NEW_ITEM')).BRLF;
+        unset($params);
+     } else {
+        $html .= '> <span class="disabled">'.$this->_translator->getMessage('COMMON_NEW_ITEM').'</span>'.BRLF;
+     }
      $params = $this->_environment->getCurrentParameterArray();
      $params['mode']='print';
      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_ANNOUNCEMENT_TYPE,'index',$params,$this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).BRLF;
-	  $html .= '</div>'.LF;
-	  $html .= '</div>'.LF;
+     $html .= '</div>'.LF;
+     $html .= '</div>'.LF;
 
      return $html;
    }
@@ -123,7 +123,7 @@ class cs_announcement_index_view extends cs_campus_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -139,7 +139,7 @@ class cs_announcement_index_view extends cs_campus_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -155,7 +155,7 @@ class cs_announcement_index_view extends cs_campus_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -214,9 +214,9 @@ class cs_announcement_index_view extends cs_campus_index_view {
       }else{
          $style='class="even"';
       }
-	  // @segment-end 89418
+     // @segment-end 89418
 
- 	  // @segment-begin 38279 ?see-#48753,#9157
+      // @segment-begin 38279 ?see-#48753,#9157
       if ($this->_clipboard_mode){
          $sort_criteria = $item->getContextID();
          if ( $sort_criteria != $this->_last_sort_criteria ) {
@@ -247,14 +247,14 @@ class cs_announcement_index_view extends cs_campus_index_view {
       }
       // @segment-end 38279
 
-	  // @segment-begin 96494 begin-announcement-entry,see#21229,#51566
+     // @segment-begin 96494 begin-announcement-entry,see#21229,#51566
       $html  .= '   <tr class="list">'.LF;
       $checked_ids = $this->getCheckedIDs();
       $dontedit_ids = $this->getDontEditIDs();
       $key = $item->getItemID();
-	  // @segment-end 96494
+     // @segment-end 96494
 
- 	  // @segment-begin 75550 check-box/text_from_announcement-entry
+      // @segment-begin 75550 check-box/text_from_announcement-entry
 
       $fileicons = $this->_getItemFiles($item, $with_links);
       if ( !empty($fileicons) ) {
@@ -276,9 +276,9 @@ class cs_announcement_index_view extends cs_campus_index_view {
       } else {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
-	  // @segment-end 75550
+     // @segment-end 75550
 
-	  // @segment-begin 66261 creator/creation-date-of-announcement-entry,see#82455,#55311
+     // @segment-begin 66261 creator/creation-date-of-announcement-entry,see#82455,#55311
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;" colspan="2">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -310,10 +310,10 @@ class cs_announcement_index_view extends cs_campus_index_view {
                            '', '', '', '', '', '', '', '',
                            CS_ANNOUNCEMENT_TYPE.$item->getItemID());
       unset($params);
-	  if ($this->_environment->inProjectRoom()) {
+     if ($this->_environment->inProjectRoom()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
-	  }
+     }
       return $title;
    }
    // @segment-end 86052

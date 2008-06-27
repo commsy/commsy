@@ -378,21 +378,21 @@ class cs_discussion_manager extends cs_manager {
     * @param integer item_id id of the item
     *
     * @return object cs_item a label
-    *
-    * @author CommSy Development Group
     */
      function getItem ($item_id) {
         $discussion = NULL;
-        if (array_key_exists($item_id,$this->_cached_items)){
+        if ( array_key_exists($item_id,$this->_cached_items) ) {
            return $this->_buildItem($this->_cached_items[$item_id]);
-        }else{
+        } else {
            $query = "SELECT * FROM discussions WHERE discussions.item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if ( !isset($result) or empty($result[0]) ) {
               include_once('functions/error_functions.php');trigger_error('Problems selecting one discussions item.',E_USER_WARNING);
            } else {
-              $this->_cached_items[$result[0]['item_id']] = $result[0];
               $discussion = $this->_buildItem($result[0]);
+              if ( $this->_cache_on ) {
+                 $this->_cached_items[$result[0]['item_id']] = $result[0];
+              }
            }
            return $discussion;
         }

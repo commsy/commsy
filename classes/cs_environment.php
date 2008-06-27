@@ -92,6 +92,7 @@ class cs_environment {
    private $session_id = NULL;
    private $session_item = NULL;
    private $_db_mysql_connector = NULL;
+   private $_cache_on = true;
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -992,6 +993,10 @@ class cs_environment {
          $this->instance[$name] = new $name($this);
       }
       $this->instance[$name]->resetLimits();
+      if ( !$this->_cache_on ) {
+         $this->instance[$name]->resetData();
+         $this->instance[$name]->setCacheOff();
+      }
       return $this->instance[$name];
    }
 
@@ -1501,7 +1506,7 @@ class cs_environment {
       global $url_for_beluga_system;
       $retour = false;
       if (isset($url_for_beluga_system) and !empty($url_for_beluga_system)){
-      	$retour = true;
+         $retour = true;
       }
       return $retour;
    }
@@ -1517,8 +1522,11 @@ class cs_environment {
       }
       $link = $url_for_beluga_system;
       $link .='?commsy_url='.urldecode($commsy_link);
-   	return $link;
+      return $link;
    }
 
+   public function setCacheOff () {
+      $this->_cache_on = false;
+   }
 }
 ?>

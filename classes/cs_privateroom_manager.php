@@ -60,7 +60,7 @@ class cs_privateroom_manager extends cs_context_manager {
 
   private $_room_home_cache = NULL;
 
-  /** constructor: cs_community_manager
+  /** constructor
     * the only available constructor, initial values for internal variables
     *
     * @param object cs_environment the environment
@@ -209,9 +209,9 @@ class cs_privateroom_manager extends cs_context_manager {
   }
 
    public function getRelatedContextListForUserOnPrivateRoomHome ($user_item) {
+      include_once('classes/cs_list.php');
+      $retour = new cs_list();
       if ( !isset($this->_room_home_cache) ) {
-         include_once('classes/cs_list.php');
-         $this->_room_home_cache = new cs_list();
          $room_manager = $this->_environment->getRoomManager();
          $list = $room_manager->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
          if ( !$list->isEmpty() ) {
@@ -221,15 +221,20 @@ class cs_privateroom_manager extends cs_context_manager {
                if ( !$item->isPrivateRoom()
                     and $item->isShownInPrivateRoomHome($user_item->getUserID())
                   ) {
-                  $this->_room_home_cache->add($item);
+                  $retour->add($item);
                }
                $item = $list->getNext();
             }
          }
          unset($room_manager);
          unset($list);
+         if ( $this->_cache_on ) {
+            $this->_room_home_cache = $retour;
+         }
+      } else {
+         $retour = $this->_room_home_cache;
       }
-      return $this->_room_home_cache;
+      return $retour;
    }
 
   function getSortedItemList($id_array,$sortBy) {

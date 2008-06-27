@@ -339,16 +339,18 @@ class cs_announcement_manager extends cs_manager {
 
      if ( !empty($item_id) ) {
         $this->_with_material = true;
-         if (array_key_exists($item_id,$this->_cached_items)){
+         if ( array_key_exists($item_id,$this->_cached_items) ) {
             return $this->_buildItem($this->_cached_items[$item_id]);
-         }else{
+         } else {
            $query = "SELECT * FROM announcement WHERE announcement.item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if ( !isset($result) ) {
               include_once('functions/error_functions.php');
               trigger_error('Problems selecting one announcement item.',E_USER_WARNING);
            } elseif ( !empty($result[0]) ) {
-              $this->_cached_items[$result[0]['item_id']] = $result[0];
+              if ( $this->_cache_on ) {
+                 $this->_cached_items[$result[0]['item_id']] = $result[0];
+              }
               $announcement = $this->_buildItem($result[0]);
               unset($result);
            } else {

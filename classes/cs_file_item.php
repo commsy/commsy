@@ -517,6 +517,7 @@ class cs_file_item extends cs_item {
                $retour = true;
             }
          }
+         unset($virus_scanner);
       }
       return $retour;
    }

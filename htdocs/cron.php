@@ -25,7 +25,7 @@
 function performRoomIDArray ($id_array,$portal_name) {
    global $environment;
    $room_manager = $environment->getRoomManager();
-   $room_manager->setCacheOut();
+   $room_manager->setCacheOff();
    foreach ($id_array as $item_id) {
       $room = $room_manager->getItem($item_id);
       $type = '';
@@ -108,6 +108,7 @@ include_once('etc/cs_constants.php');
 include_once('etc/cs_config.php');
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
+$environment->setCacheOff();
 $result_array = array();
 if ( !empty($_GET['cid']) ) {
    $context_id = $_GET['cid'];

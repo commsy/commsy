@@ -335,11 +335,13 @@ class cs_link_manager extends cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
          } else {
-            $temp = array();
-            $temp['query'] = $query;
-            $temp['result'] = $r;
-            $this->_cache[] = $temp;
             $result = $r;
+            if ( $this->_cache_on ) {
+               $temp = array();
+               $temp['query'] = $query;
+               $temp['result'] = $r;
+               $this->_cache[] = $temp;
+            }
          }
       }
       return $result;

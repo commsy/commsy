@@ -39,11 +39,6 @@ class cs_user_item extends cs_item {
 
    var $_old_status = NULL;
 
-  /**
-   * boolean - if true the modification_date will be updated - else not
-   */
-   var $_change_modification_on_save = true;
-
    /** constructor: cs_user_item
     * the only available constructor, initial values for internal variables
     */
@@ -1024,19 +1019,6 @@ class cs_user_item extends cs_item {
     */
    function isVisibleForLoggedIn () {
       return true;
-   }
-
-   /**
-    * returns true if the modification_date should be saved
-    *
-    * @param boolean
-    */
-   function isChangeModificationOnSave() {
-      return $this->_change_modification_on_save;
-   }
-
-   function setChangeModificationOnSave($save) {
-      $this->_change_modification_on_save = $save;
    }
 
    function save() {

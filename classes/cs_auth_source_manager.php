@@ -108,6 +108,7 @@ class cs_auth_source_manager extends cs_manager {
     * @return object cs_item a label
     */
   function getItem ($item_id) {
+     $retour = NULL;
      if ( !isset($this->_cache[$item_id]) ) {
         $item = NULL;
         $query = "SELECT * FROM auth_source WHERE auth_source.item_id = '".encode(AS_DB,$item_id)."'";
@@ -117,10 +118,15 @@ class cs_auth_source_manager extends cs_manager {
            trigger_error('Problems selecting one auth_source item ['.$item_id.'].',E_USER_WARNING);
            $this->_cache[$item_id] = NULL;
         } else {
-           $this->_cache[$item_id] = $this->_buildItem($result[0]);
+           $retour = $this->_buildItem($result[0]);
+           if ( $this->_cache_on ) {
+              $this->_cache[$item_id] = $retour;
+           }
         }
+     } else {
+        $retour = $this->_cache[$item_id];
      }
-     return $this->_cache[$item_id];
+     return $retour;
   }
 
    function getItemList($id_array) {

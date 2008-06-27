@@ -60,6 +60,12 @@ class cs_item {
    */
    var $_filelist_changed = false;
    var $_filelist_changed_empty = false;
+   var $_cache_on = true;
+
+  /**
+   * boolean - if true the modification_date will be updated - else not
+   */
+   var $_change_modification_on_save = true;
 
    /** constructor: cs_view
    * the only available constructor, initial values for internal variables
@@ -83,6 +89,10 @@ class cs_item {
          }
       }
       return $this->_context_item;
+   }
+
+   public function setCacheOff () {
+      $this->_cache_on = false;
    }
 
    /** Sets the data of the item.
@@ -868,9 +878,9 @@ class cs_item {
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($this->getContextID());
          $user_id = $this->_getValue($role.'_id');
-         if (!is_null($user_id)) {
-            $this->_data[$role] = $user_manager->getItem($user_id);
-            $user = $this->_data[$role];
+         if ( !is_null($user_id) ) {
+            $user = $user_manager->getItem($user_id);
+            $this->_data[$role] = $user;
          }
       }
       return $user;
@@ -1619,6 +1629,19 @@ class cs_item {
    public function save () {
       $manager = $this->_environment->getManager($this->getItemType());
       $this->_save($manager);
+   }
+
+   /**
+    * returns true if the modification_date should be saved
+    *
+    * @param boolean
+    */
+   function isChangeModificationOnSave() {
+      return $this->_change_modification_on_save;
+   }
+
+   function setChangeModificationOnSave($save) {
+      $this->_change_modification_on_save = $save;
    }
 }
 ?>

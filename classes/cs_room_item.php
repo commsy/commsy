@@ -793,6 +793,7 @@ class cs_room_item extends cs_context_item {
          $virus_found = 0;
          $file_item = $file_list->getFirst();
          while ($file_item) {
+            $file_item->setCacheOff();
             if ( $file_item->hasVirus() ) {
                $virus = trim($file_item->getVirusName());
                $virus_found++;
@@ -806,7 +807,10 @@ class cs_room_item extends cs_context_item {
                $context_title_from = $context_title;
                if ( $context_title == 'PRIVATE_ROOM' ) {
                   $context_title = $translator->getMessage('COMMON_PRIVATE_ROOM');
-                  $portal_item = $context->getcontextItem();
+                  if ( !$this->_cache_on ) {
+                     $context->setCacheOff();
+                  }
+                  $portal_item = $context->getContextItem();
                   $context_title_from = $portal_item->getTitle();
                   unset($portal_item);
                }
@@ -852,6 +856,7 @@ class cs_room_item extends cs_context_item {
          }
          $count = $file_list->getCount();
          unset($file_list);
+         unset($file_item);
          $retour['success'] = true;
          $retour['success_text'] = $count.' files scanned: '.$virus_found.' virus found';
       } else {

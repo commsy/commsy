@@ -63,7 +63,6 @@ class cs_context_manager extends cs_manager {
    var $_id_array_limit = NULL;
    var $_cache_object = array();
    var $_cache_list = array();
-   var $_cache_on = true;
 
    /** constructor: cs_room_manager
     * the only available constructor, initial values for internal variables
@@ -86,10 +85,6 @@ class cs_context_manager extends cs_manager {
       $this->_topic_limit = NULL;
       $this->_sort_order = NULL;
       $this->_id_array_limit = NULL;
-   }
-
-   public function setCacheOut () {
-      $this->_cache_on = false;
    }
 
    /** set limit to array of announcement item_ids
@@ -217,8 +212,9 @@ class cs_context_manager extends cs_manager {
    }
 
    function _getRelatedContextListForUser ($user_id, $auth_source, $context_id, $grouproom = false) {
+      include_once('classes/cs_list.php');
+      $list = new cs_list();
       if ( !isset($this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id]) ) {
-         $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id] = new cs_list();
          $query  = 'SELECT '.$this->_db_table.'.*';
          $query .= ' FROM '.$this->_db_table;
          $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
@@ -287,12 +283,16 @@ class cs_context_manager extends cs_manager {
             trigger_error('Problems selecting '.$this->_db_table.' items.',E_USER_WARNING);
          } else {
             foreach ($result as $query_result) {
-               $item = $this->_buildItem($query_result);
-               $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id]->add($item);
+               $list->add($this->_buildItem($query_result));
+            }
+            if ( $this->_cache_on ) {
+               $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id] = $list;
             }
          }
+      } else {
+         $list = $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id];
       }
-      return $this->_cache_list[$user_id.'_'.$auth_source.'_'.$context_id];
+      return $list;
    }
 
    function getRelatedOwnRoomForUser ($user_item, $context_id) {
@@ -442,6 +442,7 @@ class cs_context_manager extends cs_manager {
     * @return object cs_context a room: project, community, portal, server
     */
    function getItem ($item_id) {
+      $retour = NULL;
       if ( !isset($this->_cache_object[$item_id]) ) {
          $query = "SELECT * FROM ".$this->_db_table." WHERE ".$this->_db_table.".item_id='".encode(AS_DB,$item_id)."'";
          $result = $this->_db_connector->performQuery($query);
@@ -449,22 +450,20 @@ class cs_context_manager extends cs_manager {
          if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting '.$this->_db_table.' item.',E_USER_WARNING);
-            $this->_cache_object[$item_id] = NULL;
          } elseif ( !empty($result[0]) ) {
             $data_array = $result[0];
             if ( !empty($data_array) ) {
+               $retour = $this->_buildItem($data_array);
                if ( $this->_cache_on ) {
-                  $this->_cache_object[$item_id] = $this->_buildItem($data_array);
-               } else {
-                  return $this->_buildItem($data_array);
+                  $this->_cache_object[$item_id] = $retour;
                }
             }
             unset($result);
-         } else {
-            $this->_cache_object[$item_id] = NULL;
          }
+      } else {
+         $retour = $this->_cache_object[$item_id];
       }
-      return $this->_cache_object[$item_id];
+      return $retour;
    }
 
   /** create a project - internal, do not use -> use method save

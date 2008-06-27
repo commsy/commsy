@@ -120,6 +120,7 @@ class cs_manager {
    var $_db_connector = NULL;
 
    var $_cached_items = array();
+   var $_cache_on = true;
 
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
@@ -142,6 +143,10 @@ class cs_manager {
     */
    function setCurrentContextID($id) {
       $this->_current_context = $id;
+   }
+
+   public function setCacheOff () {
+      $this->_cache_on = false;
    }
 
   /** reset class
@@ -529,7 +534,11 @@ class cs_manager {
    * @param cs_item the item for which an update should be made
    */
    function _update($item) {
-      $query = 'UPDATE items SET modification_date="'.getCurrentDateTimeInMySQL().'", context_id="'.encode(AS_DB,$item->getContextID()).'"';
+      $query = 'UPDATE items SET';
+      if ( $item->isChangeModificationOnSave() ) {
+         $query .= ' modification_date="'.getCurrentDateTimeInMySQL().'",';
+      }
+      $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
       $query .= ' WHERE item_id = "'.encode(AS_DB,$item->getItemID()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {

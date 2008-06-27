@@ -292,8 +292,10 @@ class cs_discussionarticles_manager extends cs_manager {
                $discarticle_list->add($this->_buildItem($rs));
             }
          }
-         $this->_all_discarticle_list = $discarticle_list;
-         $this->_cached_discussion_item_ids = $id_array;
+         if ( $this->_cache_on ) {
+            $this->_all_discarticle_list = $discarticle_list;
+            $this->_cached_discussion_item_ids = $id_array;
+         }
          return $discarticle_list;
       }
    }
@@ -301,8 +303,7 @@ class cs_discussionarticles_manager extends cs_manager {
 
    function getAllArticlesForItem($discussion_item,$show_all=false){
       $item_id = $discussion_item->getItemID();
-      $version_id = $discussion_item->getVersionID();
-      if (in_array($item_id,$this->_cached_discussion_item_ids)){
+      if ( in_array($item_id,$this->_cached_discussion_item_ids) ) {
          $list = new cs_list();
          $discarticle_list = $this->_all_discarticle_list;
          $discarticle_item = $discarticle_list->getFirst();
@@ -315,7 +316,7 @@ class cs_discussionarticles_manager extends cs_manager {
          unset($discarticle_list);
          unset($discarticle_item);
          return $list;
-      }else{
+      } else {
          $this->reset();
          $this->setContextLimit($discussion_item->getContextID());
          $this->setDiscussionLimit($discussion_item->getItemID());

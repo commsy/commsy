@@ -365,8 +365,10 @@ class cs_section_manager extends cs_manager {
                $section_list->append($this->_buildItem($rs));
             }
          }
-         $this->_all_section_list = $section_list;
-         $this->_cached_material_item_ids = $id_array;
+         if ( $this->_cache_on ) {
+            $this->_all_section_list = $section_list;
+            $this->_cached_material_item_ids = $id_array;
+         }
          return $section_list;
       }
    }

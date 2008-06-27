@@ -358,8 +358,10 @@ class cs_file_manager extends cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems with links: "'.$this->_dberror.'" from query: "'.$query.'"',E_USER_WARNING);
          } else {
-            foreach ($r as $res) {
-               $this->_cache[$res['files_id']] = $res;
+            if ( $this->_cache_on ) {
+               foreach ($r as $res) {
+                  $this->_cache[$res['files_id']] = $res;
+               }
             }
             $result = $r;
          }

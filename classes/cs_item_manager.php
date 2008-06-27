@@ -391,19 +391,22 @@ class cs_item_manager extends cs_manager {
     * @return object cs_item an item
     */
    function getItem($iid, $vid = NULL) {
+      $retour = NULL;
       if ( !isset($this->_cache_object[$iid]) ) {
          $query = 'SELECT *';
          $query .= ' FROM items';
          $query .= ' WHERE item_id="'.$iid.'"';
          $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) or empty($result) ) {
-#            include_once('functions/error_functions.php');trigger_error('Problems selecting an item from query: "'.$query.'"',E_USER_WARNING);
-            $this->_cache_object[$iid] = NULL;
-         } else {
-            $this->_cache_object[$iid] = $this->_buildItem($result[0]);
+         if ( isset($result) and !empty($result) ) {
+            $retour = $this->_buildItem($result[0]);
+            if ( $this->_cache_on ) {
+               $this->_cache_object[$iid] = $retour;
+            }
          }
+      } else {
+         $retour = $this->_cache_object[$iid];
       }
-      return $this->_cache_object[$iid];
+      return $retour;
    }
 
   /** Prepares the db_array for the item

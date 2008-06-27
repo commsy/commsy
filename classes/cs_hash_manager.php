@@ -70,10 +70,12 @@ class cs_hash_manager extends cs_manager {
          $query = "SELECT rss FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
          $result = $this->_db_connector->performQuery($query);
          if ( isset($result[0]['rss']) and !empty($result[0]['rss']) ) {
-            $this->_cached_rss_array[$user_item_id] = $result[0]['rss'];
+            $retour = $result[0]['rss'];
+            if ( $this->_cache_on ) {
+               $this->_cached_rss_array[$user_item_id] = $retour;
+            }
          }
-      }
-      if ( !empty($this->_cached_rss_array[$user_item_id]) ) {
+      } elseif ( !empty($this->_cached_rss_array[$user_item_id]) ) {
          $retour = $this->_cached_rss_array[$user_item_id];
       }
       return $retour;
@@ -150,10 +152,12 @@ class cs_hash_manager extends cs_manager {
          $query = "SELECT ical FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
          $result = $this->_db_connector->performQuery($query);
          if ( isset($result[0]['ical']) and !empty($result[0]['ical']) ) {
-            $this->_cached_ical_array[$user_item_id] = $result[0]['ical'];
+            $retour = $result[0]['ical'];
+            if ( $this->_cache_on ) {
+               $this->_cached_ical_array[$user_item_id] = $retour;
+            }
          }
-      }
-      if ( !empty($this->_cached_ical_array[$user_item_id]) ) {
+      } elseif ( !empty($this->_cached_ical_array[$user_item_id]) ) {
          $retour = $this->_cached_ical_array[$user_item_id];
       }
       return $retour;

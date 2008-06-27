@@ -650,6 +650,7 @@ class cs_context_item extends cs_item {
             include_once('functions/error_functions.php');
             trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"',E_USER_WARNING);
          }
+         unset($user_in_room);
          unset($user_list);
          unset($user_manager);
       }
@@ -3287,6 +3288,7 @@ class cs_context_item extends cs_item {
     * @return array results of running crons
     */
    function runCron () {
+      $this->setCacheOff();
       $cron_array = array();
       $cron_array['daily']  = $this->_runCronDaily();
       $cron_array['weekly'] = $this->_runCronWeekly();

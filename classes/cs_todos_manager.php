@@ -361,8 +361,10 @@ class cs_todos_manager extends cs_manager {
                $result[0]['end_date'] = $result[0]['date'];
                unset($result[0]['date']);
             }
-            $this->_cached_items[$result[0]['item_id']] = $result[0];
             $todo = $this->_buildItem($result[0]);
+            if ( $this->_cache_on ) {
+               $this->_cached_items[$result[0]['item_id']] = $result[0];
+            }
          }
          return $todo;
       }

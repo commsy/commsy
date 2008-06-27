@@ -536,8 +536,6 @@ class cs_labels_manager extends cs_manager {
     * this method get all labels for the context and cache it in this class
     *
     * @param string  type       type of the label
-    *
-    * @author CommSy Development Group
     */
    function _getAllLabels ($type) {
       $data_array = array();
@@ -552,7 +550,8 @@ class cs_labels_manager extends cs_manager {
          $query .= ' AND labels.context_id = "'.encode(AS_DB,$current_context).'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting all labels.',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting all labels.',E_USER_WARNING);
          } else {
             foreach ($result as $query_result) {
                $data_array[] = $query_result;

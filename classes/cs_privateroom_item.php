@@ -259,7 +259,6 @@ class cs_privateroom_item extends cs_room_item {
          if ( !empty($mail_array) ) {
 
             // email
-            $user = $this->getOwnerUserItem();
             $id = $user->getItemID();
 
             $portal = $this->getContextItem();
@@ -277,8 +276,11 @@ class cs_privateroom_item extends cs_room_item {
                   } else {
                      $list2->add($item);
                   }
+                  unset($item);
                   $item = $list->getNext();
                }
+               unset($item);
+               unset($list);
             }
 
             $translator = $this->_environment->getTranslationObject();
@@ -300,7 +302,7 @@ class cs_privateroom_item extends cs_room_item {
                $check_rubrics = array();
                foreach ( $rubrics as $rubric ) {
                   list($rubric_name, $rubric_status) = explode('_', $rubric);
-                  if ( $rubric_status != 'none' and $rubric_name !='chat'){
+                  if ( $rubric_status != 'none' ) {
                      $check_managers[] = $rubric_name;
                      if ( $rubric_name == 'discussion' ) {
                         $check_managers[] = 'discarticle';

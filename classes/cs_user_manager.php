@@ -668,11 +668,13 @@ class cs_user_manager extends cs_manager {
         return $this->_cache_sql[$query];
      } else {
         $result = $this->_db_connector->performQuery($query);
-        $this->_cache_sql[$query] = $result;
         if (!isset($result)) {
            include_once('functions/error_functions.php');
            trigger_error('Problems selecting user.',E_USER_WARNING);
         } else {
+           if ( $this->_cache_on ) {
+              $this->_cache_sql[$query] = $result;
+           }
            return $result;
         }
      }
@@ -702,7 +704,7 @@ class cs_user_manager extends cs_manager {
       $user = NULL;
       if (isset($this->_cache[$item_id])) {
          $user = $this->_cache[$item_id];
-      } elseif(!empty($item_id)) {
+      } elseif ( !empty($item_id) ) {
          $query = "SELECT * FROM user WHERE user.item_id = '".encode(AS_DB,$item_id)."'";
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) ) {
@@ -711,7 +713,9 @@ class cs_user_manager extends cs_manager {
          } elseif ( !empty($result[0]) ) {
             $user = $this->_buildItem($result[0]);
             unset($result);
-            if (!array_key_exists($item_id,$this->_cache)){
+            if ( $this->_cache_on
+                 and !array_key_exists($item_id,$this->_cache)
+               ) {
                $this->_cache[$item_id] = $user;
             }
          }
@@ -720,7 +724,9 @@ class cs_user_manager extends cs_manager {
    }
 
    function getRoomUserByIDsForCache($context_id, $id_array = 0) {
-      if ( !empty($context_id) and !empty($id_array)) {
+      if ( !$this->_cache_on ) {
+         // do nothing
+      } elseif ( !empty($context_id) and !empty($id_array)) {
          $query = 'SELECT * FROM user WHERE user.item_id IN ('.implode(",", $id_array).') AND user.context_id = "'.encode(AS_DB,$context_id).'" AND user.status >= "2"';
          $query .= ' AND user.deleter_id IS NULL';
          $query .= ' AND user.deletion_date IS NULL';
@@ -801,8 +807,6 @@ class cs_user_manager extends cs_manager {
       }
       return $user_list;
    }
-
-
 
    function getItemList($id_array) {
       return $this->_getItemList('user', $id_array);

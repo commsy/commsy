@@ -320,13 +320,14 @@ class cs_material_manager extends cs_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting one material item from query: "'.$query.'"',E_USER_WARNING);
          } else {
-            $this->_cached_items[$result[0]['item_id']] = $result[0];
             $material = $this->_buildItem($result[0]);
+            if ( $this->_cache_on ) {
+               $this->_cached_items[$result[0]['item_id']] = $result[0];
+            }
          }
          return $material;
       }
    }
-
 
    /** get a list of items (newest version)
     * this method returns a list of items
@@ -365,19 +366,15 @@ class cs_material_manager extends cs_manager {
     */
    function getItemByVersion ($item_id,$version_id) {
       $material = NULL;
-#      if (!empty($this->_cache[$item_id])) {
-#         $material = $this->_cache[$item_id];
-#      } else {
-         $query = "SELECT * FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
-         $query .=" AND materials.version_id = '".encode(AS_DB,$version_id)."'";
-         $result = $this->_db_connector->performQuery($query);
-         if (!isset($result) or empty($result[0])) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
-         } else {
-            $material = $this->_buildItem($result[0]);
-#            $this->_cache[$item_id] = $material;
-         }
-#      }
+      $query = "SELECT * FROM materials WHERE materials.item_id = '".encode(AS_DB,$item_id)."'";
+      $query .=" AND materials.version_id = '".encode(AS_DB,$version_id)."'";
+      $result = $this->_db_connector->performQuery($query);
+      if (!isset($result) or empty($result[0])) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
+      } else {
+         $material = $this->_buildItem($result[0]);
+      }
       return $material;
    }
 
