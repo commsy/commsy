@@ -535,7 +535,9 @@ class cs_manager {
    */
    function _update($item) {
       $query = 'UPDATE items SET';
-      if ( $item->isChangeModificationOnSave() ) {
+      if ( $item->isChangeModificationOnSave()
+           or $this->_update_with_changing_modification_information
+         ) {
          $query .= ' modification_date="'.getCurrentDateTimeInMySQL().'",';
       }
       $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
