@@ -201,46 +201,6 @@ class cs_topic_detail_view extends cs_detail_view {
       } else {
          $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('COMMON_EDIT_ITEM').'</span>'.BRLF;
       }
-      // Auskommentierung der Mitglieder eines Themas
-/*      if ( !$this->_environment->inPrivateRoom() ){
-         $params = $this->_environment->getCurrentParameterArray();
-         // Enter or leave the topic
-         if ( $item->isMember($current_user) ) {
-            if ( !$item->isSystemLabel() and $mod ) {
-               $params['topic_option'] = '2';
-               $html .= '> '.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       CS_TOPIC_TYPE,
-                                       'detail',
-                                       $params,
-                                       $this->_translator->getMessage('TOPIC_LEAVE')).BRLF;
-            } else {
-               $html .= '<span class="disabled">> '.$this->_translator->getMessage('TOPIC_LEAVE').'</span>'.BRLF;
-            }
-         } else {
-            if ( $current_user->isUser() and !$item->isSystemLabel() and $mod ) {
-               $params['topic_option'] = '1';
-               $html .= '> '.ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       CS_TOPIC_TYPE,
-                                       'detail',
-                                       $params,
-                                       $this->_translator->getMessage('TOPIC_ENTER')).BRLF;
-            } else {
-               $html .= '<span class="disabled">> '.$this->_translator->getMessage('TOPIC_ENTER').'</span>'.BRLF;
-            }
-         }
-         unset($params);
-         $params = $this->_environment->getCurrentParameterArray();
-         //send email
-         if ( $current_user->isUser() and $this->_with_modifying_actions ) {
-            $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
-                                CS_TOPIC_TYPE,
-                                'mail',
-                                $params,
-                                $this->_translator->getMessage('GROUPS_EMAIL_TO_GROUP')).BRLF;
-         } else {
-            $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('GROUPS_EMAIL_TO_GROUP').'</span>'.BRLF;
-         }
-      } */
       if ( $item->mayEdit($current_user) ) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';

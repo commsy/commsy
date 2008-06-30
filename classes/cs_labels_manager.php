@@ -680,20 +680,16 @@ class cs_labels_manager extends cs_manager {
     * @return array Contains prepared data ( textfunctions applied etc. )
     */
   function _buildItem($db_array) {
-     $is_system_label = FALSE;
      if ( $db_array['name'] == 'ALL' ) {
-        $db_array['name'] = getMessage('ALL_MEMBERS');
+        $translator = $this->_environment->getTranslationObject();
+        $db_array['name'] = $translator->getMessage('ALL_MEMBERS');
         if ( $db_array['description'] == 'GROUP_ALL_DESC' ) {
-           $db_array['description'] = getMessage('GROUP_ALL_DESC');
+           $db_array['description'] = $translator->getMessage('GROUP_ALL_DESC');
         }
-        $is_system_label = TRUE;
      }
      include_once('functions/text_functions.php');
      $db_array['extras'] = cs_unserialize($db_array['extras']);
      $item = parent::_buildItem($db_array);
-     if ( $is_system_label ) {
-        $item->makeSystemLabel();
-     }
      return $item;
   }
 

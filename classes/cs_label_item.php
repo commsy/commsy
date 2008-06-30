@@ -446,8 +446,6 @@ class cs_label_item extends cs_item {
          if ( $value == 1 ) {
             $retour = true;
          }
-      } else {
-         $retour = $this->_is_system_label;
       }
       return $retour;
    }
@@ -457,11 +455,8 @@ class cs_label_item extends cs_item {
     *
     * @param boolean value true - label is a system generated label
     *                      false - label is not a system generated label
-    *
-    * @author CommSy Development Group
     */
    function makeSystemLabel ($value = true) {
-      $this->_is_system_label = $value;
       if ( $value ) {
          $this->_addExtra('SYSTEM_LABEL',1);
       } else {
