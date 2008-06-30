@@ -272,7 +272,7 @@ class cs_privateroom_item extends cs_room_item {
                        or !$item->isShownInPrivateRoomHomeByItemID($id)
                        or !$item->isOpen()
                      ) {
-                  // do nothing
+                     // do nothing
                   } else {
                      $list2->add($item);
                   }

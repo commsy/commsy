@@ -566,8 +566,6 @@ class cs_labels_manager extends cs_manager {
     * this method gets one label without type information
     *
     * @param integer  label_id  item id of the label
-    *
-    * @author CommSy Development Group
     */
   function _getLabelWithoutType ($label_id) {
      $label = NULL;
@@ -604,31 +602,33 @@ class cs_labels_manager extends cs_manager {
     * @param integer item_id id of the item
     *
     * @return object cs_item a label
-    *
-    * @author CommSy Development Group
     */
   function getItem ($item_id) {
-     if (isset($this->_room_limit)) {
-        $current_context = $this->_room_limit;
-     } else {
-        $current_context = $this->_environment->getCurrentContextID();
-     }
-     if (isset($this->_type_limit)) {
-        $current_module = $this->_environment->getCurrentModule();
-        $current_function = $this->_environment->getCurrentFunction();
-        if (!isset($this->_internal_data[$current_context][$this->_type_limit])) {
-           $this->_getAllLabels($this->_type_limit);
+     if ( $this->_cache_on ) {
+        if (isset($this->_room_limit)) {
+           $current_context = $this->_room_limit;
+        } else {
+           $current_context = $this->_environment->getCurrentContextID();
         }
-        reset($this->_internal_data[$current_context][$this->_type_limit]);
-        $line = current($this->_internal_data[$current_context][$this->_type_limit]);
-        $label = NULL;
-        while ($line and empty($label)) {
-           if ($line['item_id'] == $item_id) {
-              $label = $this->_buildItem($line);
+        if (isset($this->_type_limit)) {
+           $current_module = $this->_environment->getCurrentModule();
+           $current_function = $this->_environment->getCurrentFunction();
+           if ( !isset($this->_internal_data[$current_context][$this->_type_limit]) ) {
+              $this->_getAllLabels($this->_type_limit);
            }
-           $line = next($this->_internal_data[$current_context][$this->_type_limit]);
-        }
-        if (!isset($label)) {
+           reset($this->_internal_data[$current_context][$this->_type_limit]);
+           $line = current($this->_internal_data[$current_context][$this->_type_limit]);
+           $label = NULL;
+           while ($line and empty($label)) {
+              if ($line['item_id'] == $item_id) {
+                 $label = $this->_buildItem($line);
+              }
+              $line = next($this->_internal_data[$current_context][$this->_type_limit]);
+           }
+           if (!isset($label)) {
+              $label = $this->_getLabelWithoutType($item_id);
+           }
+        } else {
            $label = $this->_getLabelWithoutType($item_id);
         }
      } else {
