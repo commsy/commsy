@@ -112,20 +112,20 @@ if ( !empty($_FILES['upload']['tmp_name']) ) {
          include_once('classes/cs_virus_scan.php');
          $virus_scanner = new cs_virus_scan($environment);
          if ($virus_scanner->isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])) {
-           move_uploaded_file($_FILES['upload']['tmp_name'], $_FILES['upload']['tmp_name'].'commsy3');
-           $temp_array = array();
-           $temp_array['name'] = $_FILES['upload']['name'];
-           $temp_array['tmp_name'] = $_FILES['upload']['tmp_name'].'commsy3';
+            move_uploaded_file($_FILES['upload']['tmp_name'], $_FILES['upload']['tmp_name'].'commsy3');
+            $temp_array = array();
+            $temp_array['name'] = $_FILES['upload']['name'];
+            $temp_array['tmp_name'] = $_FILES['upload']['tmp_name'].'commsy3';
             $temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
             $file_array[] = $temp_array;
-           $new_file_ids[] = $temp_array['file_id'];
-          } else {
-             include_once('classes/cs_errorbox_view.php');
-             $errorbox = new cs_errorbox_view($environment, true, 500);
-           $errorbox->setText($virus_scanner->getOutput());
-             $page->add($errorbox);
-           $focus_element_onload = '';
-           $error_on_upload = true;
+            $new_file_ids[] = $temp_array['file_id'];
+         } else {
+            include_once('classes/cs_errorbox_view.php');
+            $errorbox = new cs_errorbox_view($environment, true, 500);
+            $errorbox->setText($virus_scanner->getOutput());
+            $page->add($errorbox);
+            $focus_element_onload = '';
+            $error_on_upload = true;
          }
       } else {
          move_uploaded_file($_FILES['upload']['tmp_name'], $_FILES['upload']['tmp_name'].'commsy3');

@@ -641,13 +641,14 @@ function isURLValid () {
         $module != 'buzzwords' and
         $module != 'rubric' and
 
-      // soap (only for testing)
+        // soap (only for testing)
         $module != 'soap' and
 
         // log
-        $module != 'log'
+        $module != 'log' and
 
-
+        // upload file for external tools
+        $module != 'file'
       ) {
       return false;
     }
@@ -774,8 +775,10 @@ function isURLValid () {
          $funct != 'test' and
 
          // plugins
-         $funct != 'ads'
+         $funct != 'ads' and
 
+        // upload file for external tools
+        $module != 'upload'
        ) {
        return false;
     }
