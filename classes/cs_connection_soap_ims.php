@@ -130,26 +130,26 @@ class cs_connection_soap_ims {
       $manager = $this->_environment->getUserManager();
       $source = $user_info->getSourceSystem();
       $stine_user_id = $user_info->getStineId();
-      $commsy_user_id = $id_manager->getCommsyId($source,$stine_user_id);
+      $commsy_user_id = $id_manager->getCommsyID($source,$stine_user_id);
       $context_id = $id_manager->getCommsyId($source,$user_info->getPortalId());
       $this->_environment->setCurrentContextId($context_id);
       $auth_object = $this->_environment->getAuthenticationObject();
-      $auth_object->setCommSyIdLimit($context_id);
 
-      if ( empty($commsy_user_id ) ) {
-         $stine_portal_id = $user_info->getPortalId();
+      if ( !empty($auth_object) ) {
+         $auth_object->setCommSyIdLimit($context_id);
+         if ( empty($commsy_user_id ) ) {
+            $stine_portal_id = $user_info->getPortalId();
 
-         //check if provided id is a valid portal id
-         $portal_manager = $this->_environment->getPortalManager();
-         if ($portal_manager->getItem($stine_portal_id) != NULL) {
-            $commsy_portal_id = $stine_portal_id;
-         } else {
-            $commsy_portal_id = $id_manager->getCommsyId($source,$stine_portal_id);
-         }
-         $portal_item = $portal_manager->getItem($commsy_portal_id);
-         //No user, so wrong portal id, so fix it
-         $auth_object->setCommSyIDLimit($commsy_portal_id);
-         if ( !empty($auth_object) ) {
+            //check if provided id is a valid portal id
+            $portal_manager = $this->_environment->getPortalManager();
+            if ($portal_manager->getItem($stine_portal_id) != NULL) {
+               $commsy_portal_id = $stine_portal_id;
+            } else {
+               $commsy_portal_id = $id_manager->getCommsyId($source,$stine_portal_id);
+            }
+            $portal_item = $portal_manager->getItem($commsy_portal_id);
+            //No user, so wrong portal id, so fix it
+            $auth_object->setCommSyIDLimit($commsy_portal_id);
             $this->_environment->setCurrentContextId($commsy_portal_id);
             if ( !empty($commsy_portal_id) ) {
                include_once('classes/cs_auth_item.php');
@@ -294,11 +294,11 @@ class cs_connection_soap_ims {
                $return_array = array("error" => 1,"value" => $info_text);
             }
          } else {
-            $info_text = 'Can not identify auth_source_item! - '.__FILE__.' - '.__LINE__;
+            $info_text = 'Trying to add an allready created person: '.$stine_user_id.'!';
             $return_array = array("error" => 1,"value" => $info_text);
          }
       } else {
-         $info_text = 'Trying to add an allready created person: '.$stine_user_id.'!';
+         $info_text = 'Can not get auth_object - '.__FILE__.' - '.__LINE__;
          $return_array = array("error" => 1,"value" => $info_text);
       }
       return $return_array;
@@ -438,50 +438,55 @@ class cs_connection_soap_ims {
          $user_item = $user_manager->getItem($commsy_user_id);
          $this->_environment->setCurrentContextId($context_id);
          $auth_object = $this->_environment->getAuthenticationObject();
-         $auth_object->setCommSyIdLimit($context_id);
+         if ( !empty($auth_object) ) {
+            $auth_object->setCommSyIDLimit($context_id);
 
-         $portal_manager = $this->_environment->getPortalManager();
-         $portal_item = $portal_manager->getItem($portal_id);
+            $portal_manager = $this->_environment->getPortalManager();
+            $portal_item = $portal_manager->getItem($portal_id);
 
-         $ims_auth_id = $portal_item->getAuthIMS();
-         $manager->setContextLimit($context_id);
-         $user_item = $manager->getItem($commsy_user_id);
-         $user_id = $user_item->getUserID();
-         $auth_item = $auth_object->getNewItem();
+            $ims_auth_id = $portal_item->getAuthIMS();
+            $manager->setContextLimit($context_id);
+            $user_item = $manager->getItem($commsy_user_id);
+            $user_id = $user_item->getUserID();
+            $auth_item = $auth_object->getNewItem();
 
-         $auth_item->setAuthSourceID($ims_auth_id);
+            $auth_item->setAuthSourceID($ims_auth_id);
 
-         $auth_item->setPortalID($context_id);
-         $auth_item->setUserId($user_id);
+            $auth_item->setPortalID($context_id);
+            $auth_item->setUserId($user_id);
 
-         $given_name = $user_info->getGivenName();
-         if (!empty($given_name)) {
-            $auth_item->setFirstname($given_name);
-         }
-         $family_name = $user_info->getFamilyName();
-         if (!empty($family_name)) {
-            $auth_item->setLastname($family_name);
-         }
-         $email = $user_info->getEmail();
-         if (!empty($email)) {
-            $auth_item->setEmail($email);
-         }
-         $password = $user_info->getPassword();
-         if (!empty($password)) {
-            $encryption_method = $user_info->getPasswordEncryptionMethod();
-            if ( empty($encryption_method)
-                 or strtoupper($encryption_method) == 'PLAIN'
-               ) {
-               //Plain text PW, MD5 it
-               $auth_item->setPassword($user_info->getPassword());
-            } elseif ( strtoupper($encryption_method == 'MD5') ) {
-               //just set it
-               $auth_item->setPasswordMD5($user_info->getPassword());
-            } else {
-               //unknown encryption, produce error
-               $info_text = 'Could not change Password. Only accepted encryption method is MD5, plaintext is possible but not recommended! User not changed!';
-               $return_array = array("error" => 1,"value" => $info_text);
+            $given_name = $user_info->getGivenName();
+            if (!empty($given_name)) {
+               $auth_item->setFirstname($given_name);
             }
+            $family_name = $user_info->getFamilyName();
+            if (!empty($family_name)) {
+               $auth_item->setLastname($family_name);
+            }
+            $email = $user_info->getEmail();
+            if (!empty($email)) {
+               $auth_item->setEmail($email);
+            }
+            $password = $user_info->getPassword();
+            if (!empty($password)) {
+               $encryption_method = $user_info->getPasswordEncryptionMethod();
+               if ( empty($encryption_method)
+                    or strtoupper($encryption_method) == 'PLAIN'
+                  ) {
+                  //Plain text PW, MD5 it
+                  $auth_item->setPassword($user_info->getPassword());
+               } elseif ( strtoupper($encryption_method == 'MD5') ) {
+                  //just set it
+                  $auth_item->setPasswordMD5($user_info->getPassword());
+               } else {
+                  //unknown encryption, produce error
+                  $info_text = 'Could not change Password. Only accepted encryption method is MD5, plaintext is possible but not recommended! User not changed!';
+                  $return_array = array("error" => 1,"value" => $info_text);
+               }
+            }
+         } else {
+            $info_text = 'Can not get auth_object - '.__FILE__.' - '.__LINE__;
+            $return_array = array("error" => 1,"value" => $info_text);
          }
 
          if ($return_array['error'] == 0) {
@@ -594,17 +599,22 @@ class cs_connection_soap_ims {
       if (!empty($commsy_room_id)) {
          //edit
          $room_item = $manager->getItem($commsy_room_id);
-         if ($room_info->getDescriptionShort() != "") {
-            $room_item->setTitle($room_info->getDescriptionShort());
+         if ( !empty($room_item) ) {
+            if ($room_info->getDescriptionShort() != "") {
+               $room_item->setTitle($room_info->getDescriptionShort());
+            }
+            if ($room_info->getDescriptionFull() != "") {
+               $descriptionArray = $room_item->getDescriptionArray();
+               $descriptionArray['DE'] = $room_info->getDescriptionFull();
+               $room_item->setDescriptionArray($descriptionArray);
+            }
+            $room_item->save();
+            $return_array = array('error' => 0,'value' => 'Room "'.$stine_room_id.'" succesfully edit: CommSy-id: '.$commsy_room_id.' | title: '.$room_item->getTitle());
+            $this->_log('IMS','editRoom','Room "'.$stine_room_id.'" succesfully edit: CommSy-id: '.$commsy_room_id.' | title: '.$room_item->getTitle());
+         } else {
+            $info_text = 'Can not identify room item! - '.__FILE__.' - '.__LINE__;
+            $return_array = array("error" => 1,"value" => $info_text);
          }
-         if ($room_info->getDescriptionFull() != "") {
-            $descriptionArray = $room_item->getDescriptionArray();
-            $descriptionArray['DE'] = $room_info->getDescriptionFull();
-            $room_item->setDescriptionArray($descriptionArray);
-         }
-         $room_item->save();
-         $return_array = array('error' => 0,'value' => 'Room "'.$stine_room_id.'" succesfully edit: CommSy-id: '.$commsy_room_id.' | title: '.$room_item->getTitle());
-         $this->_log('IMS','editRoom','Room "'.$stine_room_id.'" succesfully edit: CommSy-id: '.$commsy_room_id.' | title: '.$room_item->getTitle());
       } else {
          $info_text = 'Trying to edit an unknown room: '.$stine_room_id.' !';
          $return_array = array("error" => 1,"value" => $info_text);
@@ -642,20 +652,25 @@ class cs_connection_soap_ims {
 
                //create new room
                $room_item = $manager->getNewItem();
-               $room_item->setTitle($room_info->getDescriptionShort());
-               if ($room_info->getDescriptionFull() != "") {
-                  $descriptionArray = $room_item->getDescriptionArray();
-                  $descriptionArray['DE'] = $room_info->getDescriptionFull();
-                  $room_item->setDescriptionArray($descriptionArray);
-               }
-               $room_item->setContextId($commsy_portal_id);
-               $room_item->open();
+               if ( !empty($room_item) ) {
+                  $room_item->setTitle($room_info->getDescriptionShort());
+                  if ($room_info->getDescriptionFull() != "") {
+                     $descriptionArray = $room_item->getDescriptionArray();
+                     $descriptionArray['DE'] = $room_info->getDescriptionFull();
+                     $room_item->setDescriptionArray($descriptionArray);
+                  }
+                  $room_item->setContextId($commsy_portal_id);
+                  $room_item->open();
 
-               $this->_environment->setCurrentUserItem($template_user);
-               $room_item->save();
-               $id_manager->addIDsToDB($source,$stine_room_id,$room_item->getItemId());
-               $return_array = array("error" => 0,"value" => 'Room "'.$stine_room_id.'" succesfully created. CommSy Id: '.$room_item->getItemId());
-               $this->_log('IMS','createRoom','Room "'.$stine_room_id.'" succesfully created. CommSy Id: '.$room_item->getItemId());
+                  $this->_environment->setCurrentUserItem($template_user);
+                  $room_item->save();
+                  $id_manager->addIDsToDB($source,$stine_room_id,$room_item->getItemId());
+                  $return_array = array("error" => 0,"value" => 'Room "'.$stine_room_id.'" succesfully created. CommSy Id: '.$room_item->getItemId());
+                  $this->_log('IMS','createRoom','Room "'.$stine_room_id.'" succesfully created. CommSy Id: '.$room_item->getItemId());
+               } else {
+                  $info_text = 'Can not identify room item! - '.__FILE__.' - '.__LINE__;
+                  $return_array = array("error" => 1,"value" => $info_text);
+               }
             } else {
                $info_text = 'More than one or no user(s) in private room for user '.$membership_info->getSourceItemId().' !';
                $return_array = array("error" => 1,"value" => $info_text);
@@ -722,136 +737,141 @@ class cs_connection_soap_ims {
             //check if user is allready in room
             if ($user_list->isEmpty()) {
                $user_item = $user_item->cloneData();
-               $user_item->setContextID($commsy_room_id);
-               $role = $membership_info->getRoleType();
-               if ($role == '05') {
-                  $user_item->makeModerator();
-               } elseif ($role == '04') {
-                  $user_item->makeUser();
-               }
-               $user_item->save();
-               $user_item->setCreatorID2ItemID();
-               $created_id = $user_item->getItemId();
-
-               //find  group 'all'
-               $group_manager = $this->_environment->getLabelManager();
-               $group_manager->setContextLimit($commsy_room_id);
-               $group_manager->setTypeLimit(CS_GROUP_TYPE);
-               $group_manager->setNameLimit('ALL');
-               $group_manager->select();
-               $group_list = $group_manager->get();
-               $group_all = $group_list->getFirst();
-
-               // link user 2 group all
-               $user_item->setGroupByID($group_all->getItemID());
-               $user_item->setChangeModificationOnSave(false);
-               $user_item->save();
-
-               $new_room_member = $user_item;
-
-               //Mail to created member
-               $translator = $this->_environment->getTranslationObject();
-               $room_manager = $this->_environment->getRoomManager();
-               $room_item = $room_manager->getItem($commsy_room_id);
-               $translator->initFromContext($room_item);
-
-               $contact_list_room = $room_item->getContactModeratorList();
-               $contact_room = $contact_list_room->getFirst();
-
-               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-               $mail->set_to($user_item->getEmail());
-               $mail->set_reply_to_name($contact_room->getFullname());
-               $mail->set_reply_to_email($contact_room->getEmail());
-               $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-               $link = str_replace ( 'soap.php', 'commsy.php?cid='.$room_item->getItemId(), $link);
-               $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle()));
-
-               $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$new_room_member->getUserID(),$room_item->getTitle());
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_room->getFullname(),$room_item->getTitle());
-               $body .= LF.LF;
-               $body .= $link;
-               $mail->set_message($body);
-               $mail->send();
-
-               // mail handling for room moderators
-               $user_list = $room_item->getModeratorList();
-               $user_item = $user_list->getFirst();
-
-               $language = $room_item->getLanguage();
-               $recipients = '';
-
-               while ($user_item) {
-                  $want_mail = $user_item->getAccountWantMail();
-                  if (!empty($want_mail) and $want_mail == 'yes') {
-                     if ($language == 'user' and $user_item->getLanguage() != 'browser') {
-                        $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
-                     } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
-                        $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
-                     } else {
-                        $email_addresses[$language][] = $user_item->getEmail();
-                     }
-                     $recipients .= $user_item->getFullname().LF;
+               if ( !empty($user_item) ) {
+                  $user_item->setContextID($commsy_room_id);
+                  $role = $membership_info->getRoleType();
+                  if ($role == '05') {
+                     $user_item->makeModerator();
+                  } elseif ($role == '04') {
+                     $user_item->makeUser();
                   }
-                  $user_item = $user_list->getNext();
-               }
+                  $user_item->save();
+                  $user_item->setCreatorID2ItemID();
+                  $created_id = $user_item->getItemId();
 
-               $save_language = $translator->getSelectedLanguage();
-               foreach ($email_addresses as $key => $value) {
-                  $translator->setSelectedLanguage($key);
-                  if (count($value) > 0) {
-                     include_once('classes/cs_mail.php');
-                     $mail = new cs_mail();
-                     $mail->set_to(implode(',',$value));
-                     $server_item = $this->_environment->getServerItem();
-                     $default_sender_address = $server_item->getDefaultSenderAddress();
-                     if (!empty($default_sender_address)) {
-                        $mail->set_from_email($default_sender_address);
-                     } else {
-                        $mail->set_from_email('@');
+                  //find  group 'all'
+                  $group_manager = $this->_environment->getLabelManager();
+                  $group_manager->setContextLimit($commsy_room_id);
+                  $group_manager->setTypeLimit(CS_GROUP_TYPE);
+                  $group_manager->setNameLimit('ALL');
+                  $group_manager->select();
+                  $group_list = $group_manager->get();
+                  $group_all = $group_list->getFirst();
+
+                  // link user 2 group all
+                  $user_item->setGroupByID($group_all->getItemID());
+                  $user_item->setChangeModificationOnSave(false);
+                  $user_item->save();
+
+                  $new_room_member = $user_item;
+
+                  //Mail to created member
+                  $translator = $this->_environment->getTranslationObject();
+                  $room_manager = $this->_environment->getRoomManager();
+                  $room_item = $room_manager->getItem($commsy_room_id);
+                  $translator->initFromContext($room_item);
+
+                  $contact_list_room = $room_item->getContactModeratorList();
+                  $contact_room = $contact_list_room->getFirst();
+
+                  $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+                  $mail->set_to($user_item->getEmail());
+                  $mail->set_reply_to_name($contact_room->getFullname());
+                  $mail->set_reply_to_email($contact_room->getEmail());
+                  $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+                  $link = str_replace ( 'soap.php', 'commsy.php?cid='.$room_item->getItemId(), $link);
+                  $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle()));
+
+                  $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$new_room_member->getUserID(),$room_item->getTitle());
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_room->getFullname(),$room_item->getTitle());
+                  $body .= LF.LF;
+                  $body .= $link;
+                  $mail->set_message($body);
+                  $mail->send();
+
+                  // mail handling for room moderators
+                  $user_list = $room_item->getModeratorList();
+                  $user_item = $user_list->getFirst();
+
+                  $language = $room_item->getLanguage();
+                  $recipients = '';
+
+                  while ($user_item) {
+                     $want_mail = $user_item->getAccountWantMail();
+                     if (!empty($want_mail) and $want_mail == 'yes') {
+                        if ($language == 'user' and $user_item->getLanguage() != 'browser') {
+                           $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
+                        } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
+                           $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
+                        } else {
+                           $email_addresses[$language][] = $user_item->getEmail();
+                        }
+                        $recipients .= $user_item->getFullname().LF;
                      }
-
-                     $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
-                     $mail->set_reply_to_name($new_room_member->getFullname());
-
-                     $mail->set_reply_to_email($new_room_member->getEmail());
-                     $mail->set_subject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$new_room_member->getFullname(),$room_item->getTitle()));
-                     $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-                     $body .= LF.LF;
-                     $temp_language = $new_room_member->getLanguage();
-                     $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$new_room_member->getFullname(),$new_room_member->getUserId(),$new_room_member->getEmail(),$room_item->getTitle());
-                     $body .= LF.LF;
-                     $check_message = 'NO';
-
-                     switch ( $check_message )
-                     {
-                         case 'YES':
-                           $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                           break;
-                         case 'NO':
-                           $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                           break;
-                         default:
-                           break;
-                     }
-
-                     $body .= LF.LF;
-                     $body .= $translator->getMessage('MAIL_COMMENT_BY','IMS',$translator->getMessage('MAIL_COMMENT_IMS',$source));
-                     $body .= LF.LF;
-                     $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
-                     $body .= LF;
-                     $body .= $link;
-                     $mail->set_message($body);
-                     $mail->send();
+                     $user_item = $user_list->getNext();
                   }
+
+                  $save_language = $translator->getSelectedLanguage();
+                  foreach ($email_addresses as $key => $value) {
+                     $translator->setSelectedLanguage($key);
+                     if (count($value) > 0) {
+                        include_once('classes/cs_mail.php');
+                        $mail = new cs_mail();
+                        $mail->set_to(implode(',',$value));
+                        $server_item = $this->_environment->getServerItem();
+                        $default_sender_address = $server_item->getDefaultSenderAddress();
+                        if (!empty($default_sender_address)) {
+                           $mail->set_from_email($default_sender_address);
+                        } else {
+                           $mail->set_from_email('@');
+                        }
+
+                        $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+                        $mail->set_reply_to_name($new_room_member->getFullname());
+
+                        $mail->set_reply_to_email($new_room_member->getEmail());
+                        $mail->set_subject($translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$new_room_member->getFullname(),$room_item->getTitle()));
+                        $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                        $body .= LF.LF;
+                        $temp_language = $new_room_member->getLanguage();
+                        $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$new_room_member->getFullname(),$new_room_member->getUserId(),$new_room_member->getEmail(),$room_item->getTitle());
+                        $body .= LF.LF;
+                        $check_message = 'NO';
+
+                        switch ( $check_message )
+                        {
+                            case 'YES':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
+                              break;
+                            case 'NO':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
+                              break;
+                            default:
+                              break;
+                        }
+
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('MAIL_COMMENT_BY','IMS',$translator->getMessage('MAIL_COMMENT_IMS',$source));
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
+                        $body .= LF;
+                        $body .= $link;
+                        $mail->set_message($body);
+                        $mail->send();
+                     }
+                  }
+                  $translator->setSelectedLanguage($save_language);
+                  $return_array  = array('error'=>0,'value'=>'User "'.$stine_user_id.'" is now enrolled in room "'.$stine_room_id.'". (CommSy-Id of user: '.$created_id.')');
+                  $this->_log('IMS','createMembership','User "'.$stine_user_id.'" is now enrolled from room "'.$stine_room_id.'". (CommSy-Id of user: '.$created_id.')');
+               } else {
+                  $info_text = 'Can not clone user item! - '.__FILE__.' - '.__LINE__;
+                  $return_array = array("error" => 1,"value" => $info_text);
                }
-               $translator->setSelectedLanguage($save_language);
-               $return_array  = array('error'=>0,'value'=>'User "'.$stine_user_id.'" is now enrolled in room "'.$stine_room_id.'". (CommSy-Id of user: '.$created_id.')');
-               $this->_log('IMS','createMembership','User "'.$stine_user_id.'" is now enrolled from room "'.$stine_room_id.'". (CommSy-Id of user: '.$created_id.')');
             } else {
                $info_text = 'User "'.$stine_user_id.'" allready in room "'.$stine_room_id.'!"';
                $return_array = array("error" => 1,"value" => $info_text);
@@ -860,7 +880,7 @@ class cs_connection_soap_ims {
             $info_text = 'Trying to enroll an person to an unknown group:  '.$stine_room_id.' !';
             $return_array = array("error" => 1,"value" => $info_text);
          }
-      } elseif (!empty($commsy_room_id)) {
+      } elseif ( !empty($commsy_room_id) ) {
          //we know the room, but not the person... look if persons id is known on portal of the room and enroll person this way
          $room_manager = $this->_environment->getRoomManager();
          $room_item = $room_manager->getItem($commsy_room_id);
