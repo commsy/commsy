@@ -148,143 +148,148 @@ class cs_connection_soap_ims {
          }
          $portal_item = $portal_manager->getItem($commsy_portal_id);
          //No user, so wrong portal id, so fix it
-         $auth_object->setCommSyIdLimit($commsy_portal_id);
-         $this->_environment->setCurrentContextId($commsy_portal_id);
-         if (!empty($commsy_portal_id)) {
-            include_once('classes/cs_auth_item.php');
-            $auth_item = new cs_auth_item();
-            $auth_item->setUserID($user_info->getUserID());
-            $auth_item->setFirstname($user_info->getGivenName());
-            $auth_item->setLastname($user_info->getFamilyName());
-            $auth_item->setEmail($user_info->getEmail());
-            $auth_item->setPortalId($commsy_portal_id);
-            $auth_item->setAuthSourceId($portal_item->getAuthIMS());
-            $password = $user_info->getPassword();
-            if (!empty($password)) {
-               $encryption_method = $user_info->getPasswordEncryptionMethod();
-               if (empty($encryption_method)) {
-                  //Plain text PW, MD5 it
-                  $auth_item->setPassword($user_info->getPassword());
-               } elseif ($encryption_method == 'MD5') {
-                  //just set it
-                  $auth_item->setPasswordMD5($user_info->getPassword());
-               } else {
-                  //unknown encryption, produce error
-                  $info_text = 'Could not set Password. Only accepted encryption method is MD5, plaintext is possible but not recommended! User not created!';
-                  $return_array = array("error" => 1,"value" => $info_text);
-               }
-            }
-            if ($return_array['error'] == 0) {
-               //crate user if no error occured
-               $auth_object->save($auth_item);
-               $user_item = $auth_object->getUserItem();
-               $user_item->makeUser();
-               $user_item->save();
-               $return_array = array("error" => 0,"value" => 'User succesfully created! CommSy Id: '.$user_item->getItemId().', external-id: '.$stine_user_id);
-               $this->_log('IMS','createUser','User succesfully created! CommSy Id: '.$user_item->getItemId().', external-id: '.$stine_user_id);
-               $id_manager->addIDsToDB($source,$stine_user_id,$user_item->getItemId());
-
-               //Mail handling for user
-               $portal_user = $user_item;
-
-               $translator = $this->_environment->getTranslationObject();
-               $translator->initFromContext($portal_item);
-               $contact_list = $portal_item->getContactModeratorList();
-               $contact = $contact_list->getFirst();
-               $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-               $mail->set_to($user_item->getEmail());
-               $mail->set_reply_to_name($contact->getFullname());
-               $mail->set_reply_to_email($contact->getEmail());
-               $mail->set_subject(getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
-               $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-               $link = str_replace ( 'soap.php', 'commsy.php?cid='.$portal_item->getItemId(), $link);
-
-               $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$portal_user->getFullname());
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$portal_user->getUserID(),$portal_item->getTitle());
-               $body .= LF.LF;
-               $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact->getFullname(),$portal_item->getTitle());
-               $body .= LF.LF;
-               $body .= $link;
-               $mail->set_message($body);
-               $mail->send();
-
-               // mail handling for portal moderators
-               $user_list = $portal_item->getModeratorList();
-               $email_addresses = array();
-               $user_item = $user_list->getFirst();
-               $recipients = '';
-               $language = $portal_item->getLanguage();
-               while ($user_item) {
-                  $want_mail = $user_item->getAccountWantMail();
-                  if (!empty($want_mail) and $want_mail == 'yes') {
-                     if ($language == 'user' and $user_item->getLanguage() != 'browser') {
-                        $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
-                     } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
-                        $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
-                     } else {
-                        $email_addresses[$language][] = $user_item->getEmail();
-                     }
-                     $recipients .= $user_item->getFullname().LF;
-                  }
-                  $user_item = $user_list->getNext();
-               }
-               $save_language = $translator->getSelectedLanguage();
-               foreach ($email_addresses as $key => $value) {
-                  $translator->setSelectedLanguage($key);
-                  if (count($value) > 0) {
-                      include_once('classes/cs_mail.php');
-                     $mail = new cs_mail();
-                     $mail->set_to(implode(',',$value));
-                     $server_item = $this->_environment->getServerItem();
-                     $default_sender_address = $server_item->getDefaultSenderAddress();
-                     if (!empty($default_sender_address)) {
-                        $mail->set_from_email($default_sender_address);
-                     } else {
-                        $mail->set_from_email('@');
-                     }
-                     $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-                     $mail->set_reply_to_name($portal_user->getFullname());
-                     $mail->set_reply_to_email($portal_user->getEmail());
-                     $mail->set_subject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()));
-                     $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-                     $body .= LF.LF;
-                     $temp_language = $portal_user->getLanguage();
-                     if ($temp_language == 'browser') {
-                        $temp_language = $this->_environment->getSelectedLanguage();
-                     }
-                     $body .= $translator->getMessage('USER_GET_MAIL_BODY',$portal_user->getFullname(),$portal_user->getUserID(),$portal_user->getEmail(),$translator->getMessage('COMMON_UNKNOWN'));
-                     unset($temp_language);
-                     $body .= LF.LF;
-                     $check_message = 'NO';
-                     switch ( $check_message )
-                     {
-                         case 'YES':
-                           $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                           break;
-                         case 'NO':
-                           $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                           break;
-                         default:
-                           break;
-                     }
-
-                     $body .= LF.LF;
-                     $body .= $translator->getMessage('MAIL_COMMENT_BY','IMS',$translator->getMessage('MAIL_COMMENT_IMS',$source));
-                     $body .= LF.LF;
-                     $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
-                     $body .= LF;
-                     $body .= $link;
-                     $mail->set_message($body);
-                     $mail->send();
+         $auth_object->setCommSyIDLimit($commsy_portal_id);
+         if ( !empty($auth_object) ) {
+            $this->_environment->setCurrentContextId($commsy_portal_id);
+            if ( !empty($commsy_portal_id) ) {
+               include_once('classes/cs_auth_item.php');
+               $auth_item = new cs_auth_item();
+               $auth_item->setUserID($user_info->getUserID());
+               $auth_item->setFirstname($user_info->getGivenName());
+               $auth_item->setLastname($user_info->getFamilyName());
+               $auth_item->setEmail($user_info->getEmail());
+               $auth_item->setPortalID($commsy_portal_id);
+               $auth_item->setAuthSourceID($portal_item->getAuthIMS());
+               $password = $user_info->getPassword();
+               if (!empty($password)) {
+                  $encryption_method = $user_info->getPasswordEncryptionMethod();
+                  if (empty($encryption_method)) {
+                     //Plain text PW, MD5 it
+                     $auth_item->setPassword($user_info->getPassword());
+                  } elseif ($encryption_method == 'MD5') {
+                     //just set it
+                     $auth_item->setPasswordMD5($user_info->getPassword());
+                  } else {
+                     //unknown encryption, produce error
+                     $info_text = 'Could not set Password. Only accepted encryption method is MD5, plaintext is possible but not recommended! User not created!';
+                     $return_array = array("error" => 1,"value" => $info_text);
                   }
                }
-               $translator->setSelectedLanguage($save_language);
+               if ($return_array['error'] == 0) {
+                  //crate user if no error occured
+                  $auth_object->save($auth_item);
+                  $user_item = $auth_object->getUserItem();
+                  $user_item->makeUser();
+                  $user_item->save();
+                  $return_array = array("error" => 0,"value" => 'User succesfully created! CommSy Id: '.$user_item->getItemId().', external-id: '.$stine_user_id);
+                  $this->_log('IMS','createUser','User succesfully created! CommSy Id: '.$user_item->getItemId().', external-id: '.$stine_user_id);
+                  $id_manager->addIDsToDB($source,$stine_user_id,$user_item->getItemId());
+
+                  //Mail handling for user
+                  $portal_user = $user_item;
+
+                  $translator = $this->_environment->getTranslationObject();
+                  $translator->initFromContext($portal_item);
+                  $contact_list = $portal_item->getContactModeratorList();
+                  $contact = $contact_list->getFirst();
+                  $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
+                  $mail->set_to($user_item->getEmail());
+                  $mail->set_reply_to_name($contact->getFullname());
+                  $mail->set_reply_to_email($contact->getEmail());
+                  $mail->set_subject(getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
+                  $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
+                  $link = str_replace ( 'soap.php', 'commsy.php?cid='.$portal_item->getItemId(), $link);
+
+                  $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$portal_user->getFullname());
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$portal_user->getUserID(),$portal_item->getTitle());
+                  $body .= LF.LF;
+                  $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact->getFullname(),$portal_item->getTitle());
+                  $body .= LF.LF;
+                  $body .= $link;
+                  $mail->set_message($body);
+                  $mail->send();
+
+                  // mail handling for portal moderators
+                  $user_list = $portal_item->getModeratorList();
+                  $email_addresses = array();
+                  $user_item = $user_list->getFirst();
+                  $recipients = '';
+                  $language = $portal_item->getLanguage();
+                  while ($user_item) {
+                     $want_mail = $user_item->getAccountWantMail();
+                     if (!empty($want_mail) and $want_mail == 'yes') {
+                        if ($language == 'user' and $user_item->getLanguage() != 'browser') {
+                           $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
+                        } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
+                           $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
+                        } else {
+                           $email_addresses[$language][] = $user_item->getEmail();
+                        }
+                        $recipients .= $user_item->getFullname().LF;
+                     }
+                     $user_item = $user_list->getNext();
+                  }
+                  $save_language = $translator->getSelectedLanguage();
+                  foreach ($email_addresses as $key => $value) {
+                     $translator->setSelectedLanguage($key);
+                     if (count($value) > 0) {
+                        include_once('classes/cs_mail.php');
+                        $mail = new cs_mail();
+                        $mail->set_to(implode(',',$value));
+                        $server_item = $this->_environment->getServerItem();
+                        $default_sender_address = $server_item->getDefaultSenderAddress();
+                        if (!empty($default_sender_address)) {
+                           $mail->set_from_email($default_sender_address);
+                        } else {
+                           $mail->set_from_email('@');
+                        }
+                        $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
+                        $mail->set_reply_to_name($portal_user->getFullname());
+                        $mail->set_reply_to_email($portal_user->getEmail());
+                        $mail->set_subject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()));
+                        $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                        $body .= LF.LF;
+                        $temp_language = $portal_user->getLanguage();
+                        if ($temp_language == 'browser') {
+                           $temp_language = $this->_environment->getSelectedLanguage();
+                        }
+                        $body .= $translator->getMessage('USER_GET_MAIL_BODY',$portal_user->getFullname(),$portal_user->getUserID(),$portal_user->getEmail(),$translator->getMessage('COMMON_UNKNOWN'));
+                        unset($temp_language);
+                        $body .= LF.LF;
+                        $check_message = 'NO';
+                        switch ( $check_message )
+                        {
+                            case 'YES':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
+                              break;
+                            case 'NO':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
+                              break;
+                            default:
+                              break;
+                        }
+
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('MAIL_COMMENT_BY','IMS',$translator->getMessage('MAIL_COMMENT_IMS',$source));
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
+                        $body .= LF;
+                        $body .= $link;
+                        $mail->set_message($body);
+                        $mail->send();
+                     }
+                  }
+                  $translator->setSelectedLanguage($save_language);
+               }
+            } else {
+               $info_text = 'Trying to add a person to an unknown portal: '.$stine_portal_id.' !';
+               $return_array = array("error" => 1,"value" => $info_text);
             }
          } else {
-            $info_text = 'Trying to add a person to an unknown portal: '.$stine_portal_id.' !';
+            $info_text = 'Can not identify auth_source_item! - '.__FILE__.' - '.__LINE__;
             $return_array = array("error" => 1,"value" => $info_text);
          }
       } else {
@@ -1195,235 +1200,239 @@ class cs_connection_soap_ims {
             $current_user_list = $user_manager->get();
             $current_user = $current_user_list->getFirst();
          }
-         $this->_environment->setCurrentUserItem($current_user);
-         if ( $current_user->isRoot()
-              or ( $current_server_id == $this->_environment->getServerID()
-                   and $current_user->getUserId() == 'IMS_USER'
-                 )
-            ) {
-            $ims_xml = $this->_encode_input($ims_xml);
+         if ( !empty($current_user) ) {
+            $this->_environment->setCurrentUserItem($current_user);
+            if ( $current_user->isRoot()
+                 or ( $current_server_id == $this->_environment->getServerID()
+                      and $current_user->getUserID() == 'IMS_USER'
+                    )
+               ) {
+               $ims_xml = $this->_encode_input($ims_xml);
 
-            //check session
-            if (true) {
-               $id_manager = $this->_environment->getExternalIdManager();
+               //check session
+               if (true) {
+                  $id_manager = $this->_environment->getExternalIdManager();
 
-                //Prepare an notification email
-               include_once('classes/cs_mail.php');
-               $mail = new cs_mail();
-               $server_item = $this->_environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               if ( !empty($default_sender_address) ) {
-                  $mail->set_from_email($default_sender_address);
-               } else {
-                  $mail->set_from_email('@');
-               }
-               $mail->set_from_name($server_item->getTitle());
-
-               //Split Message in functional parts
-               //Properties
-               $properties = '';
-               $properties_array = array();
-               preg_match('#<properties.+?</properties>#is',$ims_xml,$properties);
-               if ( isset($properties[0]) ) {
-                  $properties = $properties[0];
-                  preg_match('#<targets>.+?</targets>#is',$ims_xml,$targets);
-                  if ( isset($targets[0]) ) {
-                     $targets = $targets[0];
-                     $server_item = $this->_environment->getServerItem();
-                     $portal_list = $server_item->getPortalList();
-                     if ( $portal_list->isNotEmpty() ) {
-                        $portal_item = $portal_list->getFirst();
-                        $name_array = array();
-                        while ($portal_item) {
-                           if ( $targets = '*'
-                                or strstr($portal_item->getTitle(),$targets)
-                              ) {
-                              $name_array[] = $portal_item->getItemID();
-                           }
-                           $portal_item = $portal_list->getNext();
-                        }
-                        if ( !empty($name_array) ) {
-                           foreach ($name_array as $portal_target) {
-                              $properties_array[] = preg_replace('#<targets>.+?</targets>#is','<targets>'.$portal_target.'</targets>',$properties);
-                           }
-                        }
-                     }
-                     unset($portal_list);
-                     unset($server_item);
+                  //Prepare an notification email
+                  include_once('classes/cs_mail.php');
+                  $mail = new cs_mail();
+                  $server_item = $this->_environment->getServerItem();
+                  $default_sender_address = $server_item->getDefaultSenderAddress();
+                  if ( !empty($default_sender_address) ) {
+                     $mail->set_from_email($default_sender_address);
                   } else {
-                     $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: no targets in properties defined');
+                     $mail->set_from_email('@');
                   }
-               } else {
-                  include_once('functions/error_functions.php');
-                  trigger_error('no properties in XML package found',E_USER_WARNING);
-               }
+                  $mail->set_from_name($server_item->getTitle());
 
-               if ( !empty($properties_array) ) {
-                  //PERSON
-                  $check_result = $this->_checkAndBackupPathfile('person');
-                  $path_array_person =  $check_result['path_array'];
-                  $return_array = array_merge($check_result['error_array'],$return_array);
-
-                  preg_match_all('#<person.+?</person>#is',$ims_xml,$person_results);
-                  $person_results = $person_results[0];
-                  $person_values = array();
-                  foreach ($person_results as $person) {
-                     foreach ( $properties_array as $properties_item ) {
-                        $person_xml = simplexml_load_string(utf8_encode('<dummytag>'.$properties_item.' '.$person.'</dummytag>'));
-                        $temp_array = array();
-                        foreach ($path_array_person as $variable => $path) {
-                           $value = $this->_getValueFromXMLPath($path,$person_xml);
-                           $temp_array[$variable] = $value;
-                        }
-                        if ( !empty($temp_array['OP']) ) {
-                           $person_values['op'.$temp_array['OP']][$temp_array['USERID']] = $temp_array;
-                        } else {
-                           $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for person ('.$temp_array['USERID'].') is not set');
-                        }
-                     }
-                  }
-
-                  //GROUP
-                  $check_result = $this->_checkAndBackupPathfile('group');
-                  $path_array_group =  $check_result['path_array'];
-                  $return_array = array_merge($check_result['error_array'],$return_array);
-
-                  preg_match_all('#<group.+?</group>#is',$ims_xml,$group_results);
-                  $group_results = $group_results[0];
-                  $group_values = array();
-                  foreach ($group_results as $group) {
-                     foreach ( $properties_array as $properties_item ) {
-                        $group_xml = simplexml_load_string('<dummytag>'.$properties_item.' '.$group.'</dummytag>');
-                        $temp_array = array();
-                        foreach ($path_array_group as $variable => $path) {
-                           $value = $this->_getValueFromXMLPath($path,$group_xml);
-                           $temp_array[$variable] = $value;
-                        }
-                        if ( !empty($temp_array['OP']) ) {
-                           $group_values['op'.$temp_array['OP']][$temp_array['GROUPID']] = $temp_array;
-                        } else {
-                           if ( !empty($temp_array) ) {
-                              $temp_array_for_message = serialize();
-                           } else {
-                              $temp_array_for_message = 'NO DATA FOUND';
+                  //Split Message in functional parts
+                  //Properties
+                  $properties = '';
+                  $properties_array = array();
+                  preg_match('#<properties.+?</properties>#is',$ims_xml,$properties);
+                  if ( isset($properties[0]) ) {
+                     $properties = $properties[0];
+                     preg_match('#<targets>.+?</targets>#is',$ims_xml,$targets);
+                     if ( isset($targets[0]) ) {
+                        $targets = $targets[0];
+                        $server_item = $this->_environment->getServerItem();
+                        $portal_list = $server_item->getPortalList();
+                        if ( $portal_list->isNotEmpty() ) {
+                           $portal_item = $portal_list->getFirst();
+                           $name_array = array();
+                           while ($portal_item) {
+                              if ( $targets = '*'
+                                   or strstr($portal_item->getTitle(),$targets)
+                                 ) {
+                                 $name_array[] = $portal_item->getItemID();
+                              }
+                              $portal_item = $portal_list->getNext();
                            }
-                           $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for group ('.$temp_array['GROUPID'].') is not set. Data array for group: '.$temp_array_for_message);
-                        }
-                     }
-                  }
-
-                  //MEMBERSHIP
-                  $check_result = $this->_checkAndBackupPathfile('membership');
-                  $path_array_membership =  $check_result['path_array'];
-                  $return_array = array_merge($check_result['error_array'],$return_array);
-
-                  preg_match_all('#<membership.+?</membership>#is',$ims_xml,$membership_results);
-                  $membership_results = $membership_results[0];
-                  $membership_values = array();
-                  foreach ($membership_results as $membership) {
-                     foreach ( $properties_array as $properties_item ) {
-                        $membership_xml = simplexml_load_string('<dummytag>'.$properties_item.' '.$membership.'</dummytag>');
-                        $temp_array = array();
-                        foreach ($path_array_membership as $variable => $path) {
-                           $value = $this->_getValueFromXMLPath($path,$membership_xml);
-                           $temp_array[$variable] = $value;
-                        }
-                        if ( !empty($temp_array['OP']) ) {
-                           if (!array_key_exists($temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID'],$temp_array)) {
-                              $membership_values['op'.$temp_array['OP']][$temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID']] = $temp_array;
-                           } else {
-                              $membership_values['op'.$temp_array['OP']][] = $temp_array;
+                           if ( !empty($name_array) ) {
+                              foreach ($name_array as $portal_target) {
+                                 $properties_array[] = preg_replace('#<targets>.+?</targets>#is','<targets>'.$portal_target.'</targets>',$properties);
+                              }
                            }
-                        } else {
-                           $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for membership ('.$temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID'].') is not set');
                         }
+                        unset($portal_list);
+                        unset($server_item);
+                     } else {
+                        $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: no targets in properties defined');
                      }
+                  } else {
+                     include_once('functions/error_functions.php');
+                     trigger_error('no properties in XML package found',E_USER_WARNING);
                   }
 
-                  // Order of actions is important!
-                  // 1-Create person(s)
-                  // 2-Create group(s)
-                  // 3-Create membership(s)
-                  // 4-Edit person(s)
-                  // 5-Edit group(s)
-                  // 6-Delete membership(s)
-                  // 7-Delete group(s)
-                  // 8-Delete person(s)
+                  if ( !empty($properties_array) ) {
+                     //PERSON
+                     $check_result = $this->_checkAndBackupPathfile('person');
+                     $path_array_person =  $check_result['path_array'];
+                     $return_array = array_merge($check_result['error_array'],$return_array);
 
-                  //Create Persons
-                  if ( !empty($person_values['op1']) ) {
-                     foreach ($person_values['op1'] as $person) {
-                        //every room needs an creator... if $person is marked as such, it is a copy of an existing
-                        // person, not a new one. It will be created while creating the room, so skip it here
-                        if ( !(isset($person['room_creator'])) ) {
+                     preg_match_all('#<person.+?</person>#is',$ims_xml,$person_results);
+                     $person_results = $person_results[0];
+                     $person_values = array();
+                     foreach ($person_results as $person) {
+                        foreach ( $properties_array as $properties_item ) {
+                           $person_xml = simplexml_load_string(utf8_encode('<dummytag>'.$properties_item.' '.$person.'</dummytag>'));
+                           $temp_array = array();
+                           foreach ($path_array_person as $variable => $path) {
+                              $value = $this->_getValueFromXMLPath($path,$person_xml);
+                              $temp_array[$variable] = $value;
+                           }
+                           if ( !empty($temp_array['OP']) ) {
+                              $person_values['op'.$temp_array['OP']][$temp_array['USERID']] = $temp_array;
+                           } else {
+                              $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for person ('.$temp_array['USERID'].') is not set');
+                           }
+                        }
+                     }
+
+                     //GROUP
+                     $check_result = $this->_checkAndBackupPathfile('group');
+                     $path_array_group =  $check_result['path_array'];
+                     $return_array = array_merge($check_result['error_array'],$return_array);
+
+                     preg_match_all('#<group.+?</group>#is',$ims_xml,$group_results);
+                     $group_results = $group_results[0];
+                     $group_values = array();
+                     foreach ($group_results as $group) {
+                        foreach ( $properties_array as $properties_item ) {
+                           $group_xml = simplexml_load_string('<dummytag>'.$properties_item.' '.$group.'</dummytag>');
+                           $temp_array = array();
+                           foreach ($path_array_group as $variable => $path) {
+                              $value = $this->_getValueFromXMLPath($path,$group_xml);
+                              $temp_array[$variable] = $value;
+                           }
+                           if ( !empty($temp_array['OP']) ) {
+                              $group_values['op'.$temp_array['OP']][$temp_array['GROUPID']] = $temp_array;
+                           } else {
+                              if ( !empty($temp_array) ) {
+                                 $temp_array_for_message = serialize();
+                              } else {
+                                 $temp_array_for_message = 'NO DATA FOUND';
+                              }
+                              $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for group ('.$temp_array['GROUPID'].') is not set. Data array for group: '.$temp_array_for_message);
+                           }
+                        }
+                     }
+
+                     //MEMBERSHIP
+                     $check_result = $this->_checkAndBackupPathfile('membership');
+                     $path_array_membership =  $check_result['path_array'];
+                     $return_array = array_merge($check_result['error_array'],$return_array);
+
+                     preg_match_all('#<membership.+?</membership>#is',$ims_xml,$membership_results);
+                     $membership_results = $membership_results[0];
+                     $membership_values = array();
+                     foreach ($membership_results as $membership) {
+                        foreach ( $properties_array as $properties_item ) {
+                           $membership_xml = simplexml_load_string('<dummytag>'.$properties_item.' '.$membership.'</dummytag>');
+                           $temp_array = array();
+                           foreach ($path_array_membership as $variable => $path) {
+                              $value = $this->_getValueFromXMLPath($path,$membership_xml);
+                              $temp_array[$variable] = $value;
+                           }
+                           if ( !empty($temp_array['OP']) ) {
+                              if (!array_key_exists($temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID'],$temp_array)) {
+                                 $membership_values['op'.$temp_array['OP']][$temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID']] = $temp_array;
+                              } else {
+                                 $membership_values['op'.$temp_array['OP']][] = $temp_array;
+                              }
+                           } else {
+                              $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: recstatus for membership ('.$temp_array['USERID'].'_'.$temp_array['ROLETYPE'].'_'.$temp_array['GROUPID'].') is not set');
+                           }
+                        }
+                     }
+
+                     // Order of actions is important!
+                     // 1-Create person(s)
+                     // 2-Create group(s)
+                     // 3-Create membership(s)
+                     // 4-Edit person(s)
+                     // 5-Edit group(s)
+                     // 6-Delete membership(s)
+                     // 7-Delete group(s)
+                     // 8-Delete person(s)
+
+                     //Create Persons
+                     if ( !empty($person_values['op1']) ) {
+                        foreach ($person_values['op1'] as $person) {
+                           //every room needs an creator... if $person is marked as such, it is a copy of an existing
+                           // person, not a new one. It will be created while creating the room, so skip it here
+                           if ( !(isset($person['room_creator'])) ) {
+                              $return_array[] = $this->_handleUserPackage($person,$mail,$id_manager);
+                           }
+                        }
+                     }
+
+                     //Create groups
+                     if ( !empty($group_values['op1']) ) {
+                        foreach ($group_values['op1'] as $room) {
+                           $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
+                        }
+                     }
+
+                     //Edit Persons
+                     if ( !empty($person_values['op2']) ) {
+                        foreach ($person_values['op2'] as $person){
                            $return_array[] = $this->_handleUserPackage($person,$mail,$id_manager);
                         }
                      }
-                  }
 
-                  //Create groups
-                  if ( !empty($group_values['op1']) ) {
-                     foreach ($group_values['op1'] as $room) {
-                        $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
-                     }
-                  }
-
-                  //Edit Persons
-                  if ( !empty($person_values['op2']) ) {
-                     foreach ($person_values['op2'] as $person){
-                        $return_array[] = $this->_handleUserPackage($person,$mail,$id_manager);
-                     }
-                  }
-
-                  //Edit groups
-                  if ( !empty($group_values['op2']) ) {
-                     foreach ($group_values['op2'] as $room){
-                        $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
-                     }
-                  }
-
-                  //Create memberships
-                  if ( !empty($membership_values['op1']) ) {
-                     foreach ($membership_values['op1'] as $membership) {
-                        //every room needs an initial member (= creator)... if $membership
-                        //as such, this membership has allready been processed while creating a room
-                        if ( !(isset($membership['room_creator'])) ) {
-                           $return_array[] = $this->_handleMembershipPackage($membership,$mail,$id_manager);
-                        } else {
-                           $return_array[] = array('error'=>0,'value'=>'User "'.$membership['USERID'].'" is now enrolled in room "'.$membership['GROUPID'].'"');
+                     //Edit groups
+                     if ( !empty($group_values['op2']) ) {
+                        foreach ($group_values['op2'] as $room){
+                           $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
                         }
                      }
-                  }
 
-                  //Delete memberships
-                  if ( !empty($membership_values['op3']) ) {
-                     foreach ($membership_values['op3'] as $membership) {
-                        $return_array[] = $this->_handleMembershipPackage($membership,$mail,$id_manager);
+                     //Create memberships
+                     if ( !empty($membership_values['op1']) ) {
+                        foreach ($membership_values['op1'] as $membership) {
+                           //every room needs an initial member (= creator)... if $membership
+                           //as such, this membership has allready been processed while creating a room
+                           if ( !(isset($membership['room_creator'])) ) {
+                              $return_array[] = $this->_handleMembershipPackage($membership,$mail,$id_manager);
+                           } else {
+                             $return_array[] = array('error'=>0,'value'=>'User "'.$membership['USERID'].'" is now enrolled in room "'.$membership['GROUPID'].'"');
+                           }
+                        }
                      }
-                  }
 
-                  //Delete groups
-                  if ( !empty($group_values['op3']) ) {
-                     foreach ($group_values['op3'] as $room) {
-                        $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
+                     //Delete memberships
+                     if ( !empty($membership_values['op3']) ) {
+                        foreach ($membership_values['op3'] as $membership) {
+                           $return_array[] = $this->_handleMembershipPackage($membership,$mail,$id_manager);
+                        }
                      }
-                  }
 
-                  //Delete Persons
-                  if ( !empty($person_values['op3']) ) {
-                     foreach ($person_values['op3'] as $person){
-                        $return_array[] = $this->_handleUserPackage($person,$mail,$id_manager);
+                     //Delete groups
+                     if ( !empty($group_values['op3']) ) {
+                        foreach ($group_values['op3'] as $room) {
+                           $return_array[] = $this->_handleRoomPackage($room,$mail,$id_manager,$person_values,$membership_values);
+                        }
                      }
+
+                     //Delete Persons
+                     if ( !empty($person_values['op3']) ) {
+                        foreach ($person_values['op3'] as $person){
+                           $return_array[] = $this->_handleUserPackage($person,$mail,$id_manager);
+                        }
+                     }
+                     $this->_log('IMS','IMS','SID='.$session_id.',IMS_XML=NOT_LOGGED');
+                  } else {
+                     $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: targets defined in IMS paket are not available in CommSy');
                   }
-                  $this->_log('IMS','IMS','SID='.$session_id.',IMS_XML=NOT_LOGGED');
                } else {
-                  $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: targets defined in IMS paket are not available in CommSy');
+                  $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: Session id ('.$session_id.') is not valid');
                }
             } else {
-               $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: Session id ('.$session_id.') is not valid');
+               $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: Logged in user is not allowed to send IMS messages to CommSy!');
             }
          } else {
-            $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: Logged in user is not allowed to send IMS messages to CommSy!');
+            $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: can not identify current user');
          }
       } else {
          $return_array[] = array('error' => '1', 'value' => 'IMS ERROR: Session id ('.$session_id.') is not valid');
