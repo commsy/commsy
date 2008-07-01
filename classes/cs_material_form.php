@@ -325,38 +325,38 @@ class cs_material_form extends cs_rubric_form {
          switch ( $this->_bib_kind ) {
             case 'book':
                $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
+               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,true);
                $this->_form->addTextField('publisher','',getMessage('MATERIAL_PUBLISHER'),getMessage('MATERIAL_PUBLISHER_DESC'),50,35,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),50,35,true);
                $this->_form->addTextField('edition','',getMessage('MATERIAL_EDITION'),getMessage('MATERIAL_EDITION_DESC'),3,3);
                $this->_form->addTextField('series','',getMessage('MATERIAL_SERIES'),getMessage('MATERIAL_SERIES_DESC'),20,35);
-               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),3,3);
+               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),4,4);
                $this->_form->addTextField('isbn','',getMessage('MATERIAL_ISBN'),getMessage('MATERIAL_ISBN_DESC'),20,20);
             $this->_form->addTextField('url','',getMessage('MATERIAL_URL'),'',100,35);
             $this->_form->addTextField('url_date','',getMessage('MATERIAL_URL_DATE'),'',10,20);
                break;
             case 'collection':
                $this->_form->addTextField('author','',getMessage('MATERIAL_EDITOR'),getMessage('MATERIAL_EDITOR_DESC'),200,35,true);
-               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
+               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,true);
                $this->_form->addTextField('publisher','',getMessage('MATERIAL_PUBLISHER'),getMessage('MATERIAL_PUBLISHER_DESC'),50,35,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),50,35,true);
                $this->_form->addTextField('edition','',getMessage('MATERIAL_EDITION'),getMessage('MATERIAL_EDITION_DESC'),3,3);
                $this->_form->addTextField('series','',getMessage('MATERIAL_SERIES'),getMessage('MATERIAL_SERIES_DESC'),20,35);
-               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),3,3);
+               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),4,4);
                $this->_form->addTextField('isbn','',getMessage('MATERIAL_ISBN'),getMessage('MATERIAL_ISBN_DESC'),20,20);
             $this->_form->addTextField('url','',getMessage('MATERIAL_URL'),'',100,35);
             $this->_form->addTextField('url_date','',getMessage('MATERIAL_URL_DATE'),'',10,20);
                break;
             case 'incollection':
                $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
+               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,true);
                $this->_form->addTextField('editor','',getMessage('MATERIAL_EDITOR'),getMessage('MATERIAL_EDITOR_DESC'),200,35,true);
                $this->_form->addTextField('booktitle','',getMessage('MATERIAL_BOOKTITLE'),getMessage('MATERIAL_BOOKTITLE_DESC'),200,35,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),200,35,true);
                $this->_form->addTextField('publisher','',getMessage('MATERIAL_PUBLISHER'),getMessage('MATERIAL_PUBLISHER_DESC'),200,35,true);
                $this->_form->addTextField('edition','',getMessage('MATERIAL_EDITION'),getMessage('MATERIAL_EDITION_DESC'),3,3);
                $this->_form->addTextField('series','',getMessage('MATERIAL_SERIES'),getMessage('MATERIAL_SERIES_DESC'),200,35);
-               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),3,3);
+               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),4,4);
                $this->_form->addTextField('isbn','',getMessage('MATERIAL_ISBN'),getMessage('MATERIAL_ISBN_DESC'),20,20);
                $this->_form->addTextField('pages','',getMessage('MATERIAL_PAGES'),getMessage('MATERIAL_PAGES_DESC'),20,15,true);
             $this->_form->addTextField('url','',getMessage('MATERIAL_URL'),'',100,35);
@@ -364,9 +364,9 @@ class cs_material_form extends cs_rubric_form {
                break;
             case 'article':
                $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
+               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,true);
                $this->_form->addTextField('journal','',getMessage('MATERIAL_JOURNAL'),getMessage('MATERIAL_JOURNAL_DESC'),200,35,true);
-               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME_J'),getMessage('MATERIAL_VOLUME_J_DESC'),3,3);
+               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME_J'),getMessage('MATERIAL_VOLUME_J_DESC'),4,4);
                $this->_form->addTextField('issue','',getMessage('MATERIAL_ISSUE'),getMessage('MATERIAL_ISSUE_DESC'),3,3);
                $this->_form->addTextField('pages','',getMessage('MATERIAL_PAGES'),getMessage('MATERIAL_PAGES_DESC'),20,15,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),200,35,false);
@@ -377,11 +377,11 @@ class cs_material_form extends cs_rubric_form {
                break;
             case 'chapter':
                $this->_form->addTextField('author','',getMessage('MATERIAL_EDITOR'),getMessage('MATERIAL_EDITOR_DESC'),200,35,true);
-               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,5,true);
+               $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,true);
                $this->_form->addTextField('address','',getMessage('MATERIAL_ADDRESS'),getMessage('MATERIAL_ADDRESS_DESC'),50,35,true);
                $this->_form->addTextField('edition','',getMessage('MATERIAL_EDITION'),getMessage('MATERIAL_EDITION_DESC'),3,3);
                $this->_form->addTextField('series','',getMessage('MATERIAL_SERIES'),getMessage('MATERIAL_SERIES_DESC'),20,35);
-               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),3,3);
+               $this->_form->addTextField('volume','',getMessage('MATERIAL_VOLUME'),getMessage('MATERIAL_VOLUME_DESC'),4,4);
                $this->_form->addTextField('isbn','',getMessage('MATERIAL_ISBN'),getMessage('MATERIAL_ISBN_DESC'),20,20);
             $this->_form->addTextField('url','',getMessage('MATERIAL_URL'),'',100,35);
             $this->_form->addTextField('url_date','',getMessage('MATERIAL_URL_DATE'),'',10,20);
