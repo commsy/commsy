@@ -40,5 +40,27 @@ class cs_myroom_detail_view extends cs_context_detail_view {
       $this->_room_type = CS_MYROOM_TYPE;
       $this->cs_context_detail_view($environment, $with_modifying_actions,$creatorInfoStatus);
    }
+
+
+   function _getForwardBoxAsHTML () {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html .= '<div class="right_box">'.LF;
+      $html .= '<div class="right_box_title">'.LF;
+      $html .= '<div class="index_forward_links" style="white-space:nowrap; text-align:center;">'.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .='</div>'.LF;
+      $html .= '</div>'.LF;
+
+     return $html;
+   }
+
+
+
 }
+
+
+
+
+
 ?>
