@@ -570,9 +570,14 @@ class cs_authentication {
             } else {
                $auth_manager = $this->getDefaultAuthManager();
             }
-            $auth_manager->save($auth_item);
-            $this->_used_auth_manager = $auth_manager;
-            $this->_dberror = $this->_used_auth_manager->getErrorMessage();
+            if ( !empty($auth_manager) ) {
+               $auth_manager->save($auth_item);
+               $this->_used_auth_manager = $auth_manager;
+               $this->_dberror = $this->_used_auth_manager->getErrorMessage();
+            } else {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting auth manager. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+            }
          } else {
             $this->_commsy_auth_manager->save($auth_item);
             $this->_used_auth_manager = $this->_commsy_auth_manager;
