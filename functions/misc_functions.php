@@ -777,8 +777,8 @@ function isURLValid () {
          // plugins
          $funct != 'ads' and
 
-        // upload file for external tools
-        $module != 'upload'
+         // upload file for external tools
+         $funct != 'upload'
        ) {
        return false;
     }
