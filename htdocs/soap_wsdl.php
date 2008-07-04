@@ -94,6 +94,13 @@
 <message name='getFileItemOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='deleteFileItemIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='file_id' type='xsd:integer'/>
+</message>
+<message name='deleteFileItemOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='addPrivateRoomMaterialListIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='material_list_xml' type='xsd:string'/>
@@ -203,6 +210,10 @@
   <operation name='getFileItem'>
     <input message='tns:getFileItemIN'/>
     <output message='tns:getFileItemOUT'/>
+  </operation>
+  <operation name='deleteFileItem'>
+    <input message='tns:deleteFileItemIN'/>
+    <output message='tns:deleteFileItemOUT'/>
   </operation>
   <operation name='addPrivateRoomMaterialList'>
     <input message='tns:addPrivateRoomMaterialListIN'/>
@@ -364,6 +375,17 @@
   </operation>
   <operation name='getFileItem'>
     <soap:operation soapAction='urn:xmethodsCommSy#getFileItem'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='deleteFileItem'>
+    <soap:operation soapAction='urn:xmethodsCommSy#deleteFileItem'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

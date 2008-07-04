@@ -382,14 +382,15 @@ class cs_file_manager extends cs_manager {
       $query = 'UPDATE '.$this->_db_table.' SET '.
               'deletion_date="'.$current_datetime.'",'.
               'deleter_id="'.encode(AS_DB,$user_id).'"'.
-              ' WHERE file_id="'.encode(AS_DB,$item_id).'"';
+              ' WHERE files_id="'.encode(AS_DB,$item_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
          trigger_error('Problems deleting files from query: "'.$query.'"',E_USER_WARNING);
       } else {
-         // Uploaded files are never deleted from harddisk...
-         // If we want to do this, we can unlink files here and delete the db record really
+         $link_manager = $this->_environment->getLinkItemFileManager();
+         $link_manager->deleteByFileID($item_id);
+         unset($link_manager);
       }
    }
 

@@ -607,6 +607,56 @@ class cs_connection_soap {
       return $result;
    }
 
+   public function deleteFileItem ($session_id, $file_id) {
+      $session_id = $this->_encode_input($session_id);
+      $file_id = $this->_encode_input($file_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
+         $auth_source = $session->getValue('auth_source');
+         $file_manager = $this->_environment->getFileManager();
+         $file_item = $file_manager->getItem($file_id);
+         if ( isset($file_item) and !empty($file_item) ) {
+            $context_id = $file_item->getContextID();
+            if ( !empty($context_id) ) {
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($context_id);
+               if ( isset($room_item) and !empty($room_item) ) {
+                  if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
+                     $file_item->delete();
+                     $result = 'success';
+                     $result = $this->_encode_output($result);
+                  } else {
+                     $info = 'ERROR: DELETE FILE ITEM';
+                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to delete the file ('.$file_id.')';
+                     $result = new SoapFault($info,$info_text);
+                  }
+               } else {
+                  $info = 'ERROR: DELETE FILE ITEM';
+                  $info_text = 'context ('.$context_id.') of file ('.$file_id.') does not exits';
+                  $result = new SoapFault($info,$info_text);
+               }
+            } else {
+               $info = 'ERROR: DELETE FILE ITEM';
+               $info_text = 'context of file ('.$file_id.') lost';
+               $result = new SoapFault($info,$info_text);
+            }
+         } else {
+            $info = 'ERROR: DELETE FILE ITEM';
+            $info_text = 'file id ('.$file_id.') does not exist';
+            $result = new SoapFault($info,$info_text);
+         }
+         $this->_updateSessionCreationDate($session_id);
+      } else {
+         $info = 'ERROR: DELETE FILE ITEM';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
+
    public function addPrivateRoomMaterialList ($session_id, $material_list_xml) {
       $session_id = $this->_encode_input($session_id);
       $result_array = array();

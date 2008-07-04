@@ -171,6 +171,23 @@ class cs_link_item_file_manager extends cs_link_father_manager {
      }
   }
 
+  /** delete link , but it is just an update
+    * this method deletes all links from an item, but only as an update to restore it later and for evaluation
+    *
+    * @param integer file_id       id of the file item
+    */
+  function deleteByFileID ($file_id) {
+     $query = 'UPDATE '.$this->_db_table.' SET '.
+              'deletion_date="'.getCurrentDateTimeInMySQL().'",'.
+              'deleter_id="'.encode(AS_DB,$this->_current_user->getItemID()).'"'.
+              ' WHERE file_id="'.encode(AS_DB,$file_id).'";';
+     $result = $this->_db_connector->performQuery($query);
+     if ( !isset($result) or !$result ) {
+        include_once('functions/error_functions.php');
+        trigger_error('Problems deleting (updating) links of an item from query: "'.$query.'". - '.__FILE__.' - '.__LINE__,E_USER_WARNING);
+     }
+  }
+
    function deleteByFileReally ($file_id) {
       $query = 'DELETE FROM '.$this->_db_table.
                ' WHERE file_id="'.encode(AS_DB,$file_id).'"';

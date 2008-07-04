@@ -467,6 +467,10 @@ class cs_file_item extends cs_item {
       $this->_data['has_html'] = (int)$value;
    }
 
+   function _delete($manager) {
+      $manager->delete($this->getFileID());
+   }
+
    public function deleteReally () {
       $manager = $this->_environment->getFileManager();
       $manager->deleteReally($this);
