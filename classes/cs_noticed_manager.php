@@ -63,6 +63,11 @@ class cs_noticed_manager {
    function resetLimits () {
    }
 
+   function resetData () {
+      $this->_noticed_id_array = array();
+      $this->_rubric_id_array = array();
+   }
+
    /** has the current user read a specific item
      * this method returns the latest version_id of an item, the user
      * has already read. Or false, if s/he never read this item.
