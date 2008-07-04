@@ -543,5 +543,44 @@ class cs_file_item extends cs_item {
    function getScribdAccessKey() {
       return (string) $this->_getExtra('SCRIBD_ACCESS_KEY');
    }
+
+   public function mayEdit ($user_item) {
+      if ( $user_item->isRoot() or
+           ( $user_item->getContextID() == $this->getContextID()
+             and ( $user_item->isModerator()
+                   or ( $user_item->isUser()
+                        and ( $user_item->getItemID() == $this->getCreatorID()
+                              or $this->mayEditLinkedItem($user_item)
+                            )
+                      )
+                 )
+           )
+         ) {
+         $access = true;
+      } else {
+         $access = false;
+      }
+      return $access;
+   }
+
+   public function mayEditLinkedItem ($user_item) {
+      $retour = false;
+      $manager = $this->_environment->getLinkItemFileManager();
+      $manager->setFileIDLimit($this->getFileID());
+      $manager->select();
+      $list = $manager->get();
+      if ( isset($list) and  $list->isNotEmpty() ) {
+         $link_item = $list->getFirst();
+         while ( $link_item ) {
+            $item = $link_item->getLinkedItem();
+            if ( $item->mayEdit($user_item) ) {
+               $retour = true;
+               break;
+            }
+            $link_item = $list->getNext();
+         }
+      }
+      return $retour;
+   }
 }
 ?>

@@ -625,12 +625,18 @@ class cs_connection_soap {
                $room_item = $room_manager->getItem($context_id);
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
-                     $file_item->delete();
-                     $result = 'success';
-                     $result = $this->_encode_output($result);
+                     if ( $file_item->mayEditByUserID($user_id,$auth_source) ) {
+                        $file_item->delete();
+                        $result = 'success';
+                        $result = $this->_encode_output($result);
+                     } else {
+                        $info = 'ERROR: DELETE FILE ITEM';
+                        $info_text = 'user_id ('.$user_id.') don\'t have the permission to delete the file ('.$file_id.')';
+                        $result = new SoapFault($info,$info_text);
+                     }
                   } else {
                      $info = 'ERROR: DELETE FILE ITEM';
-                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to delete the file ('.$file_id.')';
+                     $info_text = 'user_id ('.$user_id.') don\'t have the permission to enter the room ('.$room_item->getTitle().')';
                      $result = new SoapFault($info,$info_text);
                   }
                } else {

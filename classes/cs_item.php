@@ -1250,6 +1250,26 @@ class cs_item {
       return $access;
    }
 
+   public function mayEditByUserID ($user_id,$auth_source) {
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $user_manager->setUserIDLimit($user_id);
+      $user_manager->setAuthSourceLimit($auth_source);
+      $user_manager->setContextLimit($this->getContextID());
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      if ($user_list->getCount() == 1) {
+         $user_in_room = $user_list->getFirst();
+         return $this->mayEdit($user_in_room);
+      } elseif ($user_list->getCount() > 1) {
+         include_once('functions/error_functions.php');
+         trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"',E_USER_WARNING);
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('can not find user data in database table "user" for user-id "'.$user_id.'", auth_source "'.$auth_source.'", context_id "'.$this->getContextID().'"',E_USER_WARNING);
+      }
+   }
+
    function maySee ($user_item) {
       if ( $user_item->isRoot()
           or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
