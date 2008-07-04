@@ -37,6 +37,7 @@ class cs_noticed_manager {
   var $_noticed_id_array = array();
   var $_annotation_id_array = array();
   var $_noticed_annotation_id_array = array();
+   var $_cache_on = true;
 
    /**
     * Environment - the environment of the CommSy
@@ -66,6 +67,10 @@ class cs_noticed_manager {
    function resetData () {
       $this->_noticed_id_array = array();
       $this->_rubric_id_array = array();
+   }
+
+   public function setCacheOff () {
+      $this->_cache_on = false;
    }
 
    /** has the current user read a specific item
@@ -128,8 +133,9 @@ class cs_noticed_manager {
 
 
 
-   function getLatestNoticedByIDArray ($id_array){
-      if (count($id_array)>0){
+   function getLatestNoticedByIDArray ($id_array) {
+
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;
@@ -158,7 +164,7 @@ class cs_noticed_manager {
    }
 
    function getLatestNoticedByIDArrayAndUser ($id_array, $user_id){
-      if (count($id_array)>0){
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;
@@ -187,7 +193,7 @@ class cs_noticed_manager {
    }
 
    function getLatestNoticedAnnotationsByIDArray ($id_array){
-      if (count($id_array)>0){
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;
@@ -230,7 +236,7 @@ class cs_noticed_manager {
    }
 
    function getLatestNoticedAnnotationsByIDArrayAndUser ($id_array, $user_id){
-      if (count($id_array)>0){
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;

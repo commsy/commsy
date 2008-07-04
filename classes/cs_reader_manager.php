@@ -37,6 +37,7 @@ class cs_reader_manager {
 
   var $_rubric_id_array = array();
   var $_reader_id_array = array();
+   var $_cache_on = true;
 
    /**
     * Environment - the environment of the CommSy
@@ -68,6 +69,10 @@ class cs_reader_manager {
       $this->_reader_id_array = array();
    }
 
+   public function setCacheOff () {
+      $this->_cache_on = false;
+   }
+
    /** has the current user read a specific item
      * this method returns the latest version_id of an item, the user
      * has already read. Or false, if s/he never read this item.
@@ -90,7 +95,7 @@ class cs_reader_manager {
    }
 
    function getLatestReaderByUserIDArray ($id_array, $item_id){
-      if (count($id_array)>0){
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;
@@ -118,7 +123,7 @@ class cs_reader_manager {
    }
 
    function getLatestReaderByIDArray ($id_array){
-      if (count($id_array)>0){
+      if ($this->_cache_on and count($id_array)>0){
          foreach($id_array as $id){
             if (!in_array($id,$this->_rubric_id_array)){
                $this->_rubric_id_array[] = $id;
