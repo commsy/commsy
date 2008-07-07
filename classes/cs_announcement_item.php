@@ -139,132 +139,6 @@ class cs_announcement_item extends cs_item {
       return $this->_getValue('enddate');
    }
 
-   /** get topics of a announcement
-    * this method returns a list of topics which are linked to the announcement
-    *
-    * @return object cs_list a list of topics (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getTopicList() {
-      $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);
-      $topic_list->sortBy('name');
-      return $topic_list;
-   }
-
-  /** set topics of a announcement item by id
-   * this method sets a list of topic item_ids which are linked to the announcement
-   *
-   * @param array of topic ids
-   *
-   * @author CommSy Development Group
-   */
-   function setTopicListByID ($value) {
-      $topic_array = array();
-      foreach ( $value as $iid ) {
-         $tmp_data = array();
-         $tmp_data['iid'] = $iid;
-         $topic_array[] = $tmp_data;
-      }
-      $this->_setValue(CS_TOPIC_TYPE, $topic_array, FALSE);
-   }
-
-   /** set topics of a announcement
-    * this method sets a list of topics which are linked to the announcement
-    *
-    * @param object cs_list value list of topics (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function setTopicList($value) {
-      $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
-   }
-
-   /** get institutions of a announcement
-    * this method returns a list of institutions which are linked to the announcement
-    *
-    * @return object cs_list a list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getInstitutionList() {
-      $institution_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_INSTITUTION_TYPE);
-      $institution_list->sortBy('name');
-      return $institution_list;
-   }
-
-  /** set institutions of a announcement item by id
-   * this method sets a list of institution item_ids which are linked to the announcement
-   *
-   * @param array of institution ids
-   *
-   * @author CommSy Development Group
-   */
-   function setInstitutionListByID ($value) {
-      $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);
-   }
-
-   /** set institutions of a announcement
-    * this method sets a list of institutions which are linked to the announcement
-    *
-    * @param object cs_list value list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function setInstitutionList($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
-  /** set groups of a announcement item by id
-   * this method sets a list of group item_ids which are linked to the announcement
-   *
-   * @param array of group ids
-   *
-   * @author CommSy Development Group
-   */
-   function setGroupListByID ($value) {
-      $this->setLinkedItemsByID (CS_GROUP_TYPE, $value);
-   }
-
-   /** set groups of a announcement
-    * this method sets a list of groups which are linked to the announcement
-    *
-    * @param object cs_list value list of groups (cs_label_item)
-    */
-   function setGroupList($value) {
-      $this->_setObject(CS_GROUP_TYPE, $value, FALSE);
-   }
-
-   /** get materials of a announcement
-    * this method returns a list of materials which are linked to the announcement
-    *
-    * @return object cs_list a list of materials (cs_material_item)
-    */
-   function getMaterialList () {
-      return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
-   }
-
-  /** set materials of a announcement item by item id and version id
-   * this method sets a list of material item_ids and version_ids which are linked to the announcement
-   *
-   * @param array of material ids, index of id must be 'iid', index of version must be 'vid'
-   * Example:
-   * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
-   *
-   * @author CommSy Development Group
-   */
-   function setMaterialListByID ($value) {
-      $this->setLinkedItemsByID (CS_MATERIAL_TYPE, $value);
-   }
-
-   /** set materials of a announcement
-    * this method sets a list of materials which are linked to the news
-    *
-    * @param string value title of the news
-    */
-   function setMaterialList ($value) {
-      $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
-   }
 
    function save() {
       $announcement_manager = $this->_environment->getAnnouncementManager();
@@ -306,11 +180,6 @@ class cs_announcement_item extends cs_item {
       $this->_setValue('public', $value);
    }
 
-   function getGroupList () {
-      $group_manager = $this->_environment->getLabelManager();
-      $group_manager->setTypeLimit(CS_GROUP_TYPE);
-      return $this->_getLinkedItems($group_manager, CS_GROUP_TYPE);
-   }
 
    function copy() {
       $copy = $this->cloneCopy();
@@ -331,6 +200,7 @@ class cs_announcement_item extends cs_item {
    function cloneCopy() {
       $clone_item = clone $this; // "clone" needed for php5
       $group_list = $this->getGroupList();
+      $group_list;
       $clone_item->setGroupList($group_list);
       $institution_list = $this->getInstitutionList();
       $clone_item->setInstitutionList($institution_list);

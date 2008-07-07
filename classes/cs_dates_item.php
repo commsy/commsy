@@ -124,40 +124,6 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('datetime_end');
    }
 
-   /** get materials of a date
-    * this method returns a list of materials which are linked to the date
-    *
-    * @return object cs_list a list of materials (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getMaterialList () {
-      return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
-   }
-
-  /** set groups of a date item by id
-   * this method sets a list of group item_ids which are linked to the date
-   *
-   * @param array of group ids, index of id must be 'iid', index of version must be 'vid'<br />
-   * Example:<br />
-   * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
-   *
-   * @author CommSy Development Group
-   */
-   function setMaterialListByID ($value) {
-      $this->setLinkedItemsByID(CS_MATERIAL_TYPE, $value);
-   }
-
-   /** set materials of a date
-    * this method sets a list of materials which are linked to the date
-    *
-    * @param string value title of the date
-    *
-    * @author CommSy Development Group
-    */
-   function setMaterialList ($value) {
-      $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
-   }
 
    /** get description of a dates
     * this method returns the description of the dates
@@ -337,73 +303,6 @@ class cs_dates_item extends cs_item {
 
    function issetPrivatDate(){
       return $this->_getValue('date_mode')==1;
-   }
-
-   /** get groups of a dates
-    * this method returns a list of groups which are linked to the dates
-    *
-    * @return object cs_list a list of groups (cs_label_item)
-    *
-    * @author CommSy Development Group
-    */
-   function getGroupList () {
-      $group_manager = $this->_environment->getLabelManager();
-      $group_manager->setTypeLimit(CS_GROUP_TYPE);
-      return $this->_getLinkedItems($group_manager, CS_GROUP_TYPE);
-   }
-
-  /** set groups of a dates item by id
-   * this method sets a list of group item_ids which are linked to the news
-   *
-   * @param array of group ids, index of id must be 'iid', index of version must be 'vid'<br />
-   * Example:<br />
-   * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
-   *
-   * @author CommSy Development Group
-   */
-   function setGroupListByID ($value) {
-      $this->setLinkedItemsByID(CS_GROUP_TYPE, $value);
-   }
-
-   /** set groups of a dates
-    * this method sets a list of groups which are linked to the dates
-    *
-    * @param string value title of the dates
-    *
-    * @author CommSy Development Group
-    */
-
-   function setGroupList ($value) {
-      $this->_setObject(CS_GROUP_TYPE, $value, FALSE);
-   }
-
-
-   function setTopicList ($value) {
-      $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
-   }
-
-   function setTopicListByID ($value) {
-      $this->setLinkedItemsByID(CS_TOPIC_TYPE, $value);
-   }
-
-   function getTopicList () {
-      $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);
-      $topic_list->sortBy('name');
-      return $topic_list;
-   }
-
-   function setInstitutionList ($value) {
-      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
-   }
-
-   function setInstitutionListByID ($value) {
-      $this->setLinkedItemsByID(CS_INSTITUTION_TYPE, $value);
-   }
-
-   function getInstitutionList () {
-      $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_INSTITUTION_TYPE);
-      $topic_list->sortBy('name');
-      return $topic_list;
    }
 
 

@@ -1663,5 +1663,70 @@ class cs_item {
    function setChangeModificationOnSave($save) {
       $this->_change_modification_on_save = $save;
    }
+
+
+   function getTopicList() {
+      $topic_list = $this->getLinkedItemList(CS_TOPIC_TYPE);
+      $topic_list->sortBy('name');
+      return $topic_list;
+   }
+
+   function setTopicListByID ($value) {
+      $topic_array = array();
+      foreach ( $value as $iid ) {
+         $tmp_data = array();
+         $tmp_data['iid'] = $iid;
+         $topic_array[] = $tmp_data;
+      }
+      $this->_setValue(CS_TOPIC_TYPE, $topic_array, FALSE);
+   }
+
+   function setTopicList($value) {
+      $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
+   }
+
+   function getInstitutionList() {
+      $institution_list = $this->getLinkedItemList(CS_INSTITUTION_TYPE);
+      $institution_list->sortBy('name');
+      return $institution_list;
+   }
+
+   function setInstitutionListByID ($value) {
+      $this->setLinkedItemsByID (CS_INSTITUTION_TYPE, $value);
+   }
+
+   function setInstitutionList($value) {
+      $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
+   }
+
+   function getGroupList () {
+      $group_list = $this->getLinkedItemList(CS_GROUP_TYPE);
+      $group_list->sortBy('name');
+      return $group_list;
+   }
+
+   function setGroupListByID ($value) {
+      $this->setLinkedItemsByID (CS_GROUP_TYPE, $value);
+   }
+
+   function setGroupList($value) {
+      $this->_setObject(CS_GROUP_TYPE, $value, FALSE);
+   }
+
+   function getMaterialList () {
+      return $this->getLinkedItemList(CS_MATERIAL_TYPE);
+   }
+
+   function setMaterialListByID ($value) {
+      $this->setLinkedItemsByID (CS_MATERIAL_TYPE, $value);
+   }
+
+   function setMaterialList ($value) {
+      $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
+   }
+
+
+
+
 }
 ?>

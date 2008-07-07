@@ -151,7 +151,7 @@ class cs_annotation_item extends cs_item {
     * @author CommSy Development Group
     */
    function getMaterialList () {
-      return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
+      return $this->getLinkedItemList(CS_MATERIAL_TYPE);
    }
 
   /** set materials of a announcement item by item id and version id
