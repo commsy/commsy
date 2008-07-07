@@ -90,7 +90,7 @@ class cs_configuration_ims_form extends cs_rubric_form {
             break;
       }
       $meg_val = round($val/1048576);
-      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('COMMON_UPLOADFILE_BUTTON'),'option',false);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('COMMON_UPLOAD'),'option',false);
 
    }
 
