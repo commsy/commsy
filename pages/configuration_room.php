@@ -66,6 +66,10 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
          $room->delete();
       } elseif ($status == 'undelete') {
          $room->undelete();
+      }elseif ($status == 'archive') {
+         $room->close();
+      }elseif ($status == 'open') {
+         $room->open();
       } else {
          include_once('functions/error_functions.php');trigger_error('automatic mode is not defined, E_USER_ERROR');
       }

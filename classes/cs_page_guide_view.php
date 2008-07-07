@@ -1456,10 +1456,9 @@ class cs_page_guide_view extends cs_page_view {
               and $this->_with_modifying_actions
               and !$item->isLocked()
             ) {
-            $params = array();
             $params['iid'] = $item->getItemID();
             $params['automatic'] = 'lock';
-            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_LOCK'),'','','','','','','class="portal_link"').LF;
+            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_LOCK'),'','','','','','','class="portal_link"').BRLF;
             unset($params);
          } elseif ( $current_user->isModerator()
                     and $this->_with_modifying_actions
@@ -1468,10 +1467,28 @@ class cs_page_guide_view extends cs_page_view {
             $params = array();
             $params['automatic'] = 'unlock';
             $params['iid'] = $item->getItemID();
-            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_UNLOCK'),'','','','','','','class="portal_link"').LF;
+            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_UNLOCK'),'','','','','','','class="portal_link"').BRLF;
             unset($params);
          }
-
+         if ( $current_user->isModerator()
+              and $this->_with_modifying_actions
+              and !$item->isClosed()
+            ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['automatic'] = 'archive';
+            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_ARCHIVE'),'','','','','','','class="portal_link"').LF;
+            unset($params);
+         }elseif( $current_user->isModerator()
+              and $this->_with_modifying_actions
+              and $item->isClosed()
+            ) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $params['automatic'] = 'open';
+            $html .=  '> '.ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('CONTEXT_ROOM_OPEN'),'','','','','','','class="portal_link"').LF;
+            unset($params);
+         }
          $server_item = $this->_environment->getServerItem();
          $portal_list = $server_item->getPortalList();
          if ( $portal_list->getCount() > 1 and !$item->isGroupRoom() ) {
