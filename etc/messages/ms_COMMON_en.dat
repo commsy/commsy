@@ -601,6 +601,7 @@ $message["COMMON_TOP_OF_PAGE"]["en"] = "Go to top";
 $message["COMMON_UNIVERSITY_CONTEXT"]["en"] = "University";
 $message["COMMON_UNKNOWN"]["en"] = "Unknown";
 $message["COMMON_UNREAD"]["en"] = "unread";
+$message["COMMON_UPLOAD"]["en"] = "Upload file";
 $message["COMMON_USAGE_INFO_BODY"]["en"] = "Description (list view)";
 $message["COMMON_USAGE_INFO_FORM_BODY"]["en"] = "Description (form)";
 $message["COMMON_USER"]["en"] = "Member";
