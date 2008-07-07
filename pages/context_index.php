@@ -318,6 +318,8 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                               '_deleted_ids');
    $params = $environment->getCurrentParameterArray();
    unset($params['mode']);
+   unset($params['select']);
+   $selected_ids = array();
    redirect($environment->getCurrentContextID(), CS_PROJECT_TYPE, 'index', $params);
 }
 
@@ -363,10 +365,12 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             unset($params['mode']);
             redirect($environment->getCurrentContextID(), CS_PROJECT_TYPE, 'index', $params);
       }
-      $selected_ids = array();
-      $session->unsetValue('cid'.$environment->getCurrentContextID().
+      if ($_POST['index_view_action'] != '3'){
+         $selected_ids = array();
+         $session->unsetValue('cid'.$environment->getCurrentContextID().
                               '_'.$environment->getCurrentModule().
                               '_selected_ids');
+      }
    } // end if (perform list actions)
 
 
