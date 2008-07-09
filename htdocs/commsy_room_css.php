@@ -31,6 +31,11 @@ body {
 	background-color: white;
 }
 
+.fade-out-link{
+    font-size:8pt;
+    color:black;
+}
+
 img {
 	border: 0px;
 }

@@ -128,7 +128,7 @@ div.portal_tabs_frame {
    background-color: <?php echo($color['tabs_background'])?>;
 }
 
-div.tabs {
+div.portal-tabs {
    position:relative;
    width: 100%;
    margin:0px;
@@ -258,11 +258,11 @@ div.search_link a{
     font-size:10pt;
 }
 
-.list td.even {
+.list td.portal-even {
     background-color: <?php echo($color['myarea_title_backround'])?>;
 }
 
-.list td.odd {
+.list td.portal-odd {
     background-color: <?php echo($color['myarea_content_backround'])?>;
 }
 
@@ -273,6 +273,20 @@ div.search_link a{
     border-bottom:none;
     background-color: <?php echo($color['tabs_background'])?>;
 }
+
+.list td.portal-head {
+    font-weight:bold;
+    line-height:18px;
+    white-space:nowrap;
+    color: <?php echo($color['headline_text'])?>;
+    background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+    background-color: <?php echo($color['tabs_background'])?>;
+}
+
+.portal_link{
+    color: <?php echo($color['headline_text'])?>;
+}
+
 
 .list td.head {
     font-weight:bold;
