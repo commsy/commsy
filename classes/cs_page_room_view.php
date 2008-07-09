@@ -99,6 +99,8 @@ class cs_page_room_view extends cs_page_view {
 
    var $_shown_as_printable = false;
 
+   var $_style_image_path = 'images/layout/';
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -108,6 +110,9 @@ class cs_page_room_view extends cs_page_view {
     */
    function cs_page_room_view ($environment, $with_modifying_actions = true) {
       $this->cs_page_view($environment, $with_modifying_actions);
+      if (file_exists('htdocs/'.$environment->getCurrentPortalID().'/commsy.css') ){
+         $this->_style_image_path = $environment->getCurrentPortalID().'/images/';
+      }
    }
 
    function setBlankPage () {
@@ -373,8 +378,8 @@ class cs_page_room_view extends cs_page_view {
 
       // @segment-begin 22932 _getLinkRowAsHTML():upper-corner-images-around-tabs
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_links.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
@@ -438,8 +443,8 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '<span class="navlist">'.$text.'</span>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_links.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
@@ -992,8 +997,8 @@ class cs_page_room_view extends cs_page_view {
          // @segment-begin 35577 asHTML():bottom-corner_images
          $html .= '<div class="frame_bottom">'.LF;
          $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-5px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-         $html .= '<div style="position:absolute; top:-11px; right:-5px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+         $html .= '<div style="position:absolute; top:-11px; left:-5px;"><img src="'.$this->_style_image_path.'/ecke_unten_links.gif" alt=""/></div>';
+         $html .= '<div style="position:absolute; top:-11px; right:-5px;"><img src="'.$this->_style_image_path.'/ecke_unten_rechts.gif" alt=""/></div>';
          $html .= '</div>'."\n";
          $html .= '</div>'."\n";
 

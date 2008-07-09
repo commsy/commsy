@@ -117,6 +117,9 @@ class cs_page_guide_view extends cs_page_view {
 
    var $_with_announcements = false;
 
+   var $_style_image_path = 'images/layout/';
+
+
    private $_navigation_bar = NULL;
 
    /** constructor
@@ -128,6 +131,9 @@ class cs_page_guide_view extends cs_page_view {
     */
    function cs_page_guide_view ($environment, $with_modifying_actions = true) {
       $this->cs_page_view($environment, $with_modifying_actions);
+      if (file_exists('htdocs/'.$environment->getCurrentPortalID().'/commsy.css') ){
+         $this->_style_image_path = $environment->getCurrentPortalID().'/images/';
+      }
    }
 
    public function setNavigationBar ($value) {
@@ -297,7 +303,7 @@ class cs_page_guide_view extends cs_page_view {
 
       $html .= LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div class="portal_tabs_frame">'.LF;
-      $html .= '<div class="tabs">'.LF;
+      $html .= '<div class="portal-tabs">'.LF;
       $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
 
       // language options
@@ -330,8 +336,8 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
       $html .= '<span class="navlist">&nbsp;</span>'."\n";
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_portal_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_portal_oben_rechts.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_portal_oben_links.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_portal_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       return $html;
@@ -357,8 +363,8 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $html .= '<span class="navlist">&nbsp;</span>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-8px; left:-8px;"><img src="images/layout/ecke_portal_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-8px; right:-8px;"><img src="images/layout/ecke_portal_oben_rechts.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-8px; left:-8px;"><img src="'.$this->_style_image_path.'ecke_portal_oben_links.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-8px; right:-8px;"><img src="'.$this->_style_image_path.'ecke_portal_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
@@ -420,14 +426,14 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</table>'."\n";
 
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       $html .= '</div>'.LF;
@@ -448,14 +454,14 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</div>'."\n";
 
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       $html .= '</div>'.LF;
@@ -493,14 +499,14 @@ class cs_page_guide_view extends cs_page_view {
 
 
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       $html .= '</div>'.LF;
@@ -528,14 +534,14 @@ class cs_page_guide_view extends cs_page_view {
          $html .= $announcement_view->asHTML();
      }
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -554,14 +560,14 @@ class cs_page_guide_view extends cs_page_view {
       }
 
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -590,14 +596,14 @@ class cs_page_guide_view extends cs_page_view {
       }
 
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       $html .= '</div>'.LF;
@@ -656,8 +662,8 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $html .= '<span class="navlist">&nbsp;'.$title.'</span>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>';
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
@@ -678,8 +684,8 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-5px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-5px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
@@ -1272,14 +1278,14 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</div>'.LF;
 
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1312,14 +1318,14 @@ class cs_page_guide_view extends cs_page_view {
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1347,14 +1353,14 @@ class cs_page_guide_view extends cs_page_view {
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1536,21 +1542,21 @@ class cs_page_guide_view extends cs_page_view {
       }
       if (empty($mode)){
          $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
-         $html .= '<img src="images/layout/portal_key.gif" alt="" border="0"/>';
+         $html .= '<img src="'.$this->_style_image_path.'portal_key.gif" alt="" border="0"/>';
          $html .= '</td>'.LF;
          $html .= '<td style="width:26%; vertical-align:middle;">'.LF;
          $html .= '<span class="search_title">'.getMessage('COMMON_ACCESS_POINT').':'.'</span>';
          $html .= '</td>'.LF;
 
          $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
-         $html .= '<img src="images/layout/portal_info.gif" alt="" border="0"/>'.LF;
+         $html .= '<img src="'.$this->_style_image_path.'portal_info.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:42%; vertical-align:middle;">'.LF;
          $html .= '<span class="search_title">'.getMessage('COMMON_DESCRIPTION').':'.'</span>';
          $html .= '</td>'.LF;
 
          $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
-         $html .= '<img src="images/layout/portal_info2.gif" alt="" border="0"/>'.LF;
+         $html .= '<img src="'.$this->_style_image_path.'portal_info2.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:29%; vertical-align:middle;">'.LF;
          $html .= '<span class="search_title">'.getMessage('COMMON_FACTS').':'.'</span>';
@@ -1561,7 +1567,7 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '</td>'.LF;
 
          $html .= '<td style="width:1%; vertical-align:top;">'.LF;
-         $html .= '<img src="images/layout/portal_info2.gif" alt="" border="0"/>'.LF;
+         $html .= '<img src="'.$this->_style_image_path.'portal_info2.gif" alt="" border="0"/>'.LF;
          $html .= '</td>'.LF;
          $html .= '<td style="width:29%; vertical-align:top; padding-top:10px;">'.LF;
          $html .= '<span class="search_title">'.getMessage('COMMON_FACTS').':'.'</span>';
@@ -1603,14 +1609,14 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</table>'.LF;
 
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
+      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
 
       $html .= '</div>'.LF;
       $html .= '<div class="frame_bottom">'.LF;
       $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
+      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       if ($this->_with_delete_box) {

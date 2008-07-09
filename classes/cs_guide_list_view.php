@@ -268,9 +268,9 @@ class cs_guide_list_view extends cs_list_view_plain {
    function _getItemAsHTML($item, $i) {
       $shown_entry_number = $i;
       if ($shown_entry_number%2 == 0){
-         $style='class="even"';
+         $style='class="portal-even"';
       }else{
-         $style='class="odd"';
+         $style='class="portal-odd"';
       }
       $html = '';
       $html .= '   <tr class="list">'.LF;
@@ -733,7 +733,7 @@ class cs_guide_list_view extends cs_list_view_plain {
    function _getTableFootAsHTML() {
       if ( !$this->_environment->inServer() ) {
          $current_portal = $this->_environment->getCurrentPortalItem();
-         $html = '<tr class="head"><td class="head" colspan="3" style="border-top:4px solid white;"><table style="width:100%;" summary="Layout"><tr><td>'.$this->_getIntervalLinksAsHTML().'</td><td style="width:5%;white-space:nowrap;">'.$this->_getForwardLinkAsHTML().'</td></tr></table></td></tr>'.LF;
+         $html = '<tr class="portal-head"><td class="portal-head" colspan="3" style="border-top:4px solid white;"><table style="width:100%;" summary="Layout"><tr><td>'.$this->_getIntervalLinksAsHTML().'</td><td style="width:5%;white-space:nowrap;">'.$this->_getForwardLinkAsHTML().'</td></tr></table></td></tr>'.LF;
       } else {
          $html = '';
       }
@@ -821,7 +821,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       if ($this->_environment->inPortal()) {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '   <tr class="list">'.LF;
-         $html .= '      <td colspan="2" class="head" style="width:50%">'.LF;
+         $html .= '      <td colspan="2" class="portal-head" style="width:50%">'.LF;
          if ( $this->getSortKey() == 'title' ) {
             $params['sort'] = 'title_rev';
             $text = $this->_translator->getMessage('COMMON_TITLE');
@@ -840,12 +840,12 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= ' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
          }         $html .= '      </td>'.LF;
          if ($this->_environment->inPortal()) {
-            $html .= '      <td class="head" style="width:35%">'.LF;
+            $html .= '      <td class="portal-head" style="width:35%">'.LF;
             $html .= '<span class="portal_link">'.$this->_translator->getMessage('CONTEXT_MODERATOR').'</span>'.LF;
             $html .= '      </td>'.LF;
          }
 
-         $html .= '      <td class="head" style="width:15%">'.LF;
+         $html .= '      <td class="portal-head" style="width:15%">'.LF;
          if ( $this->getSortKey() == 'activity_rev' ) {
             $params['sort'] = 'activity';
             $text = $this->_translator->getMessage('CONTEXT_ACTIVITY');
