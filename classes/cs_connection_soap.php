@@ -160,9 +160,12 @@ class cs_connection_soap {
          $portal_item = $portal_manager->getItem($portal_id);
          if ( !empty($portal_item) ) {
             $this->_environment->setCurrentContextID($portal_id);
-
-            // Create new item
             $authentication = $this->_environment->getAuthenticationObject();
+            $current_portal = $this->_environment->getCurrentPortalItem();
+            $auth_source_id = $current_portal->getAuthDefault();
+
+            if ( $authentication->is_free($user_id,$auth_source_id) ) {
+            // Create new item
             $new_account = $authentication->getNewItem();
             $new_account->setUserID($user_id);
             $new_account->setPassword($user_pwd);
@@ -340,8 +343,11 @@ class cs_connection_soap {
 
                // login in user
                return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
-            } else {
+            }else {
                return new SoapFault('ERROR','error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
+            }
+            }else{
+               return new SoapFault('ERROR','account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
             }
          } else {
             return new SoapFault('ERROR','Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
