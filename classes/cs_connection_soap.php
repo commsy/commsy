@@ -339,7 +339,7 @@ class cs_connection_soap {
                }
 
                // login in user
-               return $this->authenticate($user_id,$user_pwd,$portal_id,$auth_source_id);
+               return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
             } else {
                return new SoapFault('ERROR','error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
             }
