@@ -142,6 +142,10 @@ class cs_connection_soap {
       return $xml;
    }
 
+   public function createUser($firstname,$lastname,$mail,$user_id,$user_pwd,$insert_pwd){
+      global $cs_soap_insert_pwd;
+   }
+
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
