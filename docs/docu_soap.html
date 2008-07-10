@@ -19,11 +19,12 @@
    </TR>
    <TR>
     <TD HEIGHT="10">
-     <A HREF="#soap">Was ist SOAP?</A>&nbsp;&nbsp;|&nbsp;&nbsp;
-     <A HREF="#requirements">Requirements</A>&nbsp;&nbsp;|&nbsp;&nbsp;
-     <A HREF="#generell">Generell</A>&nbsp;&nbsp;|&nbsp;&nbsp;
-     <A HREF="#auth">Authentifizierung</A>&nbsp;&nbsp;|&nbsp;&nbsp;
-     <a href="#material">Materialaustausch</a>&nbsp;&nbsp;|&nbsp;&nbsp;
+     <A HREF="#soap">Was ist SOAP?</A>&nbsp;|
+     <A HREF="#requirements">Requirements</A>&nbsp;|
+     <A HREF="#generell">Generell</A>&nbsp;|
+     <A HREF="#auth">Authentifizierung</A>&nbsp;|
+     <a href="#material">Materialaustausch</a>&nbsp;|
+     <A HREF="#upload_http">Dateiupload</A>&nbsp;|
      <A HREF="#ims">IMS</A>
     </TD>
    </TR>
@@ -35,7 +36,7 @@
        <TABLE BORDER="0" CELLSPACING="1" CELLPADDING="7" summary="for layout">
         <TR>
          <TD CLASS="h2">
-          SOAP-Schnittstelle: CommSy 4.5.0 und h&ouml;her
+          SOAP-Schnittstelle: CommSy 6.1.3 und h&ouml;her
          </TD>
         </TR>
         <TR>
@@ -170,16 +171,7 @@ $result = $client->authenticate('user_id','password','portal_id');
         </TR>
         <TR>
          <TD CLASS="fliesstext">
-         Es existieren verschiedene Methoden zum Austausch von Materialien zwischen CommSy und einer externen Applikation. Generell gilt zurzeit, dass Materialien zwischen CommSy und einer externen Applikation nur &uuml;ber den pers&ouml;nlichen Raum eines Nutzenden ausgetauscht werden k&ouml;nnen. Dazu stehen zurzeit insgesamt 6 Methoden zur Verf&uuml;gung:
-         <ul>
-            <li>getPrivateRoomMaterialList</li>
-            <li>getFileListFromMaterial</li>
-            <li>getFileItem</li>
-            <li>addPrivateRoomMaterialList</li>
-            <li>addFileForMaterial</li>
-            <li>linkFileToMaterial</li>
-         </ul>
-         Hintergrund: Diese Methoden sind speziell zur Kopplung des <a href="http://www.studylog.de/" target="_blank">KnowledgeDiscoveryTool study.log</a> entwickelt worden, sind aber derart generisch, dass diese Funktionen auch anderen Tools offen stehen.
+            Es existieren verschiedene Methoden zum Austausch von Materialien zwischen CommSy und einer externen Applikation. Generell gilt zurzeit, dass Materialien zwischen CommSy und einer externen Applikation nur &uuml;ber den pers&ouml;nlichen Raum eines Nutzenden ausgetauscht werden k&ouml;nnen. Ausnahmen bestätigen die Regel.
          </TD>
         </TR>
         <TR>
@@ -661,7 +653,7 @@ $result = $client->addPrivateRoomMaterialList('session_id','xml_material_list');
         <TR>
          <TD CLASS="fliesstext">
             Mit der Methode <code>addFileForMaterial</code> ist es m&ouml;glich, gezielt an vorhandene Materialien, neue Dateien zu h&auml;ngen.<br/><br/>
-            Achtung: Dieser Mechanismus erzeugt sehr viel Overhead, daher existiert auch ein alternativer Weg über HTTP-POST (siehe unten).<br/><br/>
+            Achtung: Dieser Mechanismus erzeugt sehr viel Overhead, daher existiert auch ein alternativer Weg über HTTP-POST (<a href="#upload_http">siehe unten</a>).<br/><br/>
             Bedingungen:
             <ul>
             <li>G&uuml;ltige Session-ID</li>
@@ -740,19 +732,11 @@ $result = $client->linkFileToMaterial('session_id','material_id','file_id');
          </TD>
         </TR>
         <TR>
-         <TD CLASS="h3"><A NAME="ims"></A>IMS</TD>
+         <TD CLASS="h3"><A NAME="upload_http"></A>Dateiupload</TD>
         </TR>
         <TR>
          <TD CLASS="fliesstext">
-            siehe: <a href="docu_ims.html">docu_ims.html</a>
-         </TD>
-        </TR>
-        <TR>
-         <TD CLASS="h3">upload a file</TD>
-        </TR>
-        <TR>
-         <TD CLASS="fliesstext">
-            Da das hochladen von Dateien via SOAP einen Overhead von 33% erzeugt, kann über folgenden Weg einen Datei an einen Eintrag in einem CommSy-Raum gehängt werden.<br/><br/>
+            Da das Hochladen von Dateien via SOAP einen Overhead von 33% erzeugt, kann über folgenden Weg einen Datei an einen Eintrag in einem CommSy-Raum gehängt werden.<br/><br/>
             Definitionen:
             <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;">
             URL = http://COMMSY_SERVER/commsy.php?cid=RAUM_ID&mod=file&fct=upload<br/>
@@ -772,7 +756,12 @@ $result = $client->linkFileToMaterial('session_id','material_id','file_id');
          </TD>
         </TR>
         <TR>
-         <TD>&nbsp;</TD>
+         <TD CLASS="h3"><A NAME="ims"></A>IMS</TD>
+        </TR>
+        <TR>
+         <TD CLASS="fliesstext">
+            siehe: <a href="docu_ims.html">docu_ims.html</a>
+         </TD>
         </TR>
        </TABLE>
       </TD>
@@ -785,7 +774,7 @@ $result = $client->linkFileToMaterial('session_id','material_id','file_id');
         <TR>
          <TD CLASS="fliesstext" style="font-size: xx-small;">
  Autor: Iver Jackewitz<br/>
- Datum: 18.07.2006
+ Datum: 10.07.2008
          </TD>
   <td align="right"><A href="http://sourceforge.net"><IMG src="sourceforge-logo.jpg" width="100" height="30" border="0" alt="SourceForge Logo"></A></td>
   </tr>
