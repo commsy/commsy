@@ -158,7 +158,6 @@ class cs_connection_soap {
       if ( $cs_soap_insert_pwd == $insert_pwd ) {
          $portal_manager = $this->_environment->getPortalManager();
          $portal_item = $portal_manager->getItem($portal_id);
-         unset($portal_item);
          if ( !empty($portal_item) ) {
             $this->_environment->setCurrentContextID($portal_id);
 
@@ -177,8 +176,8 @@ class cs_connection_soap {
             } else {
                $current_portal = $this->_environment->getCurrentPortalItem();
                $new_account->setAuthSourceID($current_portal->getAuthDefault());
-               unset($current_portal);
                $auth_source_id = $current_portal->getAuthDefault();
+               unset($current_portal);
             }
             $save_only_user = false;
             $authentication->save($new_account,$save_only_user);
