@@ -308,12 +308,11 @@ $result = $client->getPrivateRoomMaterialList('session_id');
          </TD>
         </TR>
         <TR>
-         <TD CLASS="h4">getFileListFromMaterial</TD>
+         <TD CLASS="h4">getSectionListFromMaterial</TD>
         </TR>
         <TR>
          <TD CLASS="fliesstext">
-            Mit der Methode <code>getFileListFromMaterial</code> ist der lesende Zugriff auf die an ein Material angeh&auml;ngten Dateien m&ouml;glich.<br/><br/>
-            Achtung: Es werden hier nur die Metadaten der Dateien &uuml;bertragen, nicht die Dateien selbst. Da potentiell sehr viele Dateien an einem Material angeh&auml;ngt sein k&ouml;nnen, muss sich die Datei einzeln mit der Methode <code>getFileItem</code> geholt werden. So kann dem Nutzenden auf Seiten des externen Tools Feedback &uuml;ber den Downloadstatus gegeben werden.<br/><br/>
+            Mit der Methode <code>getSectionListFromMaterial</code> ist der lesende Zugriff auf die an ein Material angeh&auml;ngten Abschnitte m&ouml;glich.<br/><br/>
             Bedingungen:
             <ul>
             <li>G&uuml;ltige Session-ID</li>
@@ -332,7 +331,7 @@ $result = $client->getPrivateRoomMaterialList('session_id');
             <td style="vertical-align: top; padding: 10px;">
                Output:
                <ul style="font-size: small;">
-                  <li>Erfolg: xml_file_list (string) - Liste der Dateien des Materials in XML-Notation.</li>
+                  <li>Erfolg: xml_file_list (string) - Liste der Abschnitte des Materials in XML-Notation.</li>
                   <li>Fehler: soap_fault (object) - SOAP-Fehlerobjekt mit Informationen zum Fehler</li>
                </ul>
             </td>
@@ -340,7 +339,62 @@ $result = $client->getPrivateRoomMaterialList('session_id');
             </table>
             Anwendung:
             <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
-$result = $client->getFileListFromMaterial('session_id','material_id');
+$result = $client->getSectionListFromMaterial('session_id','material_id');
+           </code></div>
+            Detaillierter Output im Erfolgsfall:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
+               &lt;section_list&gt;</code>
+                  <div style="padding-left: 30px;"><code>&lt;section_item&gt;</code>
+                     <div style="padding-left: 30px;"><code>&lt;item_id&gt;753239&lt;/item_id&gt;<br/>
+                     ...<br/>
+                     &lt;title&gt;Meine Hausaufgaben&lt;/title&gt;<br/>
+                     &lt;description&gt;... hab ich nicht gemacht.&lt;/description&gt;</code></div>
+                  <code>
+                  &lt;/section_item&gt;</code></div>
+                  <div style="padding-left: 30px;"><code>&lt;section_item&gt;</code>
+                     <div style="padding-left: 30px;"><code>...</code></div>
+                  <code>
+                  &lt;/section_item&gt;<br/>
+                  ...</code></div>
+                  <code>
+               &lt;/section_list&gt;
+           </code></div>
+         </TD>
+        </TR>
+        <TR>
+         <TD CLASS="h4">getFileListFromItem</TD>
+        </TR>
+        <TR>
+         <TD CLASS="fliesstext">
+            Mit der Methode <code>getFileListFromItem</code> ist der lesende Zugriff auf die an irgendeinen Eintrag in CommSy angeh&auml;ngten Dateien m&ouml;glich.<br/><br/>
+            Achtung: Es werden hier nur die Metadaten der Dateien &uuml;bertragen, nicht die Dateien selbst. Da potentiell sehr viele Dateien an einem Eintrag angeh&auml;ngt sein k&ouml;nnen, muss sich die Datei einzeln mit der Methode <code>getFileItem</code> oder den im XML-Output angegebenen Resource-Link geholt werden. So kann dem Nutzenden auf Seiten des externen Tools Feedback &uuml;ber den Downloadstatus gegeben werden.<br/><br/>
+            Bedingungen:
+            <ul>
+            <li>G&uuml;ltige Session-ID</li>
+            <li>Kennung muss lesenden Zugriff auf den Eintrag haben, d.h. Mitglied im entsprechenden Raum sein.</li>
+            </ul>
+            &Uuml;berblick:
+            <table style="font-size: small; border-collapse:collapse; border: 1px solid grey; margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;" summary="for layout">
+            <tr>
+            <td style="vertical-align: top; border-right: 1px solid grey; padding: 10px;">
+               Input:
+               <ul style="font-size: small;">
+                  <li>session_id (string) - Session-ID zu einer g&uuml;ltigen Session des Nutzenden</li>
+                  <li>item_id (integer) - Item-ID des Eintrages in CommSy</li>
+               </ul>
+            </td>
+            <td style="vertical-align: top; padding: 10px;">
+               Output:
+               <ul style="font-size: small;">
+                  <li>Erfolg: xml_file_list (string) - Liste der Dateien des Eintrages in XML-Notation.</li>
+                  <li>Fehler: soap_fault (object) - SOAP-Fehlerobjekt mit Informationen zum Fehler</li>
+               </ul>
+            </td>
+            </tr>
+            </table>
+            Anwendung:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
+$result = $client->getFileListFromItem('session_id','item_id');
            </code></div>
             Detaillierter Output im Erfolgsfall:
             <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
@@ -349,7 +403,9 @@ $result = $client->getFileListFromMaterial('session_id','material_id');
                      <div style="padding-left: 30px;"><code>&lt;files_id&gt;39264&lt;/files_id&gt;<br/>
                      ...<br/>
                      &lt;filename&gt;iver_jackewitz.jpg&lt;/filename&gt;<br/>
-                     &lt;md5&gt;d41d8cd98f00b204e9800998ecf8427e&lt;/md5&gt;</code></div>
+                     &lt;md5&gt;d41d8cd98f00b204e9800998ecf8427e&lt;/md5&gt;<br/>
+                     &lt;resource_link&gt;http://mein.commsyserver.de/...&lt;/resource_link&gt;
+                  </code></div>
                   <code>
                   &lt;/file_item&gt;</code></div>
                   <div style="padding-left: 30px;"><code>&lt;file_item&gt;</code>
@@ -361,6 +417,14 @@ $result = $client->getFileListFromMaterial('session_id','material_id');
                &lt;/file_list&gt;
            </code></div>
            Der md5-Wert wird aus den eigentlichen Daten der Datei gewonnen. Ein externes Tool kann so &uuml;berpr&uuml;fen, ob es die Datei schon herunter geladen hat oder nicht.
+         </TD>
+        </TR>
+        <TR>
+         <TD CLASS="h4">getFileListFromMaterial</TD>
+        </TR>
+        <TR>
+         <TD CLASS="fliesstext">
+            Diese Methode ist alt. Bitte verwenden Sie <code>getFileListFromItem</code>.
          </TD>
         </TR>
         <TR>
@@ -409,6 +473,52 @@ $result = $client->getFileItem('session_id','file_id');
                &lt;/file_item&gt;
            </code></div>
            Um die eigentliche Datei wieder herzustellen, muss der base64-String dekodiert und in eine Datei mit dem entsprechenden Namen geschrieben werden.
+         </TD>
+        </TR>
+        <TR>
+         <TD CLASS="h4">deleteFileItem</TD>
+        </TR>
+        <TR>
+         <TD CLASS="fliesstext">
+            Mit der Methode <code>deleteFileItem</code> wird eine vorhandene Datei gelöscht.
+            <br/><br/>
+            Bedingungen:
+            <ul>
+            <li>G&uuml;ltige Session-ID</li>
+            <li>Kennung muss Zugriff auf die Datei haben, d.h.
+               <ul>
+                  <li>Mitglied im entsprechenden Raum sein</li>
+                  <li>und Ersteller der Datei</li>
+                  <li>oder den Eintrag bearbeiten dürfen, an dem die Datei hängt.</li>
+               </ul>
+            </li>
+            </ul>
+            &Uuml;berblick:
+            <table style="font-size: small; border-collapse:collapse; border: 1px solid grey; margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;" summary="for layout">
+            <tr>
+            <td style="vertical-align: top; border-right: 1px solid grey; padding: 10px;">
+               Input:
+               <ul style="font-size: small;">
+                  <li>session_id (string) - Session-ID zu einer g&uuml;ltigen Session des Nutzenden</li>
+                  <li>file_id (integer) - Item-ID der Datei</li>
+               </ul>
+            </td>
+            <td style="vertical-align: top; padding: 10px;">
+               Output:
+               <ul style="font-size: small;">
+                  <li>Erfolg: "success" (string)</li>
+                  <li>Fehler: soap_fault (object) - SOAP-Fehlerobjekt mit Informationen zum Fehler</li>
+               </ul>
+            </td>
+            </tr>
+            </table>
+            Anwendung:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
+$result = $client->deleteFileItem('session_id','file_id');
+           </code></div>
+            Detaillierter Output im Erfolgsfall:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;"><code>
+               success</code></div>
          </TD>
         </TR>
         <TR>
@@ -551,6 +661,7 @@ $result = $client->addPrivateRoomMaterialList('session_id','xml_material_list');
         <TR>
          <TD CLASS="fliesstext">
             Mit der Methode <code>addFileForMaterial</code> ist es m&ouml;glich, gezielt an vorhandene Materialien, neue Dateien zu h&auml;ngen.<br/><br/>
+            Achtung: Dieser Mechanismus erzeugt sehr viel Overhead, daher existiert auch ein alternativer Weg über HTTP-POST (siehe unten).<br/><br/>
             Bedingungen:
             <ul>
             <li>G&uuml;ltige Session-ID</li>
@@ -633,7 +744,31 @@ $result = $client->linkFileToMaterial('session_id','material_id','file_id');
         </TR>
         <TR>
          <TD CLASS="fliesstext">
-            In Arbeit ...
+            siehe: <a href="docu_ims.html">docu_ims.html</a>
+         </TD>
+        </TR>
+        <TR>
+         <TD CLASS="h3">upload a file</TD>
+        </TR>
+        <TR>
+         <TD CLASS="fliesstext">
+            Da das hochladen von Dateien via SOAP einen Overhead von 33% erzeugt, kann über folgenden Weg einen Datei an einen Eintrag in einem CommSy-Raum gehängt werden.<br/><br/>
+            Definitionen:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;">
+            URL = http://COMMSY_SERVER/commsy.php?cid=RAUM_ID&mod=file&fct=upload<br/>
+            COMMSY_SERVER = die URL des CommSy-Servers bzw. Portals<br/>
+            RAIM_ID = Die Item-ID des Raumes in den die Datei geladen werden soll.
+            </div>
+            Übergabe per POST oder GET:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;">
+            item_id = ItemID des CommSy-Elementes, an die die Datei angehängt werden soll.<br/>
+            SID = session_id einer gültigen Session des Nutzenden
+            </div>
+            Übergabe per POST:
+            <div style="margin: 10px; padding: 10px; border: 1px solid grey; background-color: lightgrey;">
+            Per POST muss dann die Datei selbst übermittelt werden, wobei der Name "upload" sein muss.
+            <code>&lt;input type="file" name="upload"/&gt;</code>
+            </div>
          </TD>
         </TR>
         <TR>
