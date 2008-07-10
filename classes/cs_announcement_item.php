@@ -180,7 +180,6 @@ class cs_announcement_item extends cs_item {
       $this->_setValue('public', $value);
    }
 
-
    function copy() {
       $copy = $this->cloneCopy();
       $copy->setItemID('');
@@ -200,7 +199,6 @@ class cs_announcement_item extends cs_item {
    function cloneCopy() {
       $clone_item = clone $this; // "clone" needed for php5
       $group_list = $this->getGroupList();
-      $group_list;
       $clone_item->setGroupList($group_list);
       $institution_list = $this->getInstitutionList();
       $clone_item->setInstitutionList($institution_list);

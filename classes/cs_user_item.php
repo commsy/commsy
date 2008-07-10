@@ -85,27 +85,6 @@ class cs_user_item extends cs_item {
       $this->_setValue('auth_source', $value);
    }
 
-   /** get groups of a user
-   * this method returns a list of groups which are linked to the user
-   *
-   * @return object cs_list a list of groups (cs_label_item)
-   */
-   function getGroupList () {
-      #$group_manager = $this->_environment->getLabelManager();
-      #$group_manager->setTypeLimit(CS_GROUP_TYPE);
-      #return $this->_getLinkedItems($group_manager, CS_GROUP_TYPE);
-      return $this->getLinkedItemList(CS_GROUP_TYPE);
-   }
-
-   /** set groups of a user
-   * this method sets a list of groups which are linked to the user
-   *
-   * @param cs_list list of groups (cs_label_item)
-   */
-   function setGroupList ($value) {
-      $this->_setObject(CS_GROUP_TYPE, $value, FALSE);
-   }
-
    /** set groups of a news item by id
    * this method sets a list of group item_ids which are linked to the user
    *

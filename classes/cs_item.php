@@ -1724,9 +1724,5 @@ class cs_item {
    function setMaterialList ($value) {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
    }
-
-
-
-
 }
 ?>
