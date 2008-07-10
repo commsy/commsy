@@ -94,6 +94,8 @@ function commSyErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
       }
 
       if ( ini_get('display_errors') ) {
+         header("HTTP/1.1 400 Bad Request");
+
          $err  = '<br /><CENTER><TABLE BORDER="1" CELLSPACING="0" CELLPADDING="2" WIDTH="70%" summary="Layout">'."\n";
          $err .= "\t".'<TR><TD COLSPAN="2"><B>PHP Error</B></TD></TR>'."\n";
          $err .= "\t".'<TR><TD>Type: </TD><TD>'.$errortype[$errno].'</TD></TR>'."\n";
