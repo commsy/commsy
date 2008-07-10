@@ -18,6 +18,7 @@
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='createUserIN'>
+  <part name='portal_id' type='xsd:integer'/>
   <part name='firstname' type='xsd:string'/>
   <part name='lastname' type='xsd:string'/>
   <part name='mail' type='xsd:string'/>
