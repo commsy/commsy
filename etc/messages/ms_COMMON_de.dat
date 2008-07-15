@@ -304,7 +304,7 @@ $message["COMMON_IN"]["de"] = "im";
 $message["COMMON_INFOBOX_FURTHER_INFORMATION"]["de"] = "Link zum Eintrag";
 $message["COMMON_INFORMATION_BOX"]["de"] = "Hinweistext auf der Home";
 $message["COMMON_INFORMATION_BOX_DESC"]["de"] = "Platzieren Sie zentrale Informationen direkt auf der Einstiegsseite.";
-$message["COMMON_INFORMATION_BOX_ID_ENTRY"]["de"] = "Sie können ein Material, eine Diskussion, eine Aufgabe, ein Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen.
+$message["COMMON_INFORMATION_BOX_ID_ENTRY"]["de"] = "Sie können ein Material, eine Aufgabe, einen Termin oder eine Ankündigung als prominenten Hinweistext auf der Home anzeigen.
 <br/>Bitte geben Sie die Referenznummer des gewünschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).";
 $message["COMMON_INFORMATION_BOX_SHORT"]["de"] = "Hinweistext auf der Home";
 $message["COMMON_INFORMATION_INDEX"]["de"] = "Wichtiger Hinweis";

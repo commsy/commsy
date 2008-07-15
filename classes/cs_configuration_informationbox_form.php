@@ -100,9 +100,6 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
             case 'material':
                $is_entry = true;
                break;
-            case 'discussion':
-               $is_entry = true;
-               break;
             case 'todo':
                $is_entry = true;
                break;
