@@ -113,11 +113,8 @@ class cs_wiki_manager extends cs_manager {
          global $c_commsy_path_file;
          copy($c_commsy_path_file.'/etc/pmwiki/wiki_index.php','index.php');
       }
-      if ($item->isPortal()){
-         $str = "<?php include('../../pmwiki.php');?>";
-      } else {
-         $str = "<?php include('../../../pmwiki.php');?>";
-      }
+      global $c_pmwiki_absolute_path_file;
+      $str = "<?php include('".$c_pmwiki_absolute_path_file."/pmwiki.php');?>";
       file_put_contents('index.php',$str);
 
       if ( $item->isPortal() ) {
