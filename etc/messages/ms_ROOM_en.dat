@@ -42,6 +42,7 @@ $message["ROOM_CR_UNIVERSITY_CONTEXT_DESCRIPTION"]["en"] = "These are the worksp
 <li>Topics</li>
 <li>Institutions</li>
 </ul>";
+$message["ROOM_DELETE_BUTTON"]["en"] = "Delete room";
 $message["ROOM_GR_BUSINESS_CONTEXT_DESCRIPTION"]["en"] = "These are the workspace rubrics:
 <ul>
 <li>Announcements</li>

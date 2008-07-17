@@ -957,7 +957,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if ( !empty($this->_iid) and $this->_iid != 'NEW' and $this->_type != CS_SERVER_TYPE ) {
                  // Projektraum
          if ($this->_environment->inProjectRoom()) {
-            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('COMMON_DELETE_BUTTON'));
+            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('ROOM_DELETE_BUTTON'));
            // aus Gemeinschaftsraum
          } elseif ($this->_environment->inCommunityRoom()) {
                 // Projektraum aus Gemeinschaftsraum heraus
@@ -965,7 +965,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                 $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'');
                 // im Gemeinschaftsraum
              } else {
-                $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('COMMON_DELETE_BUTTON'));
+                $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'',getMessage('ROOM_DELETE_BUTTON'));
              }
            //aus Privatraum
          } elseif ($this->_environment->inPrivateRoom()) {
@@ -975,7 +975,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
                  }
          } else {
-            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),getMessage('COMMON_DELETE_BUTTON'));
+            $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),getMessage('ROOM_DELETE_BUTTON'));
          }
       } elseif ( $this->_type == CS_SERVER_TYPE ) {
          $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'));

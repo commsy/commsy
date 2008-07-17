@@ -277,7 +277,7 @@ if ($current_user->isGuest()) {
       }
 
       // delete item
-      if ( isOption($command, getMessage('COMMON_DELETE_BUTTON')) ) {
+      if ( isOption($command, getMessage('ROOM_DELETE_BUTTON')) ) {
          $params = $environment->getCurrentParameterArray();
          $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),$environment->getCurrentFunction(),$params));
       }

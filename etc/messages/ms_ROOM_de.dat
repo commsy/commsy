@@ -42,6 +42,7 @@ $message["ROOM_CR_UNIVERSITY_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <li>Themen</li>
 <li>Institutionen</li>
 </ul>";
+$message["ROOM_DELETE_BUTTON"]["de"] = "Raum löschen";
 $message["ROOM_GR_BUSINESS_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <ul>
 <li>Ankündigungen</li>
