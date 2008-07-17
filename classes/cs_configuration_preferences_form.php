@@ -1214,7 +1214,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if (isset($portal_item) ) {
          $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
          if ( isset($this->_form_post['communityrooms']) and $project_room_link_status !='optional'){
-            if ( ($this->_form_post['communityrooms'] == -1 or $this->_form_post['communityrooms'] == 'disabled') and !isset($this->_form_post['communityroomlist']) ){
+            if ( ($this->_form_post['communityrooms'] == -1 or $this->_form_post['communityrooms'] == 'disabled' or $this->_form_post['communityrooms']=='--------------------') and !isset($this->_form_post['communityroomlist']) ){
                $this->_form->setFailure('communityrooms','mandatory');
                $this->_error_array[] = getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',getMessage('PREFERENCES_COMMUNITY_ROOMS'));
             }
