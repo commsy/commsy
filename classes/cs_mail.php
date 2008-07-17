@@ -223,7 +223,7 @@ class cs_mail extends Mail
             $to_array = array_unique($to_array);
             foreach ($to_array as $email) {
                if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
-                  $result = $this->mail->send($email, $multipart_header, $multipart_message);
+                  $result = $this->mail->send($email, $multipart_header, $multipart_message,$this->from_email);
                   if (!$result) {
                      $this->_error_array[] = $email;
                   }
@@ -247,7 +247,7 @@ class cs_mail extends Mail
                $multipart_header["Bcc"] = $this->bcc_recipients;
             }
             if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
-               $result = $this->mail->send($this->recipients, $multipart_header, $multipart_message);
+               $result = $this->mail->send($this->recipients, $multipart_header, $multipart_message,$this->from_email);
                if (!$result) {
                   $this->_error_array[] = $this->recipients;
                }

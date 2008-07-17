@@ -80,7 +80,7 @@ class Mail extends PEAR
      * @access public
      * @deprecated use Mail_mail::send instead
      */
-    function send($recipients, $headers, $body)
+    function send($recipients, $headers, $body, $return = '')
     {
         // if we're passed an array of recipients, implode it.
         if (is_array($recipients)) {
@@ -102,7 +102,11 @@ class Mail extends PEAR
         // flatten the headers out.
         list(,$text_headers) = Mail::prepareHeaders($headers);
 
-        return mail($recipients, $subject, $body, $text_headers);
+        if ( !empty($return) ) {
+           $return = '-f'.$return;
+        }
+
+        return mail($recipients, $subject, $body, $text_headers, $return);
 
     }
 
