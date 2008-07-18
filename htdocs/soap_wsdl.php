@@ -18,13 +18,14 @@
   <part name='xml_list' type='xsd:string'/>
 </message>
 <message name='createUserIN'>
+  <part name='session_id' type='xsd:string'/>
   <part name='portal_id' type='xsd:integer'/>
   <part name='firstname' type='xsd:string'/>
   <part name='lastname' type='xsd:string'/>
   <part name='mail' type='xsd:string'/>
   <part name='user_id' type='xsd:string'/>
   <part name='user_pwd' type='xsd:string'/>
-  <part name='insert_pwd' type='xsd:string'/>
+  <part name='agb' type='xsd:boolean'/>
 </message>
 <message name='createUserOUT'>
   <part name='session_id' type='xsd:string'/>

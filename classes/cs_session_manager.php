@@ -288,10 +288,10 @@ class cs_session_manager {
       $retour = '';
       $query = 'SELECT session_id FROM session WHERE session_value LIKE "%'.encode(AS_DB,$user_id).'%" and (session_value LIKE "%i:'.encode(AS_DB,$portal_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$portal_id).'\"'.'%") ORDER BY created DESC;';
       $result = $this->_db_conntector->performQuery($query);
-      if ( !isset($result) or empty($result[0]) ) {
+      if ( !isset($result) ) {
          include('functions/error_functions.php');
          trigger_error('Problems selecting session_id values for: '.$user_id.' - '.$portal_id.' - SQL-Query:'.$query.'.', E_USER_WARNING);
-      } else {
+      } elseif ( !empty($result[0]) ) {
          $session_row = $result[0];
          $session_id = $session_row['session_id'];
          if ( !empty($session_id) ) {
