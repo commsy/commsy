@@ -142,8 +142,14 @@ class cs_connection_soap {
       return $xml;
    }
 
-   public function createUser ($portal_id,$session_id,$firstname,$lastname,$mail,$user_id,$user_pwd,$agb = false) {
+   public function createUser ($session_id,$portal_id,$firstname,$lastname,$mail,$user_id,$user_pwd,$agb = false) {
       $session_id = $this->_encode_input($session_id);
+      $portal_id = $this->_encode_input($portal_id);
+      if ( is_numeric($session_id) ) {
+         $temp = $session_id;
+         $session_id = $portal_id;
+         $portal_id = $temp;
+      }
       if ( !empty($session_id) ) {
          $this->_environment->setSessionID($session_id);
          $session_item = $this->_environment->getSessionItem();
