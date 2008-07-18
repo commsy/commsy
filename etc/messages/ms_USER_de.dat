@@ -124,6 +124,17 @@ $message["USER_PASSWORD2_DESC"]["de"] = "Zur Sicherheit müssen Sie das Passwort 
 $message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort ändern";
 $message["USER_PASSWORD_DESC"]["de"] = "Bitte suchen Sie sich ein Passwort aus.";
 $message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte überprüfen Sie Ihre Passworte.";
+$message["USER_PASSWORD_ERROR_HACKING"]["de"] = "Sie haben unberechtigt versucht, sich Zugang zur Kennung %1 zu verschaffen. Dieser Vorgang wird der Portal-Moderation gemeldet.";
+$message["USER_PASSWORD_ERROR_HACKING_MAIL_BOBY"]["de"] = "Es hat den Versuch einer feindlichen Übernahme einer Kennung gegeben.
+
+Über diesen Account erfolgte der Angriff:
+Kennung: %1
+Authentifizierungsquelle: %2
+
+Folgender Account sollte übernommen werden:
+Kennung: %3
+Authentifizierungsquelle: %4";
+$message["USER_PASSWORD_ERROR_HACKING_MAIL_SUBJECT"]["de"] = "%1: Versuch der Übernahme einer Kennung";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort generieren";
 $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Sie haben soeben ein neues Passwort generiert. Es wurde Ihnen bereits per Mail an die Adresse <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie sofort Ihr Passwort, wenn Sie sich das nächste Mal anmelden.";
 $message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein neues Passwort per E-Mail zugeschickt. Sie sollten nach Erhalt der E-Mail das Passwort sofort ändern, da Ihr neues Passwort im Klartext übertragen wird.";

@@ -124,6 +124,17 @@ $message["USER_PASSWORD2_DESC"]["en"] = "Please repeat your password.";
 $message["USER_PASSWORD_CHANGE_HEADLINE"]["en"] = "Change password";
 $message["USER_PASSWORD_DESC"]["en"] = "Please enter a password.";
 $message["USER_PASSWORD_ERROR"]["en"] = "Please check your passwords. They are not identical.";
+$message["USER_PASSWORD_ERROR_HACKING"]["en"] = "You tried to take over the account %1. The portal moderation will be informed.";
+$message["USER_PASSWORD_ERROR_HACKING_MAIL_BOBY"]["en"] = "There was an attack at an account.
+
+This account tried to overtake:
+User-ID: %1
+Authentication Source ID: %2
+
+This account should be overtaken:
+User-ID: %3
+Authentication Source ID: %4";
+$message["USER_PASSWORD_ERROR_HACKING_MAIL_SUBJECT"]["en"] = "%1: Try to overtake an account";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Generate password";
 $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "You have just generated a new password. It was sent to your e-mail address <span style=&quot;font-weight: bold;&quot;>%2</span>. Please change your password immediately, when you login next time.";
 $message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can gererate yourself a new password. Since this new password will be transmitted to you in an unencrypted email we strongly recommend you to change it a soon as possible for security reasons.";
