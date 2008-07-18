@@ -222,18 +222,32 @@ class cs_view {
 
    //Text functions --------------------------------------------------------------------------------------------------------------------------------------------
 
+   private function _cleanBadCode ( $text ) {
+
+      $search = array();
+      $replace = array();
+
+      $search[]  = '§<([/]{0,1}[j|J][a|A][v|V][a|A][s|S][c|C][r|R][i|I][p|P][t|T])§';
+      $replace[] = '&lt;$1';
+      $search[]  = '§<([/]{0,1}[s|S][c|C][r|R][i|I][p|P][t|T])§';
+      $replace[] = '&lt;$1';
+      $search[]  = '§<([/]{0,1}[j|J][s|S][c|C][r|R][i|I][p|P][t|T])§';
+      $replace[] = '&lt;$1';
+      $search[]  = '§<(\?)§';
+      $replace[] = '&lt;$1';
+      $search[]  = '§(\?)>§';
+      $replace[] = '$1&gt;';
+      $search[]  = '§<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])§';
+      $replace[] = '&lt;$1';
+      $search[]  = '§<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])§';
+      $replace[] = '&lt;$1';
+      $text = preg_replace($search,$replace,$text);
+
+      return $text;
+   }
    function _cs_htmlspecialchars ($text) {
       global $c_html_textarea;
-      $text = str_replace('<javascript','&lt;javascript',$text);
-      $text = str_replace('</javascript>','&lt;/javascript&gt;',$text);
-      $text = str_replace('<script','&lt;script',$text);
-      $text = str_replace('</script>','&lt;/script&gt;',$text);
-      $text = str_replace('<jscript','&lt;jscript',$text);
-      $text = str_replace('</jscript>','&lt;/jscript&gt;',$text);
-      $text = str_replace('<?','&lt;?',$text);
-      $text = str_replace('?>','?&gt;',$text);
-      $text = str_replace('<object','&lt;object',$text);
-      $text = str_replace('<embed','&lt;embed',$text);
+      $text = $this->_cleanBadCode($text);
       if ( !isset($c_html_textarea) or !$c_html_textarea ) {
          $text = str_replace('<img','&lt;img',$text);
       }
@@ -241,18 +255,9 @@ class cs_view {
    }
 
    function _cs_htmlspecialchars1 ($text) {
-      global $c_html_textarea;
-      $text = str_replace('<javascript','&lt;javascript',$text);
-      $text = str_replace('</javascript>','&lt;/javascript&gt;',$text);
-      $text = str_replace('<script','&lt;script',$text);
-      $text = str_replace('</script>','&lt;/script&gt;',$text);
-      $text = str_replace('<jscript','&lt;jscript',$text);
-      $text = str_replace('</jscript>','&lt;/jscript&gt;',$text);
-      $text = str_replace('<?','&lt;?',$text);
-      $text = str_replace('?>','?&gt;',$text);
-      $text = str_replace('<object','&lt;object',$text);
-      $text = str_replace('<embed','&lt;embed',$text);
+      $text = $this->_cleanBadCode($text);
       $text = htmlspecialchars($text);
+      global $c_html_textarea;
       if ( !isset($c_html_textarea) or !$c_html_textarea ) {
          $text = str_replace('<img','&lt;img',$text);
       }
@@ -260,16 +265,7 @@ class cs_view {
    }
 
    function _cs_htmlspecialchars2 ($text) {
-      $text = str_replace('<javascript','&lt;javascript',$text);
-      $text = str_replace('</javascript>','&lt;/javascript&gt;',$text);
-      $text = str_replace('<script','&lt;script',$text);
-      $text = str_replace('</script>','&lt;/script&gt;',$text);
-      $text = str_replace('<jscript','&lt;jscript',$text);
-      $text = str_replace('</jscript>','&lt;/jscript&gt;',$text);
-      $text = str_replace('<?','&lt;?',$text);
-      $text = str_replace('?>','?&gt;',$text);
-      $text = str_replace('<object','&lt;object',$text);
-      $text = str_replace('<embed','&lt;embed',$text);
+      $text = $this->_cleanBadCode($text);
       return $text;
    }
 
