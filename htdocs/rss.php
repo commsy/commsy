@@ -415,9 +415,15 @@ if ( isset($_GET['cid']) ) {
          unset($pre_title);
       }
       unset($curr_context);
-      if ( strlen($description) > $desc_len ) {
-         $description = chunkText($description,$desc_len);
-      } elseif ($description == '0') {
+      if ( isset($description)
+           and !empty($description)
+         ) {
+         if ( strlen($description) > $desc_len ) {
+            $description = chunkText($description,$desc_len);
+         } elseif ($description == '0') {
+            $description = '';
+         }
+      } else {
          $description = '';
       }
       if ( !empty($title) ) {
