@@ -145,12 +145,6 @@ You can change your password via this url in the next % minutes from the compute
 ---
 
 If you have not followed the link &quot;password forget?&quot;, please delete this email. Your password has not changed und nobody capter your account.";
-$message["USER_PASSWORD_MAIL_BODY_OLD"]["en"] = "You have just generated a new password. Now it is:
-
-%2
-
-Please log on to CommSy %1 and change your password immediately:
-Click on &quot;change password&quot; under your name aufter log in.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["en"] = "%1: Change password";
 $message["USER_PASSWORD_NEW"]["en"] = "new password";
 $message["USER_PASSWORD_NEW2"]["en"] = "repeat new password";

@@ -142,17 +142,11 @@ wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
 
 %3
 
-können Sie Ihr Passwort in den nächsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar,von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
+können Sie Ihr Passwort in den nächsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
 
 ---
 
 Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
-$message["USER_PASSWORD_MAIL_BODY_OLD"]["de"] = "Sie haben soeben ein neues Passwort generiert. Es lautet jetzt:
-
-%2
-
-Bitte melden Sie sich sofort im CommSy %1 an und ändern Sie Ihr Passwort wieder:
-Klicken Sie dazu unter Ihrem Namen auf der linken Seite auf &quot;Passwort ändern&quot;, nachdem Sie sich eingeloggt haben.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: Passwortänderung";
 $message["USER_PASSWORD_NEW"]["de"] = "neues Passwort";
 $message["USER_PASSWORD_NEW2"]["de"] = "neues Passwort wiederholen";
