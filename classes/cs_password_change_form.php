@@ -59,9 +59,6 @@ class cs_password_change_form extends cs_rubric_form {
    function _createForm () {
       $this->_form->addHeadline('title',getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
       if ($this->_auth_source->allowChangePassword()) {
-         //We may edit PW
-         $this->_form->addHidden('user_id',$this->_user->getUserID());
-         $this->_form->addHidden('auth_source',$this->_user->getAuthSource());
          $this->_form->addPassword('password','',getMessage('USER_PASSWORD'),getMessage('USER_PASSWORD_DESC'),'','21',true);
          $this->_form->addPassword('password2','',getMessage('USER_PASSWORD2'),getMessage('USER_PASSWORD2_DESC'),'','21',true);
          $this->_form->addButtonBar('option',getMessage('PASSWORD_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
@@ -89,77 +86,6 @@ class cs_password_change_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      $current_user_item = $this->_environment->getCurrentUserItem();
-      if ( $current_user_item->getAuthSource() != $this->_form_post['auth_source']
-           or $current_user_item->getUserID() != $this->_form_post['user_id']
-         ) {
-         $this->_error_array[] = getMessage('USER_PASSWORD_ERROR_HACKING',$this->_form_post['user_id']);
-
-         // portal: send mail to moderators in different languages
-         if ( !$this->_environment->inPortal()
-              or !$this->_environment->inServer()
-            ) {
-            $portal_user = $current_user_item->getRelatedCommSyUserItem();
-         } else {
-            $portal_user = $current_user_item;
-         }
-         $portal_item = $this->_environment->getCurrentPortalItem();
-         $user_list = $portal_item->getModeratorList();
-         $email_addresses = array();
-         $user_item = $user_list->getFirst();
-         $recipients = '';
-         $language = $portal_item->getLanguage();
-         while ($user_item) {
-            if ( $language == 'user'
-                 and $user_item->getLanguage() != 'browser'
-               ) {
-               $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
-            } elseif ( $language == 'user'
-                       and $user_item->getLanguage() == 'browser'
-                     ) {
-               $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
-            } else {
-               $email_addresses[$language][] = $user_item->getEmail();
-            }
-            $recipients .= $user_item->getFullname().LF;
-            $user_item = $user_list->getNext();
-         }
-         $save_language = $this->_translator->getSelectedLanguage();
-         foreach ($email_addresses as $key => $value) {
-            $this->_translator->setSelectedLanguage($key);
-            if (count($value) > 0) {
-               include_once('classes/cs_mail.php');
-               $mail = new cs_mail();
-               $mail->set_to(implode(',',$value));
-               $server_item = $this->_environment->getServerItem();
-               $default_sender_address = $server_item->getDefaultSenderAddress();
-               if (!empty($default_sender_address)) {
-                   $mail->set_from_email($default_sender_address);
-               } else {
-                   $mail->set_from_email('@');
-               }
-               $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-               $mail->set_reply_to_name($portal_user->getFullname());
-               $mail->set_reply_to_email($portal_user->getEmail());
-               $mail->set_subject($this->_translator->getMessage('USER_PASSWORD_ERROR_HACKING_MAIL_SUBJECT',$portal_item->getTitle()));
-               $body = $this->_translator->getMessage('MAIL_AUTO',$this->_translator->getDateInLang(getCurrentDateTimeInMySQL()),$this->_translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-               $body .= LF.LF;
-               $body .= $this->_translator->getMessage('USER_PASSWORD_ERROR_HACKING_MAIL_BOBY',
-                                                       $current_user_item->getUserID(),
-                                                       $current_user_item->getAuthSource(),
-                                                       $this->_form_post['user_id'],
-                                                       $this->_form_post['auth_source']
-                                                       );
-               $body .= LF.LF;
-               $body .= $this->_translator->getMessage('MAIL_SEND_TO',$recipients);
-               $body .= LF;
-               $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=detail&iid='.$portal_user->getItemID();
-               $mail->set_message($body);
-               $mail->send();
-            }
-         }
-         $this->_translator->setSelectedLanguage($save_language);
-      }
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
          $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password');

@@ -42,35 +42,36 @@ class cs_password_change_page extends cs_left_page {
       $form->loadValues();
 
       // cancel
-      if ( !empty($this->_command) and
-	isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
+      if ( !empty($this->_command)
+           and isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
          ) {
          $this->_redirect_back();
       }
 
       // Save item
       if ( !empty($this->_command)
-	  and isOption($this->_command, $this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'))
-	) {
-	$correct = $form->check();
-	if ( $correct ) {
-	   $authentication = $this->_environment->getAuthenticationObject();
-            if ($this->_post_vars['user_id'] != 'root') {
+           and isOption($this->_command, $this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'))
+         ) {
+         $correct = $form->check();
+         if ( $correct ) {
+            $current_user = $this->_environment->getCurrentUserItem();
+            $authentication = $this->_environment->getAuthenticationObject();
+            if ( !$current_user->isRoot() ) {
                $session_item = $this->_environment->getSessionItem();
-               $auth_manager = $authentication->getAuthManager($this->_post_vars['auth_source']);
+               $auth_manager = $authentication->getAuthManager($current_user->getAuthSource());
             } else {
                $server_item = $this->_environment->getServerItem();
                $auth_manager = $authentication->getAuthManagerByAuthSourceItem($server_item->getDefaultAuthSourceItem());
             }
-            $auth_manager->changePassword($this->_post_vars['user_id'],$this->_post_vars['password']);
+            $auth_manager->changePassword($current_user->getUserID(),$this->_post_vars['password']);
             $error_number = $auth_manager->getErrorNumber();
             if (empty($error_number)) {
-	      $success = true;
+               $success = true;
             }
-	}
+         }
       }
       if (!$success) {
-	return $this->_show_form($form);
+         return $this->_show_form($form);
       } else {
          $this->_redirect_back();
       }
