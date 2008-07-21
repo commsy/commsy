@@ -255,7 +255,6 @@ class cs_view {
    }
 
    function _cs_htmlspecialchars1 ($text) {
-      $text = $this->_cleanBadCode($text);
       $text = htmlspecialchars($text);
       global $c_html_textarea;
       if ( !isset($c_html_textarea) or !$c_html_textarea ) {

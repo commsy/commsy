@@ -523,7 +523,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       // form fields
       $this->_form->addHidden('iid',$this->_iid);
       if (!$this->_environment->inPrivateRoom() or $current_module =='myroom'){
-        $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',50,46,true);
+        $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,46,true);
         if ( empty($this->_iid) or $this->_iid == 'NEW' or ($this->_type == CS_PROJECT_TYPE and $this->_environment->inCommunityRoom())
            ) {
             $this->_form->addHidden('show_title','');
@@ -534,8 +534,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_form->addCheckbox('show_title',
                                       'yes',
                                       '',
-                                      '',
-                                      getMessage('PREFERENCES_SHOW_TITLE_OPTION'),
+                                      $this->_translator->getMessage('COMMON_TITLE'),
+                                      $this->_translator->getMessage('PREFERENCES_SHOW_TITLE_OPTION'),
                                       ''
                                      );
         }

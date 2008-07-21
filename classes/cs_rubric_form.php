@@ -223,11 +223,10 @@ class cs_rubric_form {
     * this methods check mandatory fields
     *
     * return boolean is mandatory ?
-    *
-    * @author CommSy Development Group
     */
    function check () {
       $this->_form->checkMandatory();
+      $this->_form->checkValues();
       $this->_error_array = $this->_form->getErrorArray();
       $this->_checkValues();
       if (count($this->_error_array) == 0) {

@@ -1381,12 +1381,6 @@ function getShortMonthNameToInt($month) {
          case 'EN':
             $retour = $this->getMessage('EN');
             break;
-         case 'RO':
-            $retour = $this->getMessage('RO');
-            break;
-         case 'RU':
-            $retour = $this->getMessage('RU');
-            break;
       }
       return $retour;
    }
@@ -1400,12 +1394,6 @@ function getShortMonthNameToInt($month) {
             break;
          case 'EN':
             $retour = $this->getMessageInLang($language,'EN');
-            break;
-         case 'RO':
-            $retour = $this->getMessageInLang($language,'RO');
-            break;
-         case 'RU':
-            $retour = $this->getMessageInLang($language,'RU');
             break;
       }
       return $retour;

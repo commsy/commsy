@@ -1189,6 +1189,104 @@ class cs_form {
       }
    }
 
+   public function checkValues () {
+      $result = true;
+      $this->_formElements->resetCursor();
+      while ( $this->_formElements->isCurrentValid() ) {
+         $current = $this->_formElements->getCurrent();
+
+         // radio
+         if ($current['type'] == 'radio') {
+            if ( !empty($current['checked']) ) {
+               $value_from_form = $current['checked'];
+               $found = false;
+               foreach ($current['value'] as $value) {
+                  if ( $value_from_form == $value['value'] ) {
+                     $found = true;
+                     break;
+                  }
+               }
+               if ( !$found ) {
+                  $current['failure'] = true;
+                  $current['failuretype'] = 'value';
+                  if (empty($current['failuretext'])) {
+                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                  }
+                  $this->_formElements->replaceElement($current);
+                  $result = false;
+               }
+            }
+         }
+
+         // select box
+         elseif ($current['type'] == 'select') {
+            if ( !empty($current['selected']) ) {
+               foreach ( $current['selected'] as $selected ) {
+                  $value_from_form = $selected;
+                  $found_array = array();
+                  foreach ($current['options'] as $value) {
+                     if ( $value_from_form == $value['value'] ) {
+                        $found_array[] = $value['value'];
+                        break;
+                     }
+                  }
+               }
+               if ( count($found_array) != count($current['selected']) ) {
+                  $current['failure'] = true;
+                  $current['failuretype'] = 'value';
+                  if (empty($current['failuretext'])) {
+                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                  }
+                  $this->_formElements->replaceElement($current);
+                  $result = false;
+               }
+            }
+         }
+
+         // checkbox group
+         elseif ($current['type'] == 'checkboxgroup') {
+            if ( !empty($current['selected']) ) {
+               foreach ( $current['selected'] as $selected ) {
+                  $value_from_form = $selected;
+                  $found_array = array();
+                  foreach ($current['value'] as $value) {
+                     if ( $value_from_form == $value['value'] ) {
+                        $found_array[] = $value['value'];
+                        break;
+                     }
+                  }
+               }
+               if ( count($found_array) != count($current['selected']) ) {
+                  $current['failure'] = true;
+                  $current['failuretype'] = 'value';
+                  if (empty($current['failuretext'])) {
+                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                  }
+                  $this->_formElements->replaceElement($current);
+                  $result = false;
+               }
+            }
+         }
+
+         // checkbox
+         elseif ($current['type'] == 'checkbox') {
+            if ( !empty($current['ischecked']) ) {
+               if ( $current['ischecked'] != $current['value'] ) {
+                  $current['failure'] = true;
+                  $current['failuretype'] = 'value';
+                  if (empty($current['failuretext'])) {
+                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                  }
+                  $this->_formElements->replaceElement($current);
+                  $result = false;
+               }
+            }
+         }
+         $this->_formElements->moveNext();
+      }
+      return $result;
+   }
+
         /** check mandatory fields
          * checks a given form with values whether the mandatory fields are filled
          *
