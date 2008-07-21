@@ -274,6 +274,7 @@ $message["COMMON_ERROR_DATABASE"]["en"] = "Sorry, a database error occured. The 
 $message["COMMON_ERROR_FIELD"]["en"] = "Please fill in field <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_FIELD_DATE_INVALID"]["en"] = "Please provide valid date format MM/DD/YYYY.";
 $message["COMMON_ERROR_INFORMATION_BOX_ID_ENTRY"]["en"] = "Please select a correct content ID number of an undeleted entry. To get the referring content ID number, view the piece of content you want to highlight in your browser, and click on the &quot;+&quot; where CommSy gives &quot;Last edit&quot; and versioning information.  You can simply copy and paste the content ID number here.";
+$message["COMMON_ERROR_MANIPULATION"]["en"] = "Manipulation of values at: <span class=&quot;bold&quot;>%1</span>";
 $message["COMMON_ERROR_SELECT"]["en"] = "Please select something for <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_TAG_ENTRY"]["en"] = "Please select a <span style=&quot;font-weight:bold;&quot;>category</span>.";
 $message["COMMON_FACTS"]["en"] = "Basics";

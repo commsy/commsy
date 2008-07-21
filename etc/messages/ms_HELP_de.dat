@@ -402,7 +402,7 @@ Um einen Link auf einen CommSy-Eintrag mit einem Wort als Link zu erhalten, schr
 
 Das gleiche Vorgehen funktioniert auch mit einer beliebigen Web-Adresse: CommSy[http://www.commsy.de]. Hier wird ein Link erstellt, bei dem nach einem Klick auf das Wort &quot;CommSy&quot; die angegebene Seite geöffnet wird.<br /><br />
 
-Um einen Satz mit Leerzeichen als Link zu benutzen, verwenden Sie folgendes Konstrukt: [&lt;Adresse&gt;|&lt;Text mit Leerzeichen&gt;|&lt;flag&gt;]. Dabei ist <span style=&quot;font-style:italic;&quot;>&lt;Adresse&gt;</span> die zu öffnende Web-Adresse und <span style=&quot;font-style:italic;&quot;>&lt;Text mit Leerzeichen&gt;</span> ein beliebiger Text. <span style=&quot;font-style:italic;&quot;>&lt;flag&gt;</span> gibt an, ob die Website im gleichen Browserfenster oder in einem neuen geöffnet werden soll: &quot;_blank&quot; öffnet in einem neuen Fenster, &quot;internal&quot; nutzt das selbe Fenster.<br />
+Um einen Satz mit Leerzeichen als Link zu benutzen, verwenden Sie folgendes Konstrukt: [<Adresse>|<Text mit Leerzeichen>|<flag>]. Dabei ist <span style=&quot;font-style:italic;&quot;><Adresse></span> die zu öffnende Web-Adresse und <span style=&quot;font-style:italic;&quot;><Text mit Leerzeichen></span> ein beliebiger Text. <span style=&quot;font-style:italic;&quot;><flag></span> gibt an, ob die Website im gleichen Browserfenster oder in einem neuen geöffnet werden soll: &quot;_blank&quot; öffnet in einem neuen Fenster, &quot;internal&quot; nutzt das selbe Fenster.<br />
 
 <br />
 
@@ -480,9 +480,9 @@ Das Bild wird dadurch an der Stelle im Text eingefügt, an der Sie es angegeben h
 
 Um das Bild vom Text umfliessen zu lassen, gibt es eine Erweiterung des obigen Befehls:<br />
 
-[&lt;Bildname&gt;|&lt;Position&gt;]<br />
+[<Bildname>|<Position>]<br />
 
-<span style=&quot;font-style:italic;&quot;>&lt;Bildname&gt;</span> ist wie oben der Name des an das Material angehängten Bildes,  <span style=&quot;font-style:italic;&quot;>&lt;Position&gt;</span> bestimmt, an welchem Rand das Bild stehen soll:<br />
+<span style=&quot;font-style:italic;&quot;><Bildname></span> ist wie oben der Name des an das Material angehängten Bildes,  <span style=&quot;font-style:italic;&quot;><Position></span> bestimmt, an welchem Rand das Bild stehen soll:<br />
 
 <ul>
 

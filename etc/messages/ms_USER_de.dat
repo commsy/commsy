@@ -117,6 +117,7 @@ $message["USER_MSN"]["de"] = "MSN";
 $message["USER_NAME"]["de"] = "Name";
 $message["USER_NEVER_LOGIN"]["de"] = "noch nie";
 $message["USER_NORMAL_USER"]["de"] = "BenutzerIn";
+$message["USER_OLD_PASSWORD_ERROR"]["de"] = "Das aktuelle Passwort ist falsch.";
 $message["USER_OWN_INFORMATION"]["de"] = "Eigene Personendaten";
 $message["USER_PASSWORD"]["de"] = "Passwort";
 $message["USER_PASSWORD2"]["de"] = "Passwort wiederholen";
@@ -124,27 +125,32 @@ $message["USER_PASSWORD2_DESC"]["de"] = "Zur Sicherheit müssen Sie das Passwort 
 $message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort ändern";
 $message["USER_PASSWORD_DESC"]["de"] = "Bitte suchen Sie sich ein Passwort aus.";
 $message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte überprüfen Sie Ihre Passworte.";
-$message["USER_PASSWORD_ERROR_HACKING"]["de"] = "Sie haben unberechtigt versucht, sich Zugang zur Kennung %1 zu verschaffen. Dieser Vorgang wird der Portal-Moderation gemeldet.";
-$message["USER_PASSWORD_ERROR_HACKING_MAIL_BOBY"]["de"] = "Es hat den Versuch einer feindlichen Übernahme einer Kennung gegeben.
+$message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort vergessen?";
+$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurde an <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie Ihr Passwort innerhalb der nächsten 15 Minuten.
+<br/><br/>
+Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
+$message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
+$message["USER_PASSWORD_MAIL_BODY"]["de"] = "für Ihre Kennung %1 auf dem CommSy-Portal %2 wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
 
-Über diesen Account erfolgte der Angriff:
-Kennung: %1
-Authentifizierungsquelle: %2
+Sofern Sie diesen Mechanismus aktiviert haben, folgen Sie bitte folgender URL:
 
-Folgender Account sollte übernommen werden:
-Kennung: %3
-Authentifizierungsquelle: %4";
-$message["USER_PASSWORD_ERROR_HACKING_MAIL_SUBJECT"]["de"] = "%1: Versuch der Übernahme einer Kennung";
-$message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort generieren";
-$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Sie haben soeben ein neues Passwort generiert. Es wurde Ihnen bereits per Mail an die Adresse <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie sofort Ihr Passwort, wenn Sie sich das nächste Mal anmelden.";
-$message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein neues Passwort per E-Mail zugeschickt. Sie sollten nach Erhalt der E-Mail das Passwort sofort ändern, da Ihr neues Passwort im Klartext übertragen wird.";
-$message["USER_PASSWORD_MAIL_BODY"]["de"] = "Sie haben soeben ein neues Passwort generiert. Es lautet jetzt:
+%3
+
+Über diesen Link können Sie Ihr Passwort neu setzen. Er ist %4 Minuten von dem Rechner aus aktiv, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
+
+---
+
+Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
+$message["USER_PASSWORD_MAIL_BODY_OLD"]["de"] = "Sie haben soeben ein neues Passwort generiert. Es lautet jetzt:
 
 %2
 
 Bitte melden Sie sich sofort im CommSy %1 an und ändern Sie Ihr Passwort wieder:
 Klicken Sie dazu unter Ihrem Namen auf der linken Seite auf &quot;Passwort ändern&quot;, nachdem Sie sich eingeloggt haben.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: Passwortänderung";
+$message["USER_PASSWORD_NEW"]["de"] = "neues Passwort";
+$message["USER_PASSWORD_NEW2"]["de"] = "neues Passwort wiederholen";
+$message["USER_PASSWORD_OLD"]["de"] = "aktuelles Passwort";
 $message["USER_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein persönliches Bild hinzufügen.";
 $message["USER_PICTURE_UPLOADFILE"]["de"] = "Bild";
 $message["USER_PREFERENCES"]["de"] = "Einstellungen";

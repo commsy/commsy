@@ -117,6 +117,7 @@ $message["USER_MSN"]["en"] = "MSN";
 $message["USER_NAME"]["en"] = "Name";
 $message["USER_NEVER_LOGIN"]["en"] = "never logged in";
 $message["USER_NORMAL_USER"]["en"] = "User";
+$message["USER_OLD_PASSWORD_ERROR"]["en"] = "The current password ist wrong.";
 $message["USER_OWN_INFORMATION"]["en"] = "My profile";
 $message["USER_PASSWORD"]["en"] = "Password";
 $message["USER_PASSWORD2"]["en"] = "Repeat password";
@@ -124,27 +125,32 @@ $message["USER_PASSWORD2_DESC"]["en"] = "Please repeat your password.";
 $message["USER_PASSWORD_CHANGE_HEADLINE"]["en"] = "Change password";
 $message["USER_PASSWORD_DESC"]["en"] = "Please enter a password.";
 $message["USER_PASSWORD_ERROR"]["en"] = "Please check your passwords. They are not identical.";
-$message["USER_PASSWORD_ERROR_HACKING"]["en"] = "You tried to take over the account %1. The portal moderation will be informed.";
-$message["USER_PASSWORD_ERROR_HACKING_MAIL_BOBY"]["en"] = "There was an attack at an account.
+$message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Forget password?";
+$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was sent to <span style=&quot;font-weight: bold;&quot;>%2</span>. Please change your password within the next 15 minutes.
+<br/><br/>
+If you are not receiving this email, please contact the portal moderation.";
+$message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.";
+$message["USER_PASSWORD_MAIL_BODY"]["en"] = "the mechanism &quot;password forget&quot; has been activated for your account %1 at the CommSy portal %2.
 
-This account tried to overtake:
-User-ID: %1
-Authentication Source ID: %2
+If you just actived it, please follow this url:
 
-This account should be overtaken:
-User-ID: %3
-Authentication Source ID: %4";
-$message["USER_PASSWORD_ERROR_HACKING_MAIL_SUBJECT"]["en"] = "%1: Try to overtake an account";
-$message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Generate password";
-$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "You have just generated a new password. It was sent to your e-mail address <span style=&quot;font-weight: bold;&quot;>%2</span>. Please change your password immediately, when you login next time.";
-$message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can gererate yourself a new password. Since this new password will be transmitted to you in an unencrypted email we strongly recommend you to change it a soon as possible for security reasons.";
-$message["USER_PASSWORD_MAIL_BODY"]["en"] = "You have just generated a new password. Now it is:
+%3
+
+You can change your password via this url in the next % minutes from the computer which actived this mechanism.
+
+---
+
+If you have not followed the link &quot;password forget?&quot;, please delete this email. Your password has not changed und nobody capter your account.";
+$message["USER_PASSWORD_MAIL_BODY_OLD"]["en"] = "You have just generated a new password. Now it is:
 
 %2
 
 Please log on to CommSy %1 and change your password immediately:
 Click on &quot;change password&quot; under your name aufter log in.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["en"] = "%1: Change password";
+$message["USER_PASSWORD_NEW"]["en"] = "new password";
+$message["USER_PASSWORD_NEW2"]["en"] = "repeat new password";
+$message["USER_PASSWORD_OLD"]["en"] = "current password";
 $message["USER_PICTURE_FILE_DESC"]["en"] = "Add a picture of yourself.";
 $message["USER_PICTURE_UPLOADFILE"]["en"] = "Picture";
 $message["USER_PREFERENCES"]["en"] = "Preferences";
