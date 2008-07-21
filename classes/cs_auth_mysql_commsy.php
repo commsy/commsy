@@ -293,8 +293,9 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
       $update .= " WHERE user_id = '" . encode(AS_DB, $old) . "'";
       $update .= " AND commsy_id='" . encode(AS_DB,$this->_commsy_id) . "'";
       $result = $this->_db_connector->performQuery($update);
-      if (!isset ($result) or !$result) {
-         include_once('functions/error_functions.php');trigger_error('Problems changing user id from query: "' . $update . '"', E_USER_WARNING);
+      if ( !isset ($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems changing user id from query: "' . $update . '"', E_USER_WARNING);
          return false;
       } else {
          return true;

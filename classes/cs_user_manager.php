@@ -1170,7 +1170,7 @@ class cs_user_manager extends cs_manager {
 
    function changeUserID ($new, $old_item) {
      $room_manager = $this->_environment->getRoomManager();
-     $room_list = $room_manager->getRelatedRoomListForUser($old_item);
+     $room_list = $room_manager->getAllRelatedRoomListForUser($old_item);
      $room_item_ids = array();
      $room_item_ids[] = $this->_environment->getCurrentPortalID();
      if ( !$room_list->isEmpty() ) {

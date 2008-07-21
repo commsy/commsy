@@ -65,7 +65,8 @@ class cs_account_change_page extends cs_left_page {
             $success_1 = false;
             $success_2 = false;
             $success_3 = false;
-            if ($this->_post_vars['user_id'] != $portal_user->getUserID()) {
+            if ( !empty($this->_post_vars['user_id'])
+                 and $this->_post_vars['user_id'] != $portal_user->getUserID()) {
                if ($authentication->changeUserID($this->_post_vars['user_id'],$portal_user)) {
                   $session = $this->_environment->getSessionItem();
                   $session_id_old = $session->getSessionID();

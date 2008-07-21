@@ -74,20 +74,23 @@ class cs_account_change_form extends cs_rubric_form {
    function _initForm () {
       // language options
       if ( $this->_environment->inCommunityRoom()
-     or $this->_environment->inProjectRoom()
-     or $this->_environment->inPrivateRoom()
+           or $this->_environment->inProjectRoom()
+           or $this->_environment->inPrivateRoom()
          ) {
          $this->_user = $this->_environment->getPortalUserItem();
       } else {
          $this->_user = $this->_environment->getCurrentUserItem();
       }
-      if ( $this->_user->isRoot()) {
-   $this->_email_room = false;
-   $this->_email_account = false;
-   $this->_account_change = false;
+      if ( !isset($this->_user) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('lost current user item. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+      } elseif ( $this->_user->isRoot()) {
+         $this->_email_room = false;
+         $this->_email_account = false;
+         $this->_account_change = false;
       } elseif ($this->_user->isModerator()) {
          $i=0;
-        $options = array();
+         $options = array();
          $options[$i]['value'] = 'browser';
          $options[$i]['text'] = getMessage('USER_BROWSER_LANGUAGE');
          $i++;
@@ -102,13 +105,13 @@ class cs_account_change_form extends cs_rubric_form {
          }
          $this->_language_options = $options;
 
-   $this->_email_room = true;
-   $this->_email_account = true;
+         $this->_email_room = true;
+         $this->_email_account = true;
       }
       $portal_item = $this->_environment->getCurrentPortalItem();
       $this->_auth_source = $portal_item->getAuthSource($this->_user->getAuthSource());
       if (!$this->_auth_source->allowChangeUserID()) {
-   $this->_account_change = false;
+         $this->_account_change = false;
       }
    }
 
@@ -119,23 +122,19 @@ class cs_account_change_form extends cs_rubric_form {
       // text and options
       $this->_form->addHeadline('merge_account',getMessage('ACCOUNT_CHANGE'));
       if ($this->_account_change) {
-   $this->_form->addTextField('user_id','',getMessage('USER_USER_ID'),'',100,21,true);
+         $this->_form->addTextField('user_id','',getMessage('USER_USER_ID'),'',100,21,true);
       } else {
          $this->_form->addText('user_id_text',getMessage('USER_USER_ID'),'&nbsp;'.$this->_user->getUserID(),'');
-   $this->_form->addHidden('user_id','');
       }
-
-      // auth source
-      $this->_form->addHidden('auth_source','');
 
       if (!empty($this->_language_options)) {
-   $this->_form->addSelect('language',$this->_language_options,'',getMessage('USER_LANGUAGE'),'','','',true,'','','','','','12.6');
+         $this->_form->addSelect('language',$this->_language_options,'',getMessage('USER_LANGUAGE'),'','','',true,'','','','','','12.6');
       }
       if ($this->_email_account) {
-   $this->_form->addCheckbox('email_account_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
+         $this->_form->addCheckbox('email_account_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
       }
       if ($this->_email_room) {
-   $this->_form->addCheckbox('email_room_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
+         $this->_form->addCheckbox('email_room_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
       }
 
       // buttons
@@ -150,20 +149,20 @@ class cs_account_change_form extends cs_rubric_form {
          $this->_values = $this->_form_post;
       } else {
          $this->_user = $this->_environment->getPortalUserItem();
-   $this->_values['user_id'] = $this->_user->getUserID();
+         $this->_values['user_id'] = $this->_user->getUserID();
          if ( $this->_user->isRoot() ) {
-      $this->_values['user_id_text'] = $this->_user->getUserID();
+            $this->_values['user_id_text'] = $this->_user->getUserID();
          }
-   $this->_values['firstname'] = $this->_user->getFirstname();
-   $this->_values['lastname'] = $this->_user->getLastname();
-   $this->_values['email'] = $this->_user->getEMail();
+         $this->_values['firstname'] = $this->_user->getFirstname();
+         $this->_values['lastname'] = $this->_user->getLastname();
+         $this->_values['email'] = $this->_user->getEMail();
          $this->_values['language'] = $this->_user->getLanguage();
-   if ($this->_user->getAccountWantMail() == 'yes') {
+         if ($this->_user->getAccountWantMail() == 'yes') {
             $this->_values['email_account_want'] = 1;
-   }
-   if ($this->_user->getOpenRoomWantMail() == 'yes') {
+         }
+         if ($this->_user->getOpenRoomWantMail() == 'yes') {
             $this->_values['email_room_want'] = 1;
-   }
+         }
          $this->_values['auth_source'] = $this->_user->getAuthSource();
       }
    }
@@ -172,24 +171,30 @@ class cs_account_change_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      if (!empty($this->_form_post['email']) and isEmailValid($this->_form_post['email']) == false) {
+      if ( !empty($this->_form_post['email'])
+           and !isEmailValid($this->_form_post['email'])
+         ) {
          $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
          $this->_form->setFailure('email','');
       }
 
       // exists user id?
-      if ( !empty($this->_form_post['auth_source']) ) {
-         $authentication = $this->_environment->getAuthenticationObject();
-         $this->_user = $this->_environment->getPortalUserItem();
-         if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$this->_form_post['auth_source'])) {
-            $this->_error_array[] = getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
-            $this->_form->setFailure('user_id','');
-         } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-            $this->_error_array[] = getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
-            $this->_form->setFailure('user_id','');
+      if ( !empty($this->_form_post['user_id']) ) {
+         $current_user = $this->_environment->getCurrentUserItem();
+         $auth_source = $current_user->getAuthSource();
+         if ( !empty($auth_source) ) {
+            $authentication = $this->_environment->getAuthenticationObject();
+            $this->_user = $this->_environment->getPortalUserItem();
+            if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$auth_source)) {
+               $this->_error_array[] = getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
+               $this->_form->setFailure('user_id','');
+            } elseif ( withUmlaut($this->_form_post['user_id']) ) {
+               $this->_error_array[] = getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+               $this->_form->setFailure('user_id','');
+            }
+         } else {
+            $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR');
          }
-      } else {
-         $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR');
       }
    }
 }

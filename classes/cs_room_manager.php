@@ -137,27 +137,27 @@ class cs_room_manager extends cs_context_manager {
   }
 
   function setContinuousLimit () {
-	 $this->_continuous_limit = 1;
+    $this->_continuous_limit = 1;
   }
 
   function setNotContinuousLimit () {
-	 $this->_continuous_limit = -1;
+    $this->_continuous_limit = -1;
   }
 
   function unsetContinuousLimit () {
-	 $this->_continuous_limit = NULL;
+    $this->_continuous_limit = NULL;
   }
 
   function setTemplateLimit () {
-	 $this->_template_limit = 1;
+    $this->_template_limit = 1;
   }
 
   function setNotTemplateLimit () {
-	 $this->_template_limit = -1;
+    $this->_template_limit = -1;
   }
 
   function unsetTemplateLimit () {
-	 $this->_template_limit = NULL;
+    $this->_template_limit = NULL;
   }
 
   /** set order limit
@@ -193,14 +193,14 @@ class cs_room_manager extends cs_context_manager {
         $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
      }
 
-	 // time (clock pulses)
-	 if ( isset($this->_time_limit) ) {
-		 if ($this->_time_limit != -1) {
-			$query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
-			$query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
-		 } else {
-			$query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
-		 }
+    // time (clock pulses)
+    if ( isset($this->_time_limit) ) {
+       if ($this->_time_limit != -1) {
+         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
+       } else {
+         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+       }
      }
 
      $query .= ' WHERE 1';
@@ -220,9 +220,9 @@ class cs_room_manager extends cs_context_manager {
      ###################################
 
      // insert limits into the select statement
-	 if (isset($this->_deleted_limit) and $this->_deleted_limit) {
+    if (isset($this->_deleted_limit) and $this->_deleted_limit) {
         $query .= ' AND '.$this->_db_table.'.deleter_id IS NOT NULL AND '.$this->_db_table.'.deletion_date IS NOT NULL';
-	 } elseif ($this->_delete_limit == true) {
+    } elseif ($this->_delete_limit == true) {
         $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL AND '.$this->_db_table.'.deletion_date IS NULL';
      }
      if (isset($this->_status_limit)) {
@@ -235,12 +235,12 @@ class cs_room_manager extends cs_context_manager {
         $query .= ' AND '.$this->_db_table.'.continuous = "'.encode(AS_DB,$this->_continuous_limit).'"';
      }
      //search limit
-	  if (isset($this->_search_array) AND !empty($this->_search_array)) {
+     if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-			$field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title');
-			$search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-			$query .= $search_limit_query_code;
-			$query .= ')';
+         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title');
+         $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
+         $query .= $search_limit_query_code;
+         $query .= ')';
       }
 
      if (!empty($this->_user_id_limit)) {
@@ -250,17 +250,17 @@ class cs_room_manager extends cs_context_manager {
         $query .= ' AND user.auth_source="'.encode(AS_DB,$this->_auth_source_limit).'"';
      }
 
-	 // time (clock pulses)
-	 if (isset($this->_time_limit)) {
-		 if ($this->_time_limit != -1) {
-			$query .= ' AND time_label.item_id = "'.encode(AS_DB,$this->_time_limit).'"';
-		 } else {
-			$query .= ' AND room_time.to_item_id IS NULL';
-		 }
+    // time (clock pulses)
+    if (isset($this->_time_limit)) {
+       if ($this->_time_limit != -1) {
+         $query .= ' AND time_label.item_id = "'.encode(AS_DB,$this->_time_limit).'"';
+       } else {
+         $query .= ' AND room_time.to_item_id IS NULL';
+       }
      }
 
-	 // template
-	 if (isset($this->_template_limit)) {
+    // template
+    if (isset($this->_template_limit)) {
         $query .= ' AND '.$this->_db_table.'.template = "'.encode(AS_DB,$this->_template_limit).'"';
      }
      $query .= ' AND '.$this->_db_table.'.type != "privateroom"';
@@ -447,6 +447,11 @@ class cs_room_manager extends cs_context_manager {
 
    function getRelatedRoomListForUser ($user_item) {
       return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+   }
+
+   function getAllRelatedRoomListForUser ($user_item) {
+      $this->setRoomTypeLimit('');
+      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID(),true);
    }
 
    function getAllMaxActivityPoints () {

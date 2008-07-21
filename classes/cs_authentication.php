@@ -1206,14 +1206,15 @@ class cs_authentication {
    }
 
    function changeUserID ($new, $old_item) {
+      $old_user_id = $old_item->getUserID();
       $auth_manager = $this->getAuthManager($old_item->getAuthSource());
-      $success = $auth_manager->changeUserID($new,$old_item->getUserID());
+      $success = $auth_manager->changeUserID($new,$old_user_id);
       if ($success) {
          $user_manager = $this->_environment->getUserManager();
          $success = $user_manager->changeUserID($new,$old_item);
       }
       if (!$success) {
-         $auth_manager->changeUserID($old_item->getUserID(),$new);
+         $auth_manager->changeUserID($old_user_id,$new);
       }
       $this->_used_auth_manager = $auth_manager;
       return $success;
