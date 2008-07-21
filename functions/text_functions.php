@@ -30,6 +30,21 @@ function _text_form2php ($text) {
    $text = preg_replace('/\r\n?/', "\n", $text);
    $text = trim($text);
 
+   // security out of fckeditor
+   // dann muss die ganze Ausgabenseite überdacht werden
+   /*
+   preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$',$text,$values);
+   foreach ($values as $key => $value) {
+      $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
+   }
+   $text = str_replace('"','&quot;',$text);
+   $text = str_replace('<','&lt;',$text);
+   $text = str_replace('>','&gt;',$text);
+   foreach ($values as $key => $value) {
+      $text = str_replace('COMMSY_FCKEDITOR'.$key,$value,$text);
+   }
+   */
+
    // corrections for FCKeditor
    if ( strstr($text,'<!-- KFC TEXT --><!-- KFC TEXT -->') ) {
       $text = str_replace('<!-- KFC TEXT -->','',$text);
@@ -166,6 +181,8 @@ function _text_php2mail ($text) {
 /////////////////////////////////////////////////////////////////////////////////
 function _text_php2file ($text) {
    $text = str_replace('"','&quot;',$text);
+   $text = str_replace('&lt;','<',$text);
+   $text = str_replace('&gt;','>',$text);
    return $text;
 }
 

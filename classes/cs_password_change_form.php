@@ -57,19 +57,20 @@ class cs_password_change_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHeadline('title',getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
       if ($this->_auth_source->allowChangePassword()) {
-         $this->_form->addPassword('password','',getMessage('USER_PASSWORD'),getMessage('USER_PASSWORD_DESC'),'','21',true);
-         $this->_form->addPassword('password2','',getMessage('USER_PASSWORD2'),getMessage('USER_PASSWORD2_DESC'),'','21',true);
-         $this->_form->addButtonBar('option',getMessage('PASSWORD_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
+         $this->_form->addPassword('password_old','',$this->_translator->getMessage('USER_PASSWORD_OLD'),'','','21',true);
+         $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD_NEW'),'','','21',true);
+         $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD_NEW2'),'','','21',true);
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
       } else {
          //we mustn't edit pw
          if ( $this->_auth_source->isCommSyDefault() ) {
-            $this->_form->addText('info','',getMessage('AUTH_NOT_AVAILABLE2'),'');
+            $this->_form->addText('info','',$this->_translator->getMessage('AUTH_NOT_AVAILABLE2'),'');
          } else {
-            $this->_form->addText('info','',getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_auth_source->getTitle()),'');
+            $this->_form->addText('info','',$this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_auth_source->getTitle()),'');
          }
-         $this->_form->addButtonBar('option','',getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',14);
+         $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',14);
       }
    }
 
@@ -86,6 +87,14 @@ class cs_password_change_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
+      if ( !empty($this->_form_post['password_old']) ) {
+         $current_user = $this->_environment->getCurrentUserItem();
+         $authentication = $this->_environment->getAuthenticationObject();
+         if ( !$authentication->isAccountGranted($current_user->getUserID(),$this->_form_post['password_old'],$current_user->getAuthSource()) ) {
+            $this->_error_array[] = getMessage('USER_OLD_PASSWORD_ERROR');
+            $this->_form->setFailure('password_old');
+         }
+      }
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
          $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password');
