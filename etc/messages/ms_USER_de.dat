@@ -126,7 +126,7 @@ $message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort ändern";
 $message["USER_PASSWORD_DESC"]["de"] = "Bitte suchen Sie sich ein Passwort aus.";
 $message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte überprüfen Sie Ihre Passworte.";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort vergessen?";
-$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurde an <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie Ihr Passwort innerhalb der nächsten 15 Minuten.
+$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurden an <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie Ihr Passwort innerhalb der nächsten 15 Minuten.
 <br/><br/>
 Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
