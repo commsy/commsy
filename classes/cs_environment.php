@@ -436,6 +436,10 @@ class cs_environment {
       return $retour;
    }
 
+   function setCurrentParameter ( $key, $value ) {
+      $this->_current_parameter_array[] = $key.'='.$value;
+   }
+
   /** get instance of cs_ads_log_manager
    *
    * @return cs_ads_log_manager

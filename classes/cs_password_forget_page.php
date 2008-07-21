@@ -43,61 +43,57 @@ class cs_password_forget_page extends cs_left_page {
 
       // cancel
       if ( !empty($this->_command)
-	  and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
-	        or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON')))
-	) {
+           and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
+           or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON')))
+         ) {
          $this->_redirect_back();
       }
 
       // Save item
       if ( !empty($this->_command)
-	  and isOption($this->_command, $this->_translator->getMessage('PASSWORD_GENERATE_BUTTON'))
-	) {
-	$correct = $form->check();
+           and isOption($this->_command, $this->_translator->getMessage('PASSWORD_GENERATE_BUTTON'))
+         ) {
+         $correct = $form->check();
          if ( $correct ) {
-            // generate password
-            srand((double)microtime()*1000000);
-            $password = "";
-            for ($i=0; $i<8; $i++) {
-               $choice = array();
-               $choice[0] = chr(rand(65,90));
-               $choice[1] = chr(rand(97,122));
-               $password .= $choice[rand(0,1)];
+
+            // save special session
+            include_once('classes/cs_session_item.php');
+            $new_special_session_item = new cs_session_item();
+            $new_special_session_item->createSessionID($this->_post_vars['user_id']);
+            $new_special_session_item->setValue('auth_source',$this->_post_vars['auth_source']);
+            if ( $this->_post_vars['user_id'] == 'root' ) {
+               $new_special_session_item->setValue('commsy_id',$this->_environment->getServerID());
+            } else {
+               $new_special_session_item->setValue('commsy_id',$this->_environment->getCurrentPortalID());
             }
-######### HACK ######
-#         if (isset ($this->_post_vars['user_id']) and strtolower($this->_post_vars['user_id']) == 'bep' ){$password = 'bepli';}
-######### HACK ######
+            if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
+               $new_special_session_item->setValue('password_forget_ip',$_SERVER["SERVER_ADDR"]);
+            } else {
+               $new_special_session_item->setValue('password_forget_ip',$_SERVER["HTTP_HOST"]);
+            }
+            include_once('functions/date_functions.php');
+            $new_special_session_item->setValue('password_forget_time',getCurrentDateTimeInMySQL());
+            $new_special_session_item->setValue('javascript',-1);
+            $new_special_session_item->setValue('cookie',0);
+            $session_manager = $this->_environment->getSessionManager();
+            $session_manager->save($new_special_session_item);
 
+            $user_email = '';
+            $user_fullname = '';
+            $user_id = '';
 
-            // save password
-            $authentication_item = $this->_environment->getAuthenticationObject();
-            $auth_manager = $authentication_item->getAuthManager($this->_post_vars['auth_source']);
-            $auth_manager->changePassword($this->_post_vars['user_id'],$password);
-            $error_number = $auth_manager->getErrorNumber();
+            $portal = $this->_environment->getCurrentPortalItem();
+            $current_user_item = $portal->getUserByUserID($this->_post_vars['user_id'],$this->_post_vars['auth_source']);
 
-            $user_manager = $this->_environment->getUserManager();
-            $user_manager->setUserIDLimit($this->_post_vars['user_id']);
-            $user_manager->setAuthSourceLimit($this->_post_vars['auth_source']);
-            $user_manager->select();
-            $user_list = $user_manager->get();
-	   if ($user_list->isNotEmpty()) {
-               $user = $user_list->getFirst();
-               $user_email = $user->getEmail();
-               $user_fullname = $user->getFullname();
-	   } else {
-	      $auth_item = $auth_manager->getItem($this->_post_vars['user_id']);
-	      if (isset($auth_item)) {
-                  $user_email = $auth_item->getEmail();
-                  $user_fullname = $auth_item->getFullname();
-		 if ( empty($user_email) ) {
-		    include_once('functions/error_functions.php');trigger_error('no email adress found for userid "'.$this->_post_vars['user_id'].'"',E_USER_ERROR);
-		 }
-	      } else {
-		 include_once('functions/error_functions.php');trigger_error('no email adress found for userid "'.$this->_post_vars['user_id'].'"',E_USER_ERROR);
-	      }
-	   }
+            if ( isset($current_user_item) ) {
+               $user_fullname = $current_user_item->getFullName();
+               $user_email = $current_user_item->getEMail();
+               $user_id = $current_user_item->getUserID();
+            }
 
-	   // send email
+            $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentPortalID().'&SID='.$new_special_session_item->getSessionID();
+
+            // send email
             $context_item = $this->_environment->getCurrentPortalItem();
             $mod_text = '';
             $mod_list = $context_item->getModeratorList();
@@ -118,13 +114,13 @@ class cs_password_forget_page extends cs_left_page {
             include_once('classes/cs_mail.php');
             $mail = new cs_mail();
             $mail->set_to($user_email);
-	   $server_item = $this->_environment->getServerItem();
-	   $default_sender_address = $server_item->getDefaultSenderAddress();
-	   if (!empty($default_sender_address)) {
+            $server_item = $this->_environment->getServerItem();
+            $default_sender_address = $server_item->getDefaultSenderAddress();
+            if (!empty($default_sender_address)) {
                $mail->set_from_email($default_sender_address);
-	   } else {
-	      $mail->set_from_email('@');
-	   }
+            } else {
+               $mail->set_from_email('@');
+            }
             if (!empty($contact_moderator)) {
                $mail->set_reply_to_email($contact_moderator->getEmail());
                $mail->set_reply_to_name($contact_moderator->getFullname());
@@ -135,7 +131,7 @@ class cs_password_forget_page extends cs_left_page {
             $body .= LF.LF;
             $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_fullname);
             $body .= LF.LF;
-            $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY',$context_item->getTitle(),$password);
+            $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY',$user_id,$context_item->getTitle(),$url,'15');
             $body .= LF.LF;
             if ( empty($contact_moderator) ) {
                $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;
@@ -145,16 +141,15 @@ class cs_password_forget_page extends cs_left_page {
                $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$context_item->getTitle());
                $body .= LF.LF;
             }
-            $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
             $mail->set_message($body);
             if ($mail->send()) {
-   	      // show little status page that mail was sent successful
+               // show little status page that mail was sent successful
                $form->showMailSent($user_email);
             } else {
-   	      // show little status page that mail was not sent successful
+               // show little status page that mail was not sent successful
                $form->showMailFailure();
             }
-	}
+         }
       }
       return $this->_show_form($form);
    }

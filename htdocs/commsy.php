@@ -187,13 +187,12 @@ if ( !isset($context_item_current)
 /*********** SESSION AND AUTHENTICATION ***********/
 
 // get Session ID (SID)
-if (!empty($_COOKIE['SID'])) {
-   $SID = $_COOKIE['SID'];
-        // session id in a cookie
-} elseif (!empty($_GET['SID'])) {
+if (!empty($_GET['SID'])) {
    $SID = $_GET['SID'];                     // session id via GET-VARS (url)
 } elseif (!empty($_POST['SID'])) {
    $SID = $_POST['SID'];                    // session id via POST-VARS (form posts)
+} elseif (!empty($_COOKIE['SID'])) {
+   $SID = $_COOKIE['SID'];
 } elseif ( $environment->getCurrentModule() == 'context'
            and  $environment->getCurrentFunction() == 'login'
            and !$outofservice
@@ -232,6 +231,42 @@ if ( !empty($SID) ) {
    // so we can load the session information
    $session_manager = $environment->getSessionManager();
    $session = $session_manager->get($SID);
+
+   /** password forget (BEGIN) **/
+   if ( $session->issetValue('password_forget_ip') ) {
+      $session_time = $session->issetValue('password_forget_time');
+      $session_ip = $session->issetValue('password_forget_ip');
+      $current_ip = '127.0.0.1';
+      if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
+         $current_ip = $_SERVER["SERVER_ADDR"];
+      } else {
+         $current_ip = $_SERVER["HTTP_HOST"];
+      }
+      include_once('functions/date_functions.php');
+
+      if ( $session_time < getCurrentDateTimeMinusMinutesInMySQL(15)
+           or $current_ip != $session_ip) {
+         $session_manager->delete($SID,true);
+         if (isset($session)){
+            $session->reset(); // so session will not saved at redirect
+         }
+         $url = $_SERVER['SCRIPT_NAME'].'?'.$_SERVER['QUERY_STRING'];
+         if (stristr($url,'&SID=')) {
+            $url = substr($url,0,strpos($url,'&SID='));
+         }
+         redirect_with_url($url);
+      } else {
+         $_GET['cs_modus'] = 'password_change';
+         $environment->setCurrentModule('home');
+         $environment->setCurrentFunction('index');
+         if ( !$environment->inPortal() ) {
+            $environment->setCurrentContextID($environment->getCurrentPortalID());
+         }
+         $environment->getCurrentParameterArray();
+         $environment->setCurrentParameter('cs_modus','password_change');
+      }
+   }
+   /** password forget (END) **/
 
    if ( isset($session)
         and strtoupper($session->getValue('user_id')) == 'GUEST'

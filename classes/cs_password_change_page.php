@@ -67,6 +67,11 @@ class cs_password_change_page extends cs_left_page {
             $error_number = $auth_manager->getErrorNumber();
             if (empty($error_number)) {
                $success = true;
+               $session = $this->_environment->getSessionItem();
+               if ( $session->issetValue('password_forget_ip') ) {
+                  $session->unsetValue('password_forget_ip');
+                  $session->unsetValue('password_forget_time');
+               }
             }
          }
       }

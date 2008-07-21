@@ -80,8 +80,8 @@ class cs_password_forget_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHeadline('title',getMessage('USER_PASSWORD_FORGET_HEADLINE'));
-      $this->_form->addText('text','',getMessage('USER_PASSWORD_FORGET_TEXT'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('USER_PASSWORD_FORGET_HEADLINE'));
+      $this->_form->addText('text','',$this->_translator->getMessage('USER_PASSWORD_FORGET_TEXT'));
 
       // auth source
       if ( $this->_count_auth_source_list_enabled == 1
@@ -100,8 +100,8 @@ class cs_password_forget_form extends cs_rubric_form {
          // buttons
          $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',13);
       } else {
-         $this->_form->addTextField('user_id','',getMessage('USER_USER_ID'),'','',24,true);
-         $this->_form->addButtonBar('option',getMessage('PASSWORD_GENERATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
+         $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'','',24,true);
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_GENERATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
       }
    }
 
@@ -125,13 +125,13 @@ class cs_password_forget_form extends cs_rubric_form {
          $authentication_item = $this->_environment->getAuthenticationObject();
          $auth_manager = $authentication_item->getAuthManager($this->_form_post['auth_source']);
          if (!$auth_manager->exists($this->_form_post['user_id'])) {
-            $this->_error_array[] = getMessage('USER_USER_ID_NOT_EXIST',$this->_form_post['user_id']);
+            $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_NOT_EXIST',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id');
          }
       } elseif ( !empty($this->_form_post['user_id'])
                  and !empty($this->_form_post['auth_source'])
                ) {
-         $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_form_post['auth_source']);
+         $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_form_post['auth_source']);
       } else {
          $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_AUTH_SOURCE');
       }
@@ -142,17 +142,19 @@ class cs_password_forget_form extends cs_rubric_form {
    function showMailSent($emailAddress) {
       $this->_form = new cs_form();
       $context = $this->_environment->getCurrentContextItem();
-      $this->_form->addText('text',getMessage('COMMON_HINTS'),getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT',$context->getTitle(),$emailAddress));
-      $this->_form->addButtonBar('option',getMessage('COMMON_FORWARD_BUTTON'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('COMMON_HINTS'));
+      $this->_form->addText('text','',$this->_translator->getMessage('USER_PASSWORD_FORGET_SUCCESS_TEXT',$context->getTitle(),$emailAddress));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_FORWARD_BUTTON'));
    }
 
    /** In case of mail server error the following page gets displayed.
     */
    function showMailFailure() {
       $this->_form = new cs_form();
-      $moderation_link = ahref_curl($this->_environment->getCurrentPortalID(),'mail','to_moderator','',getMessage('CONTEXT_MODERATOR'));
-      $this->_form->addText('text',getMessage('COMMON_HINTS'),getMessage('ERROR_MAIL_SERVER',$moderation_link));
-      $this->_form->addButtonBar('option',getMessage('COMMON_FORWARD_BUTTON'));
+      $moderation_link = ahref_curl($this->_environment->getCurrentPortalID(),'mail','to_moderator','',$this->_translator->getMessage('CONTEXT_MODERATOR'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('COMMON_HINTS'));
+      $this->_form->addText('text','',$this->_translator->getMessage('ERROR_MAIL_SERVER',$moderation_link));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_FORWARD_BUTTON'));
    }
 }
 ?>
