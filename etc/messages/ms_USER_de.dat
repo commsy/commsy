@@ -130,13 +130,19 @@ $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wur
 <br/><br/>
 Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
-$message["USER_PASSWORD_MAIL_BODY"]["de"] = "für Ihre Kennung %1 auf dem CommSy-Portal %2 wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
+$message["USER_PASSWORD_MAIL_BODY"]["de"] = "für Ihre Kennung
+   %1
 
-Sofern Sie diesen Mechanismus aktiviert haben, folgen Sie bitte folgender URL:
+auf dem CommSy-Portal
+   %2
+
+wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
+
+Über den Link
 
 %3
 
-Über diesen Link können Sie Ihr Passwort neu setzen. Er ist %4 Minuten von dem Rechner aus aktiv, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
+können Sie Ihr Passwort in den nächsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar,von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
 
 ---
 

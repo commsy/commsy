@@ -130,7 +130,11 @@ $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was s
 <br/><br/>
 If you are not receiving this email, please contact the portal moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.";
-$message["USER_PASSWORD_MAIL_BODY"]["en"] = "the mechanism &quot;password forget&quot; has been activated for your account %1 at the CommSy portal %2.
+$message["USER_PASSWORD_MAIL_BODY"]["en"] = "the mechanism &quot;password forget&quot; has been activated for your account
+   %1
+
+at the CommSy portal
+   %2
 
 If you just actived it, please follow this url:
 
