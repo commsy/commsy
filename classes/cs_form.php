@@ -1221,9 +1221,9 @@ class cs_form {
          // select box
          elseif ($current['type'] == 'select') {
             if ( !empty($current['selected']) ) {
+               $found_array = array();
                foreach ( $current['selected'] as $selected ) {
                   $value_from_form = $selected;
-                  $found_array = array();
                   foreach ($current['options'] as $value) {
                      if ( $value_from_form == $value['value'] ) {
                         $found_array[] = $value['value'];
@@ -1246,9 +1246,9 @@ class cs_form {
          // checkbox group
          elseif ($current['type'] == 'checkboxgroup') {
             if ( !empty($current['selected']) ) {
+               $found_array = array();
                foreach ( $current['selected'] as $selected ) {
                   $value_from_form = $selected;
-                  $found_array = array();
                   foreach ($current['value'] as $value) {
                      if ( $value_from_form == $value['value'] ) {
                         $found_array[] = $value['value'];
