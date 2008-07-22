@@ -233,7 +233,7 @@ if ( !empty($SID) ) {
    $session = $session_manager->get($SID);
 
    /** password forget (BEGIN) **/
-   if ( $session->issetValue('password_forget_ip') ) {
+   if ( isset($session) and $session->issetValue('password_forget_ip') ) {
       $session_time = $session->issetValue('password_forget_time');
       $session_ip = $session->issetValue('password_forget_ip');
       $current_ip = '127.0.0.1';
