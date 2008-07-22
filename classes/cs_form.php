@@ -1225,8 +1225,10 @@ class cs_form {
                foreach ( $current['selected'] as $selected ) {
                   $value_from_form = $selected;
                   foreach ($current['options'] as $value) {
-                     if ( $value_from_form == $value['value'] ) {
-                        $found_array[] = $value['value'];
+                     if ( is_numeric($value_from_form)
+                          or $value_from_form == $value['value']
+                        ) {
+                        $found_array[] = $value_from_form;
                         break;
                      }
                   }
@@ -1250,8 +1252,10 @@ class cs_form {
                foreach ( $current['selected'] as $selected ) {
                   $value_from_form = $selected;
                   foreach ($current['value'] as $value) {
-                     if ( $value_from_form == $value['value'] ) {
-                        $found_array[] = $value['value'];
+                     if ( is_numeric($value_from_form)
+                          or $value_from_form == $value['value']
+                        ) {
+                        $found_array[] = $value_from_form;
                         break;
                      }
                   }

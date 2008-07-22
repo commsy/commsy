@@ -271,6 +271,10 @@ class cs_file_item extends cs_item {
       return rawurldecode($this->_getValue('filename'));
    }
 
+   function setTempKey ($value) {
+      $this->_setExtra('TEMP_KEY', (string)$value);
+   }
+
    function setTempName($value) {
       $this->_data['tmp_name'] = $value;
    }

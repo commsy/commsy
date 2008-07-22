@@ -32,12 +32,15 @@ if ( isset($post_file_ids)
 }
 $files = $session->getValue($environment->getCurrentModule().'_add_files');
 $file_id_array = array();
-if ( !empty($files) ) {
+if ( !empty($files)
+     and count($files) >= count($file_ids)
+   ) {
    $file_man = $environment->getFileManager();
    foreach ( $files as $file_data ) {
       if ( in_array($file_data["file_id"], $file_ids) ) {
          if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
             $file_item = $file_man->getNewItem();
+            $file_item->setTempKey($file_data["file_id"]);
             $file_item->setPostFile($file_data);
             $file_item->save();
             unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
@@ -48,6 +51,37 @@ if ( !empty($files) ) {
       }
    }
    $item_files_upload_to->setFileIDArray($file_id_array);
+} elseif ( !empty($file_ids) ) {
+   $temp_array = array();
+   foreach ($file_ids as $file_id) {
+      if ( is_numeric($file_id) ) {
+         $temp_array[] = $file_id;
+      } else {
+         if ( !isset($file_manager) ) {
+            $file_manager = $environment->getFileManager();
+            $file_manager->setContextLimit($environment->getCurrentContextID());
+         }
+         $temp_key = $file_manager->getFileIDForTempKey($file_id);
+         if ( !empty($temp_key) and is_numeric($temp_key) ) {
+            $temp_array[] = $temp_key;
+         } elseif ( !empty($files) ) {
+            foreach ( $files as $file_data ) {
+               if ( $file_data["file_id"] == $file_id ) {
+                  if ( isset($file_data["tmp_name"]) and file_exists($file_data["tmp_name"]) ) { // create file entries for uploaded files
+                     $file_item = $file_manager->getNewItem();
+                     $file_item->setTempKey($file_data["file_id"]);
+                     $file_item->setPostFile($file_data);
+                     $file_item->save();
+                     unlink($file_data["tmp_name"]);  // Currently, the file manager does not unlink a file in its _saveOnDisk() method, because it is also used for copying files when copying material.
+                     $temp_array[] = $file_item->getFileID();
+                  }
+               }
+            }
+         }
+      }
+   }
+   unset($file_manager);
+   $item_files_upload_to->setFileIDArray($temp_array);
 } else {
    $item_files_upload_to->setFileIDArray(array());
 }

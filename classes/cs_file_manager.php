@@ -677,5 +677,20 @@ class cs_file_manager extends cs_manager {
       $db_array['extras'] = cs_unserialize($db_array['extras']);
       return parent::_buildItem($db_array);
    }
+
+   public function getFileIDForTempKey ( $temp_key ) {
+      $retour = '';
+      $sql = 'SELECT files_id FROM '.$this->_db_table.' WHERE context_id="'.$this->_room_limit.'" AND extras LIKE "%'.$temp_key.'%";';
+      $result = $this->_db_connector->performQuery($sql);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error("Filemanager: Problem creating file entry: ".$sql, E_USER_ERROR);
+      } elseif ( count($result) == 1
+                 and !empty($result[0]['files_id'])
+               ) {
+         $retour = $result[0]['files_id'];
+      }
+      return $retour;
+   }
 }
 ?>
