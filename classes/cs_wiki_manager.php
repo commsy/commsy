@@ -155,7 +155,7 @@ class cs_wiki_manager extends cs_manager {
 
       if ( !file_exists('config.php') ) {
          global $c_commsy_path_file;
-         copy($c_commsy_path_file.'/etc/pmwiki/wiki_config.php','config.php');
+         copy($c_commsy_path_file.'etc/pmwiki/wiki_config.php','config.php');
       }
 
       $str  = '<?php'.LF;
