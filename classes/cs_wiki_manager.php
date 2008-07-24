@@ -303,7 +303,6 @@ class cs_wiki_manager extends cs_manager {
 	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
 	            	$file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
 	            	$file_contents =  $file_contents . "\n" . 'title='. $discussion;
-	            	pr($file_contents);
 	            	file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
 	            }
 	            if(!file_exists('wiki.d/' . $discussion . '.ForumConfig')){
