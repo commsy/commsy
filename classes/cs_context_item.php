@@ -2448,6 +2448,62 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+	// Wiki Discussion
+	
+	function setWikiEnableDiscussion(){
+      $this->_addExtra('WIKIENABLEDISCUSSION','1');
+   }
+
+   function unsetWikiEnableDiscussion(){
+      $this->_addExtra('WIKIENABLEDISCUSSION','-1');
+   }
+
+   function WikiEnableDiscussion(){
+      if ( $this->_issetExtra('WIKIENABLEDISCUSSION') ) {
+         $retour = $this->_getExtra('WIKIENABLEDISCUSSION');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+
+	function WikiSetNewDiscussion($new_discussion){
+		  if(!empty($new_discussion)){
+		  	  if(!$this->_issetExtra('WIKIDISCUSSIONARRAY')){
+		  	  	$this->_addExtra('WIKIDISCUSSIONARRAY', $new_discussion);
+		  	  } else {
+				  if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && !stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $new_discussion)) {
+			         $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
+			         if(!empty($discussion_string)){
+			         	$discussion_array = explode("$CSDW$", $discussion_string);
+			         } else {
+				         $discussion_array = array();
+			         }
+			         $discussion_array[] = $new_discussion;
+			         $discussion_string = implode("$CSDW$", $discussion_array);
+			         $this->_addExtra('WIKIDISCUSSIONARRAY',$discussion_string);
+			      }
+		      }
+	      }
+	}
+	
+	function getWikiDiscussionArray(){
+		  if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') ) {
+	         $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
+	      } else {
+	         $discussion_string ='';
+	      }
+	      $discussion_array = explode("$CSDW$", $discussion_string);
+	      if($discussion_array[0] == ''){
+	      	return false;
+	      } else {
+	      	return $discussion_array;
+	      }
+	}
+	
+	function unsetWikiDiscussionArray(){
+		$this->_addExtra('WIKIDISCUSSIONARRAY','');
+	}
 
    ##########################################
    # Pfad

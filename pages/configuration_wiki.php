@@ -114,6 +114,8 @@ else {
       $item->setWikiInActive();
       $item->setWikiSkin('pmwiki');
       $item->setWikiTitle($item->getTitle());
+      $item->unsetWikiEnableDiscussion();
+      $item->unsetWikiDiscussionArray();
       // Save item
       $item->save();
 
@@ -141,7 +143,7 @@ else {
               and $dir != '.'
               and $dir != 'print'
               and $dir != 'jsMath'
-              and $dir != 'svs'
+              //and $dir != 'svs'
               and $dir != 'CVS'
             ) {
             $skin_array[] = $dir;
@@ -288,6 +290,17 @@ else {
          }
 
          // /new features
+
+		// Discussion
+		
+		if ( isset($_POST['enable_discussion']) ) {
+            $item->setWikiEnableDiscussion();
+            if ( isset($_POST['new_discussion']) ) {
+	            $item->WikiSetNewDiscussion($_POST['new_discussion']);
+	         }
+         } else {
+            $item->unsetWikiEnableDiscussion();
+         }
 
          // section edit
          if ( isset($_POST['wiki_section_edit']) ) {

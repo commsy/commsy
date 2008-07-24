@@ -236,6 +236,7 @@ $message["COMMON_DELETE_BOX_DESCRIPTION_ROOM"]["en"] = "You cannot undelete a wo
 Please note: Deleting a workspace usually also erases items of other members.
 <br/><br/>
 As an alternative, you also can archive the workspace, i.e. the worspace is &quot;freezed&quot;, all workspace members will still be able to access their data without permission to modify or add any contents.";
+$message["COMMON_DELETE_BOX_DESCRIPTION_WIKI"]["en"] = "You cannot undelete a wiki once it has been deleted.  Do you really want to delete this wiki irrecoverably?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["en"] = "You are about to delete <span class=&quot;bold&quot;>own and third party items</span> from the workspace. This is an option that is accessible for moderators only.
 Please note that deleted items cannot be undeleted afterwards, so be cautious.
 Do you really want to delete the <span style=&quot;font-weight:bold&quot;>%1 selected items</span>  irrecoverably?";
@@ -251,6 +252,7 @@ $message["COMMON_DELETE_ITEM"]["en"] = "Delete";
 $message["COMMON_DELETE_RESTRICTIONS"]["en"] = "Unset reduction";
 $message["COMMON_DELETE_ROOM"]["en"] = "Delete workspace";
 $message["COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION"]["en"] = "Deleting versions";
+$message["COMMON_DELETE_WIKI_TITLE"]["en"] = "Deleting wiki";
 $message["COMMON_DESCRIPTION"]["en"] = "Description";
 $message["COMMON_DISCUSSION"]["en"] = "Discussion";
 $message["COMMON_DISCUSSIONS"]["en"] = "Discussions";
@@ -617,7 +619,12 @@ $message["COMMON_USER_TINY_VIEW_DESCRIPTION"]["en"] = "%1 visible, %2 total";
 $message["COMMON_VERSION_DELETE"]["en"] = "Delete version";
 $message["COMMON_WEEK"]["en"] = "Week";
 $message["COMMON_WIKI_ADMIN_PW"]["en"] = "<div style=&quot;float:left; width:120px;&quot;>Admin:</div>";
+$message["COMMON_WIKI_DISCUSSION"]["en"] = "Forum";
+$message["COMMON_WIKI_DISCUSSION_DESC"]["en"] = "Use forum";
+$message["COMMON_WIKI_DISCUSSION_ENABLE"]["en"] = "Use forums in wiki";
+$message["COMMON_WIKI_DISCUSSION_NEW"]["en"] = "New forum";
 $message["COMMON_WIKI_EDIT_PW"]["en"] = "<div style=&quot;float:left; width:120px;&quot;>Edit:</div>";
+$message["COMMON_WIKI_EXISTING_DISCUSSIONS"]["en"] = "Used forums";
 $message["COMMON_WIKI_LINK"]["en"] = "Wiki";
 $message["COMMON_WIKI_PWS"]["en"] = "Passwords";
 $message["COMMON_WIKI_PWS_DESC"]["en"] = "Set different passwords.";

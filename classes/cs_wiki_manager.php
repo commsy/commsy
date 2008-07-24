@@ -277,6 +277,61 @@ class cs_wiki_manager extends cs_manager {
          $str .= '@include_once("$FarmD/cookbook/swf-sites2.php");'.LF;
          $str .= '$ENABLE_YOUTUBEGOOGLEVIMEO = "1";'.LF.LF;
       }
+      
+      if ( $item->WikiEnableDiscussion() == "1" ) {
+      	if($item->getWikiDiscussionArray()){
+      		chdir('..');
+     		 $directory_handle = @opendir('wiki.d');
+	         if (!$directory_handle) {
+	         	mkdir('wiki.d');
+         	 }
+      		foreach($item->getWikiDiscussionArray() as $discussion){
+      			$first_letter = substr($discussion, 0, 1);
+	         	$rest = substr($discussion, 1);
+	         	$first_letter = strtoupper($first_letter);
+	         	$discussion = $first_letter . $rest;
+      			
+      			$str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'all\';'.LF;
+         		$str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'add,copy\';'.LF;
+         		global $c_commsy_path_file;
+         		
+	         	
+	         	if(!file_exists('wiki.d/' . $discussion . '.CreateNewTopic')){
+	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+	            }
+	            if(!file_exists('wiki.d/' . $discussion . '.' . $discussion)){
+	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+	            	$file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+	            	$file_contents =  $file_contents . "\n" . 'title='. $discussion;
+	            	pr($file_contents);
+	            	file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
+	            }
+	            if(!file_exists('wiki.d/' . $discussion . '.ForumConfig')){
+	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
+	            }
+	            if(!file_exists('wiki.d/' . $discussion . '.Willkommen')){
+	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
+	         	}
+      		}
+      		
+      		$directory_handle = @opendir('uploads');
+	        if (!$directory_handle) {
+	        	mkdir('uploads');
+         	}
+      		chdir('uploads');
+      		$directory_handle = @opendir('Profiles');
+	        if (!$directory_handle) {
+	        	mkdir('Profiles');
+         	}
+      		copy($c_commsy_path_file.'/etc/pmwiki/nobody_m.gif','Profiles/nobody_m.gif');
+      		chdir('..');
+      		
+      		// alle anderen user...
+      		
+      		chdir('local');
+  		}
+  		$str .= '$COMMSY_DISCUSSION = "1";'.LF.LF;
+      }
 
       $str .= '?>';
 

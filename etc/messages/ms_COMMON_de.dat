@@ -236,6 +236,7 @@ $message["COMMON_DELETE_BOX_DESCRIPTION_ROOM"]["de"] = "Ein gelöschter Raum kann
 Achtung: Beim Löschen eines Raums löschen Sie in der Regel auch fremde Beiträge.
 <br/><br/>
 Alternativ zum Löschen können Sie den Raum archivieren, d.h. alle Mitglieder können weiterhin auf die Inhalte des Raums zugreifen, es können allerdings keine Änderungen mehr vorgenommen werden.";
+$message["COMMON_DELETE_BOX_DESCRIPTION_WIKI"]["de"] = "Ein gelöschtes Wiki kann nicht wieder rekonstruiert werden. Möchten Sie dieses Wiki endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
 Gelöschte Einträge können nicht wieder rekonstruiert werden. Möchten Sie diese <span style=&quot;font-weight:bold&quot;>%1 ausgewählten Einräge</span> endgültig löschen?";
 $message["COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY"]["de"] = "Als Moderator dieses Raumes können Sie <span class=&quot;bold&quot;>eigene und fremde Einträge</span> gleichzeitig löschen.
@@ -249,6 +250,7 @@ $message["COMMON_DELETE_ITEM"]["de"] = "Löschen";
 $message["COMMON_DELETE_RESTRICTIONS"]["de"] = "Einschränkung aufheben";
 $message["COMMON_DELETE_ROOM"]["de"] = "Raum löschen";
 $message["COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION"]["de"] = "Löschen einer Version";
+$message["COMMON_DELETE_WIKI_TITLE"]["de"] = "Löschen eines Wikis";
 $message["COMMON_DESCRIPTION"]["de"] = "Beschreibung";
 $message["COMMON_DISCUSSION"]["de"] = "Diskussion";
 $message["COMMON_DISCUSSIONS"]["de"] = "Diskussionen";
@@ -618,7 +620,12 @@ $message["COMMON_USER_TINY_VIEW_DESCRIPTION"]["de"] = "%1 sichtbar, %2 insgesamt
 $message["COMMON_VERSION_DELETE"]["de"] = "Version löschen";
 $message["COMMON_WEEK"]["de"] = "Woche";
 $message["COMMON_WIKI_ADMIN_PW"]["de"] = "<div style=&quot;float:left; width:120px;&quot;>Administrieren:</div>";
+$message["COMMON_WIKI_DISCUSSION"]["de"] = "Forum";
+$message["COMMON_WIKI_DISCUSSION_DESC"]["de"] = "Forum benutzen";
+$message["COMMON_WIKI_DISCUSSION_ENABLE"]["de"] = "Verwendung von Foren im Wiki";
+$message["COMMON_WIKI_DISCUSSION_NEW"]["de"] = "Neues Forum";
 $message["COMMON_WIKI_EDIT_PW"]["de"] = "<div style=&quot;float:left; width:120px;&quot;>Bearbeiten:</div>";
+$message["COMMON_WIKI_EXISTING_DISCUSSIONS"]["de"] = "Vorhandene Foren";
 $message["COMMON_WIKI_LINK"]["de"] = "Wiki";
 $message["COMMON_WIKI_PWS"]["de"] = "Passwörter";
 $message["COMMON_WIKI_PWS_DESC"]["de"] = "Setzen Sie die verschiedenen Passwörter.";
