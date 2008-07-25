@@ -285,15 +285,48 @@ class cs_wiki_manager extends cs_manager {
 	         if (!$directory_handle) {
 	         	mkdir('wiki.d');
          	 }
+            $firstForum = true; // needed for generated list of forums
       		foreach($item->getWikiDiscussionArray() as $discussion){
-      			$first_letter = substr($discussion, 0, 1);
-	         	$rest = substr($discussion, 1);
-	         	$first_letter = strtoupper($first_letter);
-	         	$discussion = $first_letter . $rest;
+      			global $c_commsy_path_file;
+                
+                // Titel fuer Wiki-Gruppe vorbereiten
+                $titleForForm = $discussion;
+                $discussionArray = explode (' ', $discussion);
+                for ($index = 0; $index < sizeof($discussionArray); $index++) {
+                    $first_letter = substr($discussionArray[$index], 0, 1);
+                    $rest = substr($discussionArray[$index], 1);
+                    $first_letter = strtoupper($first_letter);
+                    $discussionArray[$index] = $first_letter . $rest;
+                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("Ü", "ue", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+                }
+                $discussion = implode('',$discussionArray);
       			
+                // Site.Forum generieren
+                if(!file_exists('wiki.d/Site.Forum')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/Site.Forum','wiki.d/Site.Forum');
+                }
+                $file_forum_contents = file_get_contents('wiki.d/Site.Forum');
+                $file_forum_contents_array = explode("\n", $file_forum_contents);
+                for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+					if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
+                        if($firstForum){
+                            $file_forum_contents_array[$index] = 'text=Foren:';
+                            $firstForum = false;
+                        }
+                        $file_forum_contents_array[$index] .= '%0a*[['. $discussion . 'Forum.' . $discussion . 'Forum' . '|' . $titleForForm . ']]';
+                    }
+				}
+                $file_forum_contents = implode("\n", $file_forum_contents_array);
+                file_put_contents('wiki.d/Site.Forum', $file_forum_contents);
+
       			$str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'all\';'.LF;
          		$str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'add,copy\';'.LF;
-         		global $c_commsy_path_file;
          		
 	         	
 	         	if(!file_exists('wiki.d/' . $discussion . '.CreateNewTopic')){
@@ -302,9 +335,16 @@ class cs_wiki_manager extends cs_manager {
 	            if(!file_exists('wiki.d/' . $discussion . '.' . $discussion)){
 	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
 	            	$file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
-	            	$file_contents =  $file_contents . "\n" . 'title='. $discussion;
-	            	file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
-	            }
+	                $file_contents_array = explode("\n", $file_contents);
+                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+                        if(stripos($file_contents_array[$index], 'name=Forum.Forum') !== false){
+                            $file_contents_array[$index] = 'name=' . $discussion . 'Forum.' . $discussion . 'Forum';
+                        }
+                    }
+                    $file_contents = implode("\n", $file_contents_array);
+                    $file_contents =  $file_contents . "\n" . 'title='. $discussion;
+                    file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
+                }
 	            if(!file_exists('wiki.d/' . $discussion . '.ForumConfig')){
 	            	copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
 	            }
