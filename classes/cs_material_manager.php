@@ -929,11 +929,14 @@ class cs_material_manager extends cs_manager {
      $modificator = $material_item->getModificatorItem();
      $context_id = $material_item->getContextID();
      if ( !isset($user) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating new material: Creator is not set',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating new material: Creator is not set',E_USER_ERROR);
      } elseif ( !isset($modificator) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
      } elseif ( !isset($context_id) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating new material: ContextID is not set',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating new material: ContextID is not set',E_USER_ERROR);
      } else {
         $current_datetime = getCurrentDateTimeInMySQL();
         $copy_id = NULL;
@@ -941,7 +944,7 @@ class cs_material_manager extends cs_manager {
         if (isset($copy_item)){
            $copy_id = $copy_item->getItemID();
         } else {
-           $copy_id = 'NULL';
+           $copy_id = '0';
         }
         $public = $material_item->isPublic() ? '1' : '0';
          if ($material_item->getWorldPublic()) {
@@ -967,7 +970,8 @@ class cs_material_manager extends cs_manager {
                  'extras="'.encode(AS_DB,serialize($material_item->getExtraInformation())).'"';
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
-          include_once('functions/error_functions.php');trigger_error('Problems creating material from query: "'.$query.'"',E_USER_WARNING);
+          include_once('functions/error_functions.php');
+          trigger_error('Problems creating material from query: "'.$query.'"',E_USER_WARNING);
         }
      }
   }
