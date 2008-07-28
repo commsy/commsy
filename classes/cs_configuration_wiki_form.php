@@ -376,6 +376,49 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
          $this->_form->setFailure('new_discussion','');
       }
+      if ( !empty($this->_form_post['enable_discussion'])
+           and !empty($this->_form_post['new_discussion'])
+           and isset($discussion_array[0])
+         ) {
+        $tempDiscussion = $this->checkDiscussion($this->_form_post['new_discussion']);
+
+        $exists = false;
+        
+        foreach($discussion_array as $discussion){
+            $discussion = $this->checkDiscussion($discussion);
+            pr($discussion);
+            pr($tempDiscussion);
+            echo '----';
+        	if ($discussion == $tempDiscussion){
+        		$exists = true;
+        	}
+        }
+
+        if($exists){
+        	$this->_error_array[] = getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
+            $this->_form->setFailure('new_discussion','');
+        }
+
+      }
+   }
+   
+   function checkDiscussion($discussion){
+   	    $discussionArray = explode (' ', $discussion);
+        for ($index = 0; $index < sizeof($discussionArray); $index++) {
+            $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
+            $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+            $first_letter = substr($discussionArray[$index], 0, 1);
+            $rest = substr($discussionArray[$index], 1);
+            $first_letter = strtoupper($first_letter);
+            $discussionArray[$index] = $first_letter . $rest;
+        }
+        $discussion = implode('',$discussionArray);
+        return $discussion;
    }
 }
 ?>
