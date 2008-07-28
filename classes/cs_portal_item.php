@@ -1287,8 +1287,11 @@ class cs_portal_item extends cs_guide_item {
                case 'LANGUAGE_UNUSED':      //
                   $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
                   break;
+               case 'CONFIGURATION_PLUGIN':    // getestet Einstellungen Raum-Wiki
+                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGIN_FORM',$link);
+                  break;
                default:
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(1208)";
+                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
             }
             $retour = $tempMessage;
