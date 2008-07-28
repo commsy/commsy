@@ -386,9 +386,6 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         
         foreach($discussion_array as $discussion){
             $discussion = $this->checkDiscussion($discussion);
-            pr($discussion);
-            pr($tempDiscussion);
-            echo '----';
         	if ($discussion == $tempDiscussion){
         		$exists = true;
         	}

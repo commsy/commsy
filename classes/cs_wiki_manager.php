@@ -293,17 +293,17 @@ class cs_wiki_manager extends cs_manager {
                 $titleForForm = $discussion;
                 $discussionArray = explode (' ', $discussion);
                 for ($index = 0; $index < sizeof($discussionArray); $index++) {
-                    $first_letter = substr($discussionArray[$index], 0, 1);
-                    $rest = substr($discussionArray[$index], 1);
-                    $first_letter = strtoupper($first_letter);
-                    $discussionArray[$index] = $first_letter . $rest;
                     $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
                     $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
                     $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
                     $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
                     $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("Ü", "ue", $discussionArray[$index]);
+                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
                     $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+                    $first_letter = substr($discussionArray[$index], 0, 1);
+                    $rest = substr($discussionArray[$index], 1);
+                    $first_letter = strtoupper($first_letter);
+                    $discussionArray[$index] = $first_letter . $rest;
                 }
                 $discussion = implode('',$discussionArray);
 
