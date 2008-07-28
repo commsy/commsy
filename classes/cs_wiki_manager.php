@@ -329,13 +329,13 @@ class cs_wiki_manager extends cs_manager {
                $str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'add,copy\';'.LF;
 
 
-               if(!file_exists('wiki.d/' . $discussion . '.CreateNewTopic')){
-                  copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
-               }
-               if(!file_exists('wiki.d/' . $discussion . '.' . $discussion)){
-                  copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
-                  $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
-                   $file_contents_array = explode("\n", $file_contents);
+               if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                }
+                if(!file_exists('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+                    $file_contents_array = explode("\n", $file_contents);
                     for ($index = 0; $index < sizeof($file_contents_array); $index++) {
                         if(stripos($file_contents_array[$index], 'name=Forum.Forum') !== false){
                             $file_contents_array[$index] = 'name=' . $discussion . 'Forum.' . $discussion . 'Forum';
@@ -345,12 +345,12 @@ class cs_wiki_manager extends cs_manager {
                     $file_contents =  $file_contents . "\n" . 'title='. $discussion;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
                 }
-               if(!file_exists('wiki.d/' . $discussion . '.ForumConfig')){
-                  copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
-               }
-               if(!file_exists('wiki.d/' . $discussion . '.Willkommen')){
-                  copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
-               }
+                if(!file_exists('wiki.d/' . $discussion . 'Forum.ForumConfig')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
+                }
+                if(!file_exists('wiki.d/' . $discussion . 'Forum.Willkommen')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
+                }
             }
 
             $directory_handle = @opendir('uploads');
