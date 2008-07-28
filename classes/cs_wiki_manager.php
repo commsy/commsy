@@ -342,7 +342,7 @@ class cs_wiki_manager extends cs_manager {
                         }
                     }
                     $file_contents = implode("\n", $file_contents_array);
-                    $file_contents =  $file_contents . "\n" . 'title='. $discussion;
+                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
                 }
                 if(!file_exists('wiki.d/' . $discussion . 'Forum.ForumConfig')){
