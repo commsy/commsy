@@ -200,6 +200,11 @@ else {
                $new_temp_name = $_FILES['picture_upload']['tmp_name'].'_TEMP_'.$_FILES['picture_upload']['name'];
                move_uploaded_file($_FILES['picture_upload']['tmp_name'],$new_temp_name);
                $_FILES['picture_upload']['tmp_name'] = $new_temp_name;
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $session_item->setValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_temp_name',$new_temp_name);
+                  $session_item->setValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_name',$_FILES['picture_upload']['name']);
+               }
             }
             $values = array_merge($_POST,$_FILES);
          } else {
@@ -317,8 +322,13 @@ else {
               and empty($_FILES['picture_upload']['tmp_name'])
               and !empty($_POST['hidden_picture_upload_name'])
             ) {
-            $_FILES['picture_upload']['tmp_name'] = $_POST['hidden_picture_upload_tmpname'];
-            $_FILES['picture_upload']['name'] = $_POST['hidden_picture_upload_name'];
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item) ) {
+               $_FILES['picture_upload']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_temp_name');
+               $_FILES['picture_upload']['name']     = $session_item->getValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_temp_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_name');
+            }
          }
          if ( $correct
               and ( !isset($c_virus_scan)

@@ -194,11 +194,16 @@ else {
       // Load form data from postvars
       if ( !empty($_POST) ) {
          if ( !empty($_FILES) ) {
-			if ( !empty($_FILES['picture_upload']['tmp_name']) ) {
-				$new_temp_name = $_FILES['picture_upload']['tmp_name'].'_TEMP_'.$_FILES['picture_upload']['name'];
-                move_uploaded_file($_FILES['picture_upload']['tmp_name'],$new_temp_name);
-                $_FILES['picture_upload']['tmp_name'] = $new_temp_name;
- 			}
+            if ( !empty($_FILES['picture_upload']['tmp_name']) ) {
+               $new_temp_name = $_FILES['picture_upload']['tmp_name'].'_TEMP_'.$_FILES['picture_upload']['name'];
+               move_uploaded_file($_FILES['picture_upload']['tmp_name'],$new_temp_name);
+               $_FILES['picture_upload']['tmp_name'] = $new_temp_name;
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $session_item->setValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_temp_name',$new_temp_name);
+                  $session_item->setValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_name',$_FILES['picture_upload']['name']);
+               }
+            }
             $values = array_merge($_POST,$_FILES);
          } else {
             $values = $_POST;
@@ -210,7 +215,7 @@ else {
       elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -219,7 +224,7 @@ else {
       elseif ( $backfrom == CS_PROJECT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -228,7 +233,7 @@ else {
       elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -237,7 +242,7 @@ else {
       elseif ( $backfrom == CS_TODO_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_TODO_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -246,7 +251,7 @@ else {
       elseif ( $backfrom == CS_DATE_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_DATE_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -255,7 +260,7 @@ else {
       elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -268,7 +273,7 @@ else {
       elseif ( $backfrom == CS_GROUP_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_GROUP_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_GROUP_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -277,7 +282,7 @@ else {
       elseif ( $backfrom == CS_TOPIC_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -286,7 +291,7 @@ else {
       elseif ( $backfrom == CS_INSTITUTION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_INSTITUTION_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_INSTITUTION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -314,15 +319,21 @@ else {
             or isOption($command, getMessage('INSTITUTION_CHANGE_BUTTON'))) ) {
 
          $correct = $form->check();
-		 if ( $correct
-		      and empty($_FILES['picture_upload']['tmp_name'])
-			  and !empty($_POST['hidden_picture_upload_name'])
-			) {
-			$_FILES['picture_upload']['tmp_name'] = $_POST['hidden_picture_upload_tmpname'];
-			$_FILES['picture_upload']['name'] = $_POST['hidden_picture_upload_name'];
-		 }
          if ( $correct
-         	  and ( !isset($c_virus_scan)
+              and empty($_FILES['picture_upload']['tmp_name'])
+              and !empty($_POST['hidden_picture_upload_name'])
+            ) {
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item) ) {
+               $_FILES['picture_upload']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_temp_name');
+               $_FILES['picture_upload']['name']     = $session_item->getValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_temp_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_name');
+
+            }
+         }
+         if ( $correct
+              and ( !isset($c_virus_scan)
                     or !$c_virus_scan
                     or page_edit_virusscan_isClean($_FILES['picture_upload']['tmp_name'],$_FILES['picture_upload']['name'])
                   )
@@ -355,7 +366,7 @@ else {
             }
 
             if ( (isset($_POST['deletePicture']) or !empty($_FILES['picture_upload']['name'])) and $institution_item->getPicture() ) {
-	           $disc_manager = $environment->getDiscManager();
+              $disc_manager = $environment->getDiscManager();
                if ( $disc_manager->existsFile($institution_item->getPicture()) ) {
                   $disc_manager->unlinkFile($institution_item->getPicture());
                }
@@ -364,7 +375,7 @@ else {
 
             if ( !empty($_FILES['picture_upload']['name']) ) {
                $filename = 'cid'.$environment->getCurrentContextID().'_iid'.$institution_item->getItemID().'_'.$_FILES['picture_upload']['name'];
-	           $disc_manager = $environment->getDiscManager();
+              $disc_manager = $environment->getDiscManager();
                $disc_manager->copyFile($_FILES['picture_upload']['tmp_name'],$filename,true);
                $institution_item->setPicture($filename);
             }
@@ -417,13 +428,13 @@ else {
             } else {
                $institution_item->setLinkedItemsByID(CS_TOPIC_TYPE,array());
             }
-	   if ($environment->inCommunityRoom()) {
+      if ($environment->inCommunityRoom()) {
                if ( isset($_POST[CS_INSTITUTION_TYPE]) ) {
                   $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,$_POST[CS_INSTITUTION_TYPE]);
                } else {
                   $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
-	   }
+      }
             // Save item
             $institution_item->save();
 
