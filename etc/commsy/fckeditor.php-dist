@@ -26,14 +26,16 @@
 // 1. download the FCKeditor from http://www.fckeditor.net/
 // 2. install the FCKeditor at your server
 // 3. set url path to the installation of the FCKeditor (main folder)
-//    http://www.xyz.de/FCKeditor -> http://www.xyz.de[$c_fckeditor_url_path]
-//    $c_fckeditor_url_path = '/FCKeditor';
-// 4. set file path to the installation of the FCKeditor (main folder)
+//    http://www.xyz.de/fckeditor -> http://www.xyz.de[$c_fckeditor_url_path]
+//    $c_fckeditor_url_path = '/fckeditor'; // if fckeditor is in htdocs folder of your webserver
+//    $c_fckeditor_url_path = $c_commsy_domain.$c_commsy_url_path.'/fckeditor'; // if fckeditor is in htdocs folder of commsy
+// 4. set file path to the installation of the fckeditor (main folder)
 //    start at the commsy main folder
-//    $c_fckeditor_file_path = '../FCKeditor';
+//    $c_fckeditor_file_path = '../fckeditor';
 // 5. set enable FCKeditor in CommSy with setting $c_html_textarea = true;
 $c_html_textarea = true;
 
 // you can use the following versions of the FCKEditor with CommSy
 //    - 2.6.0 tested: okay
+//    - 2.6.2 tested: okay
 ?>
