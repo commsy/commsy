@@ -331,6 +331,9 @@ class cs_wiki_manager extends cs_manager {
 
                if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                    file_put_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic', $file_contents);
                 }
                 if(!file_exists('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
@@ -347,9 +350,15 @@ class cs_wiki_manager extends cs_manager {
                 }
                 if(!file_exists('wiki.d/' . $discussion . 'Forum.ForumConfig')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
+                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.ForumConfig');
+                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                    file_put_contents('wiki.d/' . $discussion . 'Forum.ForumConfig', $file_contents);
                 }
                 if(!file_exists('wiki.d/' . $discussion . 'Forum.Willkommen')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
+                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.Willkommen');
+                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                    file_put_contents('wiki.d/' . $discussion . 'Forum.Willkommen', $file_contents);
                 }
             }
 
