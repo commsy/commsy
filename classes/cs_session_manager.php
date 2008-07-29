@@ -37,6 +37,8 @@ class cs_session_manager {
     */
    var $_settings;
 
+   var $_last_query;
+
    /** constructor: cs_session_manager
     * the only available constructor, initial values for internal variables
     *
@@ -86,6 +88,10 @@ class cs_session_manager {
       return $this->_dberror;
    }
 
+   function getLastQuery () {
+      return $this->_last_query;
+   }
+
    /** get session item
     * this method returns a session item
     *
@@ -98,6 +104,7 @@ class cs_session_manager {
       $session_arrays = array();
       $session_item = NULL;
       $query = 'SELECT session_value FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -141,6 +148,7 @@ class cs_session_manager {
       $session_data = serialize($item->_data);
 
       $query = 'SELECT session_value FROM session WHERE session_id="'.encode(AS_DB,$item->getSessionID()).'";';
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -152,6 +160,7 @@ class cs_session_manager {
                                          created='".$current_date_time."'
                                      WHERE session_id='".$item->getSessionID()."';";
 
+            $this->_last_query = $query;
             $result = $this->_db_conntector->performQuery($query);
             if ( !isset($result) or !$result ) {
                trigger_error('Problems saving session values for: '.$item->getSessionID().'.', E_USER_WARNING);
@@ -161,6 +170,7 @@ class cs_session_manager {
                                               session_key='new_session_type',
                                               session_value='".encode(AS_DB,$session_data)."',
                                               created='".$current_date_time."'";
+            $this->_last_query = $query;
             $result = $this->_db_conntector->performQuery($query);
             if ( !isset($result) or !$result ) {
                include_once('functions/error_functions.php');
@@ -193,6 +203,7 @@ class cs_session_manager {
       $query = "UPDATE session SET session_value='".encode(AS_DB,$session_data)."',
                created='".$current_date_time."'
                WHERE session_id='".encode(AS_DB,$item->getSessionID())."';";
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -218,6 +229,7 @@ class cs_session_manager {
       }
       if (isset($session_item )){
          $query = 'DELETE FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
+         $this->_last_query = $query;
          $result = $this->_db_conntector->performQuery($query);
          if ( !isset($result) or !$result ) {
             include_once('functions/error_functions.php');
@@ -246,6 +258,7 @@ class cs_session_manager {
       }
       $datetime = getCurrentDateTimeMinusHoursInMySQL($session_lifetime);
       $query = 'DELETE LOW_PRIORITY FROM session WHERE created<"'.$datetime.'";';
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
@@ -287,6 +300,7 @@ class cs_session_manager {
    public function getActiveSessionID ($user_id, $portal_id) {
       $retour = '';
       $query = 'SELECT session_id FROM session WHERE session_value LIKE "%'.encode(AS_DB,$user_id).'%" and (session_value LIKE "%i:'.encode(AS_DB,$portal_id).'%" or session_value LIKE "%'.'\"'.encode(AS_DB,$portal_id).'\"'.'%") ORDER BY created DESC;';
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) ) {
          include('functions/error_functions.php');
@@ -304,6 +318,7 @@ class cs_session_manager {
    public function updateSessionCreationDate ($session_id) {
       $retour = false;
       $query = 'UPDATE session SET created = NOW() WHERE session_id="'.encode(AS_DB,$session_id).'";';
+      $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');

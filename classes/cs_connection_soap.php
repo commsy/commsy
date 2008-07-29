@@ -153,6 +153,14 @@ class cs_connection_soap {
       if ( !empty($session_id) ) {
          $this->_environment->setSessionID($session_id);
          $session_item = $this->_environment->getSessionItem();
+         if ( !isset($session_item)  ) {
+            $session_manager = $this->_environment->getSessionManager();
+            $session_item = $session_manager->get($session_id);
+            if ( !isset($session_item)  ) {
+               $last_query = $session_manager->getLastQuery();
+               return new SoapFault('ERROR','createUser: can not get session_item with query: '.$last_query.' - '.__FILE__.' - '.__FILE__);
+            }
+         }
          $current_user_id = $session_item->getValue('user_id');
          $user_manager = $this->_environment->getUserManager();
          if ($current_user_id == 'root') {
