@@ -29,27 +29,55 @@ function performRoomIDArray ($id_array,$portal_name) {
    foreach ($id_array as $item_id) {
       $room = $room_manager->getItem($item_id);
       $type = '';
+      $active = true;
       if ($room->isCommunityRoom()) {
          $type = 'Community';
          $title = $room->getTitle();
+         if ( $room->isOpen() ) {
+            $active = $room->isActiveDuringLast99Days();
+         } else {
+            $active = false;
+         }
       } elseif ($room->isProjectRoom()) {
          $type = 'Project';
          $title = $room->getTitle();
+         if ( $room->isOpen() ) {
+            $active = $room->isActiveDuringLast99Days();
+         } else {
+            $active = false;
+         }
       } elseif ($room->isGroupRoom()) {
          $type = 'Group';
          $title = $room->getTitle();
+         if ( $room->isOpen() ) {
+            $active = $room->isActiveDuringLast99Days();
+         } else {
+            $active = false;
+         }
       } elseif ($room->isPrivateRoom()) {
          $type = 'Private';
          $user = $room->getOwnerUserItem();
          if (isset($user) and $user->isUser()){
             $title = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName();
+            $portal_user_item = $user->getRelatedCommSyUserItem();
+            if ( isset($portal_user_item) and $portal_user_item->isUser() ) {
+               $active = $portal_user_item->isActiveDuringLast99Days();
+            } else {
+               $active = false;
+            }
+            unset($portal_user_item);
          } else {
             $title = getMessage('COMMON_PRIVATE_ROOM').': '.$room->getItemID();
+            $active = false;
          }
          unset($user);
       }
       echo('<h4>'.$title.' - '.$type.' - '.$portal_name.'<h4>'.LF);
-      displayCronResults($room->runCron());
+      if ( $active ) {
+         displayCronResults($room->runCron());
+      } else {
+         echo('not active'.BRLF);
+      }
       unset($room);
    }
    unset($room_manager);

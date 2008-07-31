@@ -1654,5 +1654,10 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
+
+   public function isActiveDuringLast99Days () {
+      include_once('functions/date_functions.php');
+      return $this->getLastLogin() >  getCurrentDateTimeMinusDaysInMySQL(99);
+   }
 }
 ?>
