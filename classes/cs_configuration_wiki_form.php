@@ -231,16 +231,18 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $discussion_array = $context_item->getWikiDiscussionArray();
      if (isset($discussion_array[0])){
      	$first = true;
-        $current_discussions = getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
+        $current_discussions = '<br/>' . getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
+        $current_discussions .= '<ul>';
         foreach($discussion_array as $discussion){
-        	if(!$first){
-        		$discussion = ', ' . $discussion;
-        	}
-        	if($first){
-        		$first = false;
-        	}
-        	$current_discussions .= $discussion;
+//        	if(!$first){
+//        		$discussion = ', ' . $discussion;
+//        	}
+//        	if($first){
+//        		$first = false;
+//        	}
+        	$current_discussions .= '<li>' . $discussion . '</li>';
         }
+        $current_discussions .= '</ul>';
      } else {
      	$current_discussions = getMessage('COMMON_NO_ENTRIES');
      }
