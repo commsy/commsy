@@ -332,6 +332,13 @@ class cs_wiki_manager extends cs_manager {
                if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
                     $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                    $file_contents_array = explode("\n", $file_contents);
+                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+                        if(stripos($file_contents_array[$index], '(:input hidden foxnotify:)') !== false){
+                            $file_contents_array[$index] = str_replace('(:input hidden foxnotify:)', '(:input hidden foxnotify ' . $discussion . 'Forum:)', $file_contents_array[$index]);
+                        }
+                    }
+                    $file_contents = implode("\n", $file_contents_array);
                     $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic', $file_contents);
                 }
@@ -359,6 +366,21 @@ class cs_wiki_manager extends cs_manager {
                     $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.Willkommen');
                     $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.Willkommen', $file_contents);
+                }
+                if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
+                    copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+                    $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+                    $file_contents_array = explode("\n", $file_contents);
+                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+                        if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+                            $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+                        }
+                        if(stripos($file_contents_array[$index], 'text=') !== false){
+                            //$file_contents_array[$index] = 'text=notify=' . $discussion . '@test.com%0anotify=' . $discussion . '2@test.com';
+                        }
+                    }
+                    $file_contents = implode("\n", $file_contents_array);
+                    file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
                 }
             }
 
