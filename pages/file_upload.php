@@ -22,6 +22,13 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// session prüfen: ist soap session?
+$session_item = $environment->getSessionItem();
+if ( !$session_item->isSoapSession() ) {
+   include_once('functions/error_functions.php');
+   trigger_error('upload file: Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+}
+
 $item_id = '';
 if ( !empty($_POST['item_id'])
      and is_numeric($_POST['item_id'])
@@ -35,7 +42,7 @@ if ( !empty($_POST['item_id'])
    $item_id = $_GET['item_id'];
 } else {
    include_once('functions/error_functions.php');
-   trigger_error('item id lost for linking file - please set item_id',E_USER_ERROR);
+   trigger_error('upload file: item id lost for linking file - please set item_id',E_USER_ERROR);
 }
 $version = 0;
 if ( !empty($_POST['version'])
@@ -69,6 +76,21 @@ if ( $version_id > 0 ) {
    }
 }
 $item_files_upload_to = $manager->getItem($item_id);
+if ( !isset($item_files_upload_to) ) {
+   include_once('functions/error_functions.php');
+   trigger_error('upload file: item upload file to is not valid',E_USER_ERROR);
+}
+$current_user = $environment->getCurrentUserItem();
+if ( !isset($current_user) ) {
+   include_once('functions/error_functions.php');
+   trigger_error('upload file: lost current user is not valid',E_USER_ERROR);
+}
+
+if ( !$item_files_upload_to->mayEdit($current_user) ) {
+   include_once('functions/error_functions.php');
+   trigger_error('upload file: current user ('.$current_user->getFullname().') is not allowed to change item ('.$item_files_upload_to->getTitle().')',E_USER_ERROR);
+}
+unset($current_user);
 
 $file_array = array();
 if ( !empty($_FILES)

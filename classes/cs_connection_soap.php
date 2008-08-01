@@ -448,6 +448,7 @@ class cs_connection_soap {
                         $auth_source_id = $authentication->getAuthSourceItemID();
                      }
                      $session->setValue('auth_source',$auth_source_id);
+                     $session->setSoapSession();
 
                      // save session
                      $session_manager = $this->_environment->getSessionManager();
@@ -492,7 +493,7 @@ class cs_connection_soap {
          $retour = $this->_session_id_array[$portal_id][$user_id];
       } else {
          $session_manager = $this->_environment->getSessionManager();
-         $retour = $session_manager->getActiveSessionID($user_id,$portal_id);
+         $retour = $session_manager->getActiveSOAPSessionID($user_id,$portal_id);
          if ( !empty($retour) ) {
             $this->_session_id_array[$portal_id][$user_id] = $retour;
             $this->_updateSessionCreationDate($retour);

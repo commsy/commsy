@@ -61,7 +61,6 @@ if (file_exists($filename)) {
       $root = str_replace("install.php","",$root);
       $url = $root;
       $path = $_SERVER['SCRIPT_FILENAME'];
-
    }
 
    if(isset($_POST['lang']))
@@ -677,17 +676,15 @@ if (!isset($action)) {
    echo "<td><input type=\"text\" name=\"domain\" value=\"".$domain."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '<tr>';
-   echo '<td>'.$language[$lang]['urlpath'].' *:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-   echo "<td><input type=\"text\" name=\"urlpath\" value=\"".substr($url, 0, -17)."\" class=\"formular\" /></td>";
+   echo '<td>'.$language[$lang]['urlpath'].':&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+   echo "<td><input type=\"text\" name=\"urlpath\" value=\"".substr($url, 0, -18)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '<tr>';
-   echo '<td>'.$language[$lang]['abspath'].' *:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-   echo "<td><input type=\"text\" name=\"abspath\" value=\"".substr($path, 0, -17)."\" class=\"formular\" /></td>";
+   echo '<td>'.$language[$lang]['abspath'].':&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+   echo "<td><input type=\"text\" name=\"abspath\" value=\"".substr($path, 0, -18)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '</table>';
 
-   echo '<br />';
-   echo '<p>* '.$language[$lang]['pathtext'].'</p>';
    echo '<br />';
 
    echo '<table width="100%" cellspacing="0" cellpadding="0"><tr>';
@@ -722,6 +719,9 @@ if (!isset($action)) {
 
    $schreibe11  = '// include first special commsy settings'."\n";
    $schreibe11 .= '@include_once("etc/commsy/settings.php");'."\n";
+
+   $schreibe12 = '$c_security_key';
+   $sec_key = md5(date("Y-m-d H:i:s"));
 
    $daten = "<?php
 // Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Blössl
@@ -762,6 +762,8 @@ if ( !empty($schreibe8) ) {
 }
 $schreibe5 = \"".$_POST['urlpath']."\";
 $schreibe6 = \"".$_POST['abspath']."\";
+
+$schreibe12 = \"".$sec_key."\";
 
 /** include first special commsy settings **/
 @include_once('etc/commsy/settings.php');

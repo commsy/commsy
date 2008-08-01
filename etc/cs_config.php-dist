@@ -54,6 +54,9 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 // set file path to the installation of the commsy folder
 //    $c_commsy_path_file = '/var/www/CommSy';
 
+// set security key to prevent session riding
+// $c_security_key = '';
+
 // include first special commsy settings
 @include_once('etc/commsy/settings.php');
 

@@ -120,9 +120,6 @@ $language['en']['abspath'] = 'File path';
 $language['de']['urlpath'] = 'URL-Pfad';
 $language['en']['urlpath'] = 'URL path';
 
-$language['de']['pathtext'] = 'Die Pfade müssen unbedingt mit <strong>/</strong> enden!';
-$language['en']['pathtext'] = 'The paths above have to end with a <strong>/</strong>!';
-
 //Schlussseite
 $language['de']['done'] = 'Installation abgeschlossen!';
 $language['en']['done'] = 'Installation successful!';

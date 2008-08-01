@@ -403,6 +403,25 @@ if ( !empty($SID) ) {
    }
 }
 
+/************ security: prevent session riding **************/
+if ( !empty($_POST)
+     and !empty($SID)
+     and !( $environment->getCurrentModule() == 'file'
+            and $environment->getCurrentFunction() == 'upload'
+          )
+   ) {
+   if ( empty($_POST['security_token']) ) {
+      include_once('functions/error_functions.php');
+      trigger_error('Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+   } else {
+      include_once('functions/security_functions.php');
+      if ( getToken() != $_POST['security_token'] ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+      }
+   }
+}
+
 /************ language management **************/
 if ( isset($_POST['message_language_select']) ) {
    if ( empty($_POST['message_language_select'])
@@ -706,22 +725,23 @@ if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
 }
 
 // display page
+include_once('functions/security_functions.php');
 if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {
    include_once('pages/rubric_download.php');
 }
 if ( empty($_GET['cs_modus']) ) {
    $html = $page->asHTMLFirstPart();
    if ( !empty($html) ) {
-      echo($html);
+      echo(addTokenToPost($html));
       flush();
    }
 }
 $html = $page->asHTMLSecondPart();
 if ( !empty($html) ) {
-   echo($html);
+   echo(addTokenToPost($html));
    flush();
 }
-echo($page->asHTML());
+echo(addTokenToPost($page->asHTML()));
 flush();
 unset($page);
 

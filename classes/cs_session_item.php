@@ -149,20 +149,20 @@ class cs_session_item {
          return $this->_data[$key];
       }
    }
-   
+
    function setToolName ($value) {
-	   $this->setValue('cs_external_tool',$value);
+      $this->setValue('cs_external_tool',$value);
    }
-   
+
    function getToolName () {
-	   $retour = 'commsy';
-	   if ( $this->issetValue('cs_external_tool') ) {
-		   $value = $this->getValue('cs_external_tool');
-		   if ( !empty($value) ) {
-			   $retour = $value;
-		   }
-	   }
-	   return $retour;
+      $retour = 'commsy';
+      if ( $this->issetValue('cs_external_tool') ) {
+         $value = $this->getValue('cs_external_tool');
+         if ( !empty($value) ) {
+            $retour = $value;
+         }
+      }
+      return $retour;
    }
 
    /** get all keys
@@ -193,6 +193,21 @@ class cs_session_item {
       }
       $this->_session_id = md5($session_id);
       $this->setValue('user_id',$uid);
+   }
+
+   public function isSoapSession () {
+      $retour = false;
+      if ( $this->issetValue('SOAP_SESSION') ) {
+         $value = $this->getValue('SOAP_SESSION');
+         if ( $value == 1 ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   public function setSoapSession () {
+      $this->setValue('SOAP_SESSION',1);
    }
 }
 ?>
