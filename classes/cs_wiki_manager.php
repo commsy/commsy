@@ -332,13 +332,6 @@ class cs_wiki_manager extends cs_manager {
                if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
                     copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
                     $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic');
-                    $file_contents_array = explode("\n", $file_contents);
-                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-                        if(stripos($file_contents_array[$index], '(:input hidden foxnotify:)') !== false){
-                            $file_contents_array[$index] = str_replace('(:input hidden foxnotify:)', '(:input hidden foxnotify ' . $discussion . 'Forum:)', $file_contents_array[$index]);
-                        }
-                    }
-                    $file_contents = implode("\n", $file_contents_array);
                     $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic', $file_contents);
                 }
@@ -376,7 +369,27 @@ class cs_wiki_manager extends cs_manager {
                             $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
                         }
                         if(stripos($file_contents_array[$index], 'text=') !== false){
-                            //$file_contents_array[$index] = 'text=notify=' . $discussion . '@test.com%0anotify=' . $discussion . '2@test.com';
+                            // Beim ersten generieren die vorhandenen Emails aus
+                            // dem Raum uebernehmen.
+                            
+                            $tempDir = getcwd();
+                            chdir($old_dir);
+                            
+                            $user_manager = $this->_environment->getUserManager();
+                            $user_manager->reset();
+                            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+                            $user_manager->setUserLimit();
+                            //$user_manager->setGroupLimit($selgroup);
+                            $user_manager->select();
+                            $user_list = $user_manager->get();
+                            $user_array = $user_list->to_array();
+                            $notify='';
+                            foreach($user_array as $user){
+                                $notify .= 'notify=' . $user->getEmail() . '%0a';
+                            }
+                            $file_contents_array[$index] = 'text=' . $notify;
+                            
+                            chdir($tempDir);
                         }
                     }
                     $file_contents = implode("\n", $file_contents_array);
@@ -549,7 +562,6 @@ function _file_move ($quelle, $ziel)
     // 3 = ziel existiert bereits,
     // 4 = quelle nicht gefunden
 }// ende file_move
-
 
 }
 ?>
