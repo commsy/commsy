@@ -56,6 +56,9 @@ if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
    if ($authentication->isAccountGranted($_POST['user_id'],$_POST['password'],$auth_source)) {
       $session = new cs_session_item();
       $session->createSessionID($_POST['user_id']);
+      if ( !empty($_SERVER['SERVER_ADDR']) ) {
+         $session->setValue('IP',$_SERVER['SERVER_ADDR']);
+      }
       if ( $cookie == '1' ) {
          $session->setValue('cookie',2);
       } elseif ( empty($cookie) ) {
@@ -73,13 +76,13 @@ if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
       // switch between portals
       if ( $environment->inServer() ) {
          $session->setValue('commsy_id',$environment->getServerID());
-	   } else {
+      } else {
          $session->setValue('commsy_id',$environment->getCurrentPortalID());
       }
 
       // external tool
       if ( stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
-	      $session->setToolName('homepage');
+         $session->setToolName('homepage');
       }
 
       // auth_source

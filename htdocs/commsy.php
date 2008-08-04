@@ -404,6 +404,14 @@ if ( !empty($SID) ) {
 }
 
 /************ security: prevent session riding **************/
+if ( !empty($_SERVER['SERVER_ADDR'])
+     and isset($session)
+     and $session->issetValue('IP')
+     and $session->getValue('IP') != $_SERVER['SERVER_ADDR']
+   ) {
+   include_once('functions/error_functions.php');
+   trigger_error('Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+}
 if ( !empty($_POST)
      and !empty($SID)
      and !( $environment->getCurrentModule() == 'file'
