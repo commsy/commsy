@@ -129,6 +129,7 @@ chdir('..');
 // start of execution time
 include_once('functions/misc_functions.php');
 $time_start = getmicrotime();
+$start_time = date('d.m.Y H:s:i');
 
 // setup commsy-environment
 include_once('classes/cs_cron_view.php');
@@ -291,10 +292,30 @@ while ($portal) {
 unset($portal_list);
 */
 $time_end = getmicrotime();
-$time = round($time_end - $time_start,3);
+$end_time = date('d.m.Y H:s:i');
+$time = round($time_end - $time_start,0);
+$time = '10000';
 echo('<hr/>'.LF);
 echo('<h1>CRON END</h1>'.LF);
-echo('Total execution time: '.$time.' seconds'.BRLF);
+echo('<h2>Time</h2>'.LF);
+echo('Start: '.$start_time.BRLF);
+echo('End: '.$end_time.BRLF);
+if ( $time < 60 ) {
+   echo('Total execution time: '.$time.' seconds'.LF);
+} elseif ( $time < 3600 ) {
+   $time2 = floor($time / 60);
+   $sec2 = $time % 60;
+   echo('Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
+} else {
+   $hour = floor($time / 3600);
+   $sec = $time % 3660;
+   if ( $sec > 60 ) {
+      $minutes = floor($sec / 60);
+      $sec = $sec % 60;
+   }
+   echo('Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
+}
+echo('<h2>Memory</h2>'.LF);
 echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
 echo('Current of memory allocated: '.memory_get_usage().BRLF);
 ?>
