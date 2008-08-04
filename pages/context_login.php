@@ -56,9 +56,9 @@ if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
    if ($authentication->isAccountGranted($_POST['user_id'],$_POST['password'],$auth_source)) {
       $session = new cs_session_item();
       $session->createSessionID($_POST['user_id']);
-      if ( !empty($_SERVER['SERVER_ADDR']) ) {
-         $session->setValue('IP',$_SERVER['SERVER_ADDR']);
-      }
+      #if ( !empty($_SERVER['SERVER_ADDR']) ) {
+      #   $session->setValue('IP',$_SERVER['SERVER_ADDR']);
+      #}
       if ( $cookie == '1' ) {
          $session->setValue('cookie',2);
       } elseif ( empty($cookie) ) {
