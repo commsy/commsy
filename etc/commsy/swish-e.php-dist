@@ -44,6 +44,6 @@ $bgm_log = false;
 $bgm_appendtolog = false;
 
 // new config for indexing
-$c_ftsearch_indexing = $ftsearch_enabled;
-$c_ftsearch_indexing_cron = true; // false = indexing on upload (experimental and performance problems)
+$c_indexing = $ftsearch_enabled;
+$c_indexing_cron = true; // false = indexing on upload (experimental and performance problems)
 ?>
