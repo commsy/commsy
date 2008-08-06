@@ -792,7 +792,7 @@ class cs_server_item extends cs_guide_item {
       if ($language == 'browser') {
          $language = $this->_environment->getSelectedLanguage();
       }
-      $desc_array = $this->getDescriptionArray();
+      $desc_array = $this->getOutOfServiceArray();
       if ( !empty($desc_array[cs_strtoupper($language)]) ) {
          $retour = $desc_array[cs_strtoupper($language)];
       }
