@@ -28,6 +28,7 @@
 # xpdf for the converter pdftotext
 # mkdir /tmp/swish-e
 # user of webserver must have write access in temp-folder
+# user of webserver must have execution access to /scripts/indexing/auto-indexer.sh
 
 $ftsearch_enabled = true;
 // $search_engine = "/usr/bin/swish-e";
