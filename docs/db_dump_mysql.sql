@@ -253,7 +253,7 @@ CREATE TABLE `files` (
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
   `filename` varchar(255) collate latin1_german1_ci NOT NULL,
-  `size` int(30) NOT NULL,
+  `size` int(30) NOT NULL default '0',
   `has_html` enum('0','1','2') collate latin1_german1_ci NOT NULL default '0',
   `scan` tinyint(1) NOT NULL default '-1',
   `extras` text collate latin1_german1_ci,

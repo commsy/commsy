@@ -866,7 +866,7 @@ class cs_material_manager extends cs_manager {
          if (isset($copy_item)){
             $copy_id = $copy_item->getItemID();
          } else {
-            $copy_id = 'NULL';
+            $copy_id = '0';
          }
          if ($material_item->getWorldPublic()) {
             $world_public = $material_item->getWorldPublic();

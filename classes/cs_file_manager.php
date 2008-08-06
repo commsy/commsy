@@ -212,14 +212,17 @@ class cs_file_manager extends cs_manager {
    function saveItem($file_item) {
       $saved = false;
       $current_user = $this->_environment->getCurrentUser();
-        $query = 'INSERT INTO '.$this->_db_table.' SET'.
-               ' context_id="'.encode(AS_DB,$file_item->getContextID()).'",'.
+      $query =  'INSERT INTO '.$this->_db_table.' SET'.
+                ' context_id="'.encode(AS_DB,$file_item->getContextID()).'",'.
                 ' creation_date="'.getCurrentDateTimeInMySQL().'", '.
                 ' creator_id="'.encode(AS_DB,$current_user->getItemID()).'", '.
                 ' filename="'.encode(AS_DB,$file_item->getFileName()).'", ' .
-                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ' .
-                ' has_html="'.encode(AS_DB,$file_item->getHasHTML()).'", ' .
-                ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"';
+                ' scan="'.encode(AS_DB,$file_item->getScanValue()).'", ';
+      $has_html = $file_item->getHasHTML();
+      if ( !empty($has_html) ) {
+         $query .= ' has_html="'.encode(AS_DB,$has_html).'", ';
+      }
+      $query .= ' extras="'.encode(AS_DB,serialize($file_item->getExtraInformation())).'"';
       unset($current_user);
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
