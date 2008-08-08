@@ -60,7 +60,7 @@ function del_comments ($file) {
             echo($file.': FAILED'.$NL);
          }
       } else {
-         echo($file.': no comments inside'.$NL);         
+         echo($file.': no comments inside'.$NL);
       }
       exit();
    }
@@ -72,7 +72,7 @@ function del_comments_php ($file) {
    $retour = true;
    $file_string_old = file_get_contents($file);
    if (preg_match('§<?[PHP|php]+§',$file_string_old)) {
-      $file_string = shell_exec('php -w -f '.$file);
+      $file_string = shell_exec('php '.escapeshellcmd('-w -f '.$file));
       if ( strlen($file_string) != strlen($file_string_old) ) {
          if (file_put_contents($file,$file_string)) {
             echo($file.': success'.$NL);
@@ -84,7 +84,7 @@ function del_comments_php ($file) {
             echo($file.': FAILED'.$NL);
          }
       } else {
-         echo($file.': no comments inside'.$NL);         
+         echo($file.': no comments inside'.$NL);
       }
    }
    return $retour;

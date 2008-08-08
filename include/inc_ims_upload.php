@@ -166,6 +166,8 @@ function _getMaterialListByXML($directory){
       }
    }
    foreach($xml_file_array as $file){
+      $tags = array();
+      $values = array();
       $data = implode("", file($xml_directory.$file));
       $parser = xml_parser_create();
       xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);

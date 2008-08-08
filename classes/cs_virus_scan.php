@@ -62,7 +62,7 @@ class cs_virus_scan {
             }
          } elseif ( file_exists($this->_path."/".$this->_bin) ) {
             // viren scanning with shell command
-            $output = shell_exec($this->_path."/".$this->_bin." ".$filename." | grep FOUND");
+            $output = shell_exec($this->_path."/".$this->_bin." ".escapeshellcmd($filename." | grep FOUND"));
             if (($output != '') and (stristr($output,'FOUND'))) {
                // maybe its only the filename, so remove it from output
                $output = str_replace($filename.': ', "", $output);
