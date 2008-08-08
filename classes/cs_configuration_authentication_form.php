@@ -151,10 +151,10 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_yes_no_array[1]['text'] = $this->_translator->getMessage('COMMON_NO');
       $this->_yes_no_array[1]['value'] = 2;
 
-      $this->_encryption_array[0]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_MD5');
-      $this->_encryption_array[0]['value'] = 'md5';
-      $this->_encryption_array[1]['text'] = $this->_translator->getMessage('COMMON_NONE');
-      $this->_encryption_array[1]['value'] = 'none';
+      $this->_encryption_array[0]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_NONE');
+      $this->_encryption_array[0]['value'] = 'none';
+      $this->_encryption_array[1]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_MD5');
+      $this->_encryption_array[1]['value'] = 'md5';
 
       // commsy default
       if ( isset($this->_item) and $this->_item->isCommSyDefault() ) {
@@ -324,9 +324,16 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       elseif ( $this->_auth_type == 'LDAP' ) {
          $this->_form->addTextfield('host','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST'),'','',21,true,'','','','','','',false,'');
          $this->_form->addTextfield('port','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PORT'),'','',21,true,'','','','','','',false,'');
+         $this->_form->addTextfield('dbcolumnuserid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID'),'','',21,true,'','','','','','',false,'');
+         $this->_form->combine();
+         $this->_form->addText('dbcolumnuserid_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC'));
          $this->_form->addTextfield('base','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE'),'','',21,true,'','','','','','',false,'');
-         #$this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,false,'','','','','','',false,'');
-         #$this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',21,false,'','','','','','',false,'');
+         $this->_form->addText('choice','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR'));
+         $this->_form->addTextfield('userid','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_USER'),'','',21,false,'','','','','','',false,'');
+         $this->_form->addPassword('password','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_PW'),'','',22,false,'','','','','','',false,'');
+         $this->_form->addRadioGroup('encryption',$translator->getMessage('CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION'),'',$this->_encryption_array,'',true,true,'','','');
+         $this->_form->combine();
+         $this->_form->addText('encryption_text','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION'));
 
          $this->_form->addEmptyLine();
       }
@@ -596,6 +603,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_error_array[] = getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
          $this->_form->setFailure('auth_source','');
       }
+
+      // CAS
       if ( !empty($this->_form_post['auth_type'])
            and strtoupper($this->_form_post['auth_type']) == 'CAS'
            and !( strstr($this->_form_post['host'],'https://')

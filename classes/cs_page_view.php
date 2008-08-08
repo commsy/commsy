@@ -1421,6 +1421,14 @@ class cs_page_view extends cs_view {
             }
             // login form
             $html .= '<table summary="Layout">'.LF;
+            // @segment-end 63814
+            // @segment-begin 8638 no-cs_mode/user=guest:account-field,password-field,log-in-button/table-end
+            $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
+            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
+            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
+            $html .= '</td></tr>'.LF.'<tr><td>'.LF;
+            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</td>'.LF.'<td>';
+            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
             if ( $insert_auth_source_selectbox ) {
                $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
                $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
@@ -1451,14 +1459,6 @@ class cs_page_view extends cs_view {
                $html .= '</td></tr>'.LF;
             }
             unset($auth_source_list);
-            // @segment-end 63814
-            // @segment-begin 8638 no-cs_mode/user=guest:account-field,password-field,log-in-button/table-end
-            $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
-            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
-            $html .= '</td></tr>'.LF.'<tr><td>'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</td>'.LF.'<td>';
-            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
             $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
             $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="3"/>'.LF;
             $html .= '</td></tr>'.LF;
@@ -1652,8 +1652,11 @@ class cs_page_view extends cs_view {
                // @segment-begin 42457 no-cs_modus/user-status><0:links-change_account/my_profile
                if (!$this->_environment->inServer() ) {
                // auth source
-                  if ( (isset($current_auth_source_item) and $current_auth_source_item->allowChangeUserID()) or $this->_current_user->isRoot()
-                  ) {
+                  if ( ( isset($current_auth_source_item)
+                       #  and $current_auth_source_item->allowChangeUserID()
+                       )
+                       or $this->_current_user->isRoot()
+                     ) {
                      $params = array();
                      $params = $this->_environment->getCurrentParameterArray();
                      $params['cs_modus'] = 'account_change';
@@ -1795,24 +1798,30 @@ class cs_page_view extends cs_view {
       }
 
      // change account
-      elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-   } else {
-              $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-         $portal_user = $this->_environment->getPortalUserItem();
-         $fullname = $portal_user->getFullname();
-               unset($portal_user);
-      } else {
-         $fullname = $this->_current_user->getFullname();
-      }
+     elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
+        if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
+        } else {
+           $params = array();
+           $params['iid'] = $this->_current_user->getItemID();
+           if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+              $portal_user = $this->_environment->getPortalUserItem();
+              $fullname = $portal_user->getFullname();
+              unset($portal_user);
+           } else {
+              $fullname = $this->_current_user->getFullname();
+           }
         }
         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-        include_once('classes/cs_account_change_page.php');
-        $left_page = new cs_account_change_page($this->_environment);
-        $html .= $left_page->execute();
-        $html .= BRLF;
+        $current_portal_item = $this->_environment->getCurrentPortalItem();
+        $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
+        unset($current_portal_item);
+        if ( $current_auth_source_item->allowChangeUserID() ) {
+           include_once('classes/cs_account_change_page.php');
+           $left_page = new cs_account_change_page($this->_environment);
+           $html .= $left_page->execute();
+           $html .= BRLF;
+        }
+        unset($current_auth_source_item);
         include_once('classes/cs_account_merge_page.php');
         $left_page = new cs_account_merge_page($this->_environment);
         $html .= $left_page->execute();

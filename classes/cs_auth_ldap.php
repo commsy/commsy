@@ -57,6 +57,11 @@ class cs_auth_ldap extends cs_auth_manager {
     */
    var $_rootuser_password;
 
+  /**
+   * string - containing LDAP field containing User-ID
+   */
+   var $_field_userid = 'uid';
+
    /**
     * string - containing a uid from a user with write access
     */
@@ -103,6 +108,12 @@ class cs_auth_ldap extends cs_auth_manager {
       if ( !empty($auth_data_array['PASSWORD']) ) {
          $this->_rootuser_password = $auth_data_array['PASSWORD'];
       }
+      if ( !empty($auth_data_array['ENCRYPTION']) ) {
+         $this->_encryption = $auth_data_array['ENCRYPTION'];
+      }
+      if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
+         $this->_field_userid = $auth_data_array['DBCOLUMNUSERID'];
+      }
    }
 
    /** set user with write access
@@ -134,44 +145,53 @@ class cs_auth_ldap extends cs_auth_manager {
     */
    function checkAccount ($uid, $password) {
 
-    /*
-    $basedn="CN=Users,DC=domain,DC=de";
-    $server="active_directory";
-    $port=389;
-    $anmelduser="CN=leseuser,CN=Users,DC=domain,DC=de";
-    $passwort="start";
-
-    $connect=ldap_connect($server,$port);
-
-    $suchfilter="(sAMAccountName=*)";
-    $bind=@ldap_bind($connect,$anmelduser,$passwort) or die ("Bindung mit Server nicht möglich.");
-    $search=@ldap_search($connect,$basedn,$suchfilter);
-    $result=ldap_get_entries($connect,$search);
-    $unbind=ldap_unbind($connect);
-
-    $connect=ldap_connect($server,$port);
-
-    $user=$_POST["anmeldename"];
-    $kennwort=$_POST["kennwort"];
-    $newsuchfilter="(sAMAccountName=$user)";
-    $newbind=ldap_bind($connect,$user,$kennwort);
-    */
-
       $granted = false;
       /** check if password is correct */
       if ( empty($password) || strlen($password) == 0 ) {
-         $password = crypt(microtime());
+         $password = microtime();
       }
-      $access = 'uid='.$uid.','.$this->_baseuser;
+      $access = $this->_field_userid.'='.$uid.','.$this->_baseuser;
       $connect = @ldap_connect( $this->_server, $this->_server_port );
       if ( !$connect ) {
          include_once('functions/error_functions.php');
-         trigger_error('could not connect to server '.$this->_server.', '.$this->_baseuser,E_USER_WARNING);
+         trigger_error('could not connect to server '.$this->_server.', '.$this->_server_port,E_USER_WARNING);
       } else {
          @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
-         $bind = @ldap_bind( $connect, $access, $password );
+         $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
          if ( $bind ) {
             $granted = true;
+         } elseif ( !empty($this->_rootuser)
+                    and !empty($this->_rootuser_password)
+                  ) {
+            $suchfilter="($this->_field_userid=$uid)";
+            if ( strstr($this->_rootuser,',')
+                 and strstr($this->_rootuser,'=')
+               ) {
+               $access = $this->_rootuser;
+            } else {
+               $access = $this->_field_userid.'='.$this->_rootuser.','.$this->_baseuser;
+            }
+            $bind = @ldap_bind($connect, $access, $this->encryptPassword($this->_rootuser_password));
+            if ( $bind ) {
+               $search = @ldap_search($connect,$this->_baseuser,$suchfilter);
+               $result = ldap_get_entries($connect,$search);
+               $unbind = ldap_unbind($connect);
+               if ( $result['count'] != 0 ) {
+                  $access = $result[0]['dn'];
+                  $connect = @ldap_connect( $this->_server, $this->_server_port );
+                  @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
+                  $bind = ldap_bind( $connect, $access, $this->encryptPassword($password) );
+                  if ( $bind ) {
+                     $granted = true;
+                  } else {
+                     $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+                  }
+               } else {
+                  $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+               }
+            } else {
+               $this->_error_array[] = getMessage('AUTH_ERROR_LDAP_ROOTUSER');
+            }
          } else {
             $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
          }

@@ -31,6 +31,11 @@
 class cs_auth_manager {
 
    /**
+    * string - containing the encryption of the user password in LDAP
+    */
+   var $_encryption = 'none';
+
+   /**
     * array - containing the error messages
     */
    public $_error_array = array();
@@ -202,6 +207,18 @@ class cs_auth_manager {
 
    public function isCommSyDefault () {
       return $this->_auth_source_item->isCommSyDefault();
+   }
+
+   public function encryptPassword ($password) {
+      $retour = '';
+      if ( $this->_encryption == 'none'
+           or empty($this->_encryption)
+         ) {
+         $retour = $password;
+      } elseif ( $this->_encryption == 'md5' ) {
+         $retour = md5($password);
+      }
+      return $retour;
    }
 }
 ?>

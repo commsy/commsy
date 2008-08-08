@@ -63,7 +63,8 @@ class cs_home_member2_page extends cs_left_page {
             if ( isset($this->_post_vars['auth_source']) and !empty($this->_post_vars['auth_source']) ) {
                $auth_source = $this->_post_vars['auth_source'];
             } else {
-               include_once('functions/error_functions.php');trigger_error('lost auth source',E_USER_ERROR);
+               include_once('functions/error_functions.php');
+               trigger_error('lost auth source',E_USER_ERROR);
             }
 
             $portal_item = $this->_environment->getCurrentPortalItem();
@@ -87,6 +88,11 @@ class cs_home_member2_page extends cs_left_page {
 
             // mysql allg.
             elseif ( $auth_source_item->getSourceType() == 'MYSQL' ) {
+               $redirect_to_login = false;
+            }
+
+            // LDAP
+            elseif ( $auth_source_item->getSourceType() == 'LDAP' ) {
                $redirect_to_login = false;
             }
 

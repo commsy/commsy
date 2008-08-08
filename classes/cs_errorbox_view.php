@@ -61,7 +61,11 @@ class cs_errorbox_view extends cs_text_view {
    function asHTML () {
       $html  = '';
       $html .= '<!-- BEGIN OF ERRORBOX -->'.LF;
-      if ( $this->_environment->inPortal() or $this->_environment->inServer() ) {
+      if ( !$this->_width
+           and ( $this->_environment->inPortal()
+                 or $this->_environment->inServer()
+               )
+         ) {
          $text = 'width: 60%;';
       } elseif ($this->_width and !stristr($this->_width,'em') and !stristr($this->_width,'%')) {
          $width = round($this->_width/12,0);
