@@ -157,6 +157,7 @@ class cs_auth_ldap extends cs_auth_manager {
          trigger_error('could not connect to server '.$this->_server.', '.$this->_server_port,E_USER_WARNING);
       } else {
          @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
+         @ldap_set_option($connect,LDAP_OPT_REFERRALS,0);
          $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
          if ( $bind ) {
             $granted = true;
