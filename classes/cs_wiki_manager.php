@@ -296,8 +296,8 @@ class cs_wiki_manager extends cs_manager {
             $directory_handle = @opendir('Profiles');
            if (!$directory_handle) {
               mkdir('Profiles');
+              copy($c_commsy_path_file.'/etc/pmwiki/nobody_m.gif','Profiles/nobody_m.gif');
             }
-            copy($c_commsy_path_file.'/etc/pmwiki/nobody_m.gif','Profiles/nobody_m.gif');
             chdir('..');
 
             // alle anderen user...
