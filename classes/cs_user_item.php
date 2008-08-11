@@ -1011,7 +1011,7 @@ class cs_user_item extends cs_item {
       // set old status to current status
       $this->_old_status = $this->getStatus();
       
-      //$this->updateWikiProfile();
+      $this->updateWikiProfile();
    }
 
    /**
