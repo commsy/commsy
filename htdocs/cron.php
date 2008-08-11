@@ -294,7 +294,6 @@ unset($portal_list);
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:s:i');
 $time = round($time_end - $time_start,0);
-$time = '10000';
 echo('<hr/>'.LF);
 echo('<h1>CRON END</h1>'.LF);
 echo('<h2>Time</h2>'.LF);
