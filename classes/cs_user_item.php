@@ -1010,6 +1010,8 @@ class cs_user_item extends cs_item {
 
       // set old status to current status
       $this->_old_status = $this->getStatus();
+      
+      //$this->updateWikiProfile();
    }
 
    /**
@@ -1658,6 +1660,11 @@ class cs_user_item extends cs_item {
    public function isActiveDuringLast99Days () {
       include_once('functions/date_functions.php');
       return $this->getLastLogin() >  getCurrentDateTimeMinusDaysInMySQL(99);
+   }
+   
+   public function updateWikiProfile(){
+        $wiki_manager = $this->_environment->getWikiManager();
+        $wiki_manager->updateWikiProfile($this->getUserID());
    }
 }
 ?>
