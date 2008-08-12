@@ -376,41 +376,50 @@ class cs_wiki_manager extends cs_manager {
                     $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
                     file_put_contents('wiki.d/' . $discussion . 'Forum.Willkommen', $file_contents);
                 }
-                if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-                    $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-                    $file_contents_array = explode("\n", $file_contents);
-                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-                        if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
-                            $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
-                        }
-                        if(stripos($file_contents_array[$index], 'text=') !== false){
-                            // Beim ersten generieren die vorhandenen Emails aus
-                            // dem Raum uebernehmen.
-                            
-                            $tempDir = getcwd();
-                            chdir($old_dir);
-                            
-                            $user_manager = $this->_environment->getUserManager();
-                            $user_manager->reset();
-                            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-                            $user_manager->setUserLimit();
-                            //$user_manager->setGroupLimit($selgroup);
-                            $user_manager->select();
-                            $user_list = $user_manager->get();
-                            $user_array = $user_list->to_array();
-                            $notify='';
-                            foreach($user_array as $user){
-                                $notify .= 'notify=' . $user->getEmail() . '%0a';
+                
+                if ( $item->WikiEnableDiscussionNotification() == "1" ) {
+                    if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
+                        // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
+                        // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
+                        // in die Gruppen eintragen.
+                        $tempDir = getcwd();
+                        chdir($old_dir);
+                        $group_manager = $this->_environment->getGroupManager();
+                        $group_manager->reset();
+                        $group_manager->select();
+                        $group_list = $group_manager->get();
+                        $group_array = $group_list->to_array();
+                        $group_existing = false;
+                        foreach($group_array as $group){
+                            if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
+                                $group_existing = true;
                             }
-                            $file_contents_array[$index] = 'text=' . $notify;
-                            
-                            chdir($tempDir);
                         }
+                        if(!$group_existing){
+                            $new_group = $group_manager->getNewItem();
+                            $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
+                            $currentUser = $this->_environment->getCurrentUser();
+                            $new_group->setCreatorItem($currentUser);
+                            $new_group->save();
+                        }
+                        chdir($tempDir);
+                        $str .= '$COMMSY_DISCUSSION_NOTIFICATION_GROUPS = "1";'.LF;
+                    } else {
+                        $tempDir = getcwd();
+                        chdir($old_dir);
+                        $user_manager = $this->_environment->getUserManager();
+                        $user_manager->reset();
+                        $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+                        $user_manager->setUserLimit();
+                        $user_manager->select();
+                        $user_list = $user_manager->get();
+                        $user_array = $user_list->to_array();
+                        chdir($tempDir);
+                        $this->updateWikiNotificationFile($discussion, $user_array);
                     }
-                    $file_contents = implode("\n", $file_contents_array);
-                    file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+                    $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
                 }
+                
                 // Profile der vorhandenen CommSy-Benutzer anlegen
                 $tempDir = getcwd();
                 chdir($old_dir);
@@ -640,6 +649,33 @@ function updateWikiProfileFile($user){
       }
       $file_contents = implode("\n", $file_contents_array);
       file_put_contents('wiki.d/Profiles.' . $firstname . $lastname, $file_contents);
+}
+
+function updateWikiNotificationFile($discussion, $user_array){
+    global $c_commsy_path_file;
+    if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
+        copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+    }
+    $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+    $file_contents_array = explode("\n", $file_contents);
+    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+        if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+            $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+        }
+        if(stripos($file_contents_array[$index], 'text=') !== false){
+            // Beim ersten generieren die vorhandenen Emails aus
+            // dem Raum uebernehmen.
+            
+            $notify='';
+            foreach($user_array as $user){
+                $notify .= 'notify=' . $user->getEmail() . '%0a';
+            }
+            $file_contents_array[$index] = 'text=' . $notify;
+        }
+    }
+    $file_contents = implode("\n", $file_contents_array);
+    file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+
 }
 }
 ?>

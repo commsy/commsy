@@ -2466,6 +2466,40 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setWikiEnableDiscussionNotification(){
+      $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATION','1');
+   }
+
+   function unsetWikiEnableDiscussionNotification(){
+      $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATION','-1');
+   }
+   
+   function WikiEnableDiscussionNotification(){
+      if ( $this->_issetExtra('WIKIENABLEDISCUSSIONNOTIFICATION') ) {
+         $retour = $this->_getExtra('WIKIENABLEDISCUSSIONNOTIFICATION');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableDiscussionNotificationGroups(){
+      $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS','1');
+   }
+
+   function unsetWikiEnableDiscussionNotificationGroups(){
+      $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS','-1');
+   }
+   
+   function WikiEnableDiscussionNotificationGroups(){
+      if ( $this->_issetExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS') ) {
+         $retour = $this->_getExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
 
    function WikiSetNewDiscussion($new_discussion){
         if(!empty($new_discussion)){

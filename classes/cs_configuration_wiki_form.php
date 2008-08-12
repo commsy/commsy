@@ -226,6 +226,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
 	  $this->_form->addCheckbox('enable_discussion',1,'',getMessage('COMMON_WIKI_DISCUSSION'),getMessage('COMMON_WIKI_DISCUSSION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
       $this->_form->combine();
+      $this->_form->addCheckbox('enable_discussion_notification',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_ENABLE'),false,false,'','',true,false);
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
+      $this->_form->combine();
       
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
@@ -250,7 +254,6 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addText('wiki_existing_discussions','',$current_discussions);
       $this->_form->combine();
       $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW'));
-      
       
 
 //      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
@@ -346,6 +349,12 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          if ($this->_item->WikiEnableDiscussion() == "1"){
             $this->_values['enable_discussion'] = 1;
          }
+         if ($this->_item->WikiEnableDiscussionNotification() == "1"){
+            $this->_values['enable_discussion_notification'] = 1;
+         }
+         if ($this->_item->WikiEnableDiscussionNotificationGroups() == "1"){
+            $this->_values['enable_discussion_notification_groups'] = 1;
+         }
          $this->_values['new_discussion'] = '';
          // /new features
          if ( $this->_item->wikiWithSectionEdit() ) {
@@ -398,6 +407,20 @@ class cs_configuration_wiki_form extends cs_rubric_form {
             $this->_form->setFailure('new_discussion','');
         }
 
+      }
+      if ( empty($this->_form_post['enable_discussion'])
+           and (!empty($this->_form_post['enable_discussion_notification']) or !empty($this->_form_post['enable_discussion_notification_groups']))
+         ) {
+         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOT_SELECTED_ERROR');
+         $this->_form->setFailure('enable_discussion','');
+      }
+      
+      if ( !empty($this->_form_post['enable_discussion'])
+           and empty($this->_form_post['enable_discussion_notification'])
+           and !empty($this->_form_post['enable_discussion_notification_groups'])
+         ) {
+         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
+         $this->_form->setFailure('enable_discussion_notification','');
       }
    }
    

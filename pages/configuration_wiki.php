@@ -115,6 +115,8 @@ else {
       $item->setWikiSkin('pmwiki');
       $item->setWikiTitle($item->getTitle());
       $item->unsetWikiEnableDiscussion();
+      $item->unsetWikiEnableDiscussionNotification();
+      $item->unsetWikiEnableDiscussionNotificationGroups();
       $item->unsetWikiDiscussionArray();
       // Save item
       $item->save();
@@ -297,10 +299,23 @@ else {
             $item->setWikiEnableDiscussion();
             if ( isset($_POST['new_discussion']) ) {
 	            $item->WikiSetNewDiscussion($_POST['new_discussion']);
-	         }
+	        }
          } else {
             $item->unsetWikiEnableDiscussion();
          }
+         
+         if ( isset($_POST['enable_discussion_notification']) ) {
+                $item->setWikiEnableDiscussionNotification();
+                
+            } else {
+                $item->unsetWikiEnableDiscussionNotification();
+          }
+            
+        if ( isset($_POST['enable_discussion_notification_groups']) ) {
+                $item->setWikiEnableDiscussionNotificationGroups();
+            } else {
+                $item->unsetWikiEnableDiscussionNotificationGroups();
+        }
 
          // section edit
          if ( isset($_POST['wiki_section_edit']) ) {

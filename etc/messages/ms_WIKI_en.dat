@@ -7,5 +7,8 @@ $message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["en"] = "Recognize headlines
 $message["WIKI_DELETE_BUTTON"]["en"] = "Delete wiki";
 $message["WIKI_DISCUSSION_EMPTY_ERROR"]["en"] = "";
 $message["WIKI_DISCUSSION_EXISTS_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_GROUP_TITLE"]["en"] = "Discussion:";
+$message["WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR"]["en"] = "";
+$message["WIKI_DISCUSSION_NOT_SELECTED_ERROR"]["en"] = "";
 $message["WIKI_SAVE_BUTTON"]["en"] = "Create wiki";
 ?>
