@@ -424,33 +424,7 @@ class cs_wiki_manager extends cs_manager {
                 $user_array = $user_list->to_array();
                 chdir($tempDir);
                 foreach($user_array as $user){
-                    if(!file_exists('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname())){
-                      copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname());
-                      
-                      $file_contents = file_get_contents('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname());
-                      $file_contents_array = explode("\n", $file_contents);
-                      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-                          if(stripos($file_contents_array[$index], 'author=') !== false){
-                              $file_contents_array[$index] = 'author=' . $user->getFirstname() . ' ' . $user->getLastname();
-                          } else if (stripos($file_contents_array[$index], 'name=') !== false){
-                              $file_contents_array[$index] = 'name=Profiles.' . $user->getFirstname() . $user->getLastname();
-                          } else if (stripos($file_contents_array[$index], 'text=') !== false){
-                              //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
-                              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $user->getFirstname() . $user->getLastname() . '/';
-                              if($user->getPicture() != ''){
-                                    $tempString .= $user->getPicture() . '%0a';
-                                    copy($c_commsy_path_file . 'var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
-                              } else {
-                                    $tempString .= 'nobody_m.gif%0a';
-                              }
-                              $tempString .= $user->getDescription() . '%0a:)';
-                              $file_contents_array[$index] = $tempString;
-                          }
-                      }
-                      $file_contents = implode("\n", $file_contents_array);
-                      $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
-                      file_put_contents('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname(), $file_contents);
-                  }
+                      $this->updateWikiProfileFile($user);
                 }
                 
                 
@@ -608,49 +582,64 @@ function _file_move ($quelle, $ziel)
     // 4 = quelle nicht gefunden
 }// ende file_move
 
-function updateWikiProfile($userID){
+function updateWikiProfile($userID, $contextID){
     global $c_commsy_path_file;
     global $c_pmwiki_path_file;
     $old_dir = getcwd();
     $user_manager = $this->_environment->getUserManager();
     $user_manager->reset();
-    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+    $user_manager->setContextLimit($contextID);
     $user_manager->setUserIDLimit($userID);
     $user_manager->select();
     $user_list = $user_manager->get();
     $user_array = $user_list->to_array();
     $user = $user_array[0];
     chdir($c_pmwiki_path_file);
-    chdir('wikis');
-    chdir($this->_environment->getCurrentPortalID());
-    chdir($this->_environment->getCurrentContextID());
-    if(!file_exists('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname())){
-        copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname());
+    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $contextID);
+    if ($directory_handle) {
+        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $contextID);
+        $this->updateWikiProfileFile($user);
     }
-    $file_contents = file_get_contents('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname());
-    $file_contents_array = explode("\n", $file_contents);
-    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-        if(stripos($file_contents_array[$index], 'author=') !== false){
-            $file_contents_array[$index] = 'author=' . $user->getFirstname() . ' ' . $user->getLastname();
-        } else if (stripos($file_contents_array[$index], 'name=') !== false){
-            $file_contents_array[$index] = 'name=Profiles.' . $user->getFirstname() . $user->getLastname();
-        } else if (stripos($file_contents_array[$index], 'text=') !== false){
-            //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
-            $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $user->getFirstname() . $user->getLastname() . '/';
-            if($user->getPicture() != ''){
-                $tempString .= $user->getPicture() . '%0a';
-                copy($c_commsy_path_file . 'var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
-            } else {
-                $tempString .= 'nobody_m.gif%0a';
-            }
-            $tempString .= $user->getDescription() . '%0a:)';
-            $file_contents_array[$index] = $tempString;
-        }
-    }
-    $file_contents = implode("\n", $file_contents_array);
-    $return = file_put_contents('wiki.d/Profiles.' . $user->getFirstname() . $user->getLastname(), $file_contents);
     chdir($old_dir);
 }
 
+function updateWikiProfileFile($user){
+      global $c_commsy_path_file;
+      
+      // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
+      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
+      $firstnameRest = substr($user->getFirstname(), 1);
+      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
+      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
+      $lastnameRest = substr($user->getLastname(), 1);
+      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
+      
+      if(!file_exists('wiki.d/Profiles.' . $firstname . $lastname)){
+            copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $firstname . $lastname);
+      }
+      
+      $file_contents = file_get_contents('wiki.d/Profiles.' . $firstname . $lastname);
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+          if(stripos($file_contents_array[$index], 'author=') !== false){
+              $file_contents_array[$index] = 'author=' . $user->getFirstname() . ' ' . $user->getLastname();
+          } else if (stripos($file_contents_array[$index], 'name=') !== false){
+              $file_contents_array[$index] = 'name=Profiles.' . $firstname . $lastname;
+          } else if (stripos($file_contents_array[$index], 'text=') !== false){
+              //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
+              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $firstname . $lastname . '/';
+              if($user->getPicture() != ''){
+                    $tempString .= $user->getPicture() . '%0a';
+                    copy($c_commsy_path_file . 'var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+              } else {
+                    $tempString .= 'nobody_m.gif%0a';
+              }
+              $tempString .= $user->getDescription() . '%0a:)';
+              $file_contents_array[$index] = $tempString;
+          }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      file_put_contents('wiki.d/Profiles.' . $firstname . $lastname, $file_contents);
+}
 }
 ?>

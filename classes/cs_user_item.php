@@ -1663,13 +1663,8 @@ class cs_user_item extends cs_item {
    }
    
    public function updateWikiProfile(){
-        // In welchen Räumen ist der Benutzer?
-        // Haben diese Räume ein Wiki?
-        // Schleife über alle Wikis -> updateWikiProfile($wiki, $this->getUserID())
-        if(false){
-            $wiki_manager = $this->_environment->getWikiManager();
-            $wiki_manager->updateWikiProfile($this->getUserID());
-        }
+        $wiki_manager = $this->_environment->getWikiManager();
+        $wiki_manager->updateWikiProfile($this->getUserID(), $this->_environment->getCurrentContextID());
    }
 }
 ?>
