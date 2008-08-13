@@ -317,9 +317,17 @@ if ($type != CS_GROUP_TYPE) {
          $current_user = $environment->getCurrentUser();
          if ( $_GET['group_option']=='1' ) {
             $group_item->addMember($current_user);
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){ // environment nach eingeschalteter notification fragen
+                $wiki_manager = $environment->getWikiManager();
+                $wiki_manager->addWikiNotification($group_item->getName(), $current_user);
+            }
          } elseif ( $_GET['group_option']=='2' ) {
             $group_item->removeMember($current_user);
-
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){ // environment nach eingeschalteter notification fragen
+                $wiki_manager = $environment->getWikiManager();
+                $wiki_manager->removeWikiNotification($group_item->getName(), $current_user);
+            }
+            
             ##################################
             # FLAG: group room
             ##################################

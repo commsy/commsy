@@ -591,22 +591,22 @@ function _file_move ($quelle, $ziel)
     // 4 = quelle nicht gefunden
 }// ende file_move
 
-function updateWikiProfile($userID, $contextID){
+function updateWikiProfile($userID){
     global $c_commsy_path_file;
     global $c_pmwiki_path_file;
     $old_dir = getcwd();
     $user_manager = $this->_environment->getUserManager();
     $user_manager->reset();
-    $user_manager->setContextLimit($contextID);
+    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
     $user_manager->setUserIDLimit($userID);
     $user_manager->select();
     $user_list = $user_manager->get();
     $user_array = $user_list->to_array();
     $user = $user_array[0];
     chdir($c_pmwiki_path_file);
-    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $contextID);
+    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
     if ($directory_handle) {
-        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $contextID);
+        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
         $this->updateWikiProfileFile($user);
     }
     chdir($old_dir);
@@ -676,6 +676,69 @@ function updateWikiNotificationFile($discussion, $user_array){
     $file_contents = implode("\n", $file_contents_array);
     file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
 
+}
+
+function addWikiNotification($discussion, $user){
+    global $c_commsy_path_file;
+    global $c_pmwiki_path_file;
+    
+    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$discussion);
+    
+    $old_dir = getcwd();
+    chdir($c_pmwiki_path_file);
+    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+    if ($directory_handle) {
+        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+        
+        if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
+            copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+        }
+        $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+        $file_contents_array = explode("\n", $file_contents);
+        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+            if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+                $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+            }
+            if(stripos($file_contents_array[$index], 'text=') !== false){
+                $notify .= 'notify=' . $user->getEmail() . '%0a';
+                $file_contents_array[$index] .= $notify;
+            }
+        }
+        $file_contents = implode("\n", $file_contents_array);
+        file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+    }
+    chdir($old_dir);
+}
+
+function removeWikiNotification($discussion, $user){
+    global $c_commsy_path_file;
+    global $c_pmwiki_path_file;
+    
+    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$discussion);
+    
+    $old_dir = getcwd();
+    chdir($c_pmwiki_path_file);
+    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+    if ($directory_handle) {
+        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+        
+        if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
+            copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+        }
+        $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
+        $file_contents_array = explode("\n", $file_contents);
+        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+            if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+                $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+            }
+            if(stripos($file_contents_array[$index], 'text=') !== false){
+                $file_contents_array[$index] = str_replace('notify=' . $user->getEmail() . '%0a','',$file_contents_array[$index]);
+            }
+        }
+        $file_contents = implode("\n", $file_contents_array);
+        file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+    }
+    chdir($old_dir);
 }
 }
 ?>

@@ -1664,7 +1664,7 @@ class cs_user_item extends cs_item {
    
    public function updateWikiProfile(){
         $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->updateWikiProfile($this->getUserID(), $this->_environment->getCurrentContextID());
+        $wiki_manager->updateWikiProfile($this->getUserID());
    }
 }
 ?>
