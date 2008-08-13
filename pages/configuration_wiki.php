@@ -306,7 +306,6 @@ else {
          
          if ( isset($_POST['enable_discussion_notification']) ) {
                 $item->setWikiEnableDiscussionNotification();
-                
             } else {
                 $item->unsetWikiEnableDiscussionNotification();
           }

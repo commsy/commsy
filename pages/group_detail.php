@@ -317,15 +317,15 @@ if ($type != CS_GROUP_TYPE) {
          $current_user = $environment->getCurrentUser();
          if ( $_GET['group_option']=='1' ) {
             $group_item->addMember($current_user);
-            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){ // environment nach eingeschalteter notification fragen
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
                 $wiki_manager = $environment->getWikiManager();
-                $wiki_manager->addWikiNotification($group_item->getName(), $current_user);
+                $wiki_manager->updateWikiNotificationGroups($group_item->getName(), $current_user, true);
             }
          } elseif ( $_GET['group_option']=='2' ) {
             $group_item->removeMember($current_user);
-            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){ // environment nach eingeschalteter notification fragen
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
                 $wiki_manager = $environment->getWikiManager();
-                $wiki_manager->removeWikiNotification($group_item->getName(), $current_user);
+                $wiki_manager->updateWikiNotificationGroups($group_item->getName(), $current_user, false);
             }
             
             ##################################
