@@ -99,7 +99,7 @@ class Mail_mime extends PEAR
                                      'text_encoding' => '7bit',
                                      'html_encoding' => 'quoted-printable',
                                      '7bit_wrap'     => 998,
-                                     'charset'       => 'iso-8859-1'
+                                     'charset'       => 'utf-8'
                                     );
     }
 
@@ -178,11 +178,11 @@ class Mail_mime extends PEAR
                 'boundary="' . $sec_boundary.'"' . MAIL_MIME_CRLF . MAIL_MIME_CRLF .
 
                 '--' . $sec_boundary . MAIL_MIME_CRLF .
-                'Content-Type: text/plain; charset="' . $this->_build_params['charset'] . '"' . MAIL_MIME_CRLF .
+                'Content-Type: text/plain; charset=' . $this->_build_params['charset'] . MAIL_MIME_CRLF .
                 $this->_getEncodedData($this->_txtbody, $this->_build_params['text_encoding']) . MAIL_MIME_CRLF .
 
                 '--'.$sec_boundary . MAIL_MIME_CRLF .
-                'Content-Type: text/html; charset="' . $this->_build_params['charset'] . '"' . MAIL_MIME_CRLF .
+                'Content-Type: text/html; charset=' . $this->_build_params['charset'] . MAIL_MIME_CRLF .
                 $this->_getEncodedData($this->_htmlbody, $this->_build_params['html_encoding']) . MAIL_MIME_CRLF .
                 '--' . $sec_boundary . '--' . MAIL_MIME_CRLF . MAIL_MIME_CRLF;
 
@@ -204,11 +204,11 @@ class Mail_mime extends PEAR
                 'boundary="' . $thr_boundary . '"' . MAIL_MIME_CRLF . MAIL_MIME_CRLF .
 
                 '--' . $thr_boundary . MAIL_MIME_CRLF .
-                'Content-Type: text/plain; charset="' . $this->_build_params['charset'] . '"' . MAIL_MIME_CRLF .
+                'Content-Type: text/plain; charset=' . $this->_build_params['charset'] . MAIL_MIME_CRLF .
                 $this->_getEncodedData($this->_txtbody, $this->_build_params['text_encoding']) . MAIL_MIME_CRLF .
 
                 '--'.$thr_boundary . MAIL_MIME_CRLF .
-                'Content-Type: text/html; charset="' . $this->_build_params['charset'] . '"' . MAIL_MIME_CRLF .
+                'Content-Type: text/html; charset=' . $this->_build_params['charset'] . MAIL_MIME_CRLF .
                 $this->_getEncodedData($this->_htmlbody, $this->_build_params['html_encoding']) . MAIL_MIME_CRLF .
                 '--' . $thr_boundary . '--' . MAIL_MIME_CRLF;
 
@@ -515,7 +515,7 @@ class Mail_mime extends PEAR
         } elseif ($do_text) {
             #$this->_headers['Content-Type'] = 'text/plain';
             // add charset
-            $this->_headers['Content-Type'] = 'text/plain; charset=iso-8859-1';
+            $this->_headers['Content-Type'] = 'text/plain; charset='.$this->_build_params['charset'];
         }
 
         if (isset($xtra_headers)) {
