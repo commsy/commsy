@@ -25,64 +25,71 @@
 // include functions needed for this script
 include_once('functions/curl_functions.php');
 
-if (empty($_GET['iid'])) {
-	$session = $environment->getSessionItem();
-	$history = $session->getValue('history');
-	redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
+if ( empty($_GET['iid']) ) {
+   $session = $environment->getSessionItem();
+   $history = $session->getValue('history');
+   redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
 } else {
-	$iid = $_GET['iid'];
-	$item_manager = $environment->getItemManager();
-	$item = $item_manager->getItem($iid);
-	$context_id = $item->getContextID();
-	$type = $item->getItemType();
-	
-	// discussion article
-	if ($type == CS_DISCARTICLE_TYPE) {
-		$discart_manager = $environment->getDiscussionArticlesManager();
-		$discart_item = $discart_manager->getItem($iid);
-		$sub_iid = 'anchor'.$iid;
-		$iid = $discart_item->getDiscussionID();
-	}
-	
-	// material section
-	elseif ($type == CS_SECTION_TYPE) {
-		$section_manager = $environment->getSectionManager();
-		$section_item = $section_manager->getItem($iid);
-		$sub_iid = 'anchor'.$iid;
-		$iid = $section_item->getLinkedItemID();
-	}
-   
-	// annotation
-	elseif ($type == CS_ANNOTATION_TYPE) {
-		$annotation_manager = $environment->getAnnotationManager();
-		$annotation_item = $annotation_manager->getItem($iid);
-		$sub_iid = $iid;
-		$iid = $annotation_item->getLinkedItemID();
-		$linked_item = $item_manager->getItem($iid);
-	    $type = $linked_item->getItemType();
-	}
-	
-	$module = Type2Module($type);
-	if ($module == CS_LABEL_TYPE) {
-		$label_manager = $environment->getLabelManager();
-		$item = $label_manager->getItem($iid);
-		$module = $item->getLabelType();
-	}
-   
-	// redirect to real content	
-	if ($module == CS_ITEM_TYPE) {
-		//illegal iid, go back to start
-		$session = $environment->getSessionItem();
-		$history = $session->getValue('history');
-		redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
-	} else {
-		$params = array();
-		$params['iid'] = $iid;
-		if (isset($sub_iid)) {
-			redirect($context_id,$module,'detail',$params,$sub_iid);
-		} else {     
-			redirect($context_id,$module,'detail',$params);
-		}
-	}
+   $iid = $_GET['iid'];
+   $item_manager = $environment->getItemManager();
+   $item = $item_manager->getItem($iid);
+   if ( isset($item) ) {
+      $context_id = $item->getContextID();
+      $type = $item->getItemType();
+
+      // discussion article
+      if ($type == CS_DISCARTICLE_TYPE) {
+         $discart_manager = $environment->getDiscussionArticlesManager();
+         $discart_item = $discart_manager->getItem($iid);
+         $sub_iid = 'anchor'.$iid;
+         $iid = $discart_item->getDiscussionID();
+      }
+
+      // material section
+      elseif ($type == CS_SECTION_TYPE) {
+         $section_manager = $environment->getSectionManager();
+         $section_item = $section_manager->getItem($iid);
+         $sub_iid = 'anchor'.$iid;
+         $iid = $section_item->getLinkedItemID();
+      }
+
+      // annotation
+      elseif ($type == CS_ANNOTATION_TYPE) {
+         $annotation_manager = $environment->getAnnotationManager();
+         $annotation_item = $annotation_manager->getItem($iid);
+         $sub_iid = $iid;
+         $iid = $annotation_item->getLinkedItemID();
+         $linked_item = $item_manager->getItem($iid);
+         $type = $linked_item->getItemType();
+      }
+
+      $module = Type2Module($type);
+      if ($module == CS_LABEL_TYPE) {
+         $label_manager = $environment->getLabelManager();
+         $item = $label_manager->getItem($iid);
+         $module = $item->getLabelType();
+      }
+
+      // redirect to real content
+      if ($module == CS_ITEM_TYPE) {
+         //illegal iid, go back to start
+         $session = $environment->getSessionItem();
+         $history = $session->getValue('history');
+         redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
+      } else {
+         $params = array();
+         $params['iid'] = $iid;
+         if (isset($sub_iid)) {
+            redirect($context_id,$module,'detail',$params,$sub_iid);
+         } else {
+            redirect($context_id,$module,'detail',$params);
+         }
+      }
+   } else {
+      //illegal iid, go back to start
+      $session = $environment->getSessionItem();
+      $history = $session->getValue('history');
+      redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$history[0]['parameter']);
+   }
 }
 ?>
