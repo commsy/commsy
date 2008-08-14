@@ -317,13 +317,13 @@ if ($type != CS_GROUP_TYPE) {
          $current_user = $environment->getCurrentUser();
          if ( $_GET['group_option']=='1' ) {
             $group_item->addMember($current_user);
-            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
                 $wiki_manager = $environment->getWikiManager();
                 $wiki_manager->updateWikiNotificationForUser($current_user, false);
             }
          } elseif ( $_GET['group_option']=='2' ) {
             $group_item->removeMember($current_user);
-            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
+            if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
                 $wiki_manager = $environment->getWikiManager();
                 $wiki_manager->updateWikiNotificationForUser($current_user, false);
             }

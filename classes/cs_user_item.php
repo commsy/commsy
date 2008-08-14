@@ -1011,11 +1011,11 @@ class cs_user_item extends cs_item {
       // set old status to current status
       $this->_old_status = $this->getStatus();
       
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion()){
+      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
         $this->updateWikiProfile();
       }
       
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification()){
+      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
         $this->updateWikiNotification();
       }
    }
@@ -1675,7 +1675,7 @@ class cs_user_item extends cs_item {
    
    public function updateWikiNotification(){
         $wiki_manager = $this->_environment->getWikiManager();
-        if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() != '-1'){
+        if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() != "-1"){
             $wiki_manager->updateWikiNotificationForUser($this, false);
         } else {
             $wiki_manager->updateWikiNotificationForUser($this, true);
