@@ -319,13 +319,13 @@ if ($type != CS_GROUP_TYPE) {
             $group_item->addMember($current_user);
             if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
                 $wiki_manager = $environment->getWikiManager();
-                $wiki_manager->updateWikiNotificationGroups($group_item->getName(), $current_user, true);
+                $wiki_manager->updateWikiNotificationForUser($current_user, false);
             }
          } elseif ( $_GET['group_option']=='2' ) {
             $group_item->removeMember($current_user);
             if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups()){
                 $wiki_manager = $environment->getWikiManager();
-                $wiki_manager->updateWikiNotificationGroups($group_item->getName(), $current_user, false);
+                $wiki_manager->updateWikiNotificationForUser($current_user, false);
             }
             
             ##################################

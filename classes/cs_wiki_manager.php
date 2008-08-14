@@ -414,8 +414,8 @@ class cs_wiki_manager extends cs_manager {
                         $user_manager->select();
                         $user_list = $user_manager->get();
                         $user_array = $user_list->to_array();
+                        $this->updateNotificationFile($discussion, $user_array);
                         chdir($tempDir);
-                        $this->updateWikiNotificationAll($discussion, $user_array);
                     }
                     $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
                 }
@@ -431,12 +431,10 @@ class cs_wiki_manager extends cs_manager {
                 $user_manager->select();
                 $user_list = $user_manager->get();
                 $user_array = $user_list->to_array();
-                chdir($tempDir);
                 foreach($user_array as $user){
                       $this->updateWikiProfileFile($user);
                 }
-                
-                
+                chdir($tempDir);
             }
 
             chdir('local');
@@ -591,29 +589,13 @@ function _file_move ($quelle, $ziel)
     // 4 = quelle nicht gefunden
 }// ende file_move
 
-function updateWikiProfile($userID){
-    global $c_commsy_path_file;
-    global $c_pmwiki_path_file;
-    $old_dir = getcwd();
-    $user_manager = $this->_environment->getUserManager();
-    $user_manager->reset();
-    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-    $user_manager->setUserIDLimit($userID);
-    $user_manager->select();
-    $user_list = $user_manager->get();
-    $user_array = $user_list->to_array();
-    $user = $user_array[0];
-    chdir($c_pmwiki_path_file);
-    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
-    if ($directory_handle) {
-        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
-        $this->updateWikiProfileFile($user);
-    }
-    chdir($old_dir);
-}
-
+// Updates the Profiles.-File for the $user
 function updateWikiProfileFile($user){
       global $c_commsy_path_file;
+      global $c_pmwiki_path_file;
+
+      $old_dir = getcwd();
+      chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
       
       // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
       $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
@@ -649,89 +631,23 @@ function updateWikiProfileFile($user){
       }
       $file_contents = implode("\n", $file_contents_array);
       file_put_contents('wiki.d/Profiles.' . $firstname . $lastname, $file_contents);
+      chdir($old_dir);
 }
 
-// -> updateWikiNotification
-function updateWikiNotificationAll($discussion, $user_array){
-    global $c_commsy_path_file;
-    if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
-        copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-    }
-    $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-    $file_contents_array = explode("\n", $file_contents);
-    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-        if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
-            $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
-        }
-        if(stripos($file_contents_array[$index], 'text=') !== false){
-            // Beim ersten generieren die vorhandenen Emails aus
-            // dem Raum uebernehmen.
-            
-            $notify='';
-            foreach($user_array as $user){
-                $notify .= 'notify=' . $user->getEmail() . '%0a';
-            }
-            $file_contents_array[$index] = 'text=' . $notify;
-        }
-    }
-    $file_contents = implode("\n", $file_contents_array);
-    file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
-
-}
-
-// - nicht ersetzen, wird für gruppen gebraucht
-function updateWikiNotificationGroups($discussion, $user, $update){
-    global $c_commsy_path_file;
-    global $c_pmwiki_path_file;
-    
-    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$discussion);
-    
-    $old_dir = getcwd();
-    chdir($c_pmwiki_path_file);
-    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
-    if ($directory_handle) {
-        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
-        
-        if(!file_exists('wiki.d/FoxNotifyLists.' . $discussion . 'Forum')){
-            copy($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum','wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-        }
-        $file_contents = file_get_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum');
-        $file_contents_array = explode("\n", $file_contents);
-        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-            if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
-                $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
-            }
-            if(stripos($file_contents_array[$index], 'text=') !== false){
-                if($update){
-                    $file_contents_array[$index] .= 'notify=' . $user->getEmail() . '%0a';
-                }
-                if(!$update){
-                    $file_contents_array[$index] = str_replace('notify=' . $user->getEmail() . '%0a','',$file_contents_array[$index]);
-                }
-            }
-        }
-        $file_contents = implode("\n", $file_contents_array);
-        file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
-    }
-    chdir($old_dir);
-}
-
+// Function is called when the $user changes it's details
+// This function does not change the notification file itself, but selects the discussions
+// and the users that have to be updated.
+// if $all == true -> complete notification is active -> all notification-files are updated with all users.
+// if $all == false -> group notification is active -> all notification-files are updated with the group-menbers.
 function updateWikiNotificationForUser($user, $all){
     global $c_commsy_path_file;
-    
     $old_dir = getcwd();
     chdir($c_commsy_path_file);
-        // all -> in allen Notification-Listen alle Benutzer neu eintragen
-        // -> updateWikiNotificationAll(...) mit allen Notification-Files
-        //
-        // !all -> in den ausgewählten Gruppen alle Benutzer der Gruppe neu eintragen.
-        // -> Gruppen des Benutzers rausfinden
-        // -> Nach Foren-Gruppen filtern
-        // -> Benutzer dieser Gruppen rausfinden
-        // -> neu eintragen.
-    
     if(!$all){
-        $group_ids = $user->getLinkedItemIDArray(CS_GROUP_TYPE);
+        $group_manager = $this->_environment->getGroupManager();
+        $group_manager->reset();
+        $group_manager->select();
+        $group_ids = $group_manager->getIDArray();
         foreach($group_ids as $group_id){
             $group_manager = $this->_environment->getGroupManager();
             $group_manager->reset();
@@ -768,7 +684,8 @@ function updateWikiNotificationForUser($user, $all){
     chdir($old_dir);
 }
 
-
+// Updates the $discussion-notification file. All notifications are removed
+// and replaced by those in $user_array
 function updateNotificationFile($discussion, $user_array){
     global $c_commsy_path_file;
     global $c_pmwiki_path_file;

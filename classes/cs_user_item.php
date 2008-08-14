@@ -1670,7 +1670,7 @@ class cs_user_item extends cs_item {
    
    public function updateWikiProfile(){
         $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->updateWikiProfile($this->getUserID());
+        $wiki_manager->updateWikiProfileFile($this);
    }
    
    public function updateWikiNotification(){
