@@ -95,11 +95,12 @@ class Mail_mime extends PEAR
 
         $this->_boundary = '=_' . md5(uniqid(time()));
 
+        // change charset:  also change at mail.php line 95 mb_language
         $this->_build_params = array(
                                      'text_encoding' => '7bit',
                                      'html_encoding' => 'quoted-printable',
                                      '7bit_wrap'     => 998,
-                                     'charset'       => 'utf-8'
+                                     'charset'       => 'iso-8859-1'
                                     );
     }
 

@@ -92,6 +92,7 @@ class Mail extends PEAR
         $subject = '';
         if (isset($headers['Subject'])) {
            if ( function_exists('mb_encode_mimeheader') ) {
+              mb_language('en');
               $subject = mb_encode_mimeheader($headers['Subject']);
            } else {
               $subject = $headers['Subject'];
