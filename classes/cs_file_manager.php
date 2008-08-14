@@ -521,6 +521,10 @@ class cs_file_manager extends cs_manager {
                           or $key == 'material_vid'
                         ) {
                   // do nothing
+               } elseif ( $key == 'has_html'
+                          and empty($value)
+                        ) {
+                  // do nothing
                } else {
                   $after = $key.'="'.encode(AS_DB,$value).'"';
                }
