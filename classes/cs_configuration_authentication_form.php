@@ -580,6 +580,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
             if( !empty($auth_data_array['BASE'])) {
                $this->_values['base'] = $auth_data_array['BASE'];
             }
+            if ( !empty($auth_data_array['ENCRYPTION']) ) {
+               $this->_values['encryption'] = $auth_data_array['ENCRYPTION'];
+            }
+            if ( !empty($auth_data_array['DBCOLUMNUSERID']) ) {
+               $this->_values['dbcolumnuserid'] = $auth_data_array['DBCOLUMNUSERID'];
+            }
          }
       } else {
          $this->_values['auth_source'] = -1;
