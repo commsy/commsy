@@ -365,29 +365,32 @@ class cs_page_homepage_view extends cs_page_view {
       $homepage_manager = $this->_environment->getManager(CS_HOMEPAGE_TYPE);
       $imprint_page = $homepage_manager->getImprintPageItem($this->_environment->getCurrentContextID());
 
-      $imprint_element = array();
-      $imprint_element['title'] = $this->_translator->getMessage('HOMEPAGE_TITLE_IMPRINT_PAGE');
-      $imprint_element['iid'] = $imprint_page->getItemID();
-      if ($imprint_page->getItemID() == $this->_shown_homepage_id) {
-         $imprint_element['shown'] = true;
-         $found_page = true;
-      }
+      if ( isset($imprint_page) ) {
 
-      ############
-      # get html #
-      ############
+         $imprint_element = array();
+         $imprint_element['title'] = $this->_translator->getMessage('HOMEPAGE_TITLE_IMPRINT_PAGE');
+         $imprint_element['iid'] = $imprint_page->getItemID();
+         if ($imprint_page->getItemID() == $this->_shown_homepage_id) {
+            $imprint_element['shown'] = true;
+            $found_page = true;
+         }
 
-      // imprint page
-      $retour .= '<div class="footer_link">'.LF;
-      $link_text = $imprint_element['title'];
-      if ( isset($imprint_element['shown']) and $imprint_element['shown'] ) {
-         $link_text = '<span class="bold">'.$link_text.'</span>';
+         ############
+         # get html #
+         ############
+
+         // imprint page
+         $retour .= '<div class="footer_link">'.LF;
+         $link_text = $imprint_element['title'];
+         if ( isset($imprint_element['shown']) and $imprint_element['shown'] ) {
+            $link_text = '<span class="bold">'.$link_text.'</span>';
+         }
+         $params = array();
+         $params['iid'] = $imprint_element['iid'];
+         $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
+         unset($params);
+         $retour .= '</div>'.LF;
       }
-      $params = array();
-      $params['iid'] = $imprint_element['iid'];
-      $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
-      unset($params);
-      $retour .= '</div>'.LF;
       return $retour;
    }
 
@@ -409,79 +412,81 @@ class cs_page_homepage_view extends cs_page_view {
       $homepage_manager = $this->_environment->getManager(CS_HOMEPAGE_TYPE);
       $root_page = $homepage_manager->getRootPageItem($this->_environment->getCurrentContextID());
 
-      $root_element = array();
-      $root_element['title'] = $this->_translator->getMessage('HOMEPAGE_TITLE_ROOT_PAGE');
-      $root_element['iid'] = $root_page->getItemID();
-      if (!$found_page and $root_page->getItemID() == $this->_shown_homepage_id) {
-         $root_element['shown'] = true;
-         $found_page = true;
-      }
+      if ( isset($root_page) ) {
+         $root_element = array();
+         $root_element['title'] = $this->_translator->getMessage('HOMEPAGE_TITLE_ROOT_PAGE');
+         $root_element['iid'] = $root_page->getItemID();
+         if (!$found_page and $root_page->getItemID() == $this->_shown_homepage_id) {
+            $root_element['shown'] = true;
+            $found_page = true;
+         }
 
-      // child pages of root page
-      $first_child_list = $homepage_manager->getChildList($root_page->getItemID());
-      if ($first_child_list->isNotEmpty()) {
-         $child_page = $first_child_list->getFirst();
-         while ($child_page) {
-            $temp_array = array();
-            $temp_array['title'] = $child_page->getTitle();
-            $temp_array['iid'] = $child_page->getItemID();
-            if (!$found_page and $child_page->getItemID() == $this->_shown_homepage_id) {
-               $temp_array['shown'] = true;
-               $found_page = true;
-               $grand_father_item = $child_page;
+         // child pages of root page
+         $first_child_list = $homepage_manager->getChildList($root_page->getItemID());
+         if ($first_child_list->isNotEmpty()) {
+            $child_page = $first_child_list->getFirst();
+            while ($child_page) {
+               $temp_array = array();
+               $temp_array['title'] = $child_page->getTitle();
+               $temp_array['iid'] = $child_page->getItemID();
+               if (!$found_page and $child_page->getItemID() == $this->_shown_homepage_id) {
+                  $temp_array['shown'] = true;
+                  $found_page = true;
+                  $grand_father_item = $child_page;
+                  $grand_father_item_id = $grand_father_item->getItemID();
+               }
+               $data_array[] = $temp_array;
+               unset($temp_array);
+               $child_page = $first_child_list->getNext();
+            }
+         }
+
+         // child pages of first childs
+         if (!$found_page) {
+            $grand_father_item = $homepage_manager->getGrandFatherItem($this->_shown_homepage_id);
+            $grand_father_item_id = '';
+            if ( isset($grand_father_item) ) {
                $grand_father_item_id = $grand_father_item->getItemID();
             }
-            $data_array[] = $temp_array;
-            unset($temp_array);
-            $child_page = $first_child_list->getNext();
          }
-      }
 
-      // child pages of first childs
-      if (!$found_page) {
-         $grand_father_item = $homepage_manager->getGrandFatherItem($this->_shown_homepage_id);
-         $grand_father_item_id = '';
-         if ( isset($grand_father_item) ) {
-            $grand_father_item_id = $grand_father_item->getItemID();
+         ############
+         # get html #
+         ############
+
+         // root page
+         $retour .= '<div class="navigation_link">'.LF;
+         $link_text = $root_element['title'];
+         if ( isset($root_element['shown']) and $root_element['shown'] ) {
+            $link_text = '<span class="bold">'.$link_text.'</span>';
          }
-      }
+         $params = array();
+         $params['iid'] = $root_element['iid'];
+         $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
+         unset($params);
+         $retour .= '</div>'.LF;
 
-      ############
-      # get html #
-      ############
+         // root children
+         if ( !empty($data_array) ) {
+            $retour .= LF;
+            foreach ($data_array as $child_data) {
+               $retour .= '<div class="navigation_link">'.LF;
+               $link_text = $child_data['title'];
+               if ( isset($child_data['shown']) and $child_data['shown'] ) {
+                  $link_text = '<span class="bold">'.$link_text.'</span>';
+               }
+               $params = array();
+               $params['iid'] = $child_data['iid'];
+               $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
+               unset($params);
+               $retour .= '</div>'.LF;
 
-      // root page
-      $retour .= '<div class="navigation_link">'.LF;
-      $link_text = $root_element['title'];
-      if ( isset($root_element['shown']) and $root_element['shown'] ) {
-         $link_text = '<span class="bold">'.$link_text.'</span>';
-      }
-      $params = array();
-      $params['iid'] = $root_element['iid'];
-      $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
-      unset($params);
-      $retour .= '</div>'.LF;
-
-      // root children
-      if ( !empty($data_array) ) {
-         $retour .= LF;
-         foreach ($data_array as $child_data) {
-            $retour .= '<div class="navigation_link">'.LF;
-            $link_text = $child_data['title'];
-            if ( isset($child_data['shown']) and $child_data['shown'] ) {
-               $link_text = '<span class="bold">'.$link_text.'</span>';
-            }
-            $params = array();
-            $params['iid'] = $child_data['iid'];
-            $retour .= ahref_curl($this->_environment->getCurrentContextID(),'homepage','detail',$params,$link_text);
-            unset($params);
-            $retour .= '</div>'.LF;
-
-            // second children ?
-            if ( ( !empty($grand_father_item_id) and $grand_father_item_id == $child_data['iid'] )
-                 or ( isset($child_data['shown']) and $child_data['shown'] )
-               ) {
-               $retour .= $this->_getSecondChildrenAsHTML($child_data['iid']);
+               // second children ?
+               if ( ( !empty($grand_father_item_id) and $grand_father_item_id == $child_data['iid'] )
+                    or ( isset($child_data['shown']) and $child_data['shown'] )
+                  ) {
+                  $retour .= $this->_getSecondChildrenAsHTML($child_data['iid']);
+               }
             }
          }
       }

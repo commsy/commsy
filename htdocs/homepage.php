@@ -83,9 +83,9 @@ if (!isset($_GET['cid'])) {
 }
 
 if ( !isset($_GET['mod']) ) {
-        $current_module = 'homepage';
+   $current_module = 'homepage';
 } elseif ( isset($_GET['mod']) ) {
-        $current_module = $_GET['mod'];
+   $current_module = $_GET['mod'];
 }
 
 if ( $current_module != 'homepage'
@@ -125,7 +125,6 @@ unset($current_module);
 unset($current_function);
 $context_item_current = $environment->getCurrentContextItem();
 
-
 /*********** SERVER INITIALIZATION AND JUMP TO HOMEPAGE INDEX ***********/
 
 // send user to ...
@@ -149,7 +148,7 @@ if (!empty($_COOKIE['SID_homepage'])) {
    // so create session and redirect to requested page
    $session = new cs_session_item();
    $session->createSessionID('guest');
-   #$session->setToolName('homepage');
+   $session->setToolName('homepage');
 
    // external reload to check javascript
    $session_manager = $environment->getSessionManager();

@@ -115,6 +115,10 @@ if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
    $session->setValue('error_array',$error_array);
 }
 
+if ( isset($session) ) {
+   $environment->setSessionItem($session);
+}
+
 // redirect
 if (!empty($_GET['target_cid'])) {
    $mod = 'home';
@@ -122,14 +126,27 @@ if (!empty($_GET['target_cid'])) {
    $params = array();
    redirect($_GET['target_cid'],$mod,$fct,$params);
 } else {
+   $cid = $history[0]['context'];
+   if ( empty($cid) ) {
+      $cid = $environment->getCurrentContextID();
+   }
    $mod = $history[0]['module'];
+   if ( empty($mod) ) {
+      $mod = $environment->getCurrentModule();
+   }
    $fct = $history[0]['function'];
+   if ( empty($fct) ) {
+      $fct = $environment->getCurrentFunction();
+   }
    $params = $history[0]['parameter'];
+   if ( !isset($history[0]['parameter']) ) {
+      $params = $environment->getCurrentParameterArray();
+   }
    if ( isset($error_array) and !empty($error_array) ) {
       if ( isset($auth_source) and !empty($auth_source) ) {
          $params['auth_source'] = $auth_source;
       }
    }
-   redirect($history[0]['context'],$mod,$fct,$params,'','',$back_file);
+   redirect($cid,$mod,$fct,$params,'','',$back_file);
 }
 ?>
