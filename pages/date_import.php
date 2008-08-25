@@ -195,11 +195,17 @@ else {
          // Load form data from postvars
          if ( !empty($_POST) ) {
             if ( !empty($_FILES) ) {
-	      		if ( !empty($_FILES['dates_upload']['tmp_name']) ) {
-				$new_temp_name = $_FILES['dates_upload']['tmp_name'].'_TEMP_'.$_FILES['dates_upload']['name'];
-                move_uploaded_file($_FILES['dates_upload']['tmp_name'],$new_temp_name);
-                $_FILES['dates_upload']['tmp_name'] = $new_temp_name;
- 			}
+               if ( !empty($_FILES['dates_upload']['tmp_name']) ) {
+                  $new_temp_name = $_FILES['dates_upload']['tmp_name'].'_TEMP_'.$_FILES['dates_upload']['name'];
+                  move_uploaded_file($_FILES['dates_upload']['tmp_name'],$new_temp_name);
+                  $_FILES['dates_upload']['tmp_name'] = $new_temp_name;
+                  $session_item = $environment->getSessionItem();
+                  if ( isset($session_item) ) {
+                     $current_iid = $environment->getCurrentContextID();
+                     $session_item->setValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_temp_name',$new_temp_name);
+                     $session_item->setValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_name',$_FILES['dates_upload']['name']);
+                  }
+               }
                $values = array_merge($_POST,$_FILES);
             } else {
                $values = $_POST;
@@ -211,17 +217,26 @@ else {
          $form->loadValues();
 
          // Save item
-         if ( !empty($command) and
-           isOption($command, getMessage('DATES_IMPORT_BUTTON')) ) {
+         if ( !empty($command)
+              and isOption($command, getMessage('DATES_IMPORT_BUTTON'))
+            ) {
 
             $correct = $form->check();
 
-  	   if ( $correct
-               and empty($_FILES['dates_upload']['tmp_name'])
-	      and !empty($_POST['hidden_dates_upload_name'])) {
-	      $_FILES['dates_upload']['tmp_name'] = $_POST['hidden_dates_upload_tmpname'];
-	      $_FILES['dates_upload']['name'] = $_POST['hidden_dates_upload_name'];
-	   }
+            if ( $correct
+                 and empty($_FILES['dates_upload']['tmp_name'])
+                 and !empty($_POST['hidden_dates_upload_name'])
+               ) {
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $current_iid = $environment->getCurrentContextID();
+                  $_FILES['dates_upload']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_temp_name');
+                  $_FILES['dates_upload']['name']     = $session_item->getValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_name');
+                  $session_item->unsetValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_temp_name');
+                  $session_item->unsetValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_name');
+               }
+            }
+
             if ( $correct
                and ( !isset($c_virus_scan)
                or !$c_virus_scan

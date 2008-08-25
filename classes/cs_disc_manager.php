@@ -100,7 +100,7 @@ class cs_disc_manager {
          mkdir($second_folder_string);
       }
       if ( file_exists($source_file) ) {
-              $retour = copy($source_file, $this->_getFilePath().$dest_filename);
+         $retour = copy($source_file, $this->_getFilePath().$dest_filename);
       }
       if ($retour and $delete_source) {
          unlink($source_file);

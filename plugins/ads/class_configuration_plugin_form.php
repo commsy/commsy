@@ -170,62 +170,6 @@ class class_configuration_plugin_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
 
-         // little sponsors
-         if ( !empty($this->_form_post['little_name']) ) {
-            foreach ($this->_form_post['little_name'] as $key => $name) {
-               $this->_values['little_name['.$key.']'] = $name;
-               if ( !empty($this->_form_post['little_url'][$key]) ) {
-                  $this->_values['little_url['.$key.']'] = $this->_form_post['little_url'][$key];
-               }
-            }
-         }
-
-         // main sponsors
-         if ( !empty($this->_values['hidden_main_name']) ) {
-            foreach ($this->_values['hidden_main_name'] as $key => $value) {
-               $this->_values['main_name['.$key.']'] = $value;
-               if ( !empty($this->_form_post['main_url'][$key]) ) {
-                  $this->_values['main_url['.$key.']'] = $this->_form_post['main_url'][$key];
-               }
-               if ( !empty($this->_form_post['main_html'][$key]) ) {
-                  $this->_values['main_html['.$key.']'] = $this->_form_post['main_html'][$key];
-               }
-               if ( isset($this->_values['hidden_file_main_name'][$key]) ) {
-                  $temp_array = array();
-                  $temp_array['name'] = $value;
-                  $temp_array['filename'] = $this->_values['hidden_file_main_name'][$key];
-                  $this->_values['main_name['.$key.']'] = $temp_array;
-                  unset($temp_array);
-               }
-            }
-         }
-         if ( !empty($this->_values['main_name']['name']) ) {
-            foreach ($this->_values['main_name']['name'] as $key => $value) {
-               if ( !empty($this->_values['main_name']['tmp_name'][$key]) ) {
-                  $temp_array = array();
-                  $temp_array['name'] = $this->_values['main_name']['tmp_name'][$key];
-                  $temp_array['filename'] = $value;
-                  $this->_values['main_name['.$key.']'] = $temp_array;
-                  unset($temp_array);
-               }
-               if ( !empty($this->_form_post['main_url'][$key]) ) {
-                  $this->_values['main_url['.$key.']'] = $this->_form_post['main_url'][$key];
-               }
-               if ( !empty($this->_form_post['main_html'][$key]) ) {
-                  $this->_values['main_html['.$key.']'] = $this->_form_post['main_html'][$key];
-               }
-            }
-         }
-         if ( !empty($this->_values['hidden_delete_main_name']) ) {
-            $counter = 0;
-            foreach ($this->_values['hidden_delete_main_name'] as $value) {
-               $this->_form->addHidden('hidden_delete_main_name['.$counter.']','$value');
-               $this->_values['hidden_delete_main_name['.$counter.']'] = $value;
-               $counter++;
-            }
-            unset($counter);
-         }
-
          // normal sponsors
          if ( !empty($this->_values['normal_name']['name']) ) {
             foreach ($this->_values['normal_name']['name'] as $key => $value) {
@@ -288,33 +232,17 @@ class class_configuration_plugin_form extends cs_rubric_form {
             $this->_values['show_amazon_ads'] = -1;
          }
 
-         // main
-         if ( $this->_item->hasMainSponsors() ) {
-            $array = $this->_item->getMainSponsorArray();
-            $counter = 0;
-            foreach ($array as $sponsor) {
-               if ( isset($sponsor['IMAGE']) and !empty($sponsor['IMAGE']) ) {
-                  $this->_values['main_name['.$counter.']'] = $sponsor['IMAGE'];
-               }
-               if ( isset($sponsor['URL']) and !empty($sponsor['URL']) ) {
-                  $this->_values['main_url['.$counter.']'] = $sponsor['URL'];
-               }
-               if ( isset($sponsor['HTML']) and !empty($sponsor['HTML']) ) {
-                  $this->_values['main_html['.$counter.']'] = $sponsor['HTML'];
-               }
-               $counter++;
-            }
-            unset($counter);
-         }
-         $this->_values['main_title'] = $this->_item->getMainSponsorTitle();
-
          // normal
          if ( $this->_item->hasNormalSponsors() ) {
             $array = $this->_item->getNormalSponsorArray();
+            $session_file_array = array();
             $counter = 0;
             foreach ($array as $sponsor) {
                if ( isset($sponsor['IMAGE']) and !empty($sponsor['IMAGE']) ) {
                   $this->_values['normal_name['.$counter.']'] = $sponsor['IMAGE'];
+                  $session_file_array['normal_name']['name'][$counter] = $sponsor['IMAGE'];
+                  $disc_manager = $this->_environment->getDiscManager();
+                  $session_file_array['normal_name']['tmp_name'][$counter] = $disc_manager->_getFilePath().$sponsor['IMAGE'];
                }
                if ( isset($sponsor['URL']) and !empty($sponsor['URL']) ) {
                   $this->_values['normal_url['.$counter.']'] = $sponsor['URL'];
@@ -324,23 +252,19 @@ class class_configuration_plugin_form extends cs_rubric_form {
                }
                $counter++;
             }
+            if ( !empty($session_file_array) ) {
+               $current_iid = $this->_environment->getCurrentContextID();
+               $session_item = $this->_environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $session_item->unsetValue('ads_'.$current_iid.'_files_array');
+                  $session_item->setValue('ads_'.$current_iid.'_files_array',$session_file_array);
+               }
+               unset($disc_manager);
+               unset($session_file_array);
+            }
             unset($counter);
          }
          $this->_values['normal_title'] = $this->_item->getNormalSponsorTitle();
-
-         // little
-         if ( $this->_item->hasLittleSponsors() ) {
-            $array = $this->_item->getLittleSponsorArray();
-            $counter = 0;
-            foreach ($array as $sponsor) {
-               $this->_values['little_name['.$counter.']'] = $sponsor['NAME'];
-               if ( isset($sponsor['URL']) and !empty($sponsor['URL']) ) {
-                  $this->_values['little_url['.$counter.']'] = $sponsor['URL'];
-               }
-               $counter++;
-            }
-         }
-         $this->_values['little_title'] = $this->_item->getLittleSponsorTitle();
       }
    }
 

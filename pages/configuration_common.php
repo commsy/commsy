@@ -51,9 +51,9 @@ if ( !empty($_GET['iid']) ) {
 // Get item to be edited
 $room_manager = $environment->getRoomManager();
 if(!empty($room_iid)) {
-	$room_item = $room_manager->getItem($room_iid);
+   $room_item = $room_manager->getItem($room_iid);
 } else {
-	redirect($environment->getCurrentContextID(),'home','index');
+   redirect($environment->getCurrentContextID(),'home','index');
 }
 if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
    include_once('classes/cs_errorbox_view.php');
@@ -141,20 +141,25 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-	if ( !empty($_FILES) ) {
-	   if ( !empty($_FILES['logo']['tmp_name']) ) {
-	      $new_temp_name = $_FILES['logo']['tmp_name'].'_TEMP_'.$_FILES['logo']['name'];
-	      move_uploaded_file($_FILES['logo']['tmp_name'],$new_temp_name);
-	      $_FILES['logo']['tmp_name'] = $new_temp_name;
-	   }
-	   $values = array_merge($_POST,$_FILES);
-	} else {
-	   $values = $_POST;
-	}
-   if ( isset($post_community_room_ids) AND !empty($post_community_room_ids) ) {
-      $values['communityroomlist'] = $post_community_room_ids;
-   }
- 	$form->setFormPost($values);
+         if ( !empty($_FILES) ) {
+            if ( !empty($_FILES['logo']['tmp_name']) ) {
+               $new_temp_name = $_FILES['logo']['tmp_name'].'_TEMP_'.$_FILES['logo']['name'];
+               move_uploaded_file($_FILES['logo']['tmp_name'],$new_temp_name);
+               $_FILES['logo']['tmp_name'] = $new_temp_name;
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name',$new_temp_name);
+                  $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name',$_FILES['logo']['name']);
+               }
+            }
+            $values = array_merge($_POST,$_FILES);
+         } else {
+            $values = $_POST;
+         }
+         if ( isset($post_community_room_ids) AND !empty($post_community_room_ids) ) {
+            $values['communityroomlist'] = $post_community_room_ids;
+         }
+         $form->setFormPost($values);
       }
 
       // Load form data from database
@@ -187,117 +192,122 @@ if (!$current_user->isModerator() and !$room_item->mayEdit($current_user)) {
 
       // Save item
       if ( !empty($command)
-	  and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
-		or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
-	      )
-	) {
-	if ( $form->check()
-	     and empty($_FILES['logo']['tmp_name'])
-	     and !empty($_POST['hidden_logo_name'])
-	   ) {
-	   $_FILES['logo']['tmp_name'] = $_POST['hidden_logo_tmpname'];
-	   $_FILES['logo']['name'] = $_POST['hidden_logo_name'];
-	}
-	if ( $form->check()
-	     and ( !isset($c_virus_scan)
-	           or !$c_virus_scan
-	           or page_edit_virusscan_isClean($_FILES['logo']['tmp_name'],$_FILES['logo']['name'])
-	         )
-	   ) {
+           and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
+                 or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
+               )
+         ) {
+   if ( $form->check()
+        and empty($_FILES['logo']['tmp_name'])
+        and !empty($_POST['hidden_logo_name'])
+      ) {
+      $session_item = $environment->getSessionItem();
+      if ( isset($session_item) ) {
+         $_FILES['logo']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name');
+         $_FILES['logo']['name']     = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name');
+         $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name');
+         $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name');
+      }
+   }
+   if ( $form->check()
+        and ( !isset($c_virus_scan)
+              or !$c_virus_scan
+              or page_edit_virusscan_isClean($_FILES['logo']['tmp_name'],$_FILES['logo']['name'])
+            )
+      ) {
 
-	   // Set modificator and modification date
-	   $room_item->setModificatorItem($environment->getCurrentUserItem());
-	   $room_item->setModificationDate(getCurrentDateTimeInMySQL());
+      // Set modificator and modification date
+      $room_item->setModificatorItem($environment->getCurrentUserItem());
+      $room_item->setModificationDate(getCurrentDateTimeInMySQL());
 
-	   // Set attributes
-	   if ( isset($_POST['title']) ) {
-	      $room_item->setTitle($_POST['title']);
-	   }
+      // Set attributes
+      if ( isset($_POST['title']) ) {
+         $room_item->setTitle($_POST['title']);
+      }
 
-	   // logo: save and/or delete current logo
-	   if ( isset($_POST['delete_logo']) ) {
-		$disc_manager = $environment->getDiscManager();
-		if ( $disc_manager->existsFile($room_item->getLogoFilename()) ) {
-		   $disc_manager->unlinkFile($room_item->getLogoFilename());
-		}
-	        $room_item->setLogoFilename('');
-	   }
-	   if ( !empty($_FILES['logo']['name']) ) {
-	      $logo = $room_item->getLogoFilename();
-	      $disc_manager = $environment->getDiscManager();
-	      if ( !empty ($logo) ) {
-		 if ( $disc_manager->existsFile($room_item->getLogoFilename()) ) {
-		    $disc_manager->unlinkFile($room_item->getLogoFilename());
-		 }
-		 $room_item->setLogoFilename('');
-	      }
-	      $filename = 'cid'.$room_item->getItemID().'_logo_'.$_FILES['logo']['name'];
-	      $disc_manager->setContextID($room_item->getItemID());
-	      $disc_manager->copyFile($_FILES['logo']['tmp_name'],$filename,true);
-	      $disc_manager->setContextID($environment->getCurrentContextID());
-	      $room_item->setLogoFilename($filename);
-	   }
+      // logo: save and/or delete current logo
+      if ( isset($_POST['delete_logo']) ) {
+      $disc_manager = $environment->getDiscManager();
+      if ( $disc_manager->existsFile($room_item->getLogoFilename()) ) {
+         $disc_manager->unlinkFile($room_item->getLogoFilename());
+      }
+           $room_item->setLogoFilename('');
+      }
+      if ( !empty($_FILES['logo']['name']) ) {
+         $logo = $room_item->getLogoFilename();
+         $disc_manager = $environment->getDiscManager();
+         if ( !empty ($logo) ) {
+       if ( $disc_manager->existsFile($room_item->getLogoFilename()) ) {
+          $disc_manager->unlinkFile($room_item->getLogoFilename());
+       }
+       $room_item->setLogoFilename('');
+         }
+         $filename = 'cid'.$room_item->getItemID().'_logo_'.$_FILES['logo']['name'];
+         $disc_manager->setContextID($room_item->getItemID());
+         $disc_manager->copyFile($_FILES['logo']['tmp_name'],$filename,true);
+         $disc_manager->setContextID($environment->getCurrentContextID());
+         $room_item->setLogoFilename($filename);
+      }
 
 
-	   // descriptions
-	   $languages = $environment->getAvailableLanguageArray();
-	   $description = $room_item->getDescriptionArray();
-	   foreach ($languages as $language) {
-	      if (!empty($_POST['description_'.$language])) {
-	         $description[strtoupper($language)] = $_POST['description_'.$language];
-	      } else {
-	         $description[strtoupper($language)] = '';
-	      }
-	   }
-	   $room_item->setDescriptionArray($description);
+      // descriptions
+      $languages = $environment->getAvailableLanguageArray();
+      $description = $room_item->getDescriptionArray();
+      foreach ($languages as $language) {
+         if (!empty($_POST['description_'.$language])) {
+            $description[strtoupper($language)] = $_POST['description_'.$language];
+         } else {
+            $description[strtoupper($language)] = '';
+         }
+      }
+      $room_item->setDescriptionArray($description);
 
-	   $community_room_array = array();
-	   if ( isset($_POST['communityroomlist']) ) {
-	      $community_room_array = $_POST['communityroomlist'];
-	   }
-	   if ( isset($_POST['communityrooms']) and !in_array($_POST['communityrooms'],$community_room_array) and $_POST['communityrooms'] > 0) {
-	      $community_room_array[] = $_POST['communityrooms'];
-	   }
-	   if ( $room_item->isProjectRoom() ) {
-	      $room_item->setCommunityListByID($community_room_array);
+      $community_room_array = array();
+      if ( isset($_POST['communityroomlist']) ) {
+         $community_room_array = $_POST['communityroomlist'];
+      }
+      if ( isset($_POST['communityrooms']) and !in_array($_POST['communityrooms'],$community_room_array) and $_POST['communityrooms'] > 0) {
+         $community_room_array[] = $_POST['communityrooms'];
+      }
+      if ( $room_item->isProjectRoom() ) {
+         $room_item->setCommunityListByID($community_room_array);
             }
 
-	   // time (clock pulses)
-	   if (isset($_POST['time2']) and !empty($_POST['time2'])) {
-	      if (in_array('cont',$_POST['time2'])) {
-	         $room_item->setContinuous();
-	      } else {
-	         $room_item->setTimeListByID($_POST['time2']);
+      // time (clock pulses)
+      if (isset($_POST['time2']) and !empty($_POST['time2'])) {
+         if (in_array('cont',$_POST['time2'])) {
+            $room_item->setContinuous();
+         } else {
+            $room_item->setTimeListByID($_POST['time2']);
             $room_item->setNotContinuous();
-	      }
-	   } elseif ($room_item->isProjectRoom()) {
-	      $room_item->setTimeListByID(array());
+         }
+      } elseif ($room_item->isProjectRoom()) {
+         $room_item->setTimeListByID(array());
          $room_item->setNotContinuous();
-	   }
+      }
 
-	   // Save item
-	   $room_item->save();
+      // Save item
+      $room_item->save();
 
-	   // Redirect
-	   $session = $environment->getSessionItem();
-	   $history = $session->getValue('history');
-	   if ($history[1]['function'] != 'common') {
-	      redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$history[1]['parameter']);
-	   } else {
-	      redirect($history[2]['context'],$history[2]['module'],$history[2]['function'],$history[2]['parameter']);
-	   }
-	}
+      // Redirect
+      $session = $environment->getSessionItem();
+      $history = $session->getValue('history');
+      if ($history[1]['function'] != 'common') {
+         redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$history[1]['parameter']);
+      } else {
+         redirect($history[2]['context'],$history[2]['module'],$history[2]['function'],$history[2]['parameter']);
+      }
+   }
       }
 
       // display form
       include_once('classes/cs_form_view.php');
       $form_view = new cs_form_view($environment,'');
       if (isset($room_item) and !$room_item->mayEditRegular($current_user)) {
-	$form_view->warnChanger();
+         $form_view->warnChanger();
          include_once('classes/cs_errorbox_view.php');
-	$errorbox = new cs_errorbox_view($environment, true, 500);
-	$errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-	$page->addWarning($errorbox);
+         $errorbox = new cs_errorbox_view($environment, true, 500);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->addWarning($errorbox);
       }
 
       include_once('functions/curl_functions.php');

@@ -71,17 +71,23 @@ else {
       copy($file_url,$destination_dir);
       getMaterialListByIMSZip($file_name,$destination_dir,$target_directory,$environment);
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index','');
-   }else {
+   } else {
       // Initialize the form
       $form = new cs_material_ims_import_form($environment);
       // Load form data from postvars
       if ( !empty($_POST) ) {
          if ( !empty($_FILES) ) {
-	         if ( !empty($_FILES['ims_upload']['tmp_name']) ) {
-				   $new_temp_name = $_FILES['ims_upload']['tmp_name'].'_TEMP_'.$_FILES['ims_upload']['name'];
+            if ( !empty($_FILES['ims_upload']['tmp_name']) ) {
+               $new_temp_name = $_FILES['ims_upload']['tmp_name'].'_TEMP_'.$_FILES['ims_upload']['name'];
                move_uploaded_file($_FILES['ims_upload']['tmp_name'],$new_temp_name);
                $_FILES['ims_upload']['tmp_name'] = $new_temp_name;
- 			   }
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $current_iid = $environment->getCurrentContextID();
+                  $session_item->setValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_temp_name',$new_temp_name);
+                  $session_item->setValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_name',$_FILES['ims_upload']['name']);
+               }
+            }
             $values = array_merge($_POST,$_FILES);
          } else {
             $values = $_POST;
@@ -96,13 +102,19 @@ else {
       if ( !empty($command) and isOption($command, getMessage('MATERIAL_IMS_IMPORT_BUTTON')) ) {
          $correct = $form->check();
 
-  	   if ( $correct
-           and empty($_FILES['ims_upload']['tmp_name'])
-	        and !empty($_POST['hidden_ims_upload_name']))
-         {
-	         $_FILES['ims_upload']['tmp_name'] = $_POST['hidden_ims_upload_tmpname'];
-	         $_FILES['ims_upload']['name'] = $_POST['hidden_ims_upload_name'];
-	      }
+         if ( $correct
+              and empty($_FILES['ims_upload']['tmp_name'])
+              and !empty($_POST['hidden_ims_upload_name']))
+            {
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item) ) {
+               $current_iid = $this->_environment->getCurrentContextID();
+               $_FILES['ims_upload']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_temp_name');
+               $_FILES['ims_upload']['name']     = $session_item->getValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_temp_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_material_'.$current_iid.'_ims_name');
+            }
+         }
          if ( $correct
                and ( !isset($c_virus_scan)
                or !$c_virus_scan

@@ -446,11 +446,21 @@ if ($current_user->isGuest()) {
                   $new_temp_name = $_FILES['logo']['tmp_name'].'_TEMP_'.$_FILES['logo']['name'];
                   move_uploaded_file($_FILES['logo']['tmp_name'],$new_temp_name);
                   $_FILES['logo']['tmp_name'] = $new_temp_name;
+                  $session_item = $environment->getSessionItem();
+                  if ( isset($session_item) ) {
+                     $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name',$new_temp_name);
+                     $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name',$_FILES['logo']['name']);
+                  }
                }
                if ( !empty($_FILES['picture']['tmp_name']) ) {
                   $new_temp_name = $_FILES['picture']['tmp_name'].'_TEMP_'.$_FILES['picture']['name'];
                   move_uploaded_file($_FILES['picture']['tmp_name'],$new_temp_name);
                   $_FILES['picture']['tmp_name'] = $new_temp_name;
+                  $session_item = $environment->getSessionItem();
+                  if ( isset($session_item) ) {
+                     $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_temp_name',$new_temp_name);
+                     $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_name',$_FILES['picture']['name']);
+                  }
                }
                $values = array_merge($_POST,$_FILES);
             } else {
@@ -581,15 +591,38 @@ if ($current_user->isGuest()) {
                   and empty($_FILES['logo']['tmp_name'])
                   and !empty($_POST['hidden_logo_name'])
                 ) {
-                $_FILES['logo']['tmp_name'] = $_POST['hidden_logo_tmpname'];
-                $_FILES['logo']['name'] = $_POST['hidden_logo_name'];
+                $session_item = $environment->getSessionItem();
+                if ( isset($session_item) ) {
+                   $_FILES['logo']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name');
+                   $_FILES['logo']['name']     = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name');
+                   $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name');
+                   $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name');
+                }
              }
              if ( $correct
-                and ( !isset($c_virus_scan)
-                or !$c_virus_scan
-                or !isset($_FILES['logo'])
-                or page_edit_virusscan_isClean($_FILES['logo']['tmp_name'],$_FILES['logo']['name']))
-               ) {
+                  and empty($_FILES['picture']['tmp_name'])
+                  and !empty($_POST['hidden_picture_name'])
+                ) {
+                $session_item = $environment->getSessionItem();
+                if ( isset($session_item) ) {
+                   $_FILES['picture']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_temp_name');
+                   $_FILES['picture']['name']     = $session_item->getValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_name');
+                   $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_temp_name');
+                   $session_item->unsetValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_picture_name');
+                }
+             }
+             if ( $correct
+                  and ( !isset($c_virus_scan)
+                        or !$c_virus_scan
+                        or !isset($_FILES['logo'])
+                        or page_edit_virusscan_isClean($_FILES['logo']['tmp_name'],$_FILES['logo']['name'])
+                      )
+                  and ( !isset($c_virus_scan)
+                        or !$c_virus_scan
+                        or !isset($_FILES['picture'])
+                        or page_edit_virusscan_isClean($_FILES['picture']['tmp_name'],$_FILES['picture']['name'])
+                      )
+                ) {
                 $new_flag = false;
                 if (!isset($item)) {
                    if (!empty($_POST['type'])) {

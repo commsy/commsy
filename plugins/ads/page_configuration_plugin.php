@@ -69,8 +69,11 @@ else {
       if ( isOption($command, getMessage('ADS_AD_NORMAL_SPONSOR_BUTTON'))  or
            isOption($command, getMessage('ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON')) ) {
          $counter_normal = 0;
-         if ( isset($_FILES['normal_name']['name']) ) {
+         if ( isset($_FILES['normal_name']['name'])
+              or isset($_POST['hidden_normal_name'])
+            ) {
             $counter_normal = count($_FILES['normal_name']['name']);
+            $counter_normal = $counter_normal + count($_POST['hidden_normal_name']);
          } elseif ( isset($room_item) ) {
             $counter_normal = $room_item->getCountNormalSponsors();
          }
@@ -94,6 +97,21 @@ else {
                   if ($virus_scanner->isClean($_FILES['normal_name']['tmp_name'],$_FILES['normal_name']['name'])) {
                      move_uploaded_file($_FILES['normal_name']['tmp_name'][$key],$_FILES['normal_name']['tmp_name'][$key].'_TEMP_'.$value);
                      $_FILES['normal_name']['tmp_name'][$key] = $_FILES['normal_name']['tmp_name'][$key].'_TEMP_'.$value;
+
+                     $current_iid = $environment->getCurrentContextID();
+                     $session_item = $environment->getSessionItem();
+                     if ( isset($session_item) ) {
+                        $files_array = array();
+                        if ( $session_item->issetValue('ads_'.$current_iid.'_files_array') ) {
+                           $files_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+                        }
+                        $files_array['normal_name']['tmp_name'][$key] = $_FILES['normal_name']['tmp_name'][$key];
+                        $files_array['normal_name']['name'][$key] = $_FILES['normal_name']['name'][$key];
+                        $session_item->setValue('ads_'.$current_iid.'_files_array',$files_array);
+                     }
+                     unset($files_array);
+                     unset($temp_temp_name);
+
                      if ( isset($_POST['hidden_normal_name'][$key]) and !empty($_POST['hidden_normal_name'][$key]) ) {
                         $_POST['hidden_delete_normal_name'][] = $_POST['hidden_normal_name'][$key];
                      }
@@ -103,6 +121,25 @@ else {
                      $page->add($errorbox);
                      $focus_element_onload = '';
                      $error_on_upload = true;
+                  }
+               } else {
+                  move_uploaded_file($_FILES['normal_name']['tmp_name'][$key],$_FILES['normal_name']['tmp_name'][$key].'_TEMP_'.$value);
+                  $_FILES['normal_name']['tmp_name'][$key] = $_FILES['normal_name']['tmp_name'][$key].'_TEMP_'.$value;
+
+                  $current_iid = $environment->getCurrentContextID();
+                  $session_item = $environment->getSessionItem();
+                  if ( isset($session_item) ) {
+                     $files_array = array();
+                     if ( $session_item->issetValue('ads_'.$current_iid.'_files_array') ) {
+                        $files_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+                     }
+                     $files_array['normal_name']['tmp_name'][$key] = $_FILES['normal_name']['tmp_name'][$key];
+                     $files_array['normal_name']['name'][$key] = $_FILES['normal_name']['name'][$key];
+                     $session_item->setValue('ads_'.$current_iid.'_files_array',$files_array);
+                  }
+
+                  if ( isset($_POST['hidden_normal_name'][$key]) and !empty($_POST['hidden_normal_name'][$key]) ) {
+                     $_POST['hidden_delete_normal_name'][] = $_POST['hidden_normal_name'][$key];
                   }
                }
             }
@@ -116,7 +153,7 @@ else {
             // remove normal sponsor from form
             if ( isset($_POST['normal_delete_'.$i]) and isOption($_POST['normal_delete_'.$i], getMessage('ADS_DELETE_BUTTON')) ) {
                if ( isset($_POST['hidden_normal_name'][$i]) ) {
-            $disc_manager = $environment->getDiscManager();
+                  $disc_manager = $environment->getDiscManager();
                   if ( $disc_manager->existsFile($_POST['hidden_normal_name'][$i]) ) {
                      $_POST['hidden_delete_normal_name'][] = $_POST['hidden_normal_name'][$i];
                   }
@@ -125,7 +162,16 @@ else {
                $temp_array_file_name = array();
                $temp_array_url = array();
                $temp_array_file = array();
+               $temp_array_file_session = array();
                $counter2 = 0;
+               $current_iid = $environment->getCurrentContextID();
+               $session_item = $environment->getSessionItem();
+               $files_array = array();
+               if ( isset($session_item)
+                    and $session_item->issetValue('ads_'.$current_iid.'_files_array')
+                  ) {
+                  $files_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+               }
                for ($j=0; $j<$counter; $j++) {
                   if ($j != $i) {
                      if ( isset($_POST['hidden_file_normal_name'][$j]) ) {
@@ -142,6 +188,12 @@ else {
                            $temp_array_file[$key][$counter2] = $value[$j];
                         }
                      }
+                     if (isset($files_array['normal_name']['name'][$j])) {
+                        $temp_array_file_session['normal_name']['name'][$counter2] = $files_array['normal_name']['name'][$j];
+                     }
+                     if (isset($files_array['normal_name']['tmp_name'][$j])) {
+                        $temp_array_file_session['normal_name']['tmp_name'][$counter2] = $files_array['normal_name']['tmp_name'][$j];
+                     }
                      $counter2++;
                   }
                }
@@ -149,20 +201,56 @@ else {
                $_POST['hidden_file_normal_name'] = $temp_array_file_name;
                $_FILES['normal_name'] = $temp_array_file;
                $_POST['normal_url'] = $temp_array_url;
+               $session_item->setValue('ads_'.$current_iid.'_files_array',$temp_array_file_session);
                unset($temp_array_file_name);
                unset($temp_array_name);
                unset($temp_array_file);
                unset($temp_array_url);
+               unset($temp_array_file_session);
                unset($counter2);
                $end = true;
             }
 
             // move normal sponsor down in form
-            if ( isset($_POST['normal_down_'.$i]) and isOption($_POST['normal_down_'.$i], getMessage('ADS_DOWN_BUTTON')) ) {
+            if ( isset($_POST['normal_down_'.$i])
+                 and isOption($_POST['normal_down_'.$i], getMessage('ADS_DOWN_BUTTON'))
+               ) {
                $temp_url = $_POST['normal_url'][$i];
                $_POST['normal_url'][$i] = $_POST['normal_url'][$i+1];
                $_POST['normal_url'][$i+1] = $temp_url;
                unset($temp_url);
+
+               $current_iid = $environment->getCurrentContextID();
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $files_array = array();
+                  if ( $session_item->issetValue('ads_'.$current_iid.'_files_array') ) {
+                     $files_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+                     if ( isset($files_array['normal_name']['tmp_name'][$i])
+                          and isset($files_array['normal_name']['tmp_name'][$i+1])
+                        ) {
+                        $temp_name = $files_array['normal_name']['tmp_name'][$i];
+                        $files_array['normal_name']['tmp_name'][$i] = $files_array['normal_name']['tmp_name'][$i+1];
+                        $files_array['normal_name']['tmp_name'][$i+1] = $temp_name;
+                        unset($temp_name);
+                        $temp_name = $files_array['normal_name']['name'][$i];
+                        $files_array['normal_name']['name'][$i] = $files_array['normal_name']['name'][$i+1];
+                        $files_array['normal_name']['name'][$i+1] = $temp_name;
+                        unset($temp_name);
+                     } elseif ( isset($files_array['normal_name']['tmp_name'][$i]) ) {
+                        $files_array['normal_name']['name'][$i+1] = $files_array['normal_name']['name'][$i];
+                        unset($files_array['normal_name']['name'][$i]);
+                        $files_array['normal_name']['tmp_name'][$i+1] = $files_array['normal_name']['tmp_name'][$i];
+                        unset($files_array['normal_name']['tmp_name'][$i]);
+                     } elseif ( isset($files_array['normal_name']['tmp_name'][$i+1]) ) {
+                        $files_array['normal_name']['name'][$i] = $files_array['normal_name']['name'][$i+1];
+                        unset($files_array['normal_name']['name'][$i+1]);
+                        $files_array['normal_name']['tmp_name'][$i] = $files_array['normal_name']['tmp_name'][$i+1];
+                        unset($files_array['normal_name']['tmp_name'][$i+1]);
+                     }
+                  }
+                  $session_item->setValue('ads_'.$current_iid.'_files_array',$files_array);
+               }
 
                if ( isset($_POST['hidden_normal_name'][$i]) ) {
                   if ( isset($_POST['hidden_normal_name'][$i+1]) ) {
@@ -231,6 +319,38 @@ else {
                $_POST['normal_url'][$i] = $_POST['normal_url'][$i-1];
                $_POST['normal_url'][$i-1] = $temp_url;
                unset($temp_url);
+
+               $current_iid = $environment->getCurrentContextID();
+               $session_item = $environment->getSessionItem();
+               if ( isset($session_item) ) {
+                  $files_array = array();
+                  if ( $session_item->issetValue('ads_'.$current_iid.'_files_array') ) {
+                     $files_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+                     if ( isset($files_array['normal_name']['tmp_name'][$i])
+                          and isset($files_array['normal_name']['tmp_name'][$i-1])
+                        ) {
+                        $temp_name = $files_array['normal_name']['tmp_name'][$i];
+                        $files_array['normal_name']['tmp_name'][$i] = $files_array['normal_name']['tmp_name'][$i-1];
+                        $files_array['normal_name']['tmp_name'][$i-1] = $temp_name;
+                        unset($temp_name);
+                        $temp_name = $files_array['normal_name']['name'][$i];
+                        $files_array['normal_name']['name'][$i] = $files_array['normal_name']['name'][$i-1];
+                        $files_array['normal_name']['name'][$i-1] = $temp_name;
+                        unset($temp_name);
+                     } elseif ( isset($files_array['normal_name']['tmp_name'][$i]) ) {
+                        $files_array['normal_name']['name'][$i-1] = $files_array['normal_name']['name'][$i];
+                        unset($files_array['normal_name']['name'][$i]);
+                        $files_array['normal_name']['tmp_name'][$i-1] = $files_array['normal_name']['tmp_name'][$i];
+                        unset($files_array['normal_name']['tmp_name'][$i]);
+                     } elseif ( isset($files_array['normal_name']['tmp_name'][$i-1]) ) {
+                        $files_array['normal_name']['name'][$i] = $files_array['normal_name']['name'][$i-1];
+                        unset($files_array['normal_name']['name'][$i-1]);
+                        $files_array['normal_name']['tmp_name'][$i] = $files_array['normal_name']['tmp_name'][$i-1];
+                        unset($files_array['normal_name']['tmp_name'][$i-1]);
+                     }
+                  }
+                  $session_item->setValue('ads_'.$current_iid.'_files_array',$files_array);
+               }
 
                if ( isset($_POST['hidden_normal_name'][$i]) ) {
                   if ( isset($_POST['hidden_normal_name'][$i-1]) ) {
@@ -355,55 +475,34 @@ else {
 
             // normal sponsors
             $array = array();
-            if ( isset($_POST['hidden_normal_name']) ) {
-               foreach ($_POST['hidden_normal_name'] as $key => $value) {
-                  if ( strstr($value,'_TEMP_') ) {
-                     $count = 0;
-                     $end = false;
-                     while (!$end) {
-                        $filename = 'cid'.$environment->getCurrentContextID().'_SPONSORING_'.$count.'_'.$_POST['hidden_file_normal_name'][$key];
-             $disc_manager = $environment->getDiscManager();
-             if ( !$disc_manager->existsFile($filename) ) {
-                           $end = true;
-                        } else {
-                           $count++;
+
+            $current_iid = $environment->getCurrentContextID();
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item)
+                 and $session_item->issetValue('ads_'.$current_iid.'_files_array')
+               ) {
+               $file_array = $session_item->getValue('ads_'.$current_iid.'_files_array');
+               if ( !empty($file_array['normal_name']['name']) ) {
+                  foreach ($file_array['normal_name']['name'] as $key => $value) {
+                     if ( !empty($value) ) {
+                        if ( strstr($value,'SPONSORING_') ) {
+                           $value = preg_replace('§cid[0-9]*_SPONSORING_[0-9]*_§','',$value);
                         }
-                     }
-          $disc_manager = $environment->getDiscManager();
-                     $disc_manager->copyFile($value,$filename,true);
-                     unset($count);
-                  } else {
-                     $filename = $value;
-                  }
-                  $array[$key]['IMAGE'] = $filename;
-                  if ( isset($_POST['normal_url'][$key]) and !empty($_POST['normal_url'][$key]) ) {
-                     $array[$key]['URL'] = $_POST['normal_url'][$key];
-                  }
-               }
-            }
-            if ( isset($_FILES['normal_name']['name']) ) {
-               foreach ($_FILES['normal_name']['name'] as $key => $value) {
-                  if ( !empty($value) ) {
-                     $count = 0;
-                     $end = false;
-                     while (!$end) {
-                        $filename = 'cid'.$environment->getCurrentContextID().'_SPONSORING_'.$count.'_'.$value;
-             $disc_manager = $environment->getDiscManager();
-             if ( !$disc_manager->existsFile($filename) ) {
-                           $end = true;
-                        } else {
-                           $count++;
+                        $filename = 'cid'.$environment->getCurrentContextID().'_SPONSORING_'.$key.'_'.$value;
+                        $disc_manager = $environment->getDiscManager();
+                        if ( !$disc_manager->existsFile($filename) ) {
+                           $disc_manager = $environment->getDiscManager();
+                           $disc_manager->copyFile($file_array['normal_name']['tmp_name'][$key],$filename,true);
                         }
-                     }
-          $disc_manager = $environment->getDiscManager();
-                     $disc_manager->copyFile($_FILES['normal_name']['tmp_name'][$key],$filename,true);
-                     $array[$key]['IMAGE'] = $filename;
-                     if ( isset($_POST['normal_url'][$key]) and !empty($_POST['normal_url'][$key]) ) {
-                        $array[$key]['URL'] = $_POST['normal_url'][$key];
+                        $array[$key]['IMAGE'] = $filename;
+                        if ( isset($_POST['normal_url'][$key]) and !empty($_POST['normal_url'][$key]) ) {
+                           $array[$key]['URL'] = $_POST['normal_url'][$key];
+                        }
                      }
                   }
                }
             }
+
             ksort($array);
             $room_item->setNormalSponsorArray($array);
             unset($array);
@@ -422,8 +521,8 @@ else {
             if ( isset($_POST['hidden_delete_normal_name']) and !empty($_POST['hidden_delete_normal_name']) ) {
                foreach ($_POST['hidden_delete_normal_name'] as $file) {
                   if ( !empty($file) ) {
-          $disc_manager = $environment->getDiscManager();
-          if ( $disc_manager->existsFile($file) ) {
+                     $disc_manager = $environment->getDiscManager();
+                     if ( $disc_manager->existsFile($file) ) {
                         $disc_manager->unlinkFile($file);
                      } elseif ( file_exists($file) ) {
                         unlink($file);
@@ -434,8 +533,8 @@ else {
             if ( isset($_POST['hidden_delete_main_name']) and !empty($_POST['hidden_delete_main_name']) ) {
                foreach ($_POST['hidden_delete_main_name'] as $file) {
                   if ( !empty($file) ) {
-          $disc_manager = $environment->getDiscManager();
-          if ( $disc_manager->existsFile($file) ) {
+                     $disc_manager = $environment->getDiscManager();
+                     if ( $disc_manager->existsFile($file) ) {
                         $disc_manager->unlinkFile($file);
                      } elseif ( file_exists($file) ) {
                         unlink($file);

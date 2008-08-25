@@ -92,7 +92,8 @@ if (!empty($_GET['iid'])) {
 } elseif (!empty($_POST['iid'])) {
    $iid = $_POST['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('No user selected!',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('No user selected!',E_USER_ERROR);
 }
 
 $user_manager = $environment->getUserManager();
@@ -184,6 +185,13 @@ if ($command != 'error') { // only if user is allowed to edit user
             move_uploaded_file($_FILES['upload']['tmp_name'],$new_temp_name);
             $_FILES['upload']['tmp_name'] = $new_temp_name;
 
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item) ) {
+               $current_iid = $environment->getCurrentContextID();
+               $session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name',$new_temp_name);
+               $session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
+            }
+
             //resizing the userimage to a maximum width of 150px
             $srcfile = $_FILES['upload']['tmp_name'];
             $target = $_FILES['upload']['tmp_name'];
@@ -272,8 +280,13 @@ if ($command != 'error') { // only if user is allowed to edit user
               and empty($_FILES['upload']['tmp_name'])
               and !empty($_POST['hidden_upload_name'])
             ) {
-            $_FILES['upload']['tmp_name'] = $_POST['hidden_upload_tmpname'];
-            $_FILES['upload']['name'] = $_POST['hidden_upload_name'];
+            $session_item = $environment->getSessionItem();
+            if ( isset($session_item) ) {
+               $_FILES['upload']['tmp_name'] = $session_item->getValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name');
+               $_FILES['upload']['name']     = $session_item->getValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_temp_name');
+               $session_item->unsetValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name');
+            }
          }
          if ( $correct
               and ( !isset($c_virus_scan)
