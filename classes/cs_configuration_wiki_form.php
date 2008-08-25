@@ -230,31 +230,33 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
       $this->_form->combine();
+      $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW'));
+      $this->_form->combine();
       
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
-     if (isset($discussion_array[0])){
-     	$first = true;
+      
+      if (isset($discussion_array[0])){
         $current_discussions = '<br/>' . getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
-        $current_discussions .= '<ul>';
-        foreach($discussion_array as $discussion){
-//        	if(!$first){
-//        		$discussion = ', ' . $discussion;
-//        	}
-//        	if($first){
-//        		$first = false;
-//        	}
-        	$current_discussions .= '<li>' . $discussion . '</li>';
-        }
-        $current_discussions .= '</ul>';
-     } else {
-     	$current_discussions = getMessage('COMMON_NO_ENTRIES');
-     }
+      } else {
+     	$current_discussions = '<br/>' . getMessage('COMMON_NO_ENTRIES');
+      }
       
       $this->_form->addText('wiki_existing_discussions','',$current_discussions);
-      $this->_form->combine();
-      $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW'));
       
+      if (isset($discussion_array[0])){
+        $this->_form->combine();
+        $first = true;
+        foreach($discussion_array as $discussion){
+          if(!$first){
+              $this->_form->combine();
+          }
+          $this->_form->addCheckbox('enable_discussion_discussions[]',$discussion,true,$discussion,$discussion,$discussion,false,false,'','',true,false);
+          if($first){
+              $first = false;
+          }
+        }
+      }
 
 //      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();

@@ -296,6 +296,7 @@ class cs_wiki_manager extends cs_manager {
             $directory_handle = @opendir('Profiles');
            if (!$directory_handle) {
               mkdir('Profiles');
+              global $c_commsy_path_file;
               copy($c_commsy_path_file.'/etc/pmwiki/nobody_m.gif','Profiles/nobody_m.gif');
             }
             chdir('..');
@@ -307,136 +308,158 @@ class cs_wiki_manager extends cs_manager {
 
                 // Titel fuer Wiki-Gruppe vorbereiten
                 $titleForForm = $discussion;
-                $discussionArray = explode (' ', $discussion);
-                for ($index = 0; $index < sizeof($discussionArray); $index++) {
-                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
-                    $first_letter = substr($discussionArray[$index], 0, 1);
-                    $rest = substr($discussionArray[$index], 1);
-                    $first_letter = strtoupper($first_letter);
-                    $discussionArray[$index] = $first_letter . $rest;
-                }
-                $discussion = implode('',$discussionArray);
+//                $discussionArray = explode (' ', $discussion);
+//                for ($index = 0; $index < sizeof($discussionArray); $index++) {
+//                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+//                    $first_letter = substr($discussionArray[$index], 0, 1);
+//                    $rest = substr($discussionArray[$index], 1);
+//                    $first_letter = strtoupper($first_letter);
+//                    $discussionArray[$index] = $first_letter . $rest;
+//                }
+//                $discussion = implode('',$discussionArray);
 
-                // Site.Forum generieren
-                if(!file_exists('wiki.d/Site.Forum')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/Site.Forum','wiki.d/Site.Forum');
-                }
-                $file_forum_contents = file_get_contents('wiki.d/Site.Forum');
-                $file_forum_contents_array = explode("\n", $file_forum_contents);
-                for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
-               if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
-                        if($firstForum){
-                            $file_forum_contents_array[$index] = 'text=Foren:';
-                            $firstForum = false;
+                $discussion = $this->checkDiscussion($titleForForm);
+
+                // check delete
+
+                 $keep_discussion = false;
+                 if(isset($_POST['enable_discussion_discussions'])){
+                     foreach($_POST['enable_discussion_discussions'] as $discussionKeep){
+                        if(($this->checkDiscussion($discussionKeep) == $discussion) or ($titleForForm == $_POST['new_discussion'])) {
+                            $keep_discussion = true;
                         }
-                        $file_forum_contents_array[$index] .= '%0a*[['. $discussion . 'Forum.' . $discussion . 'Forum' . '|' . $titleForForm . ']]';
+                     }
+                 } else {
+                    if($titleForForm == $_POST['new_discussion']){
+                        $keep_discussion = true;
                     }
-            }
-                $file_forum_contents = implode("\n", $file_forum_contents_array);
-                file_put_contents('wiki.d/Site.Forum', $file_forum_contents);
-
-               $str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'all\';'.LF;
-               $str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'add,copy\';'.LF;
-
-
-               if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
-                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic');
-                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
-                    file_put_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic', $file_contents);
-                }
-                if(!file_exists('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
-                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
-                    $file_contents_array = explode("\n", $file_contents);
-                    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-                        if(stripos($file_contents_array[$index], 'name=Forum.Forum') !== false){
-                            $file_contents_array[$index] = 'name=' . $discussion . 'Forum.' . $discussion . 'Forum';
-                        }
-                    }
-                    $file_contents = implode("\n", $file_contents_array);
-                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
-                    file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
-                }
-                if(!file_exists('wiki.d/' . $discussion . 'Forum.ForumConfig')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
-                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.ForumConfig');
-                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
-                    file_put_contents('wiki.d/' . $discussion . 'Forum.ForumConfig', $file_contents);
-                }
-                if(!file_exists('wiki.d/' . $discussion . 'Forum.Willkommen')){
-                    copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
-                    $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.Willkommen');
-                    $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
-                    file_put_contents('wiki.d/' . $discussion . 'Forum.Willkommen', $file_contents);
-                }
+                 }
                 
-                if ( $item->WikiEnableDiscussionNotification() == "1" ) {
-                    if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
-                        // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
-                        // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
-                        // in die Gruppen eintragen.
-                        $tempDir = getcwd();
-                        chdir($old_dir);
-                        $group_manager = $this->_environment->getGroupManager();
-                        $group_manager->reset();
-                        $group_manager->select();
-                        $group_list = $group_manager->get();
-                        $group_array = $group_list->to_array();
-                        $group_existing = false;
-                        foreach($group_array as $group){
-                            if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
-                                $group_existing = true;
+                if($keep_discussion){
+                    // Site.Forum generieren
+                    if(!file_exists('wiki.d/Site.Forum')){
+                        copy($c_commsy_path_file.'/etc/pmwiki/Site.Forum','wiki.d/Site.Forum');
+                    }
+                    $file_forum_contents = file_get_contents('wiki.d/Site.Forum');
+                    $file_forum_contents_array = explode("\n", $file_forum_contents);
+                    for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+                       if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
+                                if($firstForum){
+                                    $file_forum_contents_array[$index] = 'text=Foren:';
+                                    $firstForum = false;
+                                }
+                                $file_forum_contents_array[$index] .= '%0a*[['. $discussion . 'Forum.' . $discussion . 'Forum' . '|' . $titleForForm . ']]';
+                            }
+                    }
+                    $file_forum_contents = implode("\n", $file_forum_contents_array);
+                    file_put_contents('wiki.d/Site.Forum', $file_forum_contents);
+    
+                   $str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'all\';'.LF;
+                   $str .= '$FoxPagePermissions[\'' . $discussion . 'Forum.*\'] = \'add,copy\';'.LF;
+    
+    
+                   if(!file_exists('wiki.d/' . $discussion . 'Forum.CreateNewTopic')){
+                        copy($c_commsy_path_file.'/etc/pmwiki/Forum.CreateNewTopic','wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                        $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic');
+                        $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                        file_put_contents('wiki.d/' . $discussion . 'Forum.CreateNewTopic', $file_contents);
+                    }
+                    if(!file_exists('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum')){
+                        copy($c_commsy_path_file.'/etc/pmwiki/Forum.Forum','wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+                        $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum');
+                        $file_contents_array = explode("\n", $file_contents);
+                        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+                            if(stripos($file_contents_array[$index], 'name=Forum.Forum') !== false){
+                                $file_contents_array[$index] = 'name=' . $discussion . 'Forum.' . $discussion . 'Forum';
                             }
                         }
-                        if(!$group_existing){
-                            $new_group = $group_manager->getNewItem();
-                            $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
-                            $currentUser = $this->_environment->getCurrentUser();
-                            $new_group->setCreatorItem($currentUser);
-                            $new_group->save();
-                        }
-                        chdir($tempDir);
-                        $str .= '$COMMSY_DISCUSSION_NOTIFICATION_GROUPS = "1";'.LF;
-                    } else {
-                        $tempDir = getcwd();
-                        chdir($old_dir);
-                        $user_manager = $this->_environment->getUserManager();
-                        $user_manager->reset();
-                        $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-                        $user_manager->setUserLimit();
-                        $user_manager->select();
-                        $user_list = $user_manager->get();
-                        $user_array = $user_list->to_array();
-                        $this->updateNotificationFile($discussion, $user_array);
-                        chdir($tempDir);
+                        $file_contents = implode("\n", $file_contents_array);
+                        $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                        file_put_contents('wiki.d/' . $discussion . 'Forum.' . $discussion . 'Forum', $file_contents);
                     }
-                    $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
+                    if(!file_exists('wiki.d/' . $discussion . 'Forum.ForumConfig')){
+                        copy($c_commsy_path_file.'/etc/pmwiki/Forum.ForumConfig','wiki.d/' . $discussion . 'Forum.ForumConfig');
+                        $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.ForumConfig');
+                        $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                        file_put_contents('wiki.d/' . $discussion . 'Forum.ForumConfig', $file_contents);
+                    }
+                    if(!file_exists('wiki.d/' . $discussion . 'Forum.Willkommen')){
+                        copy($c_commsy_path_file.'/etc/pmwiki/Forum.Willkommen','wiki.d/' . $discussion . 'Forum.Willkommen');
+                        $file_contents = file_get_contents('wiki.d/' . $discussion . 'Forum.Willkommen');
+                        $file_contents =  $file_contents . "\n" . 'title='. $titleForForm;
+                        file_put_contents('wiki.d/' . $discussion . 'Forum.Willkommen', $file_contents);
+                    }
+                    
+                    if ( $item->WikiEnableDiscussionNotification() == "1" ) {
+                        if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
+                            // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
+                            // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
+                            // in die Gruppen eintragen.
+                            $tempDir = getcwd();
+                            chdir($old_dir);
+                            $group_manager = $this->_environment->getGroupManager();
+                            $group_manager->reset();
+                            $group_manager->select();
+                            $group_list = $group_manager->get();
+                            $group_array = $group_list->to_array();
+                            $group_existing = false;
+                            foreach($group_array as $group){
+                                if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
+                                    $group_existing = true;
+                                }
+                            }
+                            if(!$group_existing){
+                                $new_group = $group_manager->getNewItem();
+                                $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
+                                $currentUser = $this->_environment->getCurrentUser();
+                                $new_group->setCreatorItem($currentUser);
+                                $new_group->save();
+                            }
+                            chdir($tempDir);
+                            $str .= '$COMMSY_DISCUSSION_NOTIFICATION_GROUPS = "1";'.LF;
+                        } else {
+                            $tempDir = getcwd();
+                            chdir($old_dir);
+                            $user_manager = $this->_environment->getUserManager();
+                            $user_manager->reset();
+                            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+                            $user_manager->setUserLimit();
+                            $user_manager->select();
+                            $user_list = $user_manager->get();
+                            $user_array = $user_list->to_array();
+                            $this->updateNotificationFile($discussion, $user_array);
+                            chdir($tempDir);
+                        }
+                        $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
+                    }
+                    
+                    // Profile der vorhandenen CommSy-Benutzer anlegen
+                    $tempDir = getcwd();
+                    chdir($old_dir);
+                    $user_manager = $this->_environment->getUserManager();
+                    $user_manager->reset();
+                    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+                    $user_manager->setUserLimit();
+                    //$user_manager->setGroupLimit($selgroup);
+                    $user_manager->select();
+                    $user_list = $user_manager->get();
+                    $user_array = $user_list->to_array();
+                    foreach($user_array as $user){
+                          $this->updateWikiProfileFile($user);
+                    }
+                    chdir($tempDir);
+                } else {
+                    $this->deleteDiscussion($titleForForm);
+                    $item->WikiRemoveDiscussion($titleForForm);
                 }
-                
-                // Profile der vorhandenen CommSy-Benutzer anlegen
-                $tempDir = getcwd();
-                chdir($old_dir);
-                $user_manager = $this->_environment->getUserManager();
-                $user_manager->reset();
-                $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-                $user_manager->setUserLimit();
-                //$user_manager->setGroupLimit($selgroup);
-                $user_manager->select();
-                $user_list = $user_manager->get();
-                $user_array = $user_list->to_array();
-                foreach($user_array as $user){
-                      $this->updateWikiProfileFile($user);
-                }
-                chdir($tempDir);
             }
-
+            
             chdir('local');
         }
         $str .= '$COMMSY_DISCUSSION = "1";'.LF.LF;
@@ -717,6 +740,51 @@ function updateNotificationFile($discussion, $user_array){
         file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
     }
     chdir($old_dir);
+}
+
+function deleteDiscussion($discussion){
+    $discussionChecked = $this->checkDiscussion($discussion);
+    chdir('wiki.d');
+    if($dir=opendir(getcwd())){
+        while($file=readdir($dir)) {
+            if (!is_dir($file) && $file != "." && $file != ".."){
+                if((stripos($file, $discussionChecked) !== false) and (stripos($file, 'Discussion_Backup_') == false)){
+                    rename($file, 'Discussion_Backup_' . $file);
+                }
+            }
+        }
+    }
+    if(file_exists('Site.Forum')){
+        $file_forum_contents = file_get_contents('Site.Forum');
+        $file_forum_contents_array = explode("\n", $file_forum_contents);
+        for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+            if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
+                $file_forum_contents_array[$index] = str_replace('%0a*[['. $discussionChecked . 'Forum.' . $discussionChecked . 'Forum' . '|' . $discussion . ']]', '', $file_forum_contents_array[$index]);
+            }
+        }
+        $file_forum_contents = implode("\n", $file_forum_contents_array);
+        $result = file_put_contents('Site.Forum', $file_forum_contents);
+    }
+    chdir('..');
+}
+
+function checkDiscussion($discussion){
+    $discussionArray = explode (' ', $discussion);
+    for ($index = 0; $index < sizeof($discussionArray); $index++) {
+        $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+        $first_letter = substr($discussionArray[$index], 0, 1);
+        $rest = substr($discussionArray[$index], 1);
+        $first_letter = strtoupper($first_letter);
+        $discussionArray[$index] = $first_letter . $rest;
+    }
+    $discussion = implode('',$discussionArray);
+        return $discussion;
 }
 }
 ?>

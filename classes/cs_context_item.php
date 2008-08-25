@@ -2520,6 +2520,23 @@ class cs_context_item extends cs_item {
             }
          }
    }
+   
+   function WikiRemoveDiscussion($old_discussion){
+      if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $old_discussion)) {
+          $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
+          if(!empty($discussion_string)){
+             $discussion_array = explode("$CSDW$", $discussion_string);
+             $new_discussion_array = array();
+              foreach($discussion_array as $discussion){
+                if($discussion != $old_discussion){
+                    $new_discussion_array[] = $discussion;
+                }
+              }
+              $discussion_string = implode("$CSDW$", $new_discussion_array);
+          }
+          $this->_addExtra('WIKIDISCUSSIONARRAY',$discussion_string);
+       }
+   }
 
    function getWikiDiscussionArray(){
         if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') ) {

@@ -315,7 +315,6 @@ else {
             } else {
                 $item->unsetWikiEnableDiscussionNotificationGroups();
         }
-
          // section edit
          if ( isset($_POST['wiki_section_edit']) ) {
             $item->setWikiWithSectionEdit();
@@ -331,12 +330,13 @@ else {
          $item->setWikiExists();
          $item->setWikiActive();
 
-         // Save item
-         $item->save();
-
          // create new wiki
          $wiki_manager = $environment->getWikiManager();
          $wiki_manager->createWiki($item);
+         
+         // Save item - after createWiki() -> old discussions might be deleted
+         $item->save();
+         
          $form_view->setItemIsSaved();
          $is_saved = true;
       }
