@@ -765,7 +765,27 @@ function deleteDiscussion($discussion){
         $file_forum_contents = implode("\n", $file_forum_contents_array);
         $result = file_put_contents('Site.Forum', $file_forum_contents);
     }
+    $this->deleteDiscussionGroup($discussion);
     chdir('..');
+}
+
+function deleteDiscussionGroup($discussion){
+    global $c_commsy_path_file;
+    $old_dir = getcwd();
+    chdir($c_commsy_path_file);
+
+    $group_manager = $this->_environment->getGroupManager();
+    $group_manager->reset();
+    $group_manager->select();
+    $group_ids = $group_manager->getIDArray();
+    foreach($group_ids as $group_id){
+        $group_manager->reset();
+        $group = $group_manager->getItem($group_id);
+        if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $discussion){
+            $group_manager->delete($group_id);
+        }
+    }
+    chdir($old_dir);
 }
 
 function checkDiscussion($discussion){
