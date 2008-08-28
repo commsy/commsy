@@ -799,7 +799,7 @@ function deleteDiscussion($discussion){
     if($dir=opendir(getcwd())){
         while($file=readdir($dir)) {
             if (!is_dir($file) && $file != "." && $file != ".."){
-                if((stripos($file, $discussionChecked) !== false) and (stripos($file, 'Discussion_Backup_') == false)){
+                if((stripos($file, $discussionChecked) !== false) and !(stripos($file, 'Discussion_Backup_') !== false)){
                     rename($file, 'Discussion_Backup_' . $file);
                 }
             }
