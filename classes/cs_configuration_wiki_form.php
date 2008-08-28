@@ -393,12 +393,12 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            and !empty($this->_form_post['new_discussion'])
            and isset($discussion_array[0])
          ) {
-        $tempDiscussion = $this->checkDiscussion($this->_form_post['new_discussion']);
+        $tempDiscussion = $this->getDiscussionWikiName($this->_form_post['new_discussion']);
 
         $exists = false;
         
         foreach($discussion_array as $discussion){
-            $discussion = $this->checkDiscussion($discussion);
+            $discussion = $this->getDiscussionWikiName($discussion);
         	if ($discussion == $tempDiscussion){
         		$exists = true;
         	}
@@ -426,7 +426,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       }
    }
    
-   function checkDiscussion($discussion){
+   function getDiscussionWikiName($discussion){
    	    $discussionArray = explode (' ', $discussion);
         for ($index = 0; $index < sizeof($discussionArray); $index++) {
             $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);

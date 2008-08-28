@@ -324,14 +324,14 @@ class cs_wiki_manager extends cs_manager {
 //                }
 //                $discussion = implode('',$discussionArray);
 
-                $discussion = $this->checkDiscussion($titleForForm);
+                $discussion = $this->getDiscussionWikiName($titleForForm);
 
                 // check delete
 
                  $keep_discussion = false;
                  if(isset($_POST['enable_discussion_discussions'])){
                      foreach($_POST['enable_discussion_discussions'] as $discussionKeep){
-                        if(($this->checkDiscussion($discussionKeep) == $discussion) or ($titleForForm == $_POST['new_discussion'])) {
+                        if(($this->getDiscussionWikiName($discussionKeep) == $discussion) or ($titleForForm == $_POST['new_discussion'])) {
                             $keep_discussion = true;
                         }
                      }
@@ -401,6 +401,7 @@ class cs_wiki_manager extends cs_manager {
                             // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
+                            $this->updateGroupNotificationFiles();
                             $tempDir = getcwd();
                             chdir($old_dir);
                             $group_manager = $this->_environment->getGroupManager();
@@ -424,6 +425,7 @@ class cs_wiki_manager extends cs_manager {
                             chdir($tempDir);
                             $str .= '$COMMSY_DISCUSSION_NOTIFICATION_GROUPS = "1";'.LF;
                         } else {
+                            $this->deleteAllDiscussionGroups();
                             $tempDir = getcwd();
                             chdir($old_dir);
                             $user_manager = $this->_environment->getUserManager();
@@ -437,6 +439,9 @@ class cs_wiki_manager extends cs_manager {
                             chdir($tempDir);
                         }
                         $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
+                    } else {
+                        $this->updateGroupNotificationFiles();
+                        $this->deleteAllDiscussionGroups();
                     }
                     
                     // Profile der vorhandenen CommSy-Benutzer anlegen
@@ -515,6 +520,7 @@ class cs_wiki_manager extends cs_manager {
          }
       }
       chdir($old_dir);
+      $this->deleteAllDiscussionGroups();
    }
 
 
@@ -620,28 +626,32 @@ function updateWikiProfileFile($user){
       $old_dir = getcwd();
       chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
       
-      // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
-      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
-      $firstnameRest = substr($user->getFirstname(), 1);
-      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
-      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
-      $lastnameRest = substr($user->getLastname(), 1);
-      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
+//      The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
+//      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
+//      $firstnameRest = substr($user->getFirstname(), 1);
+//      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
+//      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
+//      $lastnameRest = substr($user->getLastname(), 1);
+//      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
       
-      if(!file_exists('wiki.d/Profiles.' . $firstname . $lastname)){
-            copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $firstname . $lastname);
+      $useridFirstLetter = substr($user->getUserID(), 0, 1);
+      $useridRest = substr($user->getUserID(), 1);
+      $userid = strtoupper($useridFirstLetter) . $useridRest;
+      
+      if(!file_exists('wiki.d/Profiles.' . $userid)){
+            copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $userid);
       }
       
-      $file_contents = file_get_contents('wiki.d/Profiles.' . $firstname . $lastname);
+      $file_contents = file_get_contents('wiki.d/Profiles.' . $userid);
       $file_contents_array = explode("\n", $file_contents);
       for ($index = 0; $index < sizeof($file_contents_array); $index++) {
           if(stripos($file_contents_array[$index], 'author=') !== false){
               $file_contents_array[$index] = 'author=' . $user->getFirstname() . ' ' . $user->getLastname();
           } else if (stripos($file_contents_array[$index], 'name=') !== false){
-              $file_contents_array[$index] = 'name=Profiles.' . $firstname . $lastname;
+              $file_contents_array[$index] = 'name=Profiles.' . $userid;
           } else if (stripos($file_contents_array[$index], 'text=') !== false){
               //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
-              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $firstname . $lastname . '/';
+              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $userid . '/';
               if($user->getPicture() != ''){
                     $tempString .= $user->getPicture() . '%0a';
                     copy($c_commsy_path_file . 'var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
@@ -653,7 +663,7 @@ function updateWikiProfileFile($user){
           }
       }
       $file_contents = implode("\n", $file_contents_array);
-      file_put_contents('wiki.d/Profiles.' . $firstname . $lastname, $file_contents);
+      file_put_contents('wiki.d/Profiles.' . $userid, $file_contents);
       chdir($old_dir);
 }
 
@@ -712,6 +722,8 @@ function updateWikiNotificationForUser($user, $all){
 function updateNotificationFile($discussion, $user_array){
     global $c_commsy_path_file;
     global $c_pmwiki_path_file;
+    
+    $discussion = $this->getDiscussionWikiName($discussion);
  
     $old_dir = getcwd();
     chdir($c_pmwiki_path_file);
@@ -742,8 +754,47 @@ function updateNotificationFile($discussion, $user_array){
     chdir($old_dir);
 }
 
+function updateGroupNotificationFiles(){
+    global $c_commsy_path_file;
+    global $c_pmwiki_path_file;
+
+    $directory_handle = @opendir('wiki.d/');
+    if ($directory_handle) {
+        chdir('wiki.d/');
+        if($dir=opendir(getcwd())){
+            while($file=readdir($dir)) {
+                if (!is_dir($file) && $file != "." && $file != ".."){
+                    if(stripos($file, 'FoxNotifyLists.') !== false){
+                        unlink($file);
+                    }
+                }
+            }
+            global $c_commsy_path_file;
+            $old_dir = getcwd();
+            chdir($c_commsy_path_file);
+            $group_manager = $this->_environment->getGroupManager();
+            $group_manager->reset();
+            $group_manager->select();
+            $group_ids = $group_manager->getIDArray();
+            foreach($group_ids as $group_id){
+                $group_manager = $this->_environment->getGroupManager();
+                $group_manager->reset();
+                $group = $group_manager->getItem($group_id);
+                $user_array = $group->getMemberItemList()->to_array();
+                if((stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false) and
+                   (!empty($user_array))){
+                    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
+                    $this->updateNotificationFile($discussion, $user_array);
+                }
+            }
+            chdir($old_dir);
+        }
+        chdir('..');
+    }
+}
+
 function deleteDiscussion($discussion){
-    $discussionChecked = $this->checkDiscussion($discussion);
+    $discussionChecked = $this->getDiscussionWikiName($discussion);
     chdir('wiki.d');
     if($dir=opendir(getcwd())){
         while($file=readdir($dir)) {
@@ -788,7 +839,27 @@ function deleteDiscussionGroup($discussion){
     chdir($old_dir);
 }
 
-function checkDiscussion($discussion){
+function deleteAllDiscussionGroups(){
+    global $c_commsy_path_file;
+    $old_dir = getcwd();
+    chdir($c_commsy_path_file);
+
+    $group_manager = $this->_environment->getGroupManager();
+    $group_manager->reset();
+    $group_manager->select();
+    $group_ids = $group_manager->getIDArray();
+    foreach($group_ids as $group_id){
+        $group_manager->reset();
+        $group = $group_manager->getItem($group_id);
+        if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
+                $group_manager->delete($group_id);
+        }
+    }
+      
+    chdir($old_dir);
+}
+
+function getDiscussionWikiName($discussion){
     $discussionArray = explode (' ', $discussion);
     for ($index = 0; $index < sizeof($discussionArray); $index++) {
         $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
