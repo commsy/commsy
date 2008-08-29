@@ -428,7 +428,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       
       if(!empty($this->_form_post['enable_discussion'])
           and empty($this->_form_post['new_discussion'])
-          and empty($this->_form_post['enable_discussion_discussions[]'])
+          and empty($this->_form_post['enable_discussion_discussions'])
         ) {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
