@@ -10,5 +10,6 @@ $message["WIKI_DISCUSSION_EXISTS_ERROR"]["de"] = "Ein Forum mit diesem Namen exi
 $message["WIKI_DISCUSSION_GROUP_TITLE"]["de"] = "Forum:";
 $message["WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR"]["de"] = "Foren-Benachrichtigung nicht aktiv, die Steuerung der Beachrichtigung über CommSy-Gruppen kann daher nicht ausgewählt werden.";
 $message["WIKI_DISCUSSION_NOT_SELECTED_ERROR"]["de"] = "Foren sind nicht aktiv, die Bachrichtigung kann daher nicht ausgewählt werden.";
+$message["WIKI_DISCUSSION_NO_DISCUSSION_ERROR"]["de"] = "Keine Foren vorhanden";
 $message["WIKI_SAVE_BUTTON"]["de"] = "Wiki anlegen";
 ?>

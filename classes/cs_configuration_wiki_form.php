@@ -393,12 +393,13 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            and !empty($this->_form_post['new_discussion'])
            and isset($discussion_array[0])
          ) {
-        $tempDiscussion = $this->getDiscussionWikiName($this->_form_post['new_discussion']);
+            $wiki_manager = $this->_environment->getWikiManager();
+        $tempDiscussion = $wiki_manager->getDiscussionWikiName($this->_form_post['new_discussion']);
 
         $exists = false;
         
         foreach($discussion_array as $discussion){
-            $discussion = $this->getDiscussionWikiName($discussion);
+            $discussion = $wiki_manager->getDiscussionWikiName($discussion);
         	if ($discussion == $tempDiscussion){
         		$exists = true;
         	}
@@ -424,25 +425,14 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
       }
-   }
-   
-   function getDiscussionWikiName($discussion){
-   	    $discussionArray = explode (' ', $discussion);
-        for ($index = 0; $index < sizeof($discussionArray); $index++) {
-            $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-            $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
-            $first_letter = substr($discussionArray[$index], 0, 1);
-            $rest = substr($discussionArray[$index], 1);
-            $first_letter = strtoupper($first_letter);
-            $discussionArray[$index] = $first_letter . $rest;
-        }
-        $discussion = implode('',$discussionArray);
-        return $discussion;
+      
+      if(!empty($this->_form_post['enable_discussion'])
+          and empty($this->_form_post['new_discussion'])
+          and empty($this->_form_post['enable_discussion_discussions[]'])
+        ) {
+         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
+         $this->_form->setFailure('enable_discussion_notification','');
+      }
    }
 }
 ?>
