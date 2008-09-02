@@ -397,6 +397,7 @@ class cs_wiki_manager extends cs_manager {
                     }
                     
                     if ( $item->WikiEnableDiscussionNotification() == "1" ) {
+                        
                         if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
                             // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
@@ -439,6 +440,7 @@ class cs_wiki_manager extends cs_manager {
                             chdir($tempDir);
                         }
                         $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
+                        $str .= '@include_once("$FarmD/cookbook/foxnotify.php");'.LF;
                     } else {
                         $this->updateGroupNotificationFiles();
                         $this->deleteAllDiscussionGroups();
