@@ -658,7 +658,7 @@ function updateWikiProfileFile($user){
               } else {
                     $tempString .= 'nobody_m.gif%0a';
               }
-              $tempString .= $user->getDescription() . '%0a:)';
+              $tempString .= '%0a:)'; //$user->getDescription() . '%0a:)';
               $file_contents_array[$index] = $tempString;
           }
       }
