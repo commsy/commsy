@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -224,7 +224,7 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$EnableAtomLink = 0;'.LF;
          $str .= '@include_once("$FarmD/cookbook/feedlinks.php");'.LF;
          $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
-//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine ï¿½nderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
          $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary} - ge&auml;ndert von: {\$LastModifiedBy}';".LF.LF;
       }
 
@@ -310,13 +310,13 @@ class cs_wiki_manager extends cs_manager {
                 $titleForForm = $discussion;
 //                $discussionArray = explode (' ', $discussion);
 //                for ($index = 0; $index < sizeof($discussionArray); $index++) {
-//                    $discussionArray[$index] = str_replace("ï¿½", "ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "Ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "Oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "Ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ï¿½", "ss", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
 //                    $first_letter = substr($discussionArray[$index], 0, 1);
 //                    $rest = substr($discussionArray[$index], 1);
 //                    $first_letter = strtoupper($first_letter);
@@ -398,7 +398,7 @@ class cs_wiki_manager extends cs_manager {
                     
                     if ( $item->WikiEnableDiscussionNotification() == "1" ) {
                         if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
-                            // CommSy-Gruppen erstellen, zuordnung erfolgt ï¿½ber diese Gruppen.
+                            // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
                             $this->updateGroupNotificationFiles();
@@ -862,13 +862,13 @@ function deleteAllDiscussionGroups(){
 function getDiscussionWikiName($discussion){
     $discussionArray = explode (' ', $discussion);
     for ($index = 0; $index < sizeof($discussionArray); $index++) {
-        $discussionArray[$index] = str_replace("ï¿½", "ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "Ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "Oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "Ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ï¿½", "ss", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
         $first_letter = substr($discussionArray[$index], 0, 1);
         $rest = substr($discussionArray[$index], 1);
         $first_letter = strtoupper($first_letter);
