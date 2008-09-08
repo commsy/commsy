@@ -31,6 +31,8 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
 
 
    $title = '';
+   $beluga_url = '';
+   $availability = '';
    $author = '';
    $pub_date = '';
    $bib_val = '';
@@ -38,32 +40,42 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
    $table_of_content = '';
    $full_text = '';
    $files = array();
+#   pr($values_array);
    foreach($values_array as $key => $value){
      switch ($value['tag']){
+       case 'beluga_url':
+            $beluga_url = utf8_decode($values_array[$key]['value']);
+            break;
+       case 'availability':
+            $availability = utf8_decode($values_array[$key]['value']);
+            if ($availability == 'none'){
+            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+            }
+            break;
        case 'dc:title':
-            $title = $values_array[$key]['value'];
+            $title = utf8_decode($values_array[$key]['value']);
             break;
        case 'dc:creator':
             if (!empty ($author)){
                 $author .= ', ';
             }
             if (isset($values_array[$key]['value'])){
-               $author = $values_array[$key]['value'];
+               $author .= utf8_decode($values_array[$key]['value']);
             }
             break;
        case 'dcterms:issued':
            if (isset($values_array[$key]['value'])){
-               $pub_date = $values_array[$key]['value'];
+               $pub_date = utf8_decode($values_array[$key]['value']);
            }
            break;
        case 'dcterms:abstract':
             if (isset($values_array[$key]['value'])){
-               $abstract = $values_array[$key]['value'];
+               $abstract = utf8_decode($values_array[$key]['value']);
             }
             break;
        case 'dcterms:tableOfContents':
             if (isset($values_array[$key]['value'])){
-               $table_of_content = $values_array[$key]['value'];
+               $table_of_content = utf8_decode($values_array[$key]['value']);
             }
             break;
        case 'dc:identifier':
@@ -78,7 +90,7 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
                         and !strstr($values_array[$key]['value'],'www.')
                         and !strstr($values_array[$key]['value'],'ftp:')
                       ){
-                         $files[]=$values_array[$key]['value'];
+                         $files[]=utf8_decode($values_array[$key]['value']);
                       }
                 }
             }
@@ -86,6 +98,7 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
       }
 
    }
+#   pr($author);exit();
    $file_man = $environment->getFileManager();
    $file_id_array = array();
    foreach ( $files as $file ) {
@@ -104,29 +117,36 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
          switch ($value['tag']){
               case 'dc:contributor':
                  if (isset($values_array[$key]['value'])){
-                    $author = $values_array[$key]['value'];
+                    $author = utf8_decode($values_array[$key]['value']);
                  }
                  break;
               case 'dc:author':
                  if (isset($values_array[$key]['value'])){
-                    $author = $values_array[$key]['value'];
+                    $author = utf8_decode($values_array[$key]['value']);
                  }
                  break;
          }
       }
    }
+
    if (empty($title)){
       $title = getMessage('COMMON_NO_TITLE');
    }
    if (empty($author)){
       $author = getMessage('COMMON_NO_AUTHOR');
    }
-   if ( !empty($table_of_content) ){
-      $abstract = '<span class="ims_key">'.getMessage('COMMON_TABLE_OF_CONTENT').':</span> '.$table_of_content.BR.$abstract;
+   $abstract = '<table>';
+   if (!empty($beluga_url)){
+    $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_LINK').': </td><td>'.$beluga_url.'</td></tr>';
    }
-   if ( !empty($full_text) ){
-      $abstract = '<span class="ims_key">'.getMessage('COMMON_FULL_TEXT').':</span> '.$full_text.BR.$abstract;
-   }
+   $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_AVAILABILITY').': </td><td>'.$availability.'</td></tr>';
+#   if ( !empty($table_of_content) ){
+#      $abstract .= '<span class="ims_key">'.getMessage('COMMON_TABLE_OF_CONTENT').':</span> '.$table_of_content.BR.$abstract;
+#   }
+#   if ( !empty($full_text) ){
+#      $abstract = '<span class="ims_key">'.getMessage('COMMON_FULL_TEXT').':</span> '.$full_text.BR.$abstract;
+#   }
+   $abstract .= '</table>';
    if (!empty($file_id_array)){
       $material_item->setFileIDArray($file_id_array);
    }
@@ -175,14 +195,14 @@ function _getMaterialListByXML($directory){
       xml_parse_into_struct($parser, $data, $values, $tags);
       $material_manager = $environment->getMaterialManager();
       $material_item = $material_manager->getNewItem();
-      $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
       xml_parser_free($parser);
       $proc = new XSLTProcessor;
       $xml = new DOMDocument;
 
-      //Datensätze vernünftig aufbereiten!!!
-      $data = utf8_decode($data);
-      $xml->loadXML(utf8_encode($data));
+      //DatensÃ¤tze vernÃ¼nftig aufbereiten!!!
+#      $data = utf8_decode($data);
+#      $xml->loadXML(utf8_encode($data));
+      $xml->loadXML($data);
       $xsl_filename = '';
       foreach($xsl_file_array as $xsl_file){
          if(strstr($data,$xsl_file)){
@@ -194,7 +214,8 @@ function _getMaterialListByXML($directory){
          $xsl->load(utf8_encode($xsl_directory.$xsl_filename));
          $proc->importStyleSheet($xsl);
          $xml_doc = $proc->transformToXML($xml);
-         $material_item->setBibliographicValues($xml_doc);
+         $material_item->setBibliographicValues(utf8_decode($xml_doc));
+         $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
          $material_item->save();
          unset($material_item);
       }
