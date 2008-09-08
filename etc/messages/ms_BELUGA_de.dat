@@ -1,3 +1,6 @@
 <?php
+$message["BELUGA_AVAILABILITY"]["de"] = "Verfügbarkeit";
 $message["BELUGA_IMPORT_DESCRIPTION"]["de"] = "Hier können Sie direkt in das angeschlossene Recherchesystem wechseln und sich eine Liste zusammenstellen.";
+$message["BELUGA_LINK"]["de"] = "Quelle";
+$message["BELUGA_NO_AVAILABILITY_INFORMATION"]["de"] = "Keine Informationen vorhanden";
 ?>
