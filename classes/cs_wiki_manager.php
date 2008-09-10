@@ -628,32 +628,33 @@ function updateWikiProfileFile($user){
       $old_dir = getcwd();
       chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
       
-//      The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
-//      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
-//      $firstnameRest = substr($user->getFirstname(), 1);
-//      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
-//      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
-//      $lastnameRest = substr($user->getLastname(), 1);
-//      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
+      // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
+      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
+      $firstnameRest = substr($user->getFirstname(), 1);
+      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
+      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
+      $lastnameRest = substr($user->getLastname(), 1);
+      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
+      $name_for_profile = $firstname . $lastname;
       
-      $useridFirstLetter = substr($user->getUserID(), 0, 1);
-      $useridRest = substr($user->getUserID(), 1);
-      $userid = strtoupper($useridFirstLetter) . $useridRest;
+//      $useridFirstLetter = substr($user->getUserID(), 0, 1);
+//      $useridRest = substr($user->getUserID(), 1);
+//      $userid = strtoupper($useridFirstLetter) . $useridRest;
       
-      if(!file_exists('wiki.d/Profiles.' . $userid)){
-            copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $userid);
+      if(!file_exists('wiki.d/Profiles.' . $name_for_profile)){
+            copy($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile','wiki.d/Profiles.' . $name_for_profile);
       }
       
-      $file_contents = file_get_contents('wiki.d/Profiles.' . $userid);
+      $file_contents = file_get_contents('wiki.d/Profiles.' . $name_for_profile);
       $file_contents_array = explode("\n", $file_contents);
       for ($index = 0; $index < sizeof($file_contents_array); $index++) {
           if(stripos($file_contents_array[$index], 'author=') !== false){
-              $file_contents_array[$index] = 'author=' . $user->getFirstname() . ' ' . $user->getLastname();
+              $file_contents_array[$index] = 'author=' . $firstname . ' ' . $lastname;
           } else if (stripos($file_contents_array[$index], 'name=') !== false){
-              $file_contents_array[$index] = 'name=Profiles.' . $userid;
+              $file_contents_array[$index] = 'name=Profiles.' . $name_for_profile;
           } else if (stripos($file_contents_array[$index], 'text=') !== false){
               //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
-              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $userid . '/';
+              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $name_for_profile . '/';
               if($user->getPicture() != ''){
                     $tempString .= $user->getPicture() . '%0a';
                     copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
@@ -665,7 +666,7 @@ function updateWikiProfileFile($user){
           }
       }
       $file_contents = implode("\n", $file_contents_array);
-      file_put_contents('wiki.d/Profiles.' . $userid, $file_contents);
+      file_put_contents('wiki.d/Profiles.' . $name_for_profile, $file_contents);
       chdir($old_dir);
 }
 
@@ -717,6 +718,10 @@ function updateWikiNotificationForUser($user, $all){
         }
     }
     chdir($old_dir);
+}
+
+function updateWikiRemoveUser($user){
+    pr($user);
 }
 
 // Updates the $discussion-notification file. All notifications are removed
@@ -859,6 +864,14 @@ function deleteAllDiscussionGroups(){
     }
       
     chdir($old_dir);
+}
+
+function removeNotification(){
+
+}
+
+function updateNotification($all){
+
 }
 
 function getDiscussionWikiName($discussion){
