@@ -1011,12 +1011,22 @@ class cs_user_item extends cs_item {
       // set old status to current status
       $this->_old_status = $this->getStatus();
       
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
-        $this->updateWikiProfile();
-      }
-      
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
-        $this->updateWikiNotification();
+      if(($this->getStatus() == 2) or ($this->getStatus() == 3)){
+        // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
+        // 2 = normaler Benutzer
+        // 3 = Moderator
+          if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
+            $this->updateWikiProfile();
+          }
+          
+          if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
+            $this->updateWikiNotification();
+          }
+      } else {
+        // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
+        // Notification entsprechend angepasst werden
+        // 0 = gesperrt & geloescht (+ deletion_date)
+        $this->updateWikiRemoveUser();
       }
    }
 
@@ -1680,6 +1690,11 @@ class cs_user_item extends cs_item {
         } else {
             $wiki_manager->updateWikiNotificationForUser($this, true);
         }
+   }
+   
+   public function updateWikiRemoveUser(){
+        $wiki_manager = $this->_environment->getWikiManager();
+        $wiki_manager->updateWikiRemoveUser($this);
    }
 }
 ?>
