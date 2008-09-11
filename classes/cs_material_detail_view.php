@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk Blï¿½ssl, Matthias Finck, Dirk Fust, Franz Grï¿½nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -527,6 +527,26 @@ class cs_material_detail_view extends cs_detail_view {
          }
          $formal_data1[] = $temp_array;
       }
+
+      if ( $item->issetBibTOC() ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('COMMON_TABLE_OF_CONTENT');
+         $temp_array[] = '<a href="'.$item->getBibTOC().'" target="blank">'.chunkText($item->getBibTOC(),60).'</a>';
+         $formal_data1[] = $temp_array;
+      }
+      if ( $item->issetBibURL() ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('BELUGA_LINK');
+         $temp_array[] = '<a href="'.$item->getBibURL().'" target="blank">'.chunkText($item->getBibURL(),60).'</a>';
+         $formal_data1[] = $temp_array;
+      }
+      if ( $item->issetBibAvailibility() ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('BELUGA_AVAILABILITY');
+         $temp_array[] = $item->getBibAvailibility();
+         $formal_data1[] = $temp_array;
+      }
+
 
       // Sections
       $this->_section_list = $item->getSectionList();

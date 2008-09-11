@@ -21,7 +21,7 @@
 
 
 
-function _getMaterialByXMLArray($material_item, $values_array,$directory){
+function _getMaterialByXMLArray($material_item, $values_array,$directory,$citation_style='harvard'){
    global $environment;
    $material_item->setVersionID(0);
    $material_item->setContextID($environment->getCurrentContextID());
@@ -33,13 +33,24 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
    $title = '';
    $beluga_url = '';
    $availability = '';
-   $author = '';
+   $authors_array = array();
+
+/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+   $contributors_array = array();
+   $bib_kind = 'buch';
+   $edition = '';
+   $location = '';
+   $publisher = '';
+/********************************************************************************/
+
+
    $pub_date = '';
    $bib_val = '';
    $abstract = '';
    $table_of_content = '';
    $full_text = '';
    $files = array();
+   $i = 0;
 #   pr($values_array);
    foreach($values_array as $key => $value){
      switch ($value['tag']){
@@ -52,15 +63,35 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
             	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
             }
             break;
+
+
+/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+       case 'dc:contributor':
+            if (isset($values_array[$key]['value'])){
+               $contributors_array[] = utf8_decode($values_array[$key]['value']);
+            }
+            break;
+       case 'dc:type':
+            if (isset($values_array[$key]['attributes']['voc']) and $values_array[$key]['attributes']['voc'] =  'vap:objekttypen'){
+               $bib_kind = utf8_decode($values_array[$key]['value']);
+            }
+            break;
+       case 'dc:publisher':
+            $publisher = utf8_decode($values_array[$key]['value']);
+            if (isset($values_array[$key]['attributes']['Location'])){
+               $location = utf8_decode($values_array[$key]['attributes']['Location']);
+            }
+            break;
+/********************************************************************************/
+
+
+
        case 'dc:title':
             $title = utf8_decode($values_array[$key]['value']);
             break;
        case 'dc:creator':
-            if (!empty ($author)){
-                $author .= ', ';
-            }
-            if (isset($values_array[$key]['value'])){
-               $author .= utf8_decode($values_array[$key]['value']);
+           if (isset($values_array[$key]['value'])){
+               $authors_array[] = utf8_decode($values_array[$key]['value']);
             }
             break;
        case 'dcterms:issued':
@@ -74,31 +105,211 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
             }
             break;
        case 'dcterms:tableOfContents':
-            if (isset($values_array[$key]['value'])){
-               $table_of_content = utf8_decode($values_array[$key]['value']);
-            }
-            break;
-       case 'dc:identifier':
-            if ($value['type'] == 'complete'){
-                if (isset($values_array[$key]['value'])){
-                   if (!empty($full_text)){
-                      $full_text .= ', ';
-                   }
-                   $full_text .= $values_array[$key]['value'];
-                   if (strstr($values_array[$key]['value'],'files/')
-                       and !strstr($values_array[$key]['value'],'http:')
-                        and !strstr($values_array[$key]['value'],'www.')
-                        and !strstr($values_array[$key]['value'],'ftp:')
-                      ){
-                         $files[]=utf8_decode($values_array[$key]['value']);
-                      }
-                }
+            if (isset($values_array[$i+1]['attributes']['url'])){
+               $table_of_content = $values_array[$i+1]['attributes']['url'];
             }
             break;
       }
+      $i++;
 
    }
-#   pr($author);exit();
+
+/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+   $biblio = '';
+   switch ($bib_kind) {
+      case 'Buch':
+      //Harvard-Style:  FAMILY NAME, INITIAL(S). ed. Year. Title. City of publication: Publisher
+      if ($citation_style == 'apa'){
+         if (!isset($authors_array[0])){
+            $authors_array = $contributors_array;
+         }
+         $names = '';
+         $i = 0;
+         foreach ($authors_array as $author_string){
+            $i++;
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = $author_array[0];
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  if (!isset($authors_array[$i])){
+                     $names .= '& ';
+                  }else{
+                     $names .= ', ';
+                  }
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!empty($pub_date)){
+            $biblio .= ' ('.$pub_date.').';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }else{
+         if (!isset($authors_array[0])){
+            $authors_array = $contributors_array;
+         }
+         $names = '';
+         foreach ($authors_array as $author_string){
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = strtoupper($author_array[0]);
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  $names .= ', ';
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!empty($pub_date)){
+            $biblio .= ' '.$pub_date.'.';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }
+      break;
+
+
+
+      default:
+      //Harvard-Style:  FAMILY NAME, INITIAL(S). ed. Year. Title. City of publication: Publisher
+      if ($citation_style == 'apa'){
+         if (!isset($authors_array[0])){
+            $authors_array = $contributors_array;
+         }
+         $names = '';
+         $i = 0;
+         foreach ($authors_array as $author_string){
+            $i++;
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = $author_array[0];
+               foreach($first_name_array as $fname){
+                  if (!empty($fname)){
+                     $firstname .= substr($fname,0,1);
+                     $firstname .= '. ';
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  if (!isset($authors_array[$i])){
+                     $names .= '& ';
+                  }else{
+                     $names .= ', ';
+                  }
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!empty($pub_date)){
+            $biblio .= ' ('.$pub_date.').';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }else{
+         if (!isset($authors_array[0])){
+            $authors_array = $contributors_array;
+         }
+         $names = '';
+         foreach ($authors_array as $author_string){
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = strtoupper($author_array[0]);
+               foreach($first_name_array as $fname){
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '. ';
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  $names .= ', ';
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!empty($pub_date)){
+            $biblio .= ' '.$pub_date.'.';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }
+      break;
+   }
+   $material_item->setBibliographicValues($biblio);
+
+
    $file_man = $environment->getFileManager();
    $file_id_array = array();
    foreach ( $files as $file ) {
@@ -112,21 +323,12 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
       $file_item->save();
       $file_id_array[] = $file_item->getFileID();
    }
-   if (empty($author)){
-      foreach($values_array as $key => $value){
-         switch ($value['tag']){
-              case 'dc:contributor':
-                 if (isset($values_array[$key]['value'])){
-                    $author = utf8_decode($values_array[$key]['value']);
-                 }
-                 break;
-              case 'dc:author':
-                 if (isset($values_array[$key]['value'])){
-                    $author = utf8_decode($values_array[$key]['value']);
-                 }
-                 break;
-         }
-      }
+   $author = '';
+   foreach ($authors_array as $author_string){
+     if (!empty($author)){
+        $author .='; ';
+     }
+     $author .= $author_string;
    }
 
    if (empty($title)){
@@ -135,20 +337,26 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory){
    if (empty($author)){
       $author = getMessage('COMMON_NO_AUTHOR');
    }
-   $abstract = '<table>';
+/*   $abstract = '<table>';
    if (!empty($beluga_url)){
     $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_LINK').': </td><td>'.$beluga_url.'</td></tr>';
    }
    $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_AVAILABILITY').': </td><td>'.$availability.'</td></tr>';
-#   if ( !empty($table_of_content) ){
-#      $abstract .= '<span class="ims_key">'.getMessage('COMMON_TABLE_OF_CONTENT').':</span> '.$table_of_content.BR.$abstract;
-#   }
-#   if ( !empty($full_text) ){
-#      $abstract = '<span class="ims_key">'.getMessage('COMMON_FULL_TEXT').':</span> '.$full_text.BR.$abstract;
-#   }
+   if ( !empty($table_of_content) ){
+      $abstract .= '<tr><td class="ims_key">'.getMessage('COMMON_TABLE_OF_CONTENT').': </td><td>'.$table_of_content.'</td></tr>';
+   }
    $abstract .= '</table>';
    if (!empty($file_id_array)){
       $material_item->setFileIDArray($file_id_array);
+   }*/
+   if (!empty($beluga_url)){
+      $material_item->setBibURL($beluga_url);
+   }
+   if (!empty($availability)){
+      $material_item->setBibAvailibility($availability);
+   }
+   if (!empty($table_of_content)){
+      $material_item->setBibTOC($table_of_content);
    }
    $material_item->setTitle($title);
    $material_item->setAuthor($author);
@@ -199,17 +407,16 @@ function _getMaterialListByXML($directory){
       $proc = new XSLTProcessor;
       $xml = new DOMDocument;
 
-      //Datensätze vernünftig aufbereiten!!!
-#      $data = utf8_decode($data);
-#      $xml->loadXML(utf8_encode($data));
       $xml->loadXML($data);
+
       $xsl_filename = '';
       foreach($xsl_file_array as $xsl_file){
          if(strstr($data,$xsl_file)){
            $xsl_filename = $xsl_file;
         }
       }
-      if (!empty($xsl_filename)){
+//Datensätze über XSLT verarbeiten!!!
+/*       if (!empty($xsl_filename)){
          $xsl = new DOMDocument;
          $xsl->load(utf8_encode($xsl_directory.$xsl_filename));
          $proc->importStyleSheet($xsl);
@@ -219,6 +426,16 @@ function _getMaterialListByXML($directory){
          $material_item->save();
          unset($material_item);
       }
+*/
+    $citation_style = 'harvard';
+    if (strstr($xsl_filename,'apa')){
+       $citation_style = 'apa';
+    }
+    $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory,$citation_style);
+    $material_item->save();
+    unset($material_item);
+
+
    }
 }
 

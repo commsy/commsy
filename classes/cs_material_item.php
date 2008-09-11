@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -116,6 +116,36 @@ class cs_material_item extends cs_item {
     */
    function setBibliographicValues($value){
       $this->_addExtra('BIBLIOGRAPHIC',(string)$value);
+   }
+
+   function setBibAvailibility($value){
+      $this->_addExtra('BIBLAVAILABILITY',(string)$value);
+   }
+   function getBibAvailibility() {
+      return (string) $this->_getExtra('BIBLAVAILABILITY');
+   }
+   function issetBibAvailibility() {
+      return $this->_issetExtra('BIBLAVAILABILITY');
+   }
+
+   function setBibTOC($value){
+      $this->_addExtra('BIBTOC',(string)$value);
+   }
+   function getBibTOC() {
+      return (string) $this->_getExtra('BIBTOC');
+   }
+   function issetBibTOC() {
+      return $this->_issetExtra('BIBTOC');
+   }
+
+   function setBibURL($value){
+      $this->_addExtra('BIBURL',(string)$value);
+   }
+   function getBibURL() {
+      return (string) $this->_getExtra('BIBURL');
+   }
+   function issetBibURL() {
+      return $this->_issetExtra('BIBURL');
    }
 
 
@@ -1165,7 +1195,7 @@ function _copySectionList ($copy_id) {
       // das Datum muss eigentlich so vorliegen jjjjmmtt
       $retour['DC.DATE.CREATION'] = $this->getPublishingDate();
 
-      // hierfür gibt es eigentlich eine definierte Liste im Standard
+      // hierfï¿½r gibt es eigentlich eine definierte Liste im Standard
       $material_type = $this->getLabelItem();
       if (isset($material_type)) {
          $retour['DC.TYPE'] = $material_type->getName();
@@ -1193,7 +1223,7 @@ function _copySectionList ($copy_id) {
       $retour['DC.FORMAT'] = '(SCHEME=IMT) '.$format;
 
       #$retour['DC.Language'] = '';
-      #$retour['DC.Coverage.Spatial'] = ''; //Geografische Gültigkeit
+      #$retour['DC.Coverage.Spatial'] = ''; //Geografische Gï¿½ltigkeit
 
       $keyword_array = $this->getBuzzwordArray();
       if (!empty($keyword_array)) {
@@ -1225,7 +1255,7 @@ function _copySectionList ($copy_id) {
       #$retour['DC.Relation'] = ''; //Angabe einer URL zu einer Ressource, die mit dem Material assiziierbar ist.
 
       // Die folgenden Angaben beziehen sich immer auf die Quelle, in der das Material publiziert wurde.
-      // Dies könnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
+      // Dies kï¿½nnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
       #$retour['DC.Source.Creator'] = '';
       #$retour['DC.Source.Title'] = '';
       #$retour['DC.Source.Volume'] = '';
