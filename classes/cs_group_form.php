@@ -59,6 +59,12 @@ class cs_group_form extends cs_rubric_form {
    */
    var $_public_array = array();
 
+   var $_discussion_notification_array = array();
+   
+   var $_shown_discussion_notification_array = array();
+   
+   var $_session_discussion_notification_array = array();
+
    #############################################
    # FLAG: group rooms
    #############################################
@@ -81,6 +87,10 @@ class cs_group_form extends cs_rubric_form {
     */
    function setSessionMaterialArray ($value) {
       $this->_session_material_array = (array)$value;
+   }
+
+   function setSessionDiscussionNotificationArray ($value) {
+      $this->_session_discussion_notification_array = (array)$value;
    }
 
    /** init data for form, INTERNAL
@@ -180,6 +190,47 @@ class cs_group_form extends cs_rubric_form {
             $this->_exists_group_room = $this->_form_post['group_room_exists'];
          }
       }
+
+      // Foren zuordnen:
+      $context_item = $this->_environment->getCurrentContextItem();
+      $discussion_array = $context_item->getWikiDiscussionArray();
+      
+      $discussion_notification_array = array();
+      $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_DISCUSSION_NOTIFICATION');
+      $temp_array['value'] = '-1';
+      $discussion_notification_array[] = $temp_array;
+      $temp_array['text'] = '--------------------';
+      $temp_array['value'] = 'disabled';
+      $discussion_notification_array[] = $temp_array;
+      
+      foreach ($discussion_array as $discussion) {
+			$temp_array['text'] = $discussion;
+         $temp_array['value'] = $discussion;
+         $discussion_notification_array[] = $temp_array;
+		}
+      
+      $this->_discussion_notification_array = $discussion_notification_array;
+      
+      $discussion_notification_array = array();
+
+      if (!empty($this->_session_discussion_notification_array)) {
+         foreach ( $this->_session_discussion_notification_array as $discussion_notification ) {
+            $temp_array['text'] = $discussion_notification;
+            $temp_array['value'] = $discussion_notification;
+            $discussion_notification_array[] = $temp_array;
+         }
+      } elseif ( isset($this->_item)) {
+         $discussion_notification_array = $this->_item->getDiscussionNotificationArray();
+         if (isset($discussion_notification_array[0])) {
+            foreach ($discussion_notification_array as $discussion_notification) {
+               $temp_array['text'] = $discussion_notification;
+               $temp_array['value'] = $discussion_notification;
+               $discussion_notification_array[] = $temp_array;
+            }
+         }
+      }
+      $this->_shown_discussion_notification_array = $discussion_notification_array;
+
    }
 
    /** create the form, INTERNAL
@@ -223,6 +274,19 @@ class cs_group_form extends cs_rubric_form {
          $this->_form->addCheckbox('deletePicture',getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),getMessage('USER_DEL_PIC_BUTTON'),'');
       }
       $this->_form->addHidden('picture_hidden','');
+
+      // Foren zuordnen:
+      
+      $context_item = $this->_environment->getCurrentContextItem();
+      if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
+         if ( !empty ($this->_shown_discussion_notification_array) ) {
+            $this->_form->addCheckBoxGroup('discussion_notification_list',$this->_shown_discussion_notification_array,'',getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);
+            $this->_form->combine();
+         }
+         $this->_form->addSelect('discussion_notification',$this->_discussion_notification_array,'',getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'', 1, false,true,false,'','','','',16);
+         $this->_form->combine('horizontal');
+         $this->_form->addButton('option',getMessage('PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON'),'','',160);
+      }
 
       #############################################
       # FLAG: group rooms
@@ -279,6 +343,12 @@ class cs_group_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
+      
+      if ( isset($this->_form_post['discussion_notification_list']) ) {
+         $this->_values['discussion_notification_list'] = $this->_form_post['discussion_notification_list'];
+         $this->_shown_discussion_notification_array = $this->_form_post['discussion_notification_list'];
+      }
+      
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
@@ -292,6 +362,9 @@ class cs_group_form extends cs_rubric_form {
 		 }
       } elseif (isset($this->_item)) {
          $this->_values['iid'] = $this->_item->getItemID();
+         $discussion_notification_array = $this->_item->getDiscussionNotificationArray();
+         $this->_values['discussion_notification_list'] = $discussion_notification_array;
+         
          if (!$this->_item->isSystemLabel()) {
             $this->_values['name'] = $this->_item->getName();
          } else {

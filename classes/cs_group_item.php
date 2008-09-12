@@ -84,6 +84,24 @@ class cs_group_item extends cs_label_item {
       return $retour;
    }
 
+   public function setDiscussionNotificationArray ( $value ) {
+      if ( !empty($value) ) {
+         $value = implode('§§', $value);
+         $this->_setExtra('DISCUSSION_NOTIFICATION_ARRAY',(string)$value);
+      } else {
+         $this->_unsetExtra('DISCUSSION_NOTIFICATION_ARRAY');
+      }
+   }
+
+   public function getDiscussionNotificationArray () {
+      $retour = array();
+      if ( $this->_issetExtra('DISCUSSION_NOTIFICATION_ARRAY') ) {
+         $retour = $this->_getExtra('DISCUSSION_NOTIFICATION_ARRAY');
+         $retour = explode('§§', $retour);
+      }
+      return $retour;
+   }   
+
    public function getGroupRoomItem () {
       $retour = NULL;
       if ( $this->_issetGroupRoomItemID() ) {
@@ -255,6 +273,10 @@ class cs_group_item extends cs_label_item {
       # FLAG: group room
       ##########################
 
+      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
+         $this->updateWikiNotification();
+      }
+
       unset($current_user_item);
    }
 
@@ -263,6 +285,11 @@ class cs_group_item extends cs_label_item {
     */
    function saveOnlyItem () {
       $this->save(false);
+   }
+   
+   function updateWikiNotification(){
+      $wiki_manager = $this->_environment->getWikiManager();
+      $wiki_manager->updateNotification();
    }
 }
 ?>

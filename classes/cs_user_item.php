@@ -1685,11 +1685,7 @@ class cs_user_item extends cs_item {
    
    public function updateWikiNotification(){
         $wiki_manager = $this->_environment->getWikiManager();
-        if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() != "-1"){
-            $wiki_manager->updateWikiNotificationForUser($this, false);
-        } else {
-            $wiki_manager->updateWikiNotificationForUser($this, true);
-        }
+        $wiki_manager->updateNotification();
    }
    
    public function updateWikiRemoveUser(){

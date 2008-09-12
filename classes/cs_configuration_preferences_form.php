@@ -832,6 +832,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
         if ( !empty($this->_community_room_array) ) {
       $portal_item = $this->_environment->getCurrentPortalItem();
       $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
+      
       if ($project_room_link_status =='optional'){
          if ( !empty ($this->_shown_community_room_array) ) {
             $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);

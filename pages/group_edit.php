@@ -67,6 +67,7 @@ function cleanup_session ($current_iid) {
    $session->unsetValue($current_iid.'_institution_attach_ids');
    $session->unsetValue($current_iid.'_group_back_module');
    $session->unsetValue($current_iid.'_topic_back_module');
+   $session->unsetValue($current_iid.'_discussion_notification');
 }
 
 // function for page edit
@@ -148,6 +149,28 @@ else {
       // Initialize the form
       $form = new cs_group_form($environment);
 
+      // Foren:
+      if ( isOption($command, getMessage('PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON')) ) {
+         $focus_element_onload = 'discussion_notification';
+         $post_discussion_notification_array = array();
+
+         if ( $session->issetValue($current_iid.'_discussion_notification') ) {
+            $discussion_notification_array = $session->getValue($current_iid.'_discussion_notification');
+         } else {
+            $discussion_notification_array = array();
+         }
+         if ( !empty($_POST['discussion_notification']) and $_POST['discussion_notification']!=-1 and !in_array($_POST['discussion_notification'],$discussion_notification_array) ) {
+            $discussion_notification_array[] = $_POST['discussion_notification'];
+         }
+
+         if ( count($discussion_notification_array) > 0 ) {
+            $session->setValue($current_iid.'_discussion_notification', $discussion_notification_array);
+         } else {
+            $session->unsetValue($current_iid.'_discussion_notification');
+         }
+         $post_discussion_notification_array = $discussion_notification_array; //array_merge($post_discussion_notification_array, $new_discussion_notification_array);
+      }
+
       // Redirect to attach material
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON')) ) {
          attach_redirect(CS_MATERIAL_TYPE, $current_iid);
@@ -209,6 +232,10 @@ else {
             $values = array_merge($_POST,$_FILES);
          } else {
             $values = $_POST;
+         }
+         // Foren:
+         if ( isset($post_discussion_notification_array) AND !empty($post_discussion_notification_array) ) {
+            $values['discussion_notification_list'] = $post_discussion_notification_array;
          }
          $form->setFormPost($values);
       }
@@ -297,6 +324,11 @@ else {
       // Load form data from database
       elseif ( isset($group_item) ) {
          $form->setItem($group_item);
+         // Foren:
+         $discussion_notification_array = $group_item->getDiscussionNotificationArray();
+         if ( isset($discussion_notification_array[0])) {
+            $session->setValue($current_iid.'_discussion_notification', $discussion_notification_array);
+         }
       }
 
       // Create data for a new item
@@ -309,6 +341,10 @@ else {
          trigger_error('group_edit was called in an unknown manner', E_USER_ERROR);
       }
 
+      if ($session->issetValue($current_iid.'_discussion_notification')) {
+         $form->setSessionDiscussionNotificationArray($session->getValue($current_iid.'_discussion_notification'));
+      }
+      
       $form->prepareForm();
       $form->loadValues();
 
@@ -449,6 +485,22 @@ else {
                   $group_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
       }
+      
+            // Foren:
+            $discussion_notification_array = array();
+            if ( isset($_POST['discussion_notification_list']) ) {
+               $discussion_notification_array = $_POST['discussion_notification_list'];
+            }
+            if ( isset($_POST['discussion_notification'])
+                 and !in_array($_POST['discussion_notification'],$discussion_notification_array)
+                 and ($_POST['discussion_notification'] != -1)
+                 and ($_POST['discussion_notification'] != 'disabled')
+               ) {
+               $discussion_notification_array[] = $_POST['discussion_notification'];
+            }
+            
+            $group_item->setDiscussionNotificationArray($discussion_notification_array);
+      
             // Save item
             $group_item->save();
 

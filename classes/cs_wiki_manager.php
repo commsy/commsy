@@ -402,48 +402,49 @@ class cs_wiki_manager extends cs_manager {
                             // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
-                            $this->updateGroupNotificationFiles();
-                            $tempDir = getcwd();
-                            chdir($old_dir);
-                            $group_manager = $this->_environment->getGroupManager();
-                            $group_manager->reset();
-                            $group_manager->select();
-                            $group_list = $group_manager->get();
-                            $group_array = $group_list->to_array();
-                            $group_existing = false;
-                            foreach($group_array as $group){
-                                if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
-                                    $group_existing = true;
-                                }
-                            }
-                            if(!$group_existing){
-                                $new_group = $group_manager->getNewItem();
-                                $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
-                                $currentUser = $this->_environment->getCurrentUser();
-                                $new_group->setCreatorItem($currentUser);
-                                $new_group->save();
-                            }
-                            chdir($tempDir);
+//                            $this->updateGroupNotificationFiles();
+//                            $tempDir = getcwd();
+//                            chdir($old_dir);
+//                            $group_manager = $this->_environment->getGroupManager();
+//                            $group_manager->reset();
+//                            $group_manager->select();
+//                            $group_list = $group_manager->get();
+//                            $group_array = $group_list->to_array();
+//                            $group_existing = false;
+//                            foreach($group_array as $group){
+//                                if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
+//                                    $group_existing = true;
+//                                }
+//                            }
+//                            if(!$group_existing){
+//                                $new_group = $group_manager->getNewItem();
+//                                $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
+//                                $currentUser = $this->_environment->getCurrentUser();
+//                                $new_group->setCreatorItem($currentUser);
+//                                $new_group->save();
+//                            }
+//                            chdir($tempDir);
                             $str .= '$COMMSY_DISCUSSION_NOTIFICATION_GROUPS = "1";'.LF;
                         } else {
-                            $this->deleteAllDiscussionGroups();
-                            $tempDir = getcwd();
-                            chdir($old_dir);
-                            $user_manager = $this->_environment->getUserManager();
-                            $user_manager->reset();
-                            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-                            $user_manager->setUserLimit();
-                            $user_manager->select();
-                            $user_list = $user_manager->get();
-                            $user_array = $user_list->to_array();
-                            $this->updateNotificationFile($discussion, $user_array);
-                            chdir($tempDir);
+//                            $this->deleteAllDiscussionGroups();
+//                            $tempDir = getcwd();
+//                            chdir($old_dir);
+//                            $user_manager = $this->_environment->getUserManager();
+//                            $user_manager->reset();
+//                            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+//                            $user_manager->setUserLimit();
+//                            $user_manager->select();
+//                            $user_list = $user_manager->get();
+//                            $user_array = $user_list->to_array();
+//                            $this->updateNotificationFile($discussion, $user_array);
+//                            chdir($tempDir);
                         }
                         $str .= '$COMMSY_DISCUSSION_NOTIFICATION = "1";'.LF;
                         $str .= '@include_once("$FarmD/cookbook/foxnotify.php");'.LF;
+                        $this->updateNotification();
                     } else {
-                        $this->updateGroupNotificationFiles();
-                        $this->deleteAllDiscussionGroups();
+//                        $this->updateGroupNotificationFiles();
+                        $this->removeNotification();
                     }
                     
                     // Profile der vorhandenen CommSy-Benutzer anlegen
@@ -522,7 +523,7 @@ class cs_wiki_manager extends cs_manager {
          }
       }
       chdir($old_dir);
-      $this->deleteAllDiscussionGroups();
+//      $this->deleteAllDiscussionGroups();
    }
 
 
@@ -675,50 +676,50 @@ function updateWikiProfileFile($user){
 // and the users that have to be updated.
 // if $all == true -> complete notification is active -> all notification-files are updated with all users.
 // if $all == false -> group notification is active -> all notification-files are updated with the group-menbers.
-function updateWikiNotificationForUser($user, $all){
-    global $c_commsy_path_file;
-    $old_dir = getcwd();
-    chdir($c_commsy_path_file);
-    if(!$all){
-        $group_manager = $this->_environment->getGroupManager();
-        $group_manager->reset();
-        $group_manager->select();
-        $group_ids = $group_manager->getIDArray();
-        foreach($group_ids as $group_id){
-            $group_manager = $this->_environment->getGroupManager();
-            $group_manager->reset();
-            $group = $group_manager->getItem($group_id);
-            if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
-                $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
-                $members_array = $group->getMemberItemList()->to_array();
-                $this->updateNotificationFile($discussion, $members_array);
-            }
-        }
-    } else {
-        $user_manager = $this->_environment->getUserManager();
-        $user_manager->reset();
-        $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-        $user_manager->setUserLimit();
-        $user_manager->select();
-        $user_list = $user_manager->get();
-        $user_array = $user_list->to_array();
-        
-        $group_manager = $this->_environment->getGroupManager();
-        $group_manager->reset();
-        $group_manager->select();
-        $group_ids = $group_manager->getIDArray();
-        foreach($group_ids as $group_id){
-            $group_manager = $this->_environment->getGroupManager();
-            $group_manager->reset();
-            $group = $group_manager->getItem($group_id);
-            if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
-                $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
-                $this->updateNotificationFile($discussion, $user_array);
-            }
-        }
-    }
-    chdir($old_dir);
-}
+//function updateWikiNotificationForUser($user, $all){
+//    global $c_commsy_path_file;
+//    $old_dir = getcwd();
+//    chdir($c_commsy_path_file);
+//    if(!$all){
+//        $group_manager = $this->_environment->getGroupManager();
+//        $group_manager->reset();
+//        $group_manager->select();
+//        $group_ids = $group_manager->getIDArray();
+//        foreach($group_ids as $group_id){
+//            $group_manager = $this->_environment->getGroupManager();
+//            $group_manager->reset();
+//            $group = $group_manager->getItem($group_id);
+//            if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
+//                $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
+//                $members_array = $group->getMemberItemList()->to_array();
+//                $this->updateNotificationFile($discussion, $members_array);
+//            }
+//        }
+//    } else {
+//        $user_manager = $this->_environment->getUserManager();
+//        $user_manager->reset();
+//        $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+//        $user_manager->setUserLimit();
+//        $user_manager->select();
+//        $user_list = $user_manager->get();
+//        $user_array = $user_list->to_array();
+//        
+//        $group_manager = $this->_environment->getGroupManager();
+//        $group_manager->reset();
+//        $group_manager->select();
+//        $group_ids = $group_manager->getIDArray();
+//        foreach($group_ids as $group_id){
+//            $group_manager = $this->_environment->getGroupManager();
+//            $group_manager->reset();
+//            $group = $group_manager->getItem($group_id);
+//            if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
+//                $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
+//                $this->updateNotificationFile($discussion, $user_array);
+//            }
+//        }
+//    }
+//    chdir($old_dir);
+//}
 
 function updateWikiRemoveUser($user){
     pr($user);
@@ -761,44 +762,44 @@ function updateNotificationFile($discussion, $user_array){
     chdir($old_dir);
 }
 
-function updateGroupNotificationFiles(){
-    global $c_commsy_path_file;
-    global $c_pmwiki_path_file;
-
-    $directory_handle = @opendir('wiki.d/');
-    if ($directory_handle) {
-        chdir('wiki.d/');
-        if($dir=opendir(getcwd())){
-            while($file=readdir($dir)) {
-                if (!is_dir($file) && $file != "." && $file != ".."){
-                    if(stripos($file, 'FoxNotifyLists.') !== false){
-                        unlink($file);
-                    }
-                }
-            }
-            global $c_commsy_path_file;
-            $old_dir = getcwd();
-            chdir($c_commsy_path_file);
-            $group_manager = $this->_environment->getGroupManager();
-            $group_manager->reset();
-            $group_manager->select();
-            $group_ids = $group_manager->getIDArray();
-            foreach($group_ids as $group_id){
-                $group_manager = $this->_environment->getGroupManager();
-                $group_manager->reset();
-                $group = $group_manager->getItem($group_id);
-                $user_array = $group->getMemberItemList()->to_array();
-                if((stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false) and
-                   (!empty($user_array))){
-                    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
-                    $this->updateNotificationFile($discussion, $user_array);
-                }
-            }
-            chdir($old_dir);
-        }
-        chdir('..');
-    }
-}
+//function updateGroupNotificationFiles(){
+//    global $c_commsy_path_file;
+//    global $c_pmwiki_path_file;
+//
+//    $directory_handle = @opendir('wiki.d/');
+//    if ($directory_handle) {
+//        chdir('wiki.d/');
+//        if($dir=opendir(getcwd())){
+//            while($file=readdir($dir)) {
+//                if (!is_dir($file) && $file != "." && $file != ".."){
+//                    if(stripos($file, 'FoxNotifyLists.') !== false){
+//                        unlink($file);
+//                    }
+//                }
+//            }
+//            global $c_commsy_path_file;
+//            $old_dir = getcwd();
+//            chdir($c_commsy_path_file);
+//            $group_manager = $this->_environment->getGroupManager();
+//            $group_manager->reset();
+//            $group_manager->select();
+//            $group_ids = $group_manager->getIDArray();
+//            foreach($group_ids as $group_id){
+//                $group_manager = $this->_environment->getGroupManager();
+//                $group_manager->reset();
+//                $group = $group_manager->getItem($group_id);
+//                $user_array = $group->getMemberItemList()->to_array();
+//                if((stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false) and
+//                   (!empty($user_array))){
+//                    $discussion = str_replace(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ','',$group->getName());
+//                    $this->updateNotificationFile($discussion, $user_array);
+//                }
+//            }
+//            chdir($old_dir);
+//        }
+//        chdir('..');
+//    }
+//}
 
 function deleteDiscussion($discussion){
     $discussionChecked = $this->getDiscussionWikiName($discussion);
@@ -823,55 +824,122 @@ function deleteDiscussion($discussion){
         $file_forum_contents = implode("\n", $file_forum_contents_array);
         $result = file_put_contents('Site.Forum', $file_forum_contents);
     }
-    $this->deleteDiscussionGroup($discussion);
+    $this->updateNotification();
     chdir('..');
 }
 
-function deleteDiscussionGroup($discussion){
-    global $c_commsy_path_file;
-    $old_dir = getcwd();
-    chdir($c_commsy_path_file);
+//function deleteDiscussionGroup($discussion){
+//    global $c_commsy_path_file;
+//    $old_dir = getcwd();
+//    chdir($c_commsy_path_file);
+//
+//    $group_manager = $this->_environment->getGroupManager();
+//    $group_manager->reset();
+//    $group_manager->select();
+//    $group_ids = $group_manager->getIDArray();
+//    foreach($group_ids as $group_id){
+//        $group_manager->reset();
+//        $group = $group_manager->getItem($group_id);
+//        if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $discussion){
+//            $group_manager->delete($group_id);
+//        }
+//    }
+//    chdir($old_dir);
+//}
 
-    $group_manager = $this->_environment->getGroupManager();
-    $group_manager->reset();
-    $group_manager->select();
-    $group_ids = $group_manager->getIDArray();
-    foreach($group_ids as $group_id){
-        $group_manager->reset();
-        $group = $group_manager->getItem($group_id);
-        if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $discussion){
-            $group_manager->delete($group_id);
-        }
-    }
-    chdir($old_dir);
-}
-
-function deleteAllDiscussionGroups(){
-    global $c_commsy_path_file;
-    $old_dir = getcwd();
-    chdir($c_commsy_path_file);
-
-    $group_manager = $this->_environment->getGroupManager();
-    $group_manager->reset();
-    $group_manager->select();
-    $group_ids = $group_manager->getIDArray();
-    foreach($group_ids as $group_id){
-        $group_manager->reset();
-        $group = $group_manager->getItem($group_id);
-        if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
-                $group_manager->delete($group_id);
-        }
-    }
-      
-    chdir($old_dir);
-}
+//function deleteAllDiscussionGroups(){
+//    global $c_commsy_path_file;
+//    $old_dir = getcwd();
+//    chdir($c_commsy_path_file);
+//
+//    $group_manager = $this->_environment->getGroupManager();
+//    $group_manager->reset();
+//    $group_manager->select();
+//    $group_ids = $group_manager->getIDArray();
+//    foreach($group_ids as $group_id){
+//        $group_manager->reset();
+//        $group = $group_manager->getItem($group_id);
+//        if(stripos($group->getName(), getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ') !== false){
+//                $group_manager->delete($group_id);
+//        }
+//    }
+//      
+//    chdir($old_dir);
+//}
 
 function removeNotification(){
-
+   global $c_commsy_path_file;
+   global $c_pmwiki_path_file;
+   $old_dir = getcwd();
+   chdir($c_commsy_path_file);
+   chdir($c_pmwiki_path_file);
+   $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+    if ($directory_handle) {
+       chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/');
+       if($dir=opendir(getcwd())){
+           while($file=readdir($dir)) {
+               if (!is_dir($file) && $file != "." && $file != ".."){
+                   if(stripos($file, 'FoxNotifyLists.') !== false){
+                       unlink($file);
+                   }
+               }
+           }
+       }
+   }
+   chdir($old_dir);
 }
 
-function updateNotification($all){
-
+function updateNotification(){
+   $this->removeNotification();
+   
+   $context_item = $this->_environment->getCurrentContextItem();
+   
+   global $c_commsy_path_file;
+   $old_dir = getcwd();
+   chdir($c_commsy_path_file);
+   if($context_item->WikiEnableDiscussionNotificationGroups() != "1"){
+      // Alle Foren mit allen Nutzern füllen
+      $discussion_array = $context_item->getWikiDiscussionArray();
+      foreach($discussion_array as $discussion){
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->reset();
+         $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+         $user_manager->setUserLimit();
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $user_array = $user_list->to_array();
+         $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
+      }
+   } else {
+      // Gruppen durchgehen
+      $context_item = $this->_environment->getCurrentContextItem();
+      $discussion_array = $context_item->getWikiDiscussionArray();
+      foreach($discussion_array as $discussion){
+         $group_manager = $this->_environment->getGroupManager();
+         $group_manager->reset();
+         $group_manager->select();
+         $group_ids = $group_manager->getIDArray();
+         $discussion_member = array();
+         foreach($group_ids as $group_id){
+             $group_manager = $this->_environment->getGroupManager();
+             $group_manager->reset();
+             $group = $group_manager->getItem($group_id);
+             $group_discussions = $group->getDiscussionNotificationArray();
+             foreach($group_discussions as $group_discussion){
+               if($group_discussion == $discussion){
+                  $user_array = $group->getMemberItemList()->to_array();
+                  foreach($user_array as $user){
+                     if(!in_array($user, $discussion_member)){
+                        $discussion_member[] = $user;
+                     }
+                  }
+               }
+             }
+         }
+         $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
+      }
+   }
+   chdir($old_dir);
 }
 
 function getDiscussionWikiName($discussion){

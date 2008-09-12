@@ -1,5 +1,6 @@
 <?php
 $message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG zuordnen";
+$message["PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON"]["de"] = "Forum hinzuf&uuml;gen";
 $message["PREFERENCES_AGB"]["de"] = "Nutzungsvereinbarungen";
 $message["PREFERENCES_AGB_DESC"]["de"] = "Eingabe und Konfiguration von Nutzungsvereinbarungen für diesen Raum.";
 $message["PREFERENCES_AGB_NOTE"]["de"] = "Bei Änderungen müssen alle Benutzer die Nutzungsbedingungen erneut akzeptieren!";
@@ -29,6 +30,7 @@ $message["PREFERENCES_DEFAULT_CONFIGURATIONS"]["de"] = "Voreinstellungen für Räu
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS_DESC"]["de"] = "Wählen Sie zwischen Voreinstellungen für Schule, Wirtschaft oder Hochschule.";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS"]["de"] = "Art der Diskussionen";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS_DESC"]["de"] = "Wählen Sie zwischen den unterschiedlichen Diskussions- formen (linear oder verzweigt)";
+$message["PREFERENCES_DISCUSSION_NOTIFICATION"]["de"] = "Wiki-Foren<br/>Benachrichtigung";
 $message["PREFERENCES_HEXACOLOR"]["de"] = "Farbkonfiguration";
 $message["PREFERENCES_HEXACOLOR_DESC"]["de"] = "Hier können Sie die Farben per HTML-HEX-Code oder per Farbauswahl einstellen.";
 $message["PREFERENCES_LISTVIEWS_CONFIGURATION"]["de"] = "Konfiguration der Menüspalten";
@@ -36,6 +38,7 @@ $message["PREFERENCES_LISTVIEWS_CONFIGURATION_DESC"]["de"] = "Hier können Sie di
 $message["PREFERENCES_MAIL_DESC"]["de"] = "Konfiguration der E-Mail-Texte, die über das System verschickt werden.";
 $message["PREFERENCES_MAIL_LINK"]["de"] = "E-Mail-Texte";
 $message["PREFERENCES_NO_COMMUNITY_ROOM"]["de"] = "keine weitere Auswahl";
+$message["PREFERENCES_NO_DISCUSSION_NOTIFICATION"]["de"] = "keine weitere Auswahl";
 $message["PREFERENCES_OPEN_FOR_GUESTS"]["de"] = "Gastzugang";
 $message["PREFERENCES_OPEN_FOR_GUESTS_DESC"]["de"] = "Gästen den Zugang zu diesem Raum gestatten?";
 $message["PREFERENCES_OUTOFSERVICE"]["de"] = "Wartungsarbeiten";
