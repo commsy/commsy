@@ -1,4 +1,4 @@
 <?php
 $message["IMS_PASSWORD_ERROR"]["en"] = "The password phrases you entered are not valid! Please enter valid, identical password phrases.";
-$message["IMS_UPLOAD_DESCRIPTION"]["en"] = "";
+$message["IMS_UPLOAD_DESCRIPTION"]["en"] = "Import a zip-file from an external ressource.";
 ?>

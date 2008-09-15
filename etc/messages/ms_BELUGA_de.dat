@@ -1,6 +1,6 @@
 <?php
 $message["BELUGA_AVAILABILITY"]["de"] = "Verfügbarkeit";
-$message["BELUGA_IMPORT_DESCRIPTION"]["de"] = "Hier können Sie direkt in das angeschlossene Recherchesystem wechseln und sich eine Liste zusammenstellen.";
+$message["BELUGA_IMPORT_DESCRIPTION"]["de"] = "Hier können Sie direkt in den angeschlossene *Katalog der Staats- und Universitätsbibliothek Hamurg* wechseln. Dort können Sie sich eine Liste zu exportierender Einträge zusammenstellen. Danach können Sie direkt ins CommSy zurückspringen und die ausgewählten Einträge werden in dem von Ihnen ausgewählten Format automatisch importiert.";
 $message["BELUGA_LINK"]["de"] = "Quelle";
 $message["BELUGA_NO_AVAILABILITY_INFORMATION"]["de"] = "Keine Informationen vorhanden";
 ?>

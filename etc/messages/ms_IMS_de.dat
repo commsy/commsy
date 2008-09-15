@@ -1,4 +1,4 @@
 <?php
 $message["IMS_PASSWORD_ERROR"]["de"] = "Passworte sind nicht gleich oder leer!";
-$message["IMS_UPLOAD_DESCRIPTION"]["de"] = "Hier können Sie ein lokales IMS-Paket hochladen.";
+$message["IMS_UPLOAD_DESCRIPTION"]["de"] = "Hier können Sie ein lokales IMS-Paket hochladen. Das IMS-Paket muss als ZIP-File vorliegen, dann werden die einzelnen Inhalte dieses Pakets nach dem Hochladen als Materialien importiert.";
 ?>
