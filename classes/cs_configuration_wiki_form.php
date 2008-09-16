@@ -232,18 +232,18 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW'));
       $this->_form->combine();
-      
+
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
-      
+
       if (isset($discussion_array[0])){
         $current_discussions = '<br/>' . getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
       } else {
      	$current_discussions = '<br/>' . getMessage('COMMON_NO_ENTRIES');
       }
-      
+
       $this->_form->addText('wiki_existing_discussions','',$current_discussions);
-      
+
       if (isset($discussion_array[0])){
         $this->_form->combine();
         $first = true;
@@ -376,9 +376,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_values['edit'] = 'edit';
          $this->_values['read'] = '';
          $this->_values['show_login_box'] = '1';
+         $this->_values['wikilink'] = '1';
       }
    }
-   
+
    function _checkValues () {
    	  $context_item = $this->_environment->getCurrentContextItem();
    	  $discussion_array = $context_item->getWikiDiscussionArray();
@@ -397,7 +398,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         $tempDiscussion = $wiki_manager->getDiscussionWikiName($this->_form_post['new_discussion']);
 
         $exists = false;
-        
+
         foreach($discussion_array as $discussion){
             $discussion = $wiki_manager->getDiscussionWikiName($discussion);
         	if ($discussion == $tempDiscussion){
@@ -417,7 +418,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOT_SELECTED_ERROR');
          $this->_form->setFailure('enable_discussion','');
       }
-      
+
       if ( !empty($this->_form_post['enable_discussion'])
            and empty($this->_form_post['enable_discussion_notification'])
            and !empty($this->_form_post['enable_discussion_notification_groups'])
@@ -425,7 +426,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
       }
-      
+
       if(!empty($this->_form_post['enable_discussion'])
           and empty($this->_form_post['new_discussion'])
           and empty($this->_form_post['enable_discussion_discussions'])
