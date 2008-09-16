@@ -2466,7 +2466,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableDiscussionNotification(){
       $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATION','1');
    }
@@ -2474,7 +2474,7 @@ class cs_context_item extends cs_item {
    function unsetWikiEnableDiscussionNotification(){
       $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATION','-1');
    }
-   
+
    function WikiEnableDiscussionNotification(){
       if ( $this->_issetExtra('WIKIENABLEDISCUSSIONNOTIFICATION') ) {
          $retour = $this->_getExtra('WIKIENABLEDISCUSSIONNOTIFICATION');
@@ -2483,7 +2483,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableDiscussionNotificationGroups(){
       $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS','1');
    }
@@ -2491,7 +2491,7 @@ class cs_context_item extends cs_item {
    function unsetWikiEnableDiscussionNotificationGroups(){
       $this->_addExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS','-1');
    }
-   
+
    function WikiEnableDiscussionNotificationGroups(){
       if ( $this->_issetExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS') ) {
          $retour = $this->_getExtra('WIKIENABLEDISCUSSIONNOTIFICATIONGROUPS');
@@ -2509,30 +2509,30 @@ class cs_context_item extends cs_item {
               if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && !stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $new_discussion)) {
                   $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
                   if(!empty($discussion_string)){
-                     $discussion_array = explode("$CSDW$", $discussion_string);
+                     $discussion_array = explode('$CSDW$', $discussion_string);
                   } else {
                      $discussion_array = array();
                   }
                   $discussion_array[] = $new_discussion;
-                  $discussion_string = implode("$CSDW$", $discussion_array);
+                  $discussion_string = implode('$CSDW$', $discussion_array);
                   $this->_addExtra('WIKIDISCUSSIONARRAY',$discussion_string);
                }
             }
          }
    }
-   
+
    function WikiRemoveDiscussion($old_discussion){
       if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $old_discussion)) {
           $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
           if(!empty($discussion_string)){
-             $discussion_array = explode("$CSDW$", $discussion_string);
+             $discussion_array = explode('$CSDW$', $discussion_string);
              $new_discussion_array = array();
               foreach($discussion_array as $discussion){
                 if($discussion != $old_discussion){
                     $new_discussion_array[] = $discussion;
                 }
               }
-              $discussion_string = implode("$CSDW$", $new_discussion_array);
+              $discussion_string = implode('$CSDW$', $new_discussion_array);
           }
           $this->_addExtra('WIKIDISCUSSIONARRAY',$discussion_string);
        }
@@ -2544,7 +2544,7 @@ class cs_context_item extends cs_item {
          } else {
             $discussion_string ='';
          }
-         $discussion_array = explode("$CSDW$", $discussion_string);
+         $discussion_array = explode('$CSDW$', $discussion_string);
          if($discussion_array[0] == ''){
             return false;
          } else {
