@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -31,7 +31,7 @@ $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
 
 // Check access rights
-if ( !$context_item->withIMSContentConnection() ) {
+if ( !$context_item->withMaterialImportLink() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view($environment, true);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED', $context_item->getTitle()));

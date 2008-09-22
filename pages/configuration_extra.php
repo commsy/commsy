@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -83,6 +83,9 @@ else {
          }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_PDA') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_PDA_DESC');
+         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT') {
+            $extra = $_POST['extra'];
+            $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT_DESC');
          } else {
             include_once('functions/error_functions.php');trigger_error('choice of extra lost',E_USER_WARNING);
          }
@@ -101,7 +104,8 @@ else {
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $portal->withWikiFunctions() ) or
-                    ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() )
+                    ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() ) or
+                    ( $extra == 'CHAT_CONFIGURATION_EXTRA_MATERIALIMPORT'    and $portal->withMaterialImportLink() )
                   ) {
                   $values['ROOM_'.$portal->getItemID()] = $portal->getItemID();
               unset($post_vars['ROOM_'.$portal->getItemID()]);
@@ -119,6 +123,7 @@ else {
                           ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
                           ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->withWikiFunctions() ) or
+                          ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
                           ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() )
                   ) {
                         $values['ROOM_'.$room->getItemID()] = $room->getItemID();
@@ -162,6 +167,7 @@ else {
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
                  $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI' or
+                 $_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT' or
                  $_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT'
                ) {
                $extra = $_POST['extra'];
@@ -188,6 +194,8 @@ else {
                         $portal->setWithChatLink();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
                         $portal->setWithPDAView();
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                        $portal->setWithMaterialImport();
                      }
                   } else {
                      if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
@@ -202,6 +210,8 @@ else {
                         $portal->setWithoutChatLink();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
                         $portal->setWithoutPDAView();
+                     }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                        $portal->setWithoutMaterialImport();
                      }
                   }
                   $portal->save();
@@ -222,6 +232,8 @@ else {
                               $room->setWithChatLink();
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
                               $room->setWithPDAView();
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                              $room->setWithMaterialImport();
                            }
                         } else {
                            if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
@@ -236,6 +248,8 @@ else {
                               $room->setWithoutChatLink();
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
                               $room->setWithoutPDAView();
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                              $room->setWithoutMaterialImport();
                            }
                         }
                         $room->save();

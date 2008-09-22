@@ -37,6 +37,7 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
 
 /**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
    $contributors_array = array();
+   $editor_array = array();
    $bib_kind = 'buch';
    $edition = '';
    $location = '';
@@ -50,6 +51,18 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $table_of_content = '';
    $full_text = '';
    $files = array();
+   $jounal_typ = 'article';
+
+   $qualification_type = '';
+   $academic_institution = '';
+   $book_title = '';
+   $start_page = '';
+   $end_page = '';
+   $volume_number = '';
+   $issue_number = '';
+   $number = '';
+   $journal_title = '';
+
    $i = 0;
 #   pr($values_array);
    foreach($values_array as $key => $value){
@@ -71,13 +84,64 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
                $contributors_array[] = utf8_decode($values_array[$key]['value']);
             }
             break;
+       case 'dc:editor':
+            if (isset($values_array[$key]['value'])){
+               $editor_array[] = utf8_decode($values_array[$key]['value']);
+            }
+            break;
        case 'dc:type':
-            if (isset($values_array[$key]['attributes']['voc']) and $values_array[$key]['attributes']['voc'] =  'vap:objekttypen'){
+            if (isset($values_array[$key]['attributes']['voc'])
+                and $values_array[$key]['attributes']['voc'] ==  'vap:objekttypen'
+                and (
+                   $values_array[$key]['value'] == 'Buch'
+                   or $values_array[$key]['value'] == 'Dissertation'
+                   or $values_array[$key]['value'] == 'Zeitschrift'
+                   or $values_array[$key]['value'] == 'Aufsatz'
+                   or $values_array[$key]['value'] == 'Schriftenreihe'
+                )
+            ){
                $bib_kind = utf8_decode($values_array[$key]['value']);
             }
             break;
-       case 'dc:publisher':
-            $publisher = utf8_decode($values_array[$key]['value']);
+       case 'dcterms:bibliographicCitation':
+            if (isset($values_array[$i+1]['attributes']['rfe.jtitle'])){
+               $jounal_typ = 'article';
+               $journal_title = utf8_decode($values_array[$i+1]['attributes']['rfe.jtitle']);
+               $journal_array = explode('.',$journal_title);
+               $journal_title = $journal_array[0];
+
+            }
+            elseif ( isset($values_array[$i+1]['attributes']['rfe.btitle']) ){
+               $jounal_typ = 'chapter';
+               $book_title = utf8_decode($values_array[$i+1]['attributes']['rfe.btitle']);
+               $book_array = explode('.',$book_title);
+               $book_title = $book_array[0];
+               $location = $book_array[1];
+               $location_array = explode('-',$location);
+               $location = $location_array[1];
+               $location_array = explode(':',$location);
+               $location = $location_array[0];
+               $publisher = $location_array[1];
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe.epage'])){
+               $end_page = utf8_decode($values_array[$i+1]['attributes']['rfe.epage']);
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe.spage'])){
+               $start_page = utf8_decode($values_array[$i+1]['attributes']['rfe.spage']);
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe.issue'])){
+               $issue_number = utf8_decode($values_array[$i+1]['attributes']['rfe.issue']);
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe_val_fmt'])){
+               if (strstr($values_array[$i+1]['attributes']['rfe_val_fmt'],'dissertation')){
+                  $qualification_type = 'Dissertation';
+               }
+            }
+            break;
+           case 'dc:publisher':
+            if (isset($values_array[$key]['value'])){
+               $publisher = utf8_decode($values_array[$key]['value']);
+            }
             if (isset($values_array[$key]['attributes']['Location'])){
                $location = utf8_decode($values_array[$key]['attributes']['Location']);
             }
@@ -119,10 +183,120 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    switch ($bib_kind) {
       case 'Buch':
       //Harvard-Style:  FAMILY NAME, INITIAL(S). ed. Year. Title. City of publication: Publisher
+      $with_creator = true;
       if ($citation_style == 'apa'){
          if (!isset($authors_array[0])){
+            $with_creator = false;
             $authors_array = $contributors_array;
          }
+         $names = '';
+         $i = 0;
+         foreach ($authors_array as $author_string){
+            $i++;
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = $author_array[0];
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  if (!isset($authors_array[$i])){
+                     $names .= '& ';
+                  }else{
+                     $names .= ', ';
+                  }
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!$with_creator){
+            $biblio .= ' Hrsg.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' ('.$pub_date.').';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }else{
+         if (!isset($authors_array[0])){
+            $authors_array = $contributors_array;
+            $with_creator = false;
+         }
+         $names = '';
+         foreach ($authors_array as $author_string){
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = strtoupper($author_array[0]);
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  $names .= ', ';
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         if (!$with_creator){
+            $biblio .= ' Hrsg.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' '.$pub_date.'.';
+         }
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }
+      break;
+
+
+
+
+
+      case 'Dissertation':
+      //FAMILY NAME, INITIAL(S). Year. Title. Type of qualification, academic institution
+      $with_creator = true;
+      if ($citation_style == 'apa'){
          $names = '';
          $i = 0;
          foreach ($authors_array as $author_string){
@@ -162,17 +336,15 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
          if (!empty($title)){
             $biblio .= ' _'.$title.'_.';
          }
+         if (!empty($qualification_type)){
+            $biblio .= ' '.$qualification_type;
+         }
          if (!empty($location)){
-            $biblio .= ' '.$location;
+            $biblio .= ', '.$location;
          }
-         if (!empty($publisher)){
-            $biblio .= ': '.$publisher.'.';
-         }
+         $biblio .= '. ';
 
       }else{
-         if (!isset($authors_array[0])){
-            $authors_array = $contributors_array;
-         }
          $names = '';
          foreach ($authors_array as $author_string){
             $name = '';
@@ -206,6 +378,104 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
          if (!empty($title)){
             $biblio .= ' _'.$title.'_.';
          }
+         if (!empty($qualification_type)){
+            $biblio .= ' '.$qualification_type;
+         }
+         if (!empty($location)){
+            $biblio .= ', '.$location;
+         }
+         $biblio .= '. ';
+
+      }
+      break;
+
+      case 'Zeitschrift':
+      //Zeitschrift: "Journal title", Ort: Verlag.
+      $with_creator = true;
+      if ($citation_style == 'apa'){
+         $names = '';
+         $i = 0;
+         foreach ($authors_array as $author_string){
+            $i++;
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = $author_array[0];
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  if (!isset($authors_array[$i])){
+                     $names .= '& ';
+                  }else{
+                     $names .= ', ';
+                  }
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         $biblio .= ' (Zeitschrift).';
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' ('.$pub_date.').';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }else{
+         $names = '';
+         $i = 0;
+         foreach ($authors_array as $author_string){
+            $name = '';
+            $author_array = explode(',',$author_string);
+            $firstname = '';
+            if (isset($author_array[1])){
+               $first_name_array = explode(' ',$author_array[1]);
+               $lastname = strtoupper($author_array[0]);
+               $j = 0;
+               foreach($first_name_array as $fname){
+                  $j++;
+                  if (!empty($fname)){
+                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= '.';
+                     if (isset($first_name_array[$j])){
+                        $firstname .= ' ';
+                     }
+                  }
+               }
+               $name = $lastname.', '.$firstname;
+               if (!empty($names)){
+                  $names .= ', ';
+               }
+               $names .= $name;
+            }
+         }
+         $biblio .= $names;
+         $biblio .= ', Zeitschrift.';
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' '.$pub_date.'.';
+         }
          if (!empty($location)){
             $biblio .= ' '.$location;
          }
@@ -215,6 +485,362 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
 
       }
       break;
+
+      case 'Schriftenreihe':
+      //Schriftenreihe: "Journal title", Ort: Verlag.
+      $with_creator = true;
+      if ($citation_style == 'apa'){
+         $biblio .= 'Schriftenreihe: ';
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' ('.$pub_date.').';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }else{
+         $biblio .= 'Schriftenreihe: ';
+         if (!empty($title)){
+            $biblio .= ' _'.$title.'_.';
+         }
+         if (!empty($pub_date)){
+            $biblio .= ' '.$pub_date.'.';
+         }
+         if (!empty($location)){
+            $biblio .= ' '.$location;
+         }
+         if (!empty($publisher)){
+            $biblio .= ': '.$publisher.'.';
+         }
+
+      }
+      break;
+
+
+
+
+      case 'Aufsatz':
+         if($jounal_typ == 'chapter'){
+      //FAMILY NAME, INITIAL(S). Year. Chapter title. In: Initial(s) FAMILY NAME OF EDITOR(S), ed(s).
+      //Title of book. City of publication: Publisher, Page numbers.
+             //FAMILY NAME, INITIAL(S). Year. Title of article. Journal title. Volume (issue number), page numbers.
+            if ($citation_style == 'apa'){
+               if (!isset($authors_array[0])){
+                  $with_creator = false;
+                  $authors_array = $contributors_array;
+               }
+               $names = '';
+               $i = 0;
+               foreach ($authors_array as $author_string){
+                  $i++;
+                  $name = '';
+                  $author_array = explode(',',$author_string);
+                  $firstname = '';
+                  if (isset($author_array[1])){
+                     $first_name_array = explode(' ',$author_array[1]);
+                     $lastname = $author_array[0];
+                     $j = 0;
+                     foreach($first_name_array as $fname){
+                        $j++;
+                        if (!empty($fname)){
+                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= '.';
+                           if (isset($first_name_array[$j])){
+                              $firstname .= ' ';
+                           }
+                        }
+                     }
+                     $name = $lastname.', '.$firstname;
+                     if (!empty($names)){
+                        if (!isset($authors_array[$i])){
+                           $names .= '& ';
+                        }else{
+                           $names .= ', ';
+                        }
+                     }
+                     $names .= $name;
+                  }
+               }
+               $biblio .= $names;
+
+               if (!empty($pub_date)){
+                  $biblio .= ' ('.$pub_date.').';
+               }
+               if (!empty($title)){
+                  $biblio .= ' '.$title.'.';
+               }
+               $biblio .= ' In';
+               $names = '';
+               $i = 0;
+               if (!isset($editors_array[0])){
+                  $names = ' ';
+               }else{
+                  foreach ($editors_array as $editor_string){
+                     $i++;
+                     $name = '';
+                     $editor_array = explode(',',$editor_string);
+                     $firstname = '';
+                     if (isset($editor_array[1])){
+                        $first_name_array = explode(' ',$editor_array[1]);
+                        $lastname = $editor_array[0];
+                        $j = 0;
+                        foreach($first_name_array as $fname){
+                           $j++;
+                           if (!empty($fname)){
+                              $firstname .= strtoupper(substr($fname,0,1));
+                              $firstname .= '.';
+                              if (isset($first_name_array[$j])){
+                                 $firstname .= ' ';
+                              }
+                           }
+                        }
+                        $name = $lastname.', '.$firstname;
+                        if (!empty($names)){
+                           if (!isset($editors_array[$i])){
+                              $names .= '& ';
+                           }else{
+                              $names .= ', ';
+                           }
+                        }
+                        $names .= $name;
+                     }
+                  }
+                  $biblio .= $names.'(Hrsg)';
+               }
+
+               if (!empty($book_title)){
+                  $biblio .= ' _'.$book_title.'_.';
+               }
+               if (!empty($start_page)){
+                  $biblio .= ', (S.'.$start_page;
+                  if (!empty($end_page)){
+                     $biblio .= ' - '.$end_page.'';
+                  }
+                  $biblio .= ')';
+               }
+               $biblio .= '.';
+               if (!empty($location)){
+                  $biblio .= ' '.$location;
+               }
+               if (!empty($publisher)){
+                  $biblio .= ': '.$publisher.'.';
+               }
+            }else{
+               if (!isset($authors_array[0])){
+                  $authors_array = $contributors_array;
+               }
+               $names = '';
+               foreach ($authors_array as $author_string){
+                  $name = '';
+                  $author_array = explode(',',$author_string);
+                  $firstname = '';
+                  if (isset($author_array[1])){
+                     $first_name_array = explode(' ',$author_array[1]);
+                     $lastname = strtoupper($author_array[0]);
+                     $j = 0;
+                     foreach($first_name_array as $fname){
+                        $j++;
+                        if (!empty($fname)){
+                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= '.';
+                           if (isset($first_name_array[$j])){
+                              $firstname .= ' ';
+                           }
+                        }
+                     }
+                     $name = $lastname.', '.$firstname;
+                     if (!empty($names)){
+                        $names .= ', ';
+                     }
+                     $names .= $name;
+                  }
+               }
+               $biblio .= $names;
+               if (!empty($pub_date)){
+                  $biblio .= ' '.$pub_date.'.';
+               }
+               if (!empty($title)){
+                  $biblio .= ' '.$title.'.';
+               }
+               $biblio .= ' In:';
+               $names = '';
+               if (!isset($editors_array[0])){
+                  $names = ' ';
+               }else{
+                   foreach ($editors_array as $editor_string){
+                      $name = '';
+                      $editor_array = explode(',',$editor_string);
+                      $firstname = '';
+                      if (isset($editor_array[1])){
+                         $first_name_array = explode(' ',$editor_array[1]);
+                         $lastname = strtoupper($editor_array[0]);
+                         $j = 0;
+                         foreach($first_name_array as $fname){
+                            $j++;
+                            if (!empty($fname)){
+                               $firstname .= strtoupper(substr($fname,0,1));
+                               $firstname .= '.';
+                               if (isset($first_name_array[$j])){
+                                  $firstname .= ' ';
+                               }
+                            }
+                         }
+                         $name = $lastname.', '.$firstname;
+                         if (!empty($names)){
+                            $names .= ', ';
+                         }
+                         $names .= $name;
+                      }
+                      $biblio .= $names.', Hrsg.';
+                   }
+               }
+
+               if (!empty($book_title)){
+                  $biblio .= ' _'.$book_title.'_.';
+               }
+               if (!empty($location)){
+                  $biblio .= ' '.$location;
+               }
+               if (!empty($publisher)){
+                  $biblio .= ': '.$publisher;
+               }
+               if (!empty($start_page)){
+                  $biblio .= ', S.'.$start_page;
+                  if (!empty($end_page)){
+                     $biblio .= ' - '.$end_page.'';
+                  }
+               }
+               $biblio .= '.';
+            }
+
+         }else{
+             //FAMILY NAME, INITIAL(S). Year. Title of article. Journal title. Volume (issue number), page numbers.
+            if ($citation_style == 'apa'){
+               if (!isset($authors_array[0])){
+                  $with_creator = false;
+                  $authors_array = $contributors_array;
+               }
+               $names = '';
+               $i = 0;
+               foreach ($authors_array as $author_string){
+                  $i++;
+                  $name = '';
+                  $author_array = explode(',',$author_string);
+                  $firstname = '';
+                  if (isset($author_array[1])){
+                     $first_name_array = explode(' ',$author_array[1]);
+                     $lastname = $author_array[0];
+                     $j = 0;
+                     foreach($first_name_array as $fname){
+                        $j++;
+                        if (!empty($fname)){
+                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= '.';
+                           if (isset($first_name_array[$j])){
+                              $firstname .= ' ';
+                           }
+                        }
+                     }
+                     $name = $lastname.', '.$firstname;
+                     if (!empty($names)){
+                        if (!isset($authors_array[$i])){
+                           $names .= '& ';
+                        }else{
+                           $names .= ', ';
+                        }
+                     }
+                     $names .= $name;
+                  }
+               }
+               $biblio .= $names;
+
+               if (!empty($pub_date)){
+                  $biblio .= ' ('.$pub_date.').';
+               }
+               if (!empty($title)){
+                  $biblio .= ' '.$title.'.';
+               }
+               if (!empty($journal_title)){
+                  $biblio .= ' _'.$journal_title.'_.';
+               }
+               if (!empty($volume_number)){
+                  $biblio .= ' '.$volume_number;
+               }
+               if (!empty($issue_number)){
+                  $biblio .= ' ('.$issue_number.')';
+               }
+               if (!empty($start_page)){
+                  $biblio .= ', '.$start_page;
+                  if (!empty($end_page)){
+                     $biblio .= ' - '.$end_page.'';
+                  }
+               }
+               $biblio .= '.';
+            }else{
+               if (!isset($authors_array[0])){
+                  $authors_array = $contributors_array;
+                  $with_creator = false;
+               }
+               $names = '';
+               foreach ($authors_array as $author_string){
+                  $name = '';
+                  $author_array = explode(',',$author_string);
+                  $firstname = '';
+                  if (isset($author_array[1])){
+                     $first_name_array = explode(' ',$author_array[1]);
+                     $lastname = strtoupper($author_array[0]);
+                     $j = 0;
+                     foreach($first_name_array as $fname){
+                        $j++;
+                        if (!empty($fname)){
+                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= '.';
+                           if (isset($first_name_array[$j])){
+                              $firstname .= ' ';
+                           }
+                        }
+                     }
+                     $name = $lastname.', '.$firstname;
+                     if (!empty($names)){
+                        $names .= ', ';
+                     }
+                     $names .= $name;
+                  }
+               }
+               $biblio .= $names;
+               if (!empty($pub_date)){
+                  $biblio .= ' '.$pub_date.'.';
+               }
+               if (!empty($title)){
+                  $biblio .= ' '.$title.'.';
+               }
+               if (!empty($journal_title)){
+                  $biblio .= ' _'.$journal_title.'_.';
+               }
+               if (!empty($volume_number)){
+                  $biblio .= ' '.$volume_number;
+               }
+               if (!empty($issue_number)){
+                  $biblio .= ' ('.$issue_number.')';
+               }
+               if (!empty($start_page)){
+                  $biblio .= ', S.'.$start_page;
+                  if (!empty($end_page)){
+                     $biblio .= ' - '.$end_page.'';
+                  }
+               }
+               $biblio .= '.';
+            }
+
+         }
+         break;
+
 
 
 
