@@ -63,18 +63,14 @@ class cs_material_ims_import_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
- #     $this->_form->addText('long_description_text',getMessage('MATERIAL_EXPLAIN_UPLOAD'),getMessage('MATERIAL_IMS_UPLOAD_DESCRIPTION').BR);
       if ($this->_environment->withBelugaConnection()){
          $link = $this->_environment->getBelugaConnectionLink();
 
-#         $this->_form->addEmptyLine();
-#         $this->_form->addSubHeadline('ims_link_upload',getMessage('MATERIAL_IMS_UPLOAD_LINK_HEADER'));
-         $this->_form->addText('import',getMessage('MATERIAL_IMS_UPLOADLINK'),'<a style="font-weight:bold;" href="'.$link.'">'.getMessage('MATERIAL_IMS_UPLOADLINK_LINK').'</a>');
+         $this->_form->addText('import',getMessage('MATERIAL_IMS_UPLOADLINK'),'<a style="font-weight:bold;" href="'.$link.'">'.getMessage('MATERIAL_IMS_UPLOAD_LINK_HEADER').'</a>');
          $this->_form->combine('vertical');
          $this->_form->addText('import_description','',getMessage('BELUGA_IMPORT_DESCRIPTION').BR);
+         $this->_form->addEmptyLine();
       }
-      $this->_form->addEmptyLine();
-#      $this->_form->addSubHeadline('ims_zip_upload',getMessage('MATERIAL_IMS_UPLOAD_ZIP_HEADER'));
 
       $this->_form->addImage('ims_upload','',getMessage('MATERIAL_UPLOADFILE'), getMessage('MATERIAL_UPLOADFILE_DESC'),'',false);
       $this->_form->combine('vertical');

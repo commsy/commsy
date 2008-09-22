@@ -1411,7 +1411,11 @@ class cs_project_item extends cs_room_item {
          $mail = new cs_mail();
          $mail->set_to(implode(',',$value));
          $mail->set_from_email($default_sender_address);
-         $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
+         if (isset($current_portal)){
+            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
+         }else{
+            $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+         }
          $mail->set_reply_to_name($current_user->getFullname());
          $mail->set_reply_to_email($current_user->getEmail());
          $mail->set_subject($subject);

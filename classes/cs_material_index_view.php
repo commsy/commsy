@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -135,7 +135,7 @@ class cs_material_index_view extends cs_index_view {
      $params = $this->_environment->getCurrentParameterArray();
      $params['mode']='print';
      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_MATERIAL_TYPE,'index',$params,$this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).BRLF;
-     if ($current_context->withIMSContentConnection()){
+     if ($current_context->withMaterialImportLink() ){
         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_MATERIAL_TYPE,'ims_import','',$this->_translator->getMessage('MATERIAL_IMS_IMPORT')).BRLF;
      }
      $html .= '</div>'.LF;

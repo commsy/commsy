@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -83,6 +83,10 @@ class cs_configuration_extra_form extends cs_rubric_form {
          $this->_array_extra[23]['text']  = getMessage('CONFIGURATION_EXTRA_WIKI');
          $this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_WIKI';
       }
+
+      $this->_array_extra[24]['text']  = getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
+      $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_MATERIALIMPORT';
+
 
       global $c_plugin_array;
       if (isset($c_plugin_array) and !empty($c_plugin_array)) {

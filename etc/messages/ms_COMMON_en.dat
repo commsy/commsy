@@ -386,6 +386,7 @@ $message["COMMON_NONE"]["en"] = "(none)";
 $message["COMMON_NOTHING_ATTACHED"]["en"] = "not linked";
 $message["COMMON_NOT_LINKED"]["en"] = "Not linked";
 $message["COMMON_NO_ANNOTATIONS"]["en"] = "No comments";
+$message["COMMON_NO_AUTHOR"]["en"] = "no author";
 $message["COMMON_NO_BUZZWORDS"]["en"] = "Select tag from list";
 $message["COMMON_NO_CONTACTS"]["en"] = "None available";
 $message["COMMON_NO_CONTACT_MODERATOR"]["en"] = "No contact person defined";

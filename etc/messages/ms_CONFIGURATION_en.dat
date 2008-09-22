@@ -69,6 +69,9 @@ $message["CONFIGURATION_EXTRA_GROUPROOM"]["en"] = "group workspaces";
 $message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["en"] = "This enables the group workspace feature (2nd level, user-moderated workspaces). On order to actually use group workspaces in a project workspace, the moderator has to enable the feature in his or her workspace settings.
 <br/><br/>
 Once activated, all moderators in the CommSy portal will be able to enable group workspaces in their project workspaces.";
+$message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["en"] = "Import materials automatically";
+$message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["en"] = "This option include an import form in materials.
+With this webform you can directly import data into your CommSy workspace through the standard content format IMS. This format is XML-based and principally serves as a standard exchange format for e-learning contents. The format design was created by the IMS Global Learning Consortium.";
 $message["CONFIGURATION_EXTRA_PDA"]["en"] = "PDA export";
 $message["CONFIGURATION_EXTRA_PDA_DESC"]["en"] = "Using this option you con download material items formatted in pda style.";
 $message["CONFIGURATION_EXTRA_SPONSORING"]["en"] = "Sponsoring / advertisement";

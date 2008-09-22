@@ -971,10 +971,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Projektraums';
                $retour['DE']['AKKS']= 'Projektraum';
                $retour['DE']['DATS']= 'Projektraum';
-               $retour['DE']['NOMPL']= 'Projekträume';
-               $retour['DE']['GENPL']= 'Projekträume';
-               $retour['DE']['AKKPL']= 'Projekträume';
-               $retour['DE']['DATPL']= 'Projekträumen';
+               $retour['DE']['NOMPL']= 'Projektrï¿½ume';
+               $retour['DE']['GENPL']= 'Projektrï¿½ume';
+               $retour['DE']['AKKPL']= 'Projektrï¿½ume';
+               $retour['DE']['DATPL']= 'Projektrï¿½umen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'project workspace';
                $retour['EN']['GENS']= 'project workspace';
@@ -1000,10 +1000,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Gemeinschaftsraums';
                $retour['DE']['AKKS']= 'Gemeinschaftsraum';
                $retour['DE']['DATS']= 'Gemeinschaftsraum';
-               $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-               $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-               $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-               $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+               $retour['DE']['NOMPL']= 'Gemeinschaftsrï¿½ume';
+               $retour['DE']['GENPL']= 'Gemeinschaftsrï¿½ume';
+               $retour['DE']['AKKPL']= 'Gemeinschaftsrï¿½ume';
+               $retour['DE']['DATPL']= 'Gemeinschaftsrï¿½umen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'community workspace';
                $retour['EN']['GENS']= 'community workspace';
@@ -2727,6 +2727,31 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+
+
+   function withMaterialImportLink () {
+      $retour = false;
+      $value = $this->_getExtraConfig('MATERIALIMPORT');
+      if ($value == 1) {
+         $retour = true;
+      } elseif ($this->isProjectRoom() or $this->isCommunityRoom()) {
+         $portal_room = $this->getContextItem();
+         if ( $portal_room->withMaterialImportLink() ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setWithMaterialImport () {
+      $this->_setExtraConfig('MATERIALIMPORT',1);
+   }
+
+   function setWithoutMaterialImport () {
+      $this->_setExtraConfig('MATERIALIMPORT',0);
+   }
+
+
 
    ##########################################
    # Chat
