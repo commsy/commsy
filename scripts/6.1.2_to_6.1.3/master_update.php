@@ -30,6 +30,7 @@ include_once('../db_link.dbi.php');
 include_once('../update_functions.php');
 
 // select scripts automatically
+$scripts = array();
 $directory = '.';
 $directory_handle  = opendir($directory);
 while(false !== ($entry = readdir($directory_handle))) {
