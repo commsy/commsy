@@ -507,6 +507,23 @@ class cs_item {
 
    }
 
+   function isNotActivated(){
+   	$date = $this->getModificationDate();
+      if ( $date > date("Y-m-d h:i:s",time()) ) {
+        return true;
+      }else{
+      	return false;
+      }
+   }
+
+   function getActivatingDate(){
+   	$retour = '';
+      if ($this->isNotactivated()){
+      	$retour = $this->getModificationDate();
+      }
+      return $retour;
+   }
+
    /** set deletion date
     * this method sets the deletion date of the item
     *

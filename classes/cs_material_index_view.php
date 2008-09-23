@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
 //
 //    This file is part of CommSy.
 //
@@ -100,6 +100,7 @@ class cs_material_index_view extends cs_index_view {
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
 
+
 /*      global $c_ftsearch_indexing;
       if ($c_ftsearch_indexing){
          $html .= '      <option value="3"';
@@ -110,8 +111,44 @@ class cs_material_index_view extends cs_index_view {
       }*/
       $html .= '   </select>'.LF;
       $html .='</div>';
+      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '      <option value="1"';
+      if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '      <option value="2"';
+      if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+          $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+      $html .= '   </select>'.LF;
+      $html .='</div>';
       return $html;
    }
+
+
+   function getAdditionalRestrictionTextAsHTML(){
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+         $this->_additional_selects = true;
+         $html_text ='<div class="restriction">';
+         $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').':</span> ';
+         $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         $new_params['selactivatingstatus'] = 1;
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</div>';
+         $html .= $html_text;
+      }
+      return $html;
+   }
+
+
 
 
    function _getListActionsAsHTML () {
@@ -342,7 +379,10 @@ class cs_material_index_view extends cs_index_view {
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
         $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         if ( isset($checked_ids)
+/***Activating Code***/
+         if($item->isNotActivated()){
+            $html .= ' disabled="disabled"'.LF;
+         }elseif ( isset($checked_ids)
               and !empty($checked_ids)
               and in_array($key, $checked_ids)
             ) {
@@ -351,43 +391,46 @@ class cs_material_index_view extends cs_index_view {
                $html .= ' disabled="disabled"'.LF;
             }
          }
+/*********************/
          $html .= '/>'.LF;
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         if($with_links) {
-            $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
-         } else {
+/***Activating Code***/
+         if ($item->isNotActivated()){
             $title = $this->_text_as_html_short($item->getTitle());
+            $user = $this->_environment->getCurrentUser();
+            if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                                  CS_MATERIAL_TYPE,
+                                  'detail',
+                                  $params,
+                                  $this->_text_as_html_short($title),
+                                  '','', '', '', '', '', '', '',
+                                  CS_MATERIAL_TYPE.$item->getItemID());
+               unset($params);
+            }
+            $title .= BR.getMessage('COMMON_ACTIVATING_DATE').': '.getDateInLang($item->getActivatingDate());
+            $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
+         }else{
+             if($with_links) {
+                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+             } else {
+                $title = $this->_text_as_html_short($item->getTitle());
+                $html .= '      <td '.$style.'>'.$title.LF;
+             }
          }
-#         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
+/*********************/
       }else{
-         if($with_links) {
-            $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).LF;
-         } else {
-            $title = $this->_text_as_html_short($item->getTitle());
-            $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
-         }
-#         $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
+            if($with_links) {
+               $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).LF;
+            } else {
+               $title = $this->_text_as_html_short($item->getTitle());
+               $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
+            }
       }
-
-#      $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-#      $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-#      if ( in_array($key, $checked_ids) ) {
-#         $html .= ' checked="checked"'.LF;
-#         if ( in_array($key, $dontedit_ids) ) {
-#            $html .= ' disabled="disabled"'.LF;
-#         }
-#      }
-#      $html .= '/>'.LF;
-#      $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
-#      $html .= '      </td>'.LF;
-#      if($with_links) {
-#         $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
-#      } else {
-#		   $title = $this->_text_as_html_short($item->getTitle());
-#         $html .= '      <td '.$style.'>'.$title.LF;
-#      }
       $html .= '          '.$this->_getItemFiles($item, $with_links).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemAuthor($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;

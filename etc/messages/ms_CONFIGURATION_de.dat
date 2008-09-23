@@ -69,6 +69,12 @@ $message["CONFIGURATION_EXTRA_GROUPROOM"]["de"] = "Gruppenräume";
 $message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["de"] = "Mit dieser Funktion stehen in Projekträumen Gruppenräume zur Verfügung. Zur Nutzung müssen die Gruppenräume im Raum noch von den jeweiligen Raummoderatoren aktiviert werden.
 <br/><br/>
 Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
+$message["CONFIGURATION_EXTRA_PDA"]["de"] = "PDA-Export";
+$message["CONFIGURATION_EXTRA_PDA_DESC"]["de"] = "Mit dieser Option lassen sich einzelne Materialien in PDA-Format als ZIP-File herunterladen.";
+$message["CONFIGURATION_EXTRA_SPONSORING"]["de"] = "Sponsoring / Werbung";
+$message["CONFIGURATION_EXTRA_SPONSORING_DESC"]["de"] = "Die Auswahl des Extras Sponsoring bedeutet, dass in diesem Raum Sponsoren konfiguriert (eingestellt) werden können und dass die Sponsoreneinstellungen aus dem übergeordneten Raum nicht übernommen werden.";
+$message["CONFIGURATION_EXTRA_WIKI"]["de"] = "Raum-Wiki";
+Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["de"] = "Automatischer Materialimport";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["de"] = "Über diese Einstellung wird ein Formular in die Rubrik Materialien eingebunden. Über dieses Formular lassen sich externe Inhalte über ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat für E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
 $message["CONFIGURATION_EXTRA_PDA"]["de"] = "PDA-Export";

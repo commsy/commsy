@@ -92,6 +92,8 @@ class cs_manager {
    var $_existence_limit = NULL;
    var $_age_limit = NULL;
 
+   var $_show_not_activated_entries_limit = true;
+
    var $_update_with_changing_modification_information = true;
 
    var $_db_table = NULL;
@@ -175,6 +177,7 @@ class cs_manager {
      $this->_output_limit = '';
      $this->_only_files_limit = NULL;
      $this->_room_array_limit = NULL;
+     $this->_show_not_activated_entries_limit = true;
   }
 
   /** reset data
@@ -183,6 +186,10 @@ class cs_manager {
   function resetData () {
      $this->_data = NULL;
      $this->_id_array = NULL;
+  }
+
+  function showNoNotActivatedEntries(){
+     $this->_show_not_activated_entries_limit = false;
   }
 
    function setBuzzwordLimit ($limit) {

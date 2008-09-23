@@ -127,6 +127,7 @@ class cs_index_view extends cs_view {
    var $_count_headlines = 0;
    var $_additional_selects = false;
    var $_attribute_limit = Null;
+   var $_activation_limit = 2;
 
    var $_colspan = 4;
 
@@ -197,6 +198,10 @@ class cs_index_view extends cs_view {
 
    function setColspan($span){
       $this->_colspan = $span;
+   }
+
+   function setActivationLimit($limit){
+   	$this->_activation_limit = $limit;
    }
 
    // @segment-begin 91360  setFrom($from)/getFrom()-beginning-counter-of-list
@@ -1118,6 +1123,8 @@ EOD;
        or isset($params['selinstitution'])
        or isset($params['seltopic'])
        or isset($params['search'])
+       or isset($params['selactivatingstatus'])
+       or isset($this->_activation_limit)
        or (!empty($ref_user) and isset($params['mode']) and $params['mode'] == 'attached')
        or (!empty($ref_iid) and isset($params['mode']) and $params['mode'] == 'attached')
        or $this->_additional_selects
@@ -1520,6 +1527,7 @@ EOD;
                       (isset($parameter_array['selgroup']) and $parameter_array['selgroup']!='0') or
                       (isset($parameter_array['selinstitution']) and $parameter_array['selinstitution']!='0') or
                       (isset($parameter_array['seltopic']) and $parameter_array['seltopic']!='0') or
+                      (isset($parameter_array['selactivatingstatus']) and $parameter_array['selactivatingstatus']!='0') or
                       (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
                    )
                 ){

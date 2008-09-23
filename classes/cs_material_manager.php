@@ -590,9 +590,18 @@ class cs_material_manager extends cs_manager {
       //      $query .= ' AND (" OR section.room_id IS NULL)';
       //   }
       //}
+
       if ($this->_delete_limit == true) {
          $query .= ' AND materials.deletion_date IS NULL';
       }
+
+
+/***Activating Code***/
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (materials.modification_date IS NULL OR materials.modification_date < NOW())';
+      }
+/*********************/
+
       if (isset($this->_ref_user_limit)) {
          $query .= ' AND (materials.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
       }

@@ -129,10 +129,12 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $seltopic = '';
       $last_selected_tag = '';
       $seltag_array = array();
+      $sel_activating_status = '';
    } else {
       $seltopic = '';
       $selinstitution = '';
       $last_selected_tag = '';
+      $sel_activating_status = '';
       $seltag_array = array();
    }
 
@@ -169,6 +171,17 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    } else {
       $selbuzzword = 0;
    }
+
+
+/***Activating Code***/
+   // Find current sel_activating_status selection
+   if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+      $sel_activating_status = $_GET['selactivatingstatus'];
+   } else {
+      $sel_activating_status = 2;
+   }
+/*********************/
+
 
    if ( $context_item->isProjectRoom() ) {
 
@@ -391,6 +404,14 @@ if ( !empty($ref_user) and $mode == 'attached' ){
 if ( !empty($sort) ) {
    $material_manager->setOrder($sort);
 }
+
+/***Activating Code***/
+if ( $sel_activating_status == 2 ) {
+   $material_manager->showNoNotActivatedEntries();
+}
+/*********************/
+
+
 if ( !empty($search) ) {
    $material_manager->setSearchLimit($search);
 }
@@ -533,6 +554,12 @@ $view->setCountAllShown($count_all_shown);
 $view->setCountAll($count_all);
 $view->setFrom($from);
 $view->setInterval($interval);
+
+/***Activating Code***/
+$view->setActivationLimit($sel_activating_status);
+/********************/
+
+
 $view->setSortKey($sort);
 $view->setSearchText($search);
 $view->setAttributeLimit($attribute_limit);
