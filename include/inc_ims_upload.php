@@ -42,6 +42,8 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $edition = '';
    $location = '';
    $publisher = '';
+   $jounal_location = '';
+   $jounal_publisher = '';
 /********************************************************************************/
 
 
@@ -62,6 +64,8 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $issue_number = '';
    $number = '';
    $journal_title = '';
+   $is_diss = false;
+   $is_electronic_publication = false;
 
    $i = 0;
 #   pr($values_array);
@@ -78,15 +82,25 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
             break;
 
 
-/**Daten fÃ¼r die Bibliografischen Angaben: werden spÃ¤ter durch das xslt ersetzt**/
+/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
        case 'dc:contributor':
             if (isset($values_array[$key]['value'])){
                $contributors_array[] = utf8_decode($values_array[$key]['value']);
             }
             break;
+       case 'dc:medium':
+            if (isset($values_array[$key]['value']) and $values_array[$key]['value'] == 'Elektronische Publikation'){
+               $is_electronic_publication = true;
+            }
+            break;
        case 'dc:editor':
             if (isset($values_array[$key]['value'])){
                $editor_array[] = utf8_decode($values_array[$key]['value']);
+            }
+            break;
+       case 'dcterms:descritpion':
+            if ( isset($values_array[$key]['attributes']['art']) and  $values_array[$key]['attributes']['art'] ==  'HSS'){
+               $is_diss = true;
             }
             break;
        case 'dc:type':
@@ -100,28 +114,17 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
                    or $values_array[$key]['value'] == 'Schriftenreihe'
                 )
             ){
-               $bib_kind = utf8_decode($values_array[$key]['value']);
+                $bib_kind = utf8_decode($values_array[$key]['value']);
             }
             break;
        case 'dcterms:bibliographicCitation':
             if (isset($values_array[$i+1]['attributes']['rfe.jtitle'])){
                $jounal_typ = 'article';
                $journal_title = utf8_decode($values_array[$i+1]['attributes']['rfe.jtitle']);
-               $journal_array = explode('.',$journal_title);
-               $journal_title = $journal_array[0];
-
             }
             elseif ( isset($values_array[$i+1]['attributes']['rfe.btitle']) ){
                $jounal_typ = 'chapter';
                $book_title = utf8_decode($values_array[$i+1]['attributes']['rfe.btitle']);
-               $book_array = explode('.',$book_title);
-               $book_title = $book_array[0];
-               $location = $book_array[1];
-               $location_array = explode('-',$location);
-               $location = $location_array[1];
-               $location_array = explode(':',$location);
-               $location = $location_array[0];
-               $publisher = $location_array[1];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.epage'])){
                $end_page = utf8_decode($values_array[$i+1]['attributes']['rfe.epage']);
@@ -131,6 +134,12 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
             }
             if (isset($values_array[$i+1]['attributes']['rfe.issue'])){
                $issue_number = utf8_decode($values_array[$i+1]['attributes']['rfe.issue']);
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe.publisher'])){
+               $jounal_publisher = utf8_decode($values_array[$i+1]['attributes']['rfe.publisher']);
+            }
+            if (isset($values_array[$i+1]['attributes']['rfe.location'])){
+               $jounal_location = utf8_decode($values_array[$i+1]['attributes']['rfe.location']);
             }
             if (isset($values_array[$i+1]['attributes']['rfe_val_fmt'])){
                if (strstr($values_array[$i+1]['attributes']['rfe_val_fmt'],'dissertation')){
@@ -177,8 +186,12 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
       $i++;
 
    }
+   if($is_diss){
+   	$bib_kind = Dissertation;
+   }
 
-/**Daten fÃ¼r die Bibliografischen Angaben: werden spÃ¤ter durch das xslt ersetzt**/
+
+/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
    $biblio = '';
    switch ($bib_kind) {
       case 'Buch':
@@ -288,9 +301,6 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
 
       }
       break;
-
-
-
 
 
       case 'Dissertation':
@@ -575,7 +585,7 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
                if (!empty($title)){
                   $biblio .= ' '.$title.'.';
                }
-               $biblio .= ' In';
+               $biblio .= ' In:';
                $names = '';
                $i = 0;
                if (!isset($editors_array[0])){
@@ -625,11 +635,11 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
                   $biblio .= ')';
                }
                $biblio .= '.';
-               if (!empty($location)){
-                  $biblio .= ' '.$location;
+               if (!empty($jounal_location)){
+                  $biblio .= ' '.$jounal_location;
                }
-               if (!empty($publisher)){
-                  $biblio .= ': '.$publisher.'.';
+               if (!empty($jounal_publisher)){
+                  $biblio .= ': '.$jounal_publisher.'.';
                }
             }else{
                if (!isset($authors_array[0])){
@@ -704,11 +714,11 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
                if (!empty($book_title)){
                   $biblio .= ' _'.$book_title.'_.';
                }
-               if (!empty($location)){
-                  $biblio .= ' '.$location;
+               if (!empty($jounal_location)){
+                  $biblio .= ' '.$jounal_location;
                }
-               if (!empty($publisher)){
-                  $biblio .= ': '.$publisher;
+               if (!empty($jounal_publisher)){
+                  $biblio .= ': '.$jounal_publisher;
                }
                if (!empty($start_page)){
                   $biblio .= ', S.'.$start_page;
@@ -933,6 +943,12 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
       }
       break;
    }
+
+
+   if ($is_electronic_publication){
+//TBD
+   }
+
    $material_item->setBibliographicValues($biblio);
 
 
