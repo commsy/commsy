@@ -509,7 +509,7 @@ class cs_item {
 
    function isNotActivated(){
    	$date = $this->getModificationDate();
-      if ( $date > date("Y-m-d h:i:s",time()) ) {
+      if ( $date > getCurrentDateTimeInMySQL() ) {
         return true;
       }else{
       	return false;
