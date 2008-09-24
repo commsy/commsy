@@ -86,6 +86,9 @@ else {
          }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT_DESC');
+         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT') {
+            $extra = $_POST['extra'];
+            $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC');
          } else {
             include_once('functions/error_functions.php');trigger_error('choice of extra lost',E_USER_WARNING);
          }
@@ -105,7 +108,8 @@ else {
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $portal->withWikiFunctions() ) or
                     ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $portal->withChatLink() ) or
-                    ( $extra == 'CHAT_CONFIGURATION_EXTRA_MATERIALIMPORT'    and $portal->withMaterialImportLink() )
+                    ( $extra == 'CHAT_CONFIGURATION_EXTRA_MATERIALIMPORT'    and $portal->withMaterialImportLink() ) or
+                    ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $portal->withActivatingContent() )
                   ) {
                   $values['ROOM_'.$portal->getItemID()] = $portal->getItemID();
               unset($post_vars['ROOM_'.$portal->getItemID()]);
@@ -124,7 +128,8 @@ else {
                           ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->withWikiFunctions() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
-                          ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() )
+                          ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() ) or
+                          ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $room->withActivatingContent() )
                   ) {
                         $values['ROOM_'.$room->getItemID()] = $room->getItemID();
              unset($post_vars['ROOM_'.$room->getItemID()]);
@@ -168,7 +173,8 @@ else {
                  $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT' or
-                 $_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT'
+                 $_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT' or
+                 $_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'
                ) {
                $extra = $_POST['extra'];
             } else {
@@ -196,6 +202,8 @@ else {
                         $portal->setWithPDAView();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
                         $portal->setWithMaterialImport();
+                     }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                        $portal->setWithActivatingContent();
                      }
                   } else {
                      if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
@@ -212,6 +220,8 @@ else {
                         $portal->setWithoutPDAView();
                      }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
                         $portal->setWithoutMaterialImport();
+                     }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                        $portal->setWithoutActivatingContent();
                      }
                   }
                   $portal->save();
@@ -234,6 +244,8 @@ else {
                               $room->setWithPDAView();
                            }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
                               $room->setWithMaterialImport();
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                              $room->setWithActivatingContent();
                            }
                         } else {
                            if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
@@ -250,6 +262,8 @@ else {
                               $room->setWithoutPDAView();
                            }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
                               $room->setWithoutMaterialImport();
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                              $room->setWithoutActivatingContent();
                            }
                         }
                         $room->save();

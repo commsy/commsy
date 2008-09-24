@@ -111,26 +111,30 @@ class cs_material_index_view extends cs_index_view {
       }*/
       $html .= '   </select>'.LF;
       $html .='</div>';
-/*      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
-      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-      $html .= '      <option value="1"';
-      if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
-         $html .= ' selected="selected"';
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+          $html .= '      <option value="1"';
+          if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+             $html .= ' selected="selected"';
+          }
+          $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+          $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+          $html .= '      <option value="2"';
+          if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+              $html .= ' selected="selected"';
+          }
+          $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+          $html .= '   </select>'.LF;
+          $html .='</div>';
       }
-      $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
-      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
-      $html .= '      <option value="2"';
-      if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
-          $html .= ' selected="selected"';
-      }
-      $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
-      $html .= '   </select>'.LF;
-      $html .='</div>';*/
       return $html;
    }
 
 
-/*   function getAdditionalRestrictionTextAsHTML(){
+   function getAdditionalRestrictionTextAsHTML(){
+/***Activating Code***/
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
       if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
@@ -145,8 +149,14 @@ class cs_material_index_view extends cs_index_view {
          $html_text .='</div>';
          $html .= $html_text;
       }
-      return $html;
-   }*/
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+         return $html;
+      }else{
+      	return '';
+      }
+/*********************/
+   }
 
 
 

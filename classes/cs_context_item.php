@@ -2751,6 +2751,28 @@ class cs_context_item extends cs_item {
       $this->_setExtraConfig('MATERIALIMPORT',0);
    }
 
+   function withActivatingContent () {
+      $retour = false;
+      $value = $this->_getExtraConfig('ACTIVATINGCONTENT');
+      if ($value == 1) {
+         $retour = true;
+      } elseif ($this->isProjectRoom() or $this->isCommunityRoom()) {
+         $portal_room = $this->getContextItem();
+         if ( $portal_room->withActivatingContent() ) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setWithActivatingContent () {
+      $this->_setExtraConfig('ACTIVATINGCONTENT',1);
+   }
+
+   function setWithoutActivatingContent () {
+      $this->_setExtraConfig('ACTIVATINGCONTENT',0);
+   }
+
 
 
    ##########################################

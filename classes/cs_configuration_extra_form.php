@@ -86,6 +86,8 @@ class cs_configuration_extra_form extends cs_rubric_form {
 
       $this->_array_extra[24]['text']  = getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
       $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_MATERIALIMPORT';
+      $this->_array_extra[25]['text']  = getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT');
+      $this->_array_extra[25]['value'] = 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT';
 
 
       global $c_plugin_array;
