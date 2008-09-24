@@ -225,24 +225,21 @@ class cs_configuration_wiki_form extends cs_rubric_form {
  	  $this->_form->addEmptyline();
 
 	  $this->_form->addCheckbox('enable_discussion',1,'',getMessage('COMMON_WIKI_DISCUSSION'),getMessage('COMMON_WIKI_DISCUSSION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
+
       $this->_form->combine();
-      $this->_form->addCheckbox('enable_discussion_notification',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_ENABLE'),false,false,'','',true,false);
-      $this->_form->combine();
-      $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
-      $this->_form->combine();
-      $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW'));
+      $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_DISCUSSION_ORGANISATION').':');
       $this->_form->combine();
 
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
 
-      if (isset($discussion_array[0])){
-        $current_discussions = '<br/>' . getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
-      } else {
-     	$current_discussions = '<br/>' . getMessage('COMMON_NO_ENTRIES');
-      }
+#      if (isset($discussion_array[0])){
+#        $current_discussions = getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
+#      } else {
+#     	$current_discussions = getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS').': ' . getMessage('COMMON_NO_FORUM_ENTRIES');
+#      }
 
-      $this->_form->addText('wiki_existing_discussions','',$current_discussions);
+#      $this->_form->addText('wiki_existing_discussions','',$current_discussions);
 
       if (isset($discussion_array[0])){
         $this->_form->combine();
@@ -257,6 +254,17 @@ class cs_configuration_wiki_form extends cs_rubric_form {
           }
         }
       }
+      $this->_form->combine();
+      $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,20,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW').': ');
+#      $this->_form->combine();
+#      $this->_form->addText('wiki_delete_existing_discussions','',getMessage('COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS'));
+
+      $this->_form->combine();
+      $this->_form->addText('wiki_space','','<br/>'.getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION').':');
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_discussion_notification',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_ENABLE'),false,false,'','',true,false);
+      $this->_form->combine();
+      $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
 
 //      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
