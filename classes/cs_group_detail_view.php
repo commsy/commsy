@@ -188,23 +188,22 @@ class cs_group_detail_view extends cs_detail_view {
          }
       }
       $html .= '</ul>'.LF;
-      
+
       // Foren
       $context_item = $this->_environment->getCurrentContextItem();
       if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
-         $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
-         $html .= '<ul>'.LF;
          $discussions = $item->getDiscussionNotificationArray();
-         if ( !isset($discussions[0]) ) {
-            $html .= '   <li><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></li>'.LF;
-         } else {
+         if ( isset($discussions[0]) ) {
+            $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
+            $html .= '<ul>'.LF;
             foreach($discussions as $discussion){
                   $html .= '   <li>' . $discussion . '</li>'.LF;
+
             }
+            $html .= '</ul>'.LF;
          }
-         $html .= '</ul>'.LF;
       }
-      
+
       #########################################
       # FLAG: group room
       #########################################
