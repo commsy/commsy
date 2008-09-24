@@ -111,7 +111,7 @@ class cs_material_index_view extends cs_index_view {
       }*/
       $html .= '   </select>'.LF;
       $html .='</div>';
-      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+/*      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
       $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '      <option value="1"';
       if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
@@ -125,12 +125,12 @@ class cs_material_index_view extends cs_index_view {
       }
       $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
       $html .= '   </select>'.LF;
-      $html .='</div>';
+      $html .='</div>';*/
       return $html;
    }
 
 
-   function getAdditionalRestrictionTextAsHTML(){
+/*   function getAdditionalRestrictionTextAsHTML(){
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
       if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
@@ -146,7 +146,7 @@ class cs_material_index_view extends cs_index_view {
          $html .= $html_text;
       }
       return $html;
-   }
+   }*/
 
 
 
