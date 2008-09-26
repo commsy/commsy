@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -42,8 +42,8 @@ if ( !empty($_GET['cid']) ) {
 }
 
 // hier muss auf den aktuellen Kontext referenziert werden,
-// da sonst spï¿½ter diese Einstellung wieder ï¿½berschrieben wird
-// in der commsy.php beim Speichern der Aktivitï¿½t
+// da sonst später diese Einstellung wieder überschrieben wird
+// in der commsy.php beim Speichern der Aktivität
 $current_context_item = $environment->getCurrentContextItem();
 $current_cid = $current_context_item->getItemId();
 if ($current_cid == $current_context_item->getItemID()) {
