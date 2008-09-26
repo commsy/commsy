@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -734,7 +734,7 @@ class cs_item {
        $this->_setUserItem($user,'creator');
    }
 
-   /**Wieder lï¿½schen!!*/
+   /**Wieder löschen!!*/
    function setCreator($user) {
       $this->setCreatorItem($user);
    }
@@ -824,7 +824,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollstï¿½ndigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
    /** get list of linked items
    * this method returns a list of items which are linked to the news item
@@ -1004,8 +1004,8 @@ class cs_item {
    }
 
    function _setObjectLinkItems($changed_key) {
-      // $changed_key_item_list enthält die link_items EINES TYPS, die das Item aktuell bei sich trï¿½gt
-      // $old_link_item_list die Link items EINES TYPS, die das Link Item vor der Bearbeitung besaï¿½
+      // $changed_key_item_list enthält die link_items EINES TYPS, die das Item aktuell bei sich trägt
+      // $old_link_item_list die Link items EINES TYPS, die das Link Item vor der Bearbeitung besa
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->resetLimits();
      if ( ($changed_key == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE))
@@ -1033,7 +1033,7 @@ class cs_item {
             #$changed_key_version_id = $changed_key_item->getVersionID();
             $old_linked_item_id = $old_linked_item->getItemID();
             #$old_linked_version_id = $old_linked_item->getVersionID();
-            // gibt es keine ï¿½bereinstimmung
+            // gibt es keine Übereinstimmung
             #if ($changed_key_item_id == $old_linked_item_id AND $changed_key_version_id == $old_linked_version_id){
             if ($changed_key_item_id == $old_linked_item_id) {
                $create_key_item_list->removeElement($changed_key_item);
@@ -1137,7 +1137,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollstï¿½ndigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
 
    function _setObjectLinks($changed_key) {
@@ -1174,7 +1174,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollstï¿½ndigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
    function _setIDLinks($changed_key) {
       $link_manager = $this->_environment->getLinkManager();
@@ -1516,7 +1516,7 @@ class cs_item {
       } elseif ( isset($this->_data['file_id_array'])
                  and empty($this->_data['file_id_array'])
                  and $this->_filelist_changed
-               ) { // alle dateien bewusst abhï¿½ngen
+               ) { // alle dateien bewusst abhängen
          $file_id_array = $this->_data['file_id_array'];
       } elseif ( isset($this->_data['file_list']) and is_object($this->_data['file_list']) ) {
          $file = $this->_data['file_list']->getFirst();
@@ -1551,8 +1551,8 @@ class cs_item {
       $this->_filelist_changed = TRUE;
    }
 
-   function _saveFileLinks() {   // das ist so komplex, weil wir die filelinks nicht aus der db lï¿½schen kï¿½nnen
-                                 // wenn jemandem was eleganteres einfï¿½llt: nur zu
+   function _saveFileLinks() {   // das ist so komplex, weil wir die filelinks nicht aus der db löschen können
+                                 // wenn jemandem was eleganteres einfällt: nur zu
       if ( $this->_filelist_changed ) {
          $this->setModificationDate(NULL);
          $link_manager = $this->_environment->getLinkManager();

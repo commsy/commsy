@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -1195,7 +1195,7 @@ function _copySectionList ($copy_id) {
       // das Datum muss eigentlich so vorliegen jjjjmmtt
       $retour['DC.DATE.CREATION'] = $this->getPublishingDate();
 
-      // hierfï¿½r gibt es eigentlich eine definierte Liste im Standard
+      // hierfür gibt es eigentlich eine definierte Liste im Standard
       $material_type = $this->getLabelItem();
       if (isset($material_type)) {
          $retour['DC.TYPE'] = $material_type->getName();
@@ -1223,7 +1223,7 @@ function _copySectionList ($copy_id) {
       $retour['DC.FORMAT'] = '(SCHEME=IMT) '.$format;
 
       #$retour['DC.Language'] = '';
-      #$retour['DC.Coverage.Spatial'] = ''; //Geografische Gï¿½ltigkeit
+      #$retour['DC.Coverage.Spatial'] = ''; //Geografische Gültigkeit
 
       $keyword_array = $this->getBuzzwordArray();
       if (!empty($keyword_array)) {
@@ -1255,7 +1255,7 @@ function _copySectionList ($copy_id) {
       #$retour['DC.Relation'] = ''; //Angabe einer URL zu einer Ressource, die mit dem Material assiziierbar ist.
 
       // Die folgenden Angaben beziehen sich immer auf die Quelle, in der das Material publiziert wurde.
-      // Dies kï¿½nnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
+      // Dies könnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
       #$retour['DC.Source.Creator'] = '';
       #$retour['DC.Source.Title'] = '';
       #$retour['DC.Source.Volume'] = '';

@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blï¿½ssl, Matthias Finck, Dirk Fust, Franz Grï¿½nig,
+// Copyright (c)2002-2007 Dirk Blösl, Matthias Finck, Dirk Fust, Franz Grünig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -392,10 +392,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Projektraums';
          $retour['DE']['AKKS']= 'Projektraum';
          $retour['DE']['DATS']= 'Projektraum';
-         $retour['DE']['NOMPL']= 'Projektrï¿½ume';
-         $retour['DE']['GENPL']= 'Projektrï¿½ume';
-         $retour['DE']['AKKPL']= 'Projektrï¿½ume';
-         $retour['DE']['DATPL']= 'Projektrï¿½umen';
+         $retour['DE']['NOMPL']= 'Projekträume';
+         $retour['DE']['GENPL']= 'Projekträume';
+         $retour['DE']['AKKPL']= 'Projekträume';
+         $retour['DE']['DATPL']= 'Projekträumen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'project workspace';
          $retour['EN']['GENS']= 'project workspace';
@@ -425,10 +425,10 @@ class cs_project_item extends cs_room_item {
           $retour['DE']['GENS']= 'Fachs';
           $retour['DE']['AKKS']= 'Fach';
           $retour['DE']['DATS']= 'Fach';
-          $retour['DE']['NOMPL']= 'Fï¿½cher';
-          $retour['DE']['GENPL']= 'Fï¿½cher';
-          $retour['DE']['AKKPL']= 'Fï¿½cher';
-          $retour['DE']['DATPL']= 'Fï¿½chern';
+          $retour['DE']['NOMPL']= 'Fächer';
+          $retour['DE']['GENPL']= 'Fächer';
+          $retour['DE']['AKKPL']= 'Fächer';
+          $retour['DE']['DATPL']= 'Fächern';
           $retour['EN']['GENUS']= 'N';
           $retour['EN']['NOMS']= 'course';
           $retour['EN']['GENS']= 'course';
@@ -456,10 +456,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Klassenraums';
          $retour['DE']['AKKS']= 'Klassenraum';
          $retour['DE']['DATS']= 'Klassenraum';
-         $retour['DE']['NOMPL']= 'Klassenrï¿½ume';
-         $retour['DE']['GENPL']= 'Klassenrï¿½ume';
-         $retour['DE']['AKKPL']= 'Klassenrï¿½ume';
-         $retour['DE']['DATPL']= 'Klassenrï¿½umen';
+         $retour['DE']['NOMPL']= 'Klassenräume';
+         $retour['DE']['GENPL']= 'Klassenräume';
+         $retour['DE']['AKKPL']= 'Klassenräume';
+         $retour['DE']['DATPL']= 'Klassenräumen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'class workspace';
          $retour['EN']['GENS']= 'class workspace';
@@ -523,10 +523,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Projektraums';
          $retour['DE']['AKKS']= 'Projektraum';
          $retour['DE']['DATS']= 'Projektraum';
-         $retour['DE']['NOMPL']= 'Projektrï¿½ume';
-         $retour['DE']['GENPL']= 'Projektrï¿½ume';
-         $retour['DE']['AKKPL']= 'Projektrï¿½ume';
-         $retour['DE']['DATPL']= 'Projektrï¿½umen';
+         $retour['DE']['NOMPL']= 'Projekträume';
+         $retour['DE']['GENPL']= 'Projekträume';
+         $retour['DE']['AKKPL']= 'Projekträume';
+         $retour['DE']['DATPL']= 'Projekträumen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'project workspace';
          $retour['EN']['GENS']= 'project workspace';
@@ -935,7 +935,7 @@ class cs_project_item extends cs_room_item {
             case 'RUBRIC_MAIL':                // getestet: Projektraum / Diskussionen / versenden
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_RUBRIC_MAIL_FORM',$link);
                break;
-            case 'SECTION_EDIT':               // getestet: Projektraum / Materialien / <ein Material> / Abschnitt hinzufï¿½gen
+            case 'SECTION_EDIT':               // getestet: Projektraum / Materialien / <ein Material> / Abschnitt hinzufügen
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_SECTION_EDIT_FORM',$link);
                break;
             case 'TODO_EDIT':                  // getestet

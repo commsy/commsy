@@ -6,7 +6,7 @@
 // Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Franz Grünig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //

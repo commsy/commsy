@@ -567,18 +567,31 @@ class cs_material_form extends cs_rubric_form {
       $this->_setFormElementsForConnectedRubrics();
 
       if ( !$this->_environment->inPrivateRoom() ){
-         // public radio-buttons
-         if ( !isset($this->_item) ) {
-            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-         } else {
-            $current_user = $this->_environment->getCurrentUser();
-            $creator = $this->_item->getCreatorItem();
-            if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-               $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-            } else {
-               $this->_form->addHidden('public','');
-            }
+
+         if ($current_context->withActivatingContent()){
+            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+#            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_PUBLIC'));
+            $this->_form->combine();
+            $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
+            $this->_form->combine('horizontal');
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',7,4,getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100);
+#            $this->_form->combine();
+#            $this->_form->addText('hide_end','',getMessage('COMMON_END_HIDING').':');
+         }else{
+             // public radio-buttons
+             if ( !isset($this->_item) ) {
+                $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+             } else {
+                $current_user = $this->_environment->getCurrentUser();
+                $creator = $this->_item->getCreatorItem();
+                if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
+                   $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                } else {
+                   $this->_form->addHidden('public','');
+                }
+             }
          }
+
       } else {
          $this->_form->addHidden('public','');
       }
@@ -604,6 +617,7 @@ class cs_material_form extends cs_rubric_form {
     */
    function _prepareValues () {
 
+      $current_context = $this->_environment->getCurrentContextItem();
       if (isset($this->_item)) {
          $this->_values['modification_date'] = $this->_item->getModificationDate();
          $this->_values['iid'] = $this->_item->getItemID();
@@ -667,7 +681,15 @@ class cs_material_form extends cs_rubric_form {
       }
       if (isset($this->_item)) {
          // public
-         $this->_values['public'] = $this->_item->isPublic();
+         if ($current_context->withActivatingContent()){
+            if ($this->_item->isPublic()){
+               $this->_values['public'] = 0;
+            }else{
+               $this->_values['public'] = $this->_item->isPublic();
+            }
+         }else{
+            $this->_values['public'] = $this->_item->isPublic();
+         }
          // rubric connections
          $this->_setValuesForRubricConnections();
 
@@ -695,7 +717,11 @@ class cs_material_form extends cs_rubric_form {
          }
       }
       if ( !isset($this->_values['public']) ) {
-         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         if ($current_context->withActivatingContent()){
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }else{
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }
       }
    }
 

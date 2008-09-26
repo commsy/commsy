@@ -781,7 +781,8 @@ class cs_form {
                                    $secondFieldMaxLength = 255,
                                    $horizontal = true,
                                    $align = 'left',
-                                   $secondFieldType = '' ) {
+                                   $secondFieldType = '',
+                                   $withWhiteSpace = true ) {
 
                 if (empty($values)) {
                         $values = array();
@@ -805,6 +806,7 @@ class cs_form {
                 $element['firstFieldMaxLength'] = $firstFieldMaxLength;
                 $element['secondFieldMaxLength'] = $secondFieldMaxLength;
                 $element['horizontal'] = $horizontal;
+                $element['withWhiteSpace'] = $withWhiteSpace;
                 if (!empty($align)) {
                         $element['text-align'] = $align;
                 }

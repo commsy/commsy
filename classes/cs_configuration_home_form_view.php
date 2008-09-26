@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -149,7 +149,7 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
          switch( $temp_mod_func  )
          {
             case 'ACCOUNT_STATUS':
-               $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ï¿½ndern (Portal)
+               $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ändern (Portal)
                break;
             case 'CONFIGURATION_AGB':
                $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');	// Nutzungsvereinbarungen OK
@@ -170,7 +170,7 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');	// Termindarstellung OK
                break;
             case 'CONFIGURATION_DEFAULTS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen fï¿½r Rï¿½ume OK
+               $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen für Räume OK
                break;
             case 'CONFIGURATION_DISCUSSION':
                $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');	// Art der Diskussion OK
@@ -194,19 +194,19 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');	// IMS-Account Einstellungen (Server)
                break;
             case 'CONFIGURATION_LANGUAGE':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// Verfï¿½gbare Sprachen (Server)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// Verfügbare Sprachen (Server)
                break;
             case 'CONFIGURATION_MAIL':
                $tempMessage = getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');	// E-Mail-Texte OK
                break;
             case 'CONFIGURATION_NEWS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// Ankï¿½ndigungen bearbeiten (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// Ankündigungen bearbeiten (Portal)
                break;
             case 'CONFIGURATION_PLUGIN':
                $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');	// Sponsoren und Werbung
                break;
             case 'CONFIGURATION_PORTALHOME':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumï¿½bersicht (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumübersicht (Portal)
                break;
             case 'CONFIGURATION_PREFERENCES':
                $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');	// Allgemeine Einstellungen bearbeiten (pers. Raum)
@@ -215,7 +215,7 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');	// E-Mail-Newsletter (priv.)
                break;
             case 'CONFIGURATION_ROOM_OPENING':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// Raumerï¿½ffnungen (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// Raumeröffnungen (Portal)
                break;
             case 'CONFIGURATION_RUBRIC':
                $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');	// Auswahl der Rubriken OK

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -971,10 +971,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Projektraums';
                $retour['DE']['AKKS']= 'Projektraum';
                $retour['DE']['DATS']= 'Projektraum';
-               $retour['DE']['NOMPL']= 'Projektrï¿½ume';
-               $retour['DE']['GENPL']= 'Projektrï¿½ume';
-               $retour['DE']['AKKPL']= 'Projektrï¿½ume';
-               $retour['DE']['DATPL']= 'Projektrï¿½umen';
+               $retour['DE']['NOMPL']= 'Projekträume';
+               $retour['DE']['GENPL']= 'Projekträume';
+               $retour['DE']['AKKPL']= 'Projekträume';
+               $retour['DE']['DATPL']= 'Projekträumen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'project workspace';
                $retour['EN']['GENS']= 'project workspace';
@@ -1000,10 +1000,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Gemeinschaftsraums';
                $retour['DE']['AKKS']= 'Gemeinschaftsraum';
                $retour['DE']['DATS']= 'Gemeinschaftsraum';
-               $retour['DE']['NOMPL']= 'Gemeinschaftsrï¿½ume';
-               $retour['DE']['GENPL']= 'Gemeinschaftsrï¿½ume';
-               $retour['DE']['AKKPL']= 'Gemeinschaftsrï¿½ume';
-               $retour['DE']['DATPL']= 'Gemeinschaftsrï¿½umen';
+               $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
+               $retour['DE']['GENPL']= 'Gemeinschaftsräume';
+               $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
+               $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'community workspace';
                $retour['EN']['GENS']= 'community workspace';
