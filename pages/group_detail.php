@@ -325,9 +325,9 @@ if ($type != CS_GROUP_TYPE) {
             $group_item->removeMember($current_user);
             if($environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
                 $wiki_manager = $environment->getWikiManager();
-                $wiki_manager->updateWikiNotificationForUser($current_user, false);
+#                $wiki_manager->updateWikiNotificationForUser($current_user, false);
             }
-            
+
             ##################################
             # FLAG: group room
             ##################################
