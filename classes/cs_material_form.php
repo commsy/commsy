@@ -569,14 +569,14 @@ class cs_material_form extends cs_rubric_form {
       if ( !$this->_environment->inPrivateRoom() ){
 
          if ($current_context->withActivatingContent()){
-            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+            $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
 #            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_PUBLIC'));
             $this->_form->combine();
             $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');
-            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',7,4,getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100);
-#            $this->_form->combine();
-#            $this->_form->addText('hide_end','',getMessage('COMMON_END_HIDING').':');
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',7,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->combine('horizontal');
+            $this->_form->addText('hide_end2','',')');
          }else{
              // public radio-buttons
              if ( !isset($this->_item) ) {
@@ -682,10 +682,10 @@ class cs_material_form extends cs_rubric_form {
       if (isset($this->_item)) {
          // public
          if ($current_context->withActivatingContent()){
-            if ($this->_item->isPublic()){
-               $this->_values['public'] = 0;
+            if ($this->_item->isPrivateEditing()){
+               $this->_values['private_editing'] = 1;
             }else{
-               $this->_values['public'] = $this->_item->isPublic();
+               $this->_values['private_editing'] = $this->_item->isPrivateEditing();
             }
          }else{
             $this->_values['public'] = $this->_item->isPublic();
@@ -715,14 +715,28 @@ class cs_material_form extends cs_rubric_form {
          if ( empty($this->_values['bib_kind']) and !empty($this->_values['common']) ) {
             $this->_values['bib_kind'] ='common';
          }
-      }
-      if ( !isset($this->_values['public']) ) {
-         if ($current_context->withActivatingContent()){
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
-         }else{
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $this->_values['hide'] = $this->_item->isNotActivated()?'1':'0';
+
+         if ($this->_item->isNotActivated()){
+            $activating_date = $this->_item->getActivatingDate();
+            if (!strstr($activating_date,'9999-00-00')){
+               $array = array();
+               $array['dayStart'] = getDateInLang($activating_date);
+               $array['timeStart'] = getTimeInLang($activating_date);
+               $this->_values['start_date_time'] = $array;
+            }
          }
+
       }
+         if ($current_context->withActivatingContent()){
+            if ( !isset($this->_values['private_editing']) ) {
+               $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
+         }else{
+            if ( !isset($this->_values['public']) ) {
+               $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
+         }
    }
 
    /** specific check the values of the form

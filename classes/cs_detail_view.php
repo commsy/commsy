@@ -684,6 +684,24 @@ class cs_detail_view extends cs_view {
          $html .='<div class="infoborder_display_content"  style="margin-top:5px; vertical-align:bottom;">'.LF;
       }
       $html .='<div style="margin-bottom:10px;">'.LF;
+
+      if ($item->isNotActivated()){
+         $formal_data1 = array();
+         $temp_array = array();
+         $temp_array[]  = getMessage('COMMON_RIGHTS');
+
+         $activating_date = $item->getActivatingDate();
+         if (strstr($activating_date,'9999-00-00')){
+            $title = getMessage('COMMON_NOT_ACTIVATED');
+         }else{
+            $title = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+         }
+         $temp_array[] = $title;
+         $formal_data1[] = $temp_array;
+         $html .= $this->_getFormalDataAsHTML($formal_data1);
+      }
+
+
       $html .= $this->_getContentAsHTML();
       $html .='</div>'.LF;
       $html .='<div class="infoborder" style="clear:both; margin-top:5px; margin-bottom:25px; padding-top:10px; padding-bottom:10px; vertical-align:top;">';

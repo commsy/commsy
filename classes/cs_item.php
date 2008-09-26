@@ -126,6 +126,29 @@ class cs_item {
    ############
 
 
+
+   /** asks if item is editable by everybody or just creator
+    *
+    * @param value
+    *
+    * @author CommSy Development Group
+    */
+   function isPrivateEditing() {
+      if ($this->_getValue('public') == 1) {
+         return false;
+      }
+      return true;
+   }
+
+   /** sets if tem is editable by everybody or just creator
+    *
+    * @param value
+    */
+   function setPrivateEditing ($value) {
+      $this->_setValue('public', $value);
+   }
+
+
     /** get buzzwords of a material
     * this method returns a list of buzzwords which are linked to the material
     *

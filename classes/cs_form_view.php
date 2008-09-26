@@ -542,8 +542,12 @@ class cs_form_view extends cs_view {
       }
       $html .= '         '.$form_element['firstLabel'].'&nbsp;'.$this->_getTextFieldAsHTML($textfield);
 
-      if ($form_element['horizontal'] and $form_element['withWhiteSpace']) {
-         $html .= '         &nbsp;&nbsp;'."\n";
+      if ($form_element['horizontal'] ) {
+         if($form_element['withWhiteSpace']){
+            $html .= '         &nbsp;&nbsp;'."\n";
+         }else{
+            $html .= ''."\n";
+         }
       } else {
          $html .= '         <br />'."\n";
       }

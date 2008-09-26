@@ -756,6 +756,38 @@ else {
                   $material_item->setPublic($_POST['public']);
                }
             }
+            if ( isset($_POST['private_editing']) ) {
+               $material_item->setPrivateEditing('0');
+            }else{
+               $material_item->setPrivateEditing('1');
+            }
+
+            if ( isset($_POST['hide']) ) {
+                // variables for datetime-format of end and beginning
+                $dt_hiding_time = '00:00:00';
+                $dt_hiding_date = '9999-00-00';
+                $dt_hiding_datetime = '';
+                $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
+                if ($converted_day_start['conforms'] == TRUE) {
+                   $dt_hiding_datetime = $converted_day_start['datetime'].' ';
+                   $converted_time_start = convertTimeFromInput($_POST['timeStart']);
+                   if ($converted_time_start['conforms'] == TRUE) {
+                      $dt_hiding_datetime .= $converted_time_start['datetime'];
+                   }else{
+                   	 $dt_hiding_datetime .= $dt_hiding_time;
+                   }
+                }else{
+                   $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+                }
+                $material_item->setModificationDate($dt_hiding_datetime);
+            }else{
+               if($material_item->isNotActivated()){
+                  $material_item->setModificationDate(getCurrentDateTimeInMySQL());
+               }
+            }
+
+
+
 
             if ( !$error ) {
 
@@ -781,7 +813,7 @@ else {
 
                   // Send mails // Warum werden die einzeln verschickt ???
                   $moderator = $modList->getFirst();
-       $translator = $environment->getTranslationObject();
+                  $translator = $environment->getTranslationObject();
                   while ( $moderator ) {
                      if ( $moderator->getPublishMaterialWantMail() == 'yes' ) {
                         include_once('classes/cs_mail.php');
@@ -792,8 +824,8 @@ else {
                         $mail->set_reply_to_name($sender->getFullName());
                         $mail->set_reply_to_email($sender->getEMail());
                         $mail->set_to($moderator->getEMail());
-             $language = $moderator->getLanguage();
-             $translator->setSelectedLanguage($language);
+                        $language = $moderator->getLanguage();
+                        $translator->setSelectedLanguage($language);
                         $mail_subject = $translator->getMessage('ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT',$context_item->getTitle());
                         $mail_body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                         $mail_body.= "\n\n";

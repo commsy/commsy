@@ -2369,7 +2369,8 @@ EOD;
     * @author CommSy Development Group
     */
    function _getItemModificationDate($item){
-      if ( $item->getCreationDate() <> $item->getModificationDate() ) {
+      $moddate = $item->getModificationDate();
+      if ( $item->getCreationDate() <> $item->getModificationDate() and !strstr($moddate,'9999-00-00')){
          $mod_date = $this->_translator->getDateInLang($item->getModificationDate());
       } else {
          $mod_date = $this->_translator->getDateInLang($item->getCreationDate());

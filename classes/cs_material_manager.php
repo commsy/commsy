@@ -882,8 +882,12 @@ class cs_material_manager extends cs_manager {
          } else {
             $world_public = '0';
          }
+         $modification_date = getCurrentDateTimeInMySQL();
+         if ($material_item->isNotActivated()){
+            $modification_date = $material_item->getModificationDate();
+         }
          $query = 'UPDATE materials SET '.
-                  'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+                  'modification_date="'.$modification_date.'",'.
                   'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                   'title="'.encode(AS_DB,$material_item->getTitle()).'",'.
                   'description="'.encode(AS_DB,$material_item->getDescription()).'",'.
@@ -961,6 +965,10 @@ class cs_material_manager extends cs_manager {
          } else {
             $world_public = '0';
          }
+        $modification_date = getCurrentDateTimeInMySQL();
+        if ($material_item->isNotActivated()){
+           $modification_date = $material_item->getModificationDate();
+        }
         $query = 'INSERT INTO materials SET '.
                  'item_id="'.encode(AS_DB,$material_item->getItemID()).'",'.
                  'version_id="'.encode(AS_DB,$material_item->getVersionID()).'",'.
@@ -968,7 +976,7 @@ class cs_material_manager extends cs_manager {
                  'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                  'creation_date="'.$current_datetime.'",'.
                  'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-                 'modification_date="'.$current_datetime.'",'.
+                 'modification_date="'.$modification_date.'",'.
                  'title="'.encode(AS_DB,$material_item->getTitle()).'",'.
                  'description="'.encode(AS_DB,$material_item->getDescription()).'",'.
                  'publishing_date="'.encode(AS_DB,$material_item->getPublishingDate()).'",'.

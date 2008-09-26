@@ -421,7 +421,12 @@ class cs_material_index_view extends cs_index_view {
                                   CS_MATERIAL_TYPE.$item->getItemID());
                unset($params);
             }
-            $title .= BR.getMessage('COMMON_ACTIVATING_DATE').': '.getDateInLang($item->getActivatingDate());
+            $activating_date = $item->getActivatingDate();
+            if (strstr($activating_date,'9999-00-00')){
+               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+            }else{
+               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            }
             $title = '<span class="disabled">'.$title.'</span>';
             $html .= '      <td '.$style.'>'.$title.LF;
          }else{
