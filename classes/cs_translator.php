@@ -1158,6 +1158,7 @@ function getShortMonthName($month) {
      case '10': $ret = $this->getMessage('COMMON_DATE_OCTOBER_SHORT'); break;
      case '11': $ret = $this->getMessage('COMMON_DATE_NOVEMBER_SHORT'); break;
      case '12': $ret = $this->getMessage('COMMON_DATE_DECEMBER_SHORT'); break;
+     default : $ret ='';
    }
    return $ret;
 }
