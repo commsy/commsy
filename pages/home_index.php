@@ -236,6 +236,7 @@ if ( $context_item->isLocked() ) {
                            } else {
                               $manager->setIntervalLimit(0, 5);
                            }
+                           $manager->showNoNotActivatedEntries();
                            $manager->select();
                            $list = $manager->get();
                            $manager->delete_tmp_table();

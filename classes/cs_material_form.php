@@ -574,7 +574,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->combine();
             $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');
-            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',7,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
             $this->_form->combine('horizontal');
             $this->_form->addText('hide_end2','',')');
          }else{
