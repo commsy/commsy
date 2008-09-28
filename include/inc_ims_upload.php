@@ -35,7 +35,7 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $availability = '';
    $authors_array = array();
 
-/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+/**Daten f�r die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
    $contributors_array = array();
    $editor_array = array();
    $bib_kind = 'buch';
