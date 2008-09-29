@@ -199,13 +199,43 @@ class cs_list {
             }elseif ($sort_by == 'filename') {
                $temp_array2[$sort_by] = $old_list[$i]->getDisplayName();
             } else {
-               include_once('functions/error_functions.php');trigger_error('Problems sorting list because '.$sort_by.' is not implemented yet.',E_USER_ERROR);
+               include_once('functions/error_functions.php');
+               trigger_error('Problems sorting list because '.$sort_by.' is not implemented yet.',E_USER_ERROR);
             }
             $temp_array[] = $temp_array2;
          }
 
          // sort temp aray
          usort($temp_array,create_function('$a,$b','return strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+
+         // create sorted list array
+         unset($this->_data);
+         $this->_data = array();
+         for ($i=0; $i<count($temp_array); $i++) {
+            $this->_data[$i] = $old_list[$temp_array[$i]['position']];
+         }
+      }
+   }
+
+   /** sort room list by page impressions for $days
+    * this method sort list by page impressions $days
+    *
+    * @param int $days
+    */
+   function sortbyPageImpressions ($days) {
+      // prepare temp array to sort
+      if (count($this->_data) > 1) {
+         $old_list = $this->_data;
+         $temp_array = array();
+         for ($i=0; $i<count($old_list); $i++) {
+            $temp_array2['position'] = $i;
+            $temp_array2[$days] = $old_list[$i]->getPageImpressions($days);
+            $temp_array[] = $temp_array2;
+         }
+
+         // sort temp aray
+         usort($temp_array,create_function('$a,$b','return strnatcasecmp($a[\''.$days.'\'],$b[\''.$days.'\']);'));
+         $temp_array = array_reverse($temp_array);
 
          // create sorted list array
          unset($this->_data);

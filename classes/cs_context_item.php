@@ -68,6 +68,8 @@ class cs_context_item extends cs_item {
 
    var $_cache_may_enter = array();
 
+   var $_page_impression_array = array();
+
    /** constructor: cs_context_item
     * the only available constructor, initial values for internal variables
     *
@@ -4395,24 +4397,31 @@ class cs_context_item extends cs_item {
    }
 
    function getPageImpressions ($external_timespread = 0) {
-      if($external_timespread != 0){
-         $timespread = $external_timespread;
-      }else{
-         $timespread = $this->getTimeSpread();
-      }
-      $count = 0;
-      $pi_array = $this->getPageImpressionArray();
-      for ($i=0; $i<$timespread; $i++) {
-         if (!empty($pi_array[$i])) {
-            $count = $count + $pi_array[$i];
+      $retour = 0;
+      if ( isset($this->_page_impression_array[$external_timespread]) ) {
+         $retour = $this->_page_impression_array[$external_timespread];
+      } else {
+         if ( $external_timespread != 0 ) {
+            $timespread = $external_timespread;
+         } else {
+            $timespread = $this->getTimeSpread();
          }
+         $count = 0;
+         $pi_array = $this->getPageImpressionArray();
+         for ($i=0; $i<$timespread; $i++) {
+            if (!empty($pi_array[$i])) {
+               $count = $count + $pi_array[$i];
+            }
+         }
+         $log_manager = $this->_environment->getLogManager();
+         $log_manager->resetLimits();
+         $log_manager->setContextLimit($this->getItemID());
+         $page_impressions = $log_manager->getCountAll();
+         unset($log_manager);
+         $this->_page_impression_array[$external_timespread] = $count + $page_impressions;
+         $retour = $this->_page_impression_array[$external_timespread];
       }
-      $log_manager = $this->_environment->getLogManager();
-      $log_manager->resetLimits();
-      $log_manager->setContextLimit($this->getItemID());
-      $page_impressions = $log_manager->getCountAll();
-      unset($log_manager);
-      return $count + $page_impressions;
+      return $retour;
    }
 
    function isActiveDuringLast99Days () {

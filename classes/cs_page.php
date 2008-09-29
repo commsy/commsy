@@ -45,6 +45,10 @@ class cs_page {
       $this->_environment = $environment;
       $this->_with_mod_actions = $with_mod_actions;
       $this->_values = $this->_environment->getCurrentParameterArray();
+      $post_array = $this->_environment->getCurrentPostParameterArray();
+      if ( !empty($post_array['activitymodus']) ) {
+         $this->_values['activitymodus'] = $post_array['activitymodus'];
+      }
       /*HOT-FIX: Suchbegriff über die $_GET, weil die andere Methode einen falschen Wert liefert
       TBD: Klären, warum $this->_environment->getCurrentParameterArray() nicht auf der $_GET arbeitet*/
       if (!empty($_GET['search'])) {

@@ -58,6 +58,7 @@ class cs_guide_list_view extends cs_list_view_plain {
    var $_count_all = NULL;
    var $_count_all_shown = NULL;
 
+   var $_activity_modus = NULL;
 
     /** constructor
     * the only available constructor, initial values for internal variables
@@ -76,6 +77,34 @@ class cs_guide_list_view extends cs_list_view_plain {
          $this->_max_activity = $manager->getMaxActivityPoints();
       }
    }
+
+   /** set special activity mode by day
+    * this method sets the special activity modus: days of ppage impressions
+    *
+    * @param int  $value          days [1,99]
+    */
+   public function setActivityModus ( $value ) {
+      $this->_activity_modus = (int)$value;
+   }
+
+    /** set the content of the list view
+    * this method sets the whole entries of the list view
+    *
+    * @param list  $this->_list          content of the list view
+    */
+    function setList ($list) {
+       $this->_list = $list;
+       if ( !empty($this->_activity_modus) ) {
+          $item = $this->_list->getFirst();
+          while ($item) {
+             if ( $this->_max_activity < $item->getPageImpressions($this->_activity_modus) ) {
+                $this->_max_activity = $item->getPageImpressions($this->_activity_modus);
+             }
+             $item = $this->_list->getNext();
+          }
+          $this->_list->sortbyPageImpressions($this->_activity_modus);
+       }
+    }
 
    /** set from counter of the list view
     * this method sets the counter of the beginning of the list view
@@ -396,7 +425,11 @@ class cs_guide_list_view extends cs_list_view_plain {
     */
    function _getActivity ($item) {
       if ( $this->_max_activity != 0 ) {
-         $percentage = $item->getActivityPoints();
+         if ( empty($this->_activity_modus) ) {
+            $percentage = $item->getActivityPoints();
+         } else {
+            $percentage = $item->getPageImpressions($this->_activity_modus);
+         }
          if ( empty($percentage) ) {
             $percentage = 0;
          } else {
@@ -415,7 +448,6 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html  = '         <div class="gauge">'.LF;
       $html .= '            <div class="gauge-bar" style="width:'.$display_percentage.'%;">&nbsp;</div>'.LF;
       $html .= '         </div>'.LF;
-
       return $html;
    }
 
@@ -546,6 +578,9 @@ class cs_guide_list_view extends cs_list_view_plain {
       if ( !$session->issetValue('cookie')
            or $session->getValue('cookie') == '0' ) {
          $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session->getSessionID()).'"/>'.LF;
+      }
+      if ( !empty($this->_activity_modus) ) {
+         $html .= '   <input type="hidden" name="activitymodus" value="'.$this->_text_as_form($this->_activity_modus).'"/>'.LF;
       }
       $html .= '<div style="padding-left:3px; padding-top:5px;">'.LF;
       $html .= '<span class="search_title" style="">'.getMessage('COMMON_ROOM_SEARCH').'</span>'.BRLF;
@@ -832,13 +867,18 @@ class cs_guide_list_view extends cs_list_view_plain {
             $params['sort'] = 'title';
             $text = $this->_translator->getMessage('COMMON_TITLE');
          }
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $text, '', '', '','','','','class="head"').LF;
+         if ( empty($this->_activity_modus) ) {
+            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $text, '', '', '','','','','class="head"').LF;
+         } else {
+            $html .= $text;
+         }
          if ( $this->getSortKey() == 'title' ) {
             $html .= ' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'title_rev' ) {
             $html .= ' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
-         }         $html .= '      </td>'.LF;
+         }
+         $html .= '      </td>'.LF;
          if ($this->_environment->inPortal()) {
             $html .= '      <td class="portal-head" style="width:35%">'.LF;
             $html .= '<span class="portal_link">'.$this->_translator->getMessage('CONTEXT_MODERATOR').'</span>'.LF;
@@ -856,8 +896,12 @@ class cs_guide_list_view extends cs_list_view_plain {
             $params['sort'] = 'activity_rev';
             $text = $this->_translator->getMessage('CONTEXT_ACTIVITY');
          }
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $text, '', '', '','','','','class="head"').LF;
+         if ( empty($this->_activity_modus) ) {
+            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $text, '', '', '','','','','class="head"').LF;
+         } else {
+            $html .= $text;
+         }
          if ( $this->getSortKey() == 'activity_rev' ) {
             $html .= ' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'activity' ) {
@@ -1041,7 +1085,22 @@ class cs_guide_list_view extends cs_list_view_plain {
          $current_item = $list->getFirst();
          $html = '';
          while ( $current_item ) {
-            $item_text = $this->_getItemAsHTML($current_item, $i);
+            $item_text = '';
+            if ( empty($this->_activity_modus)
+                 or empty($this->_interval)
+               ) {
+               $item_text = $this->_getItemAsHTML($current_item, $i);
+            } else {
+               $from = $this->_from;
+               if ( empty($from) ) {
+                  $from = 1;
+               }
+               if ( $from <= $i
+                    and $i < $from + $this->_interval
+                  ) {
+                  $item_text = $this->_getItemAsHTML($current_item, $i);
+               }
+            }
             $i++;
             $html .= $item_text;
             $current_item = $list->getNext();

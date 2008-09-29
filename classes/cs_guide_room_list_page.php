@@ -71,11 +71,11 @@ class cs_guide_room_list_page extends cs_page {
 
 
 
-	      if (!empty($this->_values['seltime'])) {
+         if (!empty($this->_values['seltime'])) {
             $seltime = $this->_values['seltime'];
-	         if ($seltime == -2 or $seltime == -3) {
-	            $seltime = '';
-	         }
+            if ($seltime == -2 or $seltime == -3) {
+               $seltime = '';
+            }
          } else {
          }
 
@@ -110,8 +110,8 @@ class cs_guide_room_list_page extends cs_page {
             $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
          }
          if (!empty($seltime)) {
-	   $manager->setTimeLimit($seltime);
-		 }
+            $manager->setTimeLimit($seltime);
+         }
          if (!empty($this->_values['search'])) {
             $manager->setSearchLimit($this->_values['search']);
          }
@@ -122,7 +122,9 @@ class cs_guide_room_list_page extends cs_page {
          }else {
             $manager->setOrder('activity_rev');
          }
-         if ( $interval > 0 ) {
+         if ( $interval > 0
+              and empty($this->_values['activitymodus'])
+            ) {
             $manager->setIntervalLimit($from-1,$interval);
          }
          $manager->select();
@@ -137,6 +139,11 @@ class cs_guide_room_list_page extends cs_page {
       // Prepare view object
       include_once('classes/cs_guide_list_view.php');
       $this->_view_object = new cs_guide_list_view($this->_environment,$this->_with_mod_actions);
+      if ( !empty($this->_values['activitymodus'])
+           and is_numeric($this->_values['activitymodus'])
+         ) {
+         $this->_view_object->setActivityModus($this->_values['activitymodus']);
+      }
       $this->_view_object->setList($list);
       if ($this->_environment->inPortal()) {
          $this->_view_object->setCountAllShown($count_all_shown);
@@ -158,7 +165,11 @@ class cs_guide_room_list_page extends cs_page {
       if (!empty($this->_values['search'])) {
          $this->_view_object->setSearchText($this->_values['search']);
       }
-      if (!empty($this->_values['sort'])) {
+      if ( !empty($this->_values['activitymodus'])
+           and is_numeric($this->_values['activitymodus'])
+         ) {
+         $this->_view_object->setSortKey('activity_rev');
+      } elseif (!empty($this->_values['sort'])) {
          $this->_view_object->setSortKey($this->_values['sort']);
       } elseif($current_context->isPortal() and $current_context->isSortRoomsByTitleOnHome()){
          $this->_view_object->setSortKey('title');
