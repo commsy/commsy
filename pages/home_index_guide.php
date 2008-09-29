@@ -48,9 +48,6 @@ if (!empty($_GET['room_id'])) {
    $current_item_id ='';
 }
 
-
-
-
 if (isset($_POST['option'])){
    $option = $_POST['option'];
 } elseif (isset($_GET['option'])){
@@ -455,11 +452,11 @@ if ( $environment->inServer() ) {
            if (isset($item) and $item->getContextID() == $environment->getCurrentContextID()) {
               $context_detail_view->setItem($item);
               $page->addRoomDetail($context_detail_view);
-     } else {
+           } else {
               include_once('classes/cs_errorbox_view.php');
-        $errorbox = new cs_errorbox_view($environment, true, '20em');
+              $errorbox = new cs_errorbox_view($environment, true, '20em');
               $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $_GET['room_id']));
-     }
+           }
         }
    }
 
