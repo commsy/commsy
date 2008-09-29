@@ -106,7 +106,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
       }
       if (empty($matches)) {
       //try TT Mon YYYY format if not succesfull yet
-         $pattern = '$([0-9]{1,2})([A-Za-z]{1,3})([0-9]{1,4})?$';
+         $pattern = '$([0-9]{1,2})([A-Za-z]{1,4})([0-9]{1,4})?$';
          if (preg_match($pattern.'i',$date,$matches)) {
             if (!empty($matches[3])) {
                $year = $matches[3];
