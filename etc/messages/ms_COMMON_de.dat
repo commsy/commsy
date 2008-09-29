@@ -280,8 +280,8 @@ $message["COMMON_ERROR_MANIPULATION"]["de"] = "Manipulation der Daten bei: <span
 $message["COMMON_ERROR_SELECT"]["de"] = "Bitte wählen Sie bei <span style=&quot;font-weight:bold;&quot;>%1</span> etwas aus.";
 $message["COMMON_ERROR_TAG_ENTRY"]["de"] = "Bitte wählen Sie eine <span style=&quot;font-weight:bold;&quot;>Kategorie</span> aus.";
 $message["COMMON_FACTS"]["de"] = "Fakten";
-$message["COMMON_FADE_IN"]["de"] = "Mein Bereich einblenden";
-$message["COMMON_FADE_OUT"]["de"] = "Mein Bereich ausblenden";
+$message["COMMON_FADE_IN"]["de"] = "Meinen Bereich einblenden";
+$message["COMMON_FADE_OUT"]["de"] = "Meinen Bereich ausblenden";
 $message["COMMON_FILE"]["de"] = "Datei";
 $message["COMMON_FILES_ERROR_MISSING"]["de"] = "%1: Datei %2 fehlt.";
 $message["COMMON_FILES_ERROR_OTHERS_SUCCESSFULL"]["de"] = "Alle anderen Kopien wurden erfolgreich übernommen.";
