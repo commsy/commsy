@@ -390,7 +390,8 @@ class cs_material_index_view extends cs_index_view {
         $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
 /***Activating Code***/
-         if($item->isNotActivated()){
+         $user = $this->_environment->getCurrentUser();
+         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
             $html .= ' disabled="disabled"'.LF;
          }elseif ( isset($checked_ids)
               and !empty($checked_ids)

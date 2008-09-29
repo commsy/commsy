@@ -1034,13 +1034,39 @@ class cs_user_detail_view extends cs_detail_view {
                   $html .= '   <li>';
                   $params = array();
                   $params['iid'] = $linked_iid;
-                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                  $user = $this->_environment->getCurrentUser();
+                  if ($rubric_item->isNotActivated() and !($rubric_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
+                      $activating_date = $rubric_item->getActivatingDate();
+                      if (strstr($activating_date,'9999-00-00')){
+                         $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                      }else{
+                         $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($rubric_item->getActivatingDate()).')';
+                      }
+                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                           $module,
+                                           'detail',
+                                           $params,
+                                           chunkText($this->_text_as_html_short($rubric_item->getTitle()),27),
+                                           $link_creator_text,
+                                           '',
+                                           '',
+                                           '',
+                                           '',
+                                           '',
+                                           'class="disabled"',
+                                           '',
+                                           '',
+                                           true);
+                      unset($params);
+                  }else{
+                     $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,
                                        chunkText($this->_text_as_html_short($rubric_item->getTitle()),27),
                                        $link_creator_text);
-                  unset($params);
+                     unset($params);
+                  }
                   $html .= '</li>'.LF;
                   if ( $limit > 0 ) {
                      $count_shown++;

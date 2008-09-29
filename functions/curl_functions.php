@@ -51,24 +51,41 @@ function curl_mailto( $mailaddress, $linktext, $title="" ) {
  *
  * @return  returns the constructed ahref-tag as a string
  */
-function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $title='', $target='', $fragment = '', $filehack='', $jshack='',$name='', $style='', $file='', $id='' ) {
+function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $title='', $target='', $fragment = '', $filehack='', $jshack='',$name='', $style='', $file='', $id='',$empty_adress = false ) {
    $address = curl($context_id, $module, $function, $parameter, $fragment, $filehack, $file );
    if ( !empty($style) ) {
       $style = ' '.$style;
    }
-   $ahref = '<a'.$style.' href="'.$address.'"';
-   if ( $title != '' )  $ahref .= ' title="'.strip_tags($title).'"';
-   if ( $name != '' )   $ahref .= ' name="'.$name.'"';
-   if ( $target != '' ) $ahref .= ' target="'.$target.'"';
-   if ( $jshack != '' ) $ahref .= ' '.$jshack;
-   if ( $id != '' )     $ahref .= ' id="'.$id.'"';
+   if (!$empty_adress){
+       $ahref = '<a'.$style.' href="'.$address.'"';
+       if ( $title != '' )  $ahref .= ' title="'.strip_tags($title).'"';
+       if ( $name != '' )   $ahref .= ' name="'.$name.'"';
+       if ( $target != '' ) $ahref .= ' target="'.$target.'"';
+       if ( $jshack != '' ) $ahref .= ' '.$jshack;
+       if ( $id != '' )     $ahref .= ' id="'.$id.'"';
 
 
-   $ahref .= '>'.encode(AS_HTML_SHORT,$linktext).'</a>';
-   if(isset($_GET['mode']) and $_GET['mode']=='print'){
-      return encode(AS_HTML_SHORT,$linktext);
+       $ahref .= '>'.encode(AS_HTML_SHORT,$linktext).'</a>';
+       if(isset($_GET['mode']) and $_GET['mode']=='print'){
+          return encode(AS_HTML_SHORT,$linktext);
+       }else{
+          return $ahref;
+       }
    }else{
-      return $ahref;
+       $ahref = '<a'.$style;
+       if ( $title != '' )  $ahref .= ' title="'.strip_tags($title).'"';
+       if ( $name != '' )   $ahref .= ' name="'.$name.'"';
+       if ( $target != '' ) $ahref .= ' target="'.$target.'"';
+       if ( $jshack != '' ) $ahref .= ' '.$jshack;
+       if ( $id != '' )     $ahref .= ' id="'.$id.'"';
+
+
+       $ahref .= '>'.encode(AS_HTML_SHORT,$linktext).'</a>';
+       if(isset($_GET['mode']) and $_GET['mode']=='print'){
+          return encode(AS_HTML_SHORT,$linktext);
+       }else{
+          return $ahref;
+       }
    }
 }
 
