@@ -721,7 +721,7 @@ function updateWikiProfileFile($user){
 //}
 
 function updateWikiRemoveUser($user){
-    pr($user);
+#    pr($user);
 }
 
 // Updates the $discussion-notification file. All notifications are removed
