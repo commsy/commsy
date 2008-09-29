@@ -598,7 +598,7 @@ class cs_material_manager extends cs_manager {
 
 /***Activating Code***/
       if (!$this->_show_not_activated_entries_limit) {
-         $query .= ' AND (materials.modification_date IS NULL OR materials.modification_date < NOW())';
+         $query .= ' AND (materials.modification_date IS NULL OR materials.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
 /*********************/
 

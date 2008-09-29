@@ -1058,7 +1058,7 @@ function _getMaterialListByXML($directory){
            $xsl_filename = $xsl_file;
         }
       }
-//Datensätze über XSLT verarbeiten!!!
+//Datensätze �ber XSLT verarbeiten!!!
 /*       if (!empty($xsl_filename)){
          $xsl = new DOMDocument;
          $xsl->load(utf8_encode($xsl_directory.$xsl_filename));
@@ -1076,7 +1076,6 @@ function _getMaterialListByXML($directory){
     }
     $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory,$citation_style);
     $material_item->save();
-#    pr($material_item);
     unset($material_item);
 
 
