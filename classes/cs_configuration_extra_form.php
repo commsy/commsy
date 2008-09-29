@@ -63,6 +63,10 @@ class cs_configuration_extra_form extends cs_rubric_form {
       // extra options
       $this->_array_extra[1]['text']  = '----------------------';
       $this->_array_extra[1]['value'] = 'disabled';
+      $this->_array_extra[5]['text']  = getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
+      $this->_array_extra[5]['value'] = 'CONFIGURATION_EXTRA_MATERIALIMPORT';
+      $this->_array_extra[6]['text']  = getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT');
+      $this->_array_extra[6]['value'] = 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT';
       $this->_array_extra[7]['text']  = getMessage('CONFIGURATION_EXTRA_GROUPROOM');
       $this->_array_extra[7]['value'] = 'CONFIGURATION_EXTRA_GROUPROOM';
       $this->_array_extra[20]['text']  = '----------------------';
@@ -83,12 +87,6 @@ class cs_configuration_extra_form extends cs_rubric_form {
          $this->_array_extra[23]['text']  = getMessage('CONFIGURATION_EXTRA_WIKI');
          $this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_WIKI';
       }
-
-      $this->_array_extra[24]['text']  = getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
-      $this->_array_extra[24]['value'] = 'CONFIGURATION_EXTRA_MATERIALIMPORT';
-      $this->_array_extra[25]['text']  = getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT');
-      $this->_array_extra[25]['value'] = 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT';
-
 
       global $c_plugin_array;
       if (isset($c_plugin_array) and !empty($c_plugin_array)) {
