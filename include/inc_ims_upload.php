@@ -23,15 +23,6 @@
 
 function _getMaterialByXMLArray($material_item, $values_array,$directory,$citation_style='harvard'){
    global $environment;
-   $material_item->setVersionID(0);
-   $material_item->setContextID($environment->getCurrentContextID());
-   $user = $environment->getCurrentUserItem();
-   $material_item->setCreatorItem($user);
-#   $material_item->setCreationDate(getCurrentDateTimeMinusMinutesInMySQL(5));
-#   $material_item->setModificationDate(getCurrentDateTimeMinusMinutesInMySQL(5));
-   $material_item->setCreationDate(getCurrentDateTimeInMySQL());
-   $material_item->setModificationDate(getCurrentDateTimeInMySQL());
-   $material_item->setPrivateEditing('1');
 
 
    $title = '';
@@ -1007,7 +998,6 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $material_item->setTitle($title);
    $material_item->setAuthor($author);
    $material_item->setPublishingDate($pub_date);
-   $material_item->setModificatorItem($user);
    $material_item->setDescription($abstract);
    return $material_item;
 }
@@ -1049,6 +1039,13 @@ function _getMaterialListByXML($directory){
       xml_parse_into_struct($parser, $data, $values, $tags);
       $material_manager = $environment->getMaterialManager();
       $material_item = $material_manager->getNewItem();
+      $material_item->setVersionID(0); // Should not be required, mj
+      $material_item->setContextID($environment->getCurrentContextID());
+      $user = $environment->getCurrentUserItem();
+      $material_item->setCreatorItem($user);
+      $material_item->setCreationDate(getCurrentDateTimeInMySQL());
+      $material_item->setPrivateEditing('1');
+
       xml_parser_free($parser);
       $proc = new XSLTProcessor;
       $xml = new DOMDocument;
@@ -1079,6 +1076,7 @@ function _getMaterialListByXML($directory){
     }
     $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory,$citation_style);
     $material_item->save();
+#    pr($material_item);
     unset($material_item);
 
 
