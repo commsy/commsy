@@ -27,8 +27,11 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    $material_item->setContextID($environment->getCurrentContextID());
    $user = $environment->getCurrentUserItem();
    $material_item->setCreatorItem($user);
-   $material_item->setCreationDate(getCurrentDateTimeMinusMinutesInMySQL(1));
-   $material_item->setModificationDate(getCurrentDateTimeMinusMinutesInMySQL(1));
+#   $material_item->setCreationDate(getCurrentDateTimeMinusMinutesInMySQL(5));
+#   $material_item->setModificationDate(getCurrentDateTimeMinusMinutesInMySQL(5));
+   $material_item->setCreationDate(getCurrentDateTimeInMySQL());
+   $material_item->setModificationDate(getCurrentDateInMySQL());
+   $material_item->setPrivateEditing('1');
 
 
    $title = '';

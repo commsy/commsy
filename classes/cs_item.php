@@ -541,7 +541,7 @@ class cs_item {
 
    function getActivatingDate(){
    	$retour = '';
-      if ($this->isNotactivated()){
+      if ($this->isNotActivated()){
       	$retour = $this->getModificationDate();
       }
       return $retour;
