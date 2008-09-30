@@ -448,6 +448,7 @@ class cs_connection_soap {
                         $auth_source_id = $authentication->getAuthSourceItemID();
                      }
                      $session->setValue('auth_source',$auth_source_id);
+                     $session->setValue('javascript',-1);
                      $session->setSoapSession();
 
                      // save session
