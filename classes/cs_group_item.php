@@ -128,11 +128,7 @@ class cs_group_item extends cs_label_item {
     * this methode save the news item into the database
     */
    function save ( $save_other = true ) {
-      
-      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
-         $this->updateWikiNotification();
-      }
-      
+
       ##########################
       # FLAG: group room
       ########BEGIN#############
@@ -279,6 +275,10 @@ class cs_group_item extends cs_label_item {
       ##########################
 
       unset($current_user_item);
+      
+      if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
+         $this->updateWikiNotification();
+      }
    }
 
    /** save news item
