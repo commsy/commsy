@@ -1026,7 +1026,9 @@ class cs_user_item extends cs_item {
         // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
         // Notification entsprechend angepasst werden
         // 0 = gesperrt & geloescht (+ deletion_date)
-        $this->updateWikiRemoveUser();
+        //
+        // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
+        //$this->updateWikiRemoveUser();
       }
    }
 
@@ -1688,9 +1690,10 @@ class cs_user_item extends cs_item {
         $wiki_manager->updateNotification();
    }
    
-   public function updateWikiRemoveUser(){
-        $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->updateWikiRemoveUser($this);
-   }
+   // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
+   //public function updateWikiRemoveUser(){
+   //     $wiki_manager = $this->_environment->getWikiManager();
+   //     $wiki_manager->updateWikiRemoveUser($this);
+   //}
 }
 ?>
