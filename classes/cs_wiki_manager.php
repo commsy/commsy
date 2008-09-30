@@ -670,8 +670,7 @@ function updateWikiProfileFile($user){
 
 // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
 //function updateWikiRemoveUser($user){
-//    pr($user);
-// updateNotification();
+//    //updateNotification();
 //}
 
 // Updates the $discussion-notification file. All notifications are removed
