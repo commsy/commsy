@@ -187,7 +187,6 @@ div.content_fader{
     width: 100%;
     margin:0px;
     padding:0px;
-    font-size: 1px;
     background:url(images/layout/bg-fader_<?php echo($color['schema'])?>.gif) repeat-x;
     background-color: <?php echo($color['content_background'])?>;
 }
@@ -360,7 +359,6 @@ h2.pagetitle{
     margin:0px 0px 10px 0px;
     font-size: 16pt;
 }
-
 
 /*Special Designs*/
 .top_of_page {
