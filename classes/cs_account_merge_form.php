@@ -112,14 +112,16 @@ class cs_account_merge_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      if ( !empty($this->_form_post['user_id'])
+      global $c_annonymous_account_array;
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ( !empty($c_annonymous_account_array[strtolower($current_user->getUserID()).'_'.$current_user->getAuthSource()]) ) {
+         $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$current_user->getUserID());
+      } elseif ( !empty($c_annonymous_account_array[strtolower($this->_form_post['user_id']).'_'.$this->_form_post['auth_source']]) ) {
+         $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$this->_form_post['user_id']);
+      } elseif ( !empty($this->_form_post['user_id'])
            and !empty($this->_form_post['password'])
            and !empty($this->_form_post['auth_source'])
-######### HACK ######
-#         and strtolower($this->_form_post['user_id']) != 'bep'
-######### HACK ######
          ) {
-         $current_user = $this->_environment->getCurrentUserItem();
          if ($current_user->getUserID() == $this->_form_post['user_id']) {
             $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_USER_ID',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id','');
