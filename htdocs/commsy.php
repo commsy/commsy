@@ -442,7 +442,8 @@ if ( isset($_POST['message_language_select']) ) {
 }
 
 /*********** javascript check *************/
-if ( !$outofservice and !$session->issetValue('javascript')
+if ( !$outofservice
+     and !$session->issetValue('javascript')
      and !isset($_GET['jscheck'])
      and !( $environment->getCurrentModule() == 'file'
             and $environment->getCurrentFunction() == 'upload'
