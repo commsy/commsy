@@ -417,6 +417,9 @@ if ( !empty($_POST)
      and !( $environment->getCurrentModule() == 'file'
             and $environment->getCurrentFunction() == 'upload'
           )
+     and !( $environment->getCurrentModule() == 'context'
+            and $environment->getCurrentFunction() == 'login'
+          )
    ) {
    if ( empty($_POST['security_token']) ) {
       include_once('functions/error_functions.php');
