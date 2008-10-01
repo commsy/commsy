@@ -64,6 +64,7 @@ class cs_connection_soap {
          $session = new cs_session_item();
          $session->createSessionID('guest');
          $session->setValue('portal_id',$portal_id);
+         $session->setSoapSession();
          $session_manager = $this->_environment->getSessionManager();
          $session_manager->save($session);
          $retour = $session->getSessionID();

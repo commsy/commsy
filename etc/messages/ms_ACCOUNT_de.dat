@@ -22,6 +22,7 @@ $message["ACCOUNT_GET_MEMBERSHIP_BUTTON"]["de"] = "Teilnahme registrieren";
 $message["ACCOUNT_INDEX"]["de"] = "Kennungen";
 $message["ACCOUNT_MERGE"]["de"] = "Kennungen verbinden";
 $message["ACCOUNT_MERGE_BUTTON"]["de"] = "Verbinden";
+$message["ACCOUNT_MERGE_ERROR_ANNONYMOUS"]["de"] = "Die Kennung %1 darf nicht verändert werden.";
 $message["ACCOUNT_MERGE_ERROR_USER_ID"]["de"] = "Sie können die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> nicht mit sich selbst zusammen führen. Bitte geben Sie eine andere Kennung an.";
 $message["ACCOUNT_NOT_ACCEPTED"]["de"] = "Ihre Kennung ist für diesen Raum gesperrt.";
 $message["ACCOUNT_NOT_ACCEPTED_YET"]["de"] = "Die ModeratorInnen haben der Teilnahme <b>noch nicht</b> zugestimmt.";
