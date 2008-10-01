@@ -656,6 +656,7 @@ function updateWikiProfileFile($user){
               $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $name_for_profile . '/';
               if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
                     $tempString .= $user->getPicture() . '%0a';
+                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
               } else {
                     $tempString .= 'nobody_m.gif%0a';
               }
