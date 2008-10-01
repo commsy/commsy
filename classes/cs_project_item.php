@@ -374,15 +374,6 @@ class cs_project_item extends cs_room_item {
           $retour['EN']['GENPL']= 'topics';
           $retour['EN']['AKKPL']= 'topics';
           $retour['EN']['DATPL']= 'topics';
-          $retour['RU']['GENUS']= 'F';
-          $retour['RU']['NOMS']= 'tema';
-          $retour['RU']['GENS']= 'temei';
-          $retour['RU']['AKKS']= 'tema';
-          $retour['RU']['DATS']= 'temei';
-          $retour['RU']['NOMPL']= 'temele';
-          $retour['RU']['GENPL']= 'temelor';
-          $retour['RU']['AKKPL']= 'temele';
-          $retour['RU']['DATPL']= 'temelor';
          $this->setRubricArray (CS_TOPIC_TYPE, $retour);
 
                 $retour = array();
@@ -405,16 +396,7 @@ class cs_project_item extends cs_room_item {
          $retour['EN']['GENPL']= 'project workspaces';
          $retour['EN']['AKKPL']= 'project workspaces';
          $retour['EN']['DATPL']= 'project workspaces';
-         $retour['RU']['GENUS']= 'F';
-         $retour['RU']['NOMS']= 'sala de proiecte';
-         $retour['RU']['GENS']= 'salii de proiecte';
-         $retour['RU']['AKKS']= 'sala de proiecte';
-         $retour['RU']['DATS']= 'salii de proiecte';
-         $retour['RU']['NOMPL']= 'salile de proiecte';
-         $retour['RU']['GENPL']= 'salilor de proiecte';
-         $retour['RU']['AKKPL']= 'salile de proiecte';
-         $retour['RU']['DATPL']= 'salilor de proiecte';
-         $this->setRubricArray (CS_PROJECT_TYPE, $retour);
+        $this->setRubricArray (CS_PROJECT_TYPE, $retour);
       }
       elseif ($value == 'school'){
          $this->setTimeSpread(7);
@@ -438,15 +420,6 @@ class cs_project_item extends cs_room_item {
           $retour['EN']['GENPL']= 'courses';
           $retour['EN']['AKKPL']= 'courses';
           $retour['EN']['DATPL']= 'courses';
-          $retour['RU']['GENUS']= 'N';
-          $retour['RU']['NOMS']= 'materia';
-          $retour['RU']['GENS']= 'materiei';
-          $retour['RU']['AKKS']= 'materia';
-          $retour['RU']['DATS']= 'materiei';
-          $retour['RU']['NOMPL']= 'materiile';
-          $retour['RU']['GENPL']= 'materiilor';
-          $retour['RU']['AKKPL']= 'materiile';
-          $retour['RU']['DATPL']= 'materiilor';
          $this->setRubricArray (CS_TOPIC_TYPE, $retour);
 
          $retour = array();
@@ -469,18 +442,30 @@ class cs_project_item extends cs_room_item {
          $retour['EN']['GENPL']= 'class workspaces';
          $retour['EN']['AKKPL']= 'class workspaces';
          $retour['EN']['DATPL']= 'class workspaces';
-          $retour['RU']['GENUS']= 'F';
-          $retour['RU']['NOMS']= 'sala de clasa';
-          $retour['RU']['GENS']= 'salii de clasa';
-          $retour['RU']['AKKS']= 'sala de clasa';
-          $retour['RU']['DATS']= 'salii de clasa';
-          $retour['RU']['NOMPL']= 'salile de clasa';
-          $retour['RU']['GENPL']= 'salilor de clasa';
-          $retour['RU']['AKKPL']= 'salile de clasa';
-          $retour['RU']['DATPL']= 'salilor de clasa';
          $this->setRubricArray (CS_PROJECT_TYPE, $retour);
 
          $retour = array();
+         $retour['NAME'] = CS_COMMUNITY_TYPE;
+         $retour['DE']['GENUS']= 'M';
+         $retour['DE']['NOMS']= 'Schulraum';
+         $retour['DE']['GENS']= 'Schulraums';
+         $retour['DE']['AKKS']= 'Schulraum';
+         $retour['DE']['DATS']= 'Schulraum';
+         $retour['DE']['NOMPL']= 'Schulräume';
+         $retour['DE']['GENPL']= 'Schulräume';
+         $retour['DE']['AKKPL']= 'Schulräume';
+         $retour['DE']['DATPL']= 'Schulräumen';
+         $retour['EN']['GENUS']= 'M';
+         $retour['EN']['NOMS']= 'school workspace';
+         $retour['EN']['GENS']= 'school workspace';
+         $retour['EN']['AKKS']= 'school workspace';
+         $retour['EN']['DATS']= 'school workspace';
+         $retour['EN']['NOMPL']= 'school workspaces';
+         $retour['EN']['GENPL']= 'school workspaces';
+         $retour['EN']['AKKPL']= 'school workspaces';
+         $retour['EN']['DATPL']= 'school workspaces';
+         $this->setRubricArray (CS_COMMUNITY_TYPE, $retour);
+
       }
       elseif ($value == 'project'){
          $this->setTimeSpread(30);
@@ -505,15 +490,6 @@ class cs_project_item extends cs_room_item {
           $retour['EN']['GENPL']= 'topics';
           $retour['EN']['AKKPL']= 'topics';
           $retour['EN']['DATPL']= 'topics';
-          $retour['RU']['GENUS']= 'F';
-          $retour['RU']['NOMS']= 'tema';
-          $retour['RU']['GENS']= 'temei';
-          $retour['RU']['AKKS']= 'tema';
-          $retour['RU']['DATS']= 'temei';
-          $retour['RU']['NOMPL']= 'temele';
-          $retour['RU']['GENPL']= 'temelor';
-          $retour['RU']['AKKPL']= 'temele';
-          $retour['RU']['DATPL']= 'temelor';
           $this->setRubricArray (CS_TOPIC_TYPE, $retour);
 
                        $retour = array();
@@ -536,15 +512,6 @@ class cs_project_item extends cs_room_item {
          $retour['EN']['GENPL']= 'project workspaces';
          $retour['EN']['AKKPL']= 'project workspaces';
          $retour['EN']['DATPL']= 'project workspaces';
-         $retour['RU']['GENUS']= 'F';
-         $retour['RU']['NOMS']= 'sala de proiecte';
-         $retour['RU']['GENS']= 'salii de proiecte';
-         $retour['RU']['AKKS']= 'sala de proiecte';
-         $retour['RU']['DATS']= 'salii de proiecte';
-         $retour['RU']['NOMPL']= 'salile de proiecte';
-         $retour['RU']['GENPL']= 'salilor de proiecte';
-         $retour['RU']['AKKPL']= 'salile de proiecte';
-         $retour['RU']['DATPL']= 'salilor de proiecte';
          $this->setRubricArray (CS_PROJECT_TYPE, $retour);
       }
    }
