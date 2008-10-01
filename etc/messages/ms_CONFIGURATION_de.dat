@@ -172,6 +172,7 @@ $message["CONFIGURATION_TAG_MANDATORY"]["de"] = "Zwingende Zuordnung von Kategor
 $message["CONFIGURATION_TAG_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_STATUS"]["de"] = "Zuordnung";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS"]["de"] = "Alle CommSy-NutzerInnen";
+$message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS"]["de"] = "Alle Mitglieder %_COMMUNITY_ART_DEF_GENS_LOW zugeordneten %_COMMUNITY_SUB_GENS_BIG";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS"]["de"] = "Nur Raummoderatoren";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS"]["de"] = "Alle Raummitglieder";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DEFAULT_COMMUNITY_TITLE"]["de"] = "Default-Vorlage <br/> (%_COMMUNITY_SUB_NOMPL_BIG)";

@@ -414,7 +414,28 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             while ($item) {
                $temp_array = array();
                $template_availability = $item->getTemplateAvailability();
+
+               $community_room_member = false;
+               $community_list = $item->getCommunityList();
+               $user_community_list = $current_user->getRelatedCommunityList();
+               if ( $community_list->isNotEmpty() and $user_community_list->isNotEmpty()) {
+                  $community_item = $community_list->getFirst();
+                  while ($community_item) {
+                     $user_community_item = $user_community_list->getFirst();
+                     while ($user_community_item) {
+                         if ( $user_community_item->getItemID() == $community_item->getItemID() ){
+                            $community_room_member = true;
+                         }
+                         $user_community_item = $user_community_list->getNext();
+                     }
+                     $community_item = $community_list->getNext();
+                  }
+               }
+
+
                if( ($template_availability == '0') OR
+                   ($this->_environment->inCommunityRoom() and $template_availability == '3') OR
+                   ($this->_environment->inPortal() and $template_availability == '3' and $community_room_member) OR
                    ($template_availability == '1' and $item->mayEnter($current_user)) OR
                    ($template_availability == '2' and $item->mayEnter($current_user) and ($item->isModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource())))
                   ){
@@ -832,7 +853,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
         if ( !empty($this->_community_room_array) ) {
       $portal_item = $this->_environment->getCurrentPortalItem();
       $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
-      
+
       if ($project_room_link_status =='optional'){
          if ( !empty ($this->_shown_community_room_array) ) {
             $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
