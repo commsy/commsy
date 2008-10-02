@@ -351,6 +351,7 @@ class cs_privateroom_item extends cs_room_item {
                      if ( $rubric_manager instanceof cs_user_manager ) {
                         $rubric_manager->setUserLimit();
                      }
+                     $rubric_manager->showNoNotActivatedEntries();
                      $rubric_manager->select();
                      $rubric_list = $rubric_manager->get();        // returns a cs_list of announcement_items
                      $ids = $rubric_manager->getIDs();
