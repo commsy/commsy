@@ -787,13 +787,12 @@ function updateNotification(){
       $discussion_array = $context_item->getWikiDiscussionArray();
       foreach($discussion_array as $discussion){
          $group_manager = $this->_environment->getGroupManager();
+         $group_manager->resetCache();
          $group_manager->reset();
          $group_manager->select();
          $group_ids = $group_manager->getIDArray();
          $discussion_member = array();
          foreach($group_ids as $group_id){
-             $group_manager = $this->_environment->getGroupManager();
-             $group_manager->reset();
              $group = $group_manager->getItem($group_id);
              $group_discussions = $group->getDiscussionNotificationArray();
              foreach($group_discussions as $group_discussion){

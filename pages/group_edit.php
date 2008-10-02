@@ -498,7 +498,7 @@ else {
                ) {
                $discussion_notification_array[] = $_POST['discussion_notification'];
             }
-            
+
             $group_item->setDiscussionNotificationArray($discussion_notification_array);
       
             // Save item
