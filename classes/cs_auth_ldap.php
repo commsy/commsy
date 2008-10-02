@@ -181,7 +181,7 @@ class cs_auth_ldap extends cs_auth_manager {
                   $access = $result[0]['dn'];
                   $connect = @ldap_connect( $this->_server, $this->_server_port );
                   @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
-                  $bind = ldap_bind( $connect, $access, $this->encryptPassword($password) );
+                  $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
                   if ( $bind ) {
                      $granted = true;
                   } else {
