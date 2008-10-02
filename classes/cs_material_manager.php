@@ -299,12 +299,6 @@ class cs_material_manager extends cs_manager {
     *
     * @return object cs_item a label
     */
-   /** get a material in newest version
-    *
-    * @param integer item_id id of the item
-    *
-    * @return object cs_item a label
-    */
    function getItem ($item_id) {
       $material = NULL;
       if (array_key_exists($item_id,$this->_cached_items)){
@@ -316,10 +310,10 @@ class cs_material_manager extends cs_manager {
          }
          $query .= " ORDER BY materials.version_id DESC";
          $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) or empty($result[0]) ) {
+         if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting one material item from query: "'.$query.'"',E_USER_WARNING);
-         } else {
+         } elseif ( !empty($result[0]) ) {
             $material = $this->_buildItem($result[0]);
             if ( $this->_cache_on ) {
                $this->_cached_items[$result[0]['item_id']] = $result[0];

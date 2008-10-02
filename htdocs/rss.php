@@ -270,7 +270,12 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_material_manager.php');
             $manager = new cs_material_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ( isset($last_section_item) and $item->getModificationDate() == $last_section_item->getModificationDate() ) {
+            if ( !isset($item)
+                 or $item->isDeleted()
+                 or ( isset($last_section_item)
+                      and $item->getModificationDate() == $last_section_item->getModificationDate()
+                    )
+               ) {
                unset($last_section_item);
                $title = '';
                $description = '';
