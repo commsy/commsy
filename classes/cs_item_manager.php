@@ -130,6 +130,12 @@ class cs_item_manager extends cs_manager {
 
      $query .= ' WHERE 1';
 
+/***Activating Code***/
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (items.modification_date IS NULL OR items.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+      }
+/*********************/
+
      if ( isset($this->_existence_limit) ) {
          $query .= ' AND items.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_existence_limit).' day)';
      }

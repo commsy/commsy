@@ -542,10 +542,14 @@ class cs_manager {
    */
    function _update($item) {
       $query = 'UPDATE items SET';
+      $modification_date = getCurrentDateTimeInMySQL();
+      if ($item->isNotActivated()){
+         $modification_date = $item->getModificationDate();
+      }
       if ( $item->isChangeModificationOnSave()
            or $this->_update_with_changing_modification_information
          ) {
-         $query .= ' modification_date="'.getCurrentDateTimeInMySQL().'",';
+         $query .= ' modification_date="'.$modification_date.'",';
       }
       $query .= ' context_id="'.encode(AS_DB,$item->getContextID()).'"';
       $query .= ' WHERE item_id = "'.encode(AS_DB,$item->getItemID()).'"';

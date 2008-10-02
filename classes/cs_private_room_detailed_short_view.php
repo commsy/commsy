@@ -595,6 +595,7 @@ class cs_private_room_short_view extends cs_view{
       if ( $rubric_manager instanceof cs_user_manager ) {
          $rubric_manager->setUserLimit(2);
       }
+      $rubric_manager->showNoNotActivatedEntries();
       $rubric_manager->select();
       $rubric_list = $rubric_manager->get();
       $ids = $rubric_manager->getIDs();
