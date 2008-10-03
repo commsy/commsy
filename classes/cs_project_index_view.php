@@ -96,7 +96,7 @@ class cs_project_index_view extends cs_context_index_view {
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       if (!$this->_clipboard_mode){
          $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
@@ -151,7 +151,7 @@ class cs_project_index_view extends cs_context_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
 		 if ($time_list->isNotEmpty()) {
 			$time_item = $time_list->getFirst();
 			while ($time_item) {
@@ -164,7 +164,7 @@ class cs_project_index_view extends cs_context_index_view {
 			}
 		 }
 
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="-1"';
          if ( isset($seltime) and $seltime == -1) {
             $html .= ' selected="selected"';

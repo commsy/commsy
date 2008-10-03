@@ -337,7 +337,8 @@ if ($current_user->isGuest()) {
             } else {
                $community_room_array = array();
             }
-            if ( !empty($_POST['communityrooms']) and $_POST['communityrooms']!=-1 and !in_array($_POST['communityrooms'],$post_community_room_ids) ) {
+            if ( !empty($_POST['communityrooms']) and $_POST['communityrooms']!=-1 and $_POST['communityrooms']!='disabled' and !in_array($_POST['communityrooms'],$post_community_room_ids) ) {
+               pr($_POST['communityrooms']);
                $temp_array = array();
                $community_manager = $environment->getCommunityManager();
                $community_manager->reset();
@@ -760,6 +761,14 @@ if ($current_user->isGuest()) {
              $item->setOpenForGuests();
           } elseif ($_POST['open_for_guests'] == 'closed') {
              $item->setClosedForGuests();
+          }
+       }
+       // Room association
+       if ( isset($_POST['room_assignment']) ) {
+          if ($_POST['room_assignment'] == 'open') {
+             $item->setAssignmentOpenForAnybody();
+          } elseif ($_POST['room_assignment'] == 'closed') {
+             $item->setAssignmentOnlyOpenForRoomMembers();
           }
        }
        // time (clock pulses)

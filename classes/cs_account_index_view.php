@@ -553,17 +553,17 @@ class cs_account_index_view extends cs_campus_index_view {
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="1">'.$this->_translator->getMessage('USER_LIST_ACTION_DELETE_ACCOUNT').'</option>'.LF;
       $html .= '   <option value="2">'.$this->_translator->getMessage('USER_LIST_ACTION_LOCK_ACCOUNT').'</option>'.LF;
       $html .= '   <option value="3">'.$this->_translator->getMessage('USER_LIST_ACTION_FREE_ACCOUNT').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="11">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_USER').'</option>'.LF;
       $html .= '   <option value="14">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_MODERATOR').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="30">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_CONTACT_MODERATOR').'</option>'.LF;
       $html .= '   <option value="31">'.$this->_translator->getMessage('USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       if ( !$this->_environment->inProjectRoom()
            and !$this->_environment->inGroupRoom()
          ) {
@@ -573,7 +573,7 @@ class cs_account_index_view extends cs_campus_index_view {
            and !$this->_environment->inGroupRoom()
          ) {
          $html .= '   <option value="23">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS').'</option>'.LF;
-         $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       }
       $html .= '   <option value="21">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SEND').'</option>'.LF;
       $html .= '</select>'.LF;

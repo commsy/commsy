@@ -173,7 +173,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_MATERIAL_PUBLISH').'</option>'.LF;
       $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_MATERIAL_NOT_PUBLISH').'</option>'.LF;
       $html .= '</select>'.LF;

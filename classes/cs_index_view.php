@@ -943,7 +943,7 @@ class cs_index_view extends cs_view {
          $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       if ( isset($tag_list) ) {
          $selected_tag_array = $this->_getSelectedTagArray();
          $buzzword = $tag_list->getFirst();
@@ -957,7 +957,7 @@ class cs_index_view extends cs_view {
          }
       }
       if ( $depth == 0 ) {
-         $html .= '   <option disabled="disabled" value="-1">------------------------------</option>'.LF;
+         $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
          $html .= '      <option value="-1"';
          if ( $selected_id == -1 ) {
             $html .= ' selected="selected"';
@@ -2586,7 +2586,7 @@ EOD;
                      $html .= ' selected="selected"';
                   }
                   $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-                  $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+                  $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
                   $sel_item = $list->getFirst();
                   while ( $sel_item ) {
                      $html .= '      <option value="'.$sel_item->getItemID().'"';
@@ -2597,7 +2597,7 @@ EOD;
                      $html .= '>'.$text.'</option>'.LF;
                      $sel_item = $list->getNext();
                  }
-                 $html .= '   <option disabled="disabled" value="-1">------------------------------</option>'.LF;
+                 $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
                  $html .= '      <option value="-1"';
                  if ( !isset($selrubric) || $selrubric == -1 ) {
                     $html .= ' selected="selected"';

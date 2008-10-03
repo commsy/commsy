@@ -211,8 +211,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       if ( ( $this->_type == CS_PROJECT_TYPE and $this->_environment->inProjectRoom() )
            or $this->_environment->getCurrentModule() == 'project'
          ) {
-              $current_portal = $this->_environment->getCurrentPortalItem();
-              $community_list = $current_portal->getCommunityList();
+         $current_portal = $this->_environment->getCurrentPortalItem();
+         $current_user = $this->_environment->getCurrentUserItem();
+         $community_list = $current_portal->getCommunityList();
          $community_room_array = array();
          $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
          $temp_array['value'] = '-1';
@@ -224,9 +225,19 @@ class cs_configuration_preferences_form extends cs_rubric_form {
               if ($community_list->isNotEmpty()) {
                  $community_item = $community_list->getFirst();
                  while ($community_item) {
-               $temp_array = array();
-                    $temp_array['text'] = $community_item->getTitle();
-                    $temp_array['value'] = $community_item->getItemID();
+                    $temp_array = array();
+                    if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
+                       if ( !$community_item->isUser($current_user)) {
+                          $temp_array['text'] = $community_item->getTitle();
+                          $temp_array['value'] = 'disabled';
+                       }else{
+                          $temp_array['text'] = $community_item->getTitle();
+                          $temp_array['value'] = $community_item->getItemID();
+                       }
+                    }else{
+                       $temp_array['text'] = $community_item->getTitle();
+                       $temp_array['value'] = $community_item->getItemID();
+                    }
                     $community_room_array[] = $temp_array;
                     unset($temp_array);
                     $community_item = $community_list->getNext();
@@ -788,7 +799,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
            ) {
            // do nothing
         } else {
-           $radio_values = array();
+            $radio_values = array();
             $radio_values[0]['text'] = getMessage('COMMON_ON');
             $radio_values[0]['value'] = 'open';
             $radio_values[1]['text'] = getMessage('COMMON_OFF');
@@ -800,6 +811,20 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                         '',
                                         true,
                                         true
+                                       );
+            unset($radio_values);
+            $radio_values = array();
+            $radio_values[0]['text'] = getMessage('COMMON_ASSIGMENT_ON');
+            $radio_values[0]['value'] = 'open';
+            $radio_values[1]['text'] = getMessage('COMMON_ASSIGMENT_OFF');
+            $radio_values[1]['value'] = 'closed';
+            $this->_form->addRadioGroup('room_assignment',
+                                        getMessage('PREFERENCES_ROOM_ASSIGMENT'),
+                                        getMessage('PREFERENCES_ASSIGMENT_OPEN_FOR_GUESTS_DESC'),
+                                        $radio_values,
+                                        '',
+                                        true,
+                                        false
                                        );
             unset($radio_values);
          }
@@ -1112,6 +1137,12 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_values['open_for_guests'] = 'open';
          } else {
             $this->_values['open_for_guests'] = 'closed';
+         }
+         if ($this->_item->isAssignmentOnlyOpenForRoomMembers()) {
+            $this->_values['room_assignment'] = 'closed';
+
+         } else {
+            $this->_values['room_assignment'] = 'open';
          }
          if ($this->_type == 'project' and $this->_environment->inProjectRoom()) {
             $community_list = $this->_item->getCommunityList();

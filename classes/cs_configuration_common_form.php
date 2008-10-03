@@ -137,19 +137,31 @@ class cs_configuration_common_form extends cs_rubric_form {
          // links to community room
          $current_portal = $this->_environment->getCurrentPortalItem();
          $community_list = $current_portal->getCommunityList();
+         $current_user = $this->_environment->getCurrentUserItem();
          $community_room_array = array();
          $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
          $temp_array['value'] = '-1';
          $community_room_array[] = $temp_array;
+         $temp_array['text'] = '--------------------';
+         $temp_array['value'] = 'disabled';
+         $community_room_array[] = $temp_array;
          unset($temp_array);
-
          if ($community_list->isNotEmpty()) {
             $community_item = $community_list->getFirst();
-
             while ($community_item) {
                $temp_array = array();
-               $temp_array['text'] = $community_item->getTitle();
-               $temp_array['value'] = $community_item->getItemID();
+               if ($community_item->isAssignmentOnlyOpenForRoomMembers() ){
+                  if ( !$community_item->isUser($current_user)) {
+                     $temp_array['text'] = $community_item->getTitle();
+                     $temp_array['value'] = 'disabled';
+                  }else{
+                     $temp_array['text'] = $community_item->getTitle();
+                     $temp_array['value'] = $community_item->getItemID();
+                  }
+               }else{
+                  $temp_array['text'] = $community_item->getTitle();
+                  $temp_array['value'] = $community_item->getItemID();
+               }
                $community_room_array[] = $temp_array;
                unset($temp_array);
                $community_item = $community_list->getNext();

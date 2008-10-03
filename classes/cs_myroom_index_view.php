@@ -294,7 +294,7 @@ class cs_myroom_index_view extends cs_context_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
 		 if ($time_list->isNotEmpty()) {
 			$time_item = $time_list->getFirst();
 			while ($time_item) {
@@ -307,7 +307,7 @@ class cs_myroom_index_view extends cs_context_index_view {
 			}
 		 }
 
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="-1"';
          if ( isset($seltime) and $seltime == -1) {
             $html .= ' selected="selected"';

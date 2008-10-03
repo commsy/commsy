@@ -88,7 +88,7 @@ class cs_material_index_view extends cs_index_view {
           $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('MATERIAL_FULL_SEARCH').'</option>'.LF;
-      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       $html .= '      <option value="1"';
       if ( isset($selected_value) and $selected_value == 'title' ) {
          $html .= ' selected="selected"';
@@ -120,7 +120,7 @@ class cs_material_index_view extends cs_index_view {
              $html .= ' selected="selected"';
           }
           $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
-          $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+          $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
           $html .= '      <option value="2"';
           if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
               $html .= ' selected="selected"';

@@ -301,7 +301,7 @@ class cs_datescalendar_index_view extends cs_room_index_view {
       }
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
 
-      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       $html .= '      <option value="3"';
       if ( !empty($selstatus) and $selstatus == 3 ) {
          $html .= ' selected="selected"';
@@ -356,7 +356,7 @@ class cs_datescalendar_index_view extends cs_room_index_view {
                      $html .= ' selected="selected"';
                   }
                   $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-                  $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+                  $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
                   $sel_item = $list->getFirst();
                   while ( $sel_item ) {
                      $html .= '      <option value="'.$sel_item->getItemID().'"';
@@ -367,7 +367,7 @@ class cs_datescalendar_index_view extends cs_room_index_view {
                      $html .= '>'.$text.'</option>'.LF;
                      $sel_item = $list->getNext();
                  }
-                 $html .= '   <option disabled="disabled" value="-1">------------------------------</option>'.LF;
+                 $html .= '   <option class="disabled" disabled="disabled" value="-1">------------------------------</option>'.LF;
                  $html .= '      <option value="-1"';
                  if ( !isset($selrubric) || $selrubric == -1 ) {
                     $html .= ' selected="selected"';

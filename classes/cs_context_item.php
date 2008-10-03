@@ -125,6 +125,22 @@ class cs_context_item extends cs_item {
       $this->_setValue('is_open_for_guests', 0, TRUE);
    }
 
+   function isAssignmentOnlyOpenForRoomMembers () {
+      $retour = false;
+      if ($this->_issetExtra('ROOMASSOCIATION') and $this->_getExtra('ROOMASSOCIATION')=='onlymembers') {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+   function setAssignmentOpenForAnybody () {
+      $this->_addExtra('ROOMASSOCIATION','forall');
+   }
+
+   function setAssignmentOnlyOpenForRoomMembers () {
+      $this->_addExtra('ROOMASSOCIATION','onlymembers');
+   }
+
    function isCommunityRoom () {
       return false;
    }

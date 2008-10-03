@@ -1018,7 +1018,7 @@ class cs_page_view extends cs_view {
       if ($this->_environment->inPortal() and $current_portal->showTime()) {
          $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" selected="selected">'.$this->_translator->getMessage('MYAREA_ROOM_NO_SELECTION').'</option>'.LF;
          if (!empty($context_array)) {
-            $retour .= '            <option value="-1" disabled="disabled">&nbsp;</option>'.LF;
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
          }
       } elseif ( !$this->_environment->inServer() ) {
          $title = $this->_translator->getMessage('MYAREA_ROOM_NO_SELECTION');
@@ -1033,7 +1033,7 @@ class cs_page_view extends cs_view {
                $additional = ' selected="selected"';
             }
             $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$title.'</option>'.LF;
-            $retour .= '            <option value="-1" disabled="disabled">&nbsp;</option>'.LF;
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
          }
          unset($own_room);
          unset($private_room_manager);
@@ -1047,7 +1047,7 @@ class cs_page_view extends cs_view {
             $additional = ' selected="selected"';
          }
          if ($con['item_id'] == -1) {
-            $additional = ' disabled="disabled"';
+            $additional = ' class="disabled" disabled="disabled"';
             if (!empty($con['title'])) {
                $title = '----'.$this->_text_as_html_short($con['title']).'----';
             } else {
@@ -1055,7 +1055,7 @@ class cs_page_view extends cs_view {
             }
          }
          if ($con['item_id'] == -2) {
-            $additional = ' disabled="disabled" style="font-style:italic;"';
+            $additional = ' class="disabled" disabled="disabled" style="font-style:italic;"';
             if (!empty($con['title'])) {
                $title = $this->_text_as_html_short($con['title']);
             } else {
@@ -1074,9 +1074,9 @@ class cs_page_view extends cs_view {
       if (!$this->_current_user->isUser() and $this->_current_user->getUserID() != "guest") {
          $context = $this->_environment->getCurrentContextItem();
          if (!empty($context_array)) {
-            $retour .= '            <option value="-1" disabled="disabled">&nbsp;</option>'.LF;
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
          }
-         $retour .= '            <option value="-1" disabled="disabled">----'.$this->_translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
+         $retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$this->_translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
          $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
       }
 
@@ -2130,7 +2130,7 @@ class cs_page_view extends cs_view {
       $html .= '>';
       $html .= '*'.$this->_translator->getMessage('MESSAGE_LANGUAGE_DEFAULT_LINK');
       $html .= '</option>'.LF;
-      $html .= '<option value="-1" disabled="disabled">';
+      $html .= '<option value="-1" class="disabled" disabled="disabled">';
       $html .= '----------';
       $html .= '</option>'.LF;
       foreach($languageArray as $languageItem) {
@@ -2145,7 +2145,7 @@ class cs_page_view extends cs_view {
          $html .= '</option>'.LF;
       }
       unset($languageArray);
-      $html .= '<option value="-1" disabled="disabled">';
+      $html .= '<option value="-1" class="disabled" disabled="disabled">';
       $html .= '----------';
       $html .= '</option>'.LF;
       $html .= '<option value="no_trans"'.LF;

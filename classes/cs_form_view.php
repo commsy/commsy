@@ -916,6 +916,7 @@ class cs_form_view extends cs_view {
          $html .= $this->_text_as_html_short_coding_format($form_element['descriptionText']).'</td><td style="border-bottom: none;">';
          $html .= '&nbsp;'.$this->_translator->getMessage('SECTION_CHOOSE_POSITION');
       }
+
       $html .= '<select name="'.$form_element['name'].'"';
       $html .= ' size="'.$form_element['size'].'"';
       if ($form_element['multiple']) {
@@ -939,6 +940,7 @@ class cs_form_view extends cs_view {
       $html .= '>'.LF;
       $options = $form_element['options'];
       $option = reset($options);
+      $browser = $this->_environment->getCurrentBrowser();
       while ($option) {
          if ( !empty($option['text']) ) {
             if (!isset($option['value'])) {
@@ -946,7 +948,10 @@ class cs_form_view extends cs_view {
             }
             $html .= '            <option';
             if (isset($option['value']) and $option['value'] == 'disabled') {
-               $html .= ' disabled="disabled"';
+               $html .= ' class="disabled" disabled="disabled"';
+               if ($browser == 'MSIE') {
+                  $html .= ' value="-1"';
+               }
             } else {
                $html .= ' value="'.$this->_text_as_form($option['value']).'"';
             }

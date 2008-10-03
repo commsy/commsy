@@ -640,7 +640,7 @@ class cs_guide_list_view extends cs_list_view_plain {
 
       $current_context = $this->_environment->getCurrentContextItem();
       if ($show_rooms !='onlycommunityrooms'){
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="3"';
          if ( !empty($selroom) and $selroom == 3 ) {
             $html .= ' selected="selected"';
@@ -660,7 +660,7 @@ class cs_guide_list_view extends cs_list_view_plain {
          if ( $current_user->isModerator()
               and $current_context->withGroupRoomFunctions()
             ) {
-            $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+            $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
             $html .= '      <option value="6"';
             if ( !empty($selroom) and $selroom == 6 ) {
                $html .= ' selected="selected"';
@@ -672,7 +672,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       if ( $this->_environment->inPortal() ) {
          $current_user = $this->_environment->getCurrentUser();
          if ( $current_user->isUser() ) {
-            $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+            $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
             $html .= '      <option value="5"';
             if ( !empty($selroom) and $selroom == 5 ) {
                $html .= ' selected="selected"';
@@ -716,7 +716,7 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= ' selected="selected"';
          }
          $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          if ($time_list->isNotEmpty()) {
             $time_item = $time_list->getFirst();
             while ($time_item) {
@@ -729,7 +729,7 @@ class cs_guide_list_view extends cs_list_view_plain {
             }
          }
 
-         $html .= '      <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="-1"';
          if ( isset($seltime) and $seltime == -1) {
             $html .= ' selected="selected"';

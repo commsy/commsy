@@ -185,7 +185,7 @@ class cs_dates_index_view extends cs_room_index_view {
       }
       $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
 
-      $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       $html .= '      <option value="3"';
       if ( !empty($selstatus) and $selstatus == 3 ) {
          $html .= ' selected="selected"';

@@ -159,9 +159,9 @@ class cs_user_index_view extends cs_room_index_view {
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
-      $html .= '   <option disabled="disabled">------------------------------</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="2">'.$this->_translator->getMessage('USER_LIST_ACTION_EMAIL_SEND').'</option>'.LF;
       $html .= '</select>'.LF;
       $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
@@ -393,7 +393,7 @@ class cs_user_index_view extends cs_room_index_view {
 
       $context_item = $this->_environment->getCurrentContextItem();
       if ($context_item->isCommunityRoom()) {
-         $html .= '   <option disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="11"';
          if ( !empty($selstatus) and $selstatus == 11 ) {
             $html .= ' selected="selected"';
