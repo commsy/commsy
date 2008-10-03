@@ -94,10 +94,16 @@
                  <LI><code>register_globals = off</code> (default = off)</LI>
                  <li><code>memory_limit = 24M</code> (default = 8M)</li>
               </UL>
+              Zum Einstellen der Parameter bearbeiten Sie eine der Dateien mit einem Texteditor und Administratorrechten. Die Orte dieser Dateien sind unter Ubuntu Linux:
+              <UL>
+                 <LI><code>/etc/php5/apache2/php.ini</code></LI>
+                 <LI><code>/var/www/commsy/htdocs/.htaccess</code> (oder ähnlich)</LI>
+                 <li><code>/etc/apache2/sites-available/COMMSY-VHOST</code></li>
+              </UL>
            </UL>
       </LI>
       <LI>MySQL-Databank Version 5
-          (z. B. von <A HREF="http://www.mysql.com" TARGET="_blank">www.mysql.com</A>)</LI>
+          (z. B. von <A HREF="http://www.mysql.com" TARGET="_blank">http://www.mysql.com</A>)</LI>
       <LI>CommSy Sourcecode von <A HREF="http://www.commsy.net/Software/Download"
           TARGET="_blank">http://www.commsy.net/Software/Download</A>
       </LI>
@@ -112,7 +118,19 @@
           (Name z. B. = <code>commsy</code>) und w&auml;hlen Sie daf&uuml;r den Zeichensatz
           <code>utf8_general_ci</code>.</li>
       <LI>Spielen Sie den CommSy-Code in das Verzeichnis Ihres Webservers
-          (z. B. <code>htdocs</code> oder <code>wwwroot</code>).</LI>
+          (z. B. <code>htdocs</code> oder <code>wwwroot</code>).
+          Unter Linux geht dies so:
+          <ol>
+             <li>Wechseln Sie mit einer Kommandozeile in den Ordner, in dem sich die CommSy-Archivdatei (z.B. <code>commsy-6.0.0.tar.bz2</code> - Versionsnummern entsprechend der neusten Version anpassen) befindet.</li>
+             <li>Nun führen Sie folgendes Kommando aus: <code>sudo tar -jxvf commsy-6.0.0.tar.bz2 -C /var/www/</code> und der CommSy-Code wird in das Verzeichnis <code>/var/www/</code> entpackt.</LI>
+             <li>Nun sollten Sie dem User "www-data", welcher den Apache Server vertritt, noch Schreibrechte auf das CommSy-Verzeichnis gewähren:<br/>
+                 <code>cd /var/www</code><br/>
+                 <code>sudo chown -R www-data ./commsy-6.0.0</code>
+             </li>
+             <li>Außerdem muss die Welt nicht unbedingt mitlesen: <code>sudo chmod -R o-rwx ./commsy-6.0.0</code></li>
+             <li>Tipp: Noch sicherer wird es, wenn Sie einen Apache vhost extra für die CommSy-Installation einrichten und als <code>DokumentRoot</code> das <code>htdocs</code>-Verzeichnis der CommSy-Installation wählen. So sind dann alle hochgeladenen Dateien und auch das Konfigurationsverzeichnis nicht direkt vom Webserver auslieferbar.</li>
+          </ol>
+      </LI>
       <LI>Legen Sie in der MySQL-Datenbank den Datenbankbenutzer an, der fortan alle
           SQL-Abfragen f&uuml;r das CommSy vornehmen wird. Mit dem Tool <i><A HREF="http://www.phpmyadmin.net" TARGET="_blank">phpMyAdmin</A></i> oder Ihrem MySQL-Client
           w&auml;hlen Sie dazu die Datenbanktabelle (<code>mysql/user</code>) gehen auf "Einf&uuml;gen"
@@ -272,7 +290,7 @@
       <li>IMS-Import:
            Um den IMS-Import zu nutzen müssen folgende php-Pakete installiert sein:
            <ul>
-           <li>php-xsl</li>
+           <li>php5-xsl</li>
            <li>libxslt in der Version 1.1.0 oder höher</li>
            </ul>
       </li>

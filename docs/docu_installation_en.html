@@ -92,6 +92,12 @@
               <LI>register_globals = off (default = off)</LI>
                              <li>memory_limit = 24M (default = 8M)</li>
                   </UL>
+              To set these parameters use an editor and root access (sudo). You can find the files at Ubuntu Linux here:
+              <UL>
+                 <LI><code>/etc/php5/apache2/php.ini</code></LI>
+                 <LI><code>/var/www/commsy/htdocs/.htaccess</code></LI>
+                 <li><code>/etc/apache2/sites-available/COMMSY-VHOST</code></li>
+              </UL>
               </UL>
            </LI>
            <LI>MySQL-Database version 5 (e.g. from <A HREF="http://www.mysql.com" TARGET="_blank">mysql.com</A>)</LI>
@@ -106,7 +112,18 @@
              <LI>Create a new database in MySQL for your CommSy installation (e.g. name: commsy). Use the
                  character set <code>utf8_general_ci</code>.</li>
              <LI>Import the CommSy code into the document root of your webserver
-                 (e.g. <code>htdocs</code> or <code>wwwroot</code>).</LI>
+                 (e.g. <code>htdocs</code> or <code>wwwroot</code>).
+          At Linux can do the following:
+          <ol>
+             <li>Go to the folder where you have downloaded the commsy archive file (<code>commsy-6.0.0.tar.bz2</code> - please change version number for current version).</li>
+             <li>Now unzip the archive: <code>sudo tar -jxvf commsy-6.0.0.tar.bz2 -C /var/www/</code> to the folder <code>/var/www/</code>.</LI>
+             <li>And finally the webserver apache must have write access:<br/>
+                 <code>cd /var/www</code><br/>
+                 <code>sudo chown -R www-data ./commsy-6.0.0</code>
+             </li>
+             <li><code>sudo chmod -R o-rwx ./commsy-6.0.0</code> so the world can not read.</li>
+             <li>Tip: Just configure an extra apache vhost for CommSy and set <code>DokumentRoot</code> to the CommSy-<code>htdocs</code> folder. So nobody can get access to your CommSy config files directly via the webserver.</li>
+          </ol></LI>
              <LI>Create the database user that is dedicated to do all SQL inquiries for CommSy from now on.</LI>
              <LI>The next step ist performed best by using the Tool <i>phpmyadmin</i> or your MySQL client. Select
                  the database table <code>mysql/user</code>, choose "insert" and specify
