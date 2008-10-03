@@ -45,6 +45,8 @@ $message["PREFERENCES_OUTOFSERVICE"]["en"] = "Out of Service";
 $message["PREFERENCES_OUTOFSERVICE_DESC"]["en"] = "Activate out of service information.";
 $message["PREFERENCES_PATH_CONFIGURATIONS"]["en"] = "Configure path feature";
 $message["PREFERENCES_PATH_CONFIGURATIONS_DESC"]["en"] = "Activate and configure path feature in  the topics workspace rubric.";
+$message["PREFERENCES_ROOM_ASSIGMENT"]["en"] = "Association of <br/>
+%_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["en"] = "Save preferences";
 $message["PREFERENCES_SHOW_TITLE_OPTION"]["en"] = "Display workspace title at top of page";
 $message["PREFERENCES_TAGS_CONFIGURATIONS"]["en"] = "Configure categories and tags";

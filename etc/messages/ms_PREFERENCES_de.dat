@@ -45,6 +45,8 @@ $message["PREFERENCES_OUTOFSERVICE"]["de"] = "Wartungsarbeiten";
 $message["PREFERENCES_OUTOFSERVICE_DESC"]["de"] = "Wartungsseite aktivieren, um die Nutzung zu unterbrechen.";
 $message["PREFERENCES_PATH_CONFIGURATIONS"]["de"] = "Pfade in %_TOPIC_ART_DEF_DATPL_LOW %_TOPIC_SUB_DATPL_LOW";
 $message["PREFERENCES_PATH_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die Pfade in %_TOPIC_ART_DEF_DATPL_LOW %_TOPIC_SUB_DATPL_LOW aktivieren.";
+$message["PREFERENCES_ROOM_ASSIGMENT"]["de"] = "Zuordnung von <br/>
+%_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["de"] = "Einstellungen speichern";
 $message["PREFERENCES_SHOW_TITLE_OPTION"]["de"] = "Name anzeigen";
 $message["PREFERENCES_TAGS_CONFIGURATIONS"]["de"] = "Schlagwörter und Kategorien";
