@@ -451,6 +451,9 @@ if ( !$outofservice
      and !( $environment->getCurrentModule() == 'file'
             and $environment->getCurrentFunction() == 'upload'
           )
+     and !( $environment->getCurrentModule() == 'material'
+            and $environment->getCurrentFunction() == 'getfile'
+          )
    ) {
    include_once('pages/context_reload.php');
    exit();
