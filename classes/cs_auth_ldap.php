@@ -164,6 +164,7 @@ class cs_auth_ldap extends cs_auth_manager {
          } elseif ( !empty($this->_rootuser)
                     and !empty($this->_rootuser_password)
                   ) {
+            $access_first = $access;
             $suchfilter="($this->_field_userid=$uid)";
             if ( strstr($this->_rootuser,',')
                  and strstr($this->_rootuser,'=')
@@ -179,11 +180,15 @@ class cs_auth_ldap extends cs_auth_manager {
                $unbind = ldap_unbind($connect);
                if ( $result['count'] != 0 ) {
                   $access = $result[0]['dn'];
-                  $connect = @ldap_connect( $this->_server, $this->_server_port );
-                  @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
-                  $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
-                  if ( $bind ) {
-                     $granted = true;
+                  if ( strtolower($access) != strtolower($access_first) ) {
+                     $connect = @ldap_connect( $this->_server, $this->_server_port );
+                     @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
+                     $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
+                     if ( $bind ) {
+                        $granted = true;
+                     } else {
+                        $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+                     }
                   } else {
                      $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                   }
