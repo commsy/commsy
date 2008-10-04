@@ -145,7 +145,23 @@ else {
               and $dir != '.'
               and $dir != 'print'
               and $dir != 'jsMath'
-              //and $dir != 'svs'
+              and $dir != 'CVS'
+            ) {
+            $skin_array[] = $dir;
+         }
+      }
+   }
+
+   // now local skin directory
+   $directory_handle = @opendir($c_pmwiki_path_file.'/wikis/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/pub/skins');
+   if ($directory_handle) {
+      while (false !== ($dir = readdir($directory_handle))) {
+         if ( $dir != 'home'
+              and $dir != '...'
+              and $dir != '..'
+              and $dir != '.'
+              and $dir != 'print'
+              and $dir != 'jsMath'
               and $dir != 'CVS'
             ) {
             $skin_array[] = $dir;
@@ -293,23 +309,23 @@ else {
 
          // /new features
 
-		// Discussion
-		
-		if ( isset($_POST['enable_discussion']) ) {
+      // Discussion
+
+      if ( isset($_POST['enable_discussion']) ) {
             $item->setWikiEnableDiscussion();
             if ( isset($_POST['new_discussion']) ) {
-	            $item->WikiSetNewDiscussion($_POST['new_discussion']);
-	        }
+               $item->WikiSetNewDiscussion($_POST['new_discussion']);
+           }
          } else {
             $item->unsetWikiEnableDiscussion();
          }
-         
+
          if ( isset($_POST['enable_discussion_notification']) ) {
                 $item->setWikiEnableDiscussionNotification();
             } else {
                 $item->unsetWikiEnableDiscussionNotification();
           }
-            
+
         if ( isset($_POST['enable_discussion_notification_groups']) ) {
                 $item->setWikiEnableDiscussionNotificationGroups();
             } else {
@@ -333,10 +349,10 @@ else {
          // create new wiki
          $wiki_manager = $environment->getWikiManager();
          $wiki_manager->createWiki($item);
-         
+
          // Save item - after createWiki() -> old discussions might be deleted
          $item->save();
-         
+
          $form_view->setItemIsSaved();
          $is_saved = true;
       }
