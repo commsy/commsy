@@ -639,11 +639,8 @@ class cs_item {
       if ($this->_issetExtra($key)) {
          $extras = $this->_getValue('extras');
          unset($extras[$key]);
+         $this->_setValue('extras', $extras);
       }
-     if (!isset($extras)) {
-       $extras = array();
-     }
-      $this->_setValue('extras', $extras);
    }
 
    /** exists the extra information with the name $key ?

@@ -814,7 +814,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                        );
             unset($radio_values);
 
-/*            $radio_values = array();
+            $radio_values = array();
             $radio_values[0]['text'] = getMessage('COMMON_ASSIGMENT_ON');
             $radio_values[0]['value'] = 'open';
             $radio_values[1]['text'] = getMessage('COMMON_ASSIGMENT_OFF');
@@ -827,7 +827,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                         true,
                                         false
                                        );
-            unset($radio_values);*/
+            unset($radio_values);
          }
 
         // show time (clock pulses in community room)
