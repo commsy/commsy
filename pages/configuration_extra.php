@@ -226,47 +226,67 @@ else {
                   }
                   $portal->save();
                   $room_list = $portal->getRoomList();
+
+
                   if ( !$portal_list->isEmpty() ) {
                      $room = $room_list->getFirst();
                      while ($room) {
+                        $save_flag = false;
                         if ( !empty($_POST['ROOM_'.$room->getItemID()]) ) {
-                           if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
+                           if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' and !$room->WithAds()) {
                               $room->setWithAds();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and !$room->WithGrouproomFunctions()) {
                               $room->setWithGrouproomFunctions();
-                           } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and !$room->WithHomepageLink() ) {
                               $room->setWithHomepageLink();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and !$room->WithWikiFunctions() ) {
                               $room->setWithWikiFunctions();
-                           } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' and !$room->WithChatLink() ) {
                               $room->setWithChatLink();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' and !$room->WithPDAView() ) {
                               $room->setWithPDAView();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                              $save_flag = true;
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and !$room->withMaterialImportLink() ) {
                               $room->setWithMaterialImport();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                              $save_flag = true;
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and !$room->WithActivatingContent() ) {
                               $room->setWithActivatingContent();
+                              $save_flag = true;
                            }
                         } else {
-                           if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' ) {
+                           if ( $extra == 'CONFIGURATION_EXTRA_SPONSORING' and $room->WithAds() ) {
                               $room->setWithoutAds();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and $room->WithGrouproomFunctions() ) {
                               $room->setWithoutGrouproomFunctions();
-                           } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->WithHomepageLink() ) {
                               $room->setWithoutHomepageLink();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->WithWikiFunctions() ) {
                               $room->setWithoutWikiFunctions();
-                           } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT' and $room->WithChatLink() ) {
                               $room->setWithoutChatLink();
-                           } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' and $room->WithPDAView() ) {
                               $room->setWithoutPDAView();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) {
+                              $save_flag = true;
                               $room->setWithoutMaterialImport();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and $room->WithActivatingContent() ) {
                               $room->setWithoutActivatingContent();
+                              $save_flag = true;
                            }
                         }
-                        $room->save();
+                        if ($save_flag){
+                           $room->save();
+                        }
                         $room = $room_list->getNext();
                      }
                   }
