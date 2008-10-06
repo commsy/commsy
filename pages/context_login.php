@@ -147,6 +147,12 @@ if (!empty($_GET['target_cid'])) {
          $params['auth_source'] = $auth_source;
       }
    }
+   if ( $mod == 'context'
+        and $fct == 'login'
+      ) {
+      $mod = 'home';
+      $fct = 'index';
+   }
    redirect($cid,$mod,$fct,$params,'','',$back_file);
 }
 ?>

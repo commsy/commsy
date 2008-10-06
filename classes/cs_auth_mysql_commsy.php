@@ -239,7 +239,9 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
       $retour = false;
       if ($this->exists($uid)) {
          $this->_get($uid);
-         if (md5($password) == $this->_item->getPasswordMD5()) {
+         if ( md5($password) == $this->_item->getPasswordMD5()
+              or md5(utf8_decode($password)) == $this->_item->getPasswordMD5()
+            ) {
             $retour = true;
          } else {
             //$this->_error_array[] = getMessage('AUTH_ERROR_PASSWORD_WRONG',$uid);
