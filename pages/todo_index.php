@@ -281,7 +281,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             $error = false;
             $todo_manager = $environment->getTodosManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+             foreach ($selected_ids as $id) {
                $todo_item = $todo_manager->getItem($id);
                $version_id = $todo_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -293,6 +293,44 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                      $annotation_item = $annotation_list->getNext();
                   }
                }
+            }
+            break;
+         case 4:
+            $action = 'ENTRY_MARK_AS_DONE';
+            $error = false;
+            $todo_manager = $environment->getTodosManager();
+            $noticed_manager = $environment->getNoticedManager();
+            foreach ($selected_ids as $id) {
+               $todo_item = $todo_manager->getItem($id);
+               $todo_item->setStatus('3');
+               $todo_item->save();
+               $version_id = $todo_item->getVersionID();
+               $noticed_manager->markNoticed($id, $version_id );
+            }
+            break;
+         case 5:
+            $action = 'ENTRY_MARK_AS_IM_PROGRESS';
+            $error = false;
+            $todo_manager = $environment->getTodosManager();
+            $noticed_manager = $environment->getNoticedManager();
+            foreach ($selected_ids as $id) {
+               $todo_item = $todo_manager->getItem($id);
+               $todo_item->setStatus('2');
+               $todo_item->save();
+               $version_id = $todo_item->getVersionID();
+               $noticed_manager->markNoticed($id, $version_id );
+            }
+            break;
+         case 6:
+            $error = false;
+            $todo_manager = $environment->getTodosManager();
+            $noticed_manager = $environment->getNoticedManager();
+            foreach ($selected_ids as $id) {
+               $todo_item = $todo_manager->getItem($id);
+               $todo_item->setStatus('1');
+               $todo_item->save();
+               $version_id = $todo_item->getVersionID();
+               $noticed_manager->markNoticed($id, $version_id );
             }
             break;
          case 2:

@@ -453,6 +453,46 @@ class cs_todo_index_view extends cs_room_index_view {
       return $html;
    }
 
+
+   function _getViewActionsAsHTML () {
+      $user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html .= '<select name="index_view_action" size="1" style="width:180px; font-size:8pt; font-weight:normal;">'.LF;
+      $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
+      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+      if (!$this->_clipboard_mode){
+         $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
+         $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         if ($user->isModerator()){
+            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }else{
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         if ($user->isModerator()){
+            $html .= '   <option value="4">'.$this->_translator->getMessage('TODO_LIST_ACTION_DONE').'</option>'.LF;
+            $html .= '   <option value="5">'.$this->_translator->getMessage('TODO_LIST_ACTION_IN_PROGRESS').'</option>'.LF;
+            $html .= '   <option value="6">'.$this->_translator->getMessage('TODO_LIST_ACTION_NOT_STARTED').'</option>'.LF;
+         }else{
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('TODO_LIST_ACTION_DONE').'</option>'.LF;
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('TODO_LIST_ACTION_IN_PROGRESS').'</option>'.LF;
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('TODO_LIST_ACTION_NOT_STARTED').'</option>'.LF;
+         }
+      }else{
+         $html .= '   <option value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;
+         $html .= '   <option value="2">'.$this->_translator->getMessage('CLIPBOARD_DELETE_BUTTON').'</option>'.LF;
+      }
+      $html .= '</select>'.LF;
+      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
+      $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
+      $html .= '/>'.LF;
+
+      return $html;
+   }
+
+
+
 	function _getPrintableTableHeadAsHTML() {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
