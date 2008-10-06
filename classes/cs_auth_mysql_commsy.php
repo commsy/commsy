@@ -95,15 +95,19 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
      * @return object cs_item an authentication item
      */
    function _get($user_id) {
-      if (!isset ($this->_item) or $this->_item->getUserID() != $user_id or $this->_item->getPortalID() != $this->_commsy_id) {
+      if ( !isset($this->_item)
+           or $this->_item->getUserID() != $user_id
+           or $this->_item->getPortalID() != $this->_commsy_id
+         ) {
          $query = 'SELECT * FROM auth';
          $query .= ' WHERE user_id="' . encode(AS_DB,$user_id) . '"';
          $query .= ' AND commsy_id="' . encode(AS_DB,$this->_commsy_id) . '"';
          $result = $this->_db_connector->performQuery($query);
-         if (!isset ($result)) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting authentication from query: "' . $query . '"', E_USER_WARNING);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting authentication from query: "' . $query . '"', E_USER_WARNING);
          }
-         elseif (!empty ($result[0])) {
+         elseif ( !empty($result[0]) ) {
             $this->_item = $this->_buildItem($result[0]);
          }
       }
