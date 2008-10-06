@@ -152,11 +152,14 @@ class cs_file_item extends cs_item {
       $this->_mime['fdf']     = 'application/vnd.fdf';
       $this->_icon['doc']     = "doc.png";
       $this->_mime['doc']     = 'application/msword';
+      $this->_icon['docx']     = "doc.png";
+      $this->_mime['doc']     = 'application/msword';
       $this->_icon['dot']     = "doc.png";
       $this->_mime['dot']     = 'application/msword';
       $this->_icon['rtf']     = "doc.png";
       $this->_mime['rtf']     = 'application/rtf';
       $this->_icon['ppt']     = "ppt.png";
+      $this->_icon['pptx']     = "ppt.png";
       //Lassi-Dateien
       $this->_icon['lsi']     = "lassi_commsy.png";
       // open office
@@ -175,6 +178,7 @@ class cs_file_item extends cs_item {
 
       // Missing MIME-type for PowerPoint (TBD) mj 20.03.03
       $this->_icon['xls']     = "xls.png";
+      $this->_icon['xlsx']     = "xls.png";
       // Missing MIME-type for Excel (TBD) mj 20.03.03
 
       // Flash / Shockwave
