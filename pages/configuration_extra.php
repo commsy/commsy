@@ -251,10 +251,10 @@ else {
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' and !$room->WithPDAView() ) {
                               $room->setWithPDAView();
                               $save_flag = true;
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and !$room->withMaterialImportLink() ) {
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and !$room->withMaterialImportLink() ) {
                               $room->setWithMaterialImport();
                               $save_flag = true;
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and !$room->WithActivatingContent() ) {
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and !$room->WithActivatingContent() ) {
                               $room->setWithActivatingContent();
                               $save_flag = true;
                            }
@@ -276,15 +276,16 @@ else {
                               $save_flag = true;
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' and $room->WithPDAView() ) {
                               $room->setWithoutPDAView();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) {
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) {
                               $save_flag = true;
                               $room->setWithoutMaterialImport();
-                           }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and $room->WithActivatingContent() ) {
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' and $room->WithActivatingContent() ) {
                               $room->setWithoutActivatingContent();
                               $save_flag = true;
                            }
                         }
-                        if ($save_flag){
+                        if ( $save_flag ) {
                            $room->save();
                         }
                         $room = $room_list->getNext();
