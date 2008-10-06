@@ -733,52 +733,35 @@ function withUmlaut($value) {
 function cs_unserialize ( $extra ) {
    $retour = '';
 
-   $extra_array = unserialize($extra);
-   if ( empty($extra_array) ) {
-      $text = $extra;
-      $counter = 0;
-      $laenge = array();
-      $temp_text = array();
-      while ( strstr($text,'<!-- KFC TEXT -->') ) {
-         $pos1 = strpos($text,'<!-- KFC TEXT -->');
-         $text_temp = substr($text,$pos1+17);
-         $pos2 = strpos($text_temp,'<!-- KFC TEXT -->');
-         $text_value = substr($text_temp,0,$pos2);
-         $laenge[$counter] = strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
-         $temp_text['FCK_TEXT_'.$counter] = '<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->';
-         $text = str_replace('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->','FCK_TEXT_'.$counter,$text);
-         $counter++;
-      }
-      preg_match_all('$s:([0-9]*):"FCK_TEXT_([0-9]*)$',$text,$values);
-      foreach ( $values[0] as $key => $wert ) {
-         $wert2 = str_replace($values[1][$key],$laenge[$values[2][$key]],$wert);
-         $text = str_replace($wert,$wert2,$text);
-      }
-
-      preg_match_all('$FCK_TEXT_[0-9]*$',$text,$values);
-      foreach ( $values[0] as $key => $wert ) {
-         $text = str_replace($wert,$temp_text[$wert],$text);
-      }
-      $extra_array = unserialize($text);
+   if ( !empty($extra) ) {
+      $extra_array = unserialize($extra);
       if ( empty($extra_array) ) {
-         preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
-         if ( !empty($values[0]) ) {
-            foreach ( $values[0] as $key => $wert ) {
-               if (strlen($values[2][$key]) != $values[1][$key] ) {
-                  $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
-                  $text = str_replace($wert,$wert2,$text);
-               }
-            }
+         $text = $extra;
+         $counter = 0;
+         $laenge = array();
+         $temp_text = array();
+         while ( strstr($text,'<!-- KFC TEXT -->') ) {
+            $pos1 = strpos($text,'<!-- KFC TEXT -->');
+            $text_temp = substr($text,$pos1+17);
+            $pos2 = strpos($text_temp,'<!-- KFC TEXT -->');
+            $text_value = substr($text_temp,0,$pos2);
+            $laenge[$counter] = strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
+            $temp_text['FCK_TEXT_'.$counter] = '<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->';
+            $text = str_replace('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->','FCK_TEXT_'.$counter,$text);
+            $counter++;
+         }
+         preg_match_all('$s:([0-9]*):"FCK_TEXT_([0-9]*)$',$text,$values);
+         foreach ( $values[0] as $key => $wert ) {
+            $wert2 = str_replace($values[1][$key],$laenge[$values[2][$key]],$wert);
+            $text = str_replace($wert,$wert2,$text);
+         }
+
+         preg_match_all('$FCK_TEXT_[0-9]*$',$text,$values);
+         foreach ( $values[0] as $key => $wert ) {
+            $text = str_replace($wert,$temp_text[$wert],$text);
          }
          $extra_array = unserialize($text);
          if ( empty($extra_array) ) {
-            $text = str_replace('(','[',$text);
-            $text = str_replace(')',']',$text);
-            $text = str_replace(':"','DOPPELPUNKTHOCH',$text);
-            $text = str_replace('";','HOCHSEMIKOLON',$text);
-            $text = str_replace('"','\'',$text);
-            $text = str_replace('DOPPELPUNKTHOCH',':"',$text);
-            $text = str_replace('HOCHSEMIKOLON','";',$text);
             preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
             if ( !empty($values[0]) ) {
                foreach ( $values[0] as $key => $wert ) {
@@ -788,8 +771,27 @@ function cs_unserialize ( $extra ) {
                   }
                }
             }
+            $extra_array = unserialize($text);
+            if ( empty($extra_array) ) {
+               $text = str_replace('(','[',$text);
+               $text = str_replace(')',']',$text);
+               $text = str_replace(':"','DOPPELPUNKTHOCH',$text);
+               $text = str_replace('";','HOCHSEMIKOLON',$text);
+               $text = str_replace('"','\'',$text);
+               $text = str_replace('DOPPELPUNKTHOCH',':"',$text);
+               $text = str_replace('HOCHSEMIKOLON','";',$text);
+               preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
+               if ( !empty($values[0]) ) {
+                  foreach ( $values[0] as $key => $wert ) {
+                     if (strlen($values[2][$key]) != $values[1][$key] ) {
+                        $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
+                        $text = str_replace($wert,$wert2,$text);
+                     }
+                  }
+               }
+            }
+            $extra_array = unserialize($text);
          }
-         $extra_array = unserialize($text);
       }
    }
    if ( !empty($extra_array) ) {
