@@ -53,5 +53,5 @@
 
 // IMS CONTENT - experimental
 // $with_ims_content_connection = false;
-// $ims_content_connection_temp_folder = 'var/temp/ims_import';
+// $ims_content_connection_temp_folder = 'var/temp/ims_import/';
 ?>
