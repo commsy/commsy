@@ -40,43 +40,50 @@ class cs_hash_manager extends cs_manager {
 
    public function getRSSHashForUser ( $user_item_id ) {
       $retour = '';
-      if ( !$this->_issetRSSHashForUser($user_item_id) ) {
-         $this->_saveHashesForUser($user_item_id);
+      if ( !empty($user_item_id) ) {
+         if ( !$this->_issetRSSHashForUser($user_item_id) ) {
+            $this->_saveHashesForUser($user_item_id);
+         }
+         $retour = $this->_getRSSHashForUser($user_item_id);
       }
-      $retour = $this->_getRSSHashForUser($user_item_id);
-
       return $retour;
    }
 
    private function _createRSSHashForUser ( $user_item_id ) {
       $retour = '';
-      include_once('functions/date_functions.php');
-      $retour = md5($user_item_id*rand(1,99).getCurrentDateTimeInMySQL());
+      if ( !empty($user_item_id) ) {
+         include_once('functions/date_functions.php');
+         $retour = md5($user_item_id*rand(1,99).getCurrentDateTimeInMySQL());
+      }
       return $retour;
    }
 
    private function _issetRSSHashForUser ( $user_item_id ) {
       $retour = false;
-      $hash = $this->_getRSSHashForUser($user_item_id);
-      if ( isset($hash) and $hash != false ) {
-         $retour = true;
+      if ( !empty($user_item_id) ) {
+         $hash = $this->_getRSSHashForUser($user_item_id);
+         if ( isset($hash) and $hash != false ) {
+            $retour = true;
+         }
       }
       return $retour;
    }
 
    private function _getRSSHashForUser ( $user_item_id ) {
       $retour = false;
-      if ( !isset($this->_cached_rss_array[$user_item_id]) or empty($this->_cached_rss_array[$user_item_id]) ) {
-         $query = "SELECT rss FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
-         $result = $this->_db_connector->performQuery($query);
-         if ( isset($result[0]['rss']) and !empty($result[0]['rss']) ) {
-            $retour = $result[0]['rss'];
-            if ( $this->_cache_on ) {
-               $this->_cached_rss_array[$user_item_id] = $retour;
+      if ( !empty($user_item_id) ) {
+         if ( !isset($this->_cached_rss_array[$user_item_id]) or empty($this->_cached_rss_array[$user_item_id]) ) {
+            $query = "SELECT rss FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+            $result = $this->_db_connector->performQuery($query);
+            if ( isset($result[0]['rss']) and !empty($result[0]['rss']) ) {
+               $retour = $result[0]['rss'];
+               if ( $this->_cache_on ) {
+                  $this->_cached_rss_array[$user_item_id] = $retour;
+               }
             }
+         } elseif ( !empty($this->_cached_rss_array[$user_item_id]) ) {
+            $retour = $this->_cached_rss_array[$user_item_id];
          }
-      } elseif ( !empty($this->_cached_rss_array[$user_item_id]) ) {
-         $retour = $this->_cached_rss_array[$user_item_id];
       }
       return $retour;
    }
@@ -95,8 +102,10 @@ class cs_hash_manager extends cs_manager {
    }
 
    public function deleteHashesForUser ( $user_item_id ) {
-      $delete = "DElETE FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
-      $result = $this->_db_connector->performQuery($delete);
+      if ( !empty($user_item_id) ) {
+         $delete = "DElETE FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+         $result = $this->_db_connector->performQuery($delete);
+      }
    }
 
    private function _getUserItemIDForRSSHash ( $rss_hash ) {
@@ -123,42 +132,50 @@ class cs_hash_manager extends cs_manager {
 
    public function getICalHashForUser ( $user_item_id ) {
       $retour = '';
-      if ( !$this->_issetICalHashForUser($user_item_id) ) {
-         $retour = $this->_saveHashesForUser($user_item_id);
+      if ( !empty($user_item_id) ) {
+         if ( !$this->_issetICalHashForUser($user_item_id) ) {
+            $retour = $this->_saveHashesForUser($user_item_id);
+         }
+         $retour = $this->_getICalHashForUser($user_item_id);
       }
-      $retour = $this->_getICalHashForUser($user_item_id);
       return $retour;
    }
 
    private function _createICalHashForUser ( $user_item_id ) {
       $retour = '';
-      include_once('functions/date_functions.php');
-      $retour = md5($user_item_id*rand(1,99).getCurrentDateTimeInMySQL()+time()*rand(100,200));
+      if ( !empty($user_item_id) ) {
+         include_once('functions/date_functions.php');
+         $retour = md5($user_item_id*rand(1,99).getCurrentDateTimeInMySQL()+time()*rand(100,200));
+      }
       return $retour;
    }
 
    private function _issetICalHashForUser ( $user_item_id ) {
       $retour = false;
-      $hash = $this->_getICalHashForUser($user_item_id);
-      if ( isset($hash) and !empty($hash) ) {
-         $retour = true;
+      if ( !empty($user_item_id) ) {
+         $hash = $this->_getICalHashForUser($user_item_id);
+         if ( isset($hash) and !empty($hash) ) {
+            $retour = true;
+         }
       }
       return $retour;
    }
 
    private function _getICalHashForUser ( $user_item_id ) {
       $retour = false;
-      if ( !isset($this->_cached_ical_array[$user_item_id]) or empty($this->_cached_ical_array[$user_item_id]) ) {
-         $query = "SELECT ical FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
-         $result = $this->_db_connector->performQuery($query);
-         if ( isset($result[0]['ical']) and !empty($result[0]['ical']) ) {
-            $retour = $result[0]['ical'];
-            if ( $this->_cache_on ) {
-               $this->_cached_ical_array[$user_item_id] = $retour;
+      if ( !empty($user_item_id) ) {
+         if ( !isset($this->_cached_ical_array[$user_item_id]) or empty($this->_cached_ical_array[$user_item_id]) ) {
+            $query = "SELECT ical FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."' LIMIT 1";
+            $result = $this->_db_connector->performQuery($query);
+            if ( isset($result[0]['ical']) and !empty($result[0]['ical']) ) {
+               $retour = $result[0]['ical'];
+               if ( $this->_cache_on ) {
+                  $this->_cached_ical_array[$user_item_id] = $retour;
+               }
             }
+         } elseif ( !empty($this->_cached_ical_array[$user_item_id]) ) {
+            $retour = $this->_cached_ical_array[$user_item_id];
          }
-      } elseif ( !empty($this->_cached_ical_array[$user_item_id]) ) {
-         $retour = $this->_cached_ical_array[$user_item_id];
       }
       return $retour;
    }
@@ -200,31 +217,33 @@ class cs_hash_manager extends cs_manager {
    ###################
 
    private function _saveHashesForUser ( $user_item_id ) {
-      $update = false;
+      if ( !empty($user_item_id) ) {
+         $update = false;
 
-      $query = "SELECT * FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."';";
-      $result = $this->_db_connector->performQuery($query);
-      if ( isset($result[0]['rss']) and !empty($result[0]['rss'])  ) {
-         $rss_hash = $result[0]['rss'];
-         $update = true;
-      } else {
-         $rss_hash = $this->_createRSSHashForUser($user_item_id);
-      }
-      if ( isset($result[0]['ical']) and !empty($result[0]['ical'])  ) {
-         $rss_hash = $result[0]['ical'];
-         $update = true;
-      } else {
-         $ical_hash = $this->_createICalHashForUser($user_item_id);
-      }
+         $query = "SELECT * FROM ".$this->_db_table." WHERE user_item_id = '".$user_item_id."';";
+         $result = $this->_db_connector->performQuery($query);
+         if ( isset($result[0]['rss']) and !empty($result[0]['rss'])  ) {
+            $rss_hash = $result[0]['rss'];
+            $update = true;
+         } else {
+            $rss_hash = $this->_createRSSHashForUser($user_item_id);
+         }
+         if ( isset($result[0]['ical']) and !empty($result[0]['ical'])  ) {
+            $rss_hash = $result[0]['ical'];
+            $update = true;
+         } else {
+            $ical_hash = $this->_createICalHashForUser($user_item_id);
+         }
 
-      if ( $update ) {
-         $query = "UPDATE ".$this->_db_table." SET rss = '".$rss_hash."', ical = '".$ical_hash."'
-                   WHERE user_item_id ='".$user_item_id."';";
-      } else {
-         $query = "INSERT INTO ".$this->_db_table." (`user_item_id`,`rss`,`ical`)
-                   VALUES ('".$user_item_id."', '".$rss_hash."', '".$ical_hash."')";
+         if ( $update ) {
+            $query = "UPDATE ".$this->_db_table." SET rss = '".$rss_hash."', ical = '".$ical_hash."'
+                      WHERE user_item_id ='".$user_item_id."';";
+         } else {
+            $query = "INSERT INTO ".$this->_db_table." (`user_item_id`,`rss`,`ical`)
+                      VALUES ('".$user_item_id."', '".$rss_hash."', '".$ical_hash."')";
+         }
+         $result = $this->_db_connector->performQuery($query);
       }
-      $result = $this->_db_connector->performQuery($query);
    }
 }
 ?>
