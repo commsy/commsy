@@ -159,7 +159,18 @@ class cs_ftsearch_manager extends cs_manager {
 
       // Remark: problems with trailing german umlaute in search word
       if ( strstr($ft_results[0],'err: Index file error') and $ft_results[1] == '.') {
-         if ( !strstr($ft_results[0],'No such file or directory') ) {
+         if ( strstr($ft_results[0],'has an unknown format') ) {
+            $pos1 = strpos($ft_results[0],'"');
+            $pos2 = strrpos($ft_results[0],'"');
+            if ( $pos1 != $pos2 ) {
+               $file_name = substr($ft_results[0],$pos1+1,$pos2-$pos1-1);
+               if ( !empty($file_name)
+                    and file_exists($file_name)
+                  ) {
+                  unlink($file_name);
+               }
+            }
+         } elseif ( !strstr($ft_results[0],'No such file or directory') ) {
             include_once('functions/error_functions.php');
             trigger_error("FT-Search: ". $ft_results[0], E_USER_WARNING);
          }
