@@ -49,12 +49,23 @@ class cs_log_archive_manager extends cs_manager {
 
    function save ($data) {
       if ( !is_array($data) ) {
-         include_once('functions/error_functions.php');trigger_error('need array',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('need array',E_USER_ERROR);
          $success = false;
       } else {
          if ( is_array($data[0]) ) {
             $success = true;
             foreach ($data as $key => $value) {
+               if ( !isset($data[$key]['uid'])
+                    or empty($data[$key]['uid'])
+                  ) {
+                  $data[$key]['uid'] = 'NULL';
+               }
+               if ( !isset($data[$key]['iid'])
+                    or empty($data[$key]['iid'])
+                  ) {
+                  $data[$key]['iid'] = 'NULL';
+               }
                $query = 'INSERT INTO log_archive SET '.
                         'ip="'.      encode(AS_DB,$data[$key]['ip']).'", '.
                         'agent="'.   encode(AS_DB,$data[$key]['agent']).'", '.
@@ -72,11 +83,22 @@ class cs_log_archive_manager extends cs_manager {
                // perform query
                $result = $this->_db_connector->performQuery($query);
                if ( !isset($result) ) {
-                  include_once('functions/error_functions.php');trigger_error('Problems log_archive from query:<br />"'.$query.'"',E_USER_WARNING);
+                  include_once('functions/error_functions.php');
+                  trigger_error('Problems log_archive from query:<br />"'.$query.'"',E_USER_WARNING);
                   $success = false;
                }
             }
          } else {
+            if ( !isset($data['uid'])
+                 or empty($data['uid'])
+               ) {
+               $data['uid'] = 'NULL';
+            }
+            if ( !isset($data['iid'])
+                 or empty($data['iid'])
+               ) {
+               $data['iid'] = 'NULL';
+            }
             $query = 'INSERT INTO log_archive SET '.
                      'ip="'.      encode(AS_DB,$data['ip']).'", '.
                      'agent="'.   encode(AS_DB,$data['agent']).'", '.
@@ -93,7 +115,8 @@ class cs_log_archive_manager extends cs_manager {
             // perform query
             $result = $this->_db_connector->performQuery($query);
             if ( !isset($result) ) {
-               include_once('functions/error_functions.php');trigger_error('Problems log_archive from query:<br />"'.$query.'"',E_USER_WARNING);
+               include_once('functions/error_functions.php');
+               trigger_error('Problems log_archive from query:<br />"'.$query.'"',E_USER_WARNING);
                $success = false;
             } else {
                $success = true;
