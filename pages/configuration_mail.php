@@ -95,6 +95,10 @@ else {
             $message_tag = 'MAIL_BODY_USER_STATUS_USER';
          } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_STATUS_MODERATOR') {
             $message_tag = 'MAIL_BODY_USER_STATUS_MODERATOR';
+         }elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON') {
+            $message_tag = 'MAIL_BODY_USER_MAKE_CONTACT_PERSON';
+         }elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON') {
+            $message_tag = 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON';
          } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD') {
             $message_tag = 'MAIL_BODY_USER_ACCOUNT_PASSWORD';
          } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_ACCOUNT_MERGE') {
@@ -179,7 +183,11 @@ else {
                $message_tag = 'MAIL_BODY_ROOM_DELETE';
             } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_ROOM_OPEN') {
                $message_tag = 'MAIL_BODY_ROOM_OPEN';
-            } else {
+            } elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON') {
+                $message_tag = 'MAIL_BODY_USER_MAKE_CONTACT_PERSON';
+             }elseif ($_POST['mail_text'] == 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON') {
+                $message_tag = 'MAIL_BODY_USER_UNMAKE_CONTACT_PERSON';
+             }else {
                include_once('functions/error_functions.php');
                trigger_error('choice of mail text lost',E_USER_WARNING);
             }

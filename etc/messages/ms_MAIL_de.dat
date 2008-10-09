@@ -169,9 +169,11 @@ $message["MAIL_CHOICE_USER_ACCOUNT_DELETE"]["de"] = "Kennung löschen";
 $message["MAIL_CHOICE_USER_ACCOUNT_LOCK"]["de"] = "Kennung sperren";
 $message["MAIL_CHOICE_USER_ACCOUNT_MERGE"]["de"] = "Kennung zusammenführen";
 $message["MAIL_CHOICE_USER_ACCOUNT_PASSWORD"]["de"] = "Kennung und Passwort";
+$message["MAIL_CHOICE_USER_MAKE_CONTACT_PERSON"]["de"] = "Zur AnsprechpartnerIn machen";
 $message["MAIL_CHOICE_USER_PASSWORD_CHANGE"]["de"] = "Passwort ändern";
 $message["MAIL_CHOICE_USER_STATUS_MODERATOR"]["de"] = "Status Moderator";
 $message["MAIL_CHOICE_USER_STATUS_USER"]["de"] = "Kennung freischalten / Status BenutzerIn";
+$message["MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON"]["de"] = "Status AnsprechpartnerIn entfernen";
 $message["MAIL_COMMENT_BY"]["de"] = "Kommentar von %1:
 %2";
 $message["MAIL_COMMENT_IMS"]["de"] = "Durchgeführt von %1";

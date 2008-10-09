@@ -85,6 +85,10 @@ class cs_configuration_mail_form extends cs_rubric_form {
       $this->_array_mail_text[7]['value'] = 'MAIL_CHOICE_USER_STATUS_USER';
       $this->_array_mail_text[8]['text']  = getMessage('MAIL_CHOICE_USER_STATUS_MODERATOR');
       $this->_array_mail_text[8]['value'] = 'MAIL_CHOICE_USER_STATUS_MODERATOR';
+      $this->_array_mail_text[9]['text']  = getMessage('MAIL_CHOICE_USER_MAKE_CONTACT_PERSON');
+      $this->_array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
+      $this->_array_mail_text[10]['text']  = getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
+      $this->_array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
       if ($this->_environment->inCommunityRoom()) {
          $this->_array_mail_text[11]['text']  = getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
          $this->_array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
@@ -205,6 +209,24 @@ class cs_configuration_mail_form extends cs_rubric_form {
                break;
             case 'MAIL_CHOICE_ROOM_UNLINK':
                $headline = ': '.$translator->getMessage('MAIL_CHOICE_ROOM_UNLINK');
+               break;
+            case 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON':
+                if ($this->_environment->inPortal()){
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_PO');
+                }elseif ($this->_environment->inCommunityRoom()){
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_GR');
+                }else {
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_MAKE_CONTACT_PERSON_PR');
+                }
+               break;
+            case 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON':
+                if ($this->_environment->inPortal()){
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PO');
+                }elseif ($this->_environment->inCommunityRoom()){
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_GR');
+                }else {
+                   $headline = ': '.$translator->getMessage('MAIL_BODY_USER_UNMAKE_CONTACT_PERSON_PR');
+                }
                break;
             default:
                $headline = ': '.$translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_mail_form(215) ');

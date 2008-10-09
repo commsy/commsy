@@ -167,9 +167,11 @@ $message["MAIL_CHOICE_USER_ACCOUNT_DELETE"]["en"] = "Delete account";
 $message["MAIL_CHOICE_USER_ACCOUNT_LOCK"]["en"] = "Lock account";
 $message["MAIL_CHOICE_USER_ACCOUNT_MERGE"]["en"] = "Merge accounts";
 $message["MAIL_CHOICE_USER_ACCOUNT_PASSWORD"]["en"] = "Account and password";
+$message["MAIL_CHOICE_USER_MAKE_CONTACT_PERSON"]["en"] = "Change status: contact person";
 $message["MAIL_CHOICE_USER_PASSWORD_CHANGE"]["en"] = "Change password";
 $message["MAIL_CHOICE_USER_STATUS_MODERATOR"]["en"] = "Status change: moderator";
 $message["MAIL_CHOICE_USER_STATUS_USER"]["en"] = "Approve membership / status user";
+$message["MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON"]["en"] = "Change status: no contact person";
 $message["MAIL_COMMENT_BY"]["en"] = "Comment by %1:
 %2";
 $message["MAIL_COMMENT_IMS"]["en"] = "Done by %1";
