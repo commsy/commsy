@@ -180,10 +180,10 @@ class cs_log_manager extends cs_manager {
          }
       }
       if ( empty($array['user_item_id']) ) {
-         $array['user_item_id'] = 'NULL';
+         $array['user_item_id'] = '0';
       }
       if ( empty($array['iid']) or strtoupper($array['iid']) == 'NEW' ) {
-         $array['iid'] = 'NULL';
+         $array['iid'] = '0';
       }
       $query = 'INSERT DELAYED INTO log SET '.
                'ip="'.      encode(AS_DB,$array['remote_addr']).'", '.

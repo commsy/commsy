@@ -59,12 +59,12 @@ class cs_log_archive_manager extends cs_manager {
                if ( !isset($data[$key]['uid'])
                     or empty($data[$key]['uid'])
                   ) {
-                  $data[$key]['uid'] = 'NULL';
+                  $data[$key]['uid'] = '0';
                }
                if ( !isset($data[$key]['iid'])
                     or empty($data[$key]['iid'])
                   ) {
-                  $data[$key]['iid'] = 'NULL';
+                  $data[$key]['iid'] = '0';
                }
                $query = 'INSERT INTO log_archive SET '.
                         'ip="'.      encode(AS_DB,$data[$key]['ip']).'", '.
@@ -92,12 +92,12 @@ class cs_log_archive_manager extends cs_manager {
             if ( !isset($data['uid'])
                  or empty($data['uid'])
                ) {
-               $data['uid'] = 'NULL';
+               $data['uid'] = '0';
             }
             if ( !isset($data['iid'])
                  or empty($data['iid'])
                ) {
-               $data['iid'] = 'NULL';
+               $data['iid'] = '0';
             }
             $query = 'INSERT INTO log_archive SET '.
                      'ip="'.      encode(AS_DB,$data['ip']).'", '.
