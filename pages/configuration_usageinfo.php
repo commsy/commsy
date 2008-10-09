@@ -134,7 +134,7 @@ else {
 	      }
          $do_not_show_form = false;
          if (!empty($_POST['info_text'])){
-	         if (empty($_POST['show_form'])) {
+	         if (empty($_POST['text_form'])) {
 	            $do_not_show_form = true;
 	         }
 	         if ( empty($info_form_array) and  $do_not_show_form ){
@@ -162,10 +162,10 @@ else {
 	            $room_item->setUsageInfoTextForRubricForm( $_POST['info_text'],  $text);
 	         }
 			 if(!empty($_POST['show_global'])) {
-			    $room_item->setUsageInfoGlobal('true');  
+			    $room_item->setUsageInfoGlobal('true');
 			 } else {
 			    $room_item->setUsageInfoGlobal('false');
-			 } 
+			 }
 
          }
          $room_item->save();
