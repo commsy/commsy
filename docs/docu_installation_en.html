@@ -72,12 +72,12 @@
               <UL>
         <LI>GD Graphics Library - gd2</LI>
         <LI>MySQL Database Library - mysql</LI>
-        <li>
+        <li>Optional:
         <ul>
-        <li>Clamav Virenscanning Library [just optional: when virenscanning is to be used]</li>
-                  <li>OpenSSL Library - php_openssl [just optional: when https is to be used]</li>
-             <LI>SOAP Library - soap [ optional: used for integration of some external tools
-                 only ]</LI>
+        <li>Clamav Virenscanning Library [when virenscanning is to be used]</li>
+                  <li>OpenSSL Library - php_openssl [when https is to be used]</li>
+             <LI>cURL Library - php5-curl [used if CommSy must use a proxy to get data form ohter servers]</LI>
+             <LI>SOAP Library - soap [used for integration of some external tools only]</LI>
         </ul></li>
         <LI>If you have to compile PHP5: activate the <i>Multibyte String Functions</i><br/>
             [ add <code>--enable-mbstring</code> in the preparation file

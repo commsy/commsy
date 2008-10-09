@@ -68,7 +68,40 @@ else {
       $file_name = 'ims'.$session->getSessionID().'.zip';
       $file_url = $url_for_beluga_upload.$file_name;
       $destination_dir = $ims_content_connection_temp_folder.$file_name;
-      copy($file_url,$destination_dir);
+
+      // get file from external ims server
+      if ( !empty($c_proxy_ip) ) {
+         $out = fopen($destination_dir,'wb');
+         if ( $out == false ) {
+            include_once('functions/error_functions.php');
+            trigger_error('can not open destination file. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+         }
+         if ( function_exists('curl_init') ) {
+            $ch = curl_init();
+            curl_setopt($ch,CURLOPT_FILE,$out);
+            curl_setopt($ch,CURLOPT_HEADER,0);
+            curl_setopt($ch,CURLOPT_URL,$file_url);
+            $proxy = $c_proxy_ip;
+            if ( !empty($c_proxy_port) ) {
+               $proxy = $c_proxy_ip.':'.$c_proxy_port;
+            }
+            curl_setopt($ch,CURLOPT_PROXY,$proxy);
+            curl_exec($ch);
+            $error = curl_error($ch);
+            if ( !empty($error) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('curl error: '.$error.' - '.$file_url.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+            }
+            curl_close($ch);
+         } else {
+            include_once('functions/error_functions.php');
+            trigger_error('curl library php5-curl is not installed - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+         }
+         fclose($out);
+      } else {
+         copy($file_url,$destination_dir);
+      }
+
       getMaterialListByIMSZip($file_name,$destination_dir,$target_directory,$environment);
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index','');
    } else {

@@ -29,7 +29,12 @@ $export_temp_folder = 'var/temp/zip_export';
 $c_delete_days = 182;
 // $c_delete_days = 365;
 
-/** session management */
-# session life time in hours
+// session management
+// session life time in hours
 $c_session_lifetime = 6;
+
+// proxy settings
+// if you use commsy behind a proxy, just set here the proxy informations
+// $c_proxy_ip   = '100.200.300.400';
+// $c_proxy_port = '3128';
 ?>
