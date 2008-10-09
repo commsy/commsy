@@ -1312,7 +1312,7 @@ class cs_item {
           or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
                 and $user_item->isUser() )
          or $user_item->isGuest() ) {
-         $access = true;
+            $access = true;
       } else {
          $access = false;
       }

@@ -70,7 +70,12 @@ if ($type != CS_MATERIAL_TYPE) {
          $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
          $page->add($errorbox);
       }
-   } elseif ( !$material_item->maySee($current_user) ) {
+   } elseif ($material_item->isNotActivated() and $current_user->getItemID() !=  $material_item->getCreatorID() and !$current_user->isModerator()){
+      include_once('classes/cs_errorbox_view.php');
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+      $page->add($errorbox);
+   }elseif ( !$material_item->maySee($current_user) ) {
       include_once('classes/cs_errorbox_view.php');
       $errorbox = new cs_errorbox_view($environment, true);
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));

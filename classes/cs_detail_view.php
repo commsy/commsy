@@ -1711,8 +1711,11 @@ class cs_detail_view extends cs_view {
             $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
          }
       }
-      $title = '&nbsp;<span class="creator_information_key">'.$this->_translator->getMessage('COMMON_LAST_MODIFIED_BY').':</span> '.$temp_html.', '.$this->_translator->getDateTimeInLangWithoutOClock($item->getModificationDate());
-
+      if ($item->isNotActivated()){
+         $title = '&nbsp;<span class="creator_information_key">'.$this->_translator->getMessage('COMMON_CREATED_BY').':</span> '.$temp_html.', '.$this->_translator->getDateTimeInLangWithoutOClock($item->getCreationDate());
+      }else{
+         $title = '&nbsp;<span class="creator_information_key">'.$this->_translator->getMessage('COMMON_LAST_MODIFIED_BY').':</span> '.$temp_html.', '.$this->_translator->getDateTimeInLangWithoutOClock($item->getModificationDate());
+      }
       $html .='&nbsp;<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
       $html .= $title;
       $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
