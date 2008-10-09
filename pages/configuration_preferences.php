@@ -338,7 +338,6 @@ if ($current_user->isGuest()) {
                $community_room_array = array();
             }
             if ( !empty($_POST['communityrooms']) and $_POST['communityrooms']!=-1 and $_POST['communityrooms']!='disabled' and !in_array($_POST['communityrooms'],$post_community_room_ids) ) {
-               pr($_POST['communityrooms']);
                $temp_array = array();
                $community_manager = $environment->getCommunityManager();
                $community_manager->reset();
