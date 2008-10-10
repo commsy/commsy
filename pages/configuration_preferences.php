@@ -447,6 +447,9 @@ if ($current_user->isGuest()) {
                   move_uploaded_file($_FILES['logo']['tmp_name'],$new_temp_name);
                   $_FILES['logo']['tmp_name'] = $new_temp_name;
                   $session_item = $environment->getSessionItem();
+                  if (!isset($room_iid) or empty($room_iid)){
+                  	$room_iid = $environment->getCurrentContextID();
+                  }
                   if ( isset($session_item) ) {
                      $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name',$new_temp_name);
                      $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_name',$_FILES['logo']['name']);
