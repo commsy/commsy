@@ -968,7 +968,7 @@ class cs_manager {
                }
 
                // default
-               else {
+               elseif (!empty($value) ) {
                   $insert_query .= $before.$key.'="'.encode(AS_DB,encode(FROM_DB,$value)).'"';
                }
             }
