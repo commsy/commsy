@@ -726,7 +726,7 @@ class cs_project_item extends cs_room_item {
                $tempMessage      = getMessage('USAGE_INFO_COMING_SOON');
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item(705) ";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item(".__LINE__.") ";
                break;
          }
          $retour = $tempMessage;
@@ -944,6 +944,9 @@ class cs_project_item extends cs_room_item {
             case 'ACCOUNT_STATUS':      //
                $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
+            case 'ACCOUNT_PREFERENCES':      //
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_ROOM_ACCOUNT_PREFERENCES_FORM');
+               break;
             case 'CONFIGURATION_ARCHIVE':      //
                $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
@@ -959,6 +962,7 @@ class cs_project_item extends cs_room_item {
          }
          $retour = $tempMessage;
          if ( $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp.'_FORM'
+              or $retour == 'USAGE_INFO_TEXT_ROOM_'.$temp.'_FORM'
               or $retour == 'tbd'
             ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
