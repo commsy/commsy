@@ -684,6 +684,7 @@ else {
       $material_item->setTagListByID($tag_array);
 
 
+
             // Files
             $item_files_upload_to = $material_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
@@ -755,11 +756,12 @@ else {
                if ( $material_item->isPublic() != $_POST['public'] ) {
                   $material_item->setPublic($_POST['public']);
                }
-            }
-            if ( isset($_POST['private_editing']) ) {
-               $material_item->setPrivateEditing('0');
             }else{
-               $material_item->setPrivateEditing('1');
+               if ( isset($_POST['private_editing']) ) {
+                  $material_item->setPrivateEditing('0');
+               }else{
+                  $material_item->setPrivateEditing('1');
+               }
             }
 
             if ( isset($_POST['hide']) ) {
