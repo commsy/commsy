@@ -1213,13 +1213,13 @@ class cs_manager {
             for ($i = 0; $i < count($ft_result) - 1; $i++) {
                $ft_sql_result .= $ft_result[$i] . ',';
             }
-            $ft_sql_result .= $ft_result[count($ft_result) - 1] . '))';
+            $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.$table.'.deleter_id IS NULL)';
             if ( $this->_db_table == type2Table(CS_MATERIAL_TYPE) ) {
                $ft_sql_result .= ' OR (' . type2Table(CS_SECTION_TYPE) . '.item_id IN (';
                for ($i = 0; $i < count($ft_result) - 1; $i++) {
                   $ft_sql_result .= $ft_result[$i] . ',';
                }
-               $ft_sql_result .= $ft_result[count($ft_result) - 1] . '))';
+               $ft_sql_result .= $ft_result[count($ft_result) - 1] . ') AND '.type2Table(CS_SECTION_TYPE).'.deleter_id IS NULL)';
             }
             unset($ft_result);
             return $ft_sql_result;
