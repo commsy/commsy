@@ -193,8 +193,18 @@ if (!empty($_GET['SID'])) {
    $SID = $_POST['SID'];                    // session id via POST-VARS (form posts)
 } elseif (!empty($_COOKIE['SID'])) {
    $SID = $_COOKIE['SID'];
+   $session_manager = $environment->getSessionManager();
+   $session = $session_manager->get($SID);
+   if ( !isset($session)
+        and $environment->getCurrentModule() == 'context'
+        and $environment->getCurrentFunction() == 'login'
+        and !$outofservice
+      ) {
+      include_once('pages/context_login.php');
+      exit();
+   }
 } elseif ( $environment->getCurrentModule() == 'context'
-           and  $environment->getCurrentFunction() == 'login'
+           and $environment->getCurrentFunction() == 'login'
            and !$outofservice
          ) {
    include_once('pages/context_login.php');
