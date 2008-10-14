@@ -134,12 +134,19 @@ class cs_homepage_extension_view extends cs_view {
                         'context',
                         'forward',
                         array('tool' => 'etchat'));
-           $title = '<span style="white-space:nowrap;"> '.
+           $current_user = $this->_environment->getCurrentUserItem();
+           $link_item = new cs_link();
+           if ( $current_user->isReallyGuest() ) {
+              $title = '<span class="disabled" style="white-space:nowrap;">'.$this->_translator->getMessage('CHAT_CHAT').'</span>';
+              // TBD: icon ausgrauen
+              $link_item->setIconPath('images/cs_config/CHAT_CONFIGURATION_IMAGE.gif');
+           } else {
+              $title = '<span style="white-space:nowrap;"> '.
                                       ahref_curl($this->_environment->getCurrentContextID(),'context','forward',array('tool' => 'etchat'),
                                                  $this->_translator->getMessage('CHAT_CHAT'), '', 'chat', '', '',
                                                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').'</span>';
-           $link_item = new cs_link();
-           $link_item->setIconPath('images/cs_config/CHAT_CONFIGURATION_IMAGE.gif');
+              $link_item->setIconPath('images/cs_config/CHAT_CONFIGURATION_IMAGE.gif');
+           }
            $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
            $html .= '<tr>'.LF;
            $html .= '<td style="width:10%;">'.LF;

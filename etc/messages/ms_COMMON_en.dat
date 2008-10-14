@@ -300,6 +300,7 @@ $message["COMMON_GROUP"]["en"] = "Group";
 $message["COMMON_GROUPROOM"]["en"] = "Group workspace";
 $message["COMMON_GROUPS"]["en"] = "Groups";
 $message["COMMON_GROUP_INDEX"]["en"] = "Groups";
+$message["COMMON_GUEST"]["en"] = "Guest";
 $message["COMMON_HELP"]["en"] = "Help";
 $message["COMMON_HELP_COMMON_FORMAT_TITLE"]["en"] = "Text format options";
 $message["COMMON_HIDE"]["en"] = "Hide entry";

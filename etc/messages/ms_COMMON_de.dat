@@ -298,6 +298,7 @@ $message["COMMON_GROUP"]["de"] = "Gruppe";
 $message["COMMON_GROUPROOM"]["de"] = "Gruppenraum";
 $message["COMMON_GROUPS"]["de"] = "Gruppen";
 $message["COMMON_GROUP_INDEX"]["de"] = "Gruppen";
+$message["COMMON_GUEST"]["de"] = "Gast";
 $message["COMMON_HELP"]["de"] = "Hilfe";
 $message["COMMON_HELP_COMMON_FORMAT_TITLE"]["de"] = "Formatierungsmöglichkeiten";
 $message["COMMON_HIDE"]["de"] = "Verbergen";

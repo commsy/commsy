@@ -895,7 +895,7 @@ class cs_user_item extends cs_item {
     *                 false, if user is not a guest
     */
    function isReallyGuest () {
-      return $this->_getValue('status') == 0 and $this->_getValue('user_id') == 'guest';
+      return $this->_getValue('status') == 0 and strtolower($this->_getValue('user_id')) == 'guest';
    }
 
       /** user has requested an account
@@ -1010,7 +1010,7 @@ class cs_user_item extends cs_item {
 
       // set old status to current status
       $this->_old_status = $this->getStatus();
-      
+
       if(($this->getStatus() == 2) or ($this->getStatus() == 3)){
         // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
         // 2 = normaler Benutzer
@@ -1018,7 +1018,7 @@ class cs_user_item extends cs_item {
           if($this->_environment->getCurrentContextItem()->WikiEnableDiscussion() == "1"){
             $this->updateWikiProfile();
           }
-          
+
           if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotification() == "1"){
             $this->updateWikiNotification();
           }
@@ -1679,17 +1679,17 @@ class cs_user_item extends cs_item {
       include_once('functions/date_functions.php');
       return $this->getLastLogin() >  getCurrentDateTimeMinusDaysInMySQL(99);
    }
-   
+
    public function updateWikiProfile(){
         $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->updateWikiProfileFile($this);
    }
-   
+
    public function updateWikiNotification(){
         $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->updateNotification();
    }
-   
+
    // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
    //public function updateWikiRemoveUser(){
    //     $wiki_manager = $this->_environment->getWikiManager();

@@ -70,17 +70,28 @@ class cs_etchat_manager extends cs_manager {
       $retour = false;
 
       // user exists?
-      $sql = 'SELECT etchat_username AS count FROM etchat_user WHERE etchat_user_id="'.$user->getItemID().'";';
+      $user_item_id = $user->getItemID();
+      if ( empty($user_item_id) ) {
+         $user_item_id = 42;
+      }
+      $sql = 'SELECT etchat_username AS count FROM etchat_user WHERE etchat_user_id="'.$user_item_id.'";';
       $result = $this->_db_connector->performQuery($sql);
+      $user_fullname = $user->getFullname();
+      if ( empty($user_fullname)
+           or $user_fullname == 'GUEST'
+         ) {
+         $translator = $this->_environment->getTranslationObject();
+         $user_fullname = $translator->getMessage('COMMON_GUEST');
+      }
       if ( empty($result[0])
            or empty($result[0]['etchat_username'])
-           or $result[0]['etchat_username'] != htmlentities($user->getFullname())
+           or $result[0]['etchat_username'] != htmlentities($user_fullname)
          ) {
          // no -> enter user
          if ( empty($result[0]) ) {
-            $sql = 'INSERT INTO etchat_user VALUES ('.$user->getItemID().',"'.addslashes(htmlentities($user->getFullname())).'",NULL,"gast");';
+            $sql = 'INSERT INTO etchat_user VALUES ('.$user_item_id.',"'.addslashes(htmlentities($user_fullname)).'",NULL,"gast");';
          } else {
-            $sql = 'UPDATE etchat_user SET etchat_username="'.addslashes(htmlentities($user->getFullname())).'" WHERE etchat_user_id='.$user->getItemID().';';
+            $sql = 'UPDATE etchat_user SET etchat_username="'.addslashes(htmlentities($user_fullname)).'" WHERE etchat_user_id='.$user_item_id.';';
          }
          $result = $this->_db_connector->performQuery($sql);
          if ( !empty($result) ) {
@@ -92,27 +103,32 @@ class cs_etchat_manager extends cs_manager {
 
       // user message
       $translator = $this->_environment->getTranslationObject();
-      $message_etchat_enter_chatroom = $translator->getMessage('ETCHAT_USER_ENTER_CHATROOM',htmlentities($user->getFullname()));
+      $message_etchat_enter_chatroom = $translator->getMessage('ETCHAT_USER_ENTER_CHATROOM',htmlentities($user_fullname));
       $time = date('U')-2;
-      $sql = 'SELECT count(*) FROM etchat_messages WHERE etchat_user_fid="'.$user->getItemID().'" AND etchat_text="'.addslashes($message_etchat_enter_chatroom).'" AND etchat_fid_room="'.$user->getContextID().'" AND etchat_timestamp>="'.$time.'";';
+      $sql = 'SELECT count(*) FROM etchat_messages WHERE etchat_user_fid="'.$user_item_id.'" AND etchat_text="'.addslashes($message_etchat_enter_chatroom).'" AND etchat_fid_room="'.$user->getContextID().'" AND etchat_timestamp>="'.$time.'";';
       $result = $this->_db_connector->performQuery($sql);
       if ( empty($result[0]['count'])
            or $result[0]['count'] == 0
          ) {
-         $sql = "INSERT INTO etchat_messages ( etchat_user_fid, etchat_text, etchat_text_css, etchat_timestamp, etchat_fid_room ) VALUES ( ".$user->getItemID().", '".addslashes($message_etchat_enter_chatroom)."', 'color:#000000;font-weight:normal;font-style:normal;', '".date('U')."',".$user->getContextID().")";
+         $sql = "INSERT INTO etchat_messages ( etchat_user_fid, etchat_text, etchat_text_css, etchat_timestamp, etchat_fid_room ) VALUES ( ".$user_item_id.", '".addslashes($message_etchat_enter_chatroom)."', 'color:#000000;font-weight:normal;font-style:normal;', '".date('U')."',".$user->getContextID().")";
          $result = $this->_db_connector->performQuery($sql);
       }
 
       // user in room exists?
-      $sql = 'SELECT count(*) AS count FROM etchat_useronline WHERE etchat_fid_room="'.$user->getContextID().'" AND etchat_onlineuser_fid="'.$user->getItemID().'";';
+      $sql = 'SELECT count(*) AS count FROM etchat_useronline WHERE etchat_fid_room="'.$user->getContextID().'" AND etchat_onlineuser_fid="'.$user_item_id.'";';
       $result = $this->_db_connector->performQuery($sql);
       if ( empty($result[0]['count'])
            or $result[0]['count'] == 0
          ) {
          // no -> enter user in room
          $context = $user->getContextItem();
-         $user_param_all = $_SERVER['REMOTE_ADDR']."@".@gethostbyaddr($_SERVER['REMOTE_ADDR'])."@".@getenv('HTTP_X_FORWARDED_FOR');
-         $sql = "INSERT INTO etchat_useronline ( etchat_onlineuser_fid, etchat_onlinetimestamp, etchat_onlineip, etchat_fid_room, etchat_user_online_room_name, etchat_user_online_user_name, etchat_user_online_user_priv) VALUES ( '".$user->getItemID()."', ".date('U').", '".$user_param_all."', ".$user->getContextID()." ,'".addslashes(htmlentities($context->getTitle()))."', '".addslashes(htmlentities($user->getFullName()))."', 'gast')";
+         global $c_proxy_ip;
+         if ( !empty($c_proxy_ip) ) {
+            $user_param_all = $_SERVER['REMOTE_ADDR']."@".$_SERVER['REMOTE_ADDR']."@".@getenv('HTTP_X_FORWARDED_FOR');
+         } else {
+            $user_param_all = $_SERVER['REMOTE_ADDR']."@".@gethostbyaddr($_SERVER['REMOTE_ADDR'])."@".@getenv('HTTP_X_FORWARDED_FOR');
+         }
+         $sql = "INSERT INTO etchat_useronline ( etchat_onlineuser_fid, etchat_onlinetimestamp, etchat_onlineip, etchat_fid_room, etchat_user_online_room_name, etchat_user_online_user_name, etchat_user_online_user_priv) VALUES ( '".$user_item_id."', ".date('U').", '".$user_param_all."', ".$user->getContextID()." ,'".addslashes(htmlentities($context->getTitle()))."', '".addslashes(htmlentities($user_item_id))."', 'gast')";
          $result = $this->_db_connector->performQuery($sql);
          if ( empty($result)
               or !is_numeric($result)
