@@ -262,11 +262,6 @@ if ( $context_item->isLocked() ) {
                            $manager = $environment->getDiscussionManager();
                            $manager->reset();
                            $manager->setContextLimit($environment->getCurrentContextID());
-                           if ($context_item->withOnlyThreadedDiscussionType()){
-                              $manager->setDiscussionTypeLimit('threaded');
-                           }elseif($context_item->withOnlySimpleDiscussionType()){
-                              $manager->setDiscussionTypeLimit('simple');
-                           }
                            $count_all = $manager->getCountAll();
                            if ($environment->inProjectRoom()) {
                               $manager->setAgeLimit($context_item->getTimeSpread());

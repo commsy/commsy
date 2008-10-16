@@ -1361,11 +1361,6 @@ class cs_item {
       }
 
       $context_item = $this->_environment->getCurrentContextItem();
-      if ( $context_item->withOnlyThreadedDiscussionType() and $type == CS_DISCUSSION_TYPE ) {
-         $link_item_manager->setDiscussionTypeLimit('threaded');
-      } elseif ( $context_item->withOnlySimpleDiscussionType() and $type == CS_DISCUSSION_TYPE ) {
-         $link_item_manager->setDiscussionTypeLimit('simple');
-      }
       if (
             ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom())
             or ($type == CS_COMMUNITY_TYPE and $this->isA(CS_PROJECT_TYPE) and $this->_environment->getCurrentModule() == 'project')

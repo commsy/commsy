@@ -341,11 +341,6 @@ $discussion_manager = $environment->getDiscussionManager();
 $discussion_manager->setContextLimit($environment->getCurrentContextID());
 
 $context_item = $environment->getCurrentContextItem();
-if ($context_item->withOnlyThreadedDiscussionType()){
-   $discussion_manager->setDiscussionTypeLimit('threaded');
-}elseif($context_item->withOnlySimpleDiscussionType()){
-   $discussion_manager->setDiscussionTypeLimit('simple');
-}
 
 $count_all = $discussion_manager->getCountAll();
 

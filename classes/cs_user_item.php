@@ -1422,11 +1422,6 @@ class cs_user_item extends cs_item {
       $id_array = array();
       $link_manager = $this->_environment->getLinkItemManager();
       $context_item = $this->_environment->getCurrentContextItem();
-      if ($context_item->withOnlyThreadedDiscussionType() and $type == CS_DISCUSSION_TYPE){
-         $link_manager->setDiscussionTypeLimit('threaded');
-      }elseif($context_item->withOnlySimpleDiscussionType() and $type == CS_DISCUSSION_TYPE ){
-         $link_manager->setDiscussionTypeLimit('simple');
-      }
       $link_ids = $link_manager->getModiefiedItemIDArray($type, $creator_id);
       foreach ($link_ids as $id) {
          $id_array[] = $id;

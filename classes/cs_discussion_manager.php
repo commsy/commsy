@@ -55,7 +55,6 @@ class cs_discussion_manager extends cs_manager {
    */
    var $_interval_limit = NULL;
 
-   var $_discussion_type_limit =NULL;
 
    /**
    *  array - containing an id-array as search limit
@@ -94,7 +93,6 @@ class cs_discussion_manager extends cs_manager {
       $this->_topic_limit = NULL;
       $this->_institution_limit = NULL;
       $this->_sort_order = NULL;
-      $this->_discussion_type_limit = NULL;
    }
 
    /** set age limit
@@ -142,9 +140,6 @@ class cs_discussion_manager extends cs_manager {
       $this->_sort_order = (string)$order;
    }
 
-   function setDiscussionTypeLimit ($limit) {
-      $this->_discussion_type_limit = (string)$limit;
-   }
 
   /** set limit to array of discussion item_ids
     *
@@ -244,12 +239,9 @@ class cs_discussion_manager extends cs_manager {
      if ($this->_delete_limit == true) {
         $query .= ' AND discussions.deleter_id IS NULL';
      }
-     if (isset($this->_discussion_type_limit)) {
-        $query .= ' AND (discussions.discussion_type = "'.encode(AS_DB,$this->_discussion_type_limit).'" )';
-     }
-      if (isset($this->_ref_user_limit)) {
+     if (isset($this->_ref_user_limit)) {
          $query .= ' AND (discussions.creator_id = "'.encode(AS_DB,$this->_ref_user_limit).'" )';
-      }
+     }
      if (isset($this->_age_limit)) {
         $query .= ' AND discussions.modification_date >= DATE_SUB(CURRENT_DATE,interval '.encode(AS_DB,$this->_age_limit).' day)';
      }
