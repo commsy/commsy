@@ -98,7 +98,6 @@ class cs_link_manager extends cs_manager {
       $this->_link_type_array_limit = array();
       $this->_sorting_place_limit = NULL;
       $this->_entry_limit = NULL;
-      $this->_discussion_type_limit = NULL;
    }
 
   /** reset data
@@ -188,10 +187,6 @@ class cs_link_manager extends cs_manager {
       $this->_linked_item = $object;
    }
 
-   function setDiscussionTypeLimit ($limit) {
-      $this->_discussion_type_limit = $limit;
-   }
-
    /** set linked_item
     * this method sets a linked-item as a limit
     *
@@ -230,15 +225,7 @@ class cs_link_manager extends cs_manager {
       }
       $query .= ' FROM link_items ';
 
-      if (isset($this->_discussion_type_limit)){
-         $query .= ' LEFT JOIN discussions AS discussion1 ON (discussion1.item_id=link_items.first_item_id)'; // modificator_id (TBD)
-         $query .= ' LEFT JOIN discussions AS discussion2 ON (discussion2.item_id=link_items.second_item_id)'; // modificator_id (TBD)
-      }
       $query .= ' WHERE 1';
-
-      if (isset($this->_discussion_type_limit)){
-         $query .= ' AND (discussion1.discussion_type ="'.encode(AS_DB,$this->_discussion_type_limit).'" OR discussion2.discussion_type ="'.encode(AS_DB,$this->_discussion_type_limit).'")';
-      }
 
       if ( isset($this->_linked_item) ) {
          $query .= ' AND ( (first_item_id ="'.encode(AS_DB,$this->_linked_item->getItemID()).'"';
@@ -654,15 +641,7 @@ class cs_link_manager extends cs_manager {
            $query ='SELECT DISTINCT announcement.item_id FROM announcement WHERE announcement.creator_id ="'.encode(AS_DB,$creator_id).'" AND announcement.deleter_id IS NULL  AND announcement.deletion_date IS NULL ORDER BY announcement.modification_date DESC';
            break;
         case CS_DISCUSSION_TYPE:
-           if (isset($this->_discussion_type_limit)){
-              $query =  ' SELECT DISTINCT discussions.item_id FROM discussions';
-              $query .= ' WHERE 1';
-              $query .= ' AND discussions.creator_id ="'.encode(AS_DB,$creator_id).'" AND discussions.deleter_id IS NULL AND discussions.deletion_date IS NULL';
-              $query .= ' AND discussions.discussion_type ="'.encode(AS_DB,$this->_discussion_type_limit).'"';
-              $query .= ' ORDER BY discussions.modification_date DESC, discussions.title DESC';
-           }else{
-              $query ='SELECT DISTINCT discussions.item_id FROM discussions WHERE discussions.creator_id ="'.encode(AS_DB,$creator_id).'" AND discussions.deleter_id IS NULL AND discussions.deletion_date IS NULL ORDER BY discussions.modification_date DESC, discussions.title DESC';
-           }
+           $query ='SELECT DISTINCT discussions.item_id FROM discussions WHERE discussions.creator_id ="'.encode(AS_DB,$creator_id).'" AND discussions.deleter_id IS NULL AND discussions.deletion_date IS NULL ORDER BY discussions.modification_date DESC, discussions.title DESC';
            break;
         case CS_TODO_TYPE:
            $query ='SELECT DISTINCT todos.item_id FROM todos WHERE todos.creator_id ="'.encode(AS_DB,$creator_id).'" AND todos.deleter_id IS NULL AND todos.deletion_date IS NULL ORDER BY todos.modification_date DESC';
