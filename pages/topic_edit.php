@@ -342,11 +342,11 @@ else {
             if (isset($_POST['public'])) {
                $topic_item->setPublic($_POST['public']);
             }
-         if ( isset($_POST['path_active']) and $_POST['path_active'] == 1 ) {
-            $topic_item->activatePath();
-         } elseif ( isset($_POST['path_active']) and $_POST['path_active'] == -1 ) {
-            $topic_item->deactivatePath();
-         }
+            if ( isset($_POST['path_active']) and $_POST['path_active'] == 1 ) {
+               $topic_item->activatePath();
+            } elseif ( isset($_POST['path_active']) and $_POST['path_active'] == -1 ) {
+               $topic_item->deactivatePath();
+            }
 
             // Set links to connected rubrics
             if ( isset($_POST[CS_MATERIAL_TYPE]) ) {
@@ -406,37 +406,37 @@ else {
             // Save item
             $topic_item->save();
 
-         // PATH
-         if ( isset($_POST['path_active'])
-              and !empty($_POST['path_active'])
-              and $_POST['path_active'] == 1
-              and isset($_POST['sorting'])
-              and !empty($_POST['sorting'])
-            ) {
-            $item_place_array = array();
-            foreach ($_POST['sorting'] as $place => $item_id) {
-               $temp_array = array();
-               $temp_array['place'] = $place+1;
-               $temp_array['item_id'] = $item_id;
-               $item_place_array[] = $temp_array;
+            // PATH
+            if ( isset($_POST['path_active'])
+                 and !empty($_POST['path_active'])
+                 and $_POST['path_active'] == 1
+                 and isset($_POST['sorting'])
+                 and !empty($_POST['sorting'])
+               ) {
+               $item_place_array = array();
+               foreach ($_POST['sorting'] as $place => $item_id) {
+                  $temp_array = array();
+                  $temp_array['place'] = $place+1;
+                  $temp_array['item_id'] = $item_id;
+                  $item_place_array[] = $temp_array;
+               }
+               $link_item_manager = $environment->getLinkItemManager();
+               $link_item_manager->cleanSortingPlaces($topic_item);
+               $link_item_manager->saveSortingPlaces($item_place_array);
+            } elseif ( isset($_POST['path_active'])
+                       and !empty($_POST['path_active'])
+                       and $_POST['path_active'] == -1
+                     ) {
+               $link_item_manager = $environment->getLinkItemManager();
+               $link_item_manager->cleanSortingPlaces($topic_item);
+            } elseif ( isset($_POST['path_active'])
+                       and !empty($_POST['path_active'])
+                       and $_POST['path_active'] == 1
+                       and empty($_POST['sorting'])
+                     ) {
+               $link_item_manager = $environment->getLinkItemManager();
+               $link_item_manager->cleanSortingPlaces($topic_item);
             }
-            $link_item_manager = $environment->getLinkItemManager();
-            $link_item_manager->cleanSortingPlaces($topic_item);
-            $link_item_manager->saveSortingPlaces($item_place_array);
-         } elseif ( isset($_POST['path_active'])
-                    and !empty($_POST['path_active'])
-                    and $_POST['path_active'] == -1
-                  ) {
-            $link_item_manager = $environment->getLinkItemManager();
-            $link_item_manager->cleanSortingPlaces($topic_item);
-         } elseif ( isset($_POST['path_active'])
-                    and !empty($_POST['path_active'])
-                    and $_POST['path_active'] == 1
-                    and empty($_POST['sorting'])
-                  ) {
-            $link_item_manager = $environment->getLinkItemManager();
-            $link_item_manager->cleanSortingPlaces($topic_item);
-         }
 
             // Reset id array
             $session->setValue('cid'.$context_item->getItemID().'_topic_index_ids',

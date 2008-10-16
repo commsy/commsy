@@ -303,9 +303,10 @@ class cs_link_manager extends cs_manager {
 
       // group to eliminate versions
       // there are no version_ids in this table ???????????
-      if ( isset($this->_linked_item) ) {
-         $query .= ' GROUP BY link_items.item_id';
-      }
+      #if ( isset($this->_linked_item) ) {
+      #   $query .= ' GROUP BY link_items.item_id';
+      #}
+
       // order
       if ( !empty($this->_order) ) {
          if ( $this->_order == 'sorting_place') {
