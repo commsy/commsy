@@ -967,8 +967,16 @@ class cs_manager {
                   $insert_query .= $before.$key.'=NULL';
                }
 
+               // special for labels
+               elseif ( $key == 'name'
+                        and empty($value)
+                        and DBTable2Type($this->_db_table) == CS_LABEL_TYPE
+                      ) {
+                  $insert_query .= $before.$key.'=" "';
+               }
+
                // default
-               elseif (!empty($value) ) {
+               elseif ( !empty($value) ) {
                   $insert_query .= $before.$key.'="'.encode(AS_DB,encode(FROM_DB,$value)).'"';
                }
             }
