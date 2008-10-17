@@ -861,7 +861,8 @@ class cs_material_manager extends cs_manager {
       parent::_update($material_item);
       $modificator = $material_item->getModificatorItem();
       if ( !isset($modificator) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems creating new material: Modificator is not set',E_USER_ERROR);
       } else {
          $public = $material_item->isPublic() ? '1' : '0';
          $copy_id = NULL;
@@ -895,7 +896,8 @@ class cs_material_manager extends cs_manager {
                   ' AND version_id="'.encode(AS_DB,$material_item->getVersionID()).'"';
          $result = $this->_db_connector->performQuery($query);
          if ( !isset($result) or !$result ) {
-            include_once('functions/error_functions.php');trigger_error('Problems updating material from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems updating material from query: "'.$query.'"',E_USER_WARNING);
          }
       }
    }

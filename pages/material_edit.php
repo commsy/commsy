@@ -756,10 +756,10 @@ else {
                if ( $material_item->isPublic() != $_POST['public'] ) {
                   $material_item->setPublic($_POST['public']);
                }
-            }else{
+            } else {
                if ( isset($_POST['private_editing']) ) {
                   $material_item->setPrivateEditing('0');
-               }else{
+               } else {
                   $material_item->setPrivateEditing('1');
                }
             }
@@ -776,7 +776,7 @@ else {
                    if ($converted_time_start['conforms'] == TRUE) {
                       $dt_hiding_datetime .= $converted_time_start['datetime'];
                    }else{
-                   	 $dt_hiding_datetime .= $dt_hiding_time;
+                      $dt_hiding_datetime .= $dt_hiding_time;
                    }
                 }else{
                    $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;

@@ -30,10 +30,10 @@ include_once('../update_functions.php');
 $time_start = getmicrotime();
 
 // add column "has_html" to table "files"
-echo ('dates: change start time -> can be NULL.'."\n");
+echo ('dates: description can be NULL.'."\n");
 flush();
 $success = true;
-$query = "ALTER TABLE `dates` CHANGE `start_time` `start_time` VARCHAR( 100 ) CHARACTER SET latin1 COLLATE latin1_german1_ci NULL;";
+$query = "ALTER TABLE `dates` CHANGE `description` `description` TEXT CHARACTER SET latin1 COLLATE latin1_german1_ci NULL;";
 $result = select($query);
 
 // end of execution time
