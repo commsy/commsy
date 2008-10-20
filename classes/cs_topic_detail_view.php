@@ -108,11 +108,14 @@ class cs_topic_detail_view extends cs_detail_view {
                   case 'TODO':
                      $type = $this->_translator->getMessage('COMMON_TODO');
                      break;
+                  case 'TOPIC':
+                     $type = $this->_translator->getMessage('COMMON_TOPIC');
+                     break;
                   case 'USER':
                      $type = $this->_translator->getMessage('COMMON_USER');
                      break;
                   default:
-                     $type = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topic_detail(117) ');
+                     $type = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topic_detail('.__LINE__.') ');
                      break;
                }
 

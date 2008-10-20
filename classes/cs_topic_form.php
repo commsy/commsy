@@ -241,8 +241,11 @@ class cs_topic_form extends cs_rubric_form {
                   case 'TODO':
                      $temp_array['text'] = $this->_translator->getMessage('COMMON_TODO');
                      break;
+                  case 'TOPIC':
+                     $temp_array['text'] = $this->_translator->getMessage('COMMON_TOPIC');
+                     break;
                   default:
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'." cs_topc_form(226) ");
+                     $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topc_form('.__LINE__.') ');
                      break;
                }
                $temp_array['text'] .= ': '.$linked_item->getTitle();
