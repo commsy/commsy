@@ -107,9 +107,9 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
                $is_entry = false;
                break;
           }
-     }
-     if($item->getContextID() != $current_context->getItemID()){
-        $is_entry = false;
+        if($item->getContextID() != $current_context->getItemID()){
+           $is_entry = false;
+        }
      }
      if(!$is_entry or $item->isDeleted()){
         $this->_form->setFailure('item_id','mandatory');
