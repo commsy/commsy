@@ -149,6 +149,9 @@ if ( $old_room->withTags() ) {
    $new_room->setWithoutTags();
 }
 
+// config of email message tags
+$new_room->setEmailTextArray($old_room->getEmailTextArray());
+
 // save new room
 $new_room->save();
 
@@ -202,7 +205,7 @@ if ($old_room->withInformationBox()){
    $new_room->setwithInformationBox('yes');
    $id =$old_room->getInformationBoxEntryID();
    if (isset($new_id_array[$id])){
-   	$new_room->setInformationBoxEntryID($new_id_array[$id]);
+      $new_room->setInformationBoxEntryID($new_id_array[$id]);
    }
 }
 

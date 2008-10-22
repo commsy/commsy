@@ -936,6 +936,11 @@ class cs_context_item extends cs_item {
       $this->_addExtra('MAIL_TEXT_ARRAY',$mail_text_array);
    }
 
+   function setEmailTextArray ($array) {
+      if ( !empty($array) ) {
+         $this->_addExtra('MAIL_TEXT_ARRAY',$array);
+      }
+   }
 
    ###################################################
    # rubric translation methods
