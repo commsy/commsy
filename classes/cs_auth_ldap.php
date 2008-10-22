@@ -169,26 +169,31 @@ class cs_auth_ldap extends cs_auth_manager {
             if ( strstr($this->_rootuser,',')
                  and strstr($this->_rootuser,'=')
                ) {
-               $access = $this->_rootuser;
+               $access_root = $this->_rootuser;
             } else {
-               $access = $this->_field_userid.'='.$this->_rootuser.','.$this->_baseuser;
+               $access_root = $this->_field_userid.'='.$this->_rootuser.','.$this->_baseuser;
             }
-            $bind = @ldap_bind($connect, $access, $this->encryptPassword($this->_rootuser_password));
+            $bind = @ldap_bind($connect, $access_root, $this->encryptPassword($this->_rootuser_password));
             if ( $bind ) {
-               $search = @ldap_search($connect,$this->_baseuser,$suchfilter);
-               $result = ldap_get_entries($connect,$search);
-               $unbind = ldap_unbind($connect);
-               if ( $result['count'] != 0 ) {
-                  $access = $result[0]['dn'];
-                  if ( strtolower($access) != strtolower($access_first) ) {
-                     $connect = @ldap_connect( $this->_server, $this->_server_port );
-                     @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
-                     $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
-                     if ( $bind ) {
-                        $granted = true;
-                     } else {
-                        $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+               $base_user_array = explode(',',$this->_baseuser);
+               $count = count($base_user_array);
+               for ( $i=0; $i<$count; $i++  ) {
+                  if ( $bind ) {
+                     $baseuser = implode(',',$base_user_array);
+                     $search = @ldap_search($connect,$baseuser,$suchfilter);
+                     $result = ldap_get_entries($connect,$search);
+                     if ( $result['count'] != 0 ) {
+                        $access = $result[0]['dn'];
+                        break;
                      }
+                  }
+                  array_shift($base_user_array);
+               }
+
+               if ( strtolower($access) != strtolower($access_first) ) {
+                  $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
+                  if ( $bind ) {
+                     $granted = true;
                   } else {
                      $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                   }
@@ -201,10 +206,12 @@ class cs_auth_ldap extends cs_auth_manager {
          } else {
             $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
          }
-         @ldap_close( $connect );
+         @ldap_unbind($connect);
+         @ldap_close($connect);
       }
       return $granted;
    }
+
 
    /** exists an user_id ? - NOT IMPLEMENTED YET
     * this method returns a boolean whether the user_id exists in the ldap-database or not
