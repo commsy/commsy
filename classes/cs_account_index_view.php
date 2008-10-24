@@ -25,7 +25,6 @@
 
 include_once('classes/cs_campus_index_view.php');
 include_once('classes/cs_link.php');
-//include_once('functions/text_functions.php');
 
 /**
  *  class for CommSy list view: contact
@@ -33,7 +32,7 @@ include_once('classes/cs_link.php');
 class cs_account_index_view extends cs_campus_index_view {
 
    var $_selected_status = NULL;
-
+   private $_selected_auth_source = NULL;
    private $_auth_source_array = array();
    private $_auth_source_count = 1;
 
@@ -320,6 +319,31 @@ class cs_account_index_view extends cs_campus_index_view {
          $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
          $html_text .='</div>';
          $html .= $html_text;
+      }
+      if ( isset($params['sel_auth_source']) and !empty($params['sel_auth_source']) and $params['sel_auth_source'] != -1){
+         $current_context = $this->_environment->getCurrentPortalItem();
+         $auth_source_item = $current_context->getAuthSource($params['sel_auth_source']);
+         if ( isset($auth_source_item) ) {
+            $this->_additional_selects = true;
+            $html_text ='<div class="restriction">';
+            $html_text .= '<span class="infocolor">'.getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').':</span> ';
+            $html_text .= '<span>';
+            $title_short = chunkText($auth_source_item->getTitle(),15);
+            if ( $title_short != $auth_source_item->getTitle() ) {
+               $html_text .= '<a title="'.$auth_source_item->getTitle().'">';
+            }
+            $html_text .= $title_short;
+            if ( $title_short != $auth_source_item->getTitle() ) {
+               $html_text .= '</a>';
+            }
+            $html_text .= '</span>';
+            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+            $new_params = $params;
+            unset($new_params['sel_auth_source']);
+            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+            $html_text .='</div>';
+            $html .= $html_text;
+         }
       }
       return $html;
    }
@@ -621,8 +645,6 @@ class cs_account_index_view extends cs_campus_index_view {
     * this method returns the possible actions in the right formatted style
     *
     * @return string item date
-    *
-    * @author CommSy Development Group
     */
    function _getItemActions ($item) {
       $actions = '';
@@ -746,8 +768,16 @@ class cs_account_index_view extends cs_campus_index_view {
       return $this->_selected_status;
    }
 
+   function setSelectedAuthSource ($value) {
+      $this->_selected_auth_source = (int)$value;
+   }
+
+   function getSelectedAuthSource () {
+      return $this->_selected_auth_source;
+   }
+
    function _getAdditionalFormFieldsAsHTML () {
-           $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       if ($left_menue_status !='disapear'){
@@ -851,6 +881,47 @@ class cs_account_index_view extends cs_campus_index_view {
 
       $html .= '   </select>'.LF;
       $html .='</div>';
+
+      if ( $this->_environment->inPortal()
+           or $this->_environment->inCommunityRoom()
+         ) {
+         $current_context = $this->_environment->getCurrentPortalItem();
+         $auth_source_list = $current_context->getAuthSourceList();
+         if ( $auth_source_list->isNotEmpty()
+              and $auth_source_list->getCount() > 1
+            ) {
+            $sel_auth_source = $this->getSelectedAuthSource();
+            $html .= '<div style="text-align:left; font-size: 10pt;">';
+            $html .= $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').BRLF;
+            $html .= '   <select name="sel_auth_source" size="1" style="width: '. $width;
+            $html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+
+            $html .= '      <option value="-1"';
+            if ( !isset($sel_auth_source) || $sel_auth_source == -1 ) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
+
+            $html .= '      <option value="" disabled="disabled"';
+            $html .= '>------------------</option>'.LF;
+
+            $auth_source_item = $auth_source_list->getFirst();
+            while ( $auth_source_item ) {
+               $html .= '      <option value="'.$auth_source_item->getItemID().'"';
+               if ( isset($sel_auth_source)
+                    and $sel_auth_source == $auth_source_item->getItemID()
+                  ) {
+                  $html .= ' selected="selected"';
+               }
+               $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
+               $auth_source_item = $auth_source_list->getNext();
+            }
+
+            $html .= '   </select>'.LF;
+            $html .='</div>';
+         }
+      }
+
       return $html;
    }
 

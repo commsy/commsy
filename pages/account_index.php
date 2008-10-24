@@ -108,6 +108,16 @@ if (!isset($error) or !$error) {
       } else {
          $selstatus = 7; // 7 = no limit = all accounts
       }
+
+      // Find current auth source selection
+      if ( isset($_POST['sel_auth_source']) ) {
+         $sel_auth_source = $_POST['sel_auth_source'];
+         $from = 1;
+      } elseif ( isset($_GET['sel_auth_source']) ) {
+         $sel_auth_source = $_GET['sel_auth_source'];
+      } else {
+         $sel_auth_source = -1; // -1 = no limit = all auth sources
+      }
    }
 
    // Find current mode
@@ -130,6 +140,11 @@ if (!isset($error) or !$error) {
    }
    if ( !empty($search) ) {
       $user_manager->setSearchLimit($search);
+   }
+   if ( !empty($sel_auth_source)
+        and  $sel_auth_source != -1
+      ) {
+      $user_manager->setAuthSourceLimit($sel_auth_source);
    }
    if ( !empty($selstatus) ) {
       if ($selstatus == 10) {
@@ -184,6 +199,7 @@ if (!isset($error) or !$error) {
    $view->setSortKey($sort);
    $view->setSearchText($search);
    $view->setSelectedStatus($selstatus);
+   $view->setSelectedAuthSource($sel_auth_source);
    $view->setHasCheckboxes('list_actions');
 
 
