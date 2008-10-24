@@ -1400,6 +1400,15 @@ class cs_portal_item extends cs_guide_item {
       return $manager->getItem($item_id);
    }
 
+   function getCountAuthSourceListEnabled () {
+      $retour = 0;
+      $list = $this->getAuthSourceListEnabled();
+      if ( isset($list) ) {
+         $retour = $list->getcount();
+      }
+      return $retour;
+   }
+
    ###########################################
    # portal description wellcome text
    ###########################################

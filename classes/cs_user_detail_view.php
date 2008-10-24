@@ -382,6 +382,22 @@ class cs_user_detail_view extends cs_detail_view {
       $html = '';
       $formal_data = array();
 
+      $temp_array = array();
+      $temp_array[] = $this->_translator->getMessage('COMMON_ACCOUNT');
+      $temp_array[] = $item->getUserID();
+      $formal_data[] = $temp_array;
+      unset($temp_array);
+
+      $portal_item = $this->_environment->getCurrentPortalItem();
+      if ( $portal_item->getCountAuthSourceListEnabled() != 1 ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE');
+         $auth_source_item = $portal_item->getAuthSource($item->getAuthSource());
+         $temp_array[] = $auth_source_item->getTitle();
+         $formal_data[] = $temp_array;
+         unset($temp_array);
+      }
+
       if ( !$this->_environment->inPrivateRoom() ) {
 
          $temp_array = array();
@@ -699,7 +715,7 @@ class cs_user_detail_view extends cs_detail_view {
          if ($this->_display_mod == 'admin' and $this->_environment->getCurrentModule() == 'account') {
             if ( $this->_environment->inPortal() and $user->isModerator() ) {
                $current_portal_item = $this->_environment->getCurrentPortalItem();
-               $auth_source_item = $current_portal_item->getAuthSource($user->getAuthSource());
+               $auth_source_item = $current_portal_item->getAuthSource($subitem->getAuthSource());
                // must be addAccount not PasswordChange, because
                // for admin change password for user we need super user access to the auth source.
                // passwordChange ist for user change his/her own password
