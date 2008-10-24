@@ -1410,13 +1410,15 @@ class cs_page_view extends cs_view {
             // @segment-begin 63814 no-cs_modus/user=guest:?auth source1/table-begin
             // auth source
             $insert_auth_source_selectbox = false;
-            $auth_source_list = $current_portal->getAuthSourceListEnabled();
-            if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
-               if ($auth_source_list->getCount() == 1) {
-                  $auth_source_item = $auth_source_list->getFirst();
-                  $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
-               } else {
-                  $insert_auth_source_selectbox = true;
+            if ( $current_portal->showAuthAtLogin() ) {
+               $auth_source_list = $current_portal->getAuthSourceListEnabled();
+               if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+                  if ($auth_source_list->getCount() == 1) {
+                     $auth_source_item = $auth_source_list->getFirst();
+                     $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
+                  } else {
+                     $insert_auth_source_selectbox = true;
+                  }
                }
             }
             // login form

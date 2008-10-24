@@ -1409,6 +1409,36 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   public function setShowAuthAtLogin () {
+      $this->_addExtra('AUTH_SHOW_LOGIN',1);
+   }
+
+   public function setNotShowAuthAtLogin () {
+      $this->_addExtra('AUTH_SHOW_LOGIN',-1);
+   }
+
+   private function _getShowAuthAtLogin () {
+      $retour = '';
+      if ($this->_issetExtra('AUTH_SHOW_LOGIN')) {
+         $value = $this->_getExtra('AUTH_SHOW_LOGIN');
+         if ( !empty($value) ) {
+            $retour = $value;
+         }
+      }
+      return $retour;
+   }
+
+   public function showAuthAtLogin () {
+      $retour = true;
+      $show = $this->_getShowAuthAtLogin();
+      if ( !empty($show)
+           and $show == -1
+         ) {
+         $retour = false;
+      }
+      return $retour;
+   }
+
    ###########################################
    # portal description wellcome text
    ###########################################

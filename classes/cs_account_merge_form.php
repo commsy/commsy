@@ -32,6 +32,8 @@ class cs_account_merge_form extends cs_rubric_form {
 
    var $_show_form = true;
 
+   private $_show_auth_source = true;
+
    var $_auth_source_list = NULL;
 
    var $_array_sources_allow_delete = array();
@@ -61,6 +63,7 @@ class cs_account_merge_form extends cs_rubric_form {
 
       // auth source
       $current_portal = $this->_environment->getCurrentPortalItem();
+      $this->_show_auth_source = $current_portal->showAuthAtLogin();
       $auth_source_list = $current_portal->getAuthSourceListEnabled();
       if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
          $auth_source_item = $auth_source_list->getFirst();
@@ -90,7 +93,7 @@ class cs_account_merge_form extends cs_rubric_form {
          $this->_form->addHeadline('title',$this->_translator->getMessage('ACCOUNT_MERGE'));
          if ( count($this->_auth_source_array) == 1 ) {
             $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
-         } else {
+         } elseif( $this->_show_auth_source ) {
             $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 12);
          }
          $this->_form->addTextfield('user_id','',$this->_translator->getMessage('COMMON_ACCOUNT'),'','',21,true);
@@ -120,16 +123,22 @@ class cs_account_merge_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$this->_form_post['user_id']);
       } elseif ( !empty($this->_form_post['user_id'])
            and !empty($this->_form_post['password'])
-           and !empty($this->_form_post['auth_source'])
          ) {
          if ($current_user->getUserID() == $this->_form_post['user_id']) {
             $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_USER_ID',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id','');
-         } else {
+         } elseif ( !empty($this->_form_post['auth_source']) ) {
             $authentication = $this->_environment->getAuthenticationObject();
             $auth_manager = $authentication->getAuthManager($this->_form_post['auth_source']);
             if ( !$auth_manager->checkAccount($this->_form_post['user_id'],$this->_form_post['password']) ) {
                $this->_error_array = array_merge($this->_error_array,$auth_manager->getErrorArray());
+               $this->_form->setFailure('user_id','');
+               $this->_form->setFailure('password','');
+            }
+         } else {
+            $authentication = $this->_environment->getAuthenticationObject();
+            if ( !$authentication->checkAccount($this->_form_post['user_id'],$this->_form_post['password']) ) {
+               $this->_error_array = array_merge($this->_error_array,$authentication->getErrorArray());
                $this->_form->setFailure('user_id','');
                $this->_form->setFailure('password','');
             }
