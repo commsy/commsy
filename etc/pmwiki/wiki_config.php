@@ -27,7 +27,7 @@ if ( !empty($COMMSY_LANGUAGE) ) {
    XLPage($COMMSY_LANGUAGE,'PmWikiDe.XLPage');
 }
 
-if( !empty($COMMSY_DISCUSSION) ) {
+//if( !empty($COMMSY_DISCUSSION) ) {
 	#***********************************
 	#******FOXFORUM Einstellungen*******
 	#***********************************
@@ -72,15 +72,20 @@ if( !empty($COMMSY_DISCUSSION) ) {
 	# for instance if access is restricted to logged-in users.
 	# you then need to modify the form pages as well, to remove the access code boxes
 	# It is better to use Cookbook/Captcha
-	$EnableFoxForumPostCaptchaRequired = 1;
+	# $EnableFoxForumPostCaptchaRequired = 1;
 	## page will be deleted if empty
 	$DeleteKeyPattern = "^\\s*$";
 	## line breaks will be honoured
 	$HTMLPNewline = '<br />';
 	
+   $EnablePostCaptchaRequired = 1;
+   if (CondAuth($pagename,'edit') || CondAuth($pagename,'admin')){
+      $EnablePostCaptchaRequired = 0;
+   }
+   
 	#***********************************
 	#**Ende FOXFORUM Einstellungen******
 	#***********************************
-}
+//}
 
 ?>
