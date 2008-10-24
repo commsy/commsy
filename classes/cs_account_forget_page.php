@@ -43,27 +43,42 @@ class cs_account_forget_page extends cs_left_page {
 
       // cancel
       if ( !empty($this->_command)
-     and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
-           or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON')))
-   ) {
+           and ( isOption($this->_command, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'))
+                 or isOption($this->_command, $this->_translator->getMessage('COMMON_FORWARD_BUTTON'))
+               )
+         ) {
          $this->_redirect_back();
       }
 
       // get accounts
       if ( !empty($this->_command)
-     and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_SEND_BUTTON'))
-   ) {
-   $correct = $form->check();
-   if ( $correct ) {
+           and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_SEND_BUTTON'))
+         ) {
+         $correct = $form->check();
+         if ( $correct ) {
             $user_manager = $this->_environment->getUserManager();
             $user_manager->resetLimits();
             $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-            $user_manager->setAuthSourceLimit($this->_post_vars['auth_source']);
             $user_manager->setSearchLimit($this->_post_vars['email']);
             $user_manager->select();
             $user_list = $user_manager->get();
             $account_text = '';
             $user_fullname = ' ';
+
+            $portal_item = $this->_environment->getCurrentPortalItem();
+            $user_item = $user_list->getFirst();
+            $show_auth_source = false;
+            while ($user_item) {
+               if ( isset($auth_source_id)
+                    and $auth_source_id != $user_item->getAuthSource()
+                  ) {
+                  $show_auth_source = true;
+                  break;
+               } else {
+                  $auth_source_id = $user_item->getAuthSource();
+               }
+               $user_item = $user_list->getNext();
+            }
 
             $first = true;
             $user_item = $user_list->getFirst();
@@ -74,13 +89,17 @@ class cs_account_forget_page extends cs_left_page {
                   $account_text .= LF;
                }
                $account_text .= $user_item->getUserID();
+               if ( $show_auth_source ) {
+                  $auth_souce_item = $portal_item->getAuthSource($user_item->getAuthSource());
+                  $account_text .= ' ('.$auth_souce_item->getTitle().')';
+               }
                $user_fullname = $user_item->getFullname();
                $user_item = $user_list->getNext();
             }
 
             $user_email = $this->_post_vars['email'];
 
-      // send email
+            // send email
             $context_item = $this->_environment->getCurrentPortalItem();
             $mod_text = '';
             $mod_list = $context_item->getContactModeratorList();

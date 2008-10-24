@@ -71,8 +71,6 @@ class cs_account_forget_form extends cs_rubric_form {
       // auth source
       if ( count($this->_auth_source_array) == 1 ) {
          $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
-      } else {
-         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 12);
       }
       $this->_form->addTextField('email','',getMessage('USER_EMAIL'),'','',21,true);
       $this->_form->addButtonBar('option',getMessage('ACCOUNT_SEND_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.5,6);
