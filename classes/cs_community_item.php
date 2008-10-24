@@ -892,8 +892,11 @@ class cs_community_item extends cs_room_item {
             case 'CONFIGURATION_ARCHIVE':      //
                $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
+            case 'INSTITUTION_MAIL':      //
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_MAIL_FORM');
+               break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item(884) ',$link);
+               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item('.__LINE__.') ',$link);
                break;
          }
          $retour = $tempMessage;
