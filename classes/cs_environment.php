@@ -1525,7 +1525,7 @@ class cs_environment {
          $commsy_link = str_replace('SID','CSID',$commsy_link);
       }
       $link = $url_for_beluga_system;
-      $link .='&commsy_url='.urldecode($commsy_link);
+      $link .='?commsy_url='.urldecode($commsy_link);
       return $link;
    }
 
