@@ -276,6 +276,32 @@ class cs_auth_source_item extends cs_item {
       return $retour;
    }
 
+   public function setPasswordChangeLink ($value) {
+      $this->_addExtra('PASSWORD_CHANGE_LINK',$value);
+   }
+
+   function getPasswordChangeLink () {
+      $retour = '';
+      $value = $this->_getExtra('PASSWORD_CHANGE_LINK');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
+   public function setContactEMail ($value) {
+      $this->_addExtra('CONTACT_EMAIL',$value);
+   }
+
+   function getContactEMail () {
+      $retour = '';
+      $value = $this->_getExtra('CONTACT_EMAIL');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
    function save() {
       $manager = $this->_environment->getManager($this->_type);
       $this->_save($manager);

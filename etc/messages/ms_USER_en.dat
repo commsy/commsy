@@ -126,7 +126,7 @@ $message["USER_PASSWORD_CHANGE_HEADLINE"]["en"] = "Change password";
 $message["USER_PASSWORD_DESC"]["en"] = "Please enter a password.";
 $message["USER_PASSWORD_ERROR"]["en"] = "Please check your passwords. They are not identical.";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["en"] = "Forget password?";
-$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was sent to <span style=&quot;font-weight: bold;&quot;>%2</span>. Please change your password within the next 15 minutes.
+$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["en"] = "Further information was sent to your email address saved in the system.
 <br/><br/>
 If you are not receiving this email, please contact the portal moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["en"] = "Using your current loginname you can receive an email with a special link in it. You can change your password via this link in the next 15 minutes from this pc.";
@@ -137,12 +137,24 @@ at the CommSy portal
    %2
 
 If you just actived it, please follow this url:
-
 %3
 
 You can change your password via this url in the next % minutes from the computer which actived this mechanism.
 
 ---
+
+If you have not followed the link &quot;password forget?&quot;, please delete this email. Your password has not changed und nobody capter your account.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY"]["en"] = "the mechanism &quot;password forget&quot; has been activated for your account
+   %1
+
+at the CommSy portal
+   %2";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2"]["en"] = "Unfortunately it is impossible to change your %1 password via CommSy.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_LINK"]["en"] = "Please follow this URL to reset your password:
+   %1";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_MAIL"]["en"] = "For further questions contact the %1 support:
+   %2";
+$message["USER_PASSWORD_MAIL_BODY_SORRY3"]["en"] = "---
 
 If you have not followed the link &quot;password forget?&quot;, please delete this email. Your password has not changed und nobody capter your account.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["en"] = "%1: Change password";

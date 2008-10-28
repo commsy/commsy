@@ -338,6 +338,12 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_form->addEmptyLine();
       }
 
+      if ( !$this->_commsy_default and !empty($this->_auth_type) ) {
+         $this->_form->addTextfield('contact_mail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CONACT_MAIL_TITLE'),'',255,40,false,'','','','','','',$disabled);
+         $this->_form->addTextfield('change_password_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL'),'',255,40,false,'','','','','','',$disabled);
+         $this->_form->addEmptyLine();
+      }
+
       if ( $this->_disable_change_user_id ) {
          $this->_form->addhidden('changeUserID',2);
          $this->_form->addText('textchangeUserID',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
@@ -358,6 +364,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       } else {
          $this->_form->addRadioGroup('changePassword',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE'),'',$this->_yes_no_array,'','',true,'','',$disabled);
       }
+
       if ( $this->_disable_add_user ) {
          $this->_form->addhidden('addAccount',2);
          $this->_form->addText('textaddAccount',$translator->getMessage('CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE'),$translator->getMessage('CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED'));
@@ -423,6 +430,8 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       } elseif ( !empty($this->_item) ) {
          $this->_values['auth_source'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
+         $this->_values['change_password_url'] = $this->_item->getPasswordChangeLink();
+         $this->_values['contact_mail'] = $this->_item->getContactEMail();
          $current_context = $this->_environment->getCurrentContextItem();
          if ( $this->_item->getItemID() == $current_context->getAuthDefault() ) {
             $this->_values['default'] = 1;

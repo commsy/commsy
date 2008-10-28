@@ -57,92 +57,132 @@ class cs_password_forget_page extends cs_left_page {
          if ( $correct ) {
 
             // save special session
-            include_once('classes/cs_session_item.php');
-            $new_special_session_item = new cs_session_item();
-            $new_special_session_item->createSessionID($this->_post_vars['user_id']);
-            $new_special_session_item->setValue('auth_source',$this->_post_vars['auth_source']);
-            if ( $this->_post_vars['user_id'] == 'root' ) {
-               $new_special_session_item->setValue('commsy_id',$this->_environment->getServerID());
-            } else {
-               $new_special_session_item->setValue('commsy_id',$this->_environment->getCurrentPortalID());
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+            $user_manager->setUserIDLimit($this->_post_vars['user_id']);
+            if ( !empty($this->_post_vars['auth_source']) ) {
+               $user_manager->setAuthSourceLimit($this->_post_vars['auth_source']);
             }
-            if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
-               $new_special_session_item->setValue('password_forget_ip',$_SERVER["SERVER_ADDR"]);
-            } else {
-               $new_special_session_item->setValue('password_forget_ip',$_SERVER["HTTP_HOST"]);
-            }
-            include_once('functions/date_functions.php');
-            $new_special_session_item->setValue('password_forget_time',getCurrentDateTimeInMySQL());
-            $new_special_session_item->setValue('javascript',-1);
-            $new_special_session_item->setValue('cookie',0);
-            $session_manager = $this->_environment->getSessionManager();
-            $session_manager->save($new_special_session_item);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            $user_item = $user_list->getFirst();
+            $success = true;
+            while ($user_item) {
 
-            $user_email = '';
-            $user_fullname = '';
-            $user_id = '';
+               // auth source
+               $auth_source_manager = $this->_environment->getAuthSourceManager();
+               $auth_source_item = $auth_source_manager->getItem($user_item->getAuthSource());
 
-            $portal = $this->_environment->getCurrentPortalItem();
-            $current_user_item = $portal->getUserByUserID($this->_post_vars['user_id'],$this->_post_vars['auth_source']);
-
-            if ( isset($current_user_item) ) {
-               $user_fullname = $current_user_item->getFullName();
-               $user_email = $current_user_item->getEMail();
-               $user_id = $current_user_item->getUserID();
-            }
-
-            $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentPortalID().'&SID='.$new_special_session_item->getSessionID();
-
-            // send email
-            $context_item = $this->_environment->getCurrentPortalItem();
-            $mod_text = '';
-            $mod_list = $context_item->getModeratorList();
-            if (!$mod_list->isEmpty()) {
-               $mod_item = $mod_list->getFirst();
-               $contact_moderator = $mod_item;
-               while ($mod_item) {
-                  if (!empty($mod_text)) {
-                     $mod_text .= ','.LF;
+               if ( $auth_source_item->allowAddAccount() ) {
+                  include_once('classes/cs_session_item.php');
+                  $new_special_session_item = new cs_session_item();
+                  $new_special_session_item->createSessionID($this->_post_vars['user_id']);
+                  $new_special_session_item->setValue('auth_source',$user_item->getAuthSource());
+                  if ( $this->_post_vars['user_id'] == 'root' ) {
+                     $new_special_session_item->setValue('commsy_id',$this->_environment->getServerID());
+                  } else {
+                     $new_special_session_item->setValue('commsy_id',$this->_environment->getCurrentPortalID());
                   }
-                  $mod_text .= $mod_item->getFullname();
-                  $mod_text .= ' ('.$mod_item->getEmail().')';
-                  $mod_item = $mod_list->getNext();
+                  if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
+                     $new_special_session_item->setValue('password_forget_ip',$_SERVER["SERVER_ADDR"]);
+                  } else {
+                     $new_special_session_item->setValue('password_forget_ip',$_SERVER["HTTP_HOST"]);
+                  }
+                  include_once('functions/date_functions.php');
+                  $new_special_session_item->setValue('password_forget_time',getCurrentDateTimeInMySQL());
+                  $new_special_session_item->setValue('javascript',-1);
+                  $new_special_session_item->setValue('cookie',0);
+                  $session_manager = $this->_environment->getSessionManager();
+                  $session_manager->save($new_special_session_item);
                }
-            }
 
-            $translator = $this->_environment->getTranslationObject();
-            include_once('classes/cs_mail.php');
-            $mail = new cs_mail();
-            $mail->set_to($user_email);
-            $server_item = $this->_environment->getServerItem();
-            $default_sender_address = $server_item->getDefaultSenderAddress();
-            if (!empty($default_sender_address)) {
-               $mail->set_from_email($default_sender_address);
-            } else {
-               $mail->set_from_email('@');
-            }
-            if (!empty($contact_moderator)) {
-               $mail->set_reply_to_email($contact_moderator->getEmail());
-               $mail->set_reply_to_name($contact_moderator->getFullname());
-            }
-            $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$context_item->getTitle()));
-            $mail->set_subject($translator->getMessage('USER_PASSWORD_MAIL_SUBJECT',$context_item->getTitle()));
-            $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-            $body .= LF.LF;
-            $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_fullname);
-            $body .= LF.LF;
-            $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY',$user_id,$context_item->getTitle(),$url,'15');
-            $body .= LF.LF;
-            if ( empty($contact_moderator) ) {
-               $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;
-               $body .= $mod_text;
+               $user_email = '';
+               $user_fullname = '';
+               $user_id = '';
+
+               $portal = $this->_environment->getCurrentPortalItem();
+
+               $user_fullname = $user_item->getFullName();
+               $user_email = $user_item->getEMail();
+               $user_id = $user_item->getUserID();
+
+               $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentPortalID();
+               if ( $auth_source_item->allowAddAccount() ) {
+                  $url .= '&SID='.$new_special_session_item->getSessionID();
+               }
+
+               // send email
+               $context_item = $this->_environment->getCurrentPortalItem();
+               $mod_text = '';
+               $mod_list = $context_item->getModeratorList();
+               if (!$mod_list->isEmpty()) {
+                  $mod_item = $mod_list->getFirst();
+                  $contact_moderator = $mod_item;
+                  while ($mod_item) {
+                     if (!empty($mod_text)) {
+                        $mod_text .= ','.LF;
+                     }
+                     $mod_text .= $mod_item->getFullname();
+                     $mod_text .= ' ('.$mod_item->getEmail().')';
+                     $mod_item = $mod_list->getNext();
+                  }
+               }
+
+               $translator = $this->_environment->getTranslationObject();
+               include_once('classes/cs_mail.php');
+               $mail = new cs_mail();
+               $mail->set_to($user_email);
+               $server_item = $this->_environment->getServerItem();
+               $default_sender_address = $server_item->getDefaultSenderAddress();
+               if (!empty($default_sender_address)) {
+                  $mail->set_from_email($default_sender_address);
+               } else {
+                  $mail->set_from_email('@');
+               }
+               if (!empty($contact_moderator)) {
+                  $mail->set_reply_to_email($contact_moderator->getEmail());
+                  $mail->set_reply_to_name($contact_moderator->getFullname());
+               }
+               $mail->set_from_name($this->_translator->getMessage('SYSTEM_MAIL_MESSAGE',$context_item->getTitle()));
+               $mail->set_subject($translator->getMessage('USER_PASSWORD_MAIL_SUBJECT',$context_item->getTitle()));
+               $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                $body .= LF.LF;
-            } else {
-               $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$context_item->getTitle());
+               $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_fullname);
                $body .= LF.LF;
+               if ( $auth_source_item->allowAddAccount() ) {
+                  $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY',$user_id,$context_item->getTitle(),$url,'15');
+               } else {
+                  $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY',$user_id,$context_item->getTitle());
+                  $body .= LF.LF;
+                  $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY2',$auth_source_item->getTitle());
+                  $link = $auth_source_item->getPasswordChangeLink();
+                  $contact_mail = $auth_source_item->getContactEMail();
+                  if ( !empty($link) ) {
+                     $body .= LF.LF;
+                     $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY2_LINK',$link);
+                  }
+                  if ( !empty($contact_mail) ) {
+                     $body .= LF.LF;
+                     $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY2_MAIL',$auth_source_item->getTitle(),$contact_mail);
+                  }
+                  $body .= LF.LF;
+                  $body .= $translator->getMessage('USER_PASSWORD_MAIL_BODY_SORRY3');
+               }
+               $body .= LF.LF;
+               if ( empty($contact_moderator) ) {
+                  $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;
+                  $body .= $mod_text;
+                  $body .= LF.LF;
+               } else {
+                  $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$context_item->getTitle());
+                  $body .= LF.LF;
+               }
+               $mail->set_message($body);
+               $success = $success and $mail->send();
+
+               $user_item = $user_list->getNext();
             }
-            $mail->set_message($body);
-            if ($mail->send()) {
+            if ($success) {
                // show little status page that mail was sent successful
                $form->showMailSent($user_email);
             } else {

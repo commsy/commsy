@@ -88,7 +88,7 @@ class cs_password_forget_form extends cs_rubric_form {
            and $this->_count_auth_source_list_add_account == 1 ) {
          $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
       } elseif ( $this->_count_auth_source_list_enabled > 1 ) {
-         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
+         #$this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
       }
       if ( $this->_count_auth_source_list_enabled == 1
            and $this->_count_auth_source_list_add_account == 0 ) {
@@ -118,22 +118,19 @@ class cs_password_forget_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      if ( !empty($this->_form_post['user_id'])
-           and !empty($this->_form_post['auth_source'])
-           and is_numeric($this->_form_post['auth_source'])
-         ) {
-         $authentication_item = $this->_environment->getAuthenticationObject();
-         $auth_manager = $authentication_item->getAuthManager($this->_form_post['auth_source']);
-         if (!$auth_manager->exists($this->_form_post['user_id'])) {
+      if ( !empty($this->_form_post['user_id']) ) {
+         $user_manager = $this->_environment->getUserManager();
+         if ( !empty($this->_form_post['auth_source'])
+              and is_numeric($this->_form_post['auth_source'])
+            ) {
+            $exists = $user_manager->exists($this->_form_post['user_id'],$this->_form_post['auth_source']);
+         } else {
+            $exists = $user_manager->exists($this->_form_post['user_id']);
+         }
+         if (!$exists) {
             $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_NOT_EXIST',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id');
          }
-      } elseif ( !empty($this->_form_post['user_id'])
-                 and !empty($this->_form_post['auth_source'])
-               ) {
-         $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_form_post['auth_source']);
-      } else {
-         $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_AUTH_SOURCE');
       }
    }
 

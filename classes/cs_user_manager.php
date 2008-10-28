@@ -1214,6 +1214,20 @@ class cs_user_manager extends cs_manager {
       return $retour;
    }
 
+   public function exists ($user_id, $auth_source = '') {
+      $retour = false;
+      $this->setUserIDLimit($user_id);
+      if ( !empty($auth_source) ) {
+         $this->setAuthSourceLimit($auth_source);
+      }
+      $this->select();
+      $count = $this->getCountAll();
+      if ( !empty($count) and $count > 0) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
    ##########################################################
    # statistic functions
    ##########################################################

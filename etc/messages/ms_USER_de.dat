@@ -126,7 +126,7 @@ $message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort ändern";
 $message["USER_PASSWORD_DESC"]["de"] = "Bitte suchen Sie sich ein Passwort aus.";
 $message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte überprüfen Sie Ihre Passworte.";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort vergessen?";
-$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurden an <span style=&quot;font-weight: bold;&quot;>%2</span> geschickt. Bitte ändern Sie Ihr Passwort innerhalb der nächsten 15 Minuten.
+$message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurden an die im System hinterlegte E-Mail-Adresse geschickt.
 <br/><br/>
 Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
 $message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
@@ -139,12 +139,26 @@ auf dem CommSy-Portal
 wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
 
 Über den Link
-
 %3
 
 können Sie Ihr Passwort in den nächsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
 
 ---
+
+Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY"]["de"] = "für Ihre Kennung
+   %1
+
+auf dem CommSy-Portal
+   %2
+
+wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2"]["de"] = "Leider kann via CommSy Ihr %1-Passwort nicht neugesetzt werden.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_LINK"]["de"] = "Zur Passwortänderung führt Sie dieser Link:
+   %1";
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_MAIL"]["de"] = "Für weitere Fragen wenden Sie sich bitte an den %1-Support:
+   %2";
+$message["USER_PASSWORD_MAIL_BODY_SORRY3"]["de"] = "---
 
 Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
 $message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: Passwortänderung";

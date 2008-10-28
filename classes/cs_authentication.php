@@ -382,6 +382,10 @@ class cs_authentication {
       $this->_auth_source_list = $value;
    }
 
+   private function getAuthSourceList () {
+      return $this->_auth_source_list;
+   }
+
    public function checkAccount ($uid, $password, $auth_source = '') {
       $allowed = false;
 
@@ -580,16 +584,35 @@ class cs_authentication {
     * @return boolean true, if user_id already exists
     *                 false, if user_id not exists -> needed for new user
     */
-   function exists ($user_id, $auth_source) {
+   function exists ($user_id, $auth_source = '') {
+      $retour = false;
       // guest and root are system user_ids, the can not be created be users
       // guest is for not logged in users
       // root is for the super admin
       if (cs_strtoupper($user_id) == 'GUEST' or cs_strtoupper($user_id) == 'ROOT') {
-         return true;
+         $retour = true;
+      } elseif ( !empty($auth_source) ) {
+         $auth_manager = $this->getAuthManager($auth_source);
+         $this->_used_auth_manager = $auth_manager;
+         $retour = $auth_manager->exists($user_id);
+      } else {
+         $auth_source_list = $this->getAuthSourceList();
+         if ( isset($auth_source_list)
+              and $auth_source_list->isNotEmpty()
+            ) {
+            $auth_source_item = $auth_source_list->getFirst();
+            while ($auth_source_item) {
+               $auth_manager = $this->_getAuthManagerByAuthSourceItem($auth_source_item);
+               $this->_used_auth_manager = $auth_manager;
+               if ( $auth_manager->exists($user_id) ) {
+                  $retour = true;
+                  break;
+               }
+               $auth_source_item = $auth_source_list->getNext();
+            }
+         }
       }
-      $auth_manager = $this->getAuthManager($auth_source);
-      $this->_used_auth_manager = $auth_manager;
-      return $auth_manager->exists($user_id);
+      return $retour;
    }
 
    /** is an user_id free?

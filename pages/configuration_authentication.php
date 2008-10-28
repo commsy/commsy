@@ -30,11 +30,11 @@ $current_user = $environment->getCurrentUserItem();
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( !$room_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
@@ -177,6 +177,14 @@ else {
                  and !empty($_POST['auth_type']) ) {
                $auth_item->setSourceType($_POST['auth_type']);
             }
+            if ( isset($_POST['change_password_url'])
+                 and !empty($_POST['change_password_url']) ) {
+               $auth_item->setPasswordChangeLink($_POST['change_password_url']);
+            }
+            if ( isset($_POST['contact_mail'])
+                 and !empty($_POST['contact_mail']) ) {
+               $auth_item->setContactEMail($_POST['contact_mail']);
+            }
 
             // special data
             $auth_data_array = array();
@@ -216,16 +224,16 @@ else {
                  and !empty($_POST['password']) ) {
                $auth_data_array['PASSWORD'] = $_POST['password'];
             }
-			
+
             if ( isset($_POST['encryption'])
                  and !empty($_POST['encryption']) ) {
                $auth_data_array['ENCRYPTION'] = $_POST['encryption'];
             }
-            
+
             if( isset($_POST['base']) and !empty($_POST['base'])) {
-            	$auth_data_array['BASE'] = $_POST['base'];
+               $auth_data_array['BASE'] = $_POST['base'];
             }
-            
+
 
             if ( !empty($auth_data_array) ) {
                $auth_item->setAuthData($auth_data_array);
@@ -243,8 +251,8 @@ else {
                   $room_item->save();
                }
             }
-				
-				if ( isset($_POST['ims']) and $_POST['ims'] == 1 ) {				
+
+            if ( isset($_POST['ims']) and $_POST['ims'] == 1 ) {
                if ( $room_item->getAuthIMS() != $_POST['auth_source']
                     and $_POST['auth_source'] != 'new'
                     and $_POST['auth_source'] != 'disabled'
