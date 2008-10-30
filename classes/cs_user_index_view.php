@@ -255,27 +255,22 @@ class cs_user_index_view extends cs_room_index_view {
          $host = $c_commsy_domain;
       global $c_commsy_url_path;
       $url_to_img = $host.$c_commsy_url_path.'/images/messenger';
-      $url_to_service = 'http://osi.danvic.co.uk';
-      #$url_to_service = 'http://osi.techno-st.net:8000';
-      #$url_to_service = 'http://www.the-server.net:8000'; ???
-      #$url_to_service = 'http://technoserv.no-ip.org:8080';
-      #$url_to_service = 'http://osi3.linux-tech.net:7777';
-      #$url_to_service = 'http://www.funnyweb.dk:8080';
-      #$url_to_service = 'http://crossbow.timb.us:5757';
-
+      #$url_to_service = '???';
 
       $icq_number = $item->getICQ();
       if ( !empty($icq_number) ){
-         $name .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
+         #$name .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
          $name .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.$icq_number.'&amp;img=5" alt="ICQ Online Status" />'.LF;
-         $name .= '</a>'.LF;
+         #$name .= '</a>'.LF;
       }
+      /*
       $jabber_number = $item->getJabber();
       if ( !empty($jabber_number) ){
          $name .= '<a href="xmpp:'.$jabber_number.'">'.LF;
          $name .= '   <img style="vertical-align:middle;" srcC="'.$url_to_service.'/jabber/'.$jabber_number.'/onurl='.$url_to_img.'/jabber_short_online.gif/offurl='.$url_to_img.'/jabber_short_offline.gif/unknownurl='.$url_to_img.'/jabber_short_unknown.gif" alt="Jabber Online Status Indicator" />'.LF;
          $name .= '</a>'.LF;
       }
+      */
       $msn_number = $item->getMSN();
       if ( !empty($msn_number) ){
          $name .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;

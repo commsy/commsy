@@ -210,13 +210,7 @@ class cs_user_detail_view extends cs_detail_view {
          }
          global $c_commsy_url_path;
          $url_to_img = $host.$c_commsy_url_path.'/images/messenger';
-         $url_to_service = 'http://osi.danvic.co.uk';
-         #$url_to_service = 'http://osi.techno-st.net:8000';
-         #$url_to_service = 'http://www.the-server.net:8000'; ???
-         #$url_to_service = 'http://technoserv.no-ip.org:8080';
-         #$url_to_service = 'http://osi3.linux-tech.net:7777';
-         #$url_to_service = 'http://www.funnyweb.dk:8080';
-         #$url_to_service = 'http://crossbow.timb.us:5757';
+         #$url_to_service = '???';
 
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_MESSENGER_NUMBERS');
@@ -224,13 +218,14 @@ class cs_user_detail_view extends cs_detail_view {
          $html_text = '<div style=" vertical-align:bottom; ">';
          if ( !empty($icq_number) ){
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
-            $html_text .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
+            #$html_text .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
             $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://status.icq.com/online.gif?icq='.$icq_number.'&amp;img=2" alt="ICQ Online Status Indicator" />'.LF;
-            $html_text .= '</a>'.LF;
+            #$html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
             $html_text .= ' ('.$icq_number.')';
             $first = false;
          }
+         /*
          if ( !empty($jabber_number) ) {
             if ( !$first ){
                 $html_text .='<br/> ';
@@ -243,6 +238,7 @@ class cs_user_detail_view extends cs_detail_view {
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
             $html_text .= ' ('.$jabber_number.')';
          }
+         */
          if ( !empty($msn_number) ) {
             if ( !$first ){
                 $html_text .='<br/> ';
