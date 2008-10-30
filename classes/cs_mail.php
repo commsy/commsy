@@ -194,6 +194,12 @@ class cs_mail extends Mail
          }
          $multipart_header["Subject"] = $this->subject;
 
+         $return_mail_address = '';
+         global $c_return_path_mail_address;
+         if ( isset($c_return_path_mail_address) and !empty($c_return_path_mail_address) ) {
+            $return_mail_address = $c_return_path_mail_address;
+         }
+
          $success = true;
          $range = 2048;
          $this->recipients = str_replace(', ',',',$this->recipients);
@@ -224,7 +230,7 @@ class cs_mail extends Mail
             $to_array = array_unique($to_array);
             foreach ($to_array as $email) {
                if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
-                  $result = $this->mail->send($email, $multipart_header, $multipart_message,$this->from_email);
+                  $result = $this->mail->send($email, $multipart_header, $multipart_message,$return_mail_address);
                   if (!$result) {
                      $this->_error_array[] = $email;
                   }
@@ -248,7 +254,7 @@ class cs_mail extends Mail
                $multipart_header["Bcc"] = $this->bcc_recipients;
             }
             if ( !isset($c_send_email) or ($c_send_email and $c_send_email !== 'print') ) {
-               $result = $this->mail->send($this->recipients, $multipart_header, $multipart_message,$this->from_email);
+               $result = $this->mail->send($this->recipients, $multipart_header, $multipart_message,$return_mail_address);
                if (!$result) {
                   $this->_error_array[] = $this->recipients;
                }

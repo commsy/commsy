@@ -37,4 +37,7 @@ $c_session_lifetime = 6;
 // if you use commsy behind a proxy, just set here the proxy informations
 // $c_proxy_ip   = '100.200.300.400';
 // $c_proxy_port = '3128';
+
+// return path of emails
+// $c_return_path_mail_address = 'mailreturn@your-domain.net';
 ?>

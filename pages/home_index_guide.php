@@ -329,14 +329,14 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
                 }
                 $mail = new cs_mail();
                 $mail->set_to(implode(',',$email_array));
-               $server_item = $environment->getServerItem();
-              $default_sender_address = $server_item->getDefaultSenderAddress();
-              if (!empty($default_sender_address)) {
+                $server_item = $environment->getServerItem();
+                $default_sender_address = $server_item->getDefaultSenderAddress();
+                if (!empty($default_sender_address)) {
                    $mail->set_from_email($default_sender_address);
-              } else {
-                $mail->set_from_email('@');
-              }
-               $current_context = $environment->getCurrentContextItem();
+                } else {
+                   $mail->set_from_email('@');
+                }
+                $current_context = $environment->getCurrentContextItem();
                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_context->getTitle()));
                 $mail->set_from_name($room_item->getTitle());
                 $mail->set_reply_to_name($user_item->getFullname());
