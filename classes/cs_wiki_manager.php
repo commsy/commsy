@@ -865,5 +865,181 @@ function getDiscussionWikiName($discussion){
     $discussion = implode('',$discussionArray);
         return $discussion;
 }
+
+//------------------------------------------
+//------------- Materialexport -------------
+function exportMaterialToWiki($current_item_id){
+   global $c_commsy_path_file;
+   global $c_pmwiki_path_file;
+   global $c_pmwiki_path_url;
+   global $c_commsy_domain;
+   global $c_commsy_url_path;
+
+   $material_manager = $this->_environment->getMaterialManager();
+   $material_version_list = $material_manager->getVersionList($current_item_id);
+   $material_item = $material_version_list->getFirst();
+
+   // Informationen
+   $author = $material_item->getAuthor();
+   $informations = '!' . $material_item->getTitle() . '%0a%0a';
+   $informations .= '(:table border=0 style="margin-left:0px;":)%0a';
+   $informations .= '(:cell:)\'\'\'AutorInnen:\'\'\' %0a(:cell:)' . $author . ' %0a';
+   
+   $description = $material_item->getDescription();
+   if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
+      $description = _text_php2html_long($description);
+   }
+   $html_wiki_file = 'CommSy.Material' . $current_item_id . '.html';
+   $old_dir = getcwd();
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+   file_put_contents($html_wiki_file, $description);
+   $command = 'html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file;
+   $htmlwiki = exec($command, $returnwiki, $returnstatus);
+   if($returnstatus == 0){
+      // ---------
+      // Mit Perl
+      $returnwiki = implode('%0a', $returnwiki);
+      $returnwiki = $this->encodeUmlaute($returnwiki);
+      // Mit Perl
+      // ---------
+   } else {
+      // ---------
+      // Ohne Perl
+      $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
+      $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $html_wiki_file .':)';
+      // Ohne Perl
+      // ---------
+   }
+   chdir($old_dir);
+   
+   $informations .= '(:cellnr:)\'\'\'Kurzfassung:\'\'\' %0a(:cell:)' . $returnwiki . ' %0a';
+
+   // Dateien
+   $file_list = $material_item->getFileList();
+   if(!$file_list->isEmpty()){
+      $file_array = $file_list->to_array();
+      $file_link_array = array();
+      foreach ($file_array as $file) {
+         $file_link_array[] = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/commsy.php/' . $file->getFileName() . '?cid=' . $this->_environment->getCurrentContextID() . '&mod=material&fct=getfile&iid=' . $file->getFileID() . '|' . $file->getFileName() . ']]';
+      }
+      $file_links = implode('\\\\%0a', $file_link_array);
+      $informations .= '(:cellnr:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
+   }
+
+   // Abschnitte
+   $section_list = $material_item->getSectionList();
+   if(!$section_list->isEmpty()){
+      $size = $section_list->getCount();
+      $section_link_array = array();
+      $section_description_array = array();
+      for ($index = 1; $index <= $size; $index++) {
+         $section = $section_list->get($index);
+         $section_link_array[] = '[[#' . $section->getTitle() . '|' . $section->getTitle() . ']]';
+         
+         $description = $section->getDescription();
+         if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
+            $description = _text_php2html_long($section->getDescription());
+         }
+         $html_wiki_file = 'CommSy.Material' . $current_item_id . '.section.' . $section->getItemID() . '.html';
+         $old_dir = getcwd();
+         chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+         file_put_contents($html_wiki_file, $description);
+         $command = 'html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file;
+         $htmlwiki = exec($command, $returnwiki, $returnstatus);
+         if($returnstatus == 0){
+            // ---------
+            // Mit Perl
+            $returnwiki = implode('%0a', $returnwiki);
+            $returnwiki = $this->encodeUmlaute($returnwiki);
+            // Mit Perl
+            // ---------
+         } else {
+            // ---------
+            // Ohne Perl
+            $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
+            $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $html_wiki_file .':)';
+            // Ohne Perl
+            // ---------
+         }
+         chdir($old_dir);
+         $description_section_link = str_replace(' ', '', $section->getTitle());
+
+         // Dateien (Abschnitte)
+         $files = '%0a%0a';
+         $file_list = $section->getFileList();
+         if(!$file_list->isEmpty()){
+            $file_array = $file_list->to_array();
+            $file_link_array = array();
+            foreach ($file_array as $file) {
+               $file_link_array[] = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/commsy.php/' . $file->getFileName() . '?cid=' . $this->_environment->getCurrentContextID() . '&mod=material&fct=getfile&iid=' . $file->getFileID() . '|' . $file->getFileName() . ']]';
+            }
+            $file_links = implode('\\\\%0a', $file_link_array);
+            $files .= '(:table border=0 style="margin-left:0px;":)%0a';
+            $files .= '(:cell:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
+            $files .= '(:tableend:) %0a';
+         }
+         
+         $section_description_array[] = '----%0a====%0a!!' . $section->getTitle() . '%0a[[#' . $description_section_link . ']]%0a' . $returnwiki . $files;
+         
+      }
+      $section_links = implode('\\\\%0a', $section_link_array);
+      $informations .= '(:cellnr:)\'\'\'Abschnitte:\'\'\' %0a(:cell:)' . $section_links . ' %0a';
+      $informations .= '(:tableend:) %0a';
+      $section_descriptions = implode('\\\\%0a', $section_description_array);
+   }
+
+   // Link zurueck ins CommSy
+   $link = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=material&fct=detail&iid=' . $current_item_id . '|"' . $material_item->getTitle() . '" im CommSy]]';
+              
+   $old_dir = getcwd();
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+   
+   copy($c_commsy_path_file.'/etc/pmwiki/Main.Material','wiki.d/CommSy.Material' . $current_item_id);
+   $file_contents = file_get_contents('wiki.d/CommSy.Material' . $current_item_id);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+       if(stripos($file_contents_array[$index], 'name=') !== false){
+           $file_contents_array[$index] = 'name=CommSy.Material' . $current_item_id;
+       }
+       if(stripos($file_contents_array[$index], 'text=') !== false){
+           $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
+       }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   $file_contents =  $file_contents . "\n" . 'title=' . $material_item->getTitle();
+   file_put_contents('wiki.d/CommSy.Material' . $current_item_id, $file_contents);
+
+   chdir($old_dir);
+   
+   $material_item->setExportToWiki('1');
+   $material_item->save();
+}
+
+function encodeUmlaute($html){
+        $html = str_replace("ä", "&auml;", $html);
+        $html = str_replace("Ä", "&Auml;", $html);
+        $html = str_replace("ö", "&ouml;", $html);
+        $html = str_replace("Ö", "&Ouml;", $html);
+        $html = str_replace("ü", "&uuml;", $html);
+        $html = str_replace("Ü", "&Uuml;", $html);
+        $html = str_replace("ß", "&szlig;", $html);
+        return $html;
+}
+
+function existsMaterialToWiki($current_item_id){
+   global $c_pmwiki_path_file;
+   $wiki_file = 'CommSy.Material' . $current_item_id;
+   $old_dir = getcwd();
+   return file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file);
+}
+
+function getExportToWikiLink($current_item_id){
+   global $c_pmwiki_path_url;
+   $wiki_file = 'CommSy.Material' . $current_item_id;
+   return '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=' . $wiki_file . '">' . $wiki_file . '</a>';
+}
+
+//------------- Materialexport -------------
+//------------------------------------------
 }
 ?>

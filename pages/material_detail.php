@@ -255,6 +255,12 @@ if ($type != CS_MATERIAL_TYPE) {
 
 
       $page->add($detail_view);
+      
+      if(isset($_GET['export_to_wiki'])){
+         $wiki_manager = $environment->getWikiManager();
+         $wiki_manager->exportMaterialToWiki($current_item_iid);
+      }
+      
       }
    }
 }
