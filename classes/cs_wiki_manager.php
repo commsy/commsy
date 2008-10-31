@@ -1005,7 +1005,11 @@ function exportMaterialToWiki($current_item_id){
            $file_contents_array[$index] = 'name=CommSy.Material' . $current_item_id;
        }
        if(stripos($file_contents_array[$index], 'text=') !== false){
-           $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
+          if(!isset($section_descriptions) or empty($section_descriptions)){
+             $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
+          } else {
+             $file_contents_array[$index] = 'text=' . $informations . '%0a%0a----%0a\\\\%0a' . $link;
+          }
        }
    }
    $file_contents = implode("\n", $file_contents_array);
