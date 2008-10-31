@@ -981,7 +981,7 @@ function exportMaterialToWiki($current_item_id){
             $files .= '(:tableend:) %0a';
          }
          
-         $section_description_array[] = '----%0a====%0a!!' . $section->getTitle() . '%0a[[#' . $description_section_link . ']]%0a' . $returnwiki . $files;
+         $section_description_array[] = '%0a----%0a%0a====%0a%0a!!' . $section->getTitle() . '%0a[[#' . $description_section_link . ']]%0a' . $returnwiki . $files;
          
       }
       $section_links = implode('\\\\%0a', $section_link_array);
