@@ -81,6 +81,13 @@ if ($type != CS_MATERIAL_TYPE) {
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {
+      if(isset($_GET['export_to_wiki'])){
+         $wiki_manager = $environment->getWikiManager();
+         $wiki_manager->exportMaterialToWiki($current_item_iid);
+         $params = $environment->getCurrentParameterArray();
+         unset($params['export_to_wiki']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
 
       // Get clipboard
       if ( $session->issetValue('material_clipboard') ) {
@@ -255,12 +262,6 @@ if ($type != CS_MATERIAL_TYPE) {
 
 
       $page->add($detail_view);
-      
-      if(isset($_GET['export_to_wiki'])){
-         $wiki_manager = $environment->getWikiManager();
-         $wiki_manager->exportMaterialToWiki($current_item_iid);
-      }
-      
       }
    }
 }
