@@ -506,6 +506,9 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$ListCategories_SizedlistMaxFontSize = 16;'.LF;
         $str .= '$ListCategories_SizedlistNum = 20;'.LF;
         $str .= '$ListCategories_ExcludeCategories = "/^(GroupFooter)$/";'.LF.LF;
+        
+        $str .= '# Categories'.LF;
+        $str .= 'include_once($FarmD.\'/cookbook/includeupload.php\');'.LF.LF;
       // Li-Pedia Erweiterungen
 
       $str .= '?>';
@@ -1029,7 +1032,6 @@ function encodeUmlaute($html){
 function existsMaterialToWiki($current_item_id){
    global $c_pmwiki_path_file;
    $wiki_file = 'CommSy.Material' . $current_item_id;
-   $old_dir = getcwd();
    return file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file);
 }
 
