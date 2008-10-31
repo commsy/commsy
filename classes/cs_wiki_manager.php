@@ -506,9 +506,7 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$ListCategories_SizedlistMaxFontSize = 16;'.LF;
         $str .= '$ListCategories_SizedlistNum = 20;'.LF;
         $str .= '$ListCategories_ExcludeCategories = "/^(GroupFooter)$/";'.LF.LF;
-        
-        $str .= '# Categories'.LF;
-        $str .= 'include_once($FarmD.\'/cookbook/includeupload.php\');'.LF.LF;
+
       // Li-Pedia Erweiterungen
 
       $str .= '?>';
@@ -931,6 +929,7 @@ function exportMaterialToWiki($current_item_id){
 
    // Abschnitte
    $section_list = $material_item->getSectionList();
+   $section_descriptions = '';
    if(!$section_list->isEmpty()){
       $size = $section_list->getCount();
       $section_link_array = array();
@@ -1005,11 +1004,7 @@ function exportMaterialToWiki($current_item_id){
            $file_contents_array[$index] = 'name=CommSy.Material' . $current_item_id;
        }
        if(stripos($file_contents_array[$index], 'text=') !== false){
-          if(!isset($section_descriptions) or empty($section_descriptions)){
-             $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
-          } else {
-             $file_contents_array[$index] = 'text=' . $informations . '%0a%0a----%0a\\\\%0a' . $link;
-          }
+          $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
        }
    }
    $file_contents = implode("\n", $file_contents_array);
