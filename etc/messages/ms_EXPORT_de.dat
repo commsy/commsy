@@ -1,0 +1,3 @@
+<?php
+$message["EXPORT_TO_WIKI_NOT_SUPPOTED_YET"]["de"] = "Diese Funktion kann noch nicht ins Wiki exportiert werden.";
+?>

@@ -1,0 +1,3 @@
+<?php
+$message["EXPORT_TO_WIKI_NOT_SUPPOTED_YET"]["en"] = "Export of this function isn't supported yet.";
+?>
