@@ -197,7 +197,7 @@ class cs_wiki_view extends cs_view {
           $material_manager = $this->_environment->getMaterialManager();
           $material_version_list = $material_manager->getVersionList($array[1]);
           $material_item = $material_version_list->getFirst();
-          if($material_item->isExportToWiki()){
+          if(!empty($material_item) && $material_item->isExportToWiki()){
             $link_text = '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=CommSy.Material' . $array[1] . '">' . $word . '</a>';
           } else {
             $link_text = '<a href="' . $c_commsy_domain . $c_commsy_url_path . '/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=content&fct=detail&iid=' . $array[1] . '">' . $word . '</a>';
