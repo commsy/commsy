@@ -3,6 +3,7 @@ $message["CONTEXT_ACTIVITY"]["de"] = "Aktivität";
 $message["CONTEXT_ACTUALITY"]["de"] = "Angezeigt auf der Home";
 $message["CONTEXT_ENTER"]["de"] = "Raum betreten";
 $message["CONTEXT_ENTER_AS_GUEST"]["de"] = "Raum als Gast betreten";
+$message["CONTEXT_ENTER_LOGIN"]["de"] = "Um diesen Raum zu betreten, müssen Sie sich einloggen (links oben) oder die %1.";
 $message["CONTEXT_EXPORT_DESC"]["de"] = "Zurzeit werden die hochgeladenen Dateien und Bilder nicht exportiert.";
 $message["CONTEXT_IS_DELETED"]["de"] = "Dieser Raum (%1) ist gelöscht worden.";
 $message["CONTEXT_IS_LOCKED"]["de"] = "Dieser Raum (%1) ist von der Moderation gesperrt worden.";

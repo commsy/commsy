@@ -1421,6 +1421,16 @@ class cs_page_view extends cs_view {
                   }
                }
             }
+
+            // login redirect
+            $session_item = $this->_environment->getSessionItem();
+            if ($session_item->issetValue('login_redirect')) {
+               $params = $session_item->getValue('login_redirect');
+               foreach ( $params as $key => $value ) {
+                  $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
+               }
+            }
+
             // login form
             $html .= '<table summary="Layout">'.LF;
             // @segment-end 63814
@@ -1536,12 +1546,31 @@ class cs_page_view extends cs_view {
                   if ( isset($own_room)
                        and empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])
                      ) {
-                     $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
-                                      'index',
-                                      '',
-                                      '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
+                     $current_portal_item = $this->_environment->getCurrentPortalItem();
+                     if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+                        $link_active = true;
+                     } else {
+                        $current_user_item = $this->_environment->getCurrentUserItem();
+                        if ( $current_user_item->isRoomMember() ) {
+                           $link_active = true;
+                        } else {
+                           $link_active = false;
+                        }
+                        unset($current_user_item);
+                     }
+                     unset($current_portal_item);
+                     if ($link_active) {
+                        $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
+                                         'index',
+                                         '',
+                                         '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
 
-                     $html .= ahref_curl($own_room->getItemID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                        $html .= ahref_curl($own_room->getItemID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                     } else {
+                        // disable private room
+                        $html .= '<span class="disabled"><img src="images/door_closed_small.gif" style="vertical-align: middle" alt="door close"/>'.LF;
+                        $html .= $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM').'</span>'.BRLF;
+                     }
                   }
                   unset($own_room);
                }
@@ -1601,10 +1630,28 @@ class cs_page_view extends cs_view {
                   ) {
                   $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
                   $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
-                  $private_room_manager = $this->_environment->getPrivateRoomManager();
-                  $own_room = $private_room_manager->getRelatedOwnRoomForUser($this->_current_user,$this->_environment->getCurrentPortalID());
-                  if ( isset($own_room) ) {
-                     $html .= '<span>> '.ahref_curl($own_room->getItemID(),'user','index',array(),$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                  $current_portal_item = $this->_environment->getCurrentPortalItem();
+                  if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+                     $link_active = true;
+                  } else {
+                     $current_user_item = $this->_environment->getCurrentUserItem();
+                     if ( $current_user_item->isRoomMember() ) {
+                        $link_active = true;
+                     } else {
+                        $link_active = false;
+                     }
+                     unset($current_user_item);
+                  }
+                  unset($current_portal_item);
+                  if ( $link_active ) {
+                     $private_room_manager = $this->_environment->getPrivateRoomManager();
+                     $own_room = $private_room_manager->getRelatedOwnRoomForUser($this->_current_user,$this->_environment->getCurrentPortalID());
+                     if ( isset($own_room) ) {
+                        $html .= '<span>> '.ahref_curl($own_room->getItemID(),'user','index',array(),$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                     }
+                  } else {
+                     // disable private room
+                     $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
                   }
                } elseif ( !$this->_current_user->isRoot() ) {
                   $html .= '<div>'.LF;

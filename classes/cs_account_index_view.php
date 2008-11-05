@@ -309,6 +309,8 @@ class cs_account_index_view extends cs_campus_index_view {
             $status_text = $this->_translator->getMessage('USER_STATUS_MODERATOR_ROOM');
          }elseif ($params['selstatus'] == 26){
             $status_text = $this->_translator->getMessage('USER_STATUS_CONTACT_ROOM');
+         } elseif ($params['selstatus'] == 31) {
+            $status_text = $this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP');
          }else{
             $status_text = $this->_translator->getMessage('COMMON_USERS');
          }
@@ -877,6 +879,15 @@ class cs_account_index_view extends cs_campus_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('USER_STATUS_CONTACT_ROOM').'</option>'.LF;
+
+         $html .= '      <option value="8" disabled="disabled"';
+         $html .= '>------------------</option>'.LF;
+
+         $html .= '      <option value="31"';
+         if ( isset($selstatus) and $selstatus == 31 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP').'</option>'.LF;
       }
 
       $html .= '   </select>'.LF;

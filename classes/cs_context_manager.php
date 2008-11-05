@@ -234,9 +234,9 @@ class cs_context_manager extends cs_manager {
             }
             if ( $this->_room_type == CS_PROJECT_TYPE
                  and (
-                    ( isset($current_portal) and $current_portal->withGroupRoomFunctions() )
-                    or $grouproom
-                    )
+                       ( isset($current_portal) and $current_portal->withGroupRoomFunctions() )
+                       or $grouproom
+                     )
                ) {
                $query .= ' AND ('.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'" or '.$this->_db_table.'.type = "'.CS_GROUPROOM_TYPE.'")';
             } else {
@@ -247,7 +247,9 @@ class cs_context_manager extends cs_manager {
             ############################################
             # FLAG: group room
             ##################BEGIN####################
-               $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
+               if ( $this->_room_type != CS_GROUPROOM_TYPE ) {
+                  $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
+               }
             }
          } else {
             $current_portal = $this->_environment->getCurrentPortalItem();
@@ -256,7 +258,8 @@ class cs_context_manager extends cs_manager {
                $current_portal = $portal_manager->getItem($context_id);
             }
             if ( ( isset($current_portal)
-                 and !$current_portal->withGroupRoomFunctions() )
+                   and !$current_portal->withGroupRoomFunctions()
+                 )
                  or !$grouproom
                ) {
                $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';

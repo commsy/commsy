@@ -3,6 +3,7 @@ $message["CONTEXT_ACTIVITY"]["en"] = "Activity";
 $message["CONTEXT_ACTUALITY"]["en"] = "Display on Home / notice board";
 $message["CONTEXT_ENTER"]["en"] = "enter workspace";
 $message["CONTEXT_ENTER_AS_GUEST"]["en"] = "enter workspace as guest";
+$message["CONTEXT_ENTER_LOGIN"]["en"] = "To get into this room, login first or %1.";
 $message["CONTEXT_EXPORT_DESC"]["en"] = "Export workspace";
 $message["CONTEXT_IS_DELETED"]["en"] = "This workspace (%1) has benn deleted.";
 $message["CONTEXT_IS_LOCKED"]["en"] = "This workspace (%1) has been blocked by the moderator/s.";

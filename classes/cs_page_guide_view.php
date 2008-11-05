@@ -122,6 +122,8 @@ class cs_page_guide_view extends cs_page_view {
 
    private $_navigation_bar = NULL;
 
+   public  $_login_redirect = NULL;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -134,6 +136,10 @@ class cs_page_guide_view extends cs_page_view {
       if (file_exists('htdocs/'.$environment->getCurrentPortalID().'/commsy.css') ){
          $this->_style_image_path = $environment->getCurrentPortalID().'/images/';
       }
+   }
+
+   public function setLoginRedirect () {
+      $this->_login_redirect = true;
    }
 
    public function setNavigationBar ($value) {
@@ -733,8 +739,8 @@ class cs_page_guide_view extends cs_page_view {
          } elseif ( $item->isLocked() ) {
             $html .= '<img src="images/door_closed_large.gif" alt="door closed" />'.LF;
          } elseif ( $item->isOpenForGuests()
-         and empty($room_user)
-       ) {
+                    and empty($room_user)
+                  ) {
             $actionCurl = curl( $item->getItemID(),
                              'home',
                              'index',
@@ -745,7 +751,7 @@ class cs_page_guide_view extends cs_page_view {
                              'index',
                              '');
             $html .= '<div style="padding-top:5px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
-           if ($item->isOpen()) {
+            if ($item->isOpen()) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
                $params['account'] = 'member';
@@ -758,12 +764,12 @@ class cs_page_guide_view extends cs_page_view {
                $html .= '<div style="padding-top:3px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
               unset($params);
            } else {
-               $html .= '<div style="padding-top:3px;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
+              $html .= '<div style="padding-top:3px;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
            }
 
          //Um Erlaubnis gefragt
          } elseif ( !empty($room_user) and $room_user->isRequested() ) {
-         if ( $item->isOpenForGuests() ) {
+            if ( $item->isOpenForGuests() ) {
                $actionCurl = curl( $item->getItemID(),
                                    'home',
                                    'index',
@@ -774,13 +780,13 @@ class cs_page_guide_view extends cs_page_view {
                                    'index',
                                    '');
                $html .= '<div style="padding-top:7px; text-align: center;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
-         } else {
+            } else {
                $html .= '<img src="images/door_closed_large.gif" alt="door closed"/>'.LF;
-         }
+            }
             $html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED_YET').'</p></div>'.LF;
          //Erlaubnis verweigert
          } elseif ( !empty($room_user) and $room_user->isRejected() ) {
-         if ( $item->isOpenForGuests() ) {
+            if ( $item->isOpenForGuests() ) {
                $actionCurl = curl( $item->getItemID(),
                                    'home',
                                    'index',
@@ -799,7 +805,7 @@ class cs_page_guide_view extends cs_page_view {
          // noch nicht angemeldet als Mitglied im Raum
          } else {
             $html .= '<img src="images/door_closed_large.gif" alt="door closed" style="vertical-align: middle; "/>'.BRLF;
-           if ($item->isOpen()) {
+            if ($item->isOpen()) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
                $params['account'] = 'member';
@@ -809,13 +815,20 @@ class cs_page_guide_view extends cs_page_view {
                                   'index',
                                   $params,
                                   '');
-               $html .= '<div style="padding-top:5px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
-              unset($params);
-           } else {
+               $session_item = $this->_environment->getSessionItem();
+               if ($session_item->issetValue('login_redirect')) {
+                  $html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('CONTEXT_ENTER_LOGIN','<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a>').'</p></div>'.LF;
+                  $session_item->unsetValue('login_redirect');
+                  unset($session_item);
+               } else {
+                  $html .= '<div style="padding-top:5px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+               }
+               unset($params);
+            } else {
                $html .= '<div style="padding-top:5px;">> <span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
-         }
+            }
             $html .= '<div style="padding-top:6px;">&nbsp;</div>'.LF;
-        }
+         }
       }
       return $html;
    }

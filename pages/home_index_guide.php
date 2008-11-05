@@ -30,6 +30,11 @@ if (!empty($_GET['account'])) {
    $account_mode = 'none';
 }
 
+$room_id_env = $environment->getValueOfParameter('room_id');
+if ( !empty($room_id_env) ) {
+   $_GET['room_id'] = $room_id_env;
+}
+
 if (!empty($_GET['room_id'])) {
    $current_item_id = $_GET['room_id'];
 
@@ -434,31 +439,6 @@ if ( $environment->inServer() ) {
    $context_detail_view->setItem($context_item);
    $page->addRoomDetail($context_detail_view);
 } else {
-   include_once('classes/cs_context_guide_detail_view.php');
-   $context_detail_view = new cs_context_guide_detail_view($environment,true);
-
-   if ($account_mode != 'none') {
-      //set account mode
-      $context_detail_view->setAccountMode($account_mode);
-   }
-   if (!empty($_GET['room_id'])) {
-        $manager = $environment->getRoomManager();
-        $item = $manager->getItem($_GET['room_id']);
-        if (isset($item) and $item->isPrivateRoom() ){
-           $context_detail_view->setItem($context_item);
-           $page->addRoomDetail($context_detail_view);
-
-        }else{
-           if (isset($item) and $item->getContextID() == $environment->getCurrentContextID()) {
-              $context_detail_view->setItem($item);
-              $page->addRoomDetail($context_detail_view);
-           } else {
-              include_once('classes/cs_errorbox_view.php');
-              $errorbox = new cs_errorbox_view($environment, true, '20em');
-              $errorbox->setText($translator->getMessage('ITEM_DOES_NOT_EXIST', $_GET['room_id']));
-           }
-        }
-   }
 
 /*   if ( ( $current_user->isModerator() or $current_user->isRoot() )
         and empty($_GET['room_id'])

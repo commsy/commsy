@@ -151,6 +151,8 @@ class cs_user_manager extends cs_manager {
 
    var $_cache_sql = array();
 
+   private $_limit_no_membership = NULL;
+
    /** constructor
     * the only available constructor, initial values for internal variables<br />
     * NOTE: the constructor must never be called directly, instead the cs_environment must
@@ -194,6 +196,7 @@ class cs_user_manager extends cs_manager {
       $this->_limit_community = NULL;
       $this->_limit_project = NULL;
       $this->_limit_portal_id = NULL;
+      $this->_limit_no_membership = NULL;
    }
 
    function setAuthSourceLimit ($value) {
@@ -385,14 +388,18 @@ class cs_user_manager extends cs_manager {
       $this->_limit_project = true;
    }
 
-  /** set order limit
+   public function setNoMemberShipLimit () {
+      $this->_limit_no_membership = true;
+   }
+
+   /** set order limit
     * this method sets an order limit for the select statement
     *
     * @param string limit order limit for selected users
     */
-  function setOrder ($limit) {
-     $this->_order = (string)$limit;
-  }
+   function setOrder ($limit) {
+      $this->_order = (string)$limit;
+   }
 
    /** get only the item ids of the selected items - should be deleted
      * (old style)
@@ -402,10 +409,37 @@ class cs_user_manager extends cs_manager {
       return $this->getIDArray();
    }
 
+   private function _getSQLJoinForNoMemberShip () {
+      $retour  = '';
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      $room_id_array = $current_portal->getCommunityIDArray();
+      $room_id_array = array_merge($room_id_array,$current_portal->getProjectIDArray());
+      $room_id_array = array_merge($room_id_array,$current_portal->getGroupIDArray());
+      if ( !empty($room_id_array) ) {
+         $tmp_db_name = 'usernomem';
+         $retour .= ' LEFT JOIN '.$this->_db_table.' AS '.$tmp_db_name;
+         $retour .= ' ON '.$this->_db_table.'.user_id='.$tmp_db_name.'.user_id';
+         $retour .= ' AND '.$this->_db_table.'.auth_source='.$tmp_db_name.'.auth_source';
+         $retour .= ' AND '.$tmp_db_name.'.deleter_id IS NULL';
+         $retour .= ' AND '.$tmp_db_name.'.deletion_date IS NULL';
+         $retour .= ' AND '.$tmp_db_name.'.context_id IN ('.implode(',',$room_id_array).')';
+      }
+
+      return $retour;
+   }
+
+   private function _getSQLLimitForNoMemberShip () {
+      $retour  = '';
+      $tmp_db_name = 'usernomem';
+      $retour .= ' AND '.$tmp_db_name.'.auth_source IS NULL';
+      return $retour;
+   }
+
    /** INTERNAL: perform database query to get user data
      *
      */
    function _performQuery($mode = 'select') {
+
       if ($mode == 'count') {
          $query = 'SELECT count(DISTINCT user.item_id) AS count';
       } elseif ($mode == 'id_array') {
@@ -443,7 +477,11 @@ class cs_user_manager extends cs_manager {
         $query .= ' INNER JOIN room ON ( room.deletion_date IS NULL AND user2.context_id=room.item_id ) ';
      }
 
-     $query .= ' WHERE 1=1';
+      if ( isset($this->_limit_no_membership) and  $this->_limit_no_membership  ) {
+         $query .= $this->_getSQLJoinForNoMemberShip();
+      }
+
+     $query .= ' WHERE 1';
 
      // fifth, insert limits into the select statement
      if (isset($this->_user_limit)) {
@@ -613,13 +651,16 @@ class cs_user_manager extends cs_manager {
         }
      }
 
+      if ( isset($this->_limit_no_membership) and  $this->_limit_no_membership  ) {
+         $query .= $this->_getSQLLimitForNoMemberShip();
+      }
 
       if ( isset($this->_limit_portal_id)
-          and ( isset($this->_limit_community)
+           and ( isset($this->_limit_community)
                 or isset($this->_limit_project)
               )
-        ) {
-        $query .= ' GROUP BY user.user_id,user.auth_source';
+         ) {
+         $query .= ' GROUP BY user.user_id,user.auth_source';
       }
      if ( ( isset($this->_search_limit)
             AND !empty($this->_search_limit)
@@ -663,21 +704,21 @@ class cs_user_manager extends cs_manager {
      }
      $this->_last_query = $query;
 
-     // perform query
-     if ( isset($this->_cache_sql[$query]) ) {
-        return $this->_cache_sql[$query];
-     } else {
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result)) {
-           include_once('functions/error_functions.php');
-           trigger_error('Problems selecting user.',E_USER_WARNING);
-        } else {
-           if ( $this->_cache_on ) {
-              $this->_cache_sql[$query] = $result;
-           }
-           return $result;
-        }
-     }
+      // perform query
+      if ( isset($this->_cache_sql[$query]) ) {
+         return $this->_cache_sql[$query];
+      } else {
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting user.',E_USER_WARNING);
+         } else {
+            if ( $this->_cache_on ) {
+               $this->_cache_sql[$query] = $result;
+            }
+            return $result;
+         }
+      }
    }
 
    function getLastQuery() {

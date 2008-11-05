@@ -129,6 +129,9 @@ $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_1"]["de"] = "Normal";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["de"] = "Detailliert (mit allen neuen Einträgen)";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["de"] = "<br/>ACHTUNG: Diese Seite beansprucht eventuell eine <br/>deutlich höhere Ladezeit!";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["de"] = "Tage";
+$message["CONFIGURATION_PRIVATEROOM_LINK"]["de"] = "Persönliche Räume";
+$message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["de"] = "stehen nur zur Verfügung, wenn andere Raumteilnahmen bestehen";
+$message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["de"] = "stehen immer zur Verfügung (default)";
 $message["CONFIGURATION_PROJECTROOM_LINK"]["de"] = "Zuordnen von <br/>
 %_PROJECT_SUB_DATPL_LOW";
 $message["CONFIGURATION_PROJECTROOM_LINK_MANDATORY"]["de"] = "zwingend";

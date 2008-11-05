@@ -945,6 +945,12 @@ class cs_user_item extends cs_item {
       return $list;
    }
 
+   function getRelatedGroupList () {
+      $manager = $this->_environment->getGrouproomManager();
+      $list = $manager->getRelatedGroupListForUser($this);
+      return $list;
+   }
+
    function getRelatedProjectListSortByTime () {
       $manager = $this->_environment->getProjectManager();
       $list = $manager->getRelatedProjectListForUserSortByTime($this);
@@ -1690,5 +1696,45 @@ class cs_user_item extends cs_item {
    //     $wiki_manager = $this->_environment->getWikiManager();
    //     $wiki_manager->updateWikiRemoveUser($this);
    //}
+
+   public function isRoomMember () {
+      $retour = false;
+
+      // project rooms
+      $list = $this->getRelatedProjectList();
+      if ( isset($list) and $list->isNotEmpty() ) {
+         $count = $list->getCount();
+         if ( $count > 0 ) {
+            $retour = true;
+         }
+      }
+      unset($list);
+
+      // community rooms
+      if ( !$retour ) {
+         $list = $this->getRelatedCommunityList();
+         if ( isset($list) and $list->isNotEmpty() ) {
+            $count = $list->getCount();
+            if ( $count > 0 ) {
+               $retour = true;
+            }
+         }
+         unset($list);
+      }
+
+      // group room
+      if ( !$retour ) {
+         $list = $this->getRelatedGroupList();
+         if ( isset($list) and $list->isNotEmpty() ) {
+            $count = $list->getCount();
+            if ( $count > 0 ) {
+               $retour = true;
+            }
+         }
+         unset($list);
+      }
+
+      return $retour;
+   }
 }
 ?>

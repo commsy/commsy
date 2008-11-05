@@ -193,6 +193,7 @@ $message["USER_STATUS_MODERATOR_PROJECT"]["en"] = "%_PROJECT_SUB_NOMPL_HIGH: mod
 $message["USER_STATUS_MODERATOR_ROOM"]["en"] = "Workspace moderators";
 $message["USER_STATUS_NEW"]["en"] = "New status";
 $message["USER_STATUS_NOW"]["en"] = "Current status";
+$message["USER_STATUS_NO_MEMBERSHIP"]["en"] = "no room membership";
 $message["USER_STATUS_REJECT"]["en"] = "Declined";
 $message["USER_STATUS_REJECTED"]["en"] = "Account locked";
 $message["USER_STATUS_REQUESTED"]["en"] = "Waiting for approval";

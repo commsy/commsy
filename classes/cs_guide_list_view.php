@@ -614,11 +614,11 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '   <input type="hidden" name="room_id" value="'.$this->_text_as_form($this->_selected_context).'"/>'.LF;
       }
 
-      if ($show_rooms !='onlycommunityrooms'){
+      #if ($show_rooms !='onlycommunityrooms'){
          $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':'.BRLF;
-      }else{
-         $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_COMMUNITY_ROOM_LIST_ROOMS').':'.BRLF;
-      }
+      #}else{
+      #   $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_COMMUNITY_ROOM_LIST_ROOMS').':'.BRLF;
+      #}
       $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
 
       $html .= '      <option value="1"';

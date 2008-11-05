@@ -131,6 +131,9 @@ $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["en"] = "detailed (incl. new i
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["en"] = "Notice: Due to increased server load this page might require more time to show up than others.
 This is no bug, the process of compiling the required information is quite demanding datawise.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["en"] = "days";
+$message["CONFIGURATION_PRIVATEROOM_LINK"]["en"] = "Private rooms";
+$message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["en"] = "only available, if there are other room memberships";
+$message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["en"] = "allways open (default)";
 $message["CONFIGURATION_PROJECTROOM_LINK"]["en"] = "associating <br/>
 %_PROJECT_SUB_DATPL_LOW";
 $message["CONFIGURATION_PROJECTROOM_LINK_MANDATORY"]["en"] = "mandatory";

@@ -175,6 +175,9 @@ if (!isset($error) or !$error) {
          $user_manager->setContactModeratorLimit();
          $user_manager->setCommunityLimit();
          $user_manager->setProjectLimit();
+      } elseif ($selstatus == 31) {
+         $user_manager->setPortalIDLimit($environment->getCurrentPortalID());
+         $user_manager->setNoMembershipLimit();
       } else {
          $user_manager->setStatusLimit($selstatus);
       }

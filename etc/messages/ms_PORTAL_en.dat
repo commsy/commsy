@@ -24,8 +24,8 @@ $message["PORTAL_NEWS_LINK"]["en"] = "Portal news";
 $message["PORTAL_NEWS_LINK_DESC"]["en"] = "Options for portal-wide announcements.";
 $message["PORTAL_NO_ANNOUNCEMENTS"]["en"] = "No current announcement";
 $message["PORTAL_ROOM_DESCRIPTION"]["en"] = "Workspace description";
-$message["PORTAL_ROOM_LIST_ROOMS"]["en"] = "Workspaces";
+$message["PORTAL_ROOM_LIST_ROOMS"]["en"] = "Type";
 $message["PORTAL_ROOM_MOVE_REQUESTED"]["en"] = "Move";
 $message["PORTAL_ROOM_OVERVIEW"]["en"] = "Workspaces";
-$message["PORTAL_SEARCH_FIELD"]["en"] = "Full-text search";
+$message["PORTAL_SEARCH_FIELD"]["en"] = "Title, moderation, description";
 ?>

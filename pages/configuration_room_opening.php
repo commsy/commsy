@@ -62,20 +62,20 @@ else {
          if ( isset($_POST['community_room_opening']) and !empty($_POST['community_room_opening']) and $_POST['community_room_opening'] == 2 ) {
             $room_item->setCommunityRoomCreationStatus('moderator');
          } else {
-	         $room_item->setCommunityRoomCreationStatus('all');
-	      }
+            $room_item->setCommunityRoomCreationStatus('all');
+         }
 
          if ( isset($_POST['project_room_link']) and !empty($_POST['project_room_link']) and $_POST['project_room_link'] == 2 ) {
             $room_item->setProjectRoomLinkStatus('mandatory');
          } else {
-	         $room_item->setProjectRoomLinkStatus('optional');
-	      }
+            $room_item->setProjectRoomLinkStatus('optional');
+         }
 
          if ( isset($_POST['project_room_opening']) and !empty($_POST['project_room_opening']) and $_POST['project_room_opening'] == 2 ) {
             $room_item->setProjectRoomCreationStatus('communityroom');
          } else {
-	         $room_item->setProjectRoomCreationStatus('portal');
-	      }
+            $room_item->setProjectRoomCreationStatus('portal');
+         }
 
          if ( !empty($_POST['template_select']) ) {
             $room_item->setDefaultProjectTemplateID($_POST['template_select']);
@@ -84,8 +84,16 @@ else {
             $room_item->setDefaultCommunityTemplateID($_POST['template_select_community']);
          }
 
-	      // Save item
-	      $room_item->save();
+         if ( !empty($_POST['private_room_link']) ) {
+            if ($_POST['private_room_link'] == 1) {
+               $room_item->setShowAllwaysPrivateRoomLink();
+            } else {
+               $room_item->unsetShowAllwaysPrivateRoomLink();
+            }
+         }
+
+         // Save item
+         $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
 

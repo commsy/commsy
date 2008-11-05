@@ -385,15 +385,35 @@ if ( !empty($SID) ) {
            and $environment->getCurrentFunction() != 'logout'
            and $environment->getCurrentFunction() != 'change'
          ) {
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true);
-         $error_array = $authentication->getErrorArray();
-         if (!empty($error_array)) {
-            $error_string = implode('<br />',$error_array);
-            $errorbox->setText($error_string);
-         } else {
-            $errorbox->setText(getMessage('COMMON_ERROR'));
-         }
+         ###############################################
+         # show error box in room
+         ###############################################
+         #include_once('classes/cs_errorbox_view.php');
+         #$errorbox = new cs_errorbox_view($environment, true);
+         #$error_array = $authentication->getErrorArray();
+         #if (!empty($error_array)) {
+         #   $error_string = implode('<br />',$error_array);
+         #   $errorbox->setText($error_string);
+         #} else {
+         #   $errorbox->setText(getMessage('COMMON_ERROR'));
+         #}
+
+         ###############################################
+         # goto portal "vor die Tuer"
+         ###############################################
+         $parameter_array = $environment->getCurrentParameterArray();
+         $parameter_array['cid'] = $environment->getCurrentContextID();
+         $parameter_array['mod'] = $environment->getCurrentModule();
+         $parameter_array['fct'] = $environment->getCurrentFunction();
+         $session->setValue('login_redirect',$parameter_array);
+
+         $environment->setCurrentParameter('room_id',$environment->getCurrentContextID());
+         $environment->setCurrentContextID($environment->getCurrentPortalID());
+         $environment->setCurrentModule('home');
+         $environment->setCurrentFunction('index');
+
+         $current_module = $environment->getCurrentModule();
+         $current_function = $environment->getCurrentFunction();
       }
       $current_user = $authentication->getUserItem();
       $environment->setCurrentUserItem($current_user);

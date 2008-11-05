@@ -44,6 +44,10 @@ class cs_portal_item extends cs_guide_item {
 
    var $_cache_auth_source_list = NULL;
 
+   private $_community_id_array = NULL;
+   private $_project_id_array = NULL;
+   private $_group_id_array = NULL;
+
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
     *
@@ -186,39 +190,54 @@ class cs_portal_item extends cs_guide_item {
 
    public function getCommunityIDArray () {
       $retour = array();
-      $manager = $this->_environment->getCommunityManager();
-      $manager->setContextLimit($this->getItemID());
-      $manager->select();
-      $id_array = $manager->getIDArray();
-      unset($manager);
-      if ( is_array($id_array) ) {
-         $retour = $id_array;
+      if ( !isset($this->_community_id_array) ) {
+         $manager = $this->_environment->getCommunityManager();
+         $manager->setContextLimit($this->getItemID());
+         $manager->select();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $this->_community_id_array = $id_array;
+         }
+      }
+      if ( !empty($this->_community_id_array) ) {
+         $retour = $this->_community_id_array;
       }
       return $retour;
    }
 
    public function getProjectIDArray () {
       $retour = array();
-      $manager = $this->_environment->getProjectManager();
-      $manager->setContextLimit($this->getItemID());
-      $manager->select();
-      $id_array = $manager->getIDArray();
-      unset($manager);
-      if ( is_array($id_array) ) {
-         $retour = $id_array;
+      if ( !isset($this->_project_id_array) ) {
+         $manager = $this->_environment->getProjectManager();
+         $manager->setContextLimit($this->getItemID());
+         $manager->select();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $this->_project_id_array = $id_array;
+         }
+      }
+      if ( !empty($this->_project_id_array) ) {
+         $retour = $this->_project_id_array;
       }
       return $retour;
    }
 
    public function getGroupIDArray () {
       $retour = array();
-      $manager = $this->_environment->getGrouproomManager();
-      $manager->setContextLimit($this->getItemID());
-      $manager->select();
-      $id_array = $manager->getIDArray();
-      unset($manager);
-      if ( is_array($id_array) ) {
-         $retour = $id_array;
+      if ( !isset($this->_group_id_array) ) {
+         $manager = $this->_environment->getGrouproomManager();
+         $manager->setContextLimit($this->getItemID());
+         $manager->select();
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $this->_group_id_array = $id_array;
+         }
+      }
+      if ( !empty($this->_group_id_array) ) {
+         $retour = $this->_group_id_array;
       }
       return $retour;
    }
@@ -1571,6 +1590,35 @@ class cs_portal_item extends cs_guide_item {
       $desc_array = $this->getDescriptionWellcome2Array();
       $desc_array[strtoupper($language)] = $value;
       $this->setDescriptionWellcome2Array($desc_array);
+   }
+
+   public function showAllwaysPrivateRoomLink () {
+      $retour = true;
+      $value = $this->_getShowPrivateRoomLink();
+      if ( $value == -1 ) {
+         $retour = false;
+      }
+      return $retour;
+   }
+
+   private function _getShowPrivateRoomLink () {
+      $retour = 1;
+      if ($this->_issetExtra('SHOW_PRIVATE_ROOM_LINK')) {
+         $retour = $this->_getExtra('SHOW_PRIVATE_ROOM_LINK');
+      }
+      return $retour;
+   }
+
+   private function _setShowPrivateRoomLink ($value) {
+      $this->_setExtra('SHOW_PRIVATE_ROOM_LINK',(int)$value);
+   }
+
+   public function setShowAllwaysPrivateRoomLink () {
+      $this->_setShowPrivateRoomLink(1);
+   }
+
+   public function unsetShowAllwaysPrivateRoomLink () {
+      $this->_setShowPrivateRoomLink(-1);
    }
 }
 ?>

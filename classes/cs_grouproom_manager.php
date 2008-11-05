@@ -632,5 +632,11 @@ class cs_grouproom_manager extends cs_context_manager {
       }
       return $retour;
    }
+
+   public function getRelatedGroupListForUser ($user_item) {
+      return $this->_getRelatedContextListForUser($user_item->getUserID(),$user_item->getAuthSource(),$this->_environment->getCurrentPortalID());
+   }
+
+
 }
 ?>
