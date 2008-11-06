@@ -805,7 +805,7 @@ class cs_page_guide_view extends cs_page_view {
          // noch nicht angemeldet als Mitglied im Raum
          } else {
             $html .= '<img src="images/door_closed_large.gif" alt="door closed" style="vertical-align: middle; "/>'.BRLF;
-            if ($item->isOpen()) {
+            if ( $item->isOpen() ) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
                $params['account'] = 'member';
@@ -817,14 +817,20 @@ class cs_page_guide_view extends cs_page_view {
                                   '');
                $session_item = $this->_environment->getSessionItem();
                if ($session_item->issetValue('login_redirect')) {
-                  $html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">'.$this->_translator->getMessage('CONTEXT_ENTER_LOGIN','<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a>').'</p></div>'.LF;
+                  $html .= '<div style="padding-top:7px;"><p style="margin-top:0px; margin-bottom:0px;text-align:left;" class="disabled">';
+                  if ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
+                     $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN','<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a>');
+                  } else {
+                     $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
+                  }
+                  $html .= '</p></div>'.LF;
                   $session_item->unsetValue('login_redirect');
                   unset($session_item);
-               } else {
+               } elseif ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
                   $html .= '<div style="padding-top:5px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
                }
                unset($params);
-            } else {
+            } elseif ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
                $html .= '<div style="padding-top:5px;">> <span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
             }
             $html .= '<div style="padding-top:6px;">&nbsp;</div>'.LF;
@@ -1446,7 +1452,7 @@ class cs_page_guide_view extends cs_page_view {
       // actions
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUser();
-      if ( !$item->isDeleted() ) {
+      if ( !$item->isDeleted() and !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
          $params = array();
          $params['iid'] = $item->getItemID();
          if ( ($current_user->isModerator() or $item->mayEdit($current_user)) and $this->_with_modifying_actions) {
@@ -1663,7 +1669,15 @@ class cs_page_guide_view extends cs_page_view {
       // logo
       $html .=       '<td style="width: 99%; vertical-align:middle; padding-left:10px; padding-top:12px; padding-bottom:13px; padding-right:0px; text-align:left;">';
       $html .= '      <span style="padding-bottom:0px; font-size: 22px; font-weight: bold;">';
-      $html .= $this->_text_as_html_short($item->getTitle());
+      if ( !$item->isPrivateRoom() ) {
+         $html .= $this->_text_as_html_short($item->getTitle());
+      } else {
+         $owner = $item->getOwnerUserItem();
+         if ( !empty($owner) ) {
+            $html .= $this->_text_as_html_short($this->_translator->getMessage('PRIVATE_ROOM_TITLE').' '.$owner->getFullname());
+         }
+         unset($owner);
+      }
       $html .= '</span>'.LF;
       if ($item->isDeleted()) {
          $html .= '      <span style="padding-bottom:0px; font-size: 22px; font-weight: normal;">';
@@ -1841,7 +1855,8 @@ class cs_page_guide_view extends cs_page_view {
                } elseif (isset($_GET['room_id'])) {
                   $room_manager = $this->_environment->getRoomManager();
                   $room_item = $room_manager->getItem($_GET['room_id']);
-                  if ( isset($room_item) and !$room_item->isPrivateRoom() ) {
+                  #if ( isset($room_item) and !$room_item->isPrivateRoom() ) {
+                  if ( isset($room_item) ) {
                      $html .= '<td colspan="2" class="portal_leftviews" style="'.$width.'">'.LF;
                      $html .= $this->_getRoomItemAsHTML($room_item);
                      $html .= '</td>'.LF;
