@@ -63,7 +63,11 @@ class cs_account_merge_form extends cs_rubric_form {
 
       // auth source
       $current_portal = $this->_environment->getCurrentPortalItem();
-      $this->_show_auth_source = $current_portal->showAuthAtLogin();
+      #$this->_show_auth_source = $current_portal->showAuthAtLogin();
+      # muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
+      # keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
+      # zusammengelegt werden
+      $this->_show_auth_source = true;
       $auth_source_list = $current_portal->getAuthSourceListEnabled();
       if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
          $auth_source_item = $auth_source_list->getFirst();
@@ -124,7 +128,11 @@ class cs_account_merge_form extends cs_rubric_form {
       } elseif ( !empty($this->_form_post['user_id'])
            and !empty($this->_form_post['password'])
          ) {
-         if ($current_user->getUserID() == $this->_form_post['user_id']) {
+         if ( $current_user->getUserID() == $this->_form_post['user_id']
+              and ( empty($this->_form_post['auth_source'])
+                    or ( $current_user->getAuthSource() == $this->_form_post['auth_source'] )
+                  )
+            ) {
             $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_USER_ID',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id','');
          } elseif ( !empty($this->_form_post['auth_source']) ) {

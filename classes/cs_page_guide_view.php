@@ -1841,7 +1841,7 @@ class cs_page_guide_view extends cs_page_view {
                } elseif (isset($_GET['room_id'])) {
                   $room_manager = $this->_environment->getRoomManager();
                   $room_item = $room_manager->getItem($_GET['room_id']);
-                  if (!$room_item->isPrivateRoom()){
+                  if ( isset($room_item) and !$room_item->isPrivateRoom() ) {
                      $html .= '<td colspan="2" class="portal_leftviews" style="'.$width.'">'.LF;
                      $html .= $this->_getRoomItemAsHTML($room_item);
                      $html .= '</td>'.LF;
