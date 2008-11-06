@@ -26,7 +26,7 @@ if (!empty($_GET['iid'])) {
    $current_item_iid = $_GET['iid'];
 } else {
    include_once('functions/error_functions.php');
-   trigger_error('A material item id must be given.', E_USER_ERROR);
+   trigger_error('An item id must be given.', E_USER_ERROR);
 }
 // Find out what to do
 if ( isset($_POST['delete_option']) ) {
@@ -61,7 +61,7 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       unset($params['discarticle_action']);
       unset($params['discarticle_iid']);
    }elseif ( isset($_GET['del_version']) ) {
-   	unset($params['action']);
+      unset($params['action']);
 //      $params['version_id'] = $_GET['del_version'];
       unset($params['del_version']);
    }else{
@@ -92,10 +92,28 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       $params = $environment->getCurrentParameterArray();
       $discarticle_manager = $environment->getDiscussionArticlesManager();
       $discarticle_item = $discarticle_manager->getItem($params['discarticle_iid']);
+      unset($discarticle_manager);
+      $discussion_item = $discarticle_item->getLinkedItem();
+      $disc_type = $discussion_item->getDiscussionType();
+      $delete_discussion = false;
+      if ( $disc_type == 'threaded' ) {
+         $position = $discarticle_item->getPosition();
+         if ($position == 1) {
+            $delete_discussion = true;
+         }
+      }
       $params = array();
       $params['iid'] = $current_item_iid;
       $discarticle_item->delete();
-      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'detail', $params);
+      unset($discarticle_item);
+      $funct = 'detail';
+      if ($delete_discussion) {
+         $discussion_item->delete();
+         unset($discussion_item);
+         $funct = 'index';
+         $params = array();
+      }
+      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $funct, $params);
     }else{
       if ( $environment->getCurrentModule() == CS_MATERIAL_TYPE){
           if ( isset($_GET['del_version']) ) {
