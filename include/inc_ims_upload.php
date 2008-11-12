@@ -20,8 +20,132 @@
 //    along with CommSy.
 
 
+function _getMaterialByXMLArray($material_item,$values_array,$directory){
+   global $environment;
+   $files = array();
 
-function _getMaterialByXMLArray($material_item, $values_array,$directory,$citation_style='harvard'){
+   if (isset($values_array['authors'])){
+      $material_item->setAuthor($values_array['authors']);
+   }else{
+   	  $material_item->setAuthor(getMessage('COMMON_NO_AUTHORS'));
+   }
+   if (isset($values_array['title'])){
+      $material_item->setTitle($values_array['title']);
+   }else{
+   	  $material_item->setTitle(getMessage('COMMON_NO_TITLE'));
+   }
+   if (isset($values_array['toc'])){
+      $material_item->setBibTOC($values_array['toc']);
+   }
+   if (isset($values_array['year'])){
+      $material_item->setPublishingDate($values_array['year']);
+   }else{
+   	  $date = getdate();
+      $material_item->setPublishingDate($date['year']);
+   }
+   if (isset($values_array['abstract'])){
+      $material_item->setDescription($values_array['abstract']);
+   }
+   $file_man = $environment->getFileManager();
+   $file_id_array = array();
+   foreach ( $files as $file ) {
+      $file_data = array();
+      $file_name = basename($directory.$file);
+      $file_data['tmp_name'] = $directory.$file;
+      $file_data['name'] = $file_name;
+      $file_data['file_id'] = $file_data['name'].'_'.getCurrentDateTimeInMySQL();
+      $file_item = $file_man->getNewItem();
+      $file_item->setPostFile($file_data);
+      $file_item->save();
+      $file_id_array[] = $file_item->getFileID();
+   }
+
+   $bib_values_array = array();
+   if (isset($values_array['xml'])){
+      $bib_values_array = $values_array['xml'];
+   }
+   $i = 0;
+   foreach($bib_values_array as $key => $value){
+      switch ($value['tag']){
+         case 'beluga_url':
+            $material_item->setBibURL(utf8_decode($bib_values_array[$key]['value']));
+            break;
+         case 'beluga_cite':
+            $material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
+            break;
+         case 'availability':
+            $availability = utf8_decode($bib_values_array[$key]['value']);
+            if ($availability == 'none'){
+            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+            }
+            $material_item->setBibAvailibility($availability);
+            break;
+      }
+      $i++;
+   }
+   return $material_item;
+}
+
+
+function _getAdditionalValuesByXMLArray($values_array){
+   $additional_values_array = array();
+   global $environment;
+   $i = 0;
+   foreach($values_array as $key => $value){
+     switch ($value['tag']){
+       case 'dc:title':
+            $additional_values_array['title'] = utf8_decode($values_array[$key]['value']);
+            break;
+       case 'dc:creator':
+           if (isset($values_array[$key]['value'])){
+               if (isset($additional_values_array['authors'])){
+                  $additional_values_array['authors'] = ', '.utf8_decode($values_array[$key]['value']);
+               }else{
+                  $additional_values_array['authors'] = utf8_decode($values_array[$key]['value']);
+               }
+            }
+            break;
+       case 'dc:contributor':
+           if (isset($values_array[$key]['value'])){
+               if (isset($additional_values_array['contributors'])){
+                  $additional_values_array['contributors'] = ', '.utf8_decode($values_array[$key]['value']);
+               }else{
+                  $additional_values_array['contributors'] = utf8_decode($values_array[$key]['value']);
+               }
+            }
+            break;
+       case 'dcterms:issued':
+           if (isset($values_array[$key]['value'])){
+               $additional_values_array['year'] = utf8_decode($values_array[$key]['value']);
+           }
+           break;
+       case 'dcterms:abstract':
+            if (isset($values_array[$key]['value'])){
+               $additional_values_array['abstract'] = utf8_decode($values_array[$key]['value']);
+            }
+            break;
+       case 'dcterms:tableOfContents':
+            if (isset($values_array[$i+1]['attributes']['url'])){
+               $additional_values_array['toc'] = $values_array[$i+1]['attributes']['url'];
+            }
+            break;
+      }
+      $i++;
+   }
+   if (!isset($additional_values_array['authors']) or empty($additional_values_array['authors']) and isset($additional_values_array['contributors'])){
+      $additional_values_array['authors'] = $additional_values_array['contributors'];
+   }
+   return $additional_values_array;
+}
+
+
+
+
+
+
+
+
+function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$citation_style='harvard'){
    global $environment;
 
 
@@ -974,18 +1098,6 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
    if (empty($author)){
       $author = getMessage('COMMON_NO_AUTHOR');
    }
-/*   $abstract = '<table>';
-   if (!empty($beluga_url)){
-    $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_LINK').': </td><td>'.$beluga_url.'</td></tr>';
-   }
-   $abstract .= '<tr><td class="ims_key">'.getMessage('BELUGA_AVAILABILITY').': </td><td>'.$availability.'</td></tr>';
-   if ( !empty($table_of_content) ){
-      $abstract .= '<tr><td class="ims_key">'.getMessage('COMMON_TABLE_OF_CONTENT').': </td><td>'.$table_of_content.'</td></tr>';
-   }
-   $abstract .= '</table>';
-   if (!empty($file_id_array)){
-      $material_item->setFileIDArray($file_id_array);
-   }*/
    if (!empty($beluga_url)){
       $material_item->setBibURL($beluga_url);
    }
@@ -1003,32 +1115,68 @@ function _getMaterialByXMLArray($material_item, $values_array,$directory,$citati
 }
 
 
+
+
+
+
+
+
 function _getMaterialListByXML($directory){
    global $environment;
    $xml_file_array = array();
+   $xml_addon_file_array = array();
    $xsl_file_array = array();
-   $xml_directory = $directory.'/data/';
-   if (is_dir($xml_directory)) {
-      if ($dh = opendir($xml_directory)) {
-         while (($file = readdir($dh)) !== false) {
-            if ( strstr($file,'.xml') and $file != 'imsmanifest.xml' and $file != 'meta.xml'){
-               $xml_file_array[] = $file;
-            }
-         }
-         closedir($dh);
-      }
-    }
-    $xsl_directory = $directory.'/styles/';
-    if (is_dir($xsl_directory)) {
+   $new_beluga_ims = false;
+   $xsl_directory = $directory.'/styles/';
+   if (is_dir($xsl_directory)) {
       if ($dh = opendir($xsl_directory)) {
          while (($file = readdir($dh)) !== false) {
-          if ( strstr($file,'.xsl') ){
+            if ( strstr($file,'.xsl') ){
                $xsl_file_array[] = $file;
+               if (strstr($file,'beluga.xsl')){
+                  $new_beluga_ims = true;
+               }
             }
          }
          closedir($dh);
       }
    }
+   if ($new_beluga_ims){
+      $xml_directory = $directory.'/data/';
+      if (is_dir($xml_directory)) {
+         if ($dh = opendir($xml_directory)) {
+            while (($file = readdir($dh)) !== false) {
+               if ( strstr($file,'.xml') and $file != 'imsmanifest.xml' and $file != 'meta.xml' and strstr($file,'bib.xml')){
+                  $xml_addon_file_array[] = $file;
+               }
+            }
+         }
+         closedir($dh);
+      }
+      $tags = array();
+      foreach($xml_addon_file_array as $file){
+         $values = array();
+         $data = implode("", file($xml_directory.$file));
+         $parser = xml_parser_create();
+         xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
+         xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
+         xml_parse_into_struct($parser, $data, $values, $tags);
+      	 $additional_values[$file] = _getAdditionalValuesByXMLArray($values);
+      }
+   }
+
+   $xml_directory = $directory.'/data/';
+   if (is_dir($xml_directory)) {
+      if ($dh = opendir($xml_directory)) {
+         while (($file = readdir($dh)) !== false) {
+            if ( strstr($file,'.xml') and $file != 'imsmanifest.xml' and $file != 'meta.xml' and !strstr($file,'bib.xml')){
+               $xml_file_array[] = $file;
+            }
+         }
+         closedir($dh);
+      }
+   }
+   $i = 1;
    foreach($xml_file_array as $file){
       $tags = array();
       $values = array();
@@ -1039,47 +1187,43 @@ function _getMaterialListByXML($directory){
       xml_parse_into_struct($parser, $data, $values, $tags);
       $material_manager = $environment->getMaterialManager();
       $material_item = $material_manager->getNewItem();
-      $material_item->setVersionID(0); // Should not be required, mj
+      $material_item->setVersionID(0);
       $material_item->setContextID($environment->getCurrentContextID());
       $user = $environment->getCurrentUserItem();
       $material_item->setCreatorItem($user);
       $material_item->setCreationDate(getCurrentDateTimeInMySQL());
       $material_item->setPrivateEditing('1');
-
       xml_parser_free($parser);
       $proc = new XSLTProcessor;
       $xml = new DOMDocument;
 
       $xml->loadXML($data);
 
-      $xsl_filename = '';
-      foreach($xsl_file_array as $xsl_file){
-         if(strstr($data,$xsl_file)){
-           $xsl_filename = $xsl_file;
-        }
-      }
-//DatensÃ¤tze über XSLT verarbeiten!!!
-/*       if (!empty($xsl_filename)){
-         $xsl = new DOMDocument;
-         $xsl->load(utf8_encode($xsl_directory.$xsl_filename));
-         $proc->importStyleSheet($xsl);
-         $xml_doc = $proc->transformToXML($xml);
-         $material_item->setBibliographicValues(utf8_decode($xml_doc));
+      if (!$new_beluga_ims){
+         $xsl_filename = '';
+         foreach($xsl_file_array as $xsl_file){
+            if(strstr($data,$xsl_file)){
+               $xsl_filename = $xsl_file;
+            }
+         }
+         $citation_style = 'harvard';
+         if (strstr($xsl_filename,'apa')){
+            $citation_style = 'apa';
+         }
+         $material_item = _getMaterialByXMLArray_old($material_item,$values,$xml_directory);
+      }else{
+         if (isset($additional_values['b'.$i.'_bib.xml'])){
+         	$temp_values = array();
+         	$temp_values['xml'] = $values;
+            $values = array_merge($temp_values, $additional_values['b'.$i.'_bib.xml']);
+         }
          $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
-         $material_item->save();
-         unset($material_item);
       }
-*/
-    $citation_style = 'harvard';
-    if (strstr($xsl_filename,'apa')){
-       $citation_style = 'apa';
-    }
-    $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory,$citation_style);
-    $material_item->save();
-    unset($material_item);
-
-
+      $material_item->save();
+      unset($material_item);
+      $i++;
    }
+
 }
 
 
