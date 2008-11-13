@@ -252,19 +252,21 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $linked_item = $item->getLinkedItem();
-            $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
-            $description = $item->getDescriptionWithoutHTML();
-            if ( strlen($description) > $desc_len ) {
-               $description = chunkText($item->getDescription(),$desc_len);
+            if ( !empty($linked_item) ) {
+               $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
+               $description = $item->getDescriptionWithoutHTML();
+               if ( strlen($description) > $desc_len ) {
+                  $description = chunkText($item->getDescription(),$desc_len);
+               }
+               $user_item = $item->getModificatorItem();
+               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+               unset($manager);
+               $last_discarticle_item = $item;
+               unset($item);
+               unset($user_item);
+               unset($linked_item);
             }
-            $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
-            unset($manager);
-            $last_discarticle_item = $item;
-            unset($item);
-            unset($user_item);
-            unset($linked_item);
             break;
       case 'material':
             include_once('classes/cs_material_manager.php');
