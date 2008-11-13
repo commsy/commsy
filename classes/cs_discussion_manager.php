@@ -375,11 +375,12 @@ class cs_discussion_manager extends cs_manager {
         $discussion = NULL;
         if ( array_key_exists($item_id,$this->_cached_items) ) {
            return $this->_buildItem($this->_cached_items[$item_id]);
-        } else {
+        } elseif ( !empty($item_id) ) {
            $query = "SELECT * FROM discussions WHERE discussions.item_id = '".encode(AS_DB,$item_id)."'";
            $result = $this->_db_connector->performQuery($query);
            if ( !isset($result) or empty($result[0]) ) {
-              include_once('functions/error_functions.php');trigger_error('Problems selecting one discussions item.',E_USER_WARNING);
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting one discussions item ('.$item_id.').',E_USER_WARNING);
            } else {
               $discussion = $this->_buildItem($result[0]);
               if ( $this->_cache_on ) {
@@ -387,6 +388,8 @@ class cs_discussion_manager extends cs_manager {
               }
            }
            return $discussion;
+        } else {
+           return NULL;
         }
      }
 
