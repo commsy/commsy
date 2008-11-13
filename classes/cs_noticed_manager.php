@@ -305,7 +305,8 @@ class cs_noticed_manager {
 
       $result = $this->_db_connector->performQuery($select);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems creating notice from query: "'.$select.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems creating notice from query: "'.$select.'"',E_USER_WARNING);
       }
 
       foreach ( $result as $row ) {
@@ -315,7 +316,8 @@ class cs_noticed_manager {
 
          $result2 = $this->_db_connector->performQuery($select2);
          if ( !isset($result2) ) {
-            include_once('functions/error_functions.php');trigger_error('Problems creating notice from query: "'.$select2.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems creating notice from query: "'.$select2.'"',E_USER_WARNING);
          } elseif ( empty($result2[0]) ) {
             $row2 = '';
          } else {
