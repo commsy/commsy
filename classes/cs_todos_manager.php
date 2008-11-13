@@ -355,7 +355,8 @@ class cs_todos_manager extends cs_manager {
          $query = "SELECT * FROM todos WHERE todos.item_id = '".encode(AS_DB,$item_id)."'";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result) or empty($result[0])) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting one todos item from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting one todos item from query: "'.$query.'"',E_USER_WARNING);
          } else {
             if ( isset($result[0]['date']) ){
                $result[0]['end_date'] = $result[0]['date'];
@@ -426,7 +427,8 @@ class cs_todos_manager extends cs_manager {
               'type="todo"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating todo from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating todo from query: "'.$query.'"',E_USER_WARNING);
         $this->_create_id = NULL;
      } else {
         $this->_create_id = $result;
@@ -441,10 +443,10 @@ class cs_todos_manager extends cs_manager {
     *
     * @param cs_todo_item the todo item to be stored
     */
-  function _newNews ($item) {
-     $user = $item->getCreatorItem();
-     $modificator = $item->getModificatorItem();
-     $current_datetime = getCurrentDateTimeInMySQL();
+   function _newNews ($item) {
+      $user = $item->getCreatorItem();
+      $modificator = $item->getModificatorItem();
+      $current_datetime = getCurrentDateTimeInMySQL();
 
       if ( $item->isPublic() ) {
          $public = '1';
@@ -452,26 +454,31 @@ class cs_todos_manager extends cs_manager {
          $public = '0';
       }
 
-     $query = 'INSERT INTO todos SET '.
-              'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
-              'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
-              'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
-              'creation_date="'.$current_datetime.'",'.
-              'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'title="'.encode(AS_DB,$item->getTitle()).'",'.
-              'date="'.encode(AS_DB,$item->getDate()).'",'.
-              'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
-              'public="'.encode(AS_DB,$public).'",'.
-              'description="'.encode(AS_DB,$item->getDescription()).'"';
-     $result = $this->_db_connector->performQuery($query);
-     if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating todos from query: "'.$query.'"',E_USER_WARNING);
-     }
-     unset($item);
-     unset($user);
-     unset($modificator);
-  }
+      $date = $item->getDate();
+
+      $query = 'INSERT INTO todos SET '.
+               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
+               'context_id="'.encode(AS_DB,$item->getContextID()).'",'.
+               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
+               'creation_date="'.$current_datetime.'",'.
+               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
+               'modification_date="'.$current_datetime.'",'.
+               'title="'.encode(AS_DB,$item->getTitle()).'",';
+      if ( !empty($date) ) {
+         $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';
+      }
+      $query .= 'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
+               'public="'.encode(AS_DB,$public).'",'.
+               'description="'.encode(AS_DB,$item->getDescription()).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems creating todos from query: "'.$query.'"',E_USER_WARNING);
+      }
+      unset($item);
+      unset($user);
+      unset($modificator);
+   }
 
   /**  delete a todo item
    *
@@ -489,7 +496,8 @@ class cs_todos_manager extends cs_manager {
               ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems deleting todos from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems deleting todos from query: "'.$query.'"',E_USER_WARNING);
       } else {
          $link_manager = $this->_environment->getLinkManager();
          $link_manager->deleteLinksBecauseItemIsDeleted($item_id);

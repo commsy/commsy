@@ -476,6 +476,11 @@ class cs_manager {
          } else {
             $list = new cs_list();
             foreach ($result as $rs ) {
+               // special for todo
+               if ( $type == 'todos' and isset($rs['date']) ){
+                  $rs['end_date'] = $rs['date'];
+                  unset($rs['date']);
+               }
                $list->add($this->_buildItem($rs));
             }
             unset($result);

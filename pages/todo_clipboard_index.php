@@ -92,11 +92,11 @@ if($command == 'paste') {
          $copy = $import_todo->copy();
 
          // Fehler mitloggen
-		   $err = $copy->getErrorArray();
-		   if( !empty($err) ){
+         $err = $copy->getErrorArray();
+         if( !empty($err) ){
              $error_array[$copy->getItemID()] = $err;
              $error_name_array[$copy->getItemID()] = $copy->GetTitle();
-		   }
+         }
          $import_todo = $import_list->getNext();
       }
    }
@@ -108,19 +108,19 @@ if($command == 'paste') {
 
       foreach($error_array as $key=>$error){
          foreach($error as  $filename){
-		      $err_txt.= $translator->getMessage('COMMON_FILES_ERROR_MISSING',$error_name_array[$key],$filename).'<br>';
+            $err_txt.= $translator->getMessage('COMMON_FILES_ERROR_MISSING',$error_name_array[$key],$filename).'<br>';
          }
       }
-	   $err_txt.='<br>'.$translator->getMessage('COMMON_FILES_ERROR_OTHERS_SUCCESSFULL');
+      $err_txt.='<br>'.$translator->getMessage('COMMON_FILES_ERROR_OTHERS_SUCCESSFULL');
 
       // Fehler-Anzeige
-	   $errorbox->setText($err_txt);
-	   $page->add($errorbox);
+      $errorbox->setText($err_txt);
+      $page->add($errorbox);
 
    } else {
       // zur Zielseite gehen
       $return_to['parameter']['select']='';
-      redirect($return_to['context'], "material", "index", $return_to['parameter']);
+      redirect($return_to['context'], "todo", "index", $return_to['parameter']);
    }
 }
 else if($command == 'delete') {

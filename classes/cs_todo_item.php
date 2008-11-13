@@ -215,12 +215,10 @@ class cs_todo_item extends cs_item {
    /** Checks and sets the data of the todo_item.
     *
     * @param $data_array Is the prepared array from "_buildItemArray($db_array)"
-    *
-    * @author CommSy Development Group
     */
    function _setItemData($data_array) {
       // TBD: check data before setting
-       $this->_data = $data_array;
+      $this->_data = $data_array;
    }
 
    /** asks if item is editable by everybody or just creator
