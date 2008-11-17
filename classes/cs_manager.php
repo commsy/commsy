@@ -124,6 +124,8 @@ class cs_manager {
    var $_cached_items = array();
    var $_cache_on = true;
 
+   public $_class_factory = NULL;
+
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
     *
@@ -131,6 +133,7 @@ class cs_manager {
     */
   function cs_manager ($environment) {
      $this->_environment = $environment;
+     $this->_class_factory = $this->_environment->getClassFactory();
      $this->reset();
      $this->_room_limit      =  $this->_environment->getCurrentContextID();
      $this->_attribute_limit =  NULL;

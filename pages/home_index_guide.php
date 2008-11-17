@@ -441,24 +441,6 @@ if ( $environment->inServer() ) {
    unset($params);
    $context_detail_view->setItem($context_item);
    $page->addRoomDetail($context_detail_view);
-} else {
-
-/*   if ( ( $current_user->isModerator() or $current_user->isRoot() )
-        and empty($_GET['room_id'])
-      ) {
-      // tasks
-      $manager = $environment->getTaskManager();
-      $manager->resetLimits();
-      $manager->setContextLimit($environment->getCurrentContextID());
-      $manager->setStatusLimit('REQUEST');
-      $manager->select();
-
-      // init list view
-      include_once('classes/cs_task_short_view.php');
-      $list_view = new cs_task_short_view($environment, true);
-      $list_view->setList($manager->get());
-      $page->addRight($list_view);
-   }   */
 }
 
 

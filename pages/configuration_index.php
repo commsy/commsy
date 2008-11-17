@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_link_preference_list_view.php');
 include_once('classes/cs_link.php');
 include_once('classes/cs_list.php');
 
@@ -36,8 +35,8 @@ if ($current_user->isGuest()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
    } else {
       $params = array() ;
-	  $params['cid'] = $room_item->getItemId();
-	  redirect($environment->getCurrentPortalId(),'home','index',$params);
+     $params['cid'] = $room_item->getItemId();
+     redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
 } elseif (!$current_user->isModerator()) {
    include_once('classes/cs_errorbox_view.php');
@@ -46,8 +45,12 @@ if ($current_user->isGuest()) {
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 } else {
-//access granted
-   $list_view = new cs_link_preference_list_view($environment,true);
+   //access granted
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $list_view = $class_factory->getClass(LINK_PREFERENCE_LIST_VIEW,$params);
+   unset($params);
 
    // room configuration options
    include_once('include/inc_configuration_room_links.php');

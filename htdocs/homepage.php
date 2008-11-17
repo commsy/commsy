@@ -58,6 +58,10 @@ if ( ini_get('register_globals') ) {
    trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }
 
+// setup class factory
+include_once('classes/cs_class_factory.php');
+$class_factory = new cs_class_factory();
+
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
@@ -124,6 +128,20 @@ unset($current_context);
 unset($current_module);
 unset($current_function);
 $context_item_current = $environment->getCurrentContextItem();
+
+// switch: CommSy6 / CommSy7
+if ( $environment->inProjectRoom()
+     or $environment->inCommunityRoom()
+     or $environment->inGroupRoom()
+     or $environment->inPrivateRoom()
+   ) {
+   if ( $context_item_current->isDesign6() ) {
+      $class_factory->setDesignTo6();
+   } else {
+      $class_factory->setDesignTo7();
+   }
+}
+
 
 /*********** SERVER INITIALIZATION AND JUMP TO HOMEPAGE INDEX ***********/
 
@@ -242,8 +260,11 @@ $translator = $environment->getTranslationObject();
 $with_modifying_actions = $context_item_current->isOpen();
 
 // create page object
-include_once('classes/cs_page_homepage_view.php');
-$page = new cs_page_homepage_view($environment,$with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$page = $class_factory->getClass(PAGE_HOMEPAGE_VIEW,$params);
+unset($params);
 $page->setCurrentUser($environment->getCurrentUserItem());
 
 // set title

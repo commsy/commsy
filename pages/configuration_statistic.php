@@ -98,8 +98,11 @@ if (!$current_user->isRoot()) {
    $room_list = $current_context_item->getPortalList();
 
    // Prepare view object
-   include_once('classes/cs_statistic_view.php');
-   $statistic_view = new cs_statistic_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $statistic_view = $class_factory->getClass(STATISTIC_VIEW,$params);
+   unset($params);
 
    // Set data for view
    $statistic_view->setList($room_list);

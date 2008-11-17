@@ -35,7 +35,6 @@ if ( !isset($c_message_management)
 
 include_once('classes/cs_view.php');
 include_once('classes/cs_language.php');
-include_once('classes/cs_table_view.php');
 $translator = $environment->getTranslationObject();
 $message = $translator->getCompleteMessageArray();
 
@@ -45,7 +44,11 @@ if (!empty($_GET['sortby'])) {
    $sortby = 'message';
 }
 
-$table_view = new cs_table_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$table_view = $class_factory->getClass(TABLE_VIEW,$params);
+unset($params);
 $table_view->addColumn(getMessage('MESSAGE_TAG'),true,$sortby=='message',getMessage('MESSAGE_TAG'),'message','');
 $table_view->addAction(getMessage('LANGUAGE_EDIT'),true,'','language','edit');
 

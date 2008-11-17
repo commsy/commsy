@@ -163,13 +163,20 @@ if ($type != CS_MATERIAL_TYPE) {
          if ( isset($current_version_id)
               and $latest_version_item->getVersionID() != $current_version_id ) {
             //Old version
-            include_once('classes/cs_material_version_detail_view.php');
-            $detail_view = new cs_material_version_detail_view($environment, $context_item->isOpen());
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $context_item->isOpen();
+            $detail_view = $class_factory->getClass(MATERIAL_VERSION_DETAIL_VIEW,$params);
+            unset($params);
             $detail_view->setVersionList($material_version_list, $current_version_id);
          } else {
             //current version
-            include_once('classes/cs_material_detail_view.php');
-            $detail_view = new cs_material_detail_view($environment, $context_item->isOpen(),$creatorInfoStatus);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $context_item->isOpen();
+            $params['creator_info_status'] = $creatorInfoStatus;
+            $detail_view = $class_factory->getClass(MATERIAL_DETAIL_VIEW,$params);
+            unset($params);
             $detail_view->setVersionList($material_version_list);
             $detail_view->setClipboardIDArray($clipboard_id_array);
          }

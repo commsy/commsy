@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_rubric_mail_form.php');
-include_once('classes/cs_mail_view.php');
 include_once('classes/cs_form_view.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
@@ -223,7 +222,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          if ($email->send()) {
             // send aknowledgement
 
-            $detail_view = new cs_mail_view($environment, false);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = false;
+            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+            unset($params);
 
             // prepare formal data
             $tmp = array(getMessage('MAIL_FROM'), $mail['from_name']." <".$mail['from_email'].">");

@@ -554,21 +554,33 @@ $with_modifying_actions = $context_item_current->isOpen();
 $parameters = $environment->getCurrentParameterArray();
 if (isset($parameters['mode']) and $parameters['mode']=='print') {
    if (isset($parameters['view_mode']) and $parameters['view_mode']=='pda') {
-      include_once('classes/cs_page_pda_view.php');
-      $page = new cs_page_pda_view($environment,$with_modifying_actions);
-   }else{
-      include_once('classes/cs_page_print_view.php');
-      $page = new cs_page_print_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
+      unset($params);
+   } else {
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $page = $class_factory->getClass(PAGE_PRINT_VIEW,$params);
+      unset($params);
    }
 } else {
    $temp_module = $environment->getCurrentModule();
    if (isset($parameters['view_mode']) and $parameters['view_mode']=='pda') {
-      include_once('classes/cs_page_pda_view.php');
-      $page = new cs_page_pda_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $page = $class_factory->getClass(PAGE_PDA_VIEW,$params);
+      unset($params);
    }
    if ($temp_module == 'help'){
-      include_once('classes/cs_page_help_view.php');
-      $page = new cs_page_help_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $page = $class_factory->getClass(PAGE_HELP_VIEW,$params);
+      unset($params);
    } else {
       // create page object
       if ( $environment->inProjectRoom()
@@ -576,11 +588,17 @@ if (isset($parameters['mode']) and $parameters['mode']=='print') {
            or $environment->inPrivateRoom()
            or $environment->inGroupRoom()
          ) {
-         include_once('classes/cs_page_room_view.php');
-         $page = new cs_page_room_view($environment,$with_modifying_actions);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $with_modifying_actions;
+         $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
+         unset($params);
       } else {
-         include_once('classes/cs_page_guide_view.php');
-         $page = new cs_page_guide_view($environment,$with_modifying_actions);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $with_modifying_actions;
+         $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+         unset($params);
       }
    }
 }

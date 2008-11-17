@@ -34,8 +34,11 @@ if ( !isset($c_message_management)
 
 $translator = $environment->getTranslationObject();
 $message = $translator->getCompleteMessageArray();
-include_once('classes/cs_language_form_view.php');
-$language_form_view = new cs_language_form_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$language_form_view = $class_factory->getClass(LANGUAGE_FORM_VIEW,$params);
+unset($params);
 $language_form_view->setAction(curl($environment->getCurrentContextID(),$current_module,$current_function,''));
 $language_form_view->setTitle('Management von Übersetzung und Sprachen');
 if ( $environment->inPortal() or $environment->inServer() ){

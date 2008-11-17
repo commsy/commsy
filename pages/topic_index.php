@@ -197,7 +197,7 @@ if ($mode == '') {
             $error = false;
             $topic_manager = $environment->getTopicManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $topic_item = $topic_manager->getItem($id);
                $version_id = $topic_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -214,7 +214,7 @@ if ($mode == '') {
          case 2:
             $action = 'ENTRY_COPY';
             // Copy to clipboard
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                if ( !in_array($id, $clipboard_id_array) ) {
                   $clipboard_id_array[] = $id;
                }
@@ -292,7 +292,6 @@ if ($environment->inCommunityRoom()) {
    $group_list = $group_manager->get();
 }
 
-include_once('classes/cs_topic_index_view.php');
 $with_modifying_actions = false;
 if ( $context_item->isProjectRoom() ) {
    if ($context_item->isOpen() AND $mode != 'detailattach' AND $mode != 'formattach')  {
@@ -303,7 +302,11 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$view = new cs_topic_index_view($environment,$with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(TOPIC_INDEX_VIEW,$params);
+unset($params);
 if ($mode=='print'){
    $view->setPrintableView();
 }

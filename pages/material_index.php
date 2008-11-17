@@ -21,7 +21,6 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-include_once('classes/cs_material_index_view.php');
 include_once('classes/cs_list.php');
 
 // Find current page mode. Modes are:
@@ -365,7 +364,7 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
          case 3:
             $error = false;
             if( $user->isModerator() ){
-            	$session->setValue('cid'.$environment->getCurrentContextID().
+               $session->setValue('cid'.$environment->getCurrentContextID().
                                                '_'.$environment->getCurrentModule().
                                                '_deleted_ids', $selected_ids);
                $params = $environment->getCurrentParameterArray();
@@ -514,7 +513,11 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$view = new cs_material_index_view($environment,$with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
+unset($params);
 
    // Get available groups
    if ( $context_item->withRubric(CS_GROUP_TYPE) ) {

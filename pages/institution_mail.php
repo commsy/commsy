@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_institution_mail_form.php');
-include_once('classes/cs_mail_view.php');
 include_once('classes/cs_form_view.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
@@ -57,27 +56,27 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $institutions = $_POST['institutions'];
          $recipients = array();
          $recipients_display = array();
-	$recipients_bcc = array();
+   $recipients_bcc = array();
          $recipients_display_bcc = array();
-	$counter = 0;
-	$name_array = array();
+   $counter = 0;
+   $name_array = array();
 
          foreach ($institutions as $iid) {
-   	   $counter++;
+         $counter++;
             $item = $manager->getItem($iid);
-	   $name_array[] = $item->getTitle();
+      $name_array[] = $item->getTitle();
             $user_list = $item->getMemberItemList();
             // get selected institutions for inclusion in recipient list
             $user_item = $user_list->getFirst();
             while($user_item) {
                if ( $user_item->isUser() ){
-		 if ($user_item->isEmailVisible()) {
+       if ($user_item->isEmailVisible()) {
                      $recipients[] = $user_item->getFullName()." <".$user_item->getEmail().">";
                      $recipients_display[] = $user_item->getFullName()." &lt;".$user_item->getEmail()."&gt;";
-		 } else {
+       } else {
                      $recipients_bcc[] = $user_item->getFullName()." <".$user_item->getEmail().">";
                      $recipients_display_bcc[] = $user_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
-		 }
+       }
                }
                $user_item = $user_list->getNext();
             }
@@ -99,35 +98,35 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $email = new cs_mail();
          $email->set_from_email($mail['from_email']);
          $email->set_from_name($mail['from_name']);
-	$email->set_to($mail['to']);
-	$email->set_subject($mail['subject']);
-	if ( !empty($recipients_bcc) ) {
+   $email->set_to($mail['to']);
+   $email->set_subject($mail['subject']);
+   if ( !empty($recipients_bcc) ) {
             $email->set_bcc_to(implode(",",$recipients_bcc));
-	}
+   }
          if (getMessage('COMMON_YES') == $_POST['copytosender']) {
             $email->set_cc_to($current_user->getEmail());
          }
 
-	$add_message = '';
-	if ($counter == 1) {
-	   $current_context = $environment->getCurrentContextItem();
-	   if ($current_context->isProjectroom()) {
-	      $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
-	   } else {
-	      $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
-	   }
-	} elseif ($counter > 1) {
-	   $current_context = $environment->getCurrentContextItem();
-	   if ($current_context->isProjectroom()) {
-	      $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
-	   } else {
-	      $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
-	   }
-	}
+   $add_message = '';
+   if ($counter == 1) {
+      $current_context = $environment->getCurrentContextItem();
+      if ($current_context->isProjectroom()) {
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
+      } else {
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_S',$current_context->getTitle(),$name_array[0]);
+      }
+   } elseif ($counter > 1) {
+      $current_context = $environment->getCurrentContextItem();
+      if ($current_context->isProjectroom()) {
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
+      } else {
+         $add_message = $translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY_INSTITUTION_PL',$current_context->getTitle(),implode(','.LF,$name_array));
+      }
+   }
 
-	if (!empty($add_message)) {
-	   $add_message = LF.LF.'---'.LF.$add_message;
-	}
+   if (!empty($add_message)) {
+      $add_message = LF.LF.'---'.LF.$add_message;
+   }
          $email->set_message($mail['message'].$add_message);
 
          // prepare formal data
@@ -137,18 +136,18 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          $tmp = array(getMessage('REPLY_TO'), $mail['from_email']);
          $formal_data[] = $tmp;
 
-	$tmp = array(getMessage('MAIL_TO'), implode(",", $recipients_display));
-	$formal_data[] = $tmp;
+   $tmp = array(getMessage('MAIL_TO'), implode(",", $recipients_display));
+   $formal_data[] = $tmp;
 
          if (getMessage('COMMON_YES') == $_POST['copytosender']) {
             $tmp = array(getMessage('CC_TO'), $mail['from_name']." &lt;".$mail['from_email']."&gt;");
             $formal_data[] = $tmp;
          }
 
-	if ( !empty($recipients_bcc) ) {
+   if ( !empty($recipients_bcc) ) {
             $tmp = array(getMessage('MAIL_BCC_TO'), implode(",<br/>",$recipients_display_bcc));
             $formal_data[] = $tmp;
-	}
+   }
 
          $tmp = array(getMessage('MAIL_SUBJECT'), $_POST['subject']);
          $formal_data[] = $tmp;
@@ -158,7 +157,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 
          if ($email->send()) {
             // send aknowledgement
-            $detail_view = new cs_mail_view($environment, false);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = false;
+            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+            unset($params);
             $detail_view->setFormalData($formal_data);
             $page->add($detail_view);
          } // ~email->send()
@@ -167,21 +170,21 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             $errorbox = new cs_errorbox_view($environment, true);
             $error_array = $email->getErrorArray();
             if ( !empty($error_array) ) {
-            	$error_string = $translator->getMessage('ERROR_SEND_EMAIL_TO');
-	            foreach ($error_array as $error) {
-	               $error = htmlentities($error);
-	               $error = str_replace(',',BRLF,$error);
-	               $error_string .= BRLF.$error;
-	            }
+               $error_string = $translator->getMessage('ERROR_SEND_EMAIL_TO');
+               foreach ($error_array as $error) {
+                  $error = htmlentities($error);
+                  $error = str_replace(',',BRLF,$error);
+                  $error_string .= BRLF.$error;
+               }
             } else {
                $error_string = $translator->getMessage('ERROR_SEND_MAIL');
-				}
+            }
 
-	   $detail_view = new cs_mail_view($environment, false);
+      $detail_view = new cs_mail_view($environment, false);
             $detail_view->setFormalData($formal_data);
             $errorbox->setText($error_string);
             $page->add($errorbox);
-			$page->add($detail_view);
+         $page->add($detail_view);
          }
       }  // ~form->check()
       else {

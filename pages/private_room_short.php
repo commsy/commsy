@@ -100,14 +100,20 @@ $page->add($title_view);
 
 if ($status=='detailed'){
 #   include_once('classes/cs_private_room_short_view.php');
-   include_once('classes/cs_private_room_detailed_short_view.php');
-   $short_view = new cs_private_room_short_view($environment,$current_context->isOpen());
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $short_view = $class_factory->getClass(PRIVATEROOM_DETAILED_SHORT_VIEW,$params);
+   unset($params);
    $short_view->setUsedRubricsForRoomsArray($used_rubrics_for_room_array);
    $user_manager = $environment->getUserManager();
    $short_view->setUserForRoomsArray($user_manager->getAllUsersByUserAndRoomIDLimit($user->getUserID(), $shown_room_id_array,$user->getAuthSource()));
 }else{
-   include_once('classes/cs_private_room_short_view.php');
-   $short_view = new cs_private_room_short_view($environment,$current_context->isOpen());
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $short_view = $class_factory->getClass(PRIVATEROOM_SHORT_VIEW,$params);
+   unset($params);
 }
 include_once('classes/cs_list.php');
 

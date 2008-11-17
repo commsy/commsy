@@ -116,8 +116,12 @@ if ($type != CS_USER_TYPE) {
       // Create view
       $current_context = $environment->getCurrentContextItem();
 
-      include_once('classes/cs_user_detail_view.php');
-      $detail_view = new cs_user_detail_view($environment,$current_context->isOpen(),$creatorInfoStatus);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $current_context->isOpen();
+      $params['creator_info_status'] = $creatorInfoStatus;
+      $detail_view = $class_factory->getClass(USER_DETAIL_VIEW,$params);
+      unset($params);
 
       if (isset($display_mod) and $display_mod == 'admin') {
          $detail_view->setDisplayModToAdmin();

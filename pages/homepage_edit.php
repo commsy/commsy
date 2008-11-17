@@ -394,7 +394,7 @@ else {
                               $biblio  .= $this->_translator->getMessage('MATERIAL_THESIS_TERM').'. ';
                               break;
                            default:
-                              $biblio  .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_material_detail_view(446) ';
+                              $biblio  .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' '.__FILE__.' '.__LINE__;
                               break;
                         }
                         $biblio .= $item->getAddress().': '.$item->getUniversity();

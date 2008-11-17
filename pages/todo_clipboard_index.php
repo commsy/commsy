@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_todo_index_view.php');
 if (!empty($_POST['return_to_context'])) {
    $return_to = array();
    $return_to['module'] = $_POST['return_to_module'];
@@ -228,7 +227,11 @@ while ($room_sort) {
 $todo_list = $new_todo_list;
 
 // view object
-$clipboard_list_view = new cs_todo_index_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$clipboard_list_view = $class_factory->getClass(TODO_INDEX_VIEW,$params);
+unset($params);
 
 // Set data for view
 $clipboard_list_view->setList($todo_list);

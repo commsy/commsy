@@ -27,7 +27,7 @@ if ($environment->inPrivateRoom()){
    redirect($environment->getCurrentContextID(), $current_module, 'detail', $params);
 } else {
 
-	$current_user = $environment->getCurrentUser();
+   $current_user = $environment->getCurrentUser();
          $current_context = $environment->getCurrentContextItem();
          if (!($current_user->isUser() or ($environment->inCommunityRoom() and $current_context->isOpenForGuests() ) )
              or ($environment->inPortal()) ){
@@ -36,31 +36,30 @@ if ($environment->inPrivateRoom()){
             }else{
                include_once('classes/cs_errorbox_view.php');
                $errorbox = new cs_errorbox_view($environment, true);
-	      $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
-	      $page->add($errorbox);
+         $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
+         $page->add($errorbox);
             }
 
          }else{
 
-	include_once('classes/cs_user_index_view.php');
-	include_once('classes/cs_list.php');
+   include_once('classes/cs_list.php');
 
-	// Find current page mode. Modes are:
-	//   browse       = standard, simply show items
-	//   detailattach = attach_iid is set, show checkboxes
-	//                  attach from a detail view
-	//                  save changes to links
-	//   formattach   = formattach_iid is set, show checkboxes
-	//                  attach from a form view
-	//                  do not changes, but leave in session
-	//   attached     = ref_iid is set, show backlink
-	//                  show all items attached to the ref item
+   // Find current page mode. Modes are:
+   //   browse       = standard, simply show items
+   //   detailattach = attach_iid is set, show checkboxes
+   //                  attach from a detail view
+   //                  save changes to links
+   //   formattach   = formattach_iid is set, show checkboxes
+   //                  attach from a form view
+   //                  do not changes, but leave in session
+   //   attached     = ref_iid is set, show backlink
+   //                  show all items attached to the ref item
 
-	if ( isset($_GET['ref_iid']) ) {
-	   $ref_iid = $_GET['ref_iid'];
-	} elseif ( isset($_POST['ref_iid']) ) {
-	   $ref_iid = $_POST['ref_iid'];
-	}
+   if ( isset($_GET['ref_iid']) ) {
+      $ref_iid = $_GET['ref_iid'];
+   } elseif ( isset($_POST['ref_iid']) ) {
+      $ref_iid = $_POST['ref_iid'];
+   }
 
    $mode = 'browse';
    if ( isset($_GET['mode']) ) {
@@ -81,19 +80,19 @@ if ($environment->inPrivateRoom()){
       $option = '';
    }
 
-	// Handle attaching
-	if ( $mode == 'formattach' or $mode == 'detailattach' ) {
-	   $attach_type = CS_USER_TYPE;
-	   include('pages/index_attach_inc.php');
-	}
+   // Handle attaching
+   if ( $mode == 'formattach' or $mode == 'detailattach' ) {
+      $attach_type = CS_USER_TYPE;
+      include('pages/index_attach_inc.php');
+   }
 
 
-	// Find current browsing starting point
-	if ( isset($_GET['from']) ) {
-	   $from = $_GET['from'];
-	} else {
-	   $from = 1;
-	}
+   // Find current browsing starting point
+   if ( isset($_GET['from']) ) {
+      $from = $_GET['from'];
+   } else {
+      $from = 1;
+   }
 
 // Find current browsing interval
 // The browsing interval is applied to all rubrics
@@ -105,48 +104,48 @@ if ( isset($_GET['interval']) ) {
    $interval = $current_context->getListLength();
 }
 
-	// Find current sort key
-	if ( isset($_GET['sort']) ) {
-	   $sort = $_GET['sort'];
-	} else {
-	   $sort = 'name';
-	}
+   // Find current sort key
+   if ( isset($_GET['sort']) ) {
+      $sort = $_GET['sort'];
+   } else {
+      $sort = 'name';
+   }
 
-	// Search / Select Area
-	if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
-	   $search = '';
-	   $selgroup = '';
-	   $seltopic = '';
-	   $selinstitution = '';
-	} else {
+   // Search / Select Area
+   if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
+      $search = '';
+      $selgroup = '';
+      $seltopic = '';
+      $selinstitution = '';
+   } else {
 
-	   // Find current search text
-	   if ( isset($_GET['search']) ) {
-	      $search = $_GET['search'];
-	   } else {
-	      $search = '';
-	   }
+      // Find current search text
+      if ( isset($_GET['search']) ) {
+         $search = $_GET['search'];
+      } else {
+         $search = '';
+      }
 
-	   // Find current group selection
-	   if ( isset($_GET['selgroup'])  and $_GET['selgroup'] !='-2') {
-	      $selgroup = $_GET['selgroup'];
-	   } else {
-	      $selgroup = 0;
-	   }
+      // Find current group selection
+      if ( isset($_GET['selgroup'])  and $_GET['selgroup'] !='-2') {
+         $selgroup = $_GET['selgroup'];
+      } else {
+         $selgroup = 0;
+      }
 
-	   // Find current topic selection
-	   if ( isset($_GET['seltopic'])  and $_GET['seltopic'] !='-2') {
-	      $seltopic = $_GET['seltopic'];
-	   } else {
-	      $seltopic = 0;
-	   }
+      // Find current topic selection
+      if ( isset($_GET['seltopic'])  and $_GET['seltopic'] !='-2') {
+         $seltopic = $_GET['seltopic'];
+      } else {
+         $seltopic = 0;
+      }
 
-	   // Find current institution selection
-	   if ( isset($_GET['selinstitution'])  and $_GET['selinstitution'] !='-2') {
-	      $selinstitution = $_GET['selinstitution'];
-	   } else {
-	      $selinstitution = 0;
-	   }
+      // Find current institution selection
+      if ( isset($_GET['selinstitution'])  and $_GET['selinstitution'] !='-2') {
+         $selinstitution = $_GET['selinstitution'];
+      } else {
+         $selinstitution = 0;
+      }
 
       // Find current status selection
       if ( isset($_GET['selstatus']) and $_GET['selstatus']!=2 and $_GET['selstatus']!='-2' ) {
@@ -154,7 +153,7 @@ if ( isset($_GET['interval']) ) {
       } else {
          $selstatus = '';
       }
-	}
+   }
 
    $context = $environment->getCurrentContextItem();
 
@@ -224,7 +223,7 @@ if ( isset($_GET['interval']) ) {
             $error = false;
             $user_manager = $environment->getUserManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $user_item = $user_manager->getItem($id);
                $version_id = $user_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -271,27 +270,27 @@ if ( isset($_GET['interval']) ) {
 
 
 
-	// Get data from database
-	$user_manager = $environment->getUserManager();
-	$user_manager->reset();
-	$user_manager->setContextLimit($environment->getCurrentContextID());
-	$user_manager->setUserLimit();
-	$count_all = $user_manager->getCountAll();
-	if ( !empty($ref_iid) and $mode == 'attached' ){
-	   $user_manager->setRefIDLimit($ref_iid);
-	}
-	if ( !empty($sort) ) {
-	   $user_manager->setSortOrder($sort);
-	}
-	if ( !empty($search) ) {
-	   $user_manager->setSearchLimit($search);
-	}
-	if ( !empty($selgroup) ) {
-	   $user_manager->setGroupLimit($selgroup);
-	}
-	if ( !empty($seltopic) ) {
-	   $user_manager->setTopicLimit($seltopic);
-	}
+   // Get data from database
+   $user_manager = $environment->getUserManager();
+   $user_manager->reset();
+   $user_manager->setContextLimit($environment->getCurrentContextID());
+   $user_manager->setUserLimit();
+   $count_all = $user_manager->getCountAll();
+   if ( !empty($ref_iid) and $mode == 'attached' ){
+      $user_manager->setRefIDLimit($ref_iid);
+   }
+   if ( !empty($sort) ) {
+      $user_manager->setSortOrder($sort);
+   }
+   if ( !empty($search) ) {
+      $user_manager->setSearchLimit($search);
+   }
+   if ( !empty($selgroup) ) {
+      $user_manager->setGroupLimit($selgroup);
+   }
+   if ( !empty($seltopic) ) {
+      $user_manager->setTopicLimit($seltopic);
+   }
    if ( !empty($selstatus) ) {
       if ($selstatus == 11) {
          $user_manager->setUserInProjectLimit();
@@ -309,16 +308,16 @@ if ( isset($_GET['interval']) ) {
          $user_manager->setVisibleToAll();
       }
    }
-	if ( !empty($selinstitution) ) {
-	   $user_manager->setInstitutionLimit($selinstitution);
-	}
-	$ids = $user_manager->getIDArray();       // returns an array of item ids
-	$count_all_shown = count($ids);
-	if ( $interval > 0 ) {
-	   $user_manager->setIntervalLimit($from-1,$interval);
-	}
-	$user_manager->select();
-	$list = $user_manager->get();        // returns a cs_list of user_items
+   if ( !empty($selinstitution) ) {
+      $user_manager->setInstitutionLimit($selinstitution);
+   }
+   $ids = $user_manager->getIDArray();       // returns an array of item ids
+   $count_all_shown = count($ids);
+   if ( $interval > 0 ) {
+      $user_manager->setIntervalLimit($from-1,$interval);
+   }
+   $user_manager->select();
+   $list = $user_manager->get();        // returns a cs_list of user_items
 
    if (isset($_GET['select']) and $_GET['select']=='all'){
       $item = $list->getFirst();
@@ -330,36 +329,40 @@ if ( isset($_GET['interval']) ) {
       }
    }
 
-	// Prepare view object
-	$context_item = $environment->getCurrentContextItem();
-	$view = new cs_user_index_view($environment,$context_item->isOpen());
+   // Prepare view object
+   $context_item = $environment->getCurrentContextItem();
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $context_item->isOpen();
+   $view = $class_factory->getClass(USER_INDEX_VIEW,$params);
+   unset($params);
 
-	// Get available groups
+   // Get available groups
          if($context_item->withRubric(CS_GROUP_TYPE)){
-	   $group_manager = $environment->getGroupManager();
-	   $group_manager->resetLimits();
-	   $group_manager->select();
-	   $group_list = $group_manager->get();
-	   $view->setSelectedGroup($selgroup);
-	   $view->setAvailableGroups($group_list);
+      $group_manager = $environment->getGroupManager();
+      $group_manager->resetLimits();
+      $group_manager->select();
+      $group_list = $group_manager->get();
+      $view->setSelectedGroup($selgroup);
+      $view->setAvailableGroups($group_list);
          }
          if($context_item->withRubric(CS_TOPIC_TYPE)){
-  	   // Get available topics
-	   $topic_manager = $environment->getTopicManager();
-	   $topic_manager->resetLimits();
-	   $topic_manager->select();
-	   $topic_list = $topic_manager->get();
-	   $view->setSelectedTopic($seltopic);
-	   $view->setAvailableTopics($topic_list);
+        // Get available topics
+      $topic_manager = $environment->getTopicManager();
+      $topic_manager->resetLimits();
+      $topic_manager->select();
+      $topic_list = $topic_manager->get();
+      $view->setSelectedTopic($seltopic);
+      $view->setAvailableTopics($topic_list);
          }
          if($context_item->withRubric(CS_INSTITUTION_TYPE)){
-	   // Get available institutions
-	   $institution_manager = $environment->getInstitutionManager();
-	   $institution_manager->resetLimits();
-	   $institution_manager->select();
-	   $institution_list = $institution_manager->get();
-	   $view->setSelectedInstitution($selinstitution);
-	   $view->setAvailableInstitutions($institution_list);
+      // Get available institutions
+      $institution_manager = $environment->getInstitutionManager();
+      $institution_manager->resetLimits();
+      $institution_manager->select();
+      $institution_list = $institution_manager->get();
+      $view->setSelectedInstitution($selinstitution);
+      $view->setAvailableInstitutions($institution_list);
          }
 
 
@@ -372,25 +375,25 @@ while ($item){
 $noticed_manager = $environment->getNoticedManager();
 $noticed_manager->getLatestNoticedByIDArray($id_array);
 
-	// Set data for view
-	$view->setList($list);
-	$view->setCountAll($count_all);
-	$view->setCountAllShown($count_all_shown);
-	$view->setFrom($from);
-	$view->setInterval($interval);
-	$view->setSortKey($sort);
-	$view->setSearchText($search);
+   // Set data for view
+   $view->setList($list);
+   $view->setCountAll($count_all);
+   $view->setCountAllShown($count_all_shown);
+   $view->setFrom($from);
+   $view->setInterval($interval);
+   $view->setSortKey($sort);
+   $view->setSearchText($search);
    $view->setSelectedStatus($selstatus);
 
-	if ( !empty($ref_iid) and $mode =='attached'){
-	   $item_manager = $environment->getItemManager();
-	   $ref_item_type = $item_manager->getItemType($ref_iid);
-	   $ref_item_manager = $environment->getManager($ref_item_type);
-	   $ref_item = $ref_item_manager->getItem($ref_iid);
-	   $view->setRefItem($ref_item);
-	   $view->setRefIid($ref_iid);
-	   $view->setIsAttachedList();
-	}
+   if ( !empty($ref_iid) and $mode =='attached'){
+      $item_manager = $environment->getItemManager();
+      $ref_item_type = $item_manager->getItemType($ref_iid);
+      $ref_item_manager = $environment->getManager($ref_item_type);
+      $ref_item = $ref_item_manager->getItem($ref_iid);
+      $view->setRefItem($ref_item);
+      $view->setRefIid($ref_iid);
+      $view->setIsAttachedList();
+   }
 
    if ( $mode == 'formattach' or $mode == 'detailattach' ) {
       $view->setRefIID($ref_iid);
@@ -404,12 +407,12 @@ $noticed_manager->getLatestNoticedByIDArray($id_array);
       $view->setHasCheckboxes('list_actions');
    }
 
-	// Add list view to page
-	$page->add($view);
+   // Add list view to page
+   $page->add($view);
 
-	// Safe information in session for later use
-	$session->setValue('interval', $interval); // interval is applied to all rubrics
-	$session->setValue('cid'.$environment->getCurrentContextID().'_user_index_ids', $ids);
+   // Safe information in session for later use
+   $session->setValue('interval', $interval); // interval is applied to all rubrics
+   $session->setValue('cid'.$environment->getCurrentContextID().'_user_index_ids', $ids);
    $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
 }
 }

@@ -61,7 +61,8 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
    $announcement_item = $announcement_manager->getItem($current_item_id);
    $current_user = $environment->getCurrentUser();
    if ( !isset($announcement_item) ) {
-      include_once('functions/error_functions.php');trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
    } elseif ( $announcement_item->isDeleted() ) {
       include_once('classes/cs_errorbox_view.php');
       $errorbox = new cs_errorbox_view($environment, true);

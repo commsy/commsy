@@ -1,5 +1,5 @@
 <?PHP
-// 
+// $Id$
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
@@ -21,32 +21,32 @@
 //    along with CommSy
 
 class cs_membershipInfo {
-		var $_room_id;
-		var $_source_item_id;
-		var $_role_type;
-		var $_source;
-		
-		function cs_membershipInfo($room_id,$source_item_id,$role_type,$source) {
-			$this->_room_id = $room_id;
-			$this->source_item_id = $source_item_id;
-			$this->_role_type = $role_type;
-			$this->_source = $source;
-		}
-		
-		function getSourceSystem() {
-			return $this->_source;
-		}
-		
-		function getRoomId() {
-		   return $this->_room_id;
-		}
-		
-		function getSourceItemId() {
-		   return $this->source_item_id;
-		}
-		
-		function getRoleType() {
-		   return $this->_role_type;
-		}
-	}
+      var $_room_id;
+      var $_source_item_id;
+      var $_role_type;
+      var $_source;
+
+      function cs_membershipInfo($room_id,$source_item_id,$role_type,$source) {
+         $this->_room_id = $room_id;
+         $this->source_item_id = $source_item_id;
+         $this->_role_type = $role_type;
+         $this->_source = $source;
+      }
+
+      function getSourceSystem() {
+         return $this->_source;
+      }
+
+      function getRoomId() {
+         return $this->_room_id;
+      }
+
+      function getSourceItemId() {
+         return $this->source_item_id;
+      }
+
+      function getRoleType() {
+         return $this->_role_type;
+      }
+   }
 ?>

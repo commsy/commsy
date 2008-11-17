@@ -21,14 +21,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Load required function libraries and class definitions
-include_once('classes/cs_todo_detail_view.php');
-
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('A todo item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('A todo item id must be given.', E_USER_ERROR);
 }
 
 include_once('include/inc_delete_entry.php');
@@ -38,7 +36,8 @@ $todo_manager = $environment->getToDosManager();
 $todo_item = $todo_manager->getItem($current_item_id);
 
 if ( !isset($todo_item) ) {
-   include_once('functions/error_functions.php');trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
 } elseif ( $todo_item->isDeleted() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view($environment, true);
@@ -52,17 +51,17 @@ if ( !isset($todo_item) ) {
 } else {
    // Get clipboard
    if ( $session->issetValue('todo_clipboard') ) {
-	   $clipboard_id_array = $session->getValue('todo_clipboard');
-	} else {
-	   $clipboard_id_array = array();
-	}
+      $clipboard_id_array = $session->getValue('todo_clipboard');
+   } else {
+      $clipboard_id_array = array();
+   }
 
-	// Copy to clipboard
-	if ( isset($_GET['add_to_todo_clipboard'])
-	     and !in_array($current_item_id, $clipboard_id_array) ) {
-	   $clipboard_id_array[] = $current_item_id;
-	   $session->setValue('todo_clipboard', $clipboard_id_array);
-	}
+   // Copy to clipboard
+   if ( isset($_GET['add_to_todo_clipboard'])
+        and !in_array($current_item_id, $clipboard_id_array) ) {
+      $clipboard_id_array[] = $current_item_id;
+      $session->setValue('todo_clipboard', $clipboard_id_array);
+   }
    //is current context open?
    $context_item = $environment->getCurrentContextItem();
    $context_open = $context_item->isOpen();
@@ -84,12 +83,17 @@ if ( !isset($todo_item) ) {
       $creatorInfoStatus = explode('-',$_GET['creator_info_max']);
    }
 
-   $detail_view = new cs_todo_detail_view($environment,$context_open,$creatorInfoStatus);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $context_open;
+   $params['creator_info_status'] = $creatorInfoStatus;
+   $detail_view = $class_factory->getClass(TODO_DETAIL_VIEW,$params);
+   unset($params);
 
 
    // set the view's item
    $detail_view->setItem($todo_item);
-	$detail_view->setClipboardIDArray($clipboard_id_array);
+   $detail_view->setClipboardIDArray($clipboard_id_array);
    $detail_view->setRubricConnections(array(CS_GROUP_TYPE,CS_MATERIAL_TYPE));
 
 
@@ -99,12 +103,12 @@ if ( !isset($todo_item) ) {
    if ( empty($reader) or $reader['read_date'] < $todo_item->getModificationDate() ) {
       $reader_manager->markRead($todo_item->getItemID(),0);
    }
-	//Set Noticed
-	$noticed_manager = $environment->getNoticedManager();
-	$noticed = $noticed_manager->getLatestNoticed($todo_item->getItemID());
-	if ( empty($noticed) or $noticed['read_date'] < $todo_item->getModificationDate() ) {
-	   $noticed_manager->markNoticed($todo_item->getItemID(),0);
-	}
+   //Set Noticed
+   $noticed_manager = $environment->getNoticedManager();
+   $noticed = $noticed_manager->getLatestNoticed($todo_item->getItemID());
+   if ( empty($noticed) or $noticed['read_date'] < $todo_item->getModificationDate() ) {
+      $noticed_manager->markNoticed($todo_item->getItemID(),0);
+   }
 
    // set up browsing
    if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_todo_index_ids') ) {
@@ -188,7 +192,7 @@ if ( !isset($todo_item) ) {
       }
       $annotation = $annotations->getNext();
    }
-	$detail_view->setAnnotationList($annotations);
-	$page->add($detail_view);
+   $detail_view->setAnnotationList($annotations);
+   $page->add($detail_view);
 }
 ?>

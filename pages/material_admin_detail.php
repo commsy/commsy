@@ -22,14 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-include_once('classes/cs_material_admin_detail_view.php');
-
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
 }else {
-   include_once('functions/error_functions.php');trigger_error('A material item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('A material item id must be given.', E_USER_ERROR);
 }
 //check access
 $error = false;
@@ -37,83 +35,87 @@ $room_item = $environment->getCurrentContextItem();
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
-	$error = true;
+   $error = true;
 } elseif (!$current_user->isModerator()) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
-	$error = true;
+   $error = true;
 }
 
 //access granted
 if (!$error) {
 
-	// initialize objects
-	$detail_view = new cs_material_admin_detail_view($environment);
-	$material_manager = $environment->getMaterialManager();
+   // initialize objects
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $detail_view = $class_factory->getClass(MATERIAL_ADMIN_DETAIL_VIEW,$params);
+   unset($params);
+   $material_manager = $environment->getMaterialManager();
    $material_item = $material_manager->getItem($current_item_id);
-	// set the view's item
-	$material_list = $material_manager->getVersionList($current_item_id);
-	$detail_view->setVersionList($material_list);
+   // set the view's item
+   $material_list = $material_manager->getVersionList($current_item_id);
+   $detail_view->setVersionList($material_list);
 
-	// set up browsing
-	if ($session->issetValue('cid'.$environment->getCurrentContextID().'_material_admin_index_ids')) {
-		$ids = $session->getValue('cid'.$environment->getCurrentContextID().'_material_admin_index_ids');
-	} else {
-		$ids = array();
-	}
-	$detail_view->setBrowseIDs($ids);
-	$annotations = $material_item->getAnnotationList();
-	$detail_view->setAnnotationList($material_item->getAnnotationList());
-	   $context_item = $environment->getCurrentContextItem();
-	   $current_room_modules = $context_item->getHomeConf();
-	   if ( !empty($current_room_modules) ){
-	      $room_modules = explode(',',$current_room_modules);
-	   } else {
-	      $room_modules =  $default_room_modules;
-	   }
-	   $first = array();
-	   $secon = array();
-	   foreach ( $room_modules as $module ) {
-	      $link_name = explode('_', $module);
-	      if ( $link_name[1] != 'none' and $link_name[0] !=$_GET['mod']) {
-	         switch ($detail_view->_is_perspective($link_name[0])) {
-	            case true:
-	               $first[] = $link_name[0];
-	            break;
-	            case false:
-	               $second[] = $link_name[0];
-	            break;
-	         }
-	      }
-	   }
-	   $room_modules = array_merge($first,$second);
-	   $rubric_connections = array();
-	   foreach ($room_modules as $module){
-	      if ($context_item->withRubric($module) ) {
-	         $ids = $material_item->getLinkedItemIDArray($module);
-	         $session->setValue('cid'.$environment->getCurrentContextID().'_'.$module.'_index_ids', $ids);
-	         $rubric_connections[] = $module;
-	      }
-	   }
+   // set up browsing
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_material_admin_index_ids')) {
+      $ids = $session->getValue('cid'.$environment->getCurrentContextID().'_material_admin_index_ids');
+   } else {
+      $ids = array();
+   }
+   $detail_view->setBrowseIDs($ids);
+   $annotations = $material_item->getAnnotationList();
+   $detail_view->setAnnotationList($material_item->getAnnotationList());
+      $context_item = $environment->getCurrentContextItem();
+      $current_room_modules = $context_item->getHomeConf();
+      if ( !empty($current_room_modules) ){
+         $room_modules = explode(',',$current_room_modules);
+      } else {
+         $room_modules =  $default_room_modules;
+      }
+      $first = array();
+      $secon = array();
+      foreach ( $room_modules as $module ) {
+         $link_name = explode('_', $module);
+         if ( $link_name[1] != 'none' and $link_name[0] !=$_GET['mod']) {
+            switch ($detail_view->_is_perspective($link_name[0])) {
+               case true:
+                  $first[] = $link_name[0];
+               break;
+               case false:
+                  $second[] = $link_name[0];
+               break;
+            }
+         }
+      }
+      $room_modules = array_merge($first,$second);
+      $rubric_connections = array();
+      foreach ($room_modules as $module){
+         if ($context_item->withRubric($module) ) {
+            $ids = $material_item->getLinkedItemIDArray($module);
+            $session->setValue('cid'.$environment->getCurrentContextID().'_'.$module.'_index_ids', $ids);
+            $rubric_connections[] = $module;
+         }
+      }
 
-	   $detail_view->setRubricConnections($rubric_connections);
+      $detail_view->setRubricConnections($rubric_connections);
 
 
-	$page->add($detail_view);
+   $page->add($detail_view);
 }
 
 ?>

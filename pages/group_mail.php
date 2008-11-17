@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_group_mail_form.php');
-include_once('classes/cs_mail_view.php');
 include_once('classes/cs_form_view.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
@@ -152,7 +151,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 
          if ($email->send()) {
             // send aknowledgement
-            $detail_view = new cs_mail_view($environment, false);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = false;
+            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+            unset($params);
             $detail_view->setFormalData($formal_data);
             $page->add($detail_view);
 
@@ -173,7 +176,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
                $error_string = $translator->getMessage('ERROR_SEND_MAIL');
             }
 
-            $detail_view = new cs_mail_view($environment, false);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = false;
+            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+            unset($params);
             $detail_view->setFormalData($formal_data);
             $errorbox->setText($error_string);
             $page->add($errorbox);
