@@ -22,9 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Load required function libraries and class definitions
-include_once('classes/cs_announcement_detail_view.php');
-
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
@@ -52,7 +49,13 @@ if ($type != CS_ANNOUNCEMENT_TYPE) {
    // initialize objects
    $announcement_manager = $environment->getAnnouncementManager();
    $current_context = $environment->getCurrentContextItem();
-   $detail_view = new cs_announcement_detail_view($environment,$current_context->isOpen(),$creatorInfoStatus);
+
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $params['creator_info_status'] = $creatorInfoStatus;
+   $detail_view = $class_factory->getClass(ANNOUNCEMENT_DETAIL_VIEW,$params);
+   unset($params);
 
    // set the view's item
    $announcement_item = $announcement_manager->getItem($current_item_id);

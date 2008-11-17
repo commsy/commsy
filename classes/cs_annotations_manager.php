@@ -153,7 +153,8 @@ class cs_annotations_manager extends cs_manager {
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting annotations.',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems selecting annotations.',E_USER_WARNING);
      } else {
         return $result;
      }
@@ -182,11 +183,13 @@ class cs_annotations_manager extends cs_manager {
         $query = "SELECT * FROM annotations WHERE annotations.item_id = '".encode(AS_DB,$item_id)."'";
         $result = $this->_db_connector->performQuery($query);
         if ( !isset($result) ) {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting one annotation item.',E_USER_WARNING);
+           include_once('functions/error_functions.php');
+           trigger_error('Problems selecting one annotation item.',E_USER_WARNING);
         } elseif ( !empty($result[0]))  {
            $annotation = $this->_buildItem($result[0]);
         } else {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting annotation item ['.$item_id.'].',E_USER_WARNING);
+           include_once('functions/error_functions.php');
+           trigger_error('Problems selecting annotation item ['.$item_id.'].',E_USER_WARNING);
         }
      }
      return $annotation;

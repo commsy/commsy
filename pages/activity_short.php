@@ -22,12 +22,16 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_activity_view.php');
 include_once('functions/misc_functions.php');
 
 $context = $environment->getCurrentContextItem();
 
 // Prepare view object
-$activity_view = new cs_activity_view($environment,$context->isOpen());
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $context->isOpen();
+$activity_view = $class_factory->getClass(ACTIVITY_VIEW,$params);
+unset($params);
+
 $page->addRight($activity_view);
 ?>

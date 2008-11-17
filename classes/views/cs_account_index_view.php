@@ -39,12 +39,11 @@ class cs_account_index_view extends cs_campus_index_view {
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            environment of the page
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_account_index_view ($environment, $with_modifying_actions) {
-      $this->cs_index_view($environment, $with_modifying_actions);
+   function cs_account_index_view ($params) {
+      $environment = $params['environment'];
+      $this->cs_index_view($params['environment'], $params['with_modifying_actions']);
       $this->setTitle($this->_translator->getMessage('COMMON_ACCOUNTS'));
       $current_user = $environment->getCurrentUserItem();
 

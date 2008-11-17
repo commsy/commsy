@@ -38,12 +38,10 @@ class cs_activity_view extends cs_view {
 
    /** constructor
     *
-    * @param object  environment            environment of the page
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params array with parameters
     */
-   function cs_activity_view ($environment, $with_modifying_actions) {
-      $this->cs_view( $environment, $with_modifying_actions);
+   public function __CONSTRUCT ( $params ) {
+      $this->cs_view( $params['environment'], $params['with_modifying_actions']);
       $this->setViewName('activity');
       // Determine time spread
       $environment = $this->getEnvironment();

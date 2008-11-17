@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_account_index_view.php');
 include_once('classes/cs_list.php');
 
 // check, if context is open
@@ -191,7 +190,11 @@ if (!isset($error) or !$error) {
    $list = $user_manager->get();        // returns a cs_list of user_items
 
    // Prepare view object
-   $view = new cs_account_index_view($environment,$current_room_item->isOpen());
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_room_item->isOpen();
+   $view = $class_factory->getClass(ACCOUNT_INDEX_VIEW,$params);
+   unset($params);
 
    // Set data for view
    $view->setList($list);

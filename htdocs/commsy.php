@@ -92,6 +92,10 @@ if ( ini_get('register_globals') ) {
    trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }
 
+// setup class factory
+include_once('classes/cs_class_factory.php');
+$class_factory = new cs_class_factory();
+
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
