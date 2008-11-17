@@ -67,48 +67,48 @@ class cs_internal_color_form extends cs_rubric_form {
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_DEFAULT');
-	   $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
+      $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = '-----';
-	   $temp_array['value'] = '-1';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_1');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_2');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_3');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_4');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_5');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_6');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_7');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_8');
@@ -136,13 +136,13 @@ class cs_internal_color_form extends cs_rubric_form {
       }
       $temp_array = array();
       $temp_array['text']  = '-----';
-	   $temp_array['value'] = '-1';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_OWN');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
+      $this->_array_info_text[] = $temp_array;
 
    }
 
@@ -163,9 +163,9 @@ class cs_internal_color_form extends cs_rubric_form {
                                true,
                                getMessage('COMMON_CHOOSE_BUTTON'),
                                'option',
-			'',
-			'',
-			'15',
+         '',
+         '',
+         '15',
                                true);
       if ( !empty($this->_form_post['color_choice']) ) {
          if ( $this->_form_post['color_choice']== 'COMMON_COLOR_DEFAULT' ) {
@@ -209,22 +209,22 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
             $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
 #            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_3','');
+            $this->_form->addHidden('color_3','');
 #            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_4','');
+            $this->_form->addHidden('color_4','');
             $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addEmptyLine();
             $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
             $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
             $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
 #            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_7','');
+            $this->_form->addHidden('color_7','');
             $this->_form->addEmptyLine();
 
             $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
             $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
 #            $this->_form->addTextField('color_12','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_12','');
+            $this->_form->addHidden('color_12','');
             $this->_form->addEmptyLine();
             $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
             $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
@@ -275,22 +275,22 @@ class cs_internal_color_form extends cs_rubric_form {
             $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
             $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
 #            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_3','');
+            $this->_form->addHidden('color_3','');
 #            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_4','');
+            $this->_form->addHidden('color_4','');
             $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_5'),'','',10);
             $this->_form->addEmptyLine();
             $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
             $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
             $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
 #            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_7','');
+            $this->_form->addHidden('color_7','');
             $this->_form->addEmptyLine();
 
             $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
             $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
 #            $this->_form->addTextField('color_12','',getMessage('COMMON_COLOR_4'),'','',10);
-	         $this->_form->addHidden('color_12','');
+            $this->_form->addHidden('color_12','');
             $this->_form->addEmptyLine();
             $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
             $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
@@ -299,6 +299,27 @@ class cs_internal_color_form extends cs_rubric_form {
          }
 
       }
+
+      // switch CommSy6 and CommSy7
+      if ( $this->_environment->inProjectRoom()
+           or $this->_environment->inCommunityRoom()
+           or $this->_environment->inGroupRoom()
+           or $this->_environment->inPrivateRoom()
+         ) {
+         $value_array = array();
+         $temp_array = array();
+         $temp_array['text'] = 'CommSy6';
+         $temp_array['value'] = '6';
+         $value_array[] = $temp_array;
+         unset($temp_array);
+         $temp_array = array();
+         $temp_array['text'] = 'CommSy7';
+         $temp_array['value'] = '7';
+         $value_array[] = $temp_array;
+         unset($temp_array);
+         $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
+      }
+
       // buttons
       $this->_form->addButtonBar('option',getMessage('COMMON_SAVE_BUTTON'),'');
 
@@ -328,6 +349,14 @@ class cs_internal_color_form extends cs_rubric_form {
       $temp_array['color_14'] = $color['info_color'];
       $temp_array['color_15'] = $color['disabled'];
       $temp_array['color_16'] = $color['warning'];
+
+      // switch CommSy6 / CommSy7
+      if ( $context_item->isDesign6() ) {
+         $this->_values['design'] = 6;
+      } else {
+         $this->_values['design'] = 7;
+      }
+
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if (empty($this->_values['color_choice'])){
@@ -364,7 +393,5 @@ class cs_internal_color_form extends cs_rubric_form {
          }
       }
    }
-
-
 }
 ?>

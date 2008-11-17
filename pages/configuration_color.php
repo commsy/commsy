@@ -36,25 +36,25 @@ $context_item = $environment->getCurrentContextItem();
 if ($current_user->isGuest()) {
    if (!$context_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $context_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $context_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 } elseif (!$current_user->isModerator()) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 }
 
 if ($command != 'error') { // only if user is allowed to edit colors
@@ -67,11 +67,11 @@ if ($command != 'error') { // only if user is allowed to edit colors
    include_once('classes/cs_color_configuration_form_view.php');
    $form_view = new cs_color_configuration_form_view($environment);
 
-	// Save item
+   // Save item
 
    if ( !empty($command) and isOption($command, getMessage('COMMON_SAVE_BUTTON')) ) {
       $color = $context_item->getColorArray();
-	   if ( isset($_POST['color_choice'])) {
+      if ( isset($_POST['color_choice'])) {
          global $cs_color;
          if ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_1'){
             $color = $cs_color['SCHEMA_1'];
@@ -116,7 +116,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
             if (!empty($_POST['color_6'])){
                $color['hyperlink'] = $_POST['color_6'];
             }
-	         if (!empty($_POST['color_7'])){
+            if (!empty($_POST['color_7'])){
                $color['help_background'] = $_POST['color_7'];
             }
             if (!empty($_POST['color_8'])){
@@ -151,9 +151,33 @@ if ($command != 'error') { // only if user is allowed to edit colors
       }
 
       $context_item->setColorArray($color);
-	   $context_item->save();
-	   // save room_item
-	   $context_item->save();
+
+      // switch CommSy6 / CommSy7
+      $redirect = false;
+      if ( !empty($_POST['design']) ) {
+         if ( $_POST['design'] == 7 ) {
+            if ( $context_item->isDesign6() ) {
+               $redirect = true;
+            }
+            $context_item->setDesignTo7();
+         } else {
+            if ( $context_item->isDesign7() ) {
+               $redirect = true;
+            }
+            $context_item->setDesignTo6();
+         }
+      }
+
+      $context_item->save();
+
+      // save room_item
+      $context_item->save();
+
+      // switch CommSy6 / CommSy7
+      if ( $redirect ) {
+         redirect($environment->getCurrentContextID(),'configuration','index');
+      }
+
       $form_view->setItemIsSaved();
       $is_saved = true;
       if ( !empty($_POST)) {
