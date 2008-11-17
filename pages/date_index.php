@@ -22,8 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_datescalendar_index_view.php');
-include_once('classes/cs_dates_index_view.php');
 include_once('classes/cs_list.php');
 
 // Find current page   mode. Modes are:
@@ -617,7 +615,11 @@ if ($seldisplay_mode == 'calendar' and !($mode == 'formattach' or $mode == 'deta
    if ( $mode != 'detailattach' and $context_item->isOpen() ) {
       $with_modifying_actions = true;
    }
-   $view = new cs_datescalendar_index_view($environment,$with_modifying_actions);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $view = $class_factory->getClass(DATE_CALENDAR_INDEX_VIEW,$params);
+   unset($params);
    $view->setMonth($month);
    $view->setYear($year);
    $view->setWeek($week);
@@ -627,7 +629,11 @@ if ($seldisplay_mode == 'calendar' and !($mode == 'formattach' or $mode == 'deta
    if ( $mode != 'detailattach' and $context_item->isOpen() ) {
       $with_modifying_actions = true;
    }
-   $view = new cs_dates_index_view($environment,$with_modifying_actions);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $view = $class_factory->getClass(DATE_INDEX_VIEW,$params);
+   unset($params);
 }
 foreach($sel_array as $rubric => $value){
    if (!empty($value)){

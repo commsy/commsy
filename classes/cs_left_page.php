@@ -24,6 +24,7 @@
 class cs_left_page {
 
    var $_environment = NULL;
+   var $_class_factory = NULL;
    var $_post_vars = array();
    var $_get_vars = array();
    var $_translator = NULL;
@@ -31,13 +32,14 @@ class cs_left_page {
 
    function cs_left_page ($environment) {
       $this->_environment = $environment;
+      $this->_class_factory = $this->_environment->getClassFactory();
       $this->_translator = $this->_environment->getTranslationObject();
       $this->_get_vars  = $this->_environment->getCurrentParameterArray();
       $this->_post_vars = $this->_environment->getCurrentPostParameterArray();
 
       // get the command
       if ( !empty($this->_post_vars['option'])) {
-	$this->_command = $this->_post_vars['option'];
+         $this->_command = $this->_post_vars['option'];
       } elseif ( !empty($this->_get_vars['option']) ) {
          $this->_command = $this->_get_vars['option'];
       } else {
@@ -54,8 +56,11 @@ class cs_left_page {
    }
 
    function _show_form ($form,$form_name='') {
-      include_once('classes/cs_form_view_left.php');
-      $form_view = new cs_form_view_left($this->_environment,'');
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $this->_class_factory->getClass(FORM_LEFT_VIEW,$params);
+      unset($params);
       if ( !empty($form_name) ) {
          $form_view->setFormName($form_name);
       }

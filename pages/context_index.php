@@ -166,14 +166,14 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    // time (clock pulses)
    if (!empty($_POST['seltime'])) {
       $seltime = $_POST['seltime'];
-	  if ($seltime == -2 or $seltime == -3) {
-		  $seltime = '';
-	  }
+     if ($seltime == -2 or $seltime == -3) {
+        $seltime = '';
+     }
    } elseif (!empty($_GET['seltime'])) {
       $seltime = $_GET['seltime'];
-	  if ($seltime == -2 or $seltime == -3) {
-		  $seltime = '';
-	  }
+     if ($seltime == -2 or $seltime == -3) {
+        $seltime = '';
+     }
    } else {
 #	  $current_context = $environment->getCurrentContextItem();
 #	  $portal_item = $current_context->getContextItem();
@@ -185,7 +185,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
 #		    $seltime = '';
 #	     }
 #	  } else {
-		 $seltime = '';
+       $seltime = '';
 #	  }
    }
 
@@ -334,7 +334,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             $error = false;
             $room_manager = $environment->getRoomManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $room_item = $room_manager->getItem($id);
                $version_id = $room_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -403,16 +403,17 @@ $with_modifying_actions = false;
 if ( $mode != 'detailattach' and $mode != 'formattach' and $current_context_item->isOpen() ) {
    $with_modifying_actions = true;
 }
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
 if ($room_type == CS_PROJECT_TYPE) {
-   include_once('classes/cs_project_index_view.php');
-   $view = new cs_project_index_view($environment,$with_modifying_actions);
-} elseif ($room_type == CS_COMMUNITY_TYPE) {
-   include_once('classes/cs_community_index_view.php');
-   $view = new cs_community_index_view($environment,$with_modifying_actions);
+   $view = $class_factory->getClass(PROJECT_INDEX_VIEW,$params);
 } elseif ($room_type == CS_MYROOM_TYPE) {
-   include_once('classes/cs_myroom_index_view.php');
-   $view = new cs_myroom_index_view($environment,$with_modifying_actions);
+   $view = $class_factory->getClass(MYROOM_INDEX_VIEW,$params);
+} elseif ($room_type == CS_COMMUNITY_TYPE) {
+   $view = $class_factory->getClass(COMMUNITY_INDEX_VIEW,$params);
 }
+unset($params);
 
 foreach ($sel_array as $rubric => $value) {
    if (!empty($value)){

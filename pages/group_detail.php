@@ -22,10 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-// Load required function libraries and class definitions
-include_once('classes/cs_group_detail_view.php');
-
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
@@ -35,7 +31,6 @@ if (!empty($_GET['iid'])) {
 }
 
 include_once('include/inc_delete_entry.php');
-
 
 $label_manager = $environment->getGroupManager();
 $item = $label_manager->getItem($_GET['iid']);
@@ -361,7 +356,12 @@ if ($type != CS_GROUP_TYPE) {
 
       // Create view
       $context_item = $environment->getCurrentContextItem();
-      $detail_view = new cs_group_detail_view($environment, $context_item->isOpen(),$creatorInfoStatus);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $context_item->isOpen();
+      $params['creator_info_status'] = $creatorInfoStatus;
+      $detail_view = $class_factory->getClass(GROUP_DETAIL_VIEW,$params);
+      unset($params);
       $detail_view->setItem($group_item);
 
       #######################################

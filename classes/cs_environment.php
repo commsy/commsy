@@ -1532,5 +1532,10 @@ class cs_environment {
    public function setCacheOff () {
       $this->_cache_on = false;
    }
+
+   public function getClassFactory () {
+      global $class_factory;
+      return $class_factory;
+   }
 }
 ?>

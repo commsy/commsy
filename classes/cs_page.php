@@ -29,6 +29,8 @@ class cs_page {
 
    var $_environment = NULL;
 
+   public $_class_factory = NULL;
+
    var $_with_mod_actions = true;
 
    var $_view_object = NULL;
@@ -43,6 +45,7 @@ class cs_page {
     */
    function cs_page ($environment, $with_mod_actions) {
       $this->_environment = $environment;
+      $this->_class_factory = $this->_environment->getClassFactory();
       $this->_with_mod_actions = $with_mod_actions;
       $this->_values = $this->_environment->getCurrentParameterArray();
       $post_array = $this->_environment->getCurrentPostParameterArray();

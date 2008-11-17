@@ -171,16 +171,18 @@ if ( !isset($item) ) {
    //is current room open?
    $context_item = $environment->getCurrentContextItem();
    $room_open = $context_item->isOpen();
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $context_item->isOpen();
+   $params['creator_info_status'] = $creatorInfoStatus;
    if ($site_room_type == CS_PROJECT_TYPE) {
-      include_once('classes/cs_project_detail_view.php');
-      $detail_view = new cs_project_detail_view($environment,$context_item->isOpen(),$creatorInfoStatus);
+      $detail_view = $class_factory->getClass(PROJECT_DETAIL_VIEW,$params);
    } elseif ($site_room_type == CS_MYROOM_TYPE) {
-      include_once('classes/cs_myroom_detail_view.php');
-      $detail_view = new cs_myroom_detail_view($environment,$context_item->isOpen(),$creatorInfoStatus);
+      $detail_view = $class_factory->getClass(MYROOM_DETAIL_VIEW,$params);
    } elseif ($site_room_type == CS_COMMUNITY_TYPE) {
-      include_once('classes/cs_community_detail_view.php');
-      $detail_view = new cs_community_detail_view($environment,$context_item->isOpen(),$creatorInfoStatus);
+      $detail_view = $class_factory->getClass(COMMUNITY_DETAIL_VIEW,$params);
    }
+   unset($params);
 
    //set account mode
    $detail_view->setAccountMode($account_mode);

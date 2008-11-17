@@ -1,7 +1,30 @@
 <?PHP
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2008 Iver Jackewitz
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
+
 class cs_class_factory {
 
-   protected $_class_folder = NULL;
+   private $_class_folder = NULL;
+   private $_design_folder = NULL;
+   private $_class_loaded_array = array();
 
    public function __CONSTRUCT () {
        $class_config = array();
@@ -10,11 +33,22 @@ class cs_class_factory {
    }
 
    public function getClass ( $name, $params = array() ) {
-      $this->includeClass($name);
+      if ( !isset($this->_class_loaded_array[$name]) ) {
+         $this->includeClass($name);
+         $this->_class_loaded_array[$name] = true;
+      }
       return new $this->_class_array[$name]['name']($params);
    }
 
    public function includeClass ( $name ) {
+      if ( !empty($this->_class_array[$name]['switchable'])
+           and $this->_class_array[$name]['switchable']
+           and !empty($this->_design_folder)
+           and !empty($this->_class_array[$name]['folder'])
+         ) {
+         $this->_class_array[$name]['folder'] .= $this->_design_folder.'/';
+      }
+
       if ( empty($this->_class_array[$name]['folder']) ) {
          trigger_error('don\'t know where class '.$name.' is',E_USER_ERROR);
       } elseif ( empty($this->_class_array[$name]['filename']) ) {
@@ -24,6 +58,14 @@ class cs_class_factory {
       } else {
          include_once($this->_class_array[$name]['folder'].$this->_class_array[$name]['filename']);
       }
+   }
+
+   public function setDesignTo6 () {
+      $this->_design_folder = 6;
+   }
+
+   public function setDesignTo7 () {
+      $this->_design_folder = 7;
    }
 }
 ?>

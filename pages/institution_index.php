@@ -21,8 +21,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-include_once('classes/cs_institution_index_view.php');
 include_once('classes/cs_list.php');
 
 // Find current page mode. Modes are:
@@ -186,7 +184,7 @@ if ($mode == '') {
             $error = false;
             $institution_manager = $environment->getInstitutionManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $institution_item = $institution_manager->getItem($id);
                $version_id = $institution_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -273,7 +271,11 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$view = new cs_institution_index_view($environment,$with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(INSTITUTION_INDEX_VIEW,$params);
+unset($params);
 
 // Set data for view
 $view->setList($list);

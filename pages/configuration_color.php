@@ -64,8 +64,10 @@ if ($command != 'error') { // only if user is allowed to edit colors
    $form = new cs_internal_color_form($environment);
    $form->setItem($context_item);
    // display form
-   include_once('classes/cs_color_configuration_form_view.php');
-   $form_view = new cs_color_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $form_view = $class_factory->getClass(CONFIGURATION_COLOR_FORM_VIEW,$params);
+   unset($params);
 
    // Save item
 

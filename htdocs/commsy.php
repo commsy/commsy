@@ -146,6 +146,20 @@ unset($current_context);
 #unset($current_module);
 #unset($current_function);
 
+// switch: CommSy6 / CommSy7
+if ( $environment->inProjectRoom()
+     or $environment->inCommunityRoom()
+     or $environment->inGroupRoom()
+     or $environment->inPrivateRoom()
+   ) {
+   $current_context_item = $environment->getCurrentContextItem();
+   if ( $current_context_item->isDesign6() ) {
+      $class_factory->setDesignTo6();
+   } else {
+      $class_factory->setDesignTo7();
+   }
+}
+
 $server_item = $environment->getServerItem();
 if ( $server_item->showOutOfService() ) {
    $current_module_save = $current_module;

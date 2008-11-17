@@ -91,11 +91,12 @@ if (!empty($shown_room_id_array)){
    }
 }
 
-include_once('classes/cs_homepagetitle_view.php');
-$title_view = new cs_homepagetitle_view($environment,$context_item->isOpen());
-
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $context_item->isOpen();
+$title_view = $class_factory->getClass(HOME_TITLE_VIEW,$params);
+unset($params);
 $page->add($title_view);
-
 
 if ($status=='detailed'){
 #   include_once('classes/cs_private_room_short_view.php');

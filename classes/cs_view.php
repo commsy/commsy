@@ -81,6 +81,8 @@ class cs_view {
 
    var $_with_slimbox = false;
 
+   public $_class_factory = NULL;
+
 
    // @segment-begin 56209 cs_view($environment,_$with_modifying_actions=true)
    /** constructor: cs_view
@@ -92,6 +94,7 @@ class cs_view {
     */
    function cs_view ($environment, $with_modifying_actions = true) {
       $this->_environment = $environment;
+      $this->_class_factory = $this->_environment->getClassFactory();
       $this->_room_id = $this->_environment->getCurrentContextID();
       $this->_module = $this->_environment->getCurrentModule();
       $this->_function = $this->_environment->getCurrentFunction();

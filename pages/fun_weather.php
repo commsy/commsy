@@ -24,7 +24,10 @@
 
 // Add form view to page
 $current_context = $environment->getCurrentContextItem();
-include_once('classes/cs_fun_weather_view.php');
-$fun_weather_view = new cs_fun_weather_view($environment,$current_context->isOpen());
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$fun_weather_view = $class_factory->getClass(FUN_WEATHER_VIEW,$params);
+unset($params);
 $page->addRight($fun_weather_view);
 ?>

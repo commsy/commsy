@@ -57,31 +57,31 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
    exit();
 } elseif ( isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON'))
            or isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_ROOM'))
-			  or isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))
-			     or isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
+           or isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))
+              or isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
          ) {
    $session_item = $environment->getSessionItem();
    $history = $session_item->getValue('history');
-   
+
    if ( (isOption($command, getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'))) or (isset($_POST['is_no_user']) and (isOption($command, getMessage('COMMON_CANCEL_BUTTON')))) ) {
-   	   if ( $environment->inPortal() or $environment->inServer() ) {
-			 $authentication = $environment->getAuthenticationObject();
-			 $authentication->delete($current_user->getItemID());
-		    $session_manager = $environment->getSessionManager();
-	       $session_manager->delete($session_item->getSessionID(),true);
-	   } 
+         if ( $environment->inPortal() or $environment->inServer() ) {
+          $authentication = $environment->getAuthenticationObject();
+          $authentication->delete($current_user->getItemID());
+          $session_manager = $environment->getSessionManager();
+          $session_manager->delete($session_item->getSessionID(),true);
+      }
     }
-	//  zur Seite leiten
+   //  zur Seite leiten
    if ( !empty($history[0]['context'])
         and $history[0]['module'] != 'agb'
         and !isOption($command, getMessage('COMMON_CANCEL_BUTTON'))
       ) {
-		// Raum betreten
+      // Raum betreten
       $params = $history[0]['parameter'];
       unset($params['cs_modus']);
       redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$params);
    } elseif ( !empty($history[1]['context']) and !isOption($command, getMessage('COMMON_CANCEL_BUTTON')) and !isset($_POST['is_no_user']) ) {
-	   // zurück in vorigen Raum
+      // zurück in vorigen Raum
       $params = $history[1]['parameter'];
       unset($params['cs_modus']);
       if ( $history[1]['context'] == $environment->getCurrentContextID()
@@ -92,7 +92,7 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
          redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$params);
       }
    } else {
-   	  include_once('pages/context_logout.php');
+        include_once('pages/context_logout.php');
    }
    exit();
 } else {
@@ -100,8 +100,11 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
    $form = new cs_agb_form($environment);
    $form->prepareForm();
    $form->loadValues();
-   include_once('classes/cs_form_view_plain.php');
-   $form_view = new cs_form_view_plain($environment,'');
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(FORM_PLAIN_VIEW,$params);
+   unset($params);
    $form_view->setAction(curl($environment->getCurrentContextID(),'agb','detail',''));
    $form_view->setForm($form);
 

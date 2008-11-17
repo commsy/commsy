@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_search_short_form.php');
-include_once('classes/cs_campus_search_short_view.php');
 
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
@@ -62,7 +61,10 @@ if (isOption($command,getMessage('HOME_SEARCH_SHORT_BUTTON'))) {
    $search_short_form->loadValues();
 }
 // Add form view to page
-$campus_search_short_view = new cs_campus_search_short_view($environment);
+$params = array();
+$params['environment'] = $environment;
+$campus_search_short_view = $class_factory->getClass(SEARCH_SHORT_VIEW,$params);
+unset($params);
 $campus_search_short_view->setForm($search_short_form);
 $campus_search_short_view->setAction(curl($environment->getCurrentContextID(),'campus_search','short',''));
 $page->addRight($campus_search_short_view);

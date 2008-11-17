@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_dates_index_view.php');
 if (!empty($_POST['return_to_context'])) {
    $return_to = array();
    $return_to['module'] = $_POST['return_to_module'];
@@ -94,11 +93,11 @@ if($command == 'paste') {
          $copy = $import_date->copy();
 
          // Fehler mitloggen
-		   $err = $copy->getErrorArray();
-		   if( !empty($err) ){
+         $err = $copy->getErrorArray();
+         if( !empty($err) ){
             $error_array[$copy->getItemID()] = $err;
             $error_name_array[$copy->getItemID()] = $copy->GetTitle();
-		   }
+         }
          $count ++;
          $import_date = $import_list->getNext();
       }
@@ -111,10 +110,10 @@ if($command == 'paste') {
 
       foreach($error_array as $key=>$error){
          foreach($error as  $filename){
-		     $err_txt.= $translator->getMessage('COMMON_FILES_ERROR_MISSING',$error_name_array[$key],$filename).'<br>';
+           $err_txt.= $translator->getMessage('COMMON_FILES_ERROR_MISSING',$error_name_array[$key],$filename).'<br>';
          }
       }
-	   $err_txt.='<br>'.$translator->getMessage('COMMON_FILES_ERROR_OTHERS_SUCCESSFULL');
+      $err_txt.='<br>'.$translator->getMessage('COMMON_FILES_ERROR_OTHERS_SUCCESSFULL');
 
       // Fehler-Anzeige
       $errorbox->setText($err_txt);
@@ -259,7 +258,11 @@ while ($room_sort) {
 $date_list = $new_date_list;
 
 // view object
-$clipboard_list_view = new cs_dates_index_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$clipboard_list_view = $class_factory->getClass(DATE_INDEX_VIEW,$params);
+unset($params);
 
 $id_array = array();
 $item = $date_list->getFirst();

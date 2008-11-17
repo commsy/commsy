@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_discussion_index_view.php');
 include_once('classes/cs_list.php');
 
 // Find current page mode. Modes are:
@@ -288,7 +287,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             $error = false;
             $discussion_manager = $environment->getDiscussionManager();
             $noticed_manager = $environment->getNoticedManager();
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $discussion_item = $discussion_manager->getItem($id);
                $version_id = $discussion_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -305,7 +304,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
          case 2:
             $action = 'ENTRY_COPY';
             // Copy to clipboard
-	         foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                if ( !in_array($id, $clipboard_id_array) ) {
                   $clipboard_id_array[] = $id;
                }
@@ -463,7 +462,11 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$view = new cs_discussion_index_view($environment, $with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(DISCUSSION_INDEX_VIEW,$params);
+unset($params);
 
 if($context_item->withRubric(CS_GROUP_TYPE)){
    // Get available groups

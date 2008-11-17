@@ -137,8 +137,11 @@ class cs_guide_room_list_page extends cs_page {
       }
 
       // Prepare view object
-      include_once('classes/cs_guide_list_view.php');
-      $this->_view_object = new cs_guide_list_view($this->_environment,$this->_with_mod_actions);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = $this->_with_mod_actions;
+      $this->_view_object = $this->_class_factory->getClass(LIST_GUIDE_VIEW,$params);
+      unset($params);
       if ( !empty($this->_values['activitymodus'])
            and is_numeric($this->_values['activitymodus'])
          ) {

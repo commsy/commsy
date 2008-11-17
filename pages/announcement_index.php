@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_announcement_index_view.php');
 include_once('classes/cs_list.php');
 
 // Find current page mode. Modes are:
@@ -431,7 +430,12 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$view = new cs_announcement_index_view($environment,$with_modifying_actions);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(ANNOUNCEMENT_INDEX_VIEW,$params);
+unset($params);
+
 foreach($sel_array as $rubric => $value){
    if (!empty($value)){
       $announcement_manager->setRubricLimit($rubric,$value);

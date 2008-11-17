@@ -434,8 +434,11 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 }
 
 if ( $environment->inServer() ) {
-   include_once('classes/cs_context_guide_detail_view.php');
-   $context_detail_view = new cs_context_guide_detail_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $context_detail_view = $class_factory->getClass(CONTEXT_GUIDE_DETAIL_VIEW,$params);
+   unset($params);
    $context_detail_view->setItem($context_item);
    $page->addRoomDetail($context_detail_view);
 } else {

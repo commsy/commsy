@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_campus_index_view.php');
+$this->includeClass(CAMPUS_INDEX_VIEW);
 include_once('classes/cs_link.php');
 
 /**

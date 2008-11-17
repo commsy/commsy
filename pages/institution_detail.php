@@ -22,9 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Load required function libraries and class definitions
-include_once('classes/cs_institution_detail_view.php');
-
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {
    $current_item_id = $_GET['iid'];
@@ -33,11 +30,11 @@ if (!empty($_GET['iid'])) {
 } elseif (!empty($_GET['pin_iid'])) {
    $current_item_id = $_GET['pin_iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('A institution item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('A institution item id must be given.', E_USER_ERROR);
 }
 
 include_once('include/inc_delete_entry.php');
-
 
 $label_manager = $environment->getLabelManager();
 $item = $label_manager->getItem($_GET['iid']);
@@ -57,8 +54,12 @@ if ($type != CS_INSTITUTION_TYPE) {
 
    // initialize objects
    $current_context = $environment->getCurrentContextItem();
-   $detail_view = new cs_institution_detail_view($environment,$current_context->isOpen(),$creatorInfoStatus);
-
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $current_context->isOpen();
+   $params['creator_info_status'] = $creatorInfoStatus;
+   $detail_view = $class_factory->getClass(INSTITUTION_DETAIL_VIEW,$params);
+   unset($params);
 
    $institution_manager = $environment->getLabelManager();
 

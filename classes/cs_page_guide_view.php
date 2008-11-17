@@ -521,13 +521,15 @@ class cs_page_guide_view extends cs_page_view {
 
    function _getPortalAnnouncements(){
       $html ='';
-      $html .= LF.'<!-- BEGIN TABS -->'."\n";
+      $html .= LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div class="welcome_frame" style="width: 100%; height:268px; margin-bottom:5px;">'.LF;
       $html .= '<div class="content_fader" style="height:268px;">';
       $html .= '<div style="margin:0px; padding:0px 0px;">'."\n";
 
-      include_once('classes/cs_guide_community_announcement_view.php');
-      $announcement_view = new cs_guide_community_announcement_view($this->_environment);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $announcement_view = $this->_class_factory->getClass(ANNOUNCEMENT_SHORT_COMMUNITY_GUIDE_VIEW,$params);
+      unset($params);
       $community_manager = $this->_environment->getCommunityManager();
       $community_manager->setOpenedLimit();
       $community_manager->setOrder('activity_rev');

@@ -23,9 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_campus_index_view.php');
-include_once('classes/cs_reader_manager.php');
-//include_once('functions/text_functions.php');
+$this->includeClass(CAMPUS_INDEX_VIEW);
 
 /**
  *  class for CommSy index list view: index
