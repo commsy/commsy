@@ -558,8 +558,11 @@ if ( $command != 'error' ) {
          $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
          unset($params);
       } else {
-         include_once('classes/cs_form_view.php');
-         $form_view = new cs_form_view($environment,'action','');
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_VIEW,$params);
+         unset($params);
       }
       $params = array();
       $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'action',$params));

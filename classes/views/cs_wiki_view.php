@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('classes/cs_list.php');
 include_once('functions/curl_functions.php');
 
@@ -49,8 +49,7 @@ class cs_wiki_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_wiki_view ($params) {
-      $environment = $params['environment'];
-      $this->cs_view($environment);
+      $this->cs_view($params);
    }
 
    /**

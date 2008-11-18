@@ -39,13 +39,19 @@ if ( !isset($todo_item) ) {
    include_once('functions/error_functions.php');
    trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
 } elseif ( $todo_item->isDeleted() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
    $page->add($errorbox);
 } elseif ( !$todo_item->maySee($current_user) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } else {

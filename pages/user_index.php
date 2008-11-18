@@ -28,19 +28,23 @@ if ($environment->inPrivateRoom()){
 } else {
 
    $current_user = $environment->getCurrentUser();
-         $current_context = $environment->getCurrentContextItem();
-         if (!($current_user->isUser() or ($environment->inCommunityRoom() and $current_context->isOpenForGuests() ) )
-             or ($environment->inPortal()) ){
-            if ($environment->inPortal()){
-               redirect($environment->getCurrentContextID(), 'home', 'index', '');
-            }else{
-               include_once('classes/cs_errorbox_view.php');
-               $errorbox = new cs_errorbox_view($environment, true);
+   $current_context = $environment->getCurrentContextItem();
+   if ( !($current_user->isUser() or ($environment->inCommunityRoom() and $current_context->isOpenForGuests() ) )
+        or ($environment->inPortal())
+      ) {
+      if ( $environment->inPortal() ) {
+         redirect($environment->getCurrentContextID(), 'home', 'index', '');
+      } else {
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
          $page->add($errorbox);
-            }
+      }
 
-         }else{
+   } else {
 
    include_once('classes/cs_list.php');
 

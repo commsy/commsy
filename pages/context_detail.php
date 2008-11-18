@@ -366,18 +366,27 @@ $manager = $environment->getManager($site_room_type);
 $item = $manager->getItem($current_item_id);
 
 if ( !isset($item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } elseif ( $item->isDeleted() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
    $page->add($errorbox);
 } elseif ( !$item->maySee($current_user)) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } else {

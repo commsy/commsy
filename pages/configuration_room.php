@@ -48,8 +48,11 @@ $context_item = $environment->getCurrentContextItem();
 
 // error if room is already deleted
 if (empty($command) and $room->getDeletionDate()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ERROR_ROOM_IS_DELETED'));
    $page->add($errorbox);
    $command = 'error';

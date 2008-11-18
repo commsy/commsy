@@ -43,8 +43,11 @@ $type = $item_manager->getItemType($_GET['iid']);;
 include_once('include/inc_delete_entry.php');
 
 if ($type != CS_MATERIAL_TYPE) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
@@ -65,19 +68,28 @@ if ($type != CS_MATERIAL_TYPE) {
       $item = $material_manager->getItem($current_item_id);
       $material_manager->setDeleteLimit(true);
       if (!empty($item) and $item->isDeleted()) {
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
          $page->add($errorbox);
       }
    } elseif ($material_item->isNotActivated() and $current_user->getItemID() !=  $material_item->getCreatorID() and !$current_user->isModerator()){
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
       $page->add($errorbox);
-   }elseif ( !$material_item->maySee($current_user) ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+   } elseif ( !$material_item->maySee($current_user) ) {
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {

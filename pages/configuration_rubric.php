@@ -36,15 +36,19 @@ if ($current_user->isGuest()) {
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
 } elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
@@ -175,8 +179,12 @@ else {
    $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
    $form_view->setForm($form);
    if (!$form->check()){
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true, 500);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = 500;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('CONFIGURATION_RUBRIC_ERROR_DESCRIPTION'));
       $page->add($errorbox);
    }

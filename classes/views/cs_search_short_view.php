@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** class for a form view in commsy-style
  * this class implements a form view
@@ -68,7 +68,7 @@ class cs_search_short_view extends cs_view {
 
    var  $_config_boxes = false;
 
-   /** constructor: cs_form_view
+   /** constructor
     * the only available constructor, initial values for internal variables
     *
     * @param object  einvironment           einvironemnt of the commsy
@@ -76,12 +76,7 @@ class cs_search_short_view extends cs_view {
     *                                       false: display without modifying functions
     */
    function __CONSTRUCT ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view($environment,$with_modifying_actions);
+      $this->cs_view($params);
       $this->setViewName('search');
       $this->_view_title = getMessage('CAMPUS_SEARCH_INDEX');
    }
@@ -406,8 +401,11 @@ class cs_search_short_view extends cs_view {
     * this method creates an errorbox with messages form the error array
     */
    function _getErrorBoxAsHTML () {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($this->_environment,true);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $first = true;
       $error_string = '';
       foreach ($this->_error_array as $error) {

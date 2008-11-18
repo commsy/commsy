@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_text_view.php');
+$this->includeClass(TEXT_VIEW);
 
 /**
  *  class for CommSy mail view: group
@@ -35,12 +35,7 @@ class cs_mail_view extends cs_text_view {
     * @param array params parameters in an array of this class
     */
    function cs_mail_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_text_view( $environment, $with_modifying_actions);
+      $this->cs_text_view($params);
       $this->setTitle($this->_translator->getMessage('SEND_MAIL_DESC'));
    }
 

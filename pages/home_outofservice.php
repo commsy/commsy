@@ -25,8 +25,11 @@
 $server = $environment->getServerItem();
 $text = $server->getOutOfService();
 
-include_once('classes/cs_text_view.php');
-$text_view = new cs_text_view($environment,false);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = false;
+$text_view = $class_factory->getClass(TEXT_VIEW,$params);
+unset($params);
 $text_view->setText($text);
 if ( $environment->inPortal() or $environment->inServer() ) {
    $page->addAGBView($text_view);

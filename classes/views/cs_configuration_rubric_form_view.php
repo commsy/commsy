@@ -32,7 +32,7 @@ $this->includeClass(CONFIGURATION_FORM_VIEW);
 class cs_configuration_rubric_form_view extends cs_configuration_form_view {
 
 
-   /** constructor: cs_form_view
+   /** constructor
     * the only available constructor, initial values for internal variables
     *
     * @param array params parameters in an array of this class

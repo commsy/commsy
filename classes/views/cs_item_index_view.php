@@ -49,13 +49,11 @@ var $_selected_restriction = NULL;
    /** constructor: cs_item_list_view
     * the only available constructor, initial values for internal variables
     *
-    * @param object environment              environment object
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_item_index_view ($environment,$with_modifying_actions) {
-      $this->cs_index_view($environment,'campus_search_index',$with_modifying_actions);
-      $context_item = $environment->getCurrentContextItem();
+   function cs_item_index_view ($params) {
+      $params['viewname'] = 'campus_search_index';
+      $this->cs_campus_index_view($params);
       $this->institution = $this->_translator->getMessage('INSTITUTION');
    }
 

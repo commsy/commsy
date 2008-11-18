@@ -262,8 +262,11 @@ if ($current_user->isGuest()) {
 
    // Check access rights
    if ( isset($item) and !$item->mayEdit($current_user) ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
       $page->addLeft($errorbox);
    }
@@ -367,8 +370,11 @@ if ($current_user->isGuest()) {
             if ( (isset($_GET['iid']) and $_GET['iid'] == 'NEW')
                or (isset($_POST['iid']) and $_POST['iid'] == 'NEW')
             ) {
-               include_once('classes/cs_form_view.php');
-               $form_view = new cs_form_view($environment,'');
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(FORM_VIEW,$params);
+            unset($params);
             } else {
                $current_context = $environment->getCurrentContextItem();
                $params = array();
@@ -382,10 +388,13 @@ if ($current_user->isGuest()) {
          } else {
             // In den Listen der Gemeinschaftsräume und persönlichen Räume
             if ( ($environment->inCommunityRoom() and $environment->getCurrentModule() == CS_PROJECT_TYPE)
-               or ($environment->inPrivateRoom() and $environment->getCurrentModule() == CS_MYROOM_TYPE)
-            ) {
-               include_once('classes/cs_form_view.php');
-               $form_view = new cs_form_view($environment,'');
+                  or ($environment->inPrivateRoom() and $environment->getCurrentModule() == CS_MYROOM_TYPE)
+               ) {
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = true;
+               $form_view = $class_factory->getClass(FORM_VIEW,$params);
+               unset($params);
                $current_context_item = $environment->getCurrentContextItem();
 
             // im Konfigurationsbereich eines Raumes
@@ -1010,8 +1019,12 @@ if ($current_user->isGuest()) {
 
          if (isset($item) and !$item->mayEditRegular($current_user)) {
             $form_view->warnChanger();
-                  include_once('classes/cs_errorbox_view.php');
-            $errorbox = new cs_errorbox_view($environment, true, 500);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $params['width'] = 500;
+            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            unset($params);
             $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
             $page->add($errorbox);
          }

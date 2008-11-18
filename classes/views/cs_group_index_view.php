@@ -22,9 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_index_view.php');
+$this->includeClass(INDEX_VIEW);
 include_once('classes/cs_reader_manager.php');
-//include_once('functions/text_functions.php');
 
 /**
  *  class for CommSy list view: group
@@ -40,12 +39,7 @@ class cs_group_index_view extends cs_index_view {
     * @param array params parameters in an array of this class
     */
    function cs_group_index_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_index_view($environment, $with_modifying_actions);
+      $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('GROUP_HEADER'));
    }
 

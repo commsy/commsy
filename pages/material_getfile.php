@@ -133,15 +133,21 @@ if ( !empty($_GET['iid']) ) {
          unset($log_manager);
          exit();
       } else {
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText(getMessage('FILE_ERROR_GET_FILE_NOT_EXISTS'));
          $page->add($errorbox);
          $page->setWithoutLeftMenue();
       }
    } else {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('FILE_ERROR_GET_FILE'));
       $page->add($errorbox);
       $page->setWithoutLeftMenue();

@@ -29,8 +29,11 @@ $is_saved = false;
 
 // Check access rights
 if ( !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment, true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isProjectRoom()) or
@@ -38,8 +41,11 @@ if ( !$room_item->isOpen() ) {
            ($room_item->isPortal() and !$current_user->isModerator()) or
            ($room_item->isServer())
        ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment, true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }

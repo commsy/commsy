@@ -31,8 +31,11 @@ if (!empty($_GET['iid'])) {
    $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
    $homepage_item = $homepage_manager->getItem($current_item_id);
    if ( !isset($homepage_item) ) {
-                 include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
       $page->addError($errorbox);
       $error = true;
@@ -42,8 +45,11 @@ if (!empty($_GET['iid'])) {
    $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
    $homepage_item = $homepage_manager->getItem($current_item_id);
    if ( !isset($homepage_item) ) {
-                 include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
       $page->addError($errorbox);
       $error = true;
@@ -52,29 +58,39 @@ if (!empty($_GET['iid'])) {
    $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
    $homepage_item = $homepage_manager->getRootPageItem($_GET['cid']);
 } else {
-   include_once('functions/error_functions.php');trigger_error('A page item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('A page item id must be given.', E_USER_ERROR);
    $error = true;
 }
 
 // Check access rights
 $context_item = $environment->getCurrentContextItem();
 if ( $context_item->isClosed() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->addError($errorbox);
    $error = true;
 } elseif ( $current_item_id != 'NEW' and !isset($homepage_item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->addError($errorbox);
    $error = true;
 } elseif ( !(($current_item_id == 'NEW' and $current_user->isUser()) or
              ($current_item_id != 'NEW' and isset($homepage_item) and
               $homepage_item->mayEdit($current_user))) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->addError($errorbox);
    $error = true;
@@ -127,8 +143,11 @@ if (!$error) {
    // set the view's item
    $current_user = $environment->getCurrentUser();
    if ( $homepage_item->isDeleted() ) {
-                 include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } else {

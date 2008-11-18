@@ -25,7 +25,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** class for a form view in commsy-style
  * this class implements a form view
@@ -120,12 +120,10 @@ class cs_form_view extends cs_view {
    /** constructor: cs_form_view
     * the only available constructor, initial values for internal variables
     *
-    * @param cs_item environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_form_view ($environment, $with_modifying_actions = true) {
-      $this->cs_view($environment, $with_modifying_actions);
+   function cs_form_view ($params) {
+      $this->cs_view($params);
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
@@ -1300,8 +1298,11 @@ class cs_form_view extends cs_view {
    }
 
    function _getWarningAsHTML ($form_element) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($this->_environment,true);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText($form_element['text']);
       return $errorbox->asHTML();
    }
@@ -2705,8 +2706,11 @@ class cs_form_view extends cs_view {
     * @author CommSy Development Group
     */
    function _getErrorBoxAsHTML () {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($this->_environment,true);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $first = true;
       $error_string = '';
       foreach ($this->_error_array as $error) {

@@ -27,8 +27,11 @@ $current_context = $environment->getCurrentContextItem();
 
 // Verify parameters for this page
 if (!$current_context->showHomepageLink()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
    $page->add($errorbox);
    $error = true;
@@ -37,8 +40,11 @@ if (!$current_context->showHomepageLink()) {
    $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
    $homepage_item = $homepage_manager->getItem($current_item_id);
    if ( !isset($homepage_item) ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
       $page->add($errorbox);
       $error = true;
@@ -70,8 +76,11 @@ if (!$error) {
    // set the view's item
    $current_user = $environment->getCurrentUser();
    if ( $homepage_item->isDeleted() ) {
-                 include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } else {

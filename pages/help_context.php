@@ -23,10 +23,13 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_helpbox_view.php');
 include_once('functions/language_functions.php');
 
-$textbox = new cs_helpbox_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$textbox = $class_factory->getClass(HELPBOX_VIEW,$params);
+unset($params);
 
 $context_item = $environment->getCurrentContextItem();
 

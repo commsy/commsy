@@ -42,12 +42,11 @@ class cs_account_index_view extends cs_campus_index_view {
     * @param array params parameters in an array of this class
     */
    function cs_account_index_view ($params) {
-      $environment = $params['environment'];
-      $this->cs_index_view($params['environment'], $params['with_modifying_actions']);
+      $this->cs_campus_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ACCOUNTS'));
-      $current_user = $environment->getCurrentUserItem();
+      $current_user = $this->_environment->getCurrentUserItem();
 
-      $user_manager = $environment->getUserManager();
+      $user_manager = $this->_environment->getUserManager();
       $count_auth_source = $user_manager->getCountAuthSourceOfRoom($this->_environment->getCurrentContextID());
       if ( $count_auth_source > 1 ) {
          $this->_auth_source_count = $count_auth_source;

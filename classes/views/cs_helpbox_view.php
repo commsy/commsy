@@ -24,7 +24,7 @@
 
 /** upper class of the errorbox
  */
-include_once('classes/cs_text_view.php');
+$this->includeClass(TEXT_VIEW);
 
 /** class for an errorbox in commsy-style
  * this class implements an errorbox, it is a special text_view
@@ -34,15 +34,17 @@ class cs_helpbox_view extends cs_text_view {
    var $_links = array();
    var $rows = array();
 
-   /** constructor: cs_errorbox_view
+   /** constructor: cs_helpbox_view
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_helpbox_view ($environment, $with_modifying_actions, $width="100%") {
-      $this->cs_text_view($environment, $with_modifying_actions);
+   function cs_helpbox_view ($params) {
+      $width="100%";
+      if ( !empty($params['width']) ) {
+         $width = $params['width'];
+      }
+      $this->cs_text_view($params);
       $this->width = $width;
    }
 

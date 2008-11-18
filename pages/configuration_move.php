@@ -39,13 +39,19 @@ $current_user = $environment->getCurrentUserItem();
 
 // Check access rights
 if ( !empty($current_iid) and !isset($item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !$environment->inPortal() or !$current_user->isModerator() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -201,8 +207,11 @@ else {
       }
 
       // Display form
-      include_once('classes/cs_form_view.php');
-      $form_view = new cs_form_view($environment,'');
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$params);
+      unset($params);
       $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
       $form_view->setForm($form);
       $page->addForm($form_view);

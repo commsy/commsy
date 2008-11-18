@@ -29,7 +29,6 @@ $file_rubric_array[] = CS_DATE_TYPE;
 $file_rubric_array[] = CS_ANNOUNCEMENT_TYPE;
 $file_rubric_array[] = CS_TODO_TYPE;
 
-include_once('classes/cs_item_index_view.php');
 include_once('classes/cs_list.php');
 
 
@@ -128,7 +127,11 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
 
 $search_list = new cs_list();
 $campus_search_ids = array();
-$view = new cs_item_index_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$view = $class_factory->getClass(ITEM_INDEX_VIEW,$params);
+unset($params);
 
 $context_item = $environment->getCurrentContextItem();
 $current_room_modules = $context_item->getHomeConf();

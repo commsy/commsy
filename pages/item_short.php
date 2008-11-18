@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_item_short_view.php');
 // Get data from database
 $item_manager = $environment->getItemManager();
 $item_manager->setContextLimit($environment->getCurrentContextID());
@@ -61,7 +60,11 @@ while($item){
 }
 
 // Prepare view object
-$item_short_view = new cs_item_short_view($environment,true);
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = true;
+$item_short_view = $class_factory->getClass(ITEM_SHORT_VIEW,$params);
+unset($params);
 
 // Set data for view
 $item_short_view->setList($new_item_list);

@@ -216,8 +216,11 @@ if (!empty($SID)) {
       if ( !$authentication->check( $session->getValue('user_id'), $session->getValue('auth_source') )
             and $environment->getCurrentFunction() !='logout'
          ) {
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox_left = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $error_array = $authentication->getErrorArray();
          if (!empty($error_array)) {
             $error_string = implode('<br />',$error_array);
@@ -280,8 +283,11 @@ $page->setPageName(getMessage('HOMEPAGE_PAGETITLE_COMMON'));
 // display login errors
 if ( isset($session) and $session->issetValue('error_array') ) {
    if ( !isset($errorbox) ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
    }
    $errorbox->setText(implode('<br/>',$session->getValue('error_array')));
    $session->unsetValue('error_array');
@@ -308,8 +314,11 @@ if (!isset($errorbox))
    }
    elseif ( !file_exists('pages/'.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.php') )
    {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText('The page '.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().' cannot be found!');
       $page->addErrorView($errorbox);
 

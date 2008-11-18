@@ -81,8 +81,12 @@ if ( $session->issetValue($file_upload_rubric.'_add_files_multi') ) {
 
 if ( $session->issetValue($file_upload_rubric.'_add_files_multi_error') ) {
    $file_array_multi_error = $session->getValue($file_upload_rubric.'_add_files_multi_error');
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true, 500);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $params['width'] = 500;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(implode(BR.BRLF,$file_array_multi_error));
    $page->add($errorbox);
    $focus_element_onload = '';
@@ -120,8 +124,12 @@ if ( !empty($_FILES['upload']['tmp_name']) ) {
             $file_array[] = $temp_array;
             $new_file_ids[] = $temp_array['file_id'];
          } else {
-            include_once('classes/cs_errorbox_view.php');
-            $errorbox = new cs_errorbox_view($environment, true, 500);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $params['width'] = 500;
+            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            unset($params);
             $errorbox->setText($virus_scanner->getOutput());
             $page->add($errorbox);
             $focus_element_onload = '';

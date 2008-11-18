@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('classes/cs_list.php');
 include_once('functions/curl_functions.php');
 
@@ -46,13 +46,10 @@ class cs_home_view extends cs_view {
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            the CommSy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_home_view ($environment, $with_modifying_actions) {
-      $this->cs_view( $environment,
-                      $with_modifying_actions);
+   function cs_home_view ($params) {
+      $this->cs_view($params);
       $this->_title = 'title';
    }
 
@@ -106,21 +103,21 @@ class cs_home_view extends cs_view {
     * @return string list view as HMTL
     */
    function asHTML () {
-	  $html = '';
+     $html = '';
 
-	  // hack for configuration index
-	  if ( $this->_environment->getCurrentModule() == 'configuration'
-	       and $this->_environment->getCurrentFunction() == 'index'
-		 ) {
-		 $html .= BRLF;
-	  }
-	  // hack for home index at portal
-	  if ( $this->_environment->getCurrentModule() == 'home'
-		   and $this->_environment->getCurrentFunction() == 'index'
-		   and $this->_environment->inPortal()
-		 ) {
-		 $html .= BR.BRLF;
-	  }
+     // hack for configuration index
+     if ( $this->_environment->getCurrentModule() == 'configuration'
+          and $this->_environment->getCurrentFunction() == 'index'
+       ) {
+       $html .= BRLF;
+     }
+     // hack for home index at portal
+     if ( $this->_environment->getCurrentModule() == 'home'
+         and $this->_environment->getCurrentFunction() == 'index'
+         and $this->_environment->inPortal()
+       ) {
+       $html .= BR.BRLF;
+     }
 
       $html .= LF.'<!-- BEGIN OF HOME VIEW -->'.LF;
 

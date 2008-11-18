@@ -70,17 +70,21 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    redirect($room_item->getItemID(),'home','index','');
 } elseif ( $room_item->isPortal() and !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isPortal() and !$current_user->isModerator())
            or ($room_item->isServer() and !$current_user->isRoot())
          ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
@@ -123,12 +127,16 @@ else {
          if ($virus_scanner->isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])) {
                   // no error
          } else {
-                  include_once('classes/cs_errorbox_view.php');
-       $errorbox = new cs_errorbox_view($environment, true, 500);
-       $errorbox->setText($virus_scanner->getOutput());
-       $page->add($errorbox);
-       $focus_element_onload = '';
-       $error_on_upload = true;
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $params['width'] = 500;
+            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            unset($params);
+            $errorbox->setText($virus_scanner->getOutput());
+            $page->add($errorbox);
+            $focus_element_onload = '';
+            $error_on_upload = true;
          }
       }
 
@@ -161,10 +169,14 @@ else {
 
                   $current_commsy_version = getCommSyVersion();
                   if ( $current_commsy_version != $commsy_version ) {
-                     include_once('classes/cs_errorbox_view.php');
-          $errorbox = new cs_errorbox_view($environment, true, 500);
-          $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_WARNING_VERSION',$current_commsy_version,$commsy_version));
-          $page->add($errorbox);
+                     $params = array();
+                     $params['environment'] = $environment;
+                     $params['with_modifying_actions'] = true;
+                     $params['width'] = 500;
+                     $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+                     unset($params);
+                     $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_WARNING_VERSION',$current_commsy_version,$commsy_version));
+                     $page->add($errorbox);
                   }
                   foreach ($xml_object->data->children() as $list) {
                      $name = str_replace('_list','',$list->getName());
@@ -172,20 +184,28 @@ else {
                      $success = false;
                      $success = $manager->backupDataFromXMLObject($list);
                      if (!isset($success) or !$success) {
-                        include_once('classes/cs_errorbox_view.php');
-             $errorbox = new cs_errorbox_view($environment, true, 500);
-             $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_MODULE',$name));
-             $page->add($errorbox);
+                        $params = array();
+                        $params['environment'] = $environment;
+                        $params['with_modifying_actions'] = true;
+                        $params['width'] = 500;
+                        $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+                        unset($params);
+                        $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_MODULE',$name));
+                        $page->add($errorbox);
                      } else {
-                  $form_view->setItemIsSaved();
-                  $is_saved = true;
+                        $form_view->setItemIsSaved();
+                        $is_saved = true;
                      }
                   }
                } else {
-                  include_once('classes/cs_errorbox_view.php');
-       $errorbox = new cs_errorbox_view($environment, true, 500);
-       $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_FILE'));
-       $page->add($errorbox);
+                  $params = array();
+                  $params['environment'] = $environment;
+                  $params['with_modifying_actions'] = true;
+                  $params['width'] = 500;
+                  $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+                  unset($params);
+                  $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_FILE'));
+                  $page->add($errorbox);
                }
             }
          }

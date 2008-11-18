@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_list_view_plain.php');
+$this->includeClass(LIST_PLAIN_VIEW);
 include_once('functions/curl_functions.php');
 
 /**
@@ -52,12 +52,10 @@ class cs_homepage_list_view extends cs_list_view_plain {
     /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            environment of the page
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_homepage_list_view ($environment, $with_modifying_actions) {
-      $this->cs_plain_list_view($environment,'homepage_list_view',$with_modifying_actions);
+   function cs_homepage_list_view ($params) {
+      $this->cs_plain_list_view($params);
       $manager = $this->_environment->getRoomManager();
       $max = $manager->getAllMaxActivityPoints();
       $this->_max_activity = $max;
@@ -211,11 +209,11 @@ class cs_homepage_list_view extends cs_list_view_plain {
     * @return string item as HMTL
     */
    function _getItemAsHTML($item, $i) {
-   	if (1 == $i%2) {
-   		$color = 'white';
-   	} else {
-   		$color = 'rgb(245, 245, 245)';
-   	}
+      if (1 == $i%2) {
+         $color = 'white';
+      } else {
+         $color = 'rgb(245, 245, 245)';
+      }
 
       $html = '';
       $html .= '   <tr style="padding: 10px;">'.LF;
@@ -256,17 +254,17 @@ class cs_homepage_list_view extends cs_list_view_plain {
          if ( empty($percentage) ) {
             $percentage = 0;
          } else {
-	        $teiler = $this->_max_activity/20;
+           $teiler = $this->_max_activity/20;
             $percentage = log(($percentage/$teiler)+1);
-		    if ($percentage < 0) {
-			   $percentage = 0;
-		    }
-		    $max_activity = log(($this->_max_activity/$teiler)+1);
+          if ($percentage < 0) {
+            $percentage = 0;
+          }
+          $max_activity = log(($this->_max_activity/$teiler)+1);
             $percentage = round(($percentage / $max_activity) * 100,2);
          }
       } else {
          $percentage = 0;
-	  }
+     }
       $display_percentage = $percentage;
       $html  = '         <div class="project-gauge">'.LF;
       $html .= '            <div class="project-gauge-bar" style="width:'.$display_percentage.'%;">&nbsp;</div>'.LF;
@@ -276,7 +274,7 @@ class cs_homepage_list_view extends cs_list_view_plain {
    }
 
    function _getListActionsAsHTML () {
-	  $current_context = $this->_environment->getCurrentContextItem();
+     $current_context = $this->_environment->getCurrentContextItem();
 
       $html  = '';
       // Search / select form
@@ -293,15 +291,15 @@ class cs_homepage_list_view extends cs_list_view_plain {
       $html .= '<div>'.LF;
       $html .= '<div style="float: left; text-align: left">'.getMessage('COMMON_SEARCHFIELD').'<br /><input style="width: 10em;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/></div> '.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
-	  $html .= '<div><br /><input name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
-	  $html .= '</div>'.LF;
+     $html .= '<div><br /><input name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/></div>'.LF;
+     $html .= '</div>'.LF;
       $html .= '</form>'.LF;
 
       return $html;
    }
 
    function _getAdditionalFormFieldsasHTML () {
-	  $html = '';
+     $html = '';
       return $html;
    }
 
@@ -311,14 +309,14 @@ class cs_homepage_list_view extends cs_list_view_plain {
     * @return string value
     */
    function _compareWithSearchText ($value) {
-		if ( !empty($this->_search_array) ){
-				 foreach ($this->_search_array as $search_text) {
-					if ( stristr($value,$search_text) ) {
-							$value = preg_replace('/'.preg_quote($search_text,'/').'/i','*$0*',$value);
-					}
-				}
-			}
-			return $value;
+      if ( !empty($this->_search_array) ){
+             foreach ($this->_search_array as $search_text) {
+               if ( stristr($value,$search_text) ) {
+                     $value = preg_replace('/'.preg_quote($search_text,'/').'/i','*$0*',$value);
+               }
+            }
+         }
+         return $value;
    }
 
    function _getTableFootAsHTML() {
@@ -478,7 +476,7 @@ class cs_homepage_list_view extends cs_list_view_plain {
     * @return string $this->_list as HMTL
     */
    function _getContentAsHTML() {
-	  $i = 1;
+     $i = 1;
       $html = '';
       if ( !$this->_list->isEmpty() ) {
          $list = $this->_list;
@@ -506,8 +504,8 @@ class cs_homepage_list_view extends cs_list_view_plain {
 
       $current_context = $this->_environment->getServerItem();
 
-	  // actions
-	  #$html .= $this->_getActionsAsHTML();
+     // actions
+     #$html .= $this->_getActionsAsHTML();
       #$html .= $this->_getForwardLinkAsHTML();
 
       $html .= '<div style="width: 100%; text-align: left">'.LF;

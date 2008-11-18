@@ -53,7 +53,7 @@ class cs_homepage_room_list_page extends cs_page {
 
      // get data
      $manager = $this->_environment->getHomepageManager();
-	 $manager->setIndexLimit();
+    $manager->setIndexLimit();
      $count_all = $manager->getCountAll();
 
      if (!empty($this->_values['search'])) {
@@ -73,8 +73,11 @@ class cs_homepage_room_list_page extends cs_page {
      $count_all_shown = count($ids);
 
       // Prepare view object
-      include_once('classes/cs_homepage_list_view.php');
-      $this->_view_object = new cs_homepage_list_view($this->_environment,$this->_with_mod_actions);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = $this->_with_mod_actions;
+      $this->_view_object = $this->_class_factory->getClass(HOMEPAGE_LIST_VIEW,$params);
+      unset($params);
       $this->_view_object->setList($list);
       $this->_view_object->setCountAllShown($count_all_shown);
       $this->_view_object->setCountAll($count_all);
@@ -86,7 +89,7 @@ class cs_homepage_room_list_page extends cs_page {
       if (!empty($this->_values['sort'])) {
          $this->_view_object->setSortKey($this->_values['sort']);
       } else {
-	     $this->_view_object->setSortKey('activity');
+        $this->_view_object->setSortKey('activity');
       }
    }
 }

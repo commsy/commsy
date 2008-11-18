@@ -714,8 +714,6 @@ class cs_page_room_view extends cs_page_view {
          if ($show_agb_again) {
             $html .='&nbsp;';
          }
-         // @segment-end 97506
-         // @segment-begin 64067 asHTML():display-full_screen_views-added-to-the-$page(e.g.:cs_announcement_view-which-asHTML()-from-upper_class-cs_index_view)
          if ( !empty($this->_views) ) {
             foreach ($this->_views as $view) {
                if ($first){
@@ -729,9 +727,6 @@ class cs_page_room_view extends cs_page_view {
          if ($this->_environment->getCurrentModule()!='home' or isset($view->_title) or $show_agb_again){
             $html .='</div>';
          }
-         // @segment-end 64067
-         // @segment-begin 45532 asHTML():display-left_views/right_views-if-any()e.g.-if-mod=home
-         // Left views
          if ( !empty($this->_views_right) ) {
             if ($this->_environment->getCurrentModule()=='home'){
                $context_item = $this->_environment->getCurrentContextItem();

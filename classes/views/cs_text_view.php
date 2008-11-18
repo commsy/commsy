@@ -24,7 +24,7 @@
 
 /** upper class of the text view
  */
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** class for a text view in commsy-style
  * this class implements a text view
@@ -49,12 +49,10 @@ class cs_text_view extends cs_view {
    /** constructor: cs_text_view
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_text_view ($environment, $with_modifying_actions) {
-      $this->cs_view($environment, $with_modifying_actions);
+   function cs_text_view ($params) {
+      $this->cs_view($params);
    }
 
    /** set title of text view

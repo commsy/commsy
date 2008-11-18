@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_home_view.php');
+$this->includeClass(HOME_VIEW);
 include_once('classes/cs_reader_manager.php');
 include_once('functions/text_functions.php');
 
@@ -34,14 +34,10 @@ class cs_item_short_view extends cs_home_view {
    /** constructor: cs_item_list_view
     * the only available constructor, initial values for internal variables
     *
-    * @param object environment              environment object
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
-    *
-    * @author CommSy Development Group
+    * @param array params parameters in an array of this class
     */
-   function cs_item_short_view ($environment,$with_modifying_actions) {
-      $this->cs_home_view($environment,$with_modifying_actions);
+   function cs_item_short_view ($params) {
+      $this->cs_home_view($params);
    }
 
    function _getTableheadAsHTML () {

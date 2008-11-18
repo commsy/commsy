@@ -31,17 +31,21 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    redirect($room_item->getItemID(),'home','index','');
 } elseif ( $room_item->isPortal() and !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isPortal() and !$current_user->isModerator())
            or ($room_item->isServer() and !$current_user->isRoot())
          ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }

@@ -142,7 +142,7 @@ else {
                redirect($environment->getCurrentContextID(),'home','index','');
             } else {
                redirect($history[1]['context'],$history[1]['module'],$history[1]['function'],$history[1]['parameter']);
-			   }
+            }
          } else {
             // error sending email
          }
@@ -151,8 +151,11 @@ else {
 }
 
 // display form
-include_once('classes/cs_form_view.php');
-$form_view = new cs_form_view($environment,'');
+$class_params = array();
+$class_params['environment'] = $environment;
+$class_params['with_modifying_actions'] = true;
+$form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+unset($class_params);
 $form_view->setAction(curl($environment->getCurrentContextID(),'user','mail',''));
 $form_view->setForm($form);
 $page->add($form_view);

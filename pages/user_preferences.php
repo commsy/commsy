@@ -46,8 +46,11 @@ $current_user = $environment->getCurrentUserItem();
 $user_manager = $environment->getUserManager();
 $user = $user_manager->getItem($iid);
 if (!$user->mayEdit($current_user)) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $error_string = getMessage('LOGIN_NOT_ALLOWED').'<br />';
    $errorbox->setText($error_string);
    $page->add($errorbox);
@@ -181,13 +184,20 @@ if ($command != 'error') { // only if user is allowed to edit user
          }
       }
    }
-   include_once('classes/cs_form_view.php');
-   $form_view = new cs_form_view($environment,'');
+   $class_params = array();
+   $class_params['environment'] = $environment;
+   $class_params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+   unset($class_params);
    $form_view->setAction(curl($environment->getCurrentContextID(),$current_module,'preferences',''));
    if (!$user->mayEditRegular($current_user)) {
       $form_view->warnChanger();
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true, 500);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = 500;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
       $page->add($errorbox);
    }

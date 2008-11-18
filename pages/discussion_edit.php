@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_discussion_form.php');
-include_once('classes/cs_form_view.php');
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -98,20 +97,29 @@ if ( $current_iid == 'NEW' ) {
 
 // Check access rights
 if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $current_iid != 'NEW' and !isset($discussion_item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($discussion_item) and
               $discussion_item->mayEditIgnoreClose($current_user))) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -335,7 +343,7 @@ else {
       elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -344,7 +352,7 @@ else {
       elseif ( $backfrom == CS_PROJECT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -353,7 +361,7 @@ else {
       elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -362,7 +370,7 @@ else {
       elseif ( $backfrom == CS_TODO_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_TODO_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -371,7 +379,7 @@ else {
       elseif ( $backfrom == CS_DATE_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_DATE_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -380,7 +388,7 @@ else {
       elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
-	$with_anchor = true;
+   $with_anchor = true;
          $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -389,7 +397,7 @@ else {
       elseif ( $backfrom == CS_GROUP_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_GROUP_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_GROUP_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -398,7 +406,7 @@ else {
       elseif ( $backfrom == CS_TOPIC_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -407,7 +415,7 @@ else {
       elseif ( $backfrom == CS_INSTITUTION_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_INSTITUTION_TYPE, $current_iid);
-		 $with_anchor = true;
+       $with_anchor = true;
          $session_post_vars[CS_INSTITUTION_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -564,13 +572,13 @@ else {
             } else {
                $discussion_item->setTopicListByID(array());
             }
-	         if ($environment->inCommunityRoom()) {
+            if ($environment->inCommunityRoom()) {
                if ( isset($_POST[CS_INSTITUTION_TYPE]) ) {
                   $discussion_item->setInstitutionListByID($_POST[CS_INSTITUTION_TYPE]);
                } else {
                   $discussion_item->setInstitutionListByID(array());
                }
-	         }
+            }
             // buzzwords
             $buzzword_array = array();
             if ( isset($_POST['buzzwordlist']) ) {
@@ -596,30 +604,30 @@ else {
 
             // Also save the initial discussion article
             if ( $new_discussion ) {
-	            $discarticle_manager = $environment->getDiscussionArticlesManager();
-	            $discarticle_item = $discarticle_manager->getNewItem();
-	            $discarticle_item->setContextID($environment->getCurrentContextID());
+               $discarticle_manager = $environment->getDiscussionArticlesManager();
+               $discarticle_item = $discarticle_manager->getNewItem();
+               $discarticle_item->setContextID($environment->getCurrentContextID());
                $user = $environment->getCurrentUserItem();
-	            $discarticle_item->setCreatorItem($user);
-	            $discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
-	            $discarticle_item->setDiscussionID($discussion_item->getItemId());
-	            if (isset($_POST['subject'])) {
-		            $discarticle_item->setSubject($_POST['subject']);
-	            }
-	            if ( isset($_POST['description'])) {
-		            $discarticle_item->setDescription($_POST['description']);
-	            }
+               $discarticle_item->setCreatorItem($user);
+               $discarticle_item->setCreationDate(getCurrentDateTimeInMySQL());
+               $discarticle_item->setDiscussionID($discussion_item->getItemId());
+               if (isset($_POST['subject'])) {
+                  $discarticle_item->setSubject($_POST['subject']);
+               }
+               if ( isset($_POST['description'])) {
+                  $discarticle_item->setDescription($_POST['description']);
+               }
                   if (isset($_POST['discussion_type']) and $_POST['discussion_type']==2){
-		    $discarticle_item->setPosition('1');
+          $discarticle_item->setPosition('1');
                   }
-	            $item_files_upload_to = $discarticle_item;
-	            include_once('include/inc_fileupload_edit_page_save_item.php');
+               $item_files_upload_to = $discarticle_item;
+               include_once('include/inc_fileupload_edit_page_save_item.php');
 
-	            $discarticle_item->save();
+               $discarticle_item->save();
 
-	            // ... and update the discussion item
-	            $discussion_item->setLatestArticleID($discarticle_item->getItemID());
-	            $discussion_item->setLatestArticleModificationDate($discarticle_item->getCreationDate());
+               // ... and update the discussion item
+               $discussion_item->setLatestArticleID($discarticle_item->getItemID());
+               $discussion_item->setLatestArticleModificationDate($discarticle_item->getCreationDate());
                $discussion_status = $context_item->getDiscussionStatus();
                if ($discussion_status == 3){
                   if ($_POST['discussion_type']==2){
@@ -632,8 +640,8 @@ else {
                }else{
                   $discussion_item->setDiscussionType('simple');
                }
-	            $discussion_item->save();
-	         }
+               $discussion_item->save();
+            }
 
             // Reset id array
             $session->setValue('cid'.$environment->getCurrentContextID().'_discussion_index_ids',
@@ -649,16 +657,24 @@ else {
       }
 
       // Display form
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       if ($with_anchor){
-		  $form_view->withAnchor();
-	  }
+        $form_view->withAnchor();
+     }
       if (!mayEditRegular($current_user, $discussion_item)) {
-        $form_view->warnChanger();
-        include_once('classes/cs_errorbox_view.php');
-        $errorbox = new cs_errorbox_view($environment, true, 500);
-        $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-        $page->add($errorbox);
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'discussion','edit',''));
       $form_view->setForm($form);

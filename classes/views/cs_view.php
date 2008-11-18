@@ -84,24 +84,28 @@ class cs_view {
    public $_class_factory = NULL;
 
 
-   // @segment-begin 56209 cs_view($environment,_$with_modifying_actions=true)
    /** constructor: cs_view
     * the only available constructor, initial values for internal variables
     *
-    * @param cs_item environment            the commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_view ($environment, $with_modifying_actions = true) {
-      $this->_environment = $environment;
+   function cs_view ($params) {
+      if ( !empty($params['environment']) ) {
+         $this->_environment = $params['environment'];
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('no environment defined '.__FILE__.' '.__LINE__,E_USER_ERROR);
+      }
+      $this->_with_modifying_actions = true;
+      if ( !empty($params['with_modifying_actions']) ) {
+         $this->_with_modifying_actions = $params['with_modifying_actions'];
+      }
       $this->_class_factory = $this->_environment->getClassFactory();
       $this->_room_id = $this->_environment->getCurrentContextID();
       $this->_module = $this->_environment->getCurrentModule();
       $this->_function = $this->_environment->getCurrentFunction();
-      $this->_with_modifying_actions = $with_modifying_actions;
       $this->_translator = $this->_environment->getTranslationObject();
    }
-   // @segment-end 56209
 
    function getEnvironment () {
       return $this->_environment;

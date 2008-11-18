@@ -24,8 +24,7 @@
 
 /*
 
-include_once('classes/cs_home_view.php');
-//include_once('functions/text_functions.php');
+$this->includeClass(HOME_VIEW);
 
 class cs_homepage_informationbox_short_view extends cs_view {
 
@@ -106,9 +105,9 @@ class cs_homepage_informationbox_short_view extends cs_view {
 }*/
 
 
-include_once('classes/cs_home_view.php');
+$this->includeClass(HOME_VIEW);
 
-class cs_home_informationbox_view extends cs_view {
+class cs_home_informationbox_view extends cs_home_view {
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -116,12 +115,7 @@ class cs_home_informationbox_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_home_informationbox_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view($environment, $with_modifying_actions);
+      $this->cs_home_view($params);
       $current_context = $this->_environment->getCurrentContextItem();
       $id = $current_context->getInformationBoxEntryID();
       $manager = $this->_environment->getItemManager();

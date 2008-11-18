@@ -28,8 +28,11 @@ $translator = $environment->getTranslationObject();
 $current_context = $environment->getServerItem();
 
 if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->addWarning($errorbox);
 } else {
@@ -121,8 +124,12 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
       // display form
       if (isset($current_context) and !$current_context->mayEditRegular($current_user)) {
          $form_view->warnChanger();
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true, 500);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText($translator->getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->addWarning($errorbox);
       }

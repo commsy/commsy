@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('classes/cs_list.php');
 include_once('functions/curl_functions.php');
 include_once('functions/date_functions.php');
@@ -131,35 +131,26 @@ class cs_index_view extends cs_view {
 
    var $_colspan = 4;
 
-   // @segment-begin 77035  cs_index_view_($environment,_$with_modifying_actions,_$with_form_fields_=_true)-constructor,uses#56209
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            the CommSy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_index_view ($environment, $with_modifying_actions, $with_form_fields = true) {
-      $this->_environment = $environment;
-      $this->_with_form_fields = $with_form_fields;
-      $this->cs_view( $environment, $with_modifying_actions);
-      $current_context = $environment->getCurrentContextItem();
+   function cs_index_view ($params) {
+      $this->_with_form_fields = true;
+      if ( !empty($params['with_form_fields']) ) {
+         $this->_with_form_fields = $params['with_form_fields'];
+      }
+      $this->cs_view($params);
+      $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withTags() ){
          $this->_show_tag_box = true;
       }
       if ( $current_context->withBuzzwords() ){
          $this->_show_buzzwords_box = true;
       }
-      /*
-      $reader_manager = $this->_environment->getReaderManager();
-      $user = $this->_environment->getCurrentUserItem();
-      $type = module2type($environment->getCurrentModule());
-      $this->_list_of_read_entry_ids = $reader_manager->getReadEntries($user->getItemID(), $type);
-      */
    }
-   // @segment-end 77035
 
-   // @segment-begin 48753 ?setTitle($value)/getTitle()-for-list-view
    /** set title of the list view
     * this method sets the title of the list view
     *
@@ -178,7 +169,6 @@ class cs_index_view extends cs_view {
        $this->_display_title = false;
        return $this->_title;
     }
-    // @segment-end 48753
 
   // @segment-begin 63086  setClipboardIDArray($cia)/getClipboardIDArray()
   function setClipboardIDArray($cia) {
@@ -201,7 +191,7 @@ class cs_index_view extends cs_view {
    }
 
    function setActivationLimit($limit){
-   	$this->_activation_limit = $limit;
+      $this->_activation_limit = $limit;
    }
 
    // @segment-begin 91360  setFrom($from)/getFrom()-beginning-counter-of-list

@@ -24,7 +24,7 @@
 
 /** upper class of the detail view
  */
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** curl_functions are needed for actions
  */
@@ -85,12 +85,7 @@ class cs_table_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_table_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view($environment, $with_modifying_actions);
+      $this->cs_view($params);
    }
 
    /** set title of the table view

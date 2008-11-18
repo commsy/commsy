@@ -106,13 +106,19 @@ if ( !$current_user->isUser()
           and !$current_user->isModerator()
         )
    ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 } elseif ( empty($linked_rubric) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('TAG_MISSING_LINKED_RUBRIC'));
    $page->add($errorbox);
 }
@@ -276,8 +282,11 @@ else {
        }
 
       // Display form
-      include_once('classes/cs_form_view.php');
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       $form_view->setWithoutDescription();
       $form_view->setAction(curl($environment->getCurrentContextID(),'tag','edit',''));
 

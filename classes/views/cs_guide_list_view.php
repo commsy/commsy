@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_list_view_plain.php');
+$this->includeClass(LIST_PLAIN_VIEW);
 include_once('functions/curl_functions.php');
 
 /**
@@ -66,12 +66,8 @@ class cs_guide_list_view extends cs_list_view_plain {
     * @param array params parameters in an array of this class
     */
    function cs_guide_list_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_plain_list_view($environment,'guide_list_view',$with_modifying_actions);
+      $params['viewname'] = 'guide_list_view';
+      $this->cs_plain_list_view($params);
       if ( $environment->inServer() ) {
          $manager = $this->_environment->getPortalManager();
          $this->_max_activity = $manager->getMaxActivityPoints();

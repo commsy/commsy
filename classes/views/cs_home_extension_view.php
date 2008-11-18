@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('functions/date_functions.php');
 include_once('classes/cs_link.php');
 
@@ -37,13 +37,7 @@ class cs_home_extension_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_home_extension_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view( $environment,
-                      $with_modifying_actions);
+      $this->cs_view($params);
       $this->_view_title = getMessage('HOME_EXTRA_TOOLS');
       $this->setViewName('homeextratools');
    }

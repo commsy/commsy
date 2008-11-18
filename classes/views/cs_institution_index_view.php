@@ -34,12 +34,7 @@ class cs_institution_index_view extends cs_campus_index_view {
     * @param array params parameters in an array of this class
     */
    function cs_institution_index_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_index_view($environment, $with_modifying_actions);
+      $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_INSTITUTIONS'));
       $this->setColspan(3);
    }

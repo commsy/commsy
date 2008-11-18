@@ -52,7 +52,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
       if ( isset($params['with_modifying_actions']) ) {
          $with_modifying_actions = $params['with_modifying_actions'];
       }
-      $this->cs_material_index_view($environment, $with_modifying_actions);
+      $this->cs_material_index_view($params);
       $this->setTitle($this->_translator->getMessage('MATERIAL_INDEX'));
    }
    function setSelectedStatus ($status) {

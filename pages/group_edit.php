@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_group_form.php');
-include_once('classes/cs_form_view.php');
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
@@ -105,20 +104,29 @@ if ( $current_iid == 'NEW' ) {
 
 // Check access rights
 if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $current_iid != 'NEW' and !isset($group_item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($group_item) and
               $group_item->mayEdit($current_user))) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -344,7 +352,7 @@ else {
       if ($session->issetValue($current_iid.'_discussion_notification')) {
          $form->setSessionDiscussionNotificationArray($session->getValue($current_iid.'_discussion_notification'));
       }
-      
+
       $form->prepareForm();
       $form->loadValues();
 
@@ -485,7 +493,7 @@ else {
                   $group_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
       }
-      
+
             // Foren:
             $discussion_notification_array = array();
             if ( isset($_POST['discussion_notification_list']) ) {
@@ -500,7 +508,7 @@ else {
             }
 
             $group_item->setDiscussionNotificationArray($discussion_notification_array);
-      
+
             // Save item
             $group_item->save();
 
@@ -518,13 +526,21 @@ else {
       }
 
       // Display form
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       if (!mayEditRegular($current_user, $group_item) and !$group_item->isSystemLabel()) {
-        $form_view->warnChanger();
-        include_once('classes/cs_errorbox_view.php');
-        $errorbox = new cs_errorbox_view($environment, true, 500);
-        $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-        $page->add($errorbox);
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'group','edit',''));
       $form_view->setForm($form);

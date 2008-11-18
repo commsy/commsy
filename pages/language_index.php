@@ -33,7 +33,6 @@ if ( !isset($c_message_management)
    redirect($environment->getCurrentContextID(),'home','index');
 }
 
-include_once('classes/cs_view.php');
 include_once('classes/cs_language.php');
 $translator = $environment->getTranslationObject();
 $message = $translator->getCompleteMessageArray();

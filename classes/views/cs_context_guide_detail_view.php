@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /**
  *  class for CommSy detail view: context at portal
@@ -42,8 +42,7 @@ class cs_context_guide_detail_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_context_guide_detail_view ($params) {
-      $environment = $params['environment'];
-      $this->cs_view($environment);
+      $this->cs_view($params);
    }
 
    function setItem ($value) {

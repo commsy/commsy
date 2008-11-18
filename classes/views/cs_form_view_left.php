@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** class for a form view in commsy-style
  * this class implements a form view
@@ -79,12 +79,7 @@ class cs_form_view_left extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_form_view_left ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view($environment,$with_modifying_actions);
+      $this->cs_view($params);
    }
 
    /** set URL of the form view
@@ -963,8 +958,12 @@ class cs_form_view_left extends cs_view {
     * this method creates an errorbox with messages form the error array
     */
    function _getErrorBoxAsHTML () {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($this->_environment,true,'100%');
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = '100%';
+      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $first = true;
       $error_string = '';
       foreach ($this->_error_array as $error) {

@@ -35,14 +35,20 @@ $context_item = $environment->getCurrentContextItem();
 
 // Check access rights
 if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 
 }  elseif ( !$current_user->isUser() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -158,8 +164,11 @@ else {
             redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index','');
          }
          // display form
-         include_once('classes/cs_form_view.php');
-         $form_view = new cs_form_view($environment,'');
+         $class_params = array();
+         $class_params['environment'] = $environment;
+         $class_params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+         unset($class_params);
          $params['selection']= true;
          $form_view->setAction(curl($environment->getCurrentContextID(),CS_DATE_TYPE,'import',$params));
          $form_view->setForm($form);
@@ -264,8 +273,11 @@ else {
          }
 
          // display form
-         include_once('classes/cs_form_view.php');
-         $form_view = new cs_form_view($environment,'');
+         $class_params = array();
+         $class_params['environment'] = $environment;
+         $class_params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+         unset($class_params);
          $form_view->setAction(curl($environment->getCurrentContextID(),CS_DATE_TYPE,'import',''));
          $form_view->setForm($form);
          $page->add($form_view);

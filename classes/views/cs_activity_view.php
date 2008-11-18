@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('functions/text_functions.php');
 
 /**
@@ -41,12 +41,11 @@ class cs_activity_view extends cs_view {
     * @param array params array with parameters
     */
    public function __CONSTRUCT ( $params ) {
-      $this->cs_view( $params['environment'], $params['with_modifying_actions']);
+      $this->cs_view($params);
       $this->setViewName('activity');
       // Determine time spread
-      $environment = $this->getEnvironment();
-      $context = $environment->getCurrentContextItem();
-      if ($environment->inCommunityRoom()){
+      $context = $this->_environment->getCurrentContextItem();
+      if ($this->_environment->inCommunityRoom()){
          $time_spread = 90;
       }else{
          $time_spread = $context->getTimeSpread();

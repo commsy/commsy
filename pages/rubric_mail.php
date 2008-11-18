@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_rubric_mail_form.php');
-include_once('classes/cs_form_view.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
 
@@ -259,8 +258,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          } // ~email->send()
          else { // Mail could not be send: display error message.
             $form = new cs_form();
-            include_once('classes/cs_errorbox_view.php');
-            $errorbox = new cs_errorbox_view($environment, true);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            unset($params);
             $error_string = "*". getMessage('ERROR_SEND_MAIL')."*<br />";
             $error_string .= "<br />*".getMessage('ERROR_MAIL_FROM')."*<br />".$mail['from_name'];
             $error_string .= "<br />*".getMessage('ERROR_MAIL_REPLY_TO')."*<br />".$mail['from_email'];
@@ -278,7 +280,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
          }
       }  // ~form->check()
       else {
-         $form_view = new cs_form_view($environment);
+         $class_params = array();
+         $class_params['environment'] = $environment;
+         $class_params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+         unset($class_params);
          if ( isset($_GET['iid']) ){
             $params = array();
             $params['iid'] = $_GET['iid'];
@@ -292,7 +298,11 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
       }
    } else {  // first call of this page
       $form->loadValues();
-      $form_view = new cs_form_view($environment);
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       if ( isset($_GET['iid']) ){
          $params = array();
          $params['iid'] = $_GET['iid'];

@@ -24,7 +24,7 @@
 
 include_once('classes/cs_reader_manager.php');
 include_once('functions/text_functions.php');
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /**
  *  class for preferences for rooms: list view
@@ -45,12 +45,7 @@ var $_configuration_rubric_list = NULL;
     * @param array params parameters in an array of this class
     */
    function cs_link_preference_list_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view( $environment, $with_modifying_actions);
+      $this->cs_view($params);
       $current_context = $this->_environment->getCurrentContextItem();
    }
 

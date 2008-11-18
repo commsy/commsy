@@ -39,9 +39,7 @@ include_once('functions/date_functions.php');
  */
 include_once('functions/misc_functions.php');
 include_once('functions/text_functions.php');
-
-
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 
 /** class for a page view of commsy
  * this class implements a page view of commsy
@@ -126,14 +124,9 @@ class cs_page_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_page_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view($environment, $with_modifying_actions);
-      if (file_exists('htdocs/'.$environment->getCurrentPortalID().'/commsy.css') ){
-         $this->_style_image_path = $environment->getCurrentPortalID().'/images/';
+      $this->cs_view($params);
+      if (file_exists('htdocs/'.$this->_environment->getCurrentPortalID().'/commsy.css') ){
+         $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images/';
       }
    }
 

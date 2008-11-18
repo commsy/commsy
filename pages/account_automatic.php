@@ -49,8 +49,11 @@ $current_user = $environment->getCurrentUserItem();
 
 // error if user is already deleted
 if (empty($command) and $user->getDeletionDate()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    if ($environment->inProjectRoom()) {
       $errorbox->setText(getMessage('MEMBER_EDIT_ERROR_JUST_DELETED',$user->getFullname()));
    } else {
@@ -63,8 +66,11 @@ if (empty($command) and $user->getDeletionDate()) {
 //check if room is open
 $context_item = $environment->getCurrentContextItem();
 if (!$context_item->isOpen()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $error_string = getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
    $errorbox->setText($error_string);
    $page->add($errorbox);
@@ -230,11 +236,15 @@ if ($command == 'automatic') {
    } else {
       $error_string .= getMessage('USER_ERROR_SAVE').'<br />';
    }
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText($error_string);
    $page->add($errorbox);
 } else {
-   include_once('functions/error_functions.php');trigger_error('no automatic status set',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('no automatic status set',E_USER_ERROR);
 }
 ?>

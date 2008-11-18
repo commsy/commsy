@@ -27,6 +27,8 @@ function page_edit_virusscan_isClean ($filename_on_disc, $filename_orig) {
    global $page;
    global $c_virus_scan;
    global $environment;
+   $class_factory = $environment->getClassFactory();
+
    $retour = true;
    if (isset($c_virus_scan) and $c_virus_scan) {
       global $c_virus_scan_cron;
@@ -34,8 +36,12 @@ function page_edit_virusscan_isClean ($filename_on_disc, $filename_orig) {
          include_once('classes/cs_virus_scan.php');
          $virus_scanner = new cs_virus_scan($environment);
          if (!$virus_scanner->isClean($filename_on_disc,$filename_orig)) {
-            include_once('classes/cs_errorbox_view.php');
-            $errorbox = new cs_errorbox_view($environment, true, 500);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $params['width'] = 500;
+            $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+            unset($params);
             $errorbox->setText($virus_scanner->getOutput());
             $page->add($errorbox);
             $retour = false;

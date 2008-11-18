@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_section_form.php');
-include_once('classes/cs_form_view.php');
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
@@ -97,12 +96,15 @@ if ( !( ( $current_iid == 'NEW' and $current_user->isUser() )
                and $material_item->mayEdit($current_user)  // should be ITEM_ID
              )
         )
-    ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment,true);
-      $error_string = getMessage('LOGIN_NOT_ALLOWED');
-      $errorbox->setText($error_string);
-      $page->add($errorbox);
+   ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $error_string = getMessage('LOGIN_NOT_ALLOWED');
+   $errorbox->setText($error_string);
+   $page->add($errorbox);
 }
 // Access granted
 else {
@@ -119,11 +121,11 @@ else {
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
-	   if (isset($section_item)and !empty($section_item)){
-		   $link_number = 'anchor'.$section_item->getItemID();
-	   } else{
-		   $link_number ='';
-	   }
+      if (isset($section_item)and !empty($section_item)){
+         $link_number = 'anchor'.$section_item->getItemID();
+      } else{
+         $link_number ='';
+      }
       $params = array();
       $params['iid'] = $material_ref_iid;
       redirect($environment->getCurrentContextID(), 'material', 'detail', $params,$link_number);
@@ -160,7 +162,7 @@ else {
       elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-		   $with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -227,7 +229,7 @@ else {
                   $material_item->save();
                   $material_item = $material_item->cloneCopy();
                   $material_item->setVersionID($version);
-		              $infoBox_forAutoNewVersion = "&autoVersion=true";
+                    $infoBox_forAutoNewVersion = "&autoVersion=true";
             }
 
             // Set modificator and modification date
@@ -264,8 +266,8 @@ else {
             $section_list = $material_item->getSectionList();
 
             // files
-	         $item_files_upload_to = $section_item;
-	         include_once('include/inc_fileupload_edit_page_save_item.php');
+            $item_files_upload_to = $section_item;
+            include_once('include/inc_fileupload_edit_page_save_item.php');
 
             $section_list->set($section_item);
             $material_item->setSectionList($section_list);
@@ -284,16 +286,24 @@ else {
       }
 
       // display form
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       if ($with_anchor){
-		  $form_view->withAnchor();
-	  }
+         $form_view->withAnchor();
+      }
       if (!mayEditRegular($current_user, $material_item)) {
-        $form_view->warnChanger();
-        include_once('classes/cs_errorbox_view.php');
-        $errorbox = new cs_errorbox_view($environment, true, 500);
-        $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-        $page->add($errorbox);
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'section','edit',''));
       $form_view->setForm($form);

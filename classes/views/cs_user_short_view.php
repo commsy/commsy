@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_home_view.php');
+$this->includeClass(HOME_VIEW);
 include_once('functions/text_functions.php');
 
 /**
@@ -36,12 +36,7 @@ class cs_user_short_view extends cs_home_view {
     * @param array params parameters in an array of this class
     */
    function cs_user_short_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_home_view($environment, $with_modifying_actions);
+      $this->cs_home_view($params);
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_USER_TYPE,
                            'index',

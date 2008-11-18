@@ -56,8 +56,11 @@ if ( !isset($c_message_management)
    $form->prepareForm();
    $form->loadValues();
 
-   include_once('classes/cs_form_view.php');
-   $form_view = new cs_form_view($environment);
+   $class_params = array();
+   $class_params['environment'] = $environment;
+   $class_params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+   unset($class_params);
 
    $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
    $form_view->setForm($form);

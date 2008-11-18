@@ -406,8 +406,11 @@ if ( !empty($SID) ) {
          ###############################################
          # show error box in room
          ###############################################
-         #include_once('classes/cs_errorbox_view.php');
-         #$errorbox = new cs_errorbox_view($environment, true);
+         #$params = array();
+         #$params['environment'] = $environment;
+         #$params['with_modifying_actions'] = true;
+         #$errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         #unset($params);
          #$error_array = $authentication->getErrorArray();
          #if (!empty($error_array)) {
          #   $error_string = implode('<br />',$error_array);
@@ -701,8 +704,11 @@ if ( $environment->inProjectRoom()
 
 // display login errors
 if ( isset($session) and $session->issetValue('error_array') ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox_left = new cs_errorbox_view($environment,$with_modifying_actions);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $errorbox_left = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox_left->setText(implode('<br/>',$session->getValue('error_array')));
    $session->unsetValue('error_array');
    $page->setMyAreaErrorBox($errorbox_left);
@@ -713,8 +719,11 @@ if ( !$environment->inServer() and !$environment->inPortal() ) {
    $current_portal = $environment->getCurrentPortalItem();
    if ( $current_portal->isDeleted() ) {
       $current_context = $environment->getCurrentContextItem();
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('PORTAL_ERROR_DELETED_ROOM',$current_portal->getTitle(),$current_context->getTitle()));
       $page->setWithoutLeftMenue();
    }
@@ -782,8 +791,11 @@ if ( $show_agb_again ) {
       $param = parameterString($_GET,$_POST);
       header("Location: http://".$jcommsy['Servlet-URL'].'?mod='.$current_module.'&fct='.$current_function.$param);
    } elseif ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment,$with_modifying_actions);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $with_modifying_actions;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText('The page '.$current_module.'_'.$current_function.' cannot be found!');
       $page->add($errorbox);
 

@@ -41,20 +41,20 @@ $label_manager = $environment->getLabelManager();
 $item = $label_manager->getItem($_GET['iid']);
 $type = $item->getItemType();
 if ($type != CS_TOPIC_TYPE) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
    $page->add($errorbox);
 } else {
-
-
    $context_item = $environment->getCurrentContextItem();
 
    $mode='browse';
    if ( isset($_GET['mode']) and $_GET['mode']=='print'){
       $mode = 'print';
    }
-
 
    //used to signal which "creator infos" of annotations are expanded...
    $creatorInfoStatus = array();
@@ -81,13 +81,19 @@ if ($type != CS_TOPIC_TYPE) {
    if ( !isset($topic_item) ) {
       include_once('functions/error_functions.php');trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
    } elseif ( $topic_item->isDeleted() ) {
-            include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
       $page->add($errorbox);
    } elseif ( !$topic_item->maySee($current_user) ) {
-            include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
    } else {

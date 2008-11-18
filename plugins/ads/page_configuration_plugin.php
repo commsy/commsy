@@ -35,16 +35,22 @@ $current_user = $environment->getCurrentUserItem();
 
 // Check access rights
 if ( !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment, true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif ( ($room_item->isProjectRoom() and !$current_user->isModerator()) or
            ($room_item->isCommunityRoom() and !$current_user->isModerator()) or
            ($room_item->isPortal() and !$current_user->isModerator()) or
            ($room_item->isServer() and !$current_user->isRoot()) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment, true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -119,7 +125,12 @@ else {
                         $_POST['hidden_delete_normal_name'][] = $_POST['hidden_normal_name'][$key];
                      }
                   } else {
-                     $errorbox = new cs_errorbox_view($environment, true, 500);
+                     $params = array();
+                     $params['environment'] = $environment;
+                     $params['with_modifying_actions'] = true;
+                     $params['width'] = 500;
+                     $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+                     unset($params);
                      $errorbox->setText($virus_scanner->getOutput());
                      $page->add($errorbox);
                      $focus_element_onload = '';

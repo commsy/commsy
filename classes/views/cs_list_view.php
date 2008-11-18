@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('classes/cs_list.php');
 include_once('functions/curl_functions.php');
 
@@ -175,19 +175,19 @@ class cs_list_view extends cs_view {
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            the CommSy environment
-    * @param string  viewname               a name for this view (e.g. news, dates)
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_list_view ($environment, $viewname, $with_modifying_actions) {
-      $this->_environment = $environment;
+   function cs_list_view ($params) {
+      $viewname = 'list_view';
+      if ( !empty($params['viewname']) ) {
+         $viewname = $params['viewname'];
+      }
       $this->_name = $viewname;
       $this->_view_name = $viewname;
       $this->_link_name = $viewname;
       $this->link_id ='';
       $this->_assigned_list_of = NULL;
-      $this->cs_view( $environment, $with_modifying_actions);
+      $this->cs_view($params);
       $this->_sort_keys = array();
       $this->_sort_key = '';
       $this->_button_list = new cs_list();

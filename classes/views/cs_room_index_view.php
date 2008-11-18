@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_index_view.php');
+$this->includeClass(INDEX_VIEW);
 include_once('functions/text_functions.php');
 
 /**
@@ -38,15 +38,10 @@ class cs_room_index_view extends cs_index_view {
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            environment of the page
-    * @param string  viewname               e.g. news_index
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
-    *
-    * @author CommSy Development Group
+    * @param array params parameters in an array of this class
     */
-   function cs_room_index_view ($environment, $with_modifying_actions) {
-      $this->cs_index_view($environment, $with_modifying_actions);
+   function cs_room_index_view ($params) {
+      $this->cs_index_view($params);
    }
 
    function setSelectedGroup ($group_id) {
@@ -101,9 +96,9 @@ class cs_room_index_view extends cs_index_view {
       $params = parent::_getGetParamsAsArray();
       $params['selgroup'] = $this->getSelectedGroup();
       $params['seltopic'] = $this->getSelectedTopic();
-	  if ($this->_environment->inCommunityRoom()) {
+     if ($this->_environment->inCommunityRoom()) {
          $params['selinstitution'] = $this->getSelectedInstitution();
-	  }
+     }
       return $params;
    }
 

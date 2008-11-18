@@ -23,6 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+$this->includeClass(DETAIL_VIEW);
 include_once('functions/curl_functions.php');
 
 /**

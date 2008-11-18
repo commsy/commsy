@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_buzzwords_form.php');
-include_once('classes/cs_form_view.php');
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -107,13 +106,19 @@ if ( !empty($_GET['module']) ) {
 
 // Check access rights
 if ( !$current_user->isUser() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }elseif ( empty($linked_rubric) ){
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('BUZZWORD_MISSING_LINKED_RUBRIC'));
    $page->add($errorbox);
 }
@@ -247,7 +252,11 @@ else {
        }else{
        }
       // Display form
-      $form_view = new cs_form_view($environment,'');
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$params);
+      unset($params);
       $form_view->setWithoutDescription();
       $form_view->setAction(curl($environment->getCurrentContextID(),'buzzwords','edit',''));
 

@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('classes/cs_list.php');
 include_once('functions/curl_functions.php');
 
@@ -69,16 +69,11 @@ class cs_detail_view extends cs_view {
     * @param array params parameters in an array of this class
     */
    function cs_detail_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
       $creatorInfoStatus = array();
       if ( isset($params['creator_info_status']) ) {
          $creatorInfoStatus = $params['creator_info_status'];
       }
-      $this->cs_view($environment,$with_modifying_actions);
+      $this->cs_view($params);
       $this->_openCreatorInfo = $creatorInfoStatus;
       $context_item = $this->_environment->getCurrentContextItem();
    }

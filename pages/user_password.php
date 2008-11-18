@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_form.php');
-include_once('classes/cs_form_view.php');
 include_once('functions/text_functions.php');
 
 $authentication = $environment->getAuthenticationObject();
@@ -50,8 +49,11 @@ $user = $user_manager->getItem($iid);
 
 // Check access rights
 if ($user->getItemID() != $current_user->getItemID() and !$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $error_string = getMessage('LOGIN_NOT_ALLOWED').'<br />';
    $errorbox->setText($error_string);
    $page->add($errorbox);
@@ -96,7 +98,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
                   $params = array();
                   $params['iid'] = $iid;
 
-		 include_once('classes/cs_mail_obj.php');
+       include_once('classes/cs_mail_obj.php');
                   $mail_obj = new cs_mail_obj();
                   $mail_obj->setMailFormHeadLine(getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
 
@@ -133,7 +135,11 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
          }
       }
 
-   $form_view = new cs_form_view($environment);
+   $class_params = array();
+   $class_params['environment'] = $environment;
+   $class_params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(FROM_VIEW,$class_params);
+   unset($class_params);
    $form_view->setAction(curl($environment->getCurrentContextID(),$current_module,'password',''));
    $form_view->setForm($form);
    if ($environment->inServer() or $environment->inPortal() ) {

@@ -105,8 +105,12 @@ if($command == 'paste') {
    // Fehlerbehandlung
    if ( !empty($error_array )){
       $err_txt='';
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true, 500);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = 500;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
 
       foreach($error_array as $key=>$error){
          foreach($error as  $filename){

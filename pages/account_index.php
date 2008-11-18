@@ -29,15 +29,20 @@ $current_room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 
 if ( isset($current_room_item) and !$current_room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $current_room_item->getTitle()));
    $page->add($errorbox);
    $error = 'true';
 } elseif ( !$current_user->isModerator() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    if ( $current_user->isGuest() ) {
       $errorbox->setText($translator->getMessage('LOGIN_NOT_ALLOWED'));
    } else {
@@ -466,8 +471,12 @@ if (!isset($error) or !$error) {
       $error_text .= $error_text_on_selection;
    }
    if (!empty($error_text)) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true, 500);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = 500;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText($error_text);
       $page->add($errorbox);
    }

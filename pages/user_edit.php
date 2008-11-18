@@ -104,8 +104,11 @@ $room_item = $environment->getCurrentContextItem();
 if (!empty($iid) and $iid != 'NEW') {
    $current_user = $environment->getCurrentUserItem();
    if (!$user_item->mayEdit($current_user)) { // only user should be allowed to edit her/his own account
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment,true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $error_string = getMessage('LOGIN_NOT_ALLOWED');
       $errorbox->setText($error_string);
       $page->add($errorbox);
@@ -114,8 +117,11 @@ if (!empty($iid) and $iid != 'NEW') {
 }
 $context_item = $environment->getCurrentContextItem();
 if (!$context_item->isOpen()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $error_string = getMessage('PROJECT_ROOM_IS_CLOSED',$context_item->getTitle());
    $errorbox->setText($error_string);
    $page->add($errorbox);
@@ -675,8 +681,11 @@ if ($command != 'error') { // only if user is allowed to edit user
       }
 
       // display form
-      include_once('classes/cs_form_view.php');
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       $room_item = $environment->getCurrentContextItem();
       // Define rubric connections
          $rubric_connection = array();
@@ -698,8 +707,12 @@ if ($command != 'error') { // only if user is allowed to edit user
       $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'edit',''));
       if (!$user_item->mayEditRegular($current_user)) {
          $form_view->warnChanger();
-         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, 500);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }

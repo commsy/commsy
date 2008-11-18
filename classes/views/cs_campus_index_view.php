@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_index_view.php');
+$this->includeClass(INDEX_VIEW);
 
 /**
  *  class for CommSy list view: news
@@ -40,9 +40,7 @@ class cs_campus_index_view extends cs_index_view {
     * @param array params parameters in an array of this class
     */
    function __CONSTRUCT ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = $params['with_modifying_actions'];
-      $this->cs_index_view($environment, $with_modifying_actions);
+      $this->cs_index_view($params);
    }
 
    function _getGetParamsAsArray() {

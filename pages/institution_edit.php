@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_institution_form.php');
-include_once('classes/cs_form_view.php');
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -100,15 +99,21 @@ if ( $current_iid == 'NEW' ) {
 }
 
 if ( $current_iid != 'NEW' and !isset($institution_item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !(($current_iid == 'NEW' and $current_user->isUser()) or
              ($current_iid != 'NEW' and isset($institution_item) and
               $institution_item->mayEdit($current_user))) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -452,13 +457,21 @@ else {
       }
 
       // Display form
-      $form_view = new cs_form_view($environment,'');
+      $class_params = array();
+      $class_params['environment'] = $environment;
+      $class_params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      unset($class_params);
       if (!mayEditRegular($current_user, $institution_item)) {
-        $form_view->warnChanger();
-        include_once('classes/cs_errorbox_view.php');
-        $errorbox = new cs_errorbox_view($environment, true, 500);
-        $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-        $page->add($errorbox);
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->add($errorbox);
       }
       $form_view->setAction(curl($environment->getCurrentContextID(),'institution','edit',''));
       $form_view->setForm($form);

@@ -67,7 +67,7 @@ class cs_item {
    */
    var $_change_modification_on_save = true;
 
-   /** constructor: cs_view
+   /** constructor
    * the only available constructor, initial values for internal variables
    *
    * @author CommSy Development Group
@@ -531,18 +531,18 @@ class cs_item {
    }
 
    function isNotActivated(){
-   	$date = $this->getModificationDate();
+      $date = $this->getModificationDate();
       if ( $date > getCurrentDateTimeInMySQL() ) {
         return true;
       }else{
-      	return false;
+         return false;
       }
    }
 
    function getActivatingDate(){
-   	$retour = '';
+      $retour = '';
       if ($this->isNotActivated()){
-      	$retour = $this->getModificationDate();
+         $retour = $this->getModificationDate();
       }
       return $retour;
    }

@@ -22,12 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$this->includeClass(CAMPUS_INDEX_VIEW);
+$this->includeClass(INDEX_VIEW);
 
 /**
  *  class for CommSy list view: announcement
  */
-class cs_announcement_index_view extends cs_campus_index_view {
+class cs_announcement_index_view extends cs_index_view {
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -35,15 +35,9 @@ class cs_announcement_index_view extends cs_campus_index_view {
     * @param array params parameters in an array of this class
     */
    public function __CONSTRUCT ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_index_view($environment, $with_modifying_actions);
+      $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENTS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENT'));
-      $user = $environment->getCurrentUser();
    }
 
    /** set the content of the list view

@@ -42,16 +42,20 @@ if ($current_user->isGuest()) {
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
 } elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
    $command = 'error';
 } elseif (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
    $command = 'error';
@@ -109,8 +113,12 @@ if ($command != 'error') {
       $form->loadValues();
       if (isset($context_item) and !$context_item->mayEditRegular($current_user)) {
          $form_view->warnChanger();
-                         include_once('classes/cs_errorbox_view.php');
-         $errorbox = new cs_errorbox_view($environment, true, 500);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
          $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
          $page->add($errorbox);
       }

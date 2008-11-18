@@ -23,7 +23,6 @@
 //    along with CommSy.
 
 include_once('classes/cs_discussion_close_form.php');
-include_once('classes/cs_form_view.php');
 
 // Get the current user and context
 $current_user = $environment->getCurrentUserItem();
@@ -48,18 +47,27 @@ if ( $current_iid == 'NEW' ) {
 
 // Check access rights
 if ( $context_item->isProjectRoom() and $context_item->isClosed() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( !isset($discussion_item) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ITEM_DOES_NOT_EXIST', $current_iid));
    $page->add($errorbox);
 } elseif ( !$discussion_item->mayEditIgnoreClose($current_user) ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
    $page->add($errorbox);
 }
@@ -178,16 +186,23 @@ else {
           }
 
           // display form
-          $form_view = new cs_form_view($environment,'');
-          $form_view->setAction(curl($environment->getCurrentContextID(),'discussion','close',''));
-          $form_view->setForm($form);
-          $page->add($form_view);
-       }
+         $class_params = array();
+         $class_params['environment'] = $environment;
+         $class_params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+         unset($class_params);
+         $form_view->setAction(curl($environment->getCurrentContextID(),'discussion','close',''));
+         $form_view->setForm($form);
+         $page->add($form_view);
+      }
    }
    //When discussion is closed, it may still be copied to a material
    else {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('DISCUSSION_UNKNOWN_ACCESS'));
       $page->add($errorbox);
    }

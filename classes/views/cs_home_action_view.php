@@ -23,7 +23,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_view.php');
+$this->includeClass(VIEW);
 include_once('functions/date_functions.php');
 
 /**
@@ -39,13 +39,7 @@ var $_config_boxes = false;
     * @param array params parameters in an array of this class
     */
    function cs_home_action_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_view( $environment,
-                      $with_modifying_actions);
+      $this->cs_view($params);
       $this->setViewName('actions');
       $this->_view_title = getMessage('COMMON_ACTIONS');
    }

@@ -25,8 +25,11 @@
 $context_item = $environment->getCurrentContextItem();
 
 if ( $context_item->isLocked() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    if ( $context_item->isPrivateRoom() ) {
       $room_name = $translator->getMessage('PRIVATEROOM');
    } else {
@@ -35,8 +38,11 @@ if ( $context_item->isLocked() ) {
    $errorbox->setText(getMessage('CONTEXT_IS_LOCKED',$room_name));
    $page->add($errorbox);
 } elseif ( $context_item->isDeleted() and !$context_item->isPortal() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    if ( $context_item->isPrivateRoom() ) {
       $room_name = $translator->getMessage('PRIVATEROOM');
    } else {
@@ -45,8 +51,11 @@ if ( $context_item->isLocked() ) {
    $errorbox->setText(getMessage('CONTEXT_IS_DELETED',$room_name));
    $page->add($errorbox);
 } elseif ( $context_item->isDeleted() and $context_item->isPortal() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view($environment, true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PORTAL_ERROR_DELETED',$context_item->getTitle()));
    $page->add($errorbox);
 } elseif ( $context_item->isProjectroom()
