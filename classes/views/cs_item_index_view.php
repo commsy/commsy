@@ -23,12 +23,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$this->includeClass(CAMPUS_INDEX_VIEW);
+$this->includeClass(INDEX_VIEW);
 
 /**
  *  class for CommSy index list view: index
  */
-class cs_item_index_view extends cs_campus_index_view {
+class cs_item_index_view extends cs_index_view {
 
 var $_max_activity = NULL;
 
@@ -53,7 +53,7 @@ var $_selected_restriction = NULL;
     */
    function cs_item_index_view ($params) {
       $params['viewname'] = 'campus_search_index';
-      $this->cs_campus_index_view($params);
+      $this->cs_index_view($params);
       $this->institution = $this->_translator->getMessage('INSTITUTION');
    }
 

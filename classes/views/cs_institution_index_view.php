@@ -21,12 +21,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$this->includeClass(CAMPUS_INDEX_VIEW);
+$this->includeClass(INDEX_VIEW);
 
 /**
  *  class for CommSy list view: institution
  */
-class cs_institution_index_view extends cs_campus_index_view {
+class cs_institution_index_view extends cs_index_view {
 
    /** constructor
     * the only available constructor, initial values for internal variables

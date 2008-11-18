@@ -23,13 +23,13 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-$this->includeClass(CAMPUS_INDEX_VIEW);
+$this->includeClass(INDEX_VIEW);
 include_once('classes/cs_link.php');
 
 /**
  *  class for CommSy list view: contact
  */
-class cs_account_index_view extends cs_campus_index_view {
+class cs_account_index_view extends cs_index_view {
 
    var $_selected_status = NULL;
    private $_selected_auth_source = NULL;
@@ -42,7 +42,7 @@ class cs_account_index_view extends cs_campus_index_view {
     * @param array params parameters in an array of this class
     */
    function cs_account_index_view ($params) {
-      $this->cs_campus_index_view($params);
+      $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ACCOUNTS'));
       $current_user = $this->_environment->getCurrentUserItem();
 
