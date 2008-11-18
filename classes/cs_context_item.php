@@ -718,16 +718,21 @@ class cs_context_item extends cs_item {
    }
 
    function getColorArray(){
+      global $cs_color;
       $retour = $this->_default_colors;
       if ($this->_issetExtra('COLOR')) {
          $retour = $this->_getExtra('COLOR');
          $retour_temp = array();
-       if ( is_array($retour) ) {
+         if ( is_array($retour) ) {
             foreach ($retour as $key => $entry){
                 $retour_temp[strtolower($key)]= $entry;
             }
-       }
-        $retour = $retour_temp;
+         }
+         $retour = $retour_temp;
+      }
+
+      if (!strstr($retour['schema'],'OWN')){
+         $retour = $cs_color[$retour['schema']];
       }
       return $retour;
    }
