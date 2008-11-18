@@ -68,5 +68,9 @@ class cs_class_factory {
    public function setDesignTo7 () {
       $this->_design_folder = 7;
    }
+
+   public function getDesignVersion (){
+      return $this->_design_folder;
+   }
 }
 ?>
