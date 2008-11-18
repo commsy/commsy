@@ -68,7 +68,7 @@ class cs_guide_list_view extends cs_list_view_plain {
    function cs_guide_list_view ($params) {
       $params['viewname'] = 'guide_list_view';
       $this->cs_plain_list_view($params);
-      if ( $environment->inServer() ) {
+      if ( $this->_environment->inServer() ) {
          $manager = $this->_environment->getPortalManager();
          $this->_max_activity = $manager->getMaxActivityPoints();
       } else {
