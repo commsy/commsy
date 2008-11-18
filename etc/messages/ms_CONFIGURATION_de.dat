@@ -1,4 +1,6 @@
 <?php
+$message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["de"] = "Stellen Sie die Bedingungen der Teilnahme und Nutzungsvereinbarungen ein.";
+$message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["de"] = "Zutrittsbedingungen";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["de"] = "Nutzungsvereinbarungen";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["de"] = "Text";
 $message["CONFIGURATION_AGB_FORM_WANT"]["de"] = "Einschalten?";
@@ -6,6 +8,7 @@ $message["CONFIGURATION_AGB_FORM_WANT_DESC"]["de"] = "Hiermit werden Nutzungsver
 $message["CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme am Portal integriert. Potentielle Mitglieder müssen die AGBs bewußt ankreuzen, um eine Kennung zu erhalten.";
 $message["CONFIGURATION_AGB_TEXT_ERROR"]["de"] = "Bitte geben Sie AGBs an.";
 $message["CONFIGURATION_ANNOUNCEMENT"]["de"] = "Ankündigungen";
+$message["CONFIGURATION_ANNOUNCEMENT_TIME_DAY_END"]["de"] = "Auf der Home anzeigen bis";
 $message["CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE"]["de"] = "Kennung anlegen";
 $message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE"]["de"] = "Passwort ändern";
 $message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL"]["de"] = "URL zur Passwortänderung";
@@ -47,11 +50,12 @@ $message["CONFIGURATION_BACKUP_LINK_DESC"]["de"] = "Einspielen eines Backups von
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["de"] = "Beschreibung";
-$message["CONFIGURATION_COLOR_DESIGN"]["de"] = "Design";
 $message["CONFIGURATION_COLOR_FORM_CHOOSE_TEXT"]["de"] = "Farbschema";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING"]["de"] = "Eröffnung von <br/> %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["de"] = "durch alle NutzerInnen";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_MODERATOR"]["de"] = "nur durch PortalmoderatorInnen";
+$message["CONFIGURATION_CONFIRMATION_FORM_TITLE"]["de"] = "Nutzungsver-<br/>
+einbarungen";
 $message["CONFIGURATION_DATES"]["de"] = "Voreinstellung";
 $message["CONFIGURATION_DATES_CHANGE"]["de"] = "Termindarstellung";
 $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendarstellung und dem Teamkalender als voreingestellte Darstellung der Termine in diesem Raum.";
@@ -62,7 +66,8 @@ $message["CONFIGURATION_DISCUSSION"]["de"] = "Art der Diskussion";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";
 $message["CONFIGURATION_DISCUSSION_DESC_3"]["de"] = "Beide Darstellungen";
-$message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
+$message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
+$message["CONFIGURATION_EXPLANATION_TITLE"]["de"] = "Erläuterung";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum können Einträge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
 $message["CONFIGURATION_EXTRA_CHOOSE_TEXT"]["de"] = "kein Extra";
@@ -92,6 +97,7 @@ $message["CONFIGURATION_HTMLTEXTAREA_CHANGE"]["de"] = "Textformatierung";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_0"]["de"] = "Ohne Icon-Leiste:<br>";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_1"]["de"] = "Mit der Standard-Leiste:<br>";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_2"]["de"] = "Mit der Minimalen-Leiste:<br>";
+$message["CONFIGURATION_IMPORTANT_OPTIONS"]["de"] = "Wichtige Einstellungen";
 $message["CONFIGURATION_LANGUAGE_LINK"]["de"] = "Verfügbare Sprachen";
 $message["CONFIGURATION_LANGUAGE_LINK_DESC"]["de"] = "Einstellung der zur Verfügung stehenden Sprachen.";
 $message["CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_DETAIL"]["de"] = "Einstellungen der Detailansichten";
@@ -130,9 +136,6 @@ $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_1"]["de"] = "Normal";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["de"] = "Detailliert (mit allen neuen Einträgen)";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["de"] = "<br/>ACHTUNG: Diese Seite beansprucht eventuell eine <br/>deutlich höhere Ladezeit!";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["de"] = "Tage";
-$message["CONFIGURATION_PRIVATEROOM_LINK"]["de"] = "Persönliche Räume";
-$message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["de"] = "stehen nur zur Verfügung, wenn andere Raumteilnahmen bestehen";
-$message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["de"] = "stehen immer zur Verfügung (default)";
 $message["CONFIGURATION_PROJECTROOM_LINK"]["de"] = "Zuordnen von <br/>
 %_PROJECT_SUB_DATPL_LOW";
 $message["CONFIGURATION_PROJECTROOM_LINK_MANDATORY"]["de"] = "zwingend";
@@ -144,12 +147,18 @@ $message["CONFIGURATION_ROOM_HOME"]["de"] = "Konfiguration der Home";
 $message["CONFIGURATION_ROOM_HOME_DESC"]["de"] = "Hier können Sie die Darstellung der Rubriken auf der Home festlegen.";
 $message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "Raumeröffnungen";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter welchen Bedingungen wer welche Räume eröffnen darf.";
+$message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
+$message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
 $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt über die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen können Sie einstellen,
 <ul>
 <li><b>welche Rubriken</b> Sie im Raum verwenden möchten und
 </li><li>in <b>welcher Reihenfolge</b> diese Rubriken dargestellt werden sollen.</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewählen.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span>, <span style=&quot;font-weight:bold&quot;>Pfaden</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["de"] = "Zusätzliche Rubrikeinstellungen";
+$message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["de"] = "Wählen Sie die Rubriken im Raum aus und deren Darstellung auf der Home.";
+$message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["de"] = "Einstellung der Rubriken";
 $message["CONFIGURATION_SCRIBD_LINK"]["de"] = "Office-Dokumente";
 $message["CONFIGURATION_SCRIBD_LINK_DESC"]["de"] = "Zugangsdaten für die Integration von Scribd.";
 $message["CONFIGURATION_SELECTION"]["de"] = "Raumanzeige";
@@ -164,16 +173,23 @@ $message["CONFIGURATION_SERVICE_LINK"]["de"] = "Handhabungssupport";
 $message["CONFIGURATION_SERVICE_TITLE"]["de"] = "Handhabungssupport";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["de"] = "als Bereich anzeigen (Standard)";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["de"] = "keine Ankündigungen anzeigen";
+$message["CONFIGURATION_SHOW_EXPANDED"]["de"] = "Ausgeklappte Darstellung als Standard";
+$message["CONFIGURATION_SHOW_STATUS"]["de"] = "Darstellung";
 $message["CONFIGURATION_SKIN_FORM_CHOOSE_TEXT"]["de"] = "Darstellung";
 $message["CONFIGURATION_SORT_ROOMS"]["de"] = "Raumsortierung";
 $message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["de"] = "nach Aktivität (Standard)";
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["de"] = "nach Titel";
 $message["CONFIGURATION_SPONSOR_DESC"]["de"] = "Hier können Sie die Anzeige von Sponsoren und Werbung konfigurieren.";
 $message["CONFIGURATION_SPONSOR_LINK"]["de"] = "Sponsoren und Werbung";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>Schlagwörter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span>.";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_TEXT"]["de"] = "Um die Suche nach Einträgen zu erleichtern, können Sie den Einträgen Schlagworte und Kategorien zuordnen. Kategorien werden in CommSy hierarchisch, Schlagworte als &quot;Wolke&quot; dargestellt.
+
+Mit der Netznavigation können Sie Ihren Beitrag anderen Einträgen zuordnen.";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["de"] = "Strukturierungshilfen";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["de"] = "Schlagwörter und Kategorien";
 $message["CONFIGURATION_TAG_EDIT"]["de"] = "Bearbeitung";
 $message["CONFIGURATION_TAG_EDIT_BY_ALL"]["de"] = "Durch alle TeilnehmerInnen";
-$message["CONFIGURATION_TAG_EDIT_BY_MODERATOR"]["de"] = "Nur durch die ModeratorInnen";
+$message["CONFIGURATION_TAG_EDIT_BY_MODERATOR"]["de"] = "Nur durch ModeratorInnen bearbeitbar";
 $message["CONFIGURATION_TAG_MANDATORY"]["de"] = "Zwingende Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_STATUS"]["de"] = "Zuordnung";

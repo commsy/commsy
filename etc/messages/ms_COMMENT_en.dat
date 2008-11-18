@@ -1,0 +1,3 @@
+<?php
+$message["COMMENT_ENTER_NEW"]["en"] = "Add comment";
+?>

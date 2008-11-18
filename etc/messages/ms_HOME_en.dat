@@ -6,6 +6,7 @@ $message["HOME_ACTIVITY_PAGE_IMPRESSIONS"]["en"] = "Page impressions";
 $message["HOME_ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"]["en"] = "Page impression";
 $message["HOME_ACTIVITY_SHORT_DESCRIPTION"]["en"] = "%1 days";
 $message["HOME_ACTIVITY_SHORT_HEADER"]["en"] = "Activity";
+$message["HOME_ACTIVITY_SHORT_HEADER_DESC"]["en"] = "Activity of the last %1 days";
 $message["HOME_ANNOUNCEMENT_ENTER_NEW"]["en"] = "Add announcement";
 $message["HOME_CAMPUS_INDEX"]["en"] = "Home - The notice board";
 $message["HOME_DATES_SHORT_VIEW_DESCRIPTION"]["en"] = "%1 current or future events out of %2 total";

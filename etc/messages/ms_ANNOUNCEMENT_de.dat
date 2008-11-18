@@ -1,6 +1,7 @@
 <?php
 $message["ANNOUNCEMENT_ACTUAL_TITLE"]["de"] = "Aktuelle Ankündigungen";
 $message["ANNOUNCEMENT_CHANGE_BUTTON"]["de"] = "Ankündigung speichern";
+$message["ANNOUNCEMENT_DETAIL"]["de"] = "Ankündigung";
 $message["ANNOUNCEMENT_EDIT"]["de"] = "Ankündigung ändern";
 $message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ankündigung erstellen";
 $message["ANNOUNCEMENT_INDEX"]["de"] = "Ankündigungen";

@@ -1,5 +1,5 @@
 <?php
-$message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["en"] = "Associate with selected";
+$message["PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON"]["en"] = "associate";
 $message["PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON"]["en"] = "Add forum";
 $message["PREFERENCES_AGB"]["en"] = "Edit Terms and Conditions";
 $message["PREFERENCES_AGB_DESC"]["en"] = "Define and configure Terms and Conditions for this workspace.";
@@ -20,6 +20,8 @@ $message["PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE"]["en"] = "Please define
 $message["PREFERENCES_COMMUNITY_ROOMS"]["en"] = "Association";
 $message["PREFERENCES_CONFIGURATION_BUZZWORD"]["en"] = "Tags";
 $message["PREFERENCES_CONFIGURATION_BUZZWORD_VALUE"]["en"] = "Use tags in this workspace.";
+$message["PREFERENCES_CONFIGURATION_NETNAVIGATION"]["en"] = "Netnavigation";
+$message["PREFERENCES_CONFIGURATION_NETNAVIGATION_VALUE"]["en"] = "Use netnavigation in this workspace.";
 $message["PREFERENCES_CONFIGURATION_PATH"]["en"] = "Activate path feature in topics";
 $message["PREFERENCES_CONFIGURATION_PATH_VALUE"]["en"] = "Active";
 $message["PREFERENCES_CONFIGURATION_TAGS"]["en"] = "Categories";

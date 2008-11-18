@@ -1,4 +1,5 @@
 <?php
+$message["ANNOTATION_ADD_NEW_BUTTON"]["de"] = "Neue Anmerkung speichern";
 $message["ANNOTATION_CHANGE_BUTTON"]["de"] = "Anmerkung speichern";
 $message["ANNOTATION_DELETE_BUTTON"]["de"] = "Anmerkung löschen";
 $message["ANNOTATION_EDIT"]["de"] = "Anmerkung bearbeiten";
