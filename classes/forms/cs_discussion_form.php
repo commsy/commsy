@@ -63,8 +63,8 @@ class cs_discussion_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_discussion_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_discussion_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** set buzzwords from session

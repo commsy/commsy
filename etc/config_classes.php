@@ -27,4 +27,6 @@ $main_folder = 'classes/';
 // views
 include_once('etc/config_classes_views.php');
 
+// forms
+include_once('etc/config_classes_forms.php');
 ?>

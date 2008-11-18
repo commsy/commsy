@@ -22,8 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_discussion_form.php');
-
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
@@ -150,7 +148,10 @@ else {
    else {
 
       // Initialize the form
-      $form = new cs_discussion_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(DISCUSSION_FORM,$class_params);
+      unset($class_params);
 
       include_once('include/inc_fileupload_edit_page_handling.php');
 

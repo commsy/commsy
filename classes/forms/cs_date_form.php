@@ -27,7 +27,7 @@ include_once('classes/cs_rubric_form.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_dates_form extends cs_rubric_form {
+class cs_date_form extends cs_rubric_form {
 
   /**
    * string - containing the headline of the form
@@ -80,13 +80,13 @@ class cs_dates_form extends cs_rubric_form {
 
    var $_session_tag_array = array();
 
-  /** constructor: cs_dates_form
+  /** constructor: cs_date_form
     * the only available constructor
     *
     * @param object environment the environment object
     */
-   function cs_dates_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_date_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    function setCalendarDateStatus(){
