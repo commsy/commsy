@@ -126,20 +126,22 @@ class cs_context_guide_detail_view extends cs_view {
             $html .= '</div>'.LF;
             $html .= BRLF;
          }
-             // portal: community room announcements
+         // portal: community room announcements
          if ($this->_item->isPortal()) {
-            include_once('classes/cs_guide_community_announcement_view.php');
-                $announcement_view = new cs_guide_community_announcement_view($this->_environment);
-                $community_manager = $this->_environment->getCommunityManager();
-                $community_manager->setOpenedLimit();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $announcement_view = $this->_class_factory->getClass(ANNOUNCEMENT_SHORT_COMMUNITY_GUIDE_VIEW);
+            unset($class_params);
+            $community_manager = $this->_environment->getCommunityManager();
+            $community_manager->setOpenedLimit();
             $community_manager->setOrder('activity_rev');
-                $community_manager->select();
-                $community_list = $community_manager->get();
-                if (!$community_list->isEmpty()) {
+            $community_manager->select();
+            $community_list = $community_manager->get();
+            if (!$community_list->isEmpty()) {
                $announcement_view->setList($community_list);
                $html .= $announcement_view->asHTML();
             }
-             }
+         }
 
              // actions
  #            $html .= BR.$this->_getActionsAsHTML();
