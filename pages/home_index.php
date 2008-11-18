@@ -337,60 +337,97 @@ if ( $context_item->isLocked() ) {
       include('pages/private_room_short.php');
    }
 
-
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $context_item->isOpen();
-   $action_view = $class_factory->getClass(HOME_ACTION_VIEW,$params);
-   unset($params);
-   $page->addRight($action_view);
-
-   $current_context = $environment->getCurrentContextItem();
-   include('pages/campus_search_short.php');
-   if ( $current_context->withBuzzwords() ){
+   $design_version = $class_factory->getDesignVersion();
+   if ($design_version == '7'){
+      if ( $current_context->withBuzzwords() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $buzzword_view = $class_factory->getClass(HOME_BUZZWORD_VIEW,$params);
+         unset($params);
+         $page->addRight($buzzword_view);
+      }
+      if ( $current_context->withTags() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $tag_view = $class_factory->getClass(HOME_TAG_VIEW,$params);
+         unset($params);
+         $page->addRight($tag_view);
+      }
+      if ( $current_context->withNetnavigation() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $tag_view = $class_factory->getClass(HOMEPAGE_NETNAVIGATION_VIEW,$params);
+         unset($params);
+         $page->addRight($tag_view);
+      }
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = $context_item->isOpen();
-      $buzzword_view = $class_factory->getClass(HOME_BUZZWORD_VIEW,$params);
+      $usage_info_view = $class_factory->getClass(HOME_USAGEINFO_VIEW,$params);
       unset($params);
-      $page->addRight($buzzword_view);
-   }
-   if ( $current_context->withTags() ){
+      $page->addRight($usage_info_view);
+   }else{
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = $context_item->isOpen();
-      $tag_view = $class_factory->getClass(HOME_TAG_VIEW,$params);
+      $action_view = $class_factory->getClass(HOME_ACTION_VIEW,$params);
       unset($params);
-      $page->addRight($tag_view);
-   }
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $context_item->isOpen();
-   $usage_info_view = $class_factory->getClass(HOME_USAGEINFO_VIEW,$params);
-   unset($params);
-   $page->addRight($usage_info_view);
+      $page->addRight($action_view);
 
-   if ( $current_context->showHomepageLink()
-        or $current_context->showChatLink()
-        or  ($current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink())
+      $current_context = $environment->getCurrentContextItem();
+      include('pages/campus_search_short.php');
+      if ( $current_context->withBuzzwords() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $buzzword_view = $class_factory->getClass(HOME_BUZZWORD_VIEW,$params);
+         unset($params);
+         $page->addRight($buzzword_view);
+      }
+      if ( $current_context->withTags() ){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $tag_view = $class_factory->getClass(HOME_TAG_VIEW,$params);
+         unset($params);
+         $page->addRight($tag_view);
+      }
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = $context_item->isOpen();
+      $usage_info_view = $class_factory->getClass(HOME_USAGEINFO_VIEW,$params);
+      unset($params);
+      $page->addRight($usage_info_view);
+
+      if ( $current_context->showHomepageLink()
+           or $current_context->showChatLink()
+           or  ($current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink())
       ) {
-      $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = $context_item->isOpen();
-      $homepage_extension_view = $class_factory->getClass(HOME_EXTENSION_VIEW,$params);
-      unset($params);
-      $page->addRight($homepage_extension_view);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $homepage_extension_view = $class_factory->getClass(HOME_EXTENSION_VIEW,$params);
+         unset($params);
+         $page->addRight($homepage_extension_view);
+      }
+
+      $context_user = $environment->getCurrentUserItem();
+      if ($context_user->isModerator()){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $configuration_view = $class_factory->getClass(HOME_CONFIGURATION_VIEW,$params);
+         unset($params);
+         $page->addRight($configuration_view);
+      }
    }
 
-   $context_user = $environment->getCurrentUserItem();
-   if ($context_user->isModerator()){
-      $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = $context_item->isOpen();
-      $configuration_view = $class_factory->getClass(HOME_CONFIGURATION_VIEW,$params);
-      unset($params);
-      $page->addRight($configuration_view);
-   }
+
+
+
 } elseif ( $context_item->isServer() or $context_item->isPortal() ) {
    include_once('pages/home_index_guide.php');
 } else {

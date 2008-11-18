@@ -512,6 +512,25 @@ class cs_context_item extends cs_item {
       $this->_addExtra('BUZZWORDMANDATORY',0);
    }
 
+   function isBuzzwordShowExpanded () {
+      $retour = false;
+      if ( $this->_issetExtra('BUZZWORDSHOWEXPANDED') ) {
+         $value = $this->_getExtra('BUZZWORDSHOWEXPANDED');
+         if ($value == 1) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setBuzzwordShowExpanded () {
+      $this->_addExtra('BUZZWORDSHOWEXPANDED',1);
+   }
+
+   function unsetBuzzwordShowExpanded () {
+      $this->_addExtra('BUZZWORDSHOWEXPANDED',0);
+   }
+
 
     /** get htmltextarea status
     *
@@ -2744,6 +2763,66 @@ class cs_context_item extends cs_item {
       $retour = false;
       if ( $this->_issetExtra('WITHTAGS') ){
          $re = $this->_getExtra('WITHTAGS');
+         if ($re == 2){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setTagsShowExpanded () {
+      $this->_addExtra('TAGSSHOWEXPANDED',1);
+   }
+
+   function unsetTagsShowExpanded () {
+      $this->_addExtra('TAGSSHOWEXPANDED',0);
+   }
+
+   function isTagsShowExpanded () {
+      $retour = false;
+      if ( $this->_issetExtra('TAGSSHOWEXPANDED') ) {
+         $value = $this->_getExtra('TAGSSHOWEXPANDED');
+         if ($value == 1) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+
+
+   function isNetnavigationShowExpanded () {
+      $retour = false;
+      if ( $this->_issetExtra('NAVIGATIONSHOWEXPANDED') ) {
+         $value = $this->_getExtra('NAVIGATIONSHOWEXPANDED');
+         if ($value == 1) {
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+   function setNetnavigationShowExpanded () {
+      $this->_addExtra('NAVIGATIONSHOWEXPANDED',1);
+   }
+
+   function unsetNetnavigationShowExpanded () {
+      $this->_addExtra('NAVIGATIONSHOWEXPANDED',0);
+   }
+
+
+   function setWithNetnavigation(){
+      $this->_addExtra('WITHNETNAVIGATION',2);
+   }
+
+   function setWithoutNetnavigation(){
+      $this->_addExtra('WITHNETNAVIGATION',1);
+   }
+
+   function withNetnavigation(){
+      $retour = false;
+      if ( $this->_issetExtra('WITHNETNAVIGATION') ){
+         $re = $this->_getExtra('WITHNETNAVIGATION');
          if ($re == 2){
             $retour = true;
          }
