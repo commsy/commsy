@@ -24,31 +24,5 @@ $message["CONTEXT_ROOM_UNDELETE"]["en"] = "Undelete workspace";
 $message["CONTEXT_ROOM_UNLOCK"]["en"] = "Unlock workspace";
 $message["CONTEXT_SHOWN_ON_HOME"]["en"] = "Yes";
 $message["CONTEXT_SHOW_ON_HOME"]["en"] = "Display on Home / notice board";
-<?php
-$message["CONTEXT_ACTIVITY"]["en"] = "Activity";
-$message["CONTEXT_ACTUALITY"]["en"] = "Display on Home / notice board";
-$message["CONTEXT_ENTER"]["en"] = "enter workspace";
-$message["CONTEXT_ENTER_AS_GUEST"]["en"] = "enter workspace as guest";
-$message["CONTEXT_ENTER_LOGIN"]["en"] = "To get into this room, login first or %1.";
-$message["CONTEXT_ENTER_LOGIN2"]["en"] = "To get into this room, login first.";
-$message["CONTEXT_EXPORT_DESC"]["en"] = "Export workspace";
-$message["CONTEXT_IS_DELETED"]["en"] = "This workspace (%1) has benn deleted.";
-$message["CONTEXT_IS_LOCKED"]["en"] = "This workspace (%1) has been blocked by the moderator/s.";
-$message["CONTEXT_JOIN"]["en"] = "Apply for membership";
-$message["CONTEXT_LANGUAGE"]["en"] = "Language";
-$message["CONTEXT_LANGUAGE_DESC"]["en"] = "Set the user controls language for your workspace. This setting will apply for all users in your workspace.";
-$message["CONTEXT_LANGUAGE_DESC2"]["en"] = "This is the user controls language for your workspace. This setting applies for all users in your workspace.";
-$message["CONTEXT_LANGUAGE_USER"]["en"] = "User preferences";
-$message["CONTEXT_MODERATOR"]["en"] = "Moderator/s";
-$message["CONTEXT_MOVE_ROOM"]["en"] = "assign workspace to a different portal";
-$message["CONTEXT_NOT_SHOWN_ON_HOME"]["en"] = "No";
-$message["CONTEXT_NOT_SHOW_ON_HOME"]["en"] = "Hide on Home / notice board";
-$message["CONTEXT_NO_ROOM"]["en"] = "No %_PROJECT_SUB_NOMS_SMALL";
-$message["CONTEXT_ROOM_ARCHIVE"]["en"] = "Archive room";
-$message["CONTEXT_ROOM_LOCK"]["en"] = "Lock workspace";
-$message["CONTEXT_ROOM_OPEN"]["en"] = "Activate room";
-$message["CONTEXT_ROOM_UNDELETE"]["en"] = "Undelete workspace";
-$message["CONTEXT_ROOM_UNLOCK"]["en"] = "Unlock workspace";
-$message["CONTEXT_SHOWN_ON_HOME"]["en"] = "Yes";
-$message["CONTEXT_SHOW_ON_HOME"]["en"] = "Display on Home / notice board";
+
 ?>
