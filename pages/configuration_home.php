@@ -30,11 +30,11 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
@@ -62,8 +62,11 @@ else {
    include_once('classes/cs_configuration_home_form.php');
    $form = new cs_configuration_home_form($environment);
    // Display form
-   include_once('classes/cs_configuration_home_form_view.php');
-   $form_view = new cs_configuration_home_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_HOME_FORM_VIEW,$params);
+   unset($params);
 
    // Save item
    if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
@@ -80,55 +83,55 @@ else {
                      }else {
                         $value = '7';
                      }
-	            $room_item->setTimeSpread($value);
+               $room_item->setTimeSpread($value);
                   }
                }elseif (!empty($_POST['time_spread'])) {
-	         $room_item->setTimeSpread($_POST['time_spread']);
-	      }
-	      if (!empty($_POST['home_status'])) {
+            $room_item->setTimeSpread($_POST['time_spread']);
+         }
+         if (!empty($_POST['home_status'])) {
             if ($_POST['home_status']=='2'){
-	            $room_item->setHomeStatus('detailed');
+               $room_item->setHomeStatus('detailed');
             }else{
-	            $room_item->setHomeStatus('normal');
+               $room_item->setHomeStatus('normal');
             }
-	      }
+         }
          if ( !$environment->inPrivateRoom() ){
-	         $current_room_modules = array();
-	         $room_item = $environment->getCurrentContextItem();
-	         $home_conf = $room_item->getHomeConf();
-	         $home_conf_array = explode(',',$home_conf);
-	         $current_room_modules = array();
-	         foreach ($home_conf_array as $rubric_conf) {
-	         $rubric_conf_array = explode('_',$rubric_conf);
-	         if ($rubric_conf_array[1] != 'none') {
-	            if ( !empty($_POST[$rubric_conf_array[0]]) ){
-	               $current_room_modules[] = $rubric_conf_array[0].'_'.$_POST[$rubric_conf_array[0]];
-	            } else{
-	               $current_room_modules[] = $rubric_conf_array[0].'_'.$rubric_conf_array[1];
-	            }
-	         } else {
-	            $current_room_modules[] = $rubric_conf_array[0].'_'.$rubric_conf_array[1];
-	         }
-	      }
-	      $room_item->setHomeConf(implode($current_room_modules,','));
+            $current_room_modules = array();
+            $room_item = $environment->getCurrentContextItem();
+            $home_conf = $room_item->getHomeConf();
+            $home_conf_array = explode(',',$home_conf);
+            $current_room_modules = array();
+            foreach ($home_conf_array as $rubric_conf) {
+            $rubric_conf_array = explode('_',$rubric_conf);
+            if ($rubric_conf_array[1] != 'none') {
+               if ( !empty($_POST[$rubric_conf_array[0]]) ){
+                  $current_room_modules[] = $rubric_conf_array[0].'_'.$_POST[$rubric_conf_array[0]];
+               } else{
+                  $current_room_modules[] = $rubric_conf_array[0].'_'.$rubric_conf_array[1];
+               }
+            } else {
+               $current_room_modules[] = $rubric_conf_array[0].'_'.$rubric_conf_array[1];
+            }
+         }
+         $room_item->setHomeConf(implode($current_room_modules,','));
 
 
             $current_room_right_modules = array();
             if (isset($_POST['activity']) and !empty($_POST['activity'])){
                $current_room_right_modules[] = 'activity'.'_'.$_POST['activity'];
-	         }
+            }
             if (isset($_POST['search']) and !empty($_POST['search'])){
                $current_room_right_modules[] = 'search'.'_'.$_POST['search'];
-	         }
+            }
             if (isset($_POST['homeextratools']) and !empty($_POST['homeextratools'])){
                $current_room_right_modules[] = 'homeextratools'.'_'.$_POST['homeextratools'];
-	         }
+            }
             if (isset($_POST['actions']) and !empty($_POST['actions'])){
                $current_room_right_modules[] = 'actions'.'_'.$_POST['actions'];
-	         }
+            }
             if (isset($_POST['usageinfos']) and !empty($_POST['usageinfos'])){
                $current_room_right_modules[] = 'usageinfos'.'_'.$_POST['usageinfos'];
-	         }
+            }
             if (isset($_POST['preferences']) and !empty($_POST['preferences'])){
                $current_room_right_modules[] = 'preferences'.'_'.$_POST['preferences'];
              }
@@ -138,10 +141,10 @@ else {
             if (isset($_POST['tags']) and !empty($_POST['tags'])){
                $current_room_right_modules[] = 'tags'.'_'.$_POST['tags'];
              }
-	         $room_item->setHomeRightConf(implode($current_room_right_modules,','));
+            $room_item->setHomeRightConf(implode($current_room_right_modules,','));
       }
       // save room_item
-	   $room_item->save();
+      $room_item->save();
       $form_view->setItemIsSaved();
       $is_saved = true;
    }

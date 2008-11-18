@@ -47,8 +47,11 @@ else {
    // Initialize the form
    include_once('classes/cs_configuration_portal_home_form.php');
    $form = new cs_configuration_portal_home_form($environment);
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
    // Save item
    if ( !empty($command)
@@ -62,21 +65,21 @@ else {
          if ( isset($_POST['announcement']) and !empty($_POST['announcement']) and $_POST['announcement'] == 2 ) {
             $room_item->setShowNoAnnouncementsOnHome();
          } else {
-	   $room_item->setShowAnnouncementsOnHome();
-	}
+      $room_item->setShowAnnouncementsOnHome();
+   }
 
          if ( isset($_POST['room_sort']) and !empty($_POST['room_sort']) and $_POST['room_sort'] == 2 ) {
             $room_item->setSortRoomsByTitleOnHome();
          } else {
             $room_item->setSortRoomsByActivityOnHome();
-	}
+   }
          if ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 3 ) {
             $room_item->setShowRoomsOnHome('onlycommunityrooms');
          } elseif ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 2 ) {
             $room_item->setShowRoomsOnHome('preselectcommunityrooms');
          }else {
             $room_item->setShowRoomsOnHome('normal');
-	}
+   }
 
          // Save item
          $room_item->save();

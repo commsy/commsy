@@ -79,11 +79,11 @@ $room_item = $environment->getCurrentContextItem();
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif (!$current_user->isModerator()) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
@@ -100,9 +100,11 @@ if (empty($command)) {
    $form->prepareForm();
    $form->loadValues();
 
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
-   #$form_view = new cs_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
    $form_view->setAction(curl($environment->getCurrentContextID(),'account','status',''));
    $form_view->setForm($form);
    if ( $environment->inServer() or $environment->inPortal() ) {
@@ -114,7 +116,7 @@ if (empty($command)) {
    $history = $session->getValue('history');
    $back_hop = 1;
    while ($history[$back_hop]['function'] == 'status' or $history[$back_hop]['module'] == 'mail') {
-	   $back_hop++;
+      $back_hop++;
    }
    redirect($history[$back_hop]['context'],$history[$back_hop]['module'],$history[$back_hop]['function'],$history[$back_hop]['parameter']);
 } elseif (isOption($command,getMessage('COMMON_CHANGE_BUTTON')) or isOption($command,getMessage('ACCOUNT_DELETE_BUTTON'))) {
@@ -170,17 +172,17 @@ if (empty($command)) {
       $language = '';
       if ( $environment->inProjectRoom() or $environment->inCommunityRoom()) {
          $language = $context_item->getLanguage();
-	if ($language == 'user') {
+   if ($language == 'user') {
             $language = $user->getLanguage();
-	   if ($language == 'browser') {
-	      $lanugage = $environment->getSelectedLanguage();
-	   }
-	}
+      if ($language == 'browser') {
+         $lanugage = $environment->getSelectedLanguage();
+      }
+   }
       } else {
          $language = $user->getLanguage();
-	if ($language == 'browser') {
-	   $lanugage = $environment->getSelectedLanguage();
-	}
+   if ($language == 'browser') {
+      $lanugage = $environment->getSelectedLanguage();
+   }
       }
       include_once('classes/cs_mail_obj.php');
       $mail_obj = new cs_mail_obj();
@@ -348,17 +350,17 @@ if (empty($command)) {
          $language = '';
          if ( $environment->inProjectRoom() or $environment->inCommunityRoom()) {
             $language = $context_item->getLanguage();
-		    if ($language == 'user') {
+          if ($language == 'user') {
                $language = $user->getLanguage();
-		       if ($language == 'browser') {
-			      $lanugage = $environment->getSelectedLanguage();
-		       }
-		    }
+             if ($language == 'browser') {
+               $lanugage = $environment->getSelectedLanguage();
+             }
+          }
          } else {
             $language = $user->getLanguage();
-		    if ($language == 'browser') {
-			   $lanugage = $environment->getSelectedLanguage();
-		    }
+          if ($language == 'browser') {
+            $lanugage = $environment->getSelectedLanguage();
+          }
          }
          include_once('classes/cs_mail_obj.php');
          $mail_obj = new cs_mail_obj();
@@ -413,8 +415,8 @@ if (empty($command)) {
          // get back link out of history
          $history = $session->getValue('history');
          $back_hop = 1; // must be one hop, so no if-clause here
-		 while ($history[$back_hop]['function'] == 'status' or $history[$back_hop]['module'] == 'mail') {
-	        $back_hop++;
+       while ($history[$back_hop]['function'] == 'status' or $history[$back_hop]['module'] == 'mail') {
+           $back_hop++;
          }
          $mail_obj->setBackLink($history[$back_hop]['context'],
                                 $history[$back_hop]['module'],
@@ -423,8 +425,11 @@ if (empty($command)) {
          $mail_obj->toSession();
          redirect($environment->getCurrentContextID(),'mail','process','');
       } else {
-         include_once('classes/cs_configuration_form_view.php');
-         $form_view = new cs_configuration_form_view($environment);
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+         unset($params);
          $form_view->setAction(curl($environment->getCurrentContextID(),'account','status',''));
          $form_view->setForm($form);
          if ( $environment->inServer() or $environment->inPortal() ) {

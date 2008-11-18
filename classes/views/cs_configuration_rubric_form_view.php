@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_configuration_form_view.php');
+$this->includeClass(CONFIGURATION_FORM_VIEW);
 
 /** class for a form view in commsy-style
  * this class implements a form view
@@ -35,12 +35,10 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
    /** constructor: cs_form_view
     * the only available constructor, initial values for internal variables
     *
-    * @param cs_item environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_configuration_rubric_form_view ($environment, $with_modifying_actions = true) {
-      $this->cs_configuration_form_view($environment, $with_modifying_actions);
+   function cs_configuration_rubric_form_view ($params) {
+      $this->cs_configuration_form_view($params);
    }
 
 
@@ -59,8 +57,8 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
       }
       $context_item = $this->_environment->getCurrentContextItem();
       $color = $context_item->getColorArray();
-	   $bgcolor = $color['tabs_background'];
-	   $color = $color['tabs_title'];
+      $bgcolor = $color['tabs_background'];
+      $color = $color['tabs_title'];
       $html  = '';
       $html .= BRLF;
       if (!empty($form_element['descriptionText'])){
@@ -76,11 +74,11 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
       $html .= ' tabindex="'.$this->_count_form_elements.'"';
       $width = '12em';
       if ($this->_environment->inCommunityRoom()){
-		$width = '12em';
-	  }elseif ($this->_environment->inPrivateRoom()){
-		$width = '12em';
-	  }
-	  $html.=' style="width:'.$width.'; font-size: 10pt; background-color:'.$bgcolor.'; color:'.$color.';font-weight:bold;"';
+      $width = '12em';
+     }elseif ($this->_environment->inPrivateRoom()){
+      $width = '12em';
+     }
+     $html.=' style="width:'.$width.'; font-size: 10pt; background-color:'.$bgcolor.'; color:'.$color.';font-weight:bold;"';
 
       $html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
       $html .= '>'.LF;
@@ -127,7 +125,7 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
    function _getFormElementAsHTML ($form_element, $without_description=false) {
       if ( !isset($form_element[0]['type']) or $form_element[0]['type'] != 'select' ){
          return parent:: _getFormElementAsHTML ($form_element, $without_description=false);
-	  }else{
+     }else{
       // prepare form element array for combined form elements
       $form_element_array = array();
       $description_span=0;
@@ -147,16 +145,16 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
       $first = true;
       $context_item = $this->_environment->getCurrentContextItem();
       $context_color = $context_item->getColorArray();
-	   $bgcolor = $context_color['tabs_focus'];
-	   $color = $context_color['tabs_title'];
+      $bgcolor = $context_color['tabs_focus'];
+      $color = $context_color['tabs_title'];
       foreach ($form_element_array as $form_element) {
          if ($first) {
             if ($form_element['type'] == 'select') {
-			   $html .= '<div style="border-bottom: 1px solid black; margin-bottom:10px; font-weight:bold;"> <div style="background-color:'.$bgcolor.'; color:'.$color.'; padding-top:3px; padding-bottom:1px; padding-left: 4px;padding-right: 4px; font-size:10pt;">'.getMessage('HOME_INDEX').'</div>'.LF;
+            $html .= '<div style="border-bottom: 1px solid black; margin-bottom:10px; font-weight:bold;"> <div style="background-color:'.$bgcolor.'; color:'.$color.'; padding-top:3px; padding-bottom:1px; padding-left: 4px;padding-right: 4px; font-size:10pt;">'.getMessage('HOME_INDEX').'</div>'.LF;
             }else{
-			   $html .= '<div style="padding-left:10em; font-weight:bold;">';
-			}
-			 $first = false;
+            $html .= '<div style="padding-left:10em; font-weight:bold;">';
+         }
+          $first = false;
          } else {
             $html .= '<!-- COMBINED FIELDS -->'."\n";
          }

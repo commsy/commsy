@@ -22,36 +22,34 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Load required function libraries and class definitions
-include_once('classes/cs_homepage_detail_view.php');
-
 $error = false;
 $current_context = $environment->getCurrentContextItem();
 
 // Verify parameters for this page
 if (!$current_context->showHomepageLink()) {
-         include_once('classes/cs_errorbox_view.php');
-	$errorbox = new cs_errorbox_view($environment, true);
-	$errorbox->setText(getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
-	$page->add($errorbox);
-	$error = true;
+   include_once('classes/cs_errorbox_view.php');
+   $errorbox = new cs_errorbox_view($environment, true);
+   $errorbox->setText(getMessage('HOMEPAGE_ERROR_NOT_ACTIVATED'));
+   $page->add($errorbox);
+   $error = true;
 } elseif (!empty($_GET['iid'])) {
-	$current_item_id = $_GET['iid'];
-	$homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
-	$homepage_item = $homepage_manager->getItem($current_item_id);
-	if ( !isset($homepage_item) ) {
-                 include_once('classes/cs_errorbox_view.php');
-		$errorbox = new cs_errorbox_view($environment, true);
-		$errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
-		$page->add($errorbox);
-		$error = true;
-	}
+   $current_item_id = $_GET['iid'];
+   $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
+   $homepage_item = $homepage_manager->getItem($current_item_id);
+   if ( !isset($homepage_item) ) {
+      include_once('classes/cs_errorbox_view.php');
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $page->add($errorbox);
+      $error = true;
+   }
 } elseif (!empty($_GET['cid'])) {
-	$homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
-	$homepage_item = $homepage_manager->getRootPageItem($_GET['cid']);
+   $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
+   $homepage_item = $homepage_manager->getRootPageItem($_GET['cid']);
 } else {
-	include_once('functions/error_functions.php');trigger_error('A page item id must be given.', E_USER_ERROR);
-	$error = true;
+   include_once('functions/error_functions.php');
+   trigger_error('A page item id must be given.', E_USER_ERROR);
+   $error = true;
 }
 
 //used to signal which "creator infos" are expanded ...
@@ -62,27 +60,32 @@ if (!empty($_GET['creator_info_max'])) {
 
 if (!$error) {
 
-	$detail_view = new cs_homepage_detail_view($environment,true,$creatorInfoStatus);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $params['creator_info_status'] = $creatorInfoStatus;
+   $detail_view = $class_factory->getClass(HOMEPAGE_DETAIL_VIEW,$params);
+   unset($params);
 
-	// set the view's item
-	$current_user = $environment->getCurrentUser();
-	if ( $homepage_item->isDeleted() ) {
+   // set the view's item
+   $current_user = $environment->getCurrentUser();
+   if ( $homepage_item->isDeleted() ) {
                  include_once('classes/cs_errorbox_view.php');
-		$errorbox = new cs_errorbox_view($environment, true);
-		$errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
-		$page->add($errorbox);
-	} else {
-		$detail_view->setItem($homepage_item);
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $page->add($errorbox);
+   } else {
+      $detail_view->setItem($homepage_item);
 
-		//Set Read
-		$reader_manager = $environment->getReaderManager();
-		$reader = $reader_manager->getLatestReader($homepage_item->getItemID());
-		if ( empty($reader) or $reader['read_date'] < $homepage_item->getModificationDate() ) {
-			$reader_manager->markRead($homepage_item->getItemID(),0);
-		}
+      //Set Read
+      $reader_manager = $environment->getReaderManager();
+      $reader = $reader_manager->getLatestReader($homepage_item->getItemID());
+      if ( empty($reader) or $reader['read_date'] < $homepage_item->getModificationDate() ) {
+         $reader_manager->markRead($homepage_item->getItemID(),0);
+      }
 
-		$page->add($detail_view);
-		$page->setShownHomepageItemID($homepage_item->getItemID());
-	}
+      $page->add($detail_view);
+      $page->setShownHomepageItemID($homepage_item->getItemID());
+   }
 }
 ?>

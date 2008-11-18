@@ -103,8 +103,11 @@ if ( $command != 'error' ) {
       }
 
       // display form
-      include_once('classes/cs_configuration_form_view.php');
-      $form_view = new cs_configuration_form_view($environment,'');
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+      unset($params);
       $form_view->setAction(curl($environment->getCurrentContextID(),'mail','process',''));
       $form_view->setForm($form);
       if ( $environment->inServer() or $environment->inPortal() ) {

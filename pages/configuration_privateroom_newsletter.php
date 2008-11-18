@@ -47,8 +47,11 @@ else {
    // Initialize the form
    include_once('classes/cs_configuration_privateroom_newsletter_form.php');
    $form = new cs_configuration_privateroom_newsletter_form($environment);
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
    // Save item
    if ( !empty($command)
@@ -65,12 +68,12 @@ else {
             }elseif ($_POST['newsletter'] == '2'){
                $room_item->setPrivateRoomNewsletterActivity('weekly');
             }
-	      } else {
-	         $room_item->setPrivateRoomNewsletterActivity('none');
-	      }
+         } else {
+            $room_item->setPrivateRoomNewsletterActivity('none');
+         }
 
-	      // Save item
-	      $room_item->save();
+         // Save item
+         $room_item->save();
          $form_view->setItemIsSaved();
 #         $room_item->_sendPrivateRoomNewsletter();exit();
          $is_saved = true;

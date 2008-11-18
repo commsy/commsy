@@ -29,11 +29,11 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
@@ -64,21 +64,24 @@ else {
    include_once('classes/cs_configuration_path_form.php');
    $form = new cs_configuration_path_form($environment);
    // Display form
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
-	// Save item
+   // Save item
    if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
-	if ( isset($_POST['path']) and !empty($_POST['path']) and $_POST['path'] == 'yes') {
-	  $room_item->setWithPath();
+   if ( isset($_POST['path']) and !empty($_POST['path']) and $_POST['path'] == 'yes') {
+     $room_item->setWithPath();
          } else {
            $room_item->setWithoutPath();
          }
 
-	      // save room_item
-	$room_item->save();
+         // save room_item
+   $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
       }

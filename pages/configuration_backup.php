@@ -97,8 +97,11 @@ else {
    include_once('classes/cs_configuration_backup_form.php');
    $form = new cs_configuration_backup_form($environment);
    // Display form
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
    // Load form data from postvars
    if ( !empty($_POST) ) {
@@ -114,20 +117,20 @@ else {
          if ( !empty($_FILES['upload']['tmp_name'])
               and $_FILES['upload']['size'] > 0 ) {
             // scanning virus
-	   if (isset($c_virus_scan) and $c_virus_scan) {
-	      include_once('classes/cs_virus_scan.php');
-	      $virus_scanner = new cs_virus_scan($environment);
-	      if ($virus_scanner->isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])) {
+      if (isset($c_virus_scan) and $c_virus_scan) {
+         include_once('classes/cs_virus_scan.php');
+         $virus_scanner = new cs_virus_scan($environment);
+         if ($virus_scanner->isClean($_FILES['upload']['tmp_name'],$_FILES['upload']['name'])) {
                   // no error
-	      } else {
+         } else {
                   include_once('classes/cs_errorbox_view.php');
-		 $errorbox = new cs_errorbox_view($environment, true, 500);
-		 $errorbox->setText($virus_scanner->getOutput());
-		 $page->add($errorbox);
-		 $focus_element_onload = '';
-		 $error_on_upload = true;
-	      }
-	   }
+       $errorbox = new cs_errorbox_view($environment, true, 500);
+       $errorbox->setText($virus_scanner->getOutput());
+       $page->add($errorbox);
+       $focus_element_onload = '';
+       $error_on_upload = true;
+         }
+      }
 
             // import
             if ( !isset($error_on_upload) or !$error_on_upload ) {
@@ -159,9 +162,9 @@ else {
                   $current_commsy_version = getCommSyVersion();
                   if ( $current_commsy_version != $commsy_version ) {
                      include_once('classes/cs_errorbox_view.php');
-		    $errorbox = new cs_errorbox_view($environment, true, 500);
-		    $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_WARNING_VERSION',$current_commsy_version,$commsy_version));
-		    $page->add($errorbox);
+          $errorbox = new cs_errorbox_view($environment, true, 500);
+          $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_WARNING_VERSION',$current_commsy_version,$commsy_version));
+          $page->add($errorbox);
                   }
                   foreach ($xml_object->data->children() as $list) {
                      $name = str_replace('_list','',$list->getName());
@@ -170,19 +173,19 @@ else {
                      $success = $manager->backupDataFromXMLObject($list);
                      if (!isset($success) or !$success) {
                         include_once('classes/cs_errorbox_view.php');
-		       $errorbox = new cs_errorbox_view($environment, true, 500);
-		       $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_MODULE',$name));
-		       $page->add($errorbox);
+             $errorbox = new cs_errorbox_view($environment, true, 500);
+             $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_MODULE',$name));
+             $page->add($errorbox);
                      } else {
-	               $form_view->setItemIsSaved();
-	               $is_saved = true;
+                  $form_view->setItemIsSaved();
+                  $is_saved = true;
                      }
                   }
                } else {
                   include_once('classes/cs_errorbox_view.php');
-		 $errorbox = new cs_errorbox_view($environment, true, 500);
-		 $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_FILE'));
-		 $page->add($errorbox);
+       $errorbox = new cs_errorbox_view($environment, true, 500);
+       $errorbox->setText($translator->getMessage('PREFERENCES_BACKUP_ERROR_FILE'));
+       $page->add($errorbox);
                }
             }
          }

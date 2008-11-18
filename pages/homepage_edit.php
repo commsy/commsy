@@ -203,8 +203,11 @@ else {
       }
 
       // Initialize the form
-      include_once('classes/cs_homepage_detail_view.php');
-      $form = new cs_homepage_detail_view($environment);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form = $class_factory->getClass(HOMEPAGE_DETAIL_VIEW,$params);
+      unset($params);
       $form->switch2Form();
 
       // Load form data from postvars

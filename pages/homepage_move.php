@@ -27,33 +27,33 @@ $error = false;
 // Verify parameters for this page
 $current_item_id = '';
 if (!empty($_GET['iid'])) {
-	$current_item_id = $_GET['iid'];
-	$homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
-	$homepage_item = $homepage_manager->getItem($current_item_id);
-	if ( !isset($homepage_item) ) {
+   $current_item_id = $_GET['iid'];
+   $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
+   $homepage_item = $homepage_manager->getItem($current_item_id);
+   if ( !isset($homepage_item) ) {
                  include_once('classes/cs_errorbox_view.php');
-		$errorbox = new cs_errorbox_view($environment, true);
-		$errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
-		$page->addError($errorbox);
-		$error = true;
-	}
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $page->addError($errorbox);
+      $error = true;
+   }
 } elseif (!empty($_POST['iid'])) {
-	$current_item_id = $_POST['iid'];
-	$homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
-	$homepage_item = $homepage_manager->getItem($current_item_id);
-	if ( !isset($homepage_item) ) {
+   $current_item_id = $_POST['iid'];
+   $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
+   $homepage_item = $homepage_manager->getItem($current_item_id);
+   if ( !isset($homepage_item) ) {
                  include_once('classes/cs_errorbox_view.php');
-		$errorbox = new cs_errorbox_view($environment, true);
-		$errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
-		$page->addError($errorbox);
-		$error = true;
-	}
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ERROR_ILLEGAL_IID'));
+      $page->addError($errorbox);
+      $error = true;
+   }
 } elseif (!empty($_GET['cid'])) {
-	$homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
-	$homepage_item = $homepage_manager->getRootPageItem($_GET['cid']);
+   $homepage_manager = $environment->getManager(CS_HOMEPAGE_TYPE);
+   $homepage_item = $homepage_manager->getRootPageItem($_GET['cid']);
 } else {
-	include_once('functions/error_functions.php');trigger_error('A page item id must be given.', E_USER_ERROR);
-	$error = true;
+   include_once('functions/error_functions.php');trigger_error('A page item id must be given.', E_USER_ERROR);
+   $error = true;
 }
 
 // Check access rights
@@ -83,56 +83,59 @@ if ( $context_item->isClosed() ) {
 // Access granted
 
 if (!$error) {
-	// Find out what to do
-	if ( isset($_POST['option']) ) {
-		$command = $_POST['option'];
-	} else {
-		$command = '';
-	}
+   // Find out what to do
+   if ( isset($_POST['option']) ) {
+      $command = $_POST['option'];
+   } else {
+      $command = '';
+   }
 
-	// Cancel editing
-	if ( isOption($command, getMessage('HOMEPAGE_MOVE_END_BUTTON')) ) {
-		$params = array();
-		if ( !empty($current_item_id) ) {
-			$params['iid'] = $current_item_id;
-		}
-		redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'detail', $params);
-	}
+   // Cancel editing
+   if ( isOption($command, getMessage('HOMEPAGE_MOVE_END_BUTTON')) ) {
+      $params = array();
+      if ( !empty($current_item_id) ) {
+         $params['iid'] = $current_item_id;
+      }
+      redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'detail', $params);
+   }
 
-	if ( isset($_GET['direction']) ) {
-		$move = $_GET['direction'];
-	} else {
-		$move = '';
-	}
+   if ( isset($_GET['direction']) ) {
+      $move = $_GET['direction'];
+   } else {
+      $move = '';
+   }
 
-	// move page
-	if ( !empty($move) ) {
-		if ($move == 'up') {
-			$homepage_item->moveUp();
-		} elseif ($move == 'down') {
-			$homepage_item->moveDown();
-		} elseif ($move == 'left') {
-			$homepage_item->moveLeft();
-		} elseif ($move == 'right') {
-			$homepage_item->moveRight();
-		}
-	}
+   // move page
+   if ( !empty($move) ) {
+      if ($move == 'up') {
+         $homepage_item->moveUp();
+      } elseif ($move == 'down') {
+         $homepage_item->moveDown();
+      } elseif ($move == 'left') {
+         $homepage_item->moveLeft();
+      } elseif ($move == 'right') {
+         $homepage_item->moveRight();
+      }
+   }
 
-    include_once('classes/cs_homepage_move_view.php');
-	$detail_view = new cs_homepage_move_view($environment,true);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $detail_view = $class_factory->getClass(HOMEPAGE_MOVE_VIEW,$params);
+   unset($params);
 
-	// set the view's item
-	$current_user = $environment->getCurrentUser();
-	if ( $homepage_item->isDeleted() ) {
+   // set the view's item
+   $current_user = $environment->getCurrentUser();
+   if ( $homepage_item->isDeleted() ) {
                  include_once('classes/cs_errorbox_view.php');
-		$errorbox = new cs_errorbox_view($environment, true);
-		$errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
-		$page->add($errorbox);
-	} else {
-		$detail_view->setItem($homepage_item);
+      $errorbox = new cs_errorbox_view($environment, true);
+      $errorbox->setText(getMessage('ITEM_NOT_AVAILABLE'));
+      $page->add($errorbox);
+   } else {
+      $detail_view->setItem($homepage_item);
 
-		$page->add($detail_view);
-		$page->setShownHomepageItemID($homepage_item->getItemID());
-	}
+      $page->add($detail_view);
+      $page->setShownHomepageItemID($homepage_item->getItemID());
+   }
 }
 ?>

@@ -38,11 +38,14 @@ class cs_configuration_form_view extends cs_form_view {
    /** constructor: cs_configuration_form_view
     * the only available constructor, initial values for internal variables
     *
-    * @param cs_item environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_configuration_form_view ($environment, $with_modifying_actions = true) {
+   function cs_configuration_form_view ($params) {
+      $environment = $params['environment'];
+      $with_modifying_actions = true;
+      if ( isset($params['with_modifying_actions']) ) {
+         $with_modifying_actions = $params['with_modifying_actions'];
+      }
       $this->cs_form_view($environment, $with_modifying_actions);
    }
 

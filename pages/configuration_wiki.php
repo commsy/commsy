@@ -91,8 +91,11 @@ else {
    include_once('classes/cs_configuration_wiki_form.php');
    $form = new cs_configuration_wiki_form($environment);
    // display form
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
    // Load form data from postvars
    if ( !empty($_POST) ) {

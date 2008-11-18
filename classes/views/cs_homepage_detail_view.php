@@ -38,11 +38,18 @@ class cs_homepage_detail_view extends cs_detail_view {
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            the CommSy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_homepage_detail_view ($environment, $with_modifying_actions=true,$creatorInfoStatus=array()) {
+   function cs_homepage_detail_view ($params) {
+      $environment = $params['environment'];
+      $with_modifying_actions = true;
+      if ( isset($params['with_modifying_actions']) ) {
+         $with_modifying_actions = $params['with_modifying_actions'];
+      }
+      $creatorInfoStatus = array();
+      if ( isset($params['creator_info_status']) ) {
+         $creatorInfoStatus = $params['creator_info_status'];
+      }
       $this->cs_detail_view($environment, 'announcement', $with_modifying_actions,$creatorInfoStatus);
    }
 

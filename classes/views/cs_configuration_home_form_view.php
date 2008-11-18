@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_configuration_form_view.php');
+$this->includeClass(CONFIGURATION_FORM_VIEW);
 include_once('classes/cs_link.php');
 include_once('classes/cs_list.php');
 
@@ -38,12 +38,10 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
    /** constructor: cs_configuration_form_view
     * the only available constructor, initial values for internal variables
     *
-    * @param cs_item environment            commsy environment
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_configuration_home_form_view ($environment, $with_modifying_actions = true) {
-      $this->cs_form_view($environment, $with_modifying_actions);
+   function cs_configuration_home_form_view ($params) {
+      $this->cs_configuration_form_view($params);
    }
 
    function setItemIsSaved(){

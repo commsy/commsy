@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_configuration_form_view.php');
+$this->includeClass(CONFIGURATION_FORM_VIEW);
 include_once('classes/cs_link.php');
 include_once('classes/cs_list.php');
 
@@ -41,12 +41,7 @@ class cs_color_configuration_form_view extends cs_configuration_form_view {
     * @param array params parameters in an array of this class
     */
    public function __CONSTRUCT ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $this->cs_configuration_form_view($environment, $with_modifying_actions);
+      $this->cs_configuration_form_view($params);
    }
 
 

@@ -75,8 +75,11 @@ else {
       include_once('classes/cs_configuration_mail_form.php');
       $form = new cs_configuration_mail_form($environment);
       // Display form
-      include_once('classes/cs_configuration_form_view.php');
-      $form_view = new cs_configuration_form_view($environment);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+      unset($params);
 
       if ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON')) ) {
          $translator = $environment->getTranslationObject();

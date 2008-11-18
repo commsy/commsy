@@ -63,8 +63,11 @@ else {
       include_once('plugins/ads/class_configuration_plugin_form.php');
       $form = new class_configuration_plugin_form($environment);
       // display form
-      include_once('classes/cs_configuration_form_view.php');
-      $form_view = new cs_configuration_form_view($environment);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+      unset($params);
 
       if ( isOption($command, getMessage('ADS_AD_NORMAL_SPONSOR_BUTTON'))  or
            isOption($command, getMessage('ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON')) ) {

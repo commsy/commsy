@@ -370,9 +370,12 @@ if ($current_user->isGuest()) {
                include_once('classes/cs_form_view.php');
                $form_view = new cs_form_view($environment,'');
             } else {
-               include_once('classes/cs_configuration_form_view.php');
                $current_context = $environment->getCurrentContextItem();
-               $form_view = new cs_configuration_form_view($environment,$current_context->isOpen());
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = $current_context->isOpen();
+               $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+               unset($params);
             }
 
          // display form
@@ -387,9 +390,12 @@ if ($current_user->isGuest()) {
 
             // im Konfigurationsbereich eines Raumes
             } else {
-               include_once('classes/cs_configuration_form_view.php');
                $current_context = $environment->getCurrentContextItem();
-               $form_view = new cs_configuration_form_view($environment,$current_context->isOpen());
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = $current_context->isOpen();
+               $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+               unset($params);
             }
          }
 
@@ -448,7 +454,7 @@ if ($current_user->isGuest()) {
                   $_FILES['logo']['tmp_name'] = $new_temp_name;
                   $session_item = $environment->getSessionItem();
                   if (!isset($room_iid) or empty($room_iid)){
-                  	$room_iid = $environment->getCurrentContextID();
+                     $room_iid = $environment->getCurrentContextID();
                   }
                   if ( isset($session_item) ) {
                      $session_item->setValue($environment->getCurrentContextID().'_pref_'.$room_iid.'_logo_temp_name',$new_temp_name);

@@ -50,8 +50,11 @@ else {
    // Initialize the form
    include_once('classes/cs_configuration_archive_form.php');
    $form = new cs_configuration_archive_form($environment);
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
    // Save item
    if ( !empty($command)
@@ -97,8 +100,8 @@ else {
          if ( isset($_POST['description'])){
             $room_item->setTemplateDescription($_POST['description']);
          }
-	      // Save item
-	      $room_item->save();
+         // Save item
+         $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
 

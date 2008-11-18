@@ -59,15 +59,18 @@ else {
       include_once('classes/cs_configuration_news_form.php');
       $form = new cs_configuration_news_form($environment);
       // Display form
-      include_once('classes/cs_configuration_form_view.php');
-      $form_view = new cs_configuration_form_view($environment);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+      unset($params);
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
          $form->setFormPost($_POST);
       } else {
-		 $form->setItem($room_item);
-	  }
+       $form->setItem($room_item);
+     }
       $form->prepareForm();
       $form->loadValues();
 
@@ -76,26 +79,26 @@ else {
 
          if ( $form->check() ) {
 
-			if (!empty($_POST['title'])) {
-			   $room_item->setServerNewsTitle($_POST['title']);
-			} else {
-			   $room_item->setServerNewsTitle('');
-			}
-			if (!empty($_POST['link'])) {
-			   $room_item->setServerNewsLink($_POST['link']);
-			} else {
-			   $room_item->setServerNewsLink('');
-			}
-			if (!empty($_POST['text'])) {
-			   $room_item->setServerNewsText($_POST['text']);
-			} else {
-			   $room_item->setServerNewsText('');
-			}
-			if ($_POST['show'] == 1) {
-			   $room_item->setShowServerNews();
-			} elseif ($_POST['show'] == -1) {
-			   $room_item->setDontShowServerNews();
-			}
+         if (!empty($_POST['title'])) {
+            $room_item->setServerNewsTitle($_POST['title']);
+         } else {
+            $room_item->setServerNewsTitle('');
+         }
+         if (!empty($_POST['link'])) {
+            $room_item->setServerNewsLink($_POST['link']);
+         } else {
+            $room_item->setServerNewsLink('');
+         }
+         if (!empty($_POST['text'])) {
+            $room_item->setServerNewsText($_POST['text']);
+         } else {
+            $room_item->setServerNewsText('');
+         }
+         if ($_POST['show'] == 1) {
+            $room_item->setShowServerNews();
+         } elseif ($_POST['show'] == -1) {
+            $room_item->setDontShowServerNews();
+         }
             $room_item->save();
             $form_view->setItemIsSaved();
             $is_saved = true;
