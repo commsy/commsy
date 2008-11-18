@@ -158,6 +158,8 @@ if ( $environment->inProjectRoom()
    } else {
       $class_factory->setDesignTo7();
    }
+}else{
+   $class_factory->setDesignTo6();
 }
 
 $server_item = $environment->getServerItem();
