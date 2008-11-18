@@ -66,17 +66,22 @@ class cs_detail_view extends cs_view {
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
     *
-    * @param object  environment            the CommSy environment
-    * @param string  viewname               a name for this view (e.g. news, dates)
-    * @param boolean with_modifying_actions true: display with modifying functions
-    *                                       false: display without modifying functions
+    * @param array params parameters in an array of this class
     */
-   function cs_detail_view ($environment, $viewname, $with_modifying_actions = true, $creatorStatus=array()) {
+   function cs_detail_view ($params) {
+      $environment = $params['environment'];
+      $with_modifying_actions = true;
+      if ( isset($params['with_modifying_actions']) ) {
+         $with_modifying_actions = $params['with_modifying_actions'];
+      }
+      $creatorInfoStatus = array();
+      if ( isset($params['creator_info_status']) ) {
+         $creatorInfoStatus = $params['creator_info_status'];
+      }
       $this->cs_view($environment,$with_modifying_actions);
-      $this->_openCreatorInfo = $creatorStatus;
+      $this->_openCreatorInfo = $creatorInfoStatus;
       $context_item = $this->_environment->getCurrentContextItem();
    }
-
 
    function setAnnotationList($annotation_list) {
       $this->_annotation_list = $annotation_list;

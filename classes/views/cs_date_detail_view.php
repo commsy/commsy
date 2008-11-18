@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_detail_view.php');
+$this->includeClass(DETAIL_VIEW);
 
 /**
  *  class for CommSy detail view: date
@@ -39,16 +39,7 @@ var $_clipboard_id_array=array();
     * @param array params parameters in an array of this class
     */
    function cs_date_detail_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $creatorInfoStatus = array();
-      if ( isset($params['creator_info_status']) ) {
-         $creatorInfoStatus = $params['creator_info_status'];
-      }
-      $this->cs_detail_view($environment,'dates',$with_modifying_actions,$creatorInfoStatus);
+      $this->cs_detail_view($params);
    }
 
    function setClipboardIDArray($cia) {

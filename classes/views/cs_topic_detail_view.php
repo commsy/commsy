@@ -23,7 +23,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_detail_view.php');
 include_once('functions/curl_functions.php');
 
 /**
@@ -37,16 +36,7 @@ class cs_topic_detail_view extends cs_detail_view {
     * @param array params parameters in an array of this class
     */
    function cs_topic_detail_view ($params) {
-      $environment = $params['environment'];
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
-      $creatorInfoStatus = array();
-      if ( isset($params['creator_info_status']) ) {
-         $creatorInfoStatus = $params['creator_info_status'];
-      }
-      $this->cs_detail_view($environment, 'topic', $with_modifying_actions,$creatorInfoStatus );
+      $this->cs_detail_view($params);
    }
 
    /** get the single entry of the list view as HTML

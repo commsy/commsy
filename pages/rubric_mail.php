@@ -26,7 +26,6 @@ include_once('classes/cs_rubric_mail_form.php');
 include_once('classes/cs_form_view.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
-include_once('classes/cs_detail_view.php');
 
 // option contains the name of the submit button, if this
 // script is called as result of a form post
