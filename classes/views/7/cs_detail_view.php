@@ -2282,8 +2282,8 @@ class cs_detail_view extends cs_view {
             $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'annotation', 'edit',$params).'" method="post" enctype="multipart/form-data" name="f">'.LF;
             $html .= '   <input type="hidden" name="version" value="'.$item->getVersionID().'"/>'.LF;
             $html .= '   <input type="hidden" name="ref_iid" value="'.$item->getItemID().'"/>'.LF;
-            $html .= '<div class="detail_annotation_headline" style="padding:4px 0px 5px 7px;">'.LF;
-            $html .= '<input name="title" style="font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" size="49" tabindex="8" type="text"/>';
+            $html .= '<div class="detail_annotation_headline" style="padding:2px 0px 3px 7px;">'.LF;
+            $html .= '<input name="title" style="font-size:12pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" size="49" tabindex="8" type="text"/>';
             $html .= '</div>'.LF;
             $html .= '<div style="margin:0px;padding:7px;">'.LF;
             $normal = '<textarea style="font-size:10pt; width:100%" name="description" rows="10" tabindex="8"></textarea>';
