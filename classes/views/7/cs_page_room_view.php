@@ -204,7 +204,6 @@ class cs_page_room_view extends cs_page_view {
    }
 
 
-   // @segment-begin 88232 _getLinkRowAsHTML():set<div>class-for-tabs
    /** get the linkbar as HTML
     * this method returns the linkbar as HTML - internal, do not use
     *
@@ -212,22 +211,14 @@ class cs_page_room_view extends cs_page_view {
     */
    function _getLinkRowAsHTML ($bottom=false) {
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
       $html .= '<div id="tabs_frame" >'.LF;
       if ($bottom){
          $html .= '<div class="tabs_bottom">'.LF;
       }else{
-         $html .= '<div class="tabs">'.LF;
+         $html .= '<div id="tabs">'.LF;
       }
-      // @segment-end 88232
-      // @segment-begin 49110 _getLinkRowAsHTML(): display-help-tab
       $html .= '<div style="float:right; margin:0px; padding:0px 20px;">'.LF;
 
-
-      // rss link
-      $current_context_item = $this->_environment->getCurrentContextItem();
-      $current_user_item = $this->_environment->getCurrentUserItem();
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();
       $current_user_item = $this->_environment->getCurrentUserItem();
@@ -249,22 +240,9 @@ class cs_page_room_view extends cs_page_view {
       if ( $show_rss_link ) {
          $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
       }
-      unset($current_user_item);
-      unset($current_context_item);
-      // Always show context sensitive help
-      $params = array();
-      $params['module'] = $this->_module;
-      $params['function'] = $this->_function;
-      $context = $this->_environment->getCurrentContextItem();
-#      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-#                             $params,
-#                             '?', '', 'help', '', '',
-#                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"');
-      unset($params);
+
       $html .= '</div>'.LF;
-      // @segment-end 49110
-      // @segment-begin 31695 _getLinkRowAsHTML():?history
-      $html .= '<div style="margin:0px; padding:0px 20px; white-space:nowrap;">'.LF;
+      $html .= '<div id="tablist">'.LF;
       $session = $this->_environment->getSession();
       $history = $session->getValue('history');
       if ( isset($history) and isset($history[1]) and !empty($history[1]) ) {
@@ -272,13 +250,9 @@ class cs_page_room_view extends cs_page_view {
       } else {
          $h_module ='';
       }
-      // @segment-end 31695
-      // @segment-begin 96055 _getLinkRowAsHTML():get-tab_title-foreach-context-link;some-different-texts-if-privat-room
-      // construct tabs
-
       $first = true;
       foreach ( $this->_links as $link ) {
-         if ($context->isPrivateRoom()){
+         if ($current_context_item->isPrivateRoom()){
             switch ($link['module']) {
                case 'topic':
                   $link_title = getMessage('COMMON_TOPICS');
@@ -352,10 +326,8 @@ class cs_page_room_view extends cs_page_view {
                $linked_rubric = '';
             }
          }
-         // @segment-end 96055
-         // @segment-begin 9313 _getLinkRowAsHTML(): foreach-context-link, user/open-guests,make-tab-link-class="navlist_current"/"navlist" mod=annotation+context extra
-          if ( $context->isOpenForGuests() or $this->_current_user->isUser() ) {
-               if ( $this->_module == $link['module']
+         if ( $current_context_item->isOpenForGuests() or $this->_current_user->isUser() ) {
+            if ( $this->_module == $link['module']
                  or ($this->_module == 'discarticle' and $link['module'] == 'discussion')
                  or ($this->_module == 'material' and $link['module'] == 'search')
                  or ($this->_module == 'section' and $link['module'] == 'material')
@@ -369,63 +341,53 @@ class cs_page_room_view extends cs_page_view {
                  or ($this->_module == 'auth' and $link['module'] == 'contact')
                  or ($this->_module == 'user' and $link['module'] == 'contact')
                  or ($this->_module == 'rubric' and $this->_function =='mail' and $link['module'] == $h_module )
-               ) {
+            ) {
+               $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
+            } elseif ( $this->_module =='annotation' ) {
+               if ( isset($history) and isset($history[1]) and !empty($history[1]) ){
+                  $h_module = $history[1]['module'];
+               } else {
+                  $h_module ='';
+               }
+               if ( $session->issetValue('annotation_history_module') ){
+                  $h_module = $session->getValue('annotation_history_module');
+               }
+               if ($link['module']== $h_module) {
                   $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
-               } elseif ( $this->_module =='annotation' ) {
-                  if ( isset($history) and isset($history[1]) and !empty($history[1]) ){
-                     $h_module = $history[1]['module'];
-                  } else {
-                     $h_module ='';
-                  }
-                  if ( $session->issetValue('annotation_history_module') ){
-                     $h_module = $session->getValue('annotation_history_module');
-                  }
-                  if ($link['module']== $h_module) {
-                     $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
-                  } else {
-                     $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist"');
-                  }
-               } elseif ( $this->_module == 'context' and $this->_function =='info_text_edit' ) {
-                  if ( isset($history) and isset($history[0]) and !empty($history[0]) ) {
-                     $h_module = $history[0]['module'];
-                  } else {
-                     $h_module ='';
-                  }
-                  if ( $link['module'] == $h_module ) {
-                     $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
-                  } else {
-                     $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist"');
-                  }
                } else {
                   $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist"');
                }
-               if (($link['module']!='todo' or $context->withRubric(CS_TODO_TYPE)) ){
-                  $html .= $ahref;
+            } elseif ( $this->_module == 'context' and $this->_function =='info_text_edit' ) {
+               if ( isset($history) and isset($history[0]) and !empty($history[0]) ) {
+                  $h_module = $history[0]['module'];
+               } else {
+                  $h_module ='';
                }
+               if ( $link['module'] == $h_module ) {
+                  $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist_current"');
+               } else {
+                  $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist"');
+               }
+            } else {
+               $ahref = ahref_curl($this->_environment->getCurrentContextID(), $link['module'], $link['function'], $link['parameter'], $link_title, $link['explanation'],'','','','','','class="navlist"');
             }
-            // @segment-end 9313
-            // @segment-begin 52653 _getLinkRowAsHTML(): tabs-not-active-if-no-user-and-not-open-for-guests
-            else {
-              $html .= '     <span >'.$link_title.'</span>'.LF;
+            if (($link['module']!='todo' or $current_context_item->withRubric(CS_TODO_TYPE)) ){
+               $html .= $ahref;
             }
+         }else {
+            $html .= '     <span >'.$link_title.'</span>'.LF;
          }
-         // @segment-end 52653
-
-      // @segment-begin 22932 _getLinkRowAsHTML():upper-corner-images-around-tabs
+      }
       $html .= '</div>'.LF;
-#      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_links.gif" alt="" border="0"/></div>';
-#      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'/ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
-      unset($session);
-      unset($context);
+      unset($current_user_item);
+      unset($current_context_item);
       return $html;
    }
-   // @segment-end 22932
 
 
-   // @segment-begin 92557  _getBlankLinkRowAsHTML()
    function _getBlankLinkRowAsHTML () {
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
       $session = $this->_environment->getSession();
@@ -489,33 +451,32 @@ class cs_page_room_view extends cs_page_view {
    // @segment-end 92557
 
 
-   // @segment-begin 52559  _getLogoAsHTML()
    function _getLogoAsHTML(){
       $html  = '';
       $logo_filename = '';
       $context_item = $this->_environment->getCurrentContextItem();
       $html .='<table summary="layout">';
       $html .= '<tr>';
-       $html .= '<td>';
-      $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
-         if ( $this->_environment->inCommunityRoom()
-              or $this->_environment->inProjectRoom()
-              or $this->_environment->inPrivateRoom()
-              or $this->_environment->inGroupRoom()
-            ) {
-            $logo_filename = $context_item->getLogoFilename();
-            if ( !empty($logo_filename) ) {
-               $params = array();
-               $params['picture'] = $context_item->getLogoFilename();
-               $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
-               unset($params);
-               $html .= '     <img style="height:4em; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
-            }
+      if ( $this->_environment->inCommunityRoom()
+           or $this->_environment->inProjectRoom()
+           or $this->_environment->inPrivateRoom()
+           or $this->_environment->inGroupRoom()
+         ) {
+         $logo_filename = $context_item->getLogoFilename();
+         if ( !empty($logo_filename) ) {
+            $params = array();
+            $params['picture'] = $context_item->getLogoFilename();
+            $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
+            unset($params);
+            $html .= '<td>';
+            $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
+            $html .= '     <img style="height:4em; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= '</div>'.LF;
+            $html .= '</td>';
          }
-      $html .= '</div>'.LF;
-      $html .= '</td>';
+      }
       $html .= '<td style="verticale-align:middle;">';
-      $html .= '<span style="font-size:24pt; font-weight:bold;">'.$context_item->getTitle().'</span>'.BRLF;
+      $html .= '<h1>'.$context_item->getTitle().'</h1>'.LF;
       $breadcrump = '';
       $portal_item = $this->_environment->getCurrentPortalItem();
       $params = array();
@@ -546,7 +507,6 @@ class cs_page_room_view extends cs_page_view {
       $html .= '</td>';
       $html .= '</tr>';
       $html .= '</table>';
-
       return $html;
    }
 
@@ -624,7 +584,7 @@ class cs_page_room_view extends cs_page_view {
 
 #      $html .= 'Angemeldet als: Matthias Finck<br/>Meine aktuellen Räume:<br/>Meine Kopien';
       $html .= '</div>';
-      $html .= '<div class="page_header_logo">';
+      $html .= '<div id="page_header_logo">';
       $html .= $this->_getLogoAsHTML().LF;
       $html .= '</div>';
       $html .= '</div>';
@@ -769,10 +729,7 @@ class cs_page_room_view extends cs_page_view {
          $session_id = '';
       }
       if ( !$this->_blank_page ) {
-#         $html .= '<td style="padding-left:10px; padding-right:0px; padding-top:0px; margin:0px; vertical-align: top; ">'.LF;
-
          // Link Row
-
          if ($this->_with_navigation_links and !$this->_shown_as_printable) {
             $html .= $this->_getLinkRowAsHTML();
          } else {
@@ -781,14 +738,8 @@ class cs_page_room_view extends cs_page_view {
          // @segment-end 47648
          // @segment-begin 65077 asHTML():set-<div>_style/class-for-views-part(under-tabs)
          // Content
-         $left_menue_status = $session->getValue('left_menue_status');
-         unset($session);
-         if ($left_menue_status =='disapear'){
-            $width = 'width:100%;';//not used
-         }else{
-            $width = 'width:100%;';//not used
-         }
-         $html .= '<div style="padding:0px 0px; margin:0px;">'.LF;
+         $width = 'width:100%;';//not used
+         $html .= '<div style="padding:0px; margin:0px;">'.LF;
          $html .= '<div class="content">'.LF;
 
          // Full Screen Views
@@ -813,7 +764,7 @@ class cs_page_room_view extends cs_page_view {
          unset($current_user);
 
 
-         $html .= LF.'<div class="main">'.LF;
+         $html .= LF.'<div id="main">'.LF;
 
          $html .= $this->_getPluginInfosForBeforeContentAsHTML();
 
