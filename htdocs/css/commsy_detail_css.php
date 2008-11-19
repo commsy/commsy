@@ -179,7 +179,7 @@ div.sub_item_main{
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
-#detail_content{
+#detail_content, .detail_content{
 	margin:0px;
    padding:5px 5px;
    background-color: #FFFFFF;

@@ -24,5 +24,4 @@ $message["CONTEXT_ROOM_UNDELETE"]["de"] = "Raum wieder herstellen";
 $message["CONTEXT_ROOM_UNLOCK"]["de"] = "Raum entsperren";
 $message["CONTEXT_SHOWN_ON_HOME"]["de"] = "Ja";
 $message["CONTEXT_SHOW_ON_HOME"]["de"] = "Auf der Home anzeigen";
-
 ?>

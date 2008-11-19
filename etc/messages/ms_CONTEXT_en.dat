@@ -24,5 +24,4 @@ $message["CONTEXT_ROOM_UNDELETE"]["en"] = "Undelete workspace";
 $message["CONTEXT_ROOM_UNLOCK"]["en"] = "Unlock workspace";
 $message["CONTEXT_SHOWN_ON_HOME"]["en"] = "Yes";
 $message["CONTEXT_SHOW_ON_HOME"]["en"] = "Display on Home / notice board";
-
 ?>

@@ -342,7 +342,7 @@ class cs_user_detail_view extends cs_detail_view {
       return $html;
    }
 
-   function _getDetailActionsAsHTML ($item) {
+   function _getDetailItemActionsAsHTML($item){
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
@@ -354,12 +354,23 @@ class cs_user_detail_view extends cs_detail_view {
                                           $this->_environment->getCurrentModule(),
                                           'edit',
                                           $params,
-                                          $image).LF;
+                                          $image,
+                                          getMessage('COMMON_EDIT_ITEM')).LF;
          unset($params);
       } else {
          $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
+      return $html;
+
+   }
+
+
+
+   function _getDetailActionsAsHTML ($item) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
@@ -673,47 +684,6 @@ class cs_user_detail_view extends cs_detail_view {
 
 
 
-   function _getSubItemsAsHTML($item){
-      $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
-      $current_item = $item;
-      $html .='<div style="width:100%; margin-top:15px;">'.LF;
-      $html .='<div class="detail_sub_items_title" style="font-weight:normal;">'.LF;
-      $html .= '<span class="sub_item_pagetitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
-      $html .= '</span>'.LF;
-      $html .='</div>'.LF;
-
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div style="float:right; width:27%; margin-top:5px; padding-left:5px; padding-right:8px; vertical-align:top; text-align:left;">'.LF;
-         $html .='<div style="margin-bottom:10px;">'.LF;
-         $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
-         $html .='</div>'.LF;
-         $html .='</div>'.LF;
-         $html .='<div style="width:70%; margin-top:5px; padding-top:10px; padding-left:5px; vertical-align:bottom;">'.LF;
-      }else{
-         $html .='<div style="width:100%; margin-top:5px; padding-top:10px; padding-left:5px; vertical-align:bottom;">'.LF;
-      }
-      $html .='<div style="margin-bottom:10px;">'.LF;
-      $html .= $this->_getSubItemAsHTML($current_item,1).LF;
-      $html .='</div>'.LF;
-      $html .='<div style="margin-top:5px; margin-bottom:0px; padding-top:10px; padding-bottom:50px; vertical-align:top;">';
-      $mode = 'short';
-      if (!$item->isA(CS_USER_TYPE)) {
-         $mode = 'short';
-         if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
-            $mode = 'long';
-         }
-         $html .='<div style="border-top:0px solid black; margin-top:5px; margin-bottom:0px; padding-bottom:0px; vertical-align:top;">';
-         $html .= $this->_getCreatorInformationAsHTML($current_item, 6,'long').LF;
-         $html .='</div>'.LF;
-      }
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
-      return $html;
-   }
 
 
    function _getSubItemDetailActionsAsHTML ($subitem) {
@@ -1142,6 +1112,210 @@ class cs_user_detail_view extends cs_detail_view {
      return $retour;
    }
 
+   function getAccountActionsAsHTML($item= NULL){
+      $current_context = $this->_environment->getCurrentContextItem();
+      $user = $this->_environment->getCurrentUserItem();
+      $annotated_item = $this->getItem();
+      $annotated_item_type = $annotated_item->getItemType();
+      $mod  = $this->_with_modifying_actions;
+      $html  = '';
+
+      if ( $item->mayEdit($user) and $mod ) {
+         if ($this->_display_mod == 'admin' and $this->_environment->getCurrentModule() == 'account') {
+            if ( $this->_environment->inPortal() and $user->isModerator() ) {
+               $current_portal_item = $this->_environment->getCurrentPortalItem();
+               $auth_source_item = $current_portal_item->getAuthSource($subitem->getAuthSource());
+               // must be addAccount not PasswordChange, because
+               // for admin change password for user we need super user access to the auth source.
+               // passwordChange ist for user change his/her own password
+               if ( $auth_source_item->allowAddAccount() ) {
+                  $params = array();
+                  $params['iid'] = $item->getItemID();
+                  $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
+                                            $this->_environment->getCurrentModule(),
+                                            'password',
+                                            $params,
+                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
+                  unset($params);
+               } else {
+                  $html .= '<span class="disabled">> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.BRLF;
+               }
+            }
+
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
+                               $this->_environment->getCurrentModule(),
+                               'status',
+                               $params,
+                               $this->_translator->getMessage('ACCOUNT_STATUS_CHANGE')).BRLF;
+            unset($params);
+         }
+
+         $private_room_manager = $this->_environment->getPrivateRoomManager();
+         $own_room = $private_room_manager->getRelatedOwnRoomForUser($item,$this->_environment->getCurrentPortalID());
+         if ( $this->_environment->inPortal() and $this->_environment->getCurrentModule() == 'account' and $user->isModerator() ){
+            $params = array();
+            if ( isset($own_room) and $own_room->isLocked() ) {
+               $params['iid'] = $own_room->getItemID();
+               $params['automatic'] = 'unlock';
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('PRIVATEROOM_UNLOCK')).' '.LF;
+               unset($params);
+            } elseif ( isset($own_room) ) {
+               $params['iid'] = $own_room->getItemID();
+               $params['automatic'] = 'lock';
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),'configuration','room',$params,$this->_translator->getMessage('PRIVATEROOM_LOCK')).' '.LF;
+               unset($params);
+            }
+         }
+         if ( $user->isRoot() and isset($own_room) ) {
+            $params = array();
+            $params['iid'] = $own_room->getItemID();
+            $html .=  ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).' '.LF;
+            unset($params);
+         }
+
+         if ($this->_environment->inCommunityRoom()) {
+            $params = array();
+            $params['iid'] = $item->getItemID();
+            $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                      $this->_environment->getCurrentModule(),
+                                      'preferences',
+                                      $params,
+                                      $this->_translator->getMessage('USER_EDIT_PREFERENCES')).' '.LF;
+            unset($params);
+         }
+
+         // project room
+         elseif ( $this->_environment->inProjectRoom()
+                  or $this->_environment->inPrivateRoom()
+                  or $this->_environment->inGroupRoom()
+                 ) {
+            $current_context = $this->_environment->getCurrentContextItem();
+            $lang = $current_context->getLanguage();
+            if ( $user->isModerator() or $current_context->isLanguageFix() ) {
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                     $this->_environment->getCurrentModule(),
+                                     'preferences',
+                                     $params,
+                                     $image,
+                                     $this->_translator->getMessage('USER_EDIT_PREFERENCES')).LF;
+               unset($params);
+            } else {
+               $image = '<img src="images/commsyicons/22x22/config_grey.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+               $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+            }
+         }
+      } elseif ($this->_environment->inCommunityRoom() or $this->_environment->inProjectRoom() or $this->_environment->inPrivateRoom()) {
+         $image = '<img src="images/commsyicons/22x22/config_grey.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+
+      // last moderator
+      $last_moderator = false;
+      if ( $item->isModerator() ) {
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->resetLimits();
+         $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+         $user_manager->setModeratorLimit();
+         $moderator_count = $user_manager->getCountAll();
+         if ($moderator_count == 1) {
+            $last_moderator = true;
+         }
+      }
+
+
+      if ( $item->getItemID() == $user->getItemID()
+           and !$this->_environment->inPrivateRoom()
+           and !$last_moderator
+         ) {
+         $params['iid'] = $item->getItemID();
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CLOSE_PARTICIPATION').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   'close',
+                                   $params,
+                                   $image,
+                                   $this->_translator->getMessage('COMMON_CLOSE_PARTICIPATION')).LF;
+         unset($params);
+      } elseif (!$this->_environment->inPrivateRoom()) {
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CLOSE_PARTICIPATION').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+     }
+
+
+
+
+
+/*      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['mode'] = 'annotate';
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                          'annotation',
+                                          'edit',
+                                          $params,
+                                          $image,
+                                          getMessage('COMMON_EDIT_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
+         $params = $this->_environment->getCurrentParameterArray();
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         $params['annotation_iid'] = $item->getItemID();
+         $params['iid'] = $annotated_item->getItemID();
+         $params['annotation_action'] = 'delete';
+         if ( !($this->_environment->getCurrentBrowser() =='MSIE'
+                and $this->_environment->getCurrentBrowserVersion() != '7.0')
+            ){
+               $anchor = 'anchor'.$item->getItemID();
+         }else{
+            $anchor = '';
+         }
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                          $this->_environment->getCurrentModule(),
+                                          'detail',
+                                          $params,
+                                          $image,
+                                          getMessage('COMMON_DELETE_ITEM'),
+                                          '',
+                                          $anchor).BRLF;
+           unset($params);
+       } else {
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }*/
+      return $html;
+   }
+
+   function _getSubItemsAsHTML($item){
+      $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
+      $current_item = $item;
+      $html .='<div class="detail_annotation_headline" style="margin-top:40px;">'.LF;
+      $html .= '<div style="float:right">';
+      $html .= $this->getAccountActionsAsHTML($item);
+      $html .= '</div>';
+      $html .= '<h3 class="annotationtitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
+      $html .= '</h3>'.LF;
+      $html .='</div>'.LF;
+      $html .='<div class="detail_content">'.LF;
+      $html .= $this->_getSubItemAsHTML($current_item,1).LF;
+      $html .='</div>'.LF;
+      $html .='<div style="clear:both;">'.LF;
+      $html .='</div>'.LF;
+      $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
+      return $html;
+   }
+
 
    /** get detail view as HTML
     * this method returns the detail view in HTML-Code
@@ -1152,20 +1326,8 @@ class cs_user_detail_view extends cs_detail_view {
       $item = $this->getItem();
       $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
-      $html .='<div style="width:100%;">'.LF;
-      $rubric = $this->_environment->getCurrentModule();
 
-      if($rubric == CS_DISCUSSION_TYPE){
-         $html .= '<h2 class="pagetitle">'.$this->_getTitleAsHTML();
-      }elseif ($rubric == 'account' ){
-        $html .= '<h2 class="pagetitle">'.$item->getFullName();
-      }elseif ($rubric != CS_USER_TYPE ){
-        $html .= '<h2 class="pagetitle">'.$item->getTitle();
-      }else{
-        $html .= '<h2 class="pagetitle">'.$item->getFullName();
-      }
-      $html .= '</h2>'.LF;
-      $html .='</div>'.LF;
+      $html .= $this->_getDetailPageHeaderAsHTML();
 
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $title_string = '';
@@ -1173,6 +1335,7 @@ class cs_user_detail_view extends cs_detail_view {
          $config_text = '';
          $size_string = '';
          $current_context = $this->_environment->getCurrentContextItem();
+         $rubric = $this->_environment->getCurrentModule();
          $html .='<div style="float:right; width:27%; margin-top:5px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div id="commsy_panels">'.LF;
          $html .='<div style="margin-bottom:0px;">'.LF;
@@ -1193,15 +1356,27 @@ class cs_user_detail_view extends cs_detail_view {
          $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
          $html .= '</script>'.LF;
          $html .='</div>'.LF;
-         $html .='<div class="infoborder" style="width:71%; margin-top:5px; vertical-align:bottom;">'.LF;
+         $html .='<div class="infoborder_display_content" style="width:71%; margin-top:5px; vertical-align:bottom;">'.LF;
       }else{
          $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
       }
-      $html .='<div style="margin-bottom:10px;">'.LF;
-      $html .= $this->_getContentAsHTML();
-      $html .='</div>'.LF;
+      $html .='<div id="detail_headline">'.LF;
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
+         $html .= '<div style="float:right; padding:3px 5px 4px 5px;">'.LF;
+         $html .= $this->_getDetailItemActionsAsHTML($item);
+         $html .= '</div>'.LF;
+      }
+      $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
+      $html .= '<h2 class="contenttitle">'.$item->getFullName();
+      $html .= '</h2>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
 
-      $html .='<div class="infoborder" style="margin-top:20px; margin-bottom:0px; padding-bottom:50px; vertical-align:top;">';
+
+      $html .='<div id="detail_content">'.LF;
+      $html .= $this->_getContentAsHTML();
+
+      $html .='<div class="infoborder" style="margin-top:5px; margin-bottom:0px; padding-bottom:0px; padding-top:10px; vertical-align:top;">';
       $mode = 'short';
       if (in_array($item->getItemID(),$this->_openCreatorInfo)) {
          $mode = 'long';
@@ -1212,35 +1387,22 @@ class cs_user_detail_view extends cs_detail_view {
          }
       }
       $html .='</div>'.LF;
-
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
       $html .='</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
       if ( $current_user->isModerator()
            or $current_user->getItemID() == $item->getItemID()
          ) {
 ############SQL-Statements reduzieren
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
          $html .= $this->_getSubItemsAsHTML($item);
       }
       unset($current_user);
-      if ( $rubric != CS_GROUP_TYPE
-          and $rubric != CS_USER_TYPE
-          and $rubric != CS_DISCUSSION_TYPE
-          and $this->_environment->getCurrentModule() !='account'
-         ) {
-         $html .= $this->_getAnnotationsAsHTML();
-      } elseif ( $rubric == CS_DISCUSSION_TYPE
-                 and !$item->isClosed()
-                 and $this->_with_modifying_actions
-               ) {
-         $html .= $this->_getDiscussionFormAsHTML();
-      }
+
+      $html .='</div>'.LF;
+      $html .='<div style="clear:both;">'.LF;
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
+      $html .= '</div>'.LF;
+      $current_user = $this->_environment->getCurrentUserItem();
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       return $html;
    }

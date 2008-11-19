@@ -402,6 +402,7 @@ $message["COMMON_NONE"]["de"] = "(keine)";
 $message["COMMON_NOTHING_ATTACHED"]["de"] = "nichts zugeordnet";
 $message["COMMON_NOT_ACTIVATED"]["de"] = "noch nicht freigeschaltet";
 $message["COMMON_NOT_LINKED"]["de"] = "nichts zugeordnet";
+$message["COMMON_NO_ACTION"]["de"] = "Die Aktion steht nicht zur Verfügung.";
 $message["COMMON_NO_ANNOTATIONS"]["de"] = "Keine Anmerkungen vorhanden";
 $message["COMMON_NO_AUTHOR"]["de"] = "ohne AutorIn";
 $message["COMMON_NO_BUZZWORDS"]["de"] = "Kein weiteres Schlagwort";
