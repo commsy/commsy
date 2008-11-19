@@ -1020,7 +1020,7 @@ class cs_room_item extends cs_context_item {
    }
 
    private function _getDesign() {
-      $retour = 0;
+      $retour = 6;
       if ( $this->_issetExtra('DESIGN')) {
          $retour = $this->_getExtra('DESIGN');
       }

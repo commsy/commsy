@@ -337,8 +337,7 @@ if ( $context_item->isLocked() ) {
       include('pages/private_room_short.php');
    }
 
-   $design_version = $class_factory->getDesignVersion();
-   if ($design_version == '7'){
+   if ($current_context->isDesign7()){
       if ( $current_context->withBuzzwords() ){
          $params = array();
          $params['environment'] = $environment;
