@@ -28,7 +28,7 @@ include_once('classes/cs_rubric_form.php');
  * this class implements an interface for the creation of forms in the commsy style
  */
 class cs_configuration_htmltextarea_form extends cs_rubric_form {
-  
+
 
    /**
    * array - containing the 2 choices of the public field
@@ -74,7 +74,7 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
 	  $radio_values[2]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_1').
              '<img src="images/html_text_area.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>';
 	  $radio_values[2]['value'] = '1';
-	  
+
 	  $this->_form->addRadioGroup('html_status',getMessage('CONFIGURATION_HTMLTEXTAREA'),'',$radio_values,'',true,false);
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -99,6 +99,6 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
          $this->_values['html_status'] ='2';
       }
    }
-   
+
 }
 ?>

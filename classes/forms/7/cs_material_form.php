@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
@@ -62,8 +62,8 @@ class cs_material_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_material_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_material_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** set buzzwords from session
@@ -284,7 +284,7 @@ class cs_material_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('vid','');
       $this->_form->addHidden('modification_date','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,47,true);
+      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,58,true);
       if ( $this->_bib_kind=='none' ) {
          $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
       } elseif ( $this->_bib_kind=='common' ) {
@@ -447,48 +447,48 @@ class cs_material_form extends cs_rubric_form {
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       if ( $this->_bib_kind=='none' ) {
-         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',25);
+         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',20);
       } else {
-         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',25);
+         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',20);
       }
-      $this->_form->addEmptyline();
+      $current_context = $this->_environment->getCurrentContextItem();
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withBuzzwords() ){
          // buzzwords
          if ( !empty ($this->_shown_buzzword_array) ) {
             if ( $current_context->isBuzzwordMandatory() ){
-               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('MATERIAL_BUZZWORDS'),getMessage('MATERIAL_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
+               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
                $this->_form->combine();
             }else{
-               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('MATERIAL_BUZZWORDS'),getMessage('MATERIAL_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
+               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
                $this->_form->combine();
             }
          }
          if ( $current_context->isBuzzwordMandatory() ){
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('MATERIAL_BUZZWORDS'),getMessage('MATERIAL_BUZZWORD_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',14,false,false,8);
          }else{
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('MATERIAL_BUZZWORDS'),getMessage('MATERIAL_BUZZWORD_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',14,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_ADD_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',70,false,'','',8);
          $this->_form->combine('vertical');
-         $this->_form->addTextField('new_buzzword',"","","","", 29, false,'','','','left','','',false,'',8);
+         $this->_form->addTextField('new_buzzword',"","","","", 24, false,'','','','left','','',false,'',8);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_NEW_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',70,false,'','',8);
       }
       if ( $current_context->withTags() ){
          // tags
          if ( !empty ($this->_shown_tag_array) ) {
-            $this->_form->addCheckBoxGroup('taglist',$this->_shown_tag_array,'',getMessage('MATERIAL_TAGS'),getMessage('MATERIAL_TAG_DESC'),false,false,0,'','','','',false,false,false,8);
+            $this->_form->addCheckBoxGroup('taglist',$this->_shown_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'),false,false,0,'','','','',false,false,false,8);
             $this->_form->combine();
          }
          if ( $current_context->isTagMandatory() ){
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('MATERIAL_TAGS'),getMessage('MATERIAL_TAG_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',14,false,false,8);
          }else{
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('MATERIAL_TAGS'),getMessage('MATERIAL_TAG_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',14,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_ADD_TAG_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',70,false,'','',8);
       }
 
       // files
@@ -570,7 +570,6 @@ class cs_material_form extends cs_rubric_form {
 
          if ($current_context->withActivatingContent()){
             $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
-#            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_PUBLIC'));
             $this->_form->combine();
             $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');

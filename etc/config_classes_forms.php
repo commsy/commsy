@@ -23,8 +23,45 @@
 // forms
 $form_folder = 'forms/';
 
+$class_name = 'cs_rubric_form';
+define('RUBRIC_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
 $class_name = 'cs_announcement_form';
 define('ANNOUNCEMENT_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_search_short_form';
+define('SEARCH_SHORT_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_material_form';
+define('MATERIAL_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+
+
+
+
+
+
+
+
+
+$class_name = 'cs_form';
+define('FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;
 $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
@@ -43,4 +80,12 @@ $class_config[$class_name]['name']       = $class_name;
 $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_configuration_htmltextarea_form';
+define('CONFIGURATION_HTMLTEXTAREA_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = false;
+
 ?>

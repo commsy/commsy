@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_form.php');
+$this->includeClass(FORM);
 include_once('functions/text_functions.php');
 
 /** class for commsy forms
@@ -93,12 +93,19 @@ class cs_rubric_form {
 
    var $_with_multi_upload = false;
 
+
+
    /** constructor: cs_rubric_form
     * the only available constructor
     *
     * @param object environment the environment object
     */
-   function cs_rubric_form ($environment) {
+   function cs_rubric_form ($params) {
+      if ( is_array($params) ) {
+         $environment = $params['environment'];
+      } else {
+         $environment = $params;
+      }
       $this->_environment = $environment;
       $this->_translator = $environment->getTranslationObject();
       $this->_form = new cs_form();
@@ -270,6 +277,53 @@ class cs_rubric_form {
    function getErrorArray () {
       return $this->_error_array;
    }
+
+
+/***buzzwords and tags ***/
+
+   /** set buzzwords from session
+    * set an array with the buzzwords from the session
+    *
+    * @param array array of buzzwords out of session
+    */
+   function setSessionBuzzwordArray ($value) {
+      $this->_session_buzzword_array = (array)$value;
+   }
+
+   /** set tags from session
+    * set an array with the tags from the session
+    *
+    * @param array array of tags out of session
+    */
+   function setSessionTagArray ($value) {
+      $this->_session_tag_array = (array)$value;
+   }
+
+   function _initTagArray($item = NULL, $ebene = 0) {
+      if ( isset($item) ) {
+         $list = $item->getChildrenList();
+         if ( isset($list) and !$list->isEmpty() ) {
+            $current_item = $list->getFirst();
+            while ( $current_item ) {
+               $temp_array = array();
+               $text = '';
+               $i = 0;
+               while($i < $ebene){
+                  $text .='>  ';
+                  $i++;
+               }
+               $text .= $current_item->getTitle();
+               $temp_array['text']  = $text;
+               $temp_array['value'] = $current_item->getItemID();
+               $this->_tag_array[] = $temp_array;
+               $this->_initTagArray($current_item, $ebene+1);
+               $current_item = $list->getNext();
+            }
+         }
+      }
+   }
+
+
 
    function _setFormElementsForConnectedRubrics () {
       foreach ( $this->_rubric_connection_array as $rubric ) {

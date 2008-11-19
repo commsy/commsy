@@ -355,7 +355,7 @@ h1{
 #form_formatting_box{
    margin-top:5px;
    margin-bottom:0px;
-   width:400px;
+   width:93%;
    padding:5px;
    border: 1px #B0B0B0 dashed;
    background-color:<?php echo($color['boxes_background'])?>;
@@ -363,8 +363,10 @@ h1{
 .form_formatting_checkbox_box{
    margin-top:0px;
    margin-bottom:0px;
-   width:300px;
+   width:93%;
    padding:5px 10px 5px 10px;
+   border: 1px #B0B0B0 dashed;
+   background-color:<?php echo($color['boxes_background'])?>;
 }
 
 #template_information_box{

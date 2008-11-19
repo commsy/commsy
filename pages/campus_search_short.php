@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_search_short_form.php');
 
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
@@ -31,7 +30,13 @@ if (!empty($_POST['option'])) {
 } else {
    $command = '';
 }
-$search_short_form = new cs_search_short_form($environment);
+
+// Initialize the form
+$class_params= array();
+$class_params['environment'] = $environment;
+$search_short_form = $class_factory->getClass(SEARCH_SHORT_FORM,$class_params);
+unset($class_params);
+
 if (isOption($command,getMessage('HOME_SEARCH_SHORT_BUTTON'))) {
    $search_short_form->setFormPost($_POST);
    $search_short_form->prepareForm();

@@ -59,18 +59,13 @@ td.formfield{
 }
 
 
-h2.pagetitle{
-  margin-bottom:0px;
-  margin-top: 0px;
-  font-size: 16pt;
-  font-family: verdana, arial, sans-serif;
-}
 
-div.form_title{
-   color:<?php echo($color['tabs_focus'])?>;
-   padding-top:10px;
-   padding-bottom:3px;
-   font-weight: bold;
+#form_title{
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   width:100%;
 }
 
 .form_title_field{
@@ -114,9 +109,9 @@ span.select_link{
 }
 
 td.buttonbar{
-   background-color: <?php echo($color['myarea_title_backround'])?>;
+   background-color: none;
    padding-bottom:2px;
-   padding-top:3px;
+   padding-top:0px;
    white-space:nowrap;
 }
 
@@ -173,27 +168,40 @@ span.key {
    white-space: nowrap;
 }
 
-.form tr.textarea td {
+#form{
+   font-size:10pt;
+   margin:0px;
+   padding:5px 5px;
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
+#form table{
+	border-collapse:collapse;
+}
+
+#form tr.textarea, td {
+   position:relative;
+   vertical-align: top;
+}
+
+#form tr.textarea, td.key {
+   position:relative;
+   padding-top: 13px; }
+
+#form tr.textarea, td.example {
+   position:relative;
+   padding-top: 13px; }
+
+#form tr.radio, td {
    position:relative;
    vertical-align: top; }
 
-.form tr.textarea td.key {
+#form tr.radio, td.key {
    position:relative;
    padding-top: 13px; }
 
-.form tr.textarea td.example {
-   position:relative;
-   padding-top: 13px; }
-
-.form tr.radio td {
-   position:relative;
-   vertical-align: top; }
-
-.form tr.radio td.key {
-   position:relative;
-   padding-top: 13px; }
-
-.form tr.radio td.example {
+#form tr.radio, td.example {
    position:relative;
    padding-top: 13px; }
 
@@ -248,7 +256,6 @@ div.formdate{
    padding-left:2px;
    padding-bottom:2px;
    font-weight: bold;
-   /* border: 1px solid #666; */
 }
 
 span.formcounter{
@@ -287,7 +294,7 @@ li.form_checkbox_dhtml{
    border-left:1px solid #B0B0B0;
    border-right:1px solid #B0B0B0;
    border-bottom:1px solid #B0B0B0;
-    margin:0px;
+   margin:0px;
    width:99%;
    font-size:8pt;
 }

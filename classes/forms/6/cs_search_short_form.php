@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_form.php');
+$this->includeClass(FORM);
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
@@ -41,15 +41,21 @@ class cs_search_short_form extends cs_form {
    */
    var $_headline = NULL;
 
+   var $_form = NULL;
+
 
   /** constructor
     * the only available constructor
     *
     * @param object environment the environment object
     */
-   function cs_search_short_form($environment) {
-      $this->_environment = $environment;
-      $this->_translator = $environment->getTranslationObject();
+   function cs_search_short_form($params) {
+      if ( !empty($params['environment']) ) {
+         $this->_environment = $params['environment'];
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('no environment defined '.__FILE__.' '.__LINE__,E_USER_ERROR);
+      }
       $this->_form = new cs_form();
    }
 

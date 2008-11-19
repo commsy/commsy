@@ -163,8 +163,10 @@ else {
    // Show form and/or save material
    else {
 
-      include_once('classes/cs_material_form.php');
-      $form = new cs_material_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(MATERIAL_FORM,$class_params);
+      unset($class_params);
 
       include_once('include/inc_fileupload_edit_page_handling.php');
 

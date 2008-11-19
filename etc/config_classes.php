@@ -29,4 +29,8 @@ include_once('etc/config_classes_views.php');
 
 // forms
 include_once('etc/config_classes_forms.php');
+
+// form_views
+include_once('etc/config_classes_form_views.php');
+
 ?>
