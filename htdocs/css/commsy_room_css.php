@@ -116,8 +116,8 @@ a:hover, a:active {
 
 
 /* Room Design */
-div.main{
-	padding: 10px 20px 0px 20px;
+#main{
+	padding: 10px 10px 0px 10px;
 }
 
 div.page_header_border{
@@ -129,14 +129,29 @@ div.page_header_border{
 
 #page_header{
    clear:both;
-   padding:0px 18px 0px 20px;
+   padding:0px 10px 0px 10px;
    height: 70px;
    background-color: white;
    font-size:8pt;
 }
 
-div.page_header_logo{
-    font-size:10pt;
+#page_header_logo{
+   font-size:10pt;
+   height: 70px;
+   vertical-align:bottom;
+}
+
+#page_header_logo table{
+	height:70px;
+}
+
+#page_header_logo td{
+	vertical-align:bottom;
+}
+
+#page_header_logo h1{
+	font-size:24pt;
+	font-weight:bold;
 }
 
 div.page_header_personal_area{
@@ -245,7 +260,13 @@ ul.item_list {
    font-weight: bold;
 }
 
-div.tabs {
+#tablist{
+	margin:0px;
+	padding:0px 10px;
+	white-space:nowrap;
+}
+
+#tabs {
    position:relative;
    width: 100%;
    border-bottom: 1px solid <?php echo($color['tabs_title'])?>;
