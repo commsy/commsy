@@ -295,8 +295,6 @@ class cs_activity_view extends cs_view {
       $html .= '         </table>'.LF;
 
 
-      $html .='<div class="listinfoborder">'.LF;
-      $html .='</div>'.LF;
 
      if (
          ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
@@ -304,6 +302,8 @@ class cs_activity_view extends cs_view {
          or ( $current_context->showHomepageLink() )
          ){
 
+      $html .='<div class="listinfoborder">'.LF;
+      $html .='</div>'.LF;
       $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
       $html .= '         <tr>'.LF;
       $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
