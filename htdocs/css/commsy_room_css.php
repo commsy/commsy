@@ -27,7 +27,7 @@ if (!empty($_GET['cid'])) {
 body {
 	margin: 0px;
 	padding: 0px;
-   font-family: 'lucida grande',tahoma,"ms sans serif",verdana,arial,sans-serif;
+   font-family: 'Trebuchet MS','lucida grande',tahoma,"ms sans serif",verdana,arial,sans-serif;
    font-size:80%;
    font-size-adjust:none;
    font-stretch:normal;
