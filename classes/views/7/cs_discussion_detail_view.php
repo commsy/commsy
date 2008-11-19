@@ -74,7 +74,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          if ( $discussion_type == 'simple') {
             $html .='</div>'.LF;
             $html .='</div>'.LF;
-            $html .='<div class="sub_item_main" style="padding-top:5px; background-color:white;">'.LF;
+            $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:60px; margin-top:10px; padding-top:5px; background-color:white;">'.LF;
             $html .='<div style="width:100%;" >'.LF;
             $html .= '<a name="form"></a>'.LF;
             $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'discarticle', 'edit','').'" method="post" enctype="multipart/form-data" name="f">'.LF;
@@ -92,7 +92,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $html .= '<h3 class="subitemtitle">'.$count.'.&nbsp;</h3>';
             $html .= '</td>'.LF;
             $html .= '<td style="width:99%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $html .= '<input name="subject" style="font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" size="37" tabindex="8" type="text"/>';
+            $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
             $html .= '</td>'.LF;
             $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
             $html .= '</td>'.LF;
