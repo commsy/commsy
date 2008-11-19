@@ -63,8 +63,11 @@ td.formfield{
 #form_title{
    background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
    background-color:<?php echo($color['tabs_background'])?>;
-   color:<?php echo($color['headline_text'])?>;
+   color:<?php echo($color['tabs_title'])?>;
    vertical-align:top;
+   font-weight:bold;
+   font-size:14pt;
+   white-space:nowrap;
    width:100%;
 }
 
