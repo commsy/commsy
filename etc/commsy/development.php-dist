@@ -39,7 +39,7 @@ $c_message_management = true;
 // true = send emails
 // false = don't send emails
 // print = don't end emails but echo them in the htmlpage (usefull for debugging)
-$c_send_email = print;
+$c_send_email = 'print';
 
 // support for debugging
 $c_show_debug_infos = false;

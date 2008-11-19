@@ -98,7 +98,12 @@ class cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_rubric_form ($environment) {
+   function cs_rubric_form ($params) {
+      if ( is_array($params) ) {
+         $environment = $params['environment'];
+      } else {
+         $environment = $params;
+      }
       $this->_environment = $environment;
       $this->_translator = $environment->getTranslationObject();
       $this->_form = new cs_form();
