@@ -261,7 +261,10 @@ else {
       // Save item
       if ( !empty($command) and
            (isOption($command, getMessage('ANNOTATION_SAVE_BUTTON'))
-            or isOption($command, getMessage('ANNOTATION_CHANGE_BUTTON'))) ) {
+            or isOption($command, getMessage('ANNOTATION_CHANGE_BUTTON'))
+            or isOption($command, getMessage('ANNOTATION_ADD_NEW_BUTTON'))
+            ) ) {
+
          $correct = $form->check();
          if ( $correct ) {
             // Create new item
