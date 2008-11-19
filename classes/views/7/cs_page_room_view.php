@@ -766,7 +766,7 @@ class cs_page_room_view extends cs_page_view {
 
          $html .= LF.'<div id="main">'.LF;
 
-#         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
+         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
 
          if ($show_agb_again) {
             $html .='&nbsp;';
