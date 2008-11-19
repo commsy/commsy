@@ -766,7 +766,7 @@ class cs_page_room_view extends cs_page_view {
 
          $html .= LF.'<div id="main">'.LF;
 
-         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
+#         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
 
          if ($show_agb_again) {
             $html .='&nbsp;';
@@ -961,7 +961,7 @@ class cs_page_room_view extends cs_page_view {
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-              $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'));'.LF;
+               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'));'.LF;
                $html .= '</script>'.LF;
             }else{
                $html .= '<table style="width:100%; padding-top:0px;" summary="Layout">'.LF;
@@ -1135,7 +1135,7 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</div>'.LF;
          // @segment-end 91880
          // @segment-begin 42747 asHTML():call-$this->_getSystemInfoAsHTML()-display-tidy&co(left-bottom-corner)
-         $html .= '<div style="padding-top:5px; padding-left:20px;">'.LF;
+         $html .= '<div style="padding-top:5px; padding-left:10px;">'.LF;
          $html .= $this->_getSystemInfoAsHTML();
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
