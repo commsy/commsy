@@ -99,7 +99,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $html .= '</tr>'.LF;
             $html .= '</table>'.LF;
             $html .= '<div style=" margin:0px;padding:0px;">'.LF;
-            $normal = '<textarea style="font-size:10pt;" name="description" cols="57" rows="10" tabindex="8"></textarea>';
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="10" tabindex="8"></textarea>';
             $text = '';
             global $c_html_textarea;
             $current_context = $this->_environment->getCurrentContextItem();
