@@ -216,7 +216,7 @@ class cs_user_index_view extends cs_room_index_view {
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
 
-         $html .= '      <td '.$style.' style="text-align:center;">'.$this->_getItemPicture($item).'</td>'.LF;
+         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
          $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }else{
          $html .= '      <td colspan="2" '.$style.' style="text-align:center; font-size:10pt;">'.$this->_getItemPicture($item).'</td>'.LF;
