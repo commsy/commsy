@@ -608,9 +608,11 @@ if (isset($parameters['mode']) and $parameters['mode']=='print') {
    }
 }
 
-$left_menue_status = $session->getValue('left_menue_status');
-if ( isset($_GET['left_menue']) and !empty($_GET['left_menue']) ){
-   $session->setValue('left_menue_status', $_GET['left_menue']);
+if ( isset($session) ) {
+   $left_menue_status = $session->getValue('left_menue_status');
+   if ( isset($_GET['left_menue']) and !empty($_GET['left_menue']) ){
+      $session->setValue('left_menue_status', $_GET['left_menue']);
+   }
 }
 $page->setCurrentUser($environment->getCurrentUserItem());
 
