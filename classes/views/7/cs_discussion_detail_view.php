@@ -74,7 +74,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          if ( $discussion_type == 'simple') {
             $html .='</div>'.LF;
             $html .='</div>'.LF;
-            $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:60px; margin-top:10px; padding-top:5px; background-color:white;">'.LF;
+            $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:70px; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
             $html .='<div style="width:100%;" >'.LF;
             $html .= '<a name="form"></a>'.LF;
             $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'discarticle', 'edit','').'" method="post" enctype="multipart/form-data" name="f">'.LF;

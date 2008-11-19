@@ -1031,7 +1031,7 @@ class cs_detail_view extends cs_view {
          unset($params);
          $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
       }else{
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 50px;"/>'.LF;
+         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
       }
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1083,7 +1083,7 @@ class cs_detail_view extends cs_view {
          while( $annotation_item ){
             $html .='<table summary="layout" class="detail_annotation_table">'.LF;
             $image = $this->_getItemPicture($annotation_item->getModificatorItem());
-            $html .='<tr><td rowspan="2" style="width:60px; padding:5px; vertical-align:top;">'.$image.'</td>'.LF;
+            $html .='<tr><td rowspan="2" style="width:70px; padding:5px; vertical-align:top;">'.$image.'</td>'.LF;
             $html .='<td class="detail_annotation_headline">'.LF;
             $html .= '<a id="anchor'.$annotation_item->getItemID().'" name="anchor'.$annotation_item->getItemID().'"></a>'.LF;
             $html .= '<div style="float:right">';
