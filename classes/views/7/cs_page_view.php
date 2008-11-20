@@ -2216,7 +2216,7 @@ class cs_page_view extends cs_view {
             }
          }
       }
-      return $retour;
+#      return $retour;
    }
 
    function _getLanguageConfigAsHTML () {
