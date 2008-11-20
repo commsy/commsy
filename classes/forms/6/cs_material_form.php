@@ -615,9 +615,22 @@ class cs_material_form extends cs_rubric_form {
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
-
       $current_context = $this->_environment->getCurrentContextItem();
-      if (isset($this->_item)) {
+      if (isset($this->_form_post)) {
+         $this->_values = $this->_form_post;
+         $tmp_array = array();
+         if (isset($this->_form_post['dayStart'])){
+            $tmp_array['dayStart'] = $this->_form_post['dayStart'];
+         }else{
+            $tmp_array['dayStart'] = '';
+         }
+         if (isset($this->_form_post['timeStart'])){
+            $tmp_array['timeStart'] = $this->_form_post['timeStart'];
+         }else{
+            $tmp_array['timeStart'] = '';
+         }
+         $this->_values['start_date_time'] = $tmp_array;
+      }elseif (isset($this->_item)) {
          $this->_values['modification_date'] = $this->_item->getModificationDate();
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['vid'] = $this->_item->getVersionID();
@@ -673,13 +686,6 @@ class cs_material_form extends cs_rubric_form {
          }else{
             $this->_values['taglist'] = $tag_array;
          }
-
-
-      } elseif (isset($this->_form_post)) {
-         $this->_values = $this->_form_post;
-      }
-      if (isset($this->_item)) {
-         // public
          if ($current_context->withActivatingContent()){
             if ($this->_item->isPrivateEditing()){
                $this->_values['private_editing'] = 1;
@@ -715,7 +721,6 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['bib_kind'] ='common';
          }
          $this->_values['hide'] = $this->_item->isNotActivated()?'1':'0';
-
          if ($this->_item->isNotActivated()){
             $activating_date = $this->_item->getActivatingDate();
             if (!strstr($activating_date,'9999-00-00')){
@@ -727,15 +732,15 @@ class cs_material_form extends cs_rubric_form {
          }
 
       }
-         if ($current_context->withActivatingContent()){
-            if ( !isset($this->_values['private_editing']) ) {
-               $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
-            }
-         }else{
-            if ( !isset($this->_values['public']) ) {
-               $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
-            }
+      if ($current_context->withActivatingContent()){
+         if ( !isset($this->_values['private_editing']) ) {
+            $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
+      }else{
+         if ( !isset($this->_values['public']) ) {
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }
+      }
    }
 
    /** specific check the values of the form

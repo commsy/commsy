@@ -262,7 +262,11 @@ else {
             // (this takes care of saving the section itself, too)
             $user = $environment->getCurrentUserItem();
             $material_item->setModificatorItem($user);
-            $material_item->setModificationDate($section_item->getModificationDate());
+            if (!$material_item->isNotActivated()){
+               $material_item->setModificationDate($section_item->getModificationDate());
+            }else{
+               $material_item->setModificationDate($material_item->getModificationDate());
+            }
             $section_list = $material_item->getSectionList();
 
             // files

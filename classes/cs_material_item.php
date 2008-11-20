@@ -693,7 +693,7 @@ class cs_material_item extends cs_item {
    function _saveSections ($mode = '') {
       $error_array_sum = array();
       if ( isset($this->_changed['section_for']) ) {
-         $this->setModificationDate(NULL);
+#         $this->setModificationDate(NULL);
          $section_list = $this->getSectionList();
          if ( $section_list->getCount() > 0 ) {
             $new_section_list = new cs_section_list();
@@ -1505,7 +1505,7 @@ function _copySectionList ($copy_id) {
       $file_list->sortby('filename');
       return $file_list;
    }
-   
+
    //------------------------------------------
    //------------- Materialexport -------------
    function setExportToWiki($value) {
