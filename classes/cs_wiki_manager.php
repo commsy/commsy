@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -224,7 +224,7 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$EnableAtomLink = 0;'.LF;
          $str .= '@include_once("$FarmD/cookbook/feedlinks.php");'.LF;
          $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
-//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine ï¿½nderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
          $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary} - ge&auml;ndert von: {\$LastModifiedBy}';".LF.LF;
       }
 
@@ -310,13 +310,13 @@ class cs_wiki_manager extends cs_manager {
                 $titleForForm = $discussion;
 //                $discussionArray = explode (' ', $discussion);
 //                for ($index = 0; $index < sizeof($discussionArray); $index++) {
-//                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "Ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "Oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "Ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ï¿½", "ss", $discussionArray[$index]);
 //                    $first_letter = substr($discussionArray[$index], 0, 1);
 //                    $rest = substr($discussionArray[$index], 1);
 //                    $first_letter = strtoupper($first_letter);
@@ -399,7 +399,7 @@ class cs_wiki_manager extends cs_manager {
                     if ( $item->WikiEnableDiscussionNotification() == "1" ) {
 
                         if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
-                            // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
+                            // CommSy-Gruppen erstellen, zuordnung erfolgt ï¿½ber diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
 //                            $this->updateGroupNotificationFiles();
@@ -508,6 +508,23 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$ListCategories_ExcludeCategories = "/^(GroupFooter)$/";'.LF.LF;
 
       // Li-Pedia Erweiterungen
+
+	  // Wiki Authetifizierung
+        $str .= '//$AuthUser[\'admin\'] = crypt(\'admin\');'.LF;
+        $str .= '//$AuthUser[\'@admins\'] = array(\'admin\');'.LF;
+        
+        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'http://localhost/commsy/htdocs/soap.php\', \'portal_id\' => \'101\', \'cid\' => \'107\');'.LF;
+
+        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'http://project.commsy.net/soap.php\', \'portal_id\' => \'192261\', \'cid\' => \'215915\');'.LF;
+
+        $str .= '//include_once("$FarmD/scripts/authuser.php");'.LF;
+
+        $str .= '//$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
+        $str .= '//$EnableUpload = 1;'.LF;
+        $str .= '//$DefaultPasswords[\'upload\'] = \'id:*\';'.LF;
+        $str .= '//$UploadMaxSize = 1000000000;'.LF;
+        $str .= '//$DefaultPasswords[\'edit\'] = \'id:*\';'.LF;
+	  // Wiki Authetifizierung
 
       $str .= '?>';
 
@@ -805,7 +822,7 @@ function updateNotification(){
    $old_dir = getcwd();
    chdir($c_commsy_path_file);
    if($context_item->WikiEnableDiscussionNotificationGroups() != "1"){
-      // Alle Foren mit allen Nutzern füllen
+      // Alle Foren mit allen Nutzern fï¿½llen
       $discussion_array = $context_item->getWikiDiscussionArray();
       foreach($discussion_array as $discussion){
          $user_manager = $this->_environment->getUserManager();
@@ -851,13 +868,13 @@ function updateNotification(){
 function getDiscussionWikiName($discussion){
     $discussionArray = explode (' ', $discussion);
     for ($index = 0; $index < sizeof($discussionArray); $index++) {
-        $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "Ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "Oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "Ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ï¿½", "ss", $discussionArray[$index]);
         $first_letter = substr($discussionArray[$index], 0, 1);
         $rest = substr($discussionArray[$index], 1);
         $first_letter = strtoupper($first_letter);
@@ -907,7 +924,7 @@ function exportMaterialToWiki($current_item_id){
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
    file_put_contents($html_wiki_file, $description);
-   $command = 'html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file;
+   $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
    $returnwiki = '';
    $returnstatus = '';
    $htmlwiki = exec($command, $returnwiki, $returnstatus);
@@ -964,7 +981,7 @@ function exportMaterialToWiki($current_item_id){
          $old_dir = getcwd();
          chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
          file_put_contents($html_wiki_file, $description);
-         $command = 'html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file;
+         $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
          $htmlwiki = exec($command, $returnwiki, $returnstatus);
          if($returnstatus == 0){
             // Mit Perl
@@ -1031,13 +1048,13 @@ function exportMaterialToWiki($current_item_id){
 }
 
 function encodeUmlaute($html){
-        $html = str_replace("ä", "&auml;", $html);
-        $html = str_replace("Ä", "&Auml;", $html);
-        $html = str_replace("ö", "&ouml;", $html);
-        $html = str_replace("Ö", "&Ouml;", $html);
-        $html = str_replace("ü", "&uuml;", $html);
-        $html = str_replace("Ü", "&Uuml;", $html);
-        $html = str_replace("ß", "&szlig;", $html);
+        $html = str_replace("ï¿½", "&auml;", $html);
+        $html = str_replace("ï¿½", "&Auml;", $html);
+        $html = str_replace("ï¿½", "&ouml;", $html);
+        $html = str_replace("ï¿½", "&Ouml;", $html);
+        $html = str_replace("ï¿½", "&uuml;", $html);
+        $html = str_replace("ï¿½", "&Uuml;", $html);
+        $html = str_replace("ï¿½", "&szlig;", $html);
         return $html;
 }
 
