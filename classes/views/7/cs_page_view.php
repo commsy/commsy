@@ -727,11 +727,7 @@ class cs_page_view extends cs_view {
             	$retour .= '<div style="padding: 0px 20px;">'.LF;
             }
             $retour .= $plugin_class->getFooterAsHTML();
-            if ( $this->_environment->inPortal()
-                 or $this->_environment->inServer()
-               ) {
-               $retour .= '</div>'.LF;
-            }
+            $retour .= '</div>'.LF;
          }
       }
       unset($plugin_class);
@@ -2216,7 +2212,7 @@ class cs_page_view extends cs_view {
             }
          }
       }
-#      return $retour;
+      return $retour;
    }
 
    function _getLanguageConfigAsHTML () {
