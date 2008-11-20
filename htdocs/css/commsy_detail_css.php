@@ -145,6 +145,7 @@ span.sub_item_pagetitle, span.sub_item_description{
    background-color: #FFFFFF;
    padding:0px;
    margin:0px;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
 .annotation_pagetitle{
