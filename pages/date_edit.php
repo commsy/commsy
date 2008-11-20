@@ -724,7 +724,39 @@ else {
             }
 
             if ( isset($_POST['public']) ) {
-               $dates_item->setPublic($_POST['public']);
+               if ( $dates_item->isPublic() != $_POST['public'] ) {
+                  $dates_item->setPublic($_POST['public']);
+               }
+            } else {
+               if ( isset($_POST['private_editing']) ) {
+                  $dates_item->setPrivateEditing('0');
+               } else {
+                  $dates_item->setPrivateEditing('1');
+               }
+            }
+
+            if ( isset($_POST['hide']) ) {
+                // variables for datetime-format of end and beginning
+                $dt_hiding_time = '00:00:00';
+                $dt_hiding_date = '9999-00-00';
+                $dt_hiding_datetime = '';
+                $converted_activate_day_start = convertDateFromInput($_POST['dayActivateStart'],$environment->getSelectedLanguage());
+                if ($converted_activate_day_start['conforms'] == TRUE) {
+                   $dt_hiding_datetime = $converted_activate_day_start['datetime'].' ';
+                   $converted_activate_time_start = convertTimeFromInput($_POST['timeStart']);
+                   if ($converted_activate_time_start['conforms'] == TRUE) {
+                      $dt_hiding_datetime .= $converted_activate_time_start['datetime'];
+                   }else{
+                      $dt_hiding_datetime .= $dt_hiding_time;
+                   }
+                }else{
+                   $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+                }
+                $dates_item->setModificationDate($dt_hiding_datetime);
+            }else{
+               if($dates_item->isNotActivated()){
+                  $dates_item->setModificationDate(getCurrentDateTimeInMySQL());
+               }
             }
 
             if ( isset($_POST['mode']) ) {

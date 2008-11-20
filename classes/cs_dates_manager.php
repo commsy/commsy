@@ -497,10 +497,14 @@ class cs_dates_manager extends cs_manager {
       } else {
          $public = '0';
       }
+      $modification_date = getCurrentDateTimeInMySQL();
+      if ($item->isNotActivated()){
+         $modification_date = $item->getModificationDate();
+      }
 
       $query = 'UPDATE dates SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
+               'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'",'.
@@ -563,6 +567,10 @@ class cs_dates_manager extends cs_manager {
       } else {
          $public = '0';
       }
+      $modification_date = getCurrentDateTimeInMySQL();
+      if ($item->isNotActivated()){
+         $modification_date = $item->getModificationDate();
+      }
 
      $query = 'INSERT INTO dates SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'", '.
@@ -570,7 +578,7 @@ class cs_dates_manager extends cs_manager {
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
+              'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'", '.
               'public="'.encode(AS_DB,$public).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'", '.
