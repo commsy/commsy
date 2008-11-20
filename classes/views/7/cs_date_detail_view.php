@@ -28,7 +28,7 @@ $this->includeClass(DETAIL_VIEW);
 /**
  *  class for CommSy detail view: date
  */
-class cs_dates_detail_view extends cs_detail_view {
+class cs_date_detail_view extends cs_detail_view {
 
 /** array of ids in clipboard*/
 var $_clipboard_id_array=array();

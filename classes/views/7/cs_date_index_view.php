@@ -313,7 +313,7 @@ class cs_date_index_view extends cs_room_index_view {
    function _getIndexPageHeaderAsHTML(){
       $html = '';
       $html .='<div style="width:100%;">'.LF;
-      $html .= '<div class="indexdate" style="width: 27%; font-size:10pt; float:right; padding-top:8px; text-align:right;">'.LF;
+      $html .= '<div class="indexdate" style="width: 27%; padding-top:18px; font-size:10pt; float:right; text-align:right;">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['week']);
       unset($params['year']);
