@@ -391,7 +391,7 @@ $cs_color['SCHEMA_8']['warning']                    = 'red';
 
 //Fade to Grey
 $cs_color['SCHEMA_9']['schema']                     = 'SCHEMA_9';
-$cs_color['SCHEMA_9']['tabs_background']            = '#666666';
+$cs_color['SCHEMA_9']['tabs_background']            = '#8D8C8C';
 $cs_color['SCHEMA_9']['tabs_focus']                 = '#c17f2a';
 $cs_color['SCHEMA_9']['table_background']           = '#A50416';
 $cs_color['SCHEMA_9']['tabs_title']                 = 'white';
