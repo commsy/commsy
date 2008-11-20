@@ -247,6 +247,9 @@ class cs_dates_manager extends cs_manager {
 
       $query .= ' WHERE 1';
 
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (dates.modification_date IS NULL OR dates.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+      }
       // fifth, insert limits into the select statement
       if ( $this->_future_limit ) {
          #$query .= ' AND (dates.datetime_end > NOW() OR dates.datetime_start > NOW())'; // this will not get all dates today

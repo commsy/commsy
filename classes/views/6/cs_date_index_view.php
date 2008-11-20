@@ -172,8 +172,26 @@ class cs_date_index_view extends cs_room_index_view {
       }else{
         $width = '220';
       }
+      $html = '';
+      if ($current_context->withActivatingContent()){
+         $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').BRLF;
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '      <option value="1"';
+         if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option value="2"';
+         if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+             $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+         $html .= '   </select>'.LF;
+         $html .='</div>';
+      }
       $selstatus = $this->getSelectedStatus();
-      $html = '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
       $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
@@ -205,7 +223,25 @@ class cs_date_index_view extends cs_room_index_view {
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
-      if ( !isset($params['selstatus']) or $params['selstatus'] == 4 ){
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+         if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+            $this->_additional_selects = true;
+            $html_text ='<div class="restriction">';
+            $module = $this->_environment->getCurrentModule();
+            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').':</span> ';
+            $status_text = $this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES');
+            $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
+            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+            $new_params = $params;
+            $new_params['selstatus'] = 2;
+            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+            $html_text .='</div>';
+            $html .= $html_text;
+         }
+      }
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( !isset($params['selstatus']) or $params['selstatus'] == 4  or $params['selstatus'] == 3 ){
          $this->_additional_selects = true;
          $html_text ='<div class="restriction">';
          $module = $this->_environment->getCurrentModule();

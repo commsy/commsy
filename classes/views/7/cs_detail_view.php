@@ -874,8 +874,8 @@ class cs_detail_view extends cs_view {
       $html .='<div id="detail_content">'.LF;
 
 
+      $formal_data1 = array();
       if ($item->isNotActivated()){
-         $formal_data1 = array();
          $temp_array = array();
          $temp_array[]  = getMessage('COMMON_RIGHTS');
 
@@ -887,12 +887,19 @@ class cs_detail_view extends cs_view {
          }
          $temp_array[] = $title;
          $formal_data1[] = $temp_array;
+      }
+      if ($this->_environment->getCurrentModule() == CS_DATE_TYPE and $item->issetPrivatDate()){
+         $temp_array = array();
+         $temp_array[]  = getMessage('COMMON_PRIVATE_DATE');
+         $title = getMessage('COMMON_NOT_ACCESSIBLE');
+         $temp_array[] = $title;
+         $formal_data1[] = $temp_array;
+      }
+      if (!empty($formal_data1)){
          $html .= $this->_getFormalDataAsHTML($formal_data1);
       }
 
-
       $html .= $this->_getContentAsHTML();
- #     $html .='</div>'.LF;
       $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
       $mode = 'short';
       if (in_array($item->getItemID(),$this->_openCreatorInfo)) {

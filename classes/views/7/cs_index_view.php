@@ -2076,6 +2076,7 @@ EOD;
    }
 
   function _getExpertSearchAsHTML(){
+      $width = '235';
       $html  = '';
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
@@ -2083,6 +2084,33 @@ EOD;
       $html .= '<div class="right_box_title">'.getMessage('COMMON_EXPERT_SEARCH').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
+      $context_item = $this->_environment->getCurrentContextItem();
+      $module = $this->_environment->getCurrentModule();
+      if ($context_item->withActivatingContent()
+          and (
+             $module == CS_DATE_TYPE
+             or $module == CS_MATERIAL_TYPE
+             or $module == CS_ANNOUNCEMENT_TYPE
+             or $module == CS_DISCUSSION_TYPE
+             or $module == CS_TODO_TYPE
+          )
+      ){
+          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+          $html .= '      <option value="1"';
+          if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+             $html .= ' selected="selected"';
+          }
+          $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+          $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+          $html .= '      <option value="2"';
+          if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+              $html .= ' selected="selected"';
+          }
+          $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+          $html .= '   </select>'.LF;
+          $html .='</div>';
+      }
       $html .= $this->_getAdditionalRestrictionBoxAsHTML('14.5').LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

@@ -504,6 +504,7 @@ class cs_date_form extends cs_rubric_form {
          $this->_form->addText('hide_end2','',')');
       }else{
           // public radio-buttons
+#          $this->_form->addCheckbox('mode','','',getMessage('COMMON_DATE_STATUS'),getMessage('DATES_NON_PUBLIC_FORM'),'');
           if ( !isset($this->_item) ) {
              $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
           } else {
@@ -515,7 +516,6 @@ class cs_date_form extends cs_rubric_form {
                 $this->_form->addHidden('public','');
              }
           }
-         $this->_form->addCheckbox('mode','','','',getMessage('DATES_NON_PUBLIC_FORM'),'');
       }
 
       // buttons

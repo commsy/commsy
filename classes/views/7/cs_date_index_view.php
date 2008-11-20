@@ -197,21 +197,40 @@ class cs_date_index_view extends cs_room_index_view {
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
-      if ( !isset($params['selstatus']) or $params['selstatus'] == 4 ){
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+         if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+            $this->_additional_selects = true;
+            $html_text ='<tr>'.LF;
+            $html_text .='<td>'.LF;
+            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .='</td>'.LF;
+            $html_text .='<td style="text-align:right;">'.LF;
+            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+            $new_params = $params;
+            $new_params['selactivatingstatus'] = 1;
+            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+            $html_text .='</td>'.LF;
+            $html_text .='</tr>'.LF;
+            $html .= $html_text;
+         }
+      }
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( !isset($params['selstatus']) or $params['selstatus'] == 4  or $params['selstatus'] == 3 ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
          $html_text .= '<span class="infocolor">'.getMessage('COMMON_DATE_STATUS').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
+         $status_text = '';
          if (isset($params['selstatus']) and $params['selstatus'] == 4){
-            $status_text = $this->_translator->getMessage('DATES_NON_PUBLIC_SHORT');
-         }elseif(!isset($params['selstatus'])){
-            $status_text = $this->_translator->getMessage('DATES_PUBLIC_SHORT');
-         }else{
-            $status_text = $this->_translator->getMessage('COMMON_USERS');
+            $status_text = $this->_translator->getMessage('DATES_NON_PUBLIC');
+         }elseif(!isset($params['selstatus']) or $params['selstatus'] == 3){
+            $status_text = $this->_translator->getMessage('DATES_PUBLIC');
          }
-         $html_text .= '<span><a title="'.$status_text.'">'.chunkText($status_text,15).'</a></span>';
+         $html_text .= '<span>'.$status_text.'</span>';
          $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
          $new_params['selstatus'] = 2;

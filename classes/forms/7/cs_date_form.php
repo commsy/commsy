@@ -375,6 +375,7 @@ class cs_date_form extends cs_rubric_form {
     */
    function _createForm () {
 
+      $current_context = $this->_environment->getCurrentContextItem();
       // dates
       $this->_form->addHidden('iid','');
       if ($this->getCalendarDateStatus()){
@@ -398,7 +399,6 @@ class cs_date_form extends cs_rubric_form {
          $this->_form->addEmptyline();
       }
 
-      $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withBuzzwords() ){
          // buzzwords
          if ( !empty ($this->_shown_buzzword_array) ) {
@@ -495,15 +495,16 @@ class cs_date_form extends cs_rubric_form {
       if ($current_context->withActivatingContent()){
          $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
+         $this->_form->addCheckbox('mode','','','',getMessage('COMMON_NOT_ACCESSIBLE'),'');
+         $this->_form->combine();
          $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
          $this->_form->combine('horizontal');
          $this->_form->addDateTimeField('start_activate_date_time','','dayActivateStart','timeActivateStart',9,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
          $this->_form->combine('horizontal');
          $this->_form->addText('hide_end2','',')');
-         $this->_form->combine();
-         $this->_form->addCheckbox('mode','','','',getMessage('DATES_NON_PUBLIC_FORM'),'');
       }else{
           // public radio-buttons
+          $this->_form->addCheckbox('mode','','',getMessage('COMMON_DATE_STATUS'),getMessage('DATES_NON_PUBLIC_FORM'),'');
           if ( !isset($this->_item) ) {
              $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
           } else {
@@ -515,7 +516,6 @@ class cs_date_form extends cs_rubric_form {
                 $this->_form->addHidden('public','');
              }
           }
-         $this->_form->addCheckbox('mode','','','',getMessage('DATES_NON_PUBLIC_FORM'),'');
       }
 
       // buttons
