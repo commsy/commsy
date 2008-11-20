@@ -1496,5 +1496,30 @@ class cs_connection_soap {
       $log_manager = $this->_environment->getLogManager();
       $log_manager->saveArray($array);
    }
+   
+   public function getUserInfo ($session_id, $context_id) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+		 $user_manager->setUserIDLimit($user_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $user_info = '';
+         if ($user_list->getCount() == 1) {
+            $user_item = $user_list->getFirst();
+            $user_info = $user_item->getDataAsXML();
+         }
+         $result = $this->_encode_output($user_info);
+      } else {
+         $info = 'ERROR: GET USER INFO';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
 }
 ?>

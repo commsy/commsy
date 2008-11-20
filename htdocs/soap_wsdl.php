@@ -173,7 +173,13 @@
 <message name='getTopicListOUT'>
   <part name='result' type='xsd:string'/>
 </message>
-
+<message name='getUserInfoIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+</message>
+<message name='getUserInfoOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -263,6 +269,10 @@
   <operation name='getTopicList'>
     <input message='tns:getTopicListIN'/>
     <output message='tns:getTopicListOUT'/>
+  </operation>
+  <operation name='getUserInfo'>
+    <input message='tns:getUserInfoIN'/>
+    <output message='tns:getUserInfoOUT'/>
   </operation>
 </portType>
 
@@ -503,6 +513,17 @@
   </operation>
   <operation name='getTopicList'>
     <soap:operation soapAction='urn:xmethodsCommSy#getTopicList'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getUserInfo'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getUserInfo'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
