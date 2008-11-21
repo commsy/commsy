@@ -140,7 +140,9 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    $seltopic = '';
    $last_selected_tag = '';
    $seltag_array = array();
+   $sel_activating_status = '';
 } else {
+   $sel_activating_status = '';
 
    // Find current search text
    if ( isset($_GET['search']) ) {
@@ -148,6 +150,14 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    }  else {
       $search = '';
    }
+
+   // Find current sel_activating_status selection
+   if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+      $sel_activating_status = $_GET['selactivatingstatus'];
+   } else {
+      $sel_activating_status = 2;
+   }
+
 
    // Find current buzzword selection
    if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
@@ -389,6 +399,9 @@ if ( !empty($ref_user) and $mode == 'attached' ){
 if ( !empty($sort) ) {
    $announcement_manager->setSortOrder($sort);
 }
+if ( $sel_activating_status == 2 ) {
+   $announcement_manager->showNoNotActivatedEntries();
+}
 if ( !empty($search) ) {
    $announcement_manager->setSearchLimit($search);
 }
@@ -504,6 +517,7 @@ $view->setClipboardIDArray($clipboard_id_array);
 $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
+$view->setActivationLimit($sel_activating_status);
 
 if ( !empty($ref_iid) and $mode =='attached' ) {
    $item_manager = $environment->getItemManager();

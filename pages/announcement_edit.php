@@ -530,7 +530,6 @@ else {
             // Set modificator and modification date
             $current_user = $environment->getCurrentUserItem();
             $announcement_item->setModificatorItem($current_user);
-            $announcement_item->setModificationDate(getCurrentDateTimeInMySQL());
 
             // Set attributes
             if ( isset($_POST['title']) ) {
@@ -640,6 +639,43 @@ else {
             // files
             $item_files_upload_to = $announcement_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
+
+            if ( isset($_POST['public']) ) {
+               if ( $announcement_item->isPublic() != $_POST['public'] ) {
+                  $announcement_item->setPublic($_POST['public']);
+               }
+            } else {
+               if ( isset($_POST['private_editing']) ) {
+                  $announcement_item->setPrivateEditing('0');
+               } else {
+                  $announcement_item->setPrivateEditing('1');
+               }
+            }
+            if ( isset($_POST['hide']) ) {
+                // variables for datetime-format of end and beginning
+                $dt_hiding_time = '00:00:00';
+                $dt_hiding_date = '9999-00-00';
+                $dt_hiding_datetime = '';
+                $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
+                if ($converted_day_start['conforms'] == TRUE) {
+                   $dt_hiding_datetime = $converted_day_start['datetime'].' ';
+                   $converted_time_start = convertTimeFromInput($_POST['timeStart']);
+                   if ($converted_time_start['conforms'] == TRUE) {
+                      $dt_hiding_datetime .= $converted_time_start['datetime'];
+                   }else{
+                      $dt_hiding_datetime .= $dt_hiding_time;
+                   }
+                }else{
+                   $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+                }
+                $announcement_item->setModificationDate($dt_hiding_datetime);
+            }else{
+               if($announcement_item->isNotActivated()){
+                  $announcement_item->setModificationDate(getCurrentDateTimeInMySQL());
+               }
+            }
+
+
 
             // Save item
             $announcement_item->save();

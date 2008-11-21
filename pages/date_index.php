@@ -299,6 +299,7 @@ if ( isset($_GET['option'])
    $selinstitution = '';
    $last_selected_tag = '';
    $seltag_array = array();
+   $sel_activating_status = '';
 } else {
 
    // Find current search text
@@ -307,7 +308,14 @@ if ( isset($_GET['option'])
    } else {
       $search = '';
    }
+   $sel_activating_status = '';
 
+   // Find current sel_activating_status selection
+   if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+      $sel_activating_status = $_GET['selactivatingstatus'];
+   } else {
+      $sel_activating_status = 2;
+   }
    // Find current buzzword selection
    if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
       $selbuzzword = $_GET['selbuzzword'];
@@ -556,6 +564,10 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
    $dates_manager->setDateModeLimit(2);
    $count_all = $dates_manager->getCountAll();
 }
+if ( $sel_activating_status == 2 ) {
+   $dates_manager->showNoNotActivatedEntries();
+}
+
 if ( !empty($ref_iid) and $mode == 'attached' ){
    $dates_manager->setRefIDLimit($ref_iid);
 }
@@ -738,6 +750,7 @@ $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setAdditionalSelect();
+$view->setActivationLimit($sel_activating_status);
 
 
 if ( !empty($ref_iid) and $mode =='attached' ) {
