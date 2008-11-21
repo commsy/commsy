@@ -518,44 +518,40 @@ class cs_wiki_manager extends cs_manager {
 	    $portalid = $this->_environment->getCurrentPortalID();
 	    $cid = $this->_environment->getCurrentContextID();
 	  
-	    $str .= '//----------------------------------------------------'.LF;
-	    $str .= '// uncomment this block to enable CommSy-login'.LF;
-	    $str .= '//'.LF;
-        $str .= '//$AuthUser[\'admin\'] = crypt(\'' . $item->getWikiAdminPW() . '\');'.LF;
-        $str .= '//$AuthUser[\'edit\'] = crypt(\'' . $item->getWikiEditPW() . '\');'.LF;
-        $str .= '//$AuthUser[\'read\'] = crypt(\'' . $item->getWikiReadPW() . '\');'.LF;
-        $str .= '//$AuthUser[\'@admins\'] = array(\'admin\');'.LF;
-        $str .= '//$AuthUser[\'@editors\'] = array(\'edit\');'.LF;
-        $str .= '//$AuthUser[\'@readers\'] = array(\'read\');'.LF;
-        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
-        $str .= '//include_once("$FarmD/scripts/authuser.php");'.LF;
-        $str .= '//$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
-        $str .= '//$EnableUpload = 1;'.LF;
-        $str .= '//$DefaultPasswords[\'upload\'] = \'id:*\';'.LF;
-        $str .= '//$UploadMaxSize = 1000000000;'.LF;
-        $str .= '//$DefaultPasswords[\'edit\'] = \'id:*\';'.LF;
-        $str .= '//'.LF;
-        $str .= '//----------------------------------------------------'.LF.LF;
+	    $str .= '$USE_COMMSY_LOGIN = false;'.LF.LF;
+	  
+	    $str .= 'if($USE_COMMSY_LOGIN){'.LF;
+        $str .= '   $AuthUser[\'admin\'] = crypt(\'' . $item->getWikiAdminPW() . '\');'.LF;
+        $str .= '   $AuthUser[\'edit\'] = crypt(\'' . $item->getWikiEditPW() . '\');'.LF;
+        $str .= '   $AuthUser[\'read\'] = crypt(\'' . $item->getWikiReadPW() . '\');'.LF;
+        $str .= '   $AuthUser[\'@admins\'] = array(\'admin\');'.LF;
+        $str .= '   $AuthUser[\'@editors\'] = array(\'edit\');'.LF;
+        $str .= '   $AuthUser[\'@readers\'] = array(\'read\');'.LF;
+        $str .= '   $AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
+        $str .= '   include_once("$FarmD/scripts/authuser.php");'.LF;
+        $str .= '   $DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
+        $str .= '   $EnableUpload = 1;'.LF;
+        $str .= '   $DefaultPasswords[\'upload\'] = \'id:*\';'.LF;
+        $str .= '   $UploadMaxSize = 1000000000;'.LF;
+        $str .= '   $DefaultPasswords[\'edit\'] = \'id:*\';'.LF;
+        $str .= '}'.LF.LF;
         
-        $str .= '//----------------------------------------------------'.LF;
-	    $str .= '// uncomment this block to enable standard-login'.LF;
-	    $str .= '//'.LF;
-        $str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
-		$str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
-		$str .= '}'.LF;
-		$str .= 'if ( !empty($COMMSY_UPLOAD_PASSWD) ) {'.LF;
-		$str .= '   $EnableUpload = 1;'.LF;
-		$str .= '   $DefaultPasswords[\'upload\'] = crypt($COMMSY_UPLOAD_PASSWD);'.LF;
-		$str .= '   $UploadMaxSize = 1000000000;'.LF;
-		$str .= '}'.LF;
-		$str .= 'if ( !empty($COMMSY_EDIT_PASSWD) ) {'.LF;
-		$str .= '   $DefaultPasswords[\'edit\'] = crypt($COMMSY_EDIT_PASSWD);'.LF;
-		$str .= '}'.LF;
-		$str .= 'if ( !empty($COMMSY_READ_PASSWD) ) {'.LF;
-		$str .= '   $DefaultPasswords[\'read\'] = crypt($COMMSY_READ_PASSWD);'.LF;
-		$str .= '}'.LF;
-		$str .= '//'.LF;
-        $str .= '//----------------------------------------------------'.LF.LF;
+        $str .= 'if(!$USE_COMMSY_LOGIN){'.LF;
+        $str .= '   if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
+		$str .= '      $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
+		$str .= '   }'.LF;
+		$str .= '   if ( !empty($COMMSY_UPLOAD_PASSWD) ) {'.LF;
+		$str .= '      $EnableUpload = 1;'.LF;
+		$str .= '      $DefaultPasswords[\'upload\'] = crypt($COMMSY_UPLOAD_PASSWD);'.LF;
+		$str .= '      $UploadMaxSize = 1000000000;'.LF;
+		$str .= '   }'.LF;
+		$str .= '   if ( !empty($COMMSY_EDIT_PASSWD) ) {'.LF;
+		$str .= '      $DefaultPasswords[\'edit\'] = crypt($COMMSY_EDIT_PASSWD);'.LF;
+		$str .= '   }'.LF;
+		$str .= '   if ( !empty($COMMSY_READ_PASSWD) ) {'.LF;
+		$str .= '      $DefaultPasswords[\'read\'] = crypt($COMMSY_READ_PASSWD);'.LF;
+		$str .= '   }'.LF;
+		$str .= '}'.LF.LF;
         
 	  // Wiki Authetifizierung
 
