@@ -693,7 +693,6 @@ class cs_material_item extends cs_item {
    function _saveSections ($mode = '') {
       $error_array_sum = array();
       if ( isset($this->_changed['section_for']) ) {
-#         $this->setModificationDate(NULL);
          $section_list = $this->getSectionList();
          if ( $section_list->getCount() > 0 ) {
             $new_section_list = new cs_section_list();
@@ -711,7 +710,7 @@ class cs_material_item extends cs_item {
                }
 
                // set files new, so they will be saved for the new version
-               // and for copiing in new rooms
+               // and for copying in new rooms
                if ( $mode == 'copy' ) {
                   $section->setFileList($file_list);
                } elseif ( isset($file_id_array) ) {
