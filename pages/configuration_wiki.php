@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -37,8 +37,8 @@ if ( !empty($_GET['iid']) ) {
 }
 
 // hier muss auf den aktuellen Kontext referenziert werden,
-// da sonst später diese Einstellung wieder überschrieben wird
-// in der commsy.php beim Speichern der Aktivität
+// da sonst spï¿½ter diese Einstellung wieder ï¿½berschrieben wird
+// in der commsy.php beim Speichern der Aktivitï¿½t
 $current_context_item = $environment->getCurrentContextItem();
 if ($current_iid == $current_context_item->getItemID()) {
    $item = $current_context_item;
@@ -226,11 +226,19 @@ else {
          } else {
             $item->setWikiEditPW('');
          }
+         
          if ( isset($_POST['read']) and !empty($_POST['read']) ) {
             $item->setWikiReadPW($_POST['read']);
          } else {
             $item->setWikiReadPW('');
          }
+         
+         if ( isset($_POST['use_commsy_login']) ) {
+            $item->setWikiUseCommSyLogin();
+         } else {
+            $item->unsetWikiUseCommSyLogin();
+         }
+         
          if ( isset($_POST['show_login_box']) ) {
             $item->setWikiShowCommSyLogin();
          } else {
