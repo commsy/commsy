@@ -510,15 +510,17 @@ class cs_wiki_manager extends cs_manager {
       // Li-Pedia Erweiterungen
 
 	  // Wiki Authetifizierung
+	    global $c_commsy_domain;
+	    global $c_commsy_url_path;
+	    
+	    $url = $c_commsy_domain . $c_commsy_url_path . '/soap.php';
+	    $portalid = $this->_environment->getCurrentPortalID();
+	    $cid = $this->_environment->getCurrentContextID();
+	  
         $str .= '//$AuthUser[\'admin\'] = crypt(\'admin\');'.LF;
         $str .= '//$AuthUser[\'@admins\'] = array(\'admin\');'.LF;
-        
-        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'http://localhost/commsy/htdocs/soap.php\', \'portal_id\' => \'101\', \'cid\' => \'107\');'.LF;
-
-        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'http://project.commsy.net/soap.php\', \'portal_id\' => \'192261\', \'cid\' => \'215915\');'.LF;
-
+        $str .= '//$AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
         $str .= '//include_once("$FarmD/scripts/authuser.php");'.LF;
-
         $str .= '//$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
         $str .= '//$EnableUpload = 1;'.LF;
         $str .= '//$DefaultPasswords[\'upload\'] = \'id:*\';'.LF;
