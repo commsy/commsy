@@ -518,7 +518,11 @@ class cs_wiki_manager extends cs_manager {
 	    $portalid = $this->_environment->getCurrentPortalID();
 	    $cid = $this->_environment->getCurrentContextID();
 	  
-	    $str .= '$USE_COMMSY_LOGIN = false;'.LF.LF;
+	    if($item->WikiUseCommSyLogin() == '1'){
+	    	$str .= '$USE_COMMSY_LOGIN = true;'.LF.LF;
+	    } else {
+	    	$str .= '$USE_COMMSY_LOGIN = false;'.LF.LF;
+	    }
 	  
 	    $str .= 'if($USE_COMMSY_LOGIN){'.LF;
         $str .= '   $AuthUser[\'admin\'] = crypt(\'' . $item->getWikiAdminPW() . '\');'.LF;
