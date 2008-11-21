@@ -443,7 +443,13 @@ class cs_date_index_view extends cs_room_index_view {
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         if ( in_array($key, $checked_ids) ) {
+         $user = $this->_environment->getCurrentUser();
+         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
+            $html .= ' disabled="disabled"'.LF;
+         }elseif ( isset($checked_ids)
+              and !empty($checked_ids)
+              and in_array($key, $checked_ids)
+            ) {
             $html .= ' checked="checked"'.LF;
             if ( in_array($key, $dontedit_ids) ) {
                $html .= ' disabled="disabled"'.LF;
@@ -452,7 +458,42 @@ class cs_date_index_view extends cs_room_index_view {
          $html .= '/>'.LF;
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+         if ($item->isNotActivated()){
+            $title = $item->getTitle();
+            $title = $this->_compareWithSearchText($title);
+            $user = $this->_environment->getCurrentUser();
+            if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                                  CS_DATE_TYPE,
+                                  'detail',
+                                  $params,
+                                  $title,
+                                  '','', '', '', '', '', '', '',
+                                  CS_DATE_TYPE.$item->getItemID());
+               unset($params);
+               if ($this->_environment->inProjectRoom()) {
+                  $title .= $this->_getItemChangeStatus($item);
+                  $title .= $this->_getItemAnnotationChangeStatus($item);
+               }
+            }
+            $activating_date = $item->getActivatingDate();
+            if (strstr($activating_date,'9999-00-00')){
+               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+            }else{
+               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            }
+            $title = '<span class="disabled">'.$title.'</span>';
+            $html .= '      <td '.$style.'>'.$title.LF;
+         }else{
+             if($with_links) {
+                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+             } else {
+                $title = $this->_text_as_html_short($item->getTitle());
+                $html .= '      <td '.$style.'>'.$title.LF;
+             }
+         }
       } else {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }

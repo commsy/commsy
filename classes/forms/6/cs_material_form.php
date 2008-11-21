@@ -569,7 +569,6 @@ class cs_material_form extends cs_rubric_form {
 
          if ($current_context->withActivatingContent()){
             $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
-#            $this->_form->addCheckbox('public',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_PUBLIC'));
             $this->_form->combine();
             $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');

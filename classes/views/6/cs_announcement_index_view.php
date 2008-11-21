@@ -93,6 +93,64 @@ class cs_announcement_index_view extends cs_index_view {
    }
    // @segment-end 25662
 
+   function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $left_menue_status = $session->getValue('left_menue_status');
+      $selected_value = $this->_attribute_limit;
+      if ($left_menue_status !='disapear'){
+         $width = '190';
+      }else{
+         $width = '220';
+      }
+      $context_item = $this->_environment->getCurrentContextItem();
+      $html = '';
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
+          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+          $html .= '      <option value="1"';
+          if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
+             $html .= ' selected="selected"';
+          }
+          $html .= '>*'.$this->_translator->getMessage('COMMON_ALL_ENTRIES').'</option>'.LF;
+          $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+          $html .= '      <option value="2"';
+          if ( !isset($this->_activation_limit) || $this->_activation_limit == 2 ) {
+              $html .= ' selected="selected"';
+          }
+          $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
+          $html .= '   </select>'.LF;
+          $html .='</div>';
+      }
+      return $html;
+   }
+
+
+   function getAdditionalRestrictionTextAsHTML(){
+/***Activating Code***/
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+         $this->_additional_selects = true;
+         $html_text ='<div class="restriction">';
+         $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').':</span> ';
+         $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         $new_params['selactivatingstatus'] = 1;
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</div>';
+         $html .= $html_text;
+      }
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->withActivatingContent()){
+         return $html;
+      }else{
+         return '';
+      }
+/*********************/
+   }
 
    // @segment-begin 47311 _getTableheadAsHTML()-Titlebox-for-announcement-index-with-sort-links,-see#35732,#96650,see#40867
    function _getTableheadAsHTML () {
@@ -251,7 +309,13 @@ class cs_announcement_index_view extends cs_index_view {
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         if ( in_array($key, $checked_ids) ) {
+         $user = $this->_environment->getCurrentUser();
+         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
+            $html .= ' disabled="disabled"'.LF;
+         }elseif ( isset($checked_ids)
+              and !empty($checked_ids)
+              and in_array($key, $checked_ids)
+            ) {
             $html .= ' checked="checked"'.LF;
             if ( in_array($key, $dontedit_ids) ) {
                $html .= ' disabled="disabled"'.LF;
@@ -260,7 +324,42 @@ class cs_announcement_index_view extends cs_index_view {
          $html .= '/>'.LF;
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
+         if ($item->isNotActivated()){
+            $title = $item->getTitle();
+            $title = $this->_compareWithSearchText($title);
+            $user = $this->_environment->getCurrentUser();
+            if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                                  CS_MATERIAL_TYPE,
+                                  'detail',
+                                  $params,
+                                  $title,
+                                  '','', '', '', '', '', '', '',
+                                  CS_MATERIAL_TYPE.$item->getItemID());
+               unset($params);
+               if ($this->_environment->inProjectRoom()) {
+                  $title .= $this->_getItemChangeStatus($item);
+                  $title .= $this->_getItemAnnotationChangeStatus($item);
+               }
+            }
+            $activating_date = $item->getActivatingDate();
+            if (strstr($activating_date,'9999-00-00')){
+               $title .= BR.getMessage('COMMON_NOT_ACTIVATED');
+            }else{
+               $title .= BR.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            }
+            $title = '<span class="disabled">'.$title.'</span>';
+            $html .= '      <td '.$style.'>'.$title.LF;
+         }else{
+             if($with_links) {
+                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+             } else {
+                $title = $this->_text_as_html_short($item->getTitle());
+                $html .= '      <td '.$style.'>'.$title.LF;
+             }
+         }
       } else {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }

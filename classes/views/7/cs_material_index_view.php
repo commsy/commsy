@@ -385,19 +385,24 @@ class cs_material_index_view extends cs_index_view {
          $html .= '      </td>'.LF;
 /***Activating Code***/
          if ($item->isNotActivated()){
-            $title = $this->_text_as_html_short($item->getTitle());
+            $title = $item->getTitle();
+            $title = $this->_compareWithSearchText($title);
             $user = $this->_environment->getCurrentUser();
             if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
                $params = array();
                $params['iid'] = $item->getItemID();
                $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                                  CS_MATERIAL_TYPE,
+                                  CS_ANNOUNCEMENT_TYPE,
                                   'detail',
                                   $params,
-                                  $this->_text_as_html_short($title),
+                                  $title,
                                   '','', '', '', '', '', '', '',
-                                  CS_MATERIAL_TYPE.$item->getItemID());
+                                  CS_ANNOUNCEMENT_TYPE.$item->getItemID());
                unset($params);
+               if ($this->_environment->inProjectRoom()) {
+                  $title .= $this->_getItemChangeStatus($item);
+                  $title .= $this->_getItemAnnotationChangeStatus($item);
+               }
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){

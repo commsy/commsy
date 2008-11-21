@@ -212,6 +212,9 @@ class cs_announcement_manager extends cs_manager {
       }
 
       $query .= ' WHERE 1';
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (announcement.modification_date IS NULL OR announcement.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+      }
       if ( isset($this->_topic_limit) ) {
          if ($this->_topic_limit == -1) {
             $query .= ' AND (l31.first_item_id IS NULL AND l31.second_item_id IS NULL)';
@@ -397,10 +400,14 @@ class cs_announcement_manager extends cs_manager {
      } else {
         $public = '0';
      }
+     $modification_date = getCurrentDateTimeInMySQL();
+     if ($announcement_item->isNotActivated()){
+        $modification_date = $announcement_item->getModificationDate();
+     }
 
      $query = 'UPDATE announcement SET '.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
+              'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
               'description="'.encode(AS_DB,$announcement_item->getDescription()).'",'.
               'public="'.encode(AS_DB,$public).'",'.
@@ -424,9 +431,10 @@ class cs_announcement_manager extends cs_manager {
     * @param object cs_item announcement_item the announcement
     */
   function _create ($announcement_item) {
+     $modification_date = getCurrentDateTimeInMySQL();
      $query = 'INSERT INTO items SET '.
               'context_id="'.encode(AS_DB,$announcement_item->getContextID()).'",'.
-              'modification_date="'.getCurrentDateTimeInMySQL().'",'.
+              'modification_date="'.$modification_date.'",'.
               'type="announcement"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -457,6 +465,10 @@ class cs_announcement_manager extends cs_manager {
      } else {
         $public = '0';
      }
+     $modification_date = getCurrentDateTimeInMySQL();
+     if ($announcement_item->isNotActivated()){
+        $modification_date = $announcement_item->getModificationDate();
+     }
 
      $query = 'INSERT INTO announcement SET '.
               'item_id="'.encode(AS_DB,$announcement_item->getItemID()).'",'.
@@ -464,7 +476,7 @@ class cs_announcement_manager extends cs_manager {
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
+              'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$announcement_item->getTitle()).'",'.
               'enddate ="'.encode(AS_DB,$announcement_item->getSecondDateTime()).'",'.
               'public="'.encode(AS_DB,$public).'",'.
