@@ -553,7 +553,7 @@ class cs_wiki_manager extends cs_manager {
 		$str .= '}'.LF;
 		$str .= 'if ( !empty($COMMSY_READ_PASSWD) ) {'.LF;
 		$str .= '   $DefaultPasswords[\'read\'] = crypt($COMMSY_READ_PASSWD);'.LF;
-		$str .= '}'.LF.LF;
+		$str .= '}'.LF;
 		$str .= '//'.LF;
         $str .= '//----------------------------------------------------'.LF.LF;
         
