@@ -204,15 +204,17 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_annotations_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $linked_item = $item->getLinkedItem();
-            $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
-            $description = $item->getDescriptionWithoutHTML();
-            if (strlen($description) > $desc_len)
-            {
-               $description = chunkText($description,$desc_len);
+            if ( isset($linked_item) ) {
+               $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
+               $description = $item->getDescriptionWithoutHTML();
+               if (strlen($description) > $desc_len)
+               {
+                  $description = chunkText($description,$desc_len);
+               }
+               $user_item = $item->getModificatorItem();
+               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $link = $path.'commsy.php?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
             }
-            $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
             unset($manager);
             unset($item);
             unset($linked_item);
