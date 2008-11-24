@@ -1164,7 +1164,8 @@ class cs_material_manager extends cs_manager {
             $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {
-               include_once('functions/error_functions.php');trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
+               include_once('functions/error_functions.php');
+               trigger_error('Problems automatic deleting materials from query: "'.$insert_query.'"',E_USER_WARNING);
             }
          }
       }

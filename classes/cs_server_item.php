@@ -138,6 +138,7 @@ class cs_server_item extends cs_guide_item {
       $cron_array = array();
       $cron_array[] = $this->_cronPageImpression();
       $cron_array[] = $this->_cronLog();
+      $cron_array[] = $this->_cronLogArchive();
       $cron_array[] = $this->_cronRoomActivity();
       $cron_array[] = $this->_cronReallyDelete();
       $cron_array[] = $this->_cronRemoveTempExportDirectory();
@@ -242,12 +243,12 @@ class cs_server_item extends cs_guide_item {
       $cron_array['success'] = false;
       $cron_array['success_text'] = 'cron failed';
 
-      // get all old (> 100 days) log data in steps to prevent overloading memory
       $log_DB = $this->_environment->getLogManager();
       $log_DB->resetlimits();
       $log_DB->setContextLimit(0);
+
       $from = 0;
-      $range = 50;
+      $range = 500;
       $log_DB->setRangeLimit($from,$range);
       $data_array = $log_DB->select();
       $count = count($data_array);
@@ -274,6 +275,36 @@ class cs_server_item extends cs_guide_item {
          }
          unset($log_archive_manager);
       }
+      unset($log_DB);
+      return $cron_array;
+   }
+
+   /** cron log, INTERNAL
+    *  daily cron, move old log entries to table log_archive
+    *
+    * @return array results of running this cron
+    */
+   function _cronLogArchive () {
+      $cron_array = array();
+      $cron_array['title'] = 'log archive cron';
+      $cron_array['description'] = 'delete old logs in log_archive';
+      $cron_array['success'] = false;
+      $cron_array['success_text'] = 'cron failed';
+
+      $log_DB = $this->_environment->getLogArchiveManager();
+      $log_DB->resetlimits();
+
+      $room_manager = $this->_environment->getRoomManager();
+      $room_manager->setContextLimit('');
+      $room_manager->setLogArchiveLimit();
+      $room_ids = $room_manager->getIDs();
+      unset($room_manager);
+
+      if ( $log_DB->deleteByContextArray($room_ids) ) {
+         $cron_array['success'] = true;
+         $cron_array['success_text'] = 'success';
+      }
+
       unset($log_DB);
       return $cron_array;
    }

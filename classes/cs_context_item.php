@@ -1650,6 +1650,28 @@ class cs_context_item extends cs_item {
 
 
    ##########################################
+   # log-archive flag
+   ##########################################
+
+   function withLogArchive () {
+      $retour = false;
+      $value = $this->_getExtraConfig('LOGARCHIVE');
+      if ($value == 1) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+   function setWithLogArchive () {
+      $this->_setExtraConfig('LOGARCHIVE',1);
+   }
+
+   function setWithoutLogArchive () {
+      $this->_setExtraConfig('LOGARCHIVE',-1);
+   }
+
+
+   ##########################################
    # grouproom flag
    ##########################################
 

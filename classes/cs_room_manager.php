@@ -65,6 +65,8 @@ class cs_room_manager extends cs_context_manager {
 
   var $_deleted_limit = NULL;
 
+  private $_logarchive_limit = NULL;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -90,6 +92,7 @@ class cs_room_manager extends cs_context_manager {
      $this->_time_limit = NULL;
      $this->_continuous_limit = NULL;
      $this->_template_limit = NULL;
+     $this->_logarchive_limit = NULL;
   }
 
   /** set interval limit
@@ -160,6 +163,12 @@ class cs_room_manager extends cs_context_manager {
     $this->_template_limit = NULL;
   }
 
+  public function setLogArchiveLimit () {
+     $this->_logarchive_limit = array();
+     $this->_logarchive_limit[] = 'LOGARCHIVE";i:1';
+     $this->_logarchive_limit[] = 'LOGARCHIVE";s:1';
+  }
+
   /** set order limit
     * this method sets an order limit for the select statement
     *
@@ -213,7 +222,9 @@ class cs_room_manager extends cs_context_manager {
      # FLAG: group room
      ###################################
      if ( empty($this->_room_type) or $this->_room_type != CS_GROUPROOM_TYPE ) {
-        $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
+        if ( !isset($this->_logarchive_limit) ) {
+           $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
+        }
      }
      ###################################
      # FLAG: group room
@@ -228,7 +239,9 @@ class cs_room_manager extends cs_context_manager {
      if (isset($this->_status_limit)) {
         $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
      }
-     if (isset($this->_room_limit)) {
+     if ( isset($this->_room_limit)
+          and !empty($this->_room_limit)
+        ) {
         $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
      if (isset($this->_continuous_limit)) {
@@ -259,11 +272,31 @@ class cs_room_manager extends cs_context_manager {
        }
      }
 
-    // template
-    if (isset($this->_template_limit)) {
+      // template
+      if (isset($this->_template_limit)) {
         $query .= ' AND '.$this->_db_table.'.template = "'.encode(AS_DB,$this->_template_limit).'"';
-     }
-     $query .= ' AND '.$this->_db_table.'.type != "privateroom"';
+      }
+      if ( !isset($this->_logarchive_limit) ) {
+         $query .= ' AND '.$this->_db_table.'.type != "privateroom"';
+      }
+
+      // log archive
+      if ( !empty($this->_logarchive_limit)
+           and count($this->_logarchive_limit) > 0
+         ) {
+         $query .= ' AND (';
+         $first = true;
+         foreach ($this->_logarchive_limit as $log_arg_limit) {
+            if ($first) {
+               $first = false;
+            } else {
+               $query .= ' OR ';
+            }
+            $query .= $this->_db_table.'.extras LIKE "%'.encode(AS_DB,$log_arg_limit).'%"';
+         }
+         $query .= ' AND '.$this->_db_table.'.extras LIKE "%'.encode(AS_DB,$this->_logarchive_limit).'%"';
+         $query .= ')';
+      }
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
@@ -295,7 +328,8 @@ class cs_room_manager extends cs_context_manager {
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
      } else {
         return $result;
      }

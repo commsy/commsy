@@ -134,7 +134,11 @@ class cs_log_manager extends cs_manager {
 
       $query .= ' WHERE 1';
 
-      if (isset($this->_room_limit) and $this->_room_limit !=0 ) {
+      if ( isset($this->_room_array_limit)
+           and count($this->_room_array_limit) > 0
+         ) {
+         $query .= ' AND cid IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).')';
+      } elseif (isset($this->_room_limit) and $this->_room_limit !=0 ) {
          $query .= ' AND cid = "'.encode(AS_DB,$this->_room_limit).'"';
       }
 

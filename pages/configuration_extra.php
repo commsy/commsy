@@ -62,8 +62,8 @@ else {
       }
 
       if ( isOption($command, getMessage('COMMON_CHOOSE_BUTTON'))
-     or ( !empty($_POST['extra']) and !isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) )
-   ) {
+           or ( !empty($_POST['extra']) and !isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) )
+         ) {
          $translator = $environment->getTranslationObject();
          $languages = $environment->getAvailableLanguageArray();
          if ($_POST['extra'] == -1) {
@@ -74,22 +74,25 @@ else {
          } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_GROUPROOM_DESC');
+         } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE') {
+            $extra = $_POST['extra'];
+            $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_LOGARCHIVE_DESC');
          } elseif ($_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE_DESC');
-         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI') {
+         } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_WIKI_DESC');
          } elseif ($_POST['extra'] == 'CHAT_CONFIGURATION_EXTRA_CHAT') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CHAT_CONFIGURATION_EXTRA_CHAT_DESC');
-         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_PDA') {
+         } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_PDA') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_PDA_DESC');
-         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT') {
+         } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_MATERIALIMPORT') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT_DESC');
-         }elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT') {
+         } elseif ($_POST['extra'] == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT') {
             $extra = $_POST['extra'];
             $values['description'] = $translator->getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC');
          } else {
@@ -107,6 +110,7 @@ else {
                if (
                     ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $portal->withAds() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $portal->withGrouproomFunctions() ) or
+                    ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'   and $portal->withLogArchive() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $portal->withPDAView() ) or
                     ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $portal->withHomepageLink() ) or
                     ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $portal->withWikiFunctions() ) or
@@ -115,10 +119,10 @@ else {
                     ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $portal->withActivatingContent() )
                   ) {
                   $values['ROOM_'.$portal->getItemID()] = $portal->getItemID();
-              unset($post_vars['ROOM_'.$portal->getItemID()]);
+                  unset($post_vars['ROOM_'.$portal->getItemID()]);
                } else {
                   $values['ROOM_'.$portal->getItemID()] = '';
-              unset($post_vars['ROOM_'.$portal->getItemID()]);
+                  unset($post_vars['ROOM_'.$portal->getItemID()]);
                }
                $room_list = $portal->getRoomList();
                if ( !$room_list->isEmpty() ) {
@@ -127,18 +131,19 @@ else {
                      if (
                          ( $extra == 'CONFIGURATION_EXTRA_SPONSORING'   and $room->withAds() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM'    and $room->withGrouproomFunctions() ) or
+                          ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE'    and $room->withLogArchive() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_PDA'          and $room->withPDAView() ) or
                           ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->withHomepageLink() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_WIKI' and $room->withWikiFunctions() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' and $room->withMaterialImportLink() ) or
                           ( $extra == 'CHAT_CONFIGURATION_EXTRA_CHAT'    and $room->withChatLink() ) or
                           ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT'    and $room->withActivatingContent() )
-                  ) {
+                     ) {
                         $values['ROOM_'.$room->getItemID()] = $room->getItemID();
-             unset($post_vars['ROOM_'.$room->getItemID()]);
+                        unset($post_vars['ROOM_'.$room->getItemID()]);
                      } else {
                         $values['ROOM_'.$room->getItemID()] = '';
-             unset($post_vars['ROOM_'.$room->getItemID()]);
+                        unset($post_vars['ROOM_'.$room->getItemID()]);
                      }
                      $room = $room_list->getNext();
                   }
@@ -172,6 +177,7 @@ else {
             if (
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_SPONSORING' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_GROUPROOM' or
+                 $_POST['extra'] == 'CONFIGURATION_EXTRA_LOGARCHIVE' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_PDA' or
                  $_POST['extra'] == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' or
                  $_POST['extra'] == 'CONFIGURATION_EXTRA_WIKI' or
@@ -181,7 +187,8 @@ else {
                ) {
                $extra = $_POST['extra'];
             } else {
-               include_once('functions/error_functions.php');trigger_error('choice of extra lost',E_USER_WARNING);
+               include_once('functions/error_functions.php');
+               trigger_error('choice of extra lost',E_USER_WARNING);
             }
 
             // save extra configuration
@@ -195,6 +202,8 @@ else {
                         $portal->setWithAds();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
                         $portal->setWithGrouproomFunctions();
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
+                        $portal->setWithLogArchive();
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                         $portal->setWithHomepageLink();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
@@ -213,6 +222,8 @@ else {
                         $portal->setWithoutAds();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' ) {
                         $portal->setWithoutGrouproomFunctions();
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' ) {
+                        $portal->setWithoutLogArchive();
                      } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' ) {
                         $portal->setWithoutHomepageLink();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_WIKI' ) {
@@ -221,9 +232,9 @@ else {
                         $portal->setWithoutChatLink();
                      } elseif ( $extra == 'CONFIGURATION_EXTRA_PDA' ) {
                         $portal->setWithoutPDAView();
-                     }elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_MATERIALIMPORT' ) {
                         $portal->setWithoutMaterialImport();
-                     }elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
+                     } elseif ( $extra == 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT' ) {
                         $portal->setWithoutActivatingContent();
                      }
                   }
@@ -241,6 +252,9 @@ else {
                               $save_flag = true;
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and !$room->WithGrouproomFunctions()) {
                               $room->setWithGrouproomFunctions();
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and !$room->withLogArchive()) {
+                              $room->setWithLogArchive();
                               $save_flag = true;
                            } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and !$room->WithHomepageLink() ) {
                               $room->setWithHomepageLink();
@@ -267,6 +281,9 @@ else {
                               $save_flag = true;
                            } elseif ( $extra == 'CONFIGURATION_EXTRA_GROUPROOM' and $room->WithGrouproomFunctions() ) {
                               $room->setWithoutGrouproomFunctions();
+                              $save_flag = true;
+                           } elseif ( $extra == 'CONFIGURATION_EXTRA_LOGARCHIVE' and $room->withLogArchive()) {
+                              $room->setWithoutLogArchive();
                               $save_flag = true;
                            } elseif ( $extra == 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE' and $room->WithHomepageLink() ) {
                               $room->setWithoutHomepageLink();
