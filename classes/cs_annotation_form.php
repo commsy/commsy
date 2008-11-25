@@ -163,7 +163,7 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('ref_iid','');
       $this->_form->addHidden('version','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,46,true);
+      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,46);
       $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
