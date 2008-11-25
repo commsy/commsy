@@ -138,7 +138,7 @@ $cs_color['room_background']  = $cs_color['background'];
 
 // default color settings
 $cs_color['DEFAULT']['schema']                     = 'DEFAULT';
-$cs_color['DEFAULT']['tabs_background']            = '#0C3359';
+$cs_color['DEFAULT']['tabs_background']            = '#3B658E';
 $cs_color['DEFAULT']['tabs_focus']                 = '#EC930D';
 $cs_color['DEFAULT']['table_background']           = '#EFEFEF';
 $cs_color['DEFAULT']['tabs_title']                 = 'white';
