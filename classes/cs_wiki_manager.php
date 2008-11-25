@@ -533,7 +533,6 @@ class cs_wiki_manager extends cs_manager {
 	        $str .= '$UploadMaxSize = 1000000000;'.LF;
 	        $str .= '$DefaultPasswords[\'edit\'] = \'@editors\';'.LF;
 	        if($item->getWikiReadPW() != ''){
-	        	pr('isset');
 	        	$str .= '$DefaultPasswords[\'read\'] = \'@readers @editors\';'.LF;
 	        }
 	    } else {
