@@ -77,8 +77,7 @@ else {
    else {
 
       // Initialize the form
-      include_once('classes/cs_configuration_export_form.php');
-      $form = new cs_configuration_export_form($environment);
+      $form = $class_factory->getClass(CONFIGURATION_EXPORT_FORM,array('environment' => $environment));
 
       // Load form data from postvars
       if ( !empty($_POST) ) {

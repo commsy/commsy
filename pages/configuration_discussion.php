@@ -77,8 +77,7 @@ if ($command != 'error') {
    // Show form and/or save item
     else {
       // Initialize the form
-      include_once('classes/cs_configuration_discussion_form.php');
-      $form = new cs_configuration_discussion_form($environment);
+      $form = $class_factory->getClass(CONFIGURATION_DISCUSSION_FORM,array('environment' => $environment));
       // display form
       $params = array();
       $params['environment'] = $environment;

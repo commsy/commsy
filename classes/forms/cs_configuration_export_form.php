@@ -23,19 +23,24 @@
 //    along with CommSy.
 
 include_once('classes/cs_rubric_form.php');
+include_once('functions/text_functions.php');
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_grouproom_form extends cs_rubric_form {
+class cs_configuration_export_form extends cs_rubric_form {
 
-   /** constructor
+   var $_portal_array = array();
+
+   var $_with_linked_checkbox = false;
+
+  /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_grouproom_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_export_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -48,16 +53,13 @@ class cs_configuration_grouproom_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-
-
-      // form fields
-      $picture = '<br/><br/><img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:290px; border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addHidden('iid','');
-      $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUPROOM_CONFIGURATION_CHOICE_TITLE'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
-      $this->_form->addText('grouproom_text',getMessage('GROUPROOM_EXPLANATION_TITLE'),getMessage('GROUPROOM_EXPLANATION_VALUE').$picture);
+      $this->_form->addHidden('name_hidden','');
+      $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
+     $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('CONTEXT_EXPORT_DESC'));
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',getMessage('PORTAL_EXPORT_ROOM_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -65,11 +67,20 @@ class cs_configuration_grouproom_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
-      if ( isset($this->_item) ) {
-         $this->_values['iid'] = $this->_item->getItemID();
-         $this->_values['grouproom'] = $this->_item->isGrouproomActive();
-      } elseif ( isset($this->_form_post) ) {
-         $this->_values = $this->_form_post;
+      if (isset($this->_item)) {
+   $this->_values['iid'] = $this->_item->getItemID();
+         $title = $this->_item->getTitle();
+         if ($title != 'PRIVATE_ROOM') {
+      $this->_values['name_hidden'] = $this->_item->getTitle();
+      $this->_values['name_title'] = $this->_item->getTitle();
+         } else {
+            $user_item = $this->_item->getOwnerUserItem();
+      $this->_values['name_hidden'] = $this->_translator->getMessage('PRIVATE_ROOM_TITLE').' '.$user_item->getFullname();
+      $this->_values['name_title'] = $this->_values['name_hidden'];
+         }
+      } elseif (isset($this->_form_post)) {
+         $this->_values = $this->_form_post; // no encode here - encode in form-views
+   $this->_values['name_title'] = $this->_values['name_hidden'];
       }
    }
 }

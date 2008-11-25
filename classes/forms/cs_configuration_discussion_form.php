@@ -26,7 +26,7 @@ include_once('classes/cs_rubric_form.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_dates_form extends cs_rubric_form {
+class cs_configuration_discussion_form extends cs_rubric_form {
 
 
    /**
@@ -37,10 +37,10 @@ class cs_configuration_dates_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_dates_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_discussion_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -49,10 +49,6 @@ class cs_configuration_dates_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-       $this->_headline = getMessage('CONFIGURATION_DATES_CHANGE');
-       $this->setHeadline($this->_headline);
-       $current_user = $this->_environment->getCurrentUser();
-       $fullname = $current_user->getFullname();
    }
 
 
@@ -63,36 +59,37 @@ class cs_configuration_dates_form extends cs_rubric_form {
     */
    function _createForm () {
 
-	  $radio_values = array();
-           $desc =getMessage('CONFIGURATION_DATES_DESC');
-           $radio_values[0]['text'] = getMessage('CONFIGURATION_DATES_DESC_0').'<br/>'.
-              '<img src="images/dates_presentation_normal.gif" width="350px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
-	  $radio_values[0]['value'] = 'normal';
-	  $radio_values[1]['text'] = getMessage('CONFIGURATION_DATES_DESC_1').'<br/>'.
-	          '<img src="images/dates_presentation_calendar.gif" width="350px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
-	  $radio_values[1]['value'] = 'calendar';
-	  $this->_form->addRadioGroup('dates_status',getMessage('CONFIGURATION_DATES'),$desc,$radio_values,'',true,false);
+     $radio_values = array();
+     $radio_values[0]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_1').
+              '<br/><img src="images/configuration_discussion_not_threaded.gif" alt="picture_simple" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
+     $radio_values[0]['value'] = '1';
+      $radio_values[1]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_2').
+              '<br/><img src="images/configuration_discussion_threaded.gif" alt="picture_threaded" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
+     $radio_values[1]['value'] = '2';
+     $radio_values[2]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_3').'<br />'.getMessage('CONFIGURATION_DISCUSSION_WARNING').''.BRLF.BRLF;
+     $radio_values[2]['value'] = '3';
+      $this->_form->addRadioGroup('discussion_status',getMessage('CONFIGURATION_DISCUSSION'),'',$radio_values,'',true,false);
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
-    * this methods loads the selected and given values to the form from the material item or the form_post data
+    *
     *
     * @author CommSy Development Group
     */
    function _prepareValues () {
       $this->_values = array();
       if (isset($this->_item)) {
-         $this->_values['dates_status'] = $this->_item->getDatesPresentationStatus();
- 	} elseif (isset($this->_form_post)) {
+         $this->_values['discussion_status'] = $this->_item->getDiscussionStatus();
+    } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
-         if ( !isset($this->_values['dates_status']) ) {
-            $this->_values['dates_status'] = 'normal';
+         if ( !isset($this->_values['discussion_status']) ) {
+            $this->_values['discussion_status'] = '1';
          }
 
      } else {
-         $this->_values['dates_status'] ='normal';
+         $this->_values['discussion_status'] ='1';
       }
    }
 

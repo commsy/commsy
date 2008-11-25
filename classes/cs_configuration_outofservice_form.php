@@ -136,7 +136,6 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
                $languageArray[$zaehler]['text'] = getMessage('RU');
                break;
             default:
-               // $languageArray[$zaehler]['text'] = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_common_form(449) ');
                break;
          }
 

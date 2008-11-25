@@ -27,15 +27,15 @@ include_once('classes/cs_rubric_form.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_chat_form extends cs_rubric_form {
+class cs_configuration_grouproom_form extends cs_rubric_form {
 
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_chat_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_grouproom_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -48,13 +48,13 @@ class cs_configuration_chat_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
+
+
       // form fields
+      $picture = '<br/><br/><img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:290px; border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addHidden('iid','');
-      $desc = '<img src="images/chat_screenshot.gif" alt="Chat Screenshot" style=" border:1px solid black; vertical-align: middle;"/>';
-      $this->_form->addCheckbox('chatlink',1,'',getMessage('CHAT_CONFIGURATION_CHAT'),getMessage('CHAT_CONFIGURATION_CHAT_VALUE'),'');
-      $desc = getMessage('CHAT_CONFIGURATION_DESCRIPTION');
-      $desc .= '<br/><img src="images/chat_screenshot.gif" alt="'.getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
-      $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+      $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUPROOM_CONFIGURATION_CHOICE_TITLE'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
+      $this->_form->addText('grouproom_text',getMessage('GROUPROOM_EXPLANATION_TITLE'),getMessage('GROUPROOM_EXPLANATION_VALUE').$picture);
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -65,10 +65,10 @@ class cs_configuration_chat_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
-      if (isset($this->_item)) {
+      if ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
-         $this->_values['chatlink'] = $this->_item->isChatLinkActive();
-      } elseif (isset($this->_form_post)) {
+         $this->_values['grouproom'] = $this->_item->isGrouproomActive();
+      } elseif ( isset($this->_form_post) ) {
          $this->_values = $this->_form_post;
       }
    }

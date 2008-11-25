@@ -27,54 +27,37 @@ include_once('classes/cs_rubric_form.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_backup_form extends cs_rubric_form {
+class cs_configuration_chat_form extends cs_rubric_form {
 
-  /**
-   * string - containing the headline of the form
-   */
-  var $_headline = NULL;
-
-  var $_ims_user_id = 'IMS_USER';
-
-  /** constructor
+   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_backup_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_chat_form ($params) {
+      $this->cs_rubric_form($params);
    }
+
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $val = ini_get('upload_max_filesize');
-      $val = trim($val);
-      $last = $val[strlen($val)-1];
-      switch($last) {
-         case 'k':
-         case 'K':
-            $val = $val * 1024;
-            break;
-         case 'm':
-         case 'M':
-            $val = $val * 1048576;
-            break;
-      }
-      $this->_meg_val = round($val/1048576);
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
     */
    function _createForm () {
+      // form fields
+      $this->_form->addHidden('iid','');
+      $desc = '<img src="images/chat_screenshot.gif" alt="Chat Screenshot" style=" border:1px solid black; vertical-align: middle;"/>';
+      $this->_form->addCheckbox('chatlink',1,'',getMessage('CHAT_CONFIGURATION_CHAT'),getMessage('CHAT_CONFIGURATION_CHAT_VALUE'),'');
+      $desc = getMessage('CHAT_CONFIGURATION_DESCRIPTION');
+      $desc .= '<br/><img src="images/chat_screenshot.gif" alt="'.getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
+      $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
 
-      $this->setHeadline($this->_headline);
-      $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('PREFERENCES_BACKUP_DESC',getCommSyVersion()));
-
-      $this->_form->addFilefield('upload', getMessage('COMMON_FILE'),'');
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_BACKUP_BUTTON'),'');
+      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
@@ -82,7 +65,10 @@ class cs_configuration_backup_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
-      if ( !empty($this->_form_post) ) {
+      if (isset($this->_item)) {
+         $this->_values['iid'] = $this->_item->getItemID();
+         $this->_values['chatlink'] = $this->_item->isChatLinkActive();
+      } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
       }
    }

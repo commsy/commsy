@@ -52,8 +52,7 @@ else {
    }
 
       // Initialize the form
-      include_once('classes/cs_configuration_extra_form.php');
-      $form = new cs_configuration_extra_form($environment);
+      $form = $class_factory->getClass(CONFIGURATION_EXTRA_FORM,array('environment' => $environment));
 
       if ( isset($_POST) and !empty($_POST) ) {
          $post_vars = $_POST;

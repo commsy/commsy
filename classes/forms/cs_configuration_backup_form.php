@@ -23,43 +23,58 @@
 //    along with CommSy.
 
 include_once('classes/cs_rubric_form.php');
-include_once('functions/text_functions.php');
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_export_form extends cs_rubric_form {
+class cs_configuration_backup_form extends cs_rubric_form {
 
-   var $_portal_array = array();
+  /**
+   * string - containing the headline of the form
+   */
+  var $_headline = NULL;
 
-   var $_with_linked_checkbox = false;
+  var $_ims_user_id = 'IMS_USER';
 
   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_export_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_backup_form($params) {
+      $this->cs_rubric_form($params);
    }
-
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
+      $val = ini_get('upload_max_filesize');
+      $val = trim($val);
+      $last = $val[strlen($val)-1];
+      switch($last) {
+         case 'k':
+         case 'K':
+            $val = $val * 1024;
+            break;
+         case 'm':
+         case 'M':
+            $val = $val * 1048576;
+            break;
+      }
+      $this->_meg_val = round($val/1048576);
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHidden('iid','');
-      $this->_form->addHidden('name_hidden','');
-      $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
-     $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('CONTEXT_EXPORT_DESC'));
 
+      $this->setHeadline($this->_headline);
+      $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('PREFERENCES_BACKUP_DESC',getCommSyVersion()));
+
+      $this->_form->addFilefield('upload', getMessage('COMMON_FILE'),'');
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PORTAL_EXPORT_ROOM_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',getMessage('PREFERENCES_BACKUP_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
@@ -67,20 +82,8 @@ class cs_configuration_export_form extends cs_rubric_form {
     */
    function _prepareValues () {
       $this->_values = array();
-      if (isset($this->_item)) {
-   $this->_values['iid'] = $this->_item->getItemID();
-         $title = $this->_item->getTitle();
-         if ($title != 'PRIVATE_ROOM') {
-      $this->_values['name_hidden'] = $this->_item->getTitle();
-      $this->_values['name_title'] = $this->_item->getTitle();
-         } else {
-            $user_item = $this->_item->getOwnerUserItem();
-      $this->_values['name_hidden'] = $this->_translator->getMessage('PRIVATE_ROOM_TITLE').' '.$user_item->getFullname();
-      $this->_values['name_title'] = $this->_values['name_hidden'];
-         }
-      } elseif (isset($this->_form_post)) {
-         $this->_values = $this->_form_post; // no encode here - encode in form-views
-   $this->_values['name_title'] = $this->_values['name_hidden'];
+      if ( !empty($this->_form_post) ) {
+         $this->_values = $this->_form_post;
       }
    }
 }
