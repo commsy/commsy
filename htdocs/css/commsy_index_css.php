@@ -149,7 +149,7 @@ table.list {
    text-align: right;
 }
 .list td.foot_left {
-   background-image:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
@@ -157,7 +157,7 @@ table.list {
    font-weight:bold;
 }
 .list td.foot_right {
-   background-image:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
