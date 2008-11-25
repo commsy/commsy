@@ -36,8 +36,13 @@ var $_with_template_form_element2 = false;
 
 var $_with_template_form_element3 = false;
 
-   function cs_configuration_archive_form ($environment) {
-      $this->cs_rubric_form($environment);
+  /** constructor
+    * the only available constructor
+    *
+    * @param array params array of parameter
+    */
+   function cs_configuration_archive_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
 
