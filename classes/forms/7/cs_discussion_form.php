@@ -310,7 +310,7 @@ class cs_discussion_form extends cs_rubric_form {
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-         $this->_form->addTextArea('description','',getMessage('DISCUSSION_INIT_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',25);
+         $this->_form->addTextArea('description','',getMessage('DISCUSSION_INIT_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',15);
       }
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->withBuzzwords() ){
@@ -325,16 +325,16 @@ class cs_discussion_form extends cs_rubric_form {
             }
          }
          if ( $current_context->isBuzzwordMandatory() ){
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',14.5,false,false,8);
          }else{
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',14.5,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',80,false,'','',8);
          $this->_form->combine('vertical');
-         $this->_form->addTextField('new_buzzword',"","","","", 29, false,'','','','left','','',false,'',8);
+         $this->_form->addTextField('new_buzzword',"","","","", 25, false,'','','','left','','',false,'',8);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',80,false,'','',8);
       }
       if ( $current_context->withTags() ){
          // tags
@@ -343,16 +343,15 @@ class cs_discussion_form extends cs_rubric_form {
             $this->_form->combine();
          }
          if ( $current_context->isTagMandatory() ){
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',14.5,false,false,8);
          }else{
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',14.5,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',80,false,'','',8);
       }
 
-         $this->_form->addEmptyline();      // public radio-buttons
-         // files
+        // files
          $this->_form->addAnchor('fileupload');
          $val = ini_get('upload_max_filesize');
          $val = trim($val);
@@ -415,16 +414,32 @@ class cs_discussion_form extends cs_rubric_form {
              $this->_form->addRadioGroup('discussion_type',getMessage('DISCUSSION_FORM_TYPE_1').BRLF.getMessage('DISCUSSION_FORM_TYPE_2'),'',$this->_discussion_array);
          }
       }
-      if ( !isset($this->_item) ) {
-         $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-      } else {
-         $current_user = $this->_environment->getCurrentUser();
-         $creator = $this->_item->getCreatorItem();
-         if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
-         } else {
-            $this->_form->addHidden('public','');
+      if ( !$this->_environment->inPrivateRoom() ){
+         // public radio-buttons
+         if ($current_context->withActivatingContent()){
+            $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+            $this->_form->combine();
+            $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
+            $this->_form->combine('horizontal');
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->combine('horizontal');
+            $this->_form->addText('hide_end2','',')');
+         }else{
+             // public radio-buttons
+             if ( !isset($this->_item) ) {
+                $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+             } else {
+                $current_user = $this->_environment->getCurrentUser();
+                $creator = $this->_item->getCreatorItem();
+                if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
+                   $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                } else {
+                   $this->_form->addHidden('public','');
+                }
+             }
          }
+      } else {
+         $this->_form->addHidden('public','');
       }
 
       // buttons
@@ -447,8 +462,8 @@ class cs_discussion_form extends cs_rubric_form {
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
+      $current_context = $this->_environment->getCurrentContextItem();
       $this->_values = array();
-
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
@@ -458,6 +473,18 @@ class cs_discussion_form extends cs_rubric_form {
          if ( !isset($this->_values['discussion_type']) ) {
             $this->_values['discussion_type'] = '1';
          }
+         $tmp_array = array();
+         if (isset($this->_form_post['dayStart'])){
+            $tmp_array['dayStart'] = $this->_form_post['dayStart'];
+         }else{
+            $tmp_array['dayStart'] = '';
+         }
+         if (isset($this->_form_post['timeStart'])){
+            $tmp_array['timeStart'] = $this->_form_post['timeStart'];
+         }else{
+            $tmp_array['timeStart'] = '';
+         }
+         $this->_values['start_date_time'] = $tmp_array;
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
@@ -493,10 +520,37 @@ class cs_discussion_form extends cs_rubric_form {
          }else{
             $this->_values['taglist'] = $tag_array;
          }
+         if ($current_context->withActivatingContent()){
+            if ($this->_item->isPrivateEditing()){
+               $this->_values['private_editing'] = 1;
+            }else{
+               $this->_values['private_editing'] = $this->_item->isPrivateEditing();
+            }
+         }else{
+            $this->_values['public'] = $this->_item->isPublic();
+         }
+         $this->_values['hide'] = $this->_item->isNotActivated()?'1':'0';
+         if ($this->_item->isNotActivated()){
+            $activating_date = $this->_item->getActivatingDate();
+            if (!strstr($activating_date,'9999-00-00')){
+               $array = array();
+               $array['dayStart'] = getDateInLang($activating_date);
+               $array['timeStart'] = getTimeInLang($activating_date);
+               $this->_values['start_date_time'] = $array;
+            }
+         }
       } else {
-         $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          $this->_values['discussion_type'] = '1';
          $this->_values['subject'] = $this->_translator->getMessage('INITIALARTICLE');
+      }
+      if ($current_context->withActivatingContent()){
+         if ( !isset($this->_values['private_editing']) ) {
+            $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }
+      }else{
+         if ( !isset($this->_values['public']) ) {
+            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         }
       }
    }
 

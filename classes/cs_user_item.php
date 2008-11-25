@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
+// Edouard Simon, Monique Strauss, Jose Manuel Gonzalez Vazquez
 //
 //    This file is part of CommSy.
 //
@@ -1029,7 +1029,7 @@ class cs_user_item extends cs_item {
             $this->updateWikiNotification();
           }
       } else {
-        // Wenn der Benutzer gesperrt oder geloescht ist, mï¿½ssen Profile und
+        // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
         // Notification entsprechend angepasst werden
         // 0 = gesperrt & geloescht (+ deletion_date)
         //
@@ -1736,7 +1736,7 @@ class cs_user_item extends cs_item {
 
       return $retour;
    }
-   
+
    function getDataAsXML(){
    	  return $this->_getDataAsXML();
    }

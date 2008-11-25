@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_discarticle_form.php');
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
@@ -192,7 +191,11 @@ else {
    else {
 
       // Initialize the form
-      $form = new cs_discarticle_form($environment);
+      // Initialize the form
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+      unset($class_params);
       $form->setDiscussionID($discussion_id);
       $form->setRefPosition($ref_position);
       if (isset($ref_did)){

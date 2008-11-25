@@ -1563,6 +1563,7 @@ EOD;
                ($this->_environment->getCurrentModule() == CS_DATE_TYPE)
                or ($this->_environment->getCurrentModule() == CS_MATERIAL_TYPE)
                or ($this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE)
+               or ($this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE)
                or ($this->_environment->getCurrentModule() == CS_USER_TYPE)
                or ($this->_environment->getCurrentModule() == CS_TODO_TYPE)
             )

@@ -230,6 +230,9 @@ class cs_discussion_manager extends cs_manager {
 
      $query .= ' WHERE 1=1';
 
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (discussions.modification_date IS NULL OR discussions.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+      }
      // fifth, insert limits into the select statement
      if (isset($this->_room_limit)) {
         $query .= ' AND discussions.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
@@ -425,10 +428,14 @@ class cs_discussion_manager extends cs_manager {
      } else {
         $type = 'simple';
      }
+     $modification_date = getCurrentDateTimeInMySQL();
+     if ($item->isNotActivated()){
+        $modification_date = $item->getModificationDate();
+     }
 
       $query = 'UPDATE discussions SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
+               'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'public="'.encode(AS_DB,$public).'"';
       $article_id = $item->getLatestArticleID();
@@ -494,6 +501,10 @@ class cs_discussion_manager extends cs_manager {
      } else {
         $type = 'simple';
      }
+     $modification_date = getCurrentDateTimeInMySQL();
+     if ($item->isNotActivated()){
+        $modification_date = $item->getModificationDate();
+     }
 
      $query = 'INSERT INTO discussions SET '.
               'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
@@ -501,7 +512,7 @@ class cs_discussion_manager extends cs_manager {
               'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
               'creation_date="'.$current_datetime.'",'.
               'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
+              'modification_date="'.$modification_date.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'discussion_type="'.encode(AS_DB,$type).'",'.
               'public="'.encode(AS_DB,$public).'"';

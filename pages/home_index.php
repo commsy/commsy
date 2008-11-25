@@ -139,6 +139,7 @@ if ( $context_item->isLocked() ) {
                         $count_all = $manager->getCountAll();
                         $manager->setDateLimit(getCurrentDateTimeInMySQL());
                         $manager->setSortOrder('modified');
+                        $manager->showNoNotActivatedEntries();
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -153,6 +154,7 @@ if ( $context_item->isLocked() ) {
                         $count_all = $manager->getCountAll();
                         $manager->setFutureLimit();
                         $manager->setDateModeLimit(3);
+                        $manager->showNoNotActivatedEntries();
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -195,6 +197,7 @@ if ( $context_item->isLocked() ) {
                         $count_all = $manager->getCountAll();
                         $manager->setStatusLimit(4);
                         $manager->setSortOrder('date');
+                        $manager->showNoNotActivatedEntries();
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);
@@ -284,6 +287,7 @@ if ( $context_item->isLocked() ) {
                         } elseif ($environment->inCommunityRoom()) {
                            $manager->setIntervalLimit(0,5);
                         }
+                        $manager->showNoNotActivatedEntries();
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);

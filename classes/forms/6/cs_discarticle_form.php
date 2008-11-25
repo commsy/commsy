@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
@@ -45,8 +45,8 @@ class cs_discarticle_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_discarticle_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_discarticle_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** set materials from session

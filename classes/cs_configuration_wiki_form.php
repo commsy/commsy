@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, Jose Manuel Gonzalez Vazquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -114,6 +114,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addTextField('read','',getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_READ_PW'));
       $this->_form->combine();
       $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),'');
+
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){

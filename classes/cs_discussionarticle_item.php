@@ -189,7 +189,9 @@ class cs_discussionarticle_item extends cs_item {
       $discussion_item = $discussion_manager->getItem($this->getDiscussionID());
       $current_user = $this->_environment->getCurrentUserItem();
       $discussion_item->setModificatorItem($current_user);
-      $discussion_item->setModificationDate($this->getModificationDate());
+      if (!$discussion_item->isNotActivated()){
+         $discussion_item->setModificationDate($this->getModificationDate());
+      }
       $discussion_item->setLatestArticleID($this->getItemID());
       $discussion_item->setLatestArticleModificationDate($this->getModificationDate());
       $discussion_item->save();

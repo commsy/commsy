@@ -1094,7 +1094,11 @@ class cs_form_view extends cs_view {
    function _getTitleFieldAsHTML ($form_element) {
       $html  = '';
       if ($form_element['display']){
-         $html .= '<input style="margin:3px 0px 2px 0px; width:85%; font-size:12pt; font-weight:bold;" type="text" name="'.$form_element['name'].'"';
+         $with = 'width:85%; ';
+         if ($this->_environment->getCurrentModule() == 'discarticle'){
+            $with = 'width:80%; ';
+         }
+         $html .= '<input style="margin:3px 0px 2px 0px; '.$with.' font-size:12pt; font-weight:bold;" type="text" name="'.$form_element['name'].'"';
          $html .= ' value="'.$this->_text_as_form1($form_element['value']).'"';
          $html .= ' maxlength="'.$form_element['maxlength'].'"';
          $html .= ' tabindex="'.$this->_count_form_elements.'"';

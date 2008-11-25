@@ -22,8 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Load required function libraries and class definitions
-include_once('classes/cs_discarticle_form.php');
 
 // Verify parameters for this page
 if (!empty($_GET['iid'])) {

@@ -390,14 +390,10 @@ class cs_date_form extends cs_rubric_form {
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),getMessage('COMMON_CONTENT_DESC',$link),'',15);
+      $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),getMessage('COMMON_CONTENT_DESC',$link),'',10);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
-
-      if ( !$this->_environment->inPrivateRoom() ) {
-         $this->_form->addEmptyline();
-      }
 
       if ( $current_context->withBuzzwords() ){
          // buzzwords
@@ -411,16 +407,16 @@ class cs_date_form extends cs_rubric_form {
             }
          }
          if ( $current_context->isBuzzwordMandatory() ){
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',14.5,false,false,8);
          }else{
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',14.5,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',80,false,'','',8);
          $this->_form->combine('vertical');
-         $this->_form->addTextField('new_buzzword',"","","","", 29, false,'','','','left','','',false,'',8);
+         $this->_form->addTextField('new_buzzword',"","","","", 25, false,'','','','left','','',false,'',8);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',80,false,'','',8);
       }
       if ( $current_context->withTags() ){
          // tags
@@ -429,12 +425,12 @@ class cs_date_form extends cs_rubric_form {
             $this->_form->combine();
          }
          if ( $current_context->isTagMandatory() ){
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',14.5,false,false,8);
          }else{
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',16,false,false,8);
+            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',14.5,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',80,false,'','',8);
       }
 
       // files

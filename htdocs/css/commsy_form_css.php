@@ -173,6 +173,7 @@ span.key {
 
 #form{
    font-size:10pt;
+   width:100%;
    margin:0px;
    padding:5px 5px;
    background-color: #FFFFFF;

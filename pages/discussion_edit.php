@@ -515,14 +515,44 @@ else {
             // Set modificator and modification date
             $user = $environment->getCurrentUserItem();
             $discussion_item->setModificatorItem($user);
-            $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());
 
             // Set attributes
             if ( isset($_POST['title']) ) {
                $discussion_item->setTitle($_POST['title']);
             }
             if ( isset($_POST['public']) ) {
-               $discussion_item->setPublic($_POST['public']);
+               if ( $discussion_item->isPublic() != $_POST['public'] ) {
+                  $discussion_item->setPublic($_POST['public']);
+               }
+            } else {
+               if ( isset($_POST['private_editing']) ) {
+                  $discussion_item->setPrivateEditing('0');
+               } else {
+                  $discussion_item->setPrivateEditing('1');
+               }
+            }
+            if ( isset($_POST['hide']) ) {
+                // variables for datetime-format of end and beginning
+                $dt_hiding_time = '00:00:00';
+                $dt_hiding_date = '9999-00-00';
+                $dt_hiding_datetime = '';
+                $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
+                if ($converted_day_start['conforms'] == TRUE) {
+                   $dt_hiding_datetime = $converted_day_start['datetime'].' ';
+                   $converted_time_start = convertTimeFromInput($_POST['timeStart']);
+                   if ($converted_time_start['conforms'] == TRUE) {
+                      $dt_hiding_datetime .= $converted_time_start['datetime'];
+                   }else{
+                      $dt_hiding_datetime .= $dt_hiding_time;
+                   }
+                }else{
+                   $dt_hiding_datetime = $dt_hiding_date.' '.$dt_hiding_time;
+                }
+                $discussion_item->setModificationDate($dt_hiding_datetime);
+            }else{
+               if($discussion_item->isNotActivated()){
+                  $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());
+               }
             }
 
             // Set links to connected rubrics

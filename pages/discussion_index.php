@@ -125,8 +125,9 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    $selinstitution = '';
    $last_selected_tag = '';
    $seltag_array = array();
+   $sel_activating_status = '';
 } else {
-
+   $sel_activating_status = '';
    // Find current search text
    if ( isset($_GET['search']) ) {
       $search = $_GET['search'];
@@ -144,6 +145,13 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $selbuzzword = 0;
    }
    $last_selected_tag = '';
+
+   // Find current sel_activating_status selection
+   if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+      $sel_activating_status = $_GET['selactivatingstatus'];
+   } else {
+      $sel_activating_status = 2;
+   }
 
    // Find current topic selection
    if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
@@ -354,6 +362,9 @@ if ( !empty($ref_user) and $mode == 'attached' ){
 if ( !empty($sort) ) {
    $discussion_manager->setSortOrder($sort);
 }
+if ( $sel_activating_status == 2 ) {
+   $discussion_manager->showNoNotActivatedEntries();
+}
 if ( !empty($search) ) {
    $discussion_manager->setSearchLimit($search);
 }
@@ -510,6 +521,7 @@ $view->setInterval($interval);
 $view->setSortKey($sort);
 $view->setSearchText($search);
 $view->setClipboardIDArray($clipboard_id_array);
+$view->setActivationLimit($sel_activating_status);
 
 
 
