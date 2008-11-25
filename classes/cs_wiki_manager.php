@@ -1100,5 +1100,107 @@ function getExportToWikiLink($current_item_id){
 
 //------------- Materialexport -------------
 //------------------------------------------
+
+function getGroupsForWiki($complete){
+	global $c_pmwiki_path_file;
+//	$old_dir = getcwd();
+//	chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+//    chdir($old_dir);
+    
+    $result = array('groups' => array(), 'public' => array());
+    $directory = $c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d';
+	$directory_handle = @opendir($directory);
+	if($directory_handle){
+		if($dir=opendir($directory)){
+	       while($file=readdir($dir)) {
+	           if (!is_dir($file) && $file != "." && $file != ".."){
+	              	$group = explode('.', $file);
+	              	if((!in_array($group[0], $result['groups']))
+	              	  && ($group[0] != '')
+	              	  && (!stristr($group[0], 'Site'))
+	              	  && (!stristr($group[0], 'SiteAdmin'))
+	              	  && (!stristr($group[0], 'Main'))
+	              	  && (!stristr($group[0], 'Discussion_Backup_'))
+	              	  && (!stristr($group[0], 'FoxNotifyLists'))
+	              	  && (!stristr($group[0], 'Profiles'))){
+	       	   			$result['groups'][] = $group[0];
+	       	   			$found = false;
+	       	   			$dir2=opendir($directory);
+	       	   			while($fileGroupAttributes=readdir($dir2)) {
+	           				if (!is_dir($fileGroupAttributes) && $fileGroupAttributes != "." && $fileGroupAttributes != ".."){
+		           				if(stristr($fileGroupAttributes, $group[0] . '.GroupAttributes')){
+		           					$file_contents = file_get_contents($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $group[0] . '.GroupAttributes');
+							        $file_contents_array = explode("\n", $file_contents);
+							        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+							            if(stripos($file_contents_array[$index], 'passwdread=$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
+							                $result['public'][] = 'selected';
+		       	   							$found = true;
+							            }
+							        }
+		       	   				}
+	           				}
+	       	   			}
+	       	   			if(!$found){
+	       	   				$result['public'][] = '';
+	       	   			}
+	              	}
+	           }
+	       }
+	    }
+	}
+   
+   // zusätzlich noch in der wiki-config nach den bisher freigegebenen Dateien suchen.
+   
+   return $result;
+}
+
+function setWikiGroupAsPublic($group){
+    global $c_commsy_path_file;
+    global $c_pmwiki_path_file;
+
+    $old_dir = getcwd();
+    chdir($c_pmwiki_path_file);
+    $directory_handle = @opendir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+    if ($directory_handle) {
+        chdir('wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+
+        if(!file_exists('wiki.d/' . $group . '.GroupAttributes')){
+            copy($c_commsy_path_file.'/etc/pmwiki/Group.GroupAttributes','wiki.d/' . $group . '.GroupAttributes');
+        }
+        $file_contents = file_get_contents('wiki.d/' . $group . '.GroupAttributes');
+        $file_contents_array = explode("\n", $file_contents);
+        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+            if(stripos($file_contents_array[$index], 'name=Group.GroupAttributes') !== false){
+                $file_contents_array[$index] = 'name=' . $group . '.GroupAttributes';
+            }
+        }
+        $file_contents = implode("\n", $file_contents_array);
+        file_put_contents('wiki.d/' . $group . '.GroupAttributes', $file_contents);
+    }
+    chdir($old_dir);
+}
+
+function setWikiGroupsAsPublic($groups){
+	global $c_pmwiki_path_file;
+	
+	$directory = $c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d';
+	$directory_handle = @opendir($directory);
+	if($directory_handle){
+		if($dir=opendir($directory)){
+	       while($file=readdir($dir)) {
+	           if (!is_dir($file) && $file != "." && $file != ".."){
+	           		if(stristr($file, '.GroupAttributes')){
+	           			unlink($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $file);
+	           		}
+	           }
+	       }
+		}
+	}
+
+	foreach($groups as $group){
+		$this->setWikiGroupAsPublic($group);
+	}
+}
+
 }
 ?>

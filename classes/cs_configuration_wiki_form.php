@@ -115,6 +115,34 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),'');
 
+	  $wiki_manager = $this->_environment->getWikiManager();
+	  $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
+
+//	  if (isset($wiki_groups_array['groups'][0])){
+//        $this->_form->combine();
+//        $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
+//        $this->_form->combine();
+//        //$this->_form->addCheckbox('enable_wiki_groups[]',$wiki_groups_array,false,$wiki_group,$wiki_group,$wiki_group,false,false,'','',true,false);
+//        $this->_form->addCheckBoxGroup('enable_wiki_groups',$wiki_groups_array['groups'],$wiki_groups_array['public'],getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);     
+//      }
+
+	  if (isset($wiki_groups_array['groups'][0])){
+        $this->_form->combine();
+        $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
+        $this->_form->combine();
+        $first = true;
+        for ($index = 0; $index < sizeof($wiki_groups_array['groups']); $index++) {
+			$group = $wiki_groups_array['groups'][$index];
+			$public = $wiki_groups_array['public'][$index];
+			if(!$first){
+              $this->_form->combine();
+	        }
+	        $this->_form->addCheckbox('enable_wiki_groups[]',$group,$public,$group,$group,$group,false,false,'','',true,false);
+	        if($first){
+	        	$first = false;
+	        }
+		}
+      }
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){
@@ -448,6 +476,13 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         ) {
          $this->_error_array[] = getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
+      }
+      if ( !empty($this->_form_post['enable_wiki_groups'])){
+      	$wiki_manager = $this->_environment->getWikiManager();
+        $wiki_manager->setWikiGroupsAsPublic($this->_form_post['enable_wiki_groups']);
+      } else {
+      	$wiki_manager = $this->_environment->getWikiManager();
+        $wiki_manager->setWikiGroupsAsPublic(array());
       }
    }
 }
