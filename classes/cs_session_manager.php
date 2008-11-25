@@ -303,7 +303,7 @@ class cs_session_manager {
       $this->_last_query = $query;
       $result = $this->_db_conntector->performQuery($query);
       if ( !isset($result) ) {
-         include('functions/error_functions.php');
+         include_once('functions/error_functions.php');
          trigger_error('Problems selecting session_id values for: '.$user_id.' - '.$portal_id.' - SQL-Query:'.$query.'.', E_USER_WARNING);
       } elseif ( !empty($result[0]) ) {
          $session_row = $result[0];

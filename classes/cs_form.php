@@ -25,7 +25,7 @@
 
 /** for internal data-structure
  */
-include ('classes/cs_array_list.php');
+include_once('classes/cs_array_list.php');
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style

@@ -64,8 +64,7 @@ if ($current_user->isGuest()) {
 
 
    /* setup the form */
-   include_once('classes/cs_configuration_agb_form.php');
-   $form = new cs_configuration_agb_form($environment);
+   $form = $class_factory->getClass(CONFIGURATION_AGB_FORM,array('environment' => $environment));
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

@@ -24,6 +24,6 @@
 
 
 // include pages for the index of the commsy portal
-include('pages/account_index.php');
+include_once('pages/account_index.php');
 
 ?>

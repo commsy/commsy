@@ -105,7 +105,7 @@ class cs_rubric_form {
          $environment = $params;
       }
       $this->_environment = $environment;
-      $this->_translator = $environment->getTranslationObject();
+      $this->_translator = $this->_environment->getTranslationObject();
       $this->_form = new cs_form();
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();

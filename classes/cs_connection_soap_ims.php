@@ -934,7 +934,7 @@ class cs_connection_soap_ims {
                $id_manager->addIDsToDB($source,$stine_user_id,$result);
             }
          } else {
-            include('functions/error_functions.php');
+            include_once('functions/error_functions.php');
             trigger_error('don\'t know the context '.$commsy_room_id);
             $info_text = 'Failure enrolling person: '.$stine_user_id.' to room: '.$stine_room_id.': Unknown room and person!';
             $return_array = array("error" => 1,"value" => $info_text);
