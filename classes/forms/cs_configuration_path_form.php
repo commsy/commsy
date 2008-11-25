@@ -32,10 +32,10 @@ class cs_configuration_path_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_path_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_path_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL

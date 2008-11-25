@@ -30,19 +30,17 @@ include_once('functions/text_functions.php');
  */
 class cs_configuration_move_form extends cs_rubric_form {
 
-	var $_portal_array = array();
-	
-	var $_with_linked_checkbox = false;
-	
+   var $_portal_array = array();
+
+   var $_with_linked_checkbox = false;
+
   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
-    *
-    * @author CommSy Development Group
+    * @param array params array of parameter
     */
-   function cs_configuration_move_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_move_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -52,42 +50,42 @@ class cs_configuration_move_form extends cs_rubric_form {
     */
    function _initForm () {
       $server_item = $this->_environment->getServerItem();
-	  $current_portal = $this->_environment->getCurrentPortalItem();
-	  $portal_list = $server_item->getPortalList();
-	  if ($portal_list->isNotEmpty()) {
-		 $portal_item = $portal_list->getFirst();
-		 while ($portal_item) {
-			if ($portal_item->getItemID() != $current_portal->getItemID()) {
-			   $temp_array = array();
-			   $temp_array['value'] = $portal_item->getItemID();
-			   $temp_array['text']  = $portal_item->getTitle();
-			   $this->_portal_array[] = $temp_array;
- 			   unset($temp_array);
-			} 
-		    $portal_item = $portal_list->getNext();
-		 } 
-	  }
-	  
-	  if ( ( isset($this->_item) and $this->_item->isCommunityRoom() )
-	       or (isset($this->_form_post['type']) and $this->_form_post['type'] == 'community')
-	     ) {
-	     $this->_with_linked_checkbox = true;		  
-	  }
+     $current_portal = $this->_environment->getCurrentPortalItem();
+     $portal_list = $server_item->getPortalList();
+     if ($portal_list->isNotEmpty()) {
+       $portal_item = $portal_list->getFirst();
+       while ($portal_item) {
+         if ($portal_item->getItemID() != $current_portal->getItemID()) {
+            $temp_array = array();
+            $temp_array['value'] = $portal_item->getItemID();
+            $temp_array['text']  = $portal_item->getTitle();
+            $this->_portal_array[] = $temp_array;
+             unset($temp_array);
+         }
+          $portal_item = $portal_list->getNext();
+       }
+     }
+
+     if ( ( isset($this->_item) and $this->_item->isCommunityRoom() )
+          or (isset($this->_form_post['type']) and $this->_form_post['type'] == 'community')
+        ) {
+        $this->_with_linked_checkbox = true;
+     }
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-	  $this->setHeadline($this->_translator->getMessage('CONTEXT_MOVE_ROOM'));
-	  $this->_form->addHidden('type','');
-	  $this->_form->addHidden('iid','');
-	  $this->_form->addHidden('name_hidden','');
-	  $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
-	  $this->_form->addRadioGroup('portal_id',getMessage('COMMON_PORTAL'),getMessage('CONFIGURATION_MOVE_PORTAL_DESC'),$this->_portal_array,'',true,false);
-	  if ($this->_with_linked_checkbox) {
-		 $this->_form->addCheckbox('with_linked_rooms',1,'',getMessage('CONFIGURATION_MOVE_LINKED_ROOM_TITLE'),getMessage('CONFIGURATION_MOVE_LINKED_ROOM_VALUE'),''); 
-	  }	  
+     $this->setHeadline($this->_translator->getMessage('CONTEXT_MOVE_ROOM'));
+     $this->_form->addHidden('type','');
+     $this->_form->addHidden('iid','');
+     $this->_form->addHidden('name_hidden','');
+     $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
+     $this->_form->addRadioGroup('portal_id',getMessage('COMMON_PORTAL'),getMessage('CONFIGURATION_MOVE_PORTAL_DESC'),$this->_portal_array,'',true,false);
+     if ($this->_with_linked_checkbox) {
+       $this->_form->addCheckbox('with_linked_rooms',1,'',getMessage('CONFIGURATION_MOVE_LINKED_ROOM_TITLE'),getMessage('CONFIGURATION_MOVE_LINKED_ROOM_VALUE'),'');
+     }
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PORTAL_MOVE_ROOM_REGISTER_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
@@ -101,17 +99,17 @@ class cs_configuration_move_form extends cs_rubric_form {
    function _prepareValues () {
       $this->_values = array();
       if (isset($this->_item)) {
-		 $this->_values['iid'] = $this->_item->getItemID();
-		 $this->_values['name_hidden'] = $this->_item->getTitle();
-		 $this->_values['name_title'] = $this->_item->getTitle();
-		 if ($this->_item->isProjectRoom()) {
-			$this->_values['type'] = 'project';
-		 } elseif ($this->_item->isCommunityRoom()) {
-			$this->_values['type'] = 'community';			 
-		 }
+       $this->_values['iid'] = $this->_item->getItemID();
+       $this->_values['name_hidden'] = $this->_item->getTitle();
+       $this->_values['name_title'] = $this->_item->getTitle();
+       if ($this->_item->isProjectRoom()) {
+         $this->_values['type'] = 'project';
+       } elseif ($this->_item->isCommunityRoom()) {
+         $this->_values['type'] = 'community';
+       }
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post; // no encode here - encode in form-views
-		 $this->_values['name_title'] = $this->_values['name_hidden'];
+       $this->_values['name_title'] = $this->_values['name_hidden'];
       }
    }
 }

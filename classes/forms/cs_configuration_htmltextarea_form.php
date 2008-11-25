@@ -38,10 +38,10 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_htmltextarea_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_htmltextarea_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -64,18 +64,18 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
     */
    function _createForm () {
 
-	  $radio_values = array();
+     $radio_values = array();
       $radio_values[0]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_0').
               '<img src="images/without_html_text_area.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
-	  $radio_values[0]['value'] = '3';
-	  $radio_values[1]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_2').
-	          '<img src="images/html_text_area_min.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
-	  $radio_values[1]['value'] = '2';
-	  $radio_values[2]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_1').
+     $radio_values[0]['value'] = '3';
+     $radio_values[1]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_2').
+             '<img src="images/html_text_area_min.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
+     $radio_values[1]['value'] = '2';
+     $radio_values[2]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_1').
              '<img src="images/html_text_area.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>';
-	  $radio_values[2]['value'] = '1';
+     $radio_values[2]['value'] = '1';
 
-	  $this->_form->addRadioGroup('html_status',getMessage('CONFIGURATION_HTMLTEXTAREA'),'',$radio_values,'',true,false);
+     $this->_form->addRadioGroup('html_status',getMessage('CONFIGURATION_HTMLTEXTAREA'),'',$radio_values,'',true,false);
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
@@ -89,7 +89,7 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
       $this->_values = array();
       if (isset($this->_item)) {
          $this->_values['html_status'] = $this->_item->getHtmlTextAreaStatus();
- 	} elseif (isset($this->_form_post)) {
+    } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['html_status']) ) {
             $this->_values['html_status'] = '3';

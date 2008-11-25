@@ -41,7 +41,7 @@ class cs_configuration_scribd_form extends cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_configuration_ims_form($environment) {
+   function cs_configuration_scribd_form($environment) {
       $this->cs_rubric_form($environment);
    }
    /** init data for form, INTERNAL

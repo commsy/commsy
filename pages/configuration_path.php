@@ -65,8 +65,7 @@ else {
 
 
    // Initialize the form
-   include_once('classes/cs_configuration_path_form.php');
-   $form = new cs_configuration_path_form($environment);
+   $form = $class_factory->getClass(CONFIGURATION_PATH_FORM,array('environment' => $environment));
    // Display form
    $params = array();
    $params['environment'] = $environment;

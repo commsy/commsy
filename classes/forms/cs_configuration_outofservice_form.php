@@ -45,10 +45,10 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   public function __CONSTRUCT($environment) {
-      $this->cs_rubric_form($environment);
+   public function __CONSTRUCT($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL

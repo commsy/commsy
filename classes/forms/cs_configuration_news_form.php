@@ -41,10 +41,10 @@ class cs_configuration_news_form extends cs_rubric_form {
   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_news_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_news_form($params) {
+      $this->cs_rubric_form($params);
    }
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups

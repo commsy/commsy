@@ -23,20 +23,20 @@
 //    along with CommSy.
 
 
-
-
-
 include_once('classes/cs_rubric_form.php');
 
 class cs_configuration_informationbox_form extends cs_rubric_form {
 
-
    var $_show_information_box_array = array();
 
-   function cs_configuration_informationbox_form ($environment) {
-      $this->cs_rubric_form($environment);
+  /** constructor
+    * the only available constructor
+    *
+    * @param array params array of parameter
+    */
+   function cs_configuration_informationbox_form ($params) {
+      $this->cs_rubric_form($params);
    }
-
 
    function _initForm () {
       $current_context= $this->_environment->getCurrentContextItem();

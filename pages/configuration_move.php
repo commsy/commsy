@@ -77,8 +77,7 @@ else {
    else {
 
       // Initialize the form
-      include_once('classes/cs_configuration_move_form.php');
-      $form = new cs_configuration_move_form($environment);
+      $form = $class_factory->getClass(CONFIGURATION_MOVE_FORM,array('environment' => $environment));
 
       // Load form data from postvars
       if ( !empty($_POST) ) {

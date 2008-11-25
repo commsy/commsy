@@ -29,7 +29,7 @@ include_once('functions/text_functions.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_listviews_form extends cs_rubric_form {
+class cs_configuration_listview_form extends cs_rubric_form {
 
   /**
    * string - containing the headline of the form
@@ -40,13 +40,14 @@ class cs_configuration_listviews_form extends cs_rubric_form {
    var $_optionArray = array();
    var $_optionArray2 = array();
    var $_lengthArray = array();
+
   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_listviews_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_listview_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
