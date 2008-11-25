@@ -529,9 +529,10 @@ class cs_wiki_manager extends cs_manager {
 	        $str .= 'include_once("$FarmD/scripts/authuser.php");'.LF;
 	        $str .= '$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
 	        $str .= '$EnableUpload = 1;'.LF;
-	        $str .= '$DefaultPasswords[\'upload\'] = \'id:*\';'.LF;
+	        $str .= '$DefaultPasswords[\'upload\'] = \'@editors\';'.LF;
 	        $str .= '$UploadMaxSize = 1000000000;'.LF;
-	        $str .= '$DefaultPasswords[\'edit\'] = \'id:*\';'.LF;
+	        $str .= '$DefaultPasswords[\'edit\'] = \'@editors\';'.LF;
+	        $str .= '$DefaultPasswords[\'read\'] = \'@readers @editors\';'.LF;
 	    } else {
 	    	$str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
 			$str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;

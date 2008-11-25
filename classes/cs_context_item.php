@@ -2637,7 +2637,7 @@ class cs_context_item extends cs_item {
       if ( $this->_issetExtra('WIKIUSECOMMSYLOGIN') ) {
          $retour = $this->_getExtra('WIKIUSECOMMSYLOGIN');
       } else {
-         $retour ='-1';
+         $retour ='1';
       }
       return $retour;
    }

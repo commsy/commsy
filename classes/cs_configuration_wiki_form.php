@@ -114,7 +114,6 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addTextField('read','',getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_READ_PW'));
       $this->_form->combine();
       $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),'');
-         
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){
@@ -388,9 +387,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_values['skin_choice'] = 'pmwiki';
          $this->_values['admin'] = 'admin';
          $this->_values['edit'] = 'edit';
-         $this->_values['read'] = '';
+         $this->_values['read'] = 'read';
          $this->_values['show_login_box'] = '1';
          $this->_values['wikilink'] = '1';
+         $this->_values['use_commsy_login'] = '1';
       }
    }
 
