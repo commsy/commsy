@@ -203,6 +203,9 @@ class cs_todos_manager extends cs_manager {
       if ( isset($this->_room_limit) ) {
          $query .= ' AND todos.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
       }
+      if (!$this->_show_not_activated_entries_limit) {
+         $query .= ' AND (todos.modification_date IS NULL OR todos.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
+      }
 #      if ( $this->_future_limit ) {
 #         $date = date("Y-m-d").' 00:00:00';
 #         $query .= ' AND todos.date >= "'.$date.'"';
@@ -390,17 +393,20 @@ class cs_todos_manager extends cs_manager {
       parent::_update($item);
 
       $modificator = $item->getModificatorItem();
-      $current_datetime = getCurrentDateTimeInMySQL();
+      $modification_date = getCurrentDateTimeInMySQL();
 
       if ( $item->isPublic() ) {
          $public = '1';
       } else {
          $public = '0';
       }
+      if ($item->isNotActivated()){
+         $modification_date = $item->getModificationDate();
+      }
 
       $query = 'UPDATE todos SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
+               'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'date="'.encode(AS_DB,$item->getDate()).'",'.
                'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
@@ -446,7 +452,7 @@ class cs_todos_manager extends cs_manager {
    function _newNews ($item) {
       $user = $item->getCreatorItem();
       $modificator = $item->getModificatorItem();
-      $current_datetime = getCurrentDateTimeInMySQL();
+      $modification_date = getCurrentDateTimeInMySQL();
 
       if ( $item->isPublic() ) {
          $public = '1';
@@ -455,6 +461,10 @@ class cs_todos_manager extends cs_manager {
       }
 
       $date = $item->getDate();
+      $item = getCurrentDateTimeInMySQL();
+      if ($item->isNotActivated()){
+         $modification_date = $item->getModificationDate();
+      }
 
       $query = 'INSERT INTO todos SET '.
                'item_id="'.encode(AS_DB,$item->getItemID()).'",'.
@@ -462,7 +472,7 @@ class cs_todos_manager extends cs_manager {
                'creator_id="'.encode(AS_DB,$user->getItemID()).'",'.
                'creation_date="'.$current_datetime.'",'.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
-               'modification_date="'.$current_datetime.'",'.
+               'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",';
       if ( !empty($date) ) {
          $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';

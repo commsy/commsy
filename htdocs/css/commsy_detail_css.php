@@ -148,6 +148,13 @@ span.sub_item_pagetitle, span.sub_item_description{
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
+#newest_link_box{
+   background-color: #FFFFFF;
+   padding:0px;
+   margin:0px;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
 .annotation_pagetitle{
    padding-top:5px;
    font-size: 16pt;

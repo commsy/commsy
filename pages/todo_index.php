@@ -124,7 +124,9 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    $seltopic = '';
    $last_selected_tag = '';
    $seltag_array = array();
+   $sel_activating_status = '';
 } else {
+   $sel_activating_status = '';
 
    // Find current search text
    if ( isset($_GET['search']) ) {
@@ -139,6 +141,13 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $selbuzzword = 0;
    }
    $last_selected_tag = '';
+
+   // Find current sel_activating_status selection
+   if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+      $sel_activating_status = $_GET['selactivatingstatus'];
+   } else {
+      $sel_activating_status = 2;
+   }
 
    // Find current topic selection
    if ( isset($_GET['seltag']) and $_GET['seltag'] =='yes') {
@@ -381,6 +390,9 @@ if ( !empty($ref_user) and $mode == 'attached' ){
 if ( !empty($sort) ) {
    $todo_manager->setSortOrder($sort);
 }
+if ( $sel_activating_status == 2 ) {
+   $todo_manager->showNoNotActivatedEntries();
+}
 if ( !empty($search) ) {
    $todo_manager->setSearchLimit($search);
 }
@@ -497,6 +509,7 @@ $view->setClipboardIDArray($clipboard_id_array);
 $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
+$view->setActivationLimit($sel_activating_status);
 
 
 if ( !empty($ref_iid) and $mode =='attached' ){

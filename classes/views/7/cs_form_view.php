@@ -2453,6 +2453,7 @@ class cs_form_view extends cs_view {
       }else{
          $html .= '<ul style="padding-top:0px; list-style:none; margin-left:0px; padding-left:0px;">'.LF;
          $html .= '   <li>';
+         $link_array['font_size'] = '8';
          $html .= $this->_getCheckboxGroupAsHTML($link_array);
          $html .= '   </li>';
          $html .= '   </ul>';

@@ -255,7 +255,7 @@ class cs_group_detail_view extends cs_detail_view {
          $grouproom_item = $item->getGroupRoomItem();
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
             if ( $grouproom_item->isUser($current_user) ) {
-               if ( $grouproom_item->isLastModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource()) ) {
+               if ($item->isSystemLabel() or ( $grouproom_item->isLastModeratorByUserID($current_user->getUserID(),$current_user->getAuthSource())) ) {
                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('GROUP_LEAVE').'</span>'.BRLF;
                } else {
                   $params = array();
