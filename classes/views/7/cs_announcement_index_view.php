@@ -47,6 +47,7 @@ class cs_announcement_index_view extends cs_index_view {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENTS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENT'));
+      $this->_colspan = '5';
    }
    // @segment-end 80628
 
