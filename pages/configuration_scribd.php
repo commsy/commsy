@@ -48,8 +48,7 @@ else {
    }
 
    // Initialize the form
-   include_once('classes/cs_configuration_scribd_form.php');
-   $form = new cs_configuration_scribd_form($environment);
+   $form = $class_factory->getClass(CONFIGURATION_SCRIBD_FORM,array('environment' => $environment));
    // Display form
    $params = array();
    $params['environment'] = $environment;

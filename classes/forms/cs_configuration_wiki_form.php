@@ -35,14 +35,14 @@ class cs_configuration_wiki_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function __construct ($environment) {
-      $this->cs_rubric_form($environment);
+   function __construct ($params) {
+      $this->cs_rubric_form($params);
    }
 
    function setDeletionValues(){
-   	$this->_set_deletion_values = true;
+      $this->_set_deletion_values = true;
    }
 
    function setSkinArray($array){
@@ -115,33 +115,33 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),'');
 
-	  $wiki_manager = $this->_environment->getWikiManager();
-	  $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
+     $wiki_manager = $this->_environment->getWikiManager();
+     $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
 
 //	  if (isset($wiki_groups_array['groups'][0])){
 //        $this->_form->combine();
 //        $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
 //        $this->_form->combine();
 //        //$this->_form->addCheckbox('enable_wiki_groups[]',$wiki_groups_array,false,$wiki_group,$wiki_group,$wiki_group,false,false,'','',true,false);
-//        $this->_form->addCheckBoxGroup('enable_wiki_groups',$wiki_groups_array['groups'],$wiki_groups_array['public'],getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);     
+//        $this->_form->addCheckBoxGroup('enable_wiki_groups',$wiki_groups_array['groups'],$wiki_groups_array['public'],getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);
 //      }
 
-	  if (isset($wiki_groups_array['groups'][0])){
+     if (isset($wiki_groups_array['groups'][0])){
         $this->_form->combine();
         $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
         $this->_form->combine();
         $first = true;
         for ($index = 0; $index < sizeof($wiki_groups_array['groups']); $index++) {
-			$group = $wiki_groups_array['groups'][$index];
-			$public = $wiki_groups_array['public'][$index];
-			if(!$first){
+         $group = $wiki_groups_array['groups'][$index];
+         $public = $wiki_groups_array['public'][$index];
+         if(!$first){
               $this->_form->combine();
-	        }
-	        $this->_form->addCheckbox('enable_wiki_groups[]',$group,$public,$group,$group,$group,false,false,'','',true,false);
-	        if($first){
-	        	$first = false;
-	        }
-		}
+           }
+           $this->_form->addCheckbox('enable_wiki_groups[]',$group,$public,$group,$group,$group,false,false,'','',true,false);
+           if($first){
+              $first = false;
+           }
+      }
       }
 
       $this->_form->addEmptyline();
@@ -229,7 +229,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         // Calendar
         if((($this->_environment->getCurrentContextItem()->getLanguage() == "de") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-de.php'))) ||
            (($this->_environment->getCurrentContextItem()->getLanguage() == "en") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-en.php')))){
-        	   $features_available[] = array('enable_calendar',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+              $features_available[] = array('enable_calendar',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
         }
       }
       if (file_exists($c_pmwiki_path_file.'/cookbook/gallery.php')) {
@@ -246,16 +246,16 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       }
 
       for ($index = 0; $index < sizeof($features_available); $index++) {
-		      $array_element = $features_available[$index];
+            $array_element = $features_available[$index];
             $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);
             if($index < sizeof($features_available)-1){
-            	$this->_form->combine();
+               $this->_form->combine();
             }
-	   }
+      }
 
- 	  $this->_form->addEmptyline();
+      $this->_form->addEmptyline();
 
-	  $this->_form->addCheckbox('enable_discussion',1,'',getMessage('COMMON_WIKI_DISCUSSION'),getMessage('COMMON_WIKI_DISCUSSION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
+     $this->_form->addCheckbox('enable_discussion',1,'',getMessage('COMMON_WIKI_DISCUSSION'),getMessage('COMMON_WIKI_DISCUSSION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
 
       $this->_form->combine();
       $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_DISCUSSION_ORGANISATION').':');
@@ -424,8 +424,8 @@ class cs_configuration_wiki_form extends cs_rubric_form {
    }
 
    function _checkValues () {
-   	  $context_item = $this->_environment->getCurrentContextItem();
-   	  $discussion_array = $context_item->getWikiDiscussionArray();
+        $context_item = $this->_environment->getCurrentContextItem();
+        $discussion_array = $context_item->getWikiDiscussionArray();
       if ( !empty($this->_form_post['enable_discussion'])
            and empty($this->_form_post['new_discussion'])
            and !isset($discussion_array[0])
@@ -444,13 +444,13 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
         foreach($discussion_array as $discussion){
             $discussion = $wiki_manager->getDiscussionWikiName($discussion);
-        	if ($discussion == $tempDiscussion){
-        		$exists = true;
-        	}
+           if ($discussion == $tempDiscussion){
+              $exists = true;
+           }
         }
 
         if($exists){
-        	$this->_error_array[] = getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
+           $this->_error_array[] = getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
             $this->_form->setFailure('new_discussion','');
         }
 
@@ -478,10 +478,10 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_form->setFailure('enable_discussion_notification','');
       }
       if ( !empty($this->_form_post['enable_wiki_groups'])){
-      	$wiki_manager = $this->_environment->getWikiManager();
+         $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->setWikiGroupsAsPublic($this->_form_post['enable_wiki_groups']);
       } else {
-      	$wiki_manager = $this->_environment->getWikiManager();
+         $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->setWikiGroupsAsPublic(array());
       }
    }

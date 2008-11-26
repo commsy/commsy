@@ -65,8 +65,7 @@ else {
 
    // Show form and/or save item
    // Initialize the form
-   include_once('classes/cs_configuration_usageinfo_form.php');
-   $form = new cs_configuration_usageinfo_form($environment);
+   $form = $class_factory->getClass(CONFIGURATION_USAGEINFO_FORM,array('environment' => $environment));
    // Display form
    $params = array();
    $params['environment'] = $environment;

@@ -52,10 +52,10 @@ class cs_configuration_time_form extends cs_rubric_form {
   /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_time_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_time_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -73,22 +73,22 @@ class cs_configuration_time_form extends cs_rubric_form {
       $this->_show_choice[1]['text'] = $translator->getMessage('COMMON_NO');
       $this->_show_choice[1]['value'] = -1;
 
-	  // choice show clock pulse in future
+     // choice show clock pulse in future
       $this->_future_choice[0]['text'] = '0';
       $this->_future_choice[0]['value'] = -1;
-	  for ($i=1; $i<9; $i++) {
+     for ($i=1; $i<9; $i++) {
          $this->_future_choice[$i]['text'] = $i;
          $this->_future_choice[$i]['value'] = $i;
-	  }
+     }
 
       // counter
       if ( $this->_counter == 0) {
          if ( isset($this->_item) ) {
             $this->_counter = count($this->_item->getTimeTextArray());
          } else {
-			$this->_counter = count($this->_form_post['clock_pulse']);
-		 }
-		 if ($this->_counter == 0) {
+         $this->_counter = count($this->_form_post['clock_pulse']);
+       }
+       if ($this->_counter == 0) {
             $this->_counter = 1;
          }
       }
@@ -107,10 +107,10 @@ class cs_configuration_time_form extends cs_rubric_form {
       $first = true;
       foreach ($avaiable_languages as $language) {
          if ($first) {
-	   $first = false;
-	} else {
-	   $this->_form->combine('vertical');
-	}
+      $first = false;
+   } else {
+      $this->_form->combine('vertical');
+   }
          $this->_form->addTextField('name['.strtoupper($language).']','',$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_NAME_TITLE'),'','','45',false,'','','','',$language);
       }
 
@@ -146,9 +146,9 @@ class cs_configuration_time_form extends cs_rubric_form {
 
          if ( !empty($this->_form_post['clock_pulse']) ) {
             foreach ($this->_form_post['clock_pulse'] as $key => $name) {
-			   foreach ($name as $lang => $value) {
+            foreach ($name as $lang => $value) {
                   $this->_values['clock_pulse['.$key.']['.$lang.']'] = $value;
-			   }
+            }
             }
          }
 
@@ -165,23 +165,23 @@ class cs_configuration_time_form extends cs_rubric_form {
             $this->_values['show_time'] = -1;
          }
 
-		 $time_text_array = $this->_item->getTimeTextArray();
+       $time_text_array = $this->_item->getTimeTextArray();
          if ( !empty($time_text_array) ) {
             foreach ($time_text_array as $key => $name) {
-			   foreach ($name as $lang => $value) {
+            foreach ($name as $lang => $value) {
                   $this->_values['clock_pulse['.$key.']['.$lang.']'] = $value;
-			   }
+            }
             }
          }
 
-		 $time_name_array = $this->_item->getTimeNameArray();
-		 if ( !empty($time_name_array) ) {
+       $time_name_array = $this->_item->getTimeNameArray();
+       if ( !empty($time_name_array) ) {
             foreach ($time_name_array as $key => $name) {
                $this->_values['name['.$key.']'] = $name;
             }
          }
 
-		 $this->_values['future'] = $this->_item->getTimeInFuture();
+       $this->_values['future'] = $this->_item->getTimeInFuture();
       }
    }
 

@@ -27,7 +27,7 @@ include_once('classes/cs_rubric_form.php');
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_configuration_tags_form extends cs_rubric_form {
+class cs_configuration_tag_form extends cs_rubric_form {
 
 
 var $_with_buzzwords = false;
@@ -36,10 +36,10 @@ var $_with_tags = false;
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_tags_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_tag_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
