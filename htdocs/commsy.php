@@ -824,6 +824,10 @@ if (!$current_user->isUser() and !$context_item_current->isOpenForGuests()) {
    $page->setWithoutNavigationLinks();
 }
 
+if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
+  include_once('pages/profile_edit.php');
+}
+
 // display page
 include_once('functions/security_functions.php');
 if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {

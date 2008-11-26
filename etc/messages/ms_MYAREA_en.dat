@@ -24,6 +24,7 @@ $message["MYAREA_MY_ACTUAL_ROOMS"]["en"] = "My workspaces";
 $message["MYAREA_MY_COPIES"]["en"] = "My online clipboard";
 $message["MYAREA_MY_PROFILE"]["en"] = "My user account";
 $message["MYAREA_PASSWORD"]["en"] = "Password";
+$message["MYAREA_PROFILE"]["en"] = "Profile";
 $message["MYAREA_PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
 $message["MYAREA_ROOM_NO_SELECTION"]["en"] = "*Select workspace";
 $message["MYAREA_USER_AUTH_SOURCE_SHORT"]["en"] = "Source";

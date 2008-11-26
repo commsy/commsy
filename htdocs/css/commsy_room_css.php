@@ -377,4 +377,20 @@ h1{
    background-color:<?php echo($color['boxes_background'])?>;
 }
 
+#profile_title{
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   margin:0px;
+   padding:10px;
+}
+
+#profile_content{
+   margin-bottom:20px;
+   padding:0px
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
 

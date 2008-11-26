@@ -23,7 +23,6 @@
 function _getMaterialByXMLArray($material_item,$values_array,$directory){
    global $environment;
    $files = array();
-
    if (isset($values_array['authors'])){
       $material_item->setAuthor($values_array['authors']);
    }else{
@@ -45,6 +44,24 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
    }
    if (isset($values_array['abstract'])){
       $material_item->setDescription($values_array['abstract']);
+   }
+   if (isset($values_array['ppn'])){
+      $availability = '<span id="status"></span>' .
+      		  '<script type="text/javascript" src="javascript/seealso.js"></script>' .
+      		  '<script type="text/javascript" src="javascript/daia2seealso.js"></script>' .
+      		  '<script type="text/javascript">' .
+      		  'var id = \''.$values_array['ppn'].'\';' .
+      		  'var isil = \'DE-18\';' .
+      		  'var url = "http://daia.subhh.ath.cx/daia?format=json&isil=" + isil;' .
+      		  'var service = new DAIAService(url);' .
+      		  'var view = new SeeAlsoCSV();' .
+      		  'var statusSpan = document.getElementById(\'status\');' .
+      		  'statusSpan.innerHTML = "";' .
+      		  'service.query(id, function(response) {' .
+      		  '   view.display(statusSpan, response);' .
+      		  '});' .
+      		  '</script>';
+      $material_item->setBibAvailibility($availability);
    }
    $file_man = $environment->getFileManager();
    $file_id_array = array();
@@ -73,13 +90,14 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
          case 'beluga_cite':
             $material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
             break;
-         case 'availability':
-            $availability = utf8_decode($bib_values_array[$key]['value']);
-            if ($availability == 'none'){
-            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
-            }
-            $material_item->setBibAvailibility($availability);
-            break;
+#         case 'availability':
+#            $availability = utf8_decode($bib_values_array[$key]['value']);
+#            if ($availability == 'none'){
+#            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+#            }
+#            $material_item->setBibAvailibility($availability);
+#            break;
+#            break;
       }
       $i++;
    }
@@ -91,10 +109,17 @@ function _getAdditionalValuesByXMLArray($values_array){
    $additional_values_array = array();
    global $environment;
    $i = 0;
-   foreach($values_array as $key => $value){
+  foreach($values_array as $key => $value){
      switch ($value['tag']){
        case 'dc:title':
-            $additional_values_array['title'] = utf8_decode($values_array[$key]['value']);
+          $additional_values_array['title'] = utf8_decode($values_array[$key]['value']);
+          break;
+       case 'vap:recordId':
+          if (isset($values_array[$key]['attributes']['voc'])
+                and $values_array[$key]['attributes']['voc'] ==  'vap:PPN'
+            ){
+                $additional_values_array['ppn'] = utf8_decode($values_array[$key]['value']);
+            }
             break;
        case 'dc:creator':
            if (isset($values_array[$key]['value'])){

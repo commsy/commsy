@@ -572,7 +572,9 @@ class cs_material_detail_view extends cs_detail_view {
       if ( $item->issetBibAvailibility() ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('BELUGA_AVAILABILITY');
-         $temp_array[] = $item->getBibAvailibility();
+
+         $link = $item->getBibAvailibility();
+         $temp_array[] = $link;
          $formal_data1[] = $temp_array;
       }
       if ($item->isExportToWiki()) {

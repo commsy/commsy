@@ -491,6 +491,7 @@ $message["COMMON_PRIVATEROOM_DESC"]["en"] = "private workspace";
 $message["COMMON_PRIVATEROOM_INDEX"]["en"] = "%_PRIVATEROOM_SUB_NOMPL_BIG";
 $message["COMMON_PRIVATE_DATE"]["en"] = "Event type";
 $message["COMMON_PRIVATE_ROOM"]["en"] = "Private workspace";
+$message["COMMON_PROFILE_EDIT"]["en"] = "Edit profile";
 $message["COMMON_PROJECT"]["en"] = "%_PROJECT_SUB_NOMS_LOW";
 $message["COMMON_PROJECT_INDEX"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";
 $message["COMMON_PROJECT_PL"]["en"] = "%_PROJECT_SUB_NOMPL_BIG";

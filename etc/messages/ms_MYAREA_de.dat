@@ -24,6 +24,7 @@ $message["MYAREA_MY_ACTUAL_ROOMS"]["de"] = "Meine aktuellen Räume";
 $message["MYAREA_MY_COPIES"]["de"] = "Meine Kopien";
 $message["MYAREA_MY_PROFILE"]["de"] = "Mein Profil";
 $message["MYAREA_PASSWORD"]["de"] = "Passwort";
+$message["MYAREA_PROFILE"]["de"] = "Profil";
 $message["MYAREA_PROJECT_INDEX"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
 $message["MYAREA_ROOM_NO_SELECTION"]["de"] = "*keine Auswahl";
 $message["MYAREA_USER_AUTH_SOURCE_SHORT"]["de"] = "Quelle";

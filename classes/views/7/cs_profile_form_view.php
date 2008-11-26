@@ -25,13 +25,13 @@
 
 /** upper class of the form view
  */
-$this->includeClass(VIEW);
+$this->includeClass(FORM_VIEW);
 $this->includeClass(ERRORBOX_VIEW);
 
 /** class for a form view in commsy-style
  * this class implements a form view
  */
-class cs_form_view extends cs_view {
+class cs_profile_form_view extends cs_form_view {
 
    /**
     * string - containing the URL where data will post to
@@ -125,8 +125,8 @@ class cs_form_view extends cs_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_form_view ($params) {
-      $this->cs_view($params);
+   function cs_profile_form_view ($params) {
+      $this->cs_form_view($params);
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
@@ -525,7 +525,7 @@ class cs_form_view extends cs_view {
    function _getEmptyLineAsHTML ($form_element) {
       $html  = '';
       $html .= '<!-- EMPTY LINE -->';
-      $html .= '&nbsp;'.LF;
+      $html .= '&nbsp;'.BRLF;
       return $html;
    }
 
@@ -1132,7 +1132,7 @@ class cs_form_view extends cs_view {
       global $c_html_textarea;
       $html  = '';
       $vsize = '';
-      $normal = '<textarea style="width:98%" name="'.$form_element['name'].'"';
+      $normal = '<textarea style="width:80%" name="'.$form_element['name'].'"';
 #      $normal .= ' cols="'.$form_element['vsize'].'"';
       $normal .= ' rows="'.$form_element['hsize'].'"';
 #      $normal .= ' wrap="'.$form_element['wrap'].'"';
@@ -1463,7 +1463,7 @@ class cs_form_view extends cs_view {
          } elseif (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titletext'){
                   $html .= '      <td class="infoborder" class="key" colspan="2" style="width: 100%; "><div>';
          } elseif (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline'){
-                  $html .= '      <td class="infoborder" colspan="2" style="width: 100%; ">';
+                  $html .= '      <td colspan="2" style="width: 100%;  margin-top:10px;">';
          } else {
             if (!$this->_display_plain) {
                if ($this->_special_color) {
@@ -1498,7 +1498,7 @@ class cs_form_view extends cs_view {
             }
          }
       } elseif ( $form_element_array[0]['type'] == 'emptyline' ) {
-         $html .= '<td class="infoborder" style="width: 70%;">'.LF;
+         $html .= '<td style="width: 70%; margin-top:10px;">'.LF;
       }
 
       // form fields
@@ -1733,8 +1733,11 @@ class cs_form_view extends cs_view {
    function asHTML () {
       $html  = '';
       $netnavigation_array = array();
+      $html .='<div id="profile_content">'.LF;
+      $html .= '<h2 id="profile_title">'.getMessage('COMMON_PROFILE_EDIT').'</h2>';
+
       $html .= '<form style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
-      $html .='<div style="width:100%;">'.LF;
+      $html .='<div style="width:100%; padding:10px;">'.LF;
 
       #$html .= '<div class="formdate">'.$date_array[2].'. '.$month.' '.$date_array[0].'</div>';
       if (count($this->_error_array) > 0) {
@@ -1791,190 +1794,6 @@ class cs_form_view extends cs_view {
          foreach ($form_element_array as $form_element) {
             $temp_array[] = $form_element;
          }
-         $html .='<div style="width:100%;">'.LF;
-         if ( $this->_environment->getCurrentFunction() == 'mail' ) {
-            $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
-         } else {
-            $temp_mod_func = strtoupper($this->_environment->getCurrentModule()) . '_' . strtoupper($this->_environment->getCurrentFunction());
-            $tempMessage = "";
-            switch( $temp_mod_func  )
-            {
-               case 'ANNOUNCEMENT_EDIT':
-                  $tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/announcement.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'MATERIAL_EDIT':
-                  $tempMessage = getMessage('COMMON_MATERIAL_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'DATE_EDIT':
-                  $tempMessage = getMessage('COMMON_DATE_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'TODO_EDIT':
-                  $tempMessage = getMessage('COMMON_TODO_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'GROUP_EDIT':
-                  $tempMessage = getMessage('COMMON_GROUP_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'TOPIC_EDIT':
-                  $tempMessage = getMessage('COMMON_TOPIC_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'INSTITUTION_EDIT':
-                  $tempMessage = getMessage('COMMON_INSTITUTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/institution.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'DISCUSSION_EDIT':
-                  $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'DISCARTICLE_EDIT':
-                  $tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'SECTION_EDIT':
-                  $tempMessage = getMessage('COMMON_SECTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/section.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-                  break;
-               case 'ACCOUNT_PASSWORD':      // Password ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
-                  break;
-               case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
-                  $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
-                  break;
-               case 'ACCOUNT_STATUS':        // Status ändern (Portal)
-                  $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_AUTHENTICATION': // Authentifizierung einstellen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_BACKUP':  // Backup eines Raumes einspielen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_CHAT':    // Raum-Chat einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_COLOR':   // Farbkonfiguration
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_DATES':   // Termindarstellung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_DEFAULTS': // Voreinstellungen für Räume
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_DISCUSSION': // Art der Diskussion
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_EXPORT':  // Raum exportieren (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXPORT_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_EXTRA':   // Extras einstellen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenräume" eingeschaltet ist
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_HOMEPAGE': // Raum-Webseite einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_HOME':    // Konfiguration der Home
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_HTMLTEXTAREA': // FCK-Editor-Konfiguration ??
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');
-                   break;
-               case 'CONFIGURATION_IMS':     // IMS-Account Einstellungen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_LANGUAGE': // Verfügbare Sprachen (Server)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_MAIL':    // E-Mail-Texte
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_MOVE':    // Raum auf anderes Portal umziehen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_NEWS':    // Ankündigungen bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_PLUGIN':  // Sponsoren und Werbung
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // E-Mail-Newsletter (priv.)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_ROOM_OPENING': // Raumeröffnungen (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
-                  break;
-               case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
-                  $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_SERVICE': // Handhabungssupport einstellen
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_TIME':    // Zeittakte bearbeiten (Portal)
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');
-                  break;
-               case 'CONFIGURATION_USAGEINFO': // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
-                  break;
-               case 'LABELS_EDIT':           // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_LABELS_EDIT_FORM_TITLE');
-                  break;
-               case 'BUZZWORDS_EDIT':        // Nutzungshinweise bearbeiten
-                  $tempMessage = getMessage('COMMON_BUZZWORDS_EDIT_FORM_TITLE');
-                  break;
-               case 'USER_ACTION':           // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_EMAIL_SEND_FORM_TITLE');
-                  break;
-               case 'USER_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
-                  break;
-               case 'ACCOUNT_CLOSE':            // Personen E-Mail senden
-                  $tempMessage = getMessage('COMMON_USER_CLOSE_FORM_TITLE');
-                  break;
-               case 'DATE_IMPORT':           // Externe Termine importieren
-                  $tempMessage = getMessage('COMMON_DATE_IMPORT_FORM_TITLE');
-                  break;
-               case 'USER_PREFERENCES':      //
-                  $tempMessage = getMessage('COMMON_USER_PREFERENCES_FORM_TITLE');
-                  break;
-               case 'MAIL_TO_MODERATOR':      //
-                  $tempMessage = getMessage('CONFIGURATION_SERVICE_EMAIL_MODERATOR');
-                  break;
-               case 'TAG_EDIT':      //
-                  $tempMessage = getMessage('TAG_EDIT_FORM_TITLE');
-                  break;
-               case 'LANGUAGE_UNUSED':      //
-                  $tempMessage = getMessage('LANGUAGE_UNUSED_FORM_TITLE');
-                  break;
-               case 'MATERIAL_IMS_IMPORT':      //
-                  $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
-                  break;
-               default:                      // "Bitte Messagetag-Fehler melden ..."
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
-                  break;
-            }
-            $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
-         }
-         $html .= '</div>';
 
 
       //Berechnung der Buttonleiste
@@ -1994,71 +1813,7 @@ class cs_form_view extends cs_view {
       $temp_array = array();
       $html .='<div style="width: 100%;">'.LF;
       $funct = $this->_environment->getCurrentFunction();
-      $html .='<div style="float:right; width:27%; margin-top:0px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
-      $user = $this->_environment->getCurrentUserItem();
-      $room = $this->_environment->getCurrentContextItem();
-      if ($user->isUser() and $funct !='info_text_form_edit' and $funct !='info_text_edit'){
-         $html .='<div id="commsy_panels_form" style="width:250px;">'.LF;
-         if (  $this->_environment->getCurrentModule() !='buzzwords' and
-               $this->_environment->getCurrentModule() !='labels' and
-               $this->_environment->getCurrentFunction() !='close' and
-               $this->_environment->getCurrentModule() !='configuration' and
-               $this->_environment->getCurrentFunction() !='preferences' and
-               $this->_environment->getCurrentFunction() !='to_moderator' and
-               $this->_environment->getCurrentFunction() !='import' and
-               !($this->_environment->inPortal() and $this->_environment->getCurrentModule() =='account') and
-               $funct !='mail'
-            ) {
-            if ($this->_environment->getCurrentModule() != CS_USER_TYPE and
-               $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
-               $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE){
-               foreach ($form_element_array as $form_element) {
-                  if ( isset($form_element['type']) and $form_element['type'] == 'netnavigation' ) {
-                     $netnavigation_array[] = $form_element;
-                  }
-               }
-               $this->_count_form_elements = $this->_count_form_elements + 50;
-               foreach ($form_element_array as $form_element) {
-                  if ( (isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzwordlist')
-                    or (isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzword') ) {
-                     $html .='<div class="commsy_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-                     $html .= $this->_getBuzzwordBoxAsHTML($form_element);
-                     $html .='</div>'.LF;
-                  }
-               }
-               foreach ($form_element_array as $form_element) {
-                  if ( (isset($form_element[0]['name']) and $form_element[0]['name'] == 'taglist')
-                    or (isset($form_element[0]['name']) and $form_element[0]['name'] == 'tag') ) {
-                     $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-                     $html .= $this->_getTagBoxAsHTML($form_element);
-                     $html .='</div>'.LF;
-                  }
-               }
-               if ($this->_environment->getCurrentModule() != 'account'){
-                  $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-                  $html .= $this->_getAllLinkedItemsAsHTML($netnavigation_array);
-                  $html .='</div>'.LF;
-               }
-               $this->_count_form_elements = $this->_count_form_elements - 50;
-            }
-         }
-         $rubric_info_array = $room->getUsageInfoFormArray();
-         if (!is_array($rubric_info_array)) {
-            $rubric_info_array = array();
-         }
-         if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) ){
-            $room = $this->_environment->getCurrentContextItem();
-            if (!$this->_environment->inPortal()){
-               $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-               $html .= $this->_getRubricFormInfoAsHTML($this->_environment->getCurrentModule());
-               $html .='</div>'.LF;
-            }
-         }
-         $html .='</div>'.LF;
-      }
-      $html .= '</div>'.LF;
-
-      $html .='<div style="width:71%; margin-top:5px; vertical-align:bottom;">'.LF;
+      $html .='<div style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
       $html .= '<!-- BEGIN OF FORM-VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       foreach ($form_element_array as $form_element) {
@@ -2219,6 +1974,7 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
       }
       $html .= '</form>'.BRLF;
+      $html .= '</div>'.BRLF;
       return $html;
    }
 
