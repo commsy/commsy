@@ -494,8 +494,7 @@ if ( $command != 'error' ) {
       redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
    } else {
 
-      include_once('classes/cs_account_action_form.php');
-      $form = new cs_account_action_form($environment);
+      $form = $class_factory->getClass(ACCOUNT_ACTION_FORM,array('environment' => $environment));
 
       // init display data
       if ( !empty($_POST) ) {     // second call of form: set post data

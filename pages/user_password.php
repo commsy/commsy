@@ -72,8 +72,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
    /* setup the form */
 
    // Construct the form
-   include_once('classes/cs_account_password_form.php');
-   $form = new cs_account_password_form($environment);
+   $form = $class_factory->getClass(ACCOUNT_PASSWORD_FORM,array('environment' => $environment));
 
       /* we are not called as a result of a form post, so just display the form */
       if ( empty($command) and !empty($_GET['iid']) ) {
@@ -138,7 +137,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
    $class_params = array();
    $class_params['environment'] = $environment;
    $class_params['with_modifying_actions'] = true;
-   $form_view = $class_factory->getClass(FROM_VIEW,$class_params);
+   $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
    unset($class_params);
    $form_view->setAction(curl($environment->getCurrentContextID(),$current_module,'password',''));
    $form_view->setForm($form);

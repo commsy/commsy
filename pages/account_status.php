@@ -27,7 +27,6 @@ include_once('classes/cs_form.php');
 include_once('classes/cs_mail.php');
 include_once('functions/date_functions.php');
 include_once('functions/text_functions.php');
-include_once('classes/cs_account_status_form.php');
 
 // translation - object
 $translator = $environment->getTranslationObject();
@@ -103,7 +102,7 @@ if ($current_user->isGuest()) {
 
 // first step administration form
 if (empty($command)) {
-   $form = new cs_account_status_form($environment);
+   $form = $class_factory->getClass(ACCOUNT_STATUS_FORM,array('environment' => $environment));
    $form->setItem($user);
    $form->prepareForm();
    $form->loadValues();
@@ -223,7 +222,7 @@ if (empty($command)) {
 
    // change status to ... but not delete a user
    else {
-      $form = new cs_account_status_form($environment);
+      $form = $class_factory->getClass(ACCOUNT_STATUS_FORM,array('environment' => $environment));
       $form->setFormPost($_POST);
       $form->prepareForm();
       $form->loadValues();

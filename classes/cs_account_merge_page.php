@@ -30,8 +30,7 @@ class cs_account_merge_page extends cs_left_page {
    }
 
    function execute () {
-      include_once('classes/cs_account_merge_form.php');
-      $form = new cs_account_merge_form($this->_environment);
+      $form = $this->_class_factory->getClass(ACCOUNT_MERGE_FORM,array('environment' => $this->_environment));
       // Load form data from postvars
       if ( !empty($this->_post_vars) and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_MERGE_BUTTON')) ) {
          $form->setFormPost($this->_post_vars);
@@ -48,12 +47,12 @@ class cs_account_merge_page extends cs_left_page {
 
       // Save item
       if ( !empty($this->_command)
-	        and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_MERGE_BUTTON'))
-	      ) {
-        	$correct = $form->check();
-        	if ( $correct ) {
-        	   $authentication = $this->_environment->getAuthenticationObject();
-        	   $current_user = $this->_environment->getCurrentUserItem();
+           and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_MERGE_BUTTON'))
+         ) {
+           $correct = $form->check();
+           if ( $correct ) {
+              $authentication = $this->_environment->getAuthenticationObject();
+              $current_user = $this->_environment->getCurrentUserItem();
             if ( isset($this->_post_vars['auth_source']) and !empty($this->_post_vars['auth_source']) ) {
                $auth_source_old = $this->_post_vars['auth_source'];
             } else {
@@ -62,7 +61,7 @@ class cs_account_merge_page extends cs_left_page {
             }
             $authentication->mergeAccount($current_user->getUserID(),$current_user->getAuthSource(),$this->_post_vars['user_id'],$auth_source_old);
             $this->_redirect_back();
-	      }
+         }
       }
       return $this->_show_form($form);
    }

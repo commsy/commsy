@@ -32,8 +32,7 @@ class cs_account_forget_page extends cs_left_page {
    function execute () {
       $success = false;
 
-      include_once('classes/cs_account_forget_form.php');
-      $form = new cs_account_forget_form($this->_environment);
+      $form = $this->_class_factory->getClass(ACCOUNT_FORGET_FORM,array('environment' => $this->_environment));
       // Load form data from postvars
       if ( !empty($this->_post_vars) ) {
          $form->setFormPost($this->_post_vars);

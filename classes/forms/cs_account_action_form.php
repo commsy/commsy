@@ -53,10 +53,10 @@ class cs_account_action_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_account_action_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_account_action_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    /**

@@ -33,8 +33,7 @@ class cs_account_change_page extends cs_left_page {
 
       $success = false;
 
-      include_once('classes/cs_account_change_form.php');
-      $form = new cs_account_change_form($this->_environment);
+      $form = $this->_class_factory->getClass(ACCOUNT_CHANGE_FORM,array('environment' => $this->_environment));
       // Load form data from postvars
       if ( !empty($this->_post_vars) and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_CHANGE_BUTTON')) ) {
          $form->setFormPost($this->_post_vars);
