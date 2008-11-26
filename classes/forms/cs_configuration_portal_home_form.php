@@ -32,10 +32,10 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_portal_home_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_portal_home_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -53,28 +53,28 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
 
       // form fields
 #	  $this->_form->addHidden('iid','');
-	      $radio_values = array();
-	      $radio_values[0]['text'] = getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT');
-	      $radio_values[0]['value'] = '1';
+         $radio_values = array();
+         $radio_values[0]['text'] = getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT');
+         $radio_values[0]['value'] = '1';
                $radio_values[1]['text'] = getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT_NOT');
-	      $radio_values[1]['value'] = '2';
-	      $this->_form->addRadioGroup('announcement',getMessage('CONFIGURATION_ANNOUNCEMENT'),'',$radio_values,'',true,false);
+         $radio_values[1]['value'] = '2';
+         $this->_form->addRadioGroup('announcement',getMessage('CONFIGURATION_ANNOUNCEMENT'),'',$radio_values,'',true,false);
 
-	      $radio_values = array();
+         $radio_values = array();
                $radio_values[0]['text'] = getMessage('CONFIGURATION_NO_SELECTION');
-	      $radio_values[0]['value'] = '1';
-	      $radio_values[1]['text'] = getMessage('CONFIGURATION_PRESELECT_COMMUNITY_ROOMS');
-	      $radio_values[1]['value'] = '2';
-	      $radio_values[2]['text'] = getMessage('CONFIGURATION_ONLY_COMMUNITY_ROOMS');
-	      $radio_values[2]['value'] = '3';
-	      $this->_form->addRadioGroup('preselection',getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
+         $radio_values[0]['value'] = '1';
+         $radio_values[1]['text'] = getMessage('CONFIGURATION_PRESELECT_COMMUNITY_ROOMS');
+         $radio_values[1]['value'] = '2';
+         $radio_values[2]['text'] = getMessage('CONFIGURATION_ONLY_COMMUNITY_ROOMS');
+         $radio_values[2]['value'] = '3';
+         $this->_form->addRadioGroup('preselection',getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
 
-	      $radio_values = array();
-	      $radio_values[0]['text'] = getMessage('CONFIGURATION_SORT_ROOMS_ACTIVITY');
-	      $radio_values[0]['value'] = '1';
+         $radio_values = array();
+         $radio_values[0]['text'] = getMessage('CONFIGURATION_SORT_ROOMS_ACTIVITY');
+         $radio_values[0]['value'] = '1';
                $radio_values[1]['text'] = getMessage('CONFIGURATION_SORT_ROOMS_TITLE');
-	      $radio_values[1]['value'] = '2';
-	      $this->_form->addRadioGroup('room_sort',getMessage('CONFIGURATION_SORT_ROOMS'),'',$radio_values,'',true,false);
+         $radio_values[1]['value'] = '2';
+         $this->_form->addRadioGroup('room_sort',getMessage('CONFIGURATION_SORT_ROOMS'),'',$radio_values,'',true,false);
 
 
       // buttons
@@ -91,24 +91,24 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          $room = $this->_environment->getCurrentContextItem();
          $with_announcements = $room->isShowAnnouncementsOnHome();
          if ($with_announcements){
-	   $this->_values['announcement'] ='1';
+      $this->_values['announcement'] ='1';
          }else{
-	   $this->_values['announcement'] ='2';
+      $this->_values['announcement'] ='2';
 
          }
          $sort_rooms_by_title = $room->isSortRoomsByTitleOnHome();
          if ($sort_rooms_by_title){
-	   $this->_values['room_sort'] ='2';
+      $this->_values['room_sort'] ='2';
          }else{
-	   $this->_values['room_sort'] ='1';
+      $this->_values['room_sort'] ='1';
          }
          $show_only_community_rooms = $room->getShowRoomsOnHome();
          if ($show_only_community_rooms =='preselectcommunityrooms'){
-	   $this->_values['preselection'] ='2';
+      $this->_values['preselection'] ='2';
          }elseif ($show_only_community_rooms =='onlycommunityrooms'){
-	   $this->_values['preselection'] ='3';
+      $this->_values['preselection'] ='3';
          }else{
-	   $this->_values['preselection'] ='1';
+      $this->_values['preselection'] ='1';
 
          }
       }

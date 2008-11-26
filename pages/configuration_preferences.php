@@ -322,8 +322,7 @@ if ($current_user->isGuest()) {
       // Show form and/or save item
       else {
          // Initialize the form
-         include_once('classes/cs_configuration_preferences_form.php');
-         $form = new cs_configuration_preferences_form($environment);
+         $form = $class_factory->getClass(CONFIGURATION_PREFERENCES_FORM,array('environment' => $environment));
 
          // Add a community_room
          if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {

@@ -34,13 +34,14 @@ var $_with_template_form_element3 = false;
 
 var $_template_community_array = array();
 var $_template_array = array();
+
 /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_room_opening_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_room_opening_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL

@@ -47,8 +47,7 @@ else {
    }
 
    // Initialize the form
-   include_once('classes/cs_configuration_portal_home_form.php');
-   $form = new cs_configuration_portal_home_form($environment);
+   $form = $class_factory->getClass(CONFIGURATION_PORTALHOME_FORM,array('environment' => $environment));
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

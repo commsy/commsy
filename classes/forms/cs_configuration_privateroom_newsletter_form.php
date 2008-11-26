@@ -32,10 +32,10 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
    /** constructor
     * the only available constructor
     *
-    * @param object environment the environment object
+    * @param array params array of parameter
     */
-   function cs_configuration_privateroom_newsletter_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_privateroom_newsletter_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** init data for form, INTERNAL
@@ -53,14 +53,14 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
 
       // form fields
 #	  $this->_form->addHidden('iid','');
-	      $radio_values = array();
-	 $radio_values[0]['text'] = getMessage('CONFIGURATION_NEWSLETTER_NONE');
-	      $radio_values[0]['value'] = '1';
+         $radio_values = array();
+    $radio_values[0]['text'] = getMessage('CONFIGURATION_NEWSLETTER_NONE');
+         $radio_values[0]['value'] = '1';
          $radio_values[1]['text'] = getMessage('CONFIGURATION_NEWSLETTER_WEEKLY');
-	      $radio_values[1]['value'] = '2';
+         $radio_values[1]['value'] = '2';
          $radio_values[2]['text'] = getMessage('CONFIGURATION_NEWSLETTER_DAILY');
-	      $radio_values[2]['value'] = '3';
-	      $this->_form->addRadioGroup('newsletter',getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
+         $radio_values[2]['value'] = '3';
+         $this->_form->addRadioGroup('newsletter',getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
 
       // 2007-04-11 Warnhinweis dass Nachricht nur in HTML-Format gesendet wirde
       // Warning for Message is sent in HTML format only
@@ -68,9 +68,9 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
-      
-      
-      
+
+
+
    }
 
    /** loads the selected and given values to the form
@@ -80,14 +80,14 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
       if (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
       }else{
-	      $room = $this->_environment->getCurrentContextItem();
+         $room = $this->_environment->getCurrentContextItem();
          $newlsetter = $room->getPrivateRoomNewsletterActivity();
          if ($newlsetter == 'weekly'){
-	         $this->_values['newsletter'] ='2';
+            $this->_values['newsletter'] ='2';
          }elseif ($newlsetter == 'daily'){
-	         $this->_values['newsletter'] ='3';
+            $this->_values['newsletter'] ='3';
          }else{
-	         $this->_values['newsletter'] ='1';
+            $this->_values['newsletter'] ='1';
 
          }
       }
