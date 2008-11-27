@@ -1519,7 +1519,43 @@ class cs_connection_soap {
          $info_text = 'session id ('.$session_id.') is not valid';
          $result = new SoapFault($info,$info_text);
       }
+      $project_manager = $this->_environment->getProjectManager;
       return $result;
+   }
+   
+   public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
+   		// User Moderator im Raum -> admin
+   		// User Mitglied in Raum -> edit
+   		// User Mitglied in Gemeinschaftsraum zu dme der Raum zugeordnet ist -> read
+   		// sonst -> notAuthenticated
+   		$result = 'notAuthenticated';
+   		$session_id = $this->_encode_input($session_id);
+      	if ($this->_isSessionValid($session_id)) {
+	   		$user_manager = $this->_environment->getUserManager();
+	        $user_manager->setContextLimit($context_id);
+			$user_manager->setUserIDLimit($user_id);
+	        $user_manager->select();
+	        $user_list = $user_manager->get();
+	        if ($user_list->getCount() == 1) {
+	        	$user_item = $user_list->getFirst();
+	        	if($user_item->getStatus() == 3){
+	   				$result = 'moderator';
+	   			}
+	   			if($user_item->getStatus() == 2){
+	   				$result = 'user';
+	   			}
+	   			if($user_item->getStatus() == 1){
+	   				$result = 'notAuthenticated';
+	   			}
+	        }
+			//      $projectList = $project_manager->getRelatedProjectListForUser($user_item);
+			//      pr($projectList);
+      	} else {
+        	$info = 'ERROR: GET AUTHENTICATION FOR WIKI';
+         	$info_text = 'session id ('.$session_id.') is not valid';
+         	$result = new SoapFault($info,$info_text);
+      	}
+   		return $result;
    }
 }
 ?>

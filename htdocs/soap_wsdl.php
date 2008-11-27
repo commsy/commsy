@@ -180,6 +180,14 @@
 <message name='getUserInfoOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='getAuthenticationForWikiIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:string'/>
+  <part name='user_id' type='xsd:string'/>
+</message>
+<message name='getAuthenticationForWikiOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -273,6 +281,10 @@
   <operation name='getUserInfo'>
     <input message='tns:getUserInfoIN'/>
     <output message='tns:getUserInfoOUT'/>
+  </operation>
+  <operation name='getAuthenticationForWiki'>
+    <input message='tns:getAuthenticationForWikiIN'/>
+    <output message='tns:getAuthenticationForWikiOUT'/>
   </operation>
 </portType>
 
@@ -524,6 +536,17 @@
   </operation>
   <operation name='getUserInfo'>
     <soap:operation soapAction='urn:xmethodsCommSy#getUserInfo'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getAuthenticationForWiki'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getAuthenticationForWiki'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
