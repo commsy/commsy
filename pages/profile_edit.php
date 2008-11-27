@@ -51,6 +51,12 @@ if (!empty($_GET['uid'])) {
    trigger_error('No user selected!',E_USER_ERROR);
 }
 
+if (!empty($_GET['profile_page'])) {
+   $profile_page = $_GET['profile_page'];
+}  else {
+   $profile_page = 'account';
+}
+
 $user_manager = $environment->getUserManager();
 $user_item = $user_manager->getItem($iid);
 $room_item = $environment->getCurrentContextItem();
@@ -87,7 +93,7 @@ if ($command != 'error') { // only if user is allowed to edit user
    // include form
    include_once('classes/cs_profile_form.php');
    $form = new cs_profile_form($environment);
-
+   $form->setProfilePageName($profile_page);
    // cancel edit process
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
       $params = $environment->getCurrentParameterArray();

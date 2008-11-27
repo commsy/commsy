@@ -33,6 +33,67 @@ $this->includeClass(ERRORBOX_VIEW);
  */
 class cs_profile_form_view extends cs_form_view {
 
+   function cs_profile_form_view ($params) {
+      $this->cs_form_view($params);
+    }
+
+
+   function _getLinkRowAsHTML () {
+      $html  = LF.'<!-- BEGIN TABS -->'.LF;
+      $html .= '<div id="profile_tabs_frame" >'.LF;
+      $html .= '<div id="profile_tablist">'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['profile_page'] = 'account';
+      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                           $this->_environment->getCurrentFunction(),
+                           $params,
+                           getMessage('PROFILE_ACCOUNT_DATA'));
+      if (!isset($_GET['profile_page']) or $_GET['profile_page'] == 'account'){
+         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
+              }else{
+         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
+      }
+      $params['profile_page'] = 'user';
+      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                           $this->_environment->getCurrentFunction(),
+                           $params,
+                           getMessage('PROFILE_USER_DATA'));
+      if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'user'){
+         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
+      }else{
+         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
+      }
+      $params['profile_page'] = 'room_list';
+      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                           $this->_environment->getCurrentFunction(),
+                           $params,
+                           getMessage('PROFILE_ROOM_LIST_DATA'));
+      if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'room_list'){
+         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
+      }else{
+         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
+      }
+      $params['profile_page'] = 'newsletter';
+      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                           $this->_environment->getCurrentFunction(),
+                           $params,
+                           getMessage('PROFILE_NEWSLETTER_DATA'));
+      if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'newsletter'){
+         $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
+      }else{
+         $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
+      }
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<!-- END TABS -->'.LF;
+      return $html;
+   }
+
+
 
    /** get form element as HTML ROW and in commsy-style- internal, do not use
     * this method returns a string contains a form element in commsy-style in HMTL-Code
@@ -62,6 +123,8 @@ class cs_profile_form_view extends cs_form_view {
                            '','', '', '', '', '', 'class="titlelink"');
       $html .= '<h2 id="profile_title" style="float:right">'.$title.'</h2>';
       $html .= '<h2 id="profile_title">'.getMessage('COMMON_PROFILE_EDIT').'</h2>';
+
+      $html .= $this->_getLinkRowAsHTML();
 
       $html .= '<form style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
       $html .='<div style="width:100%; padding:10px;">'.LF;
@@ -219,7 +282,7 @@ class cs_profile_form_view extends cs_form_view {
 
       $form_element_array = $temp_array;
 
-      $html .= '<table id="form" summary="layout">'.LF;
+      $html .= '<table summary="layout">'.LF;
       $form_element = $this->_form_elements->getFirst();
       $html .= '<tr>'.LF;
       $html .= '<td style="border:0px; padding:0px;" colspan="4">'.LF;
@@ -301,7 +364,7 @@ class cs_profile_form_view extends cs_form_view {
          $html .= '</div>'.LF;
       }
       $html .= '</form>'.BRLF;
-      $html .= '</div>'.BRLF;
+      $html .= '</div>'.LF;
       return $html;
    }
 

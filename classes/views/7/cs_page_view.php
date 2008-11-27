@@ -315,7 +315,8 @@ class cs_page_view extends cs_view {
                or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='action')
                or $this->_environment->getCurrentModule() == 'configuration'
                or $this->_environment->getCurrentModule() == 'account'
-               or $this->_environment->getCurrentModule() == 'material_admin')
+               or $this->_environment->getCurrentModule() == 'material_admin'
+               or (isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'))
                and !$this->_is_print_page
       ){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_form_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;

@@ -189,6 +189,7 @@ $message["COMMON_CONTENT"]["en"] = "Content";
 $message["COMMON_CONTENT_DESC"]["en"] = "You can write here what ever and as much as you like.<br /><br />
 The text can be formatted in multiple ways, for a complete description look here: %1.";
 $message["COMMON_CONTINUOUS"]["en"] = "continuous";
+$message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_CREATED_BY"]["en"] = "created by";
 $message["COMMON_CREATE_ANNOTATION"]["en"] = "Add comment";
 $message["COMMON_DATES"]["en"] = "Event";

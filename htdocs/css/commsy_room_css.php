@@ -248,6 +248,35 @@ ul.item_list {
    list-style: circle;
 }
 
+/* Profile Tab Style */
+
+#profile_tabs_frame {
+   position:relative;
+   padding:3px 10px;
+   margin:0px 0px 0px 0px;
+   background-color: #EEEEEE;
+   border-bottom:1px solid <?php echo($color['tabs_background'])?>;
+}
+
+#profile_tablist{
+    margin:0px;
+    white-space:nowrap;
+    display:inline;
+}
+
+.profile_tab{
+    border-right:1px solid <?php echo($color['tabs_background'])?>;
+    padding:3px 10px;
+    display:inline;
+}
+
+.profile_tab_current{
+    border-right:1px solid <?php echo($color['tabs_background'])?>;
+    padding:3px 10px;
+    display:inline;
+    font-weight:bold;
+}
+
 
 
 /* Tab Style */

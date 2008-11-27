@@ -195,6 +195,7 @@ $message["COMMON_CONTENT"]["de"] = "Inhalt";
 $message["COMMON_CONTENT_DESC"]["de"] = "Hier können Sie schreiben, was und soviel Sie wollen.<br /><br />
 Sie können den Text auf vielfältige Weise formatieren, eine genaue Beschreibung der Möglichkeiten finden Sie hier: %1.";
 $message["COMMON_CONTINUOUS"]["de"] = "kontinuierlich";
+$message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
 $message["COMMON_CREATED_BY"]["de"] = "erstellt von";
 $message["COMMON_CREATE_ANNOTATION"]["de"] = "Anmerkung hinzufügen";
 $message["COMMON_DATES"]["de"] = "Termin";

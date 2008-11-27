@@ -1,0 +1,6 @@
+<?php
+$message["PROFILE_ACCOUNT_DATA"]["de"] = "Kennung &amp; Passwort";
+$message["PROFILE_NEWSLETTER_DATA"]["de"] = "Newsletter";
+$message["PROFILE_ROOM_LIST_DATA"]["de"] = "Raumliste";
+$message["PROFILE_USER_DATA"]["de"] = "Nutzerdaten";
+?>
