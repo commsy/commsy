@@ -528,6 +528,7 @@ class cs_wiki_manager extends cs_manager {
 	        $str .= '$AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
 	        $str .= 'include_once("$FarmD/scripts/authuser.php");'.LF;
 	        $str .= '$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
+	        $str .= '$DefaultPasswords[\'attr\'] = \'@admins\';'.LF;
 	        $str .= '$EnableUpload = 1;'.LF;
 	        $str .= '$DefaultPasswords[\'upload\'] = \'@editors\';'.LF;
 	        $str .= '$UploadMaxSize = 1000000000;'.LF;
@@ -538,6 +539,7 @@ class cs_wiki_manager extends cs_manager {
 	    } else {
 	    	$str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
 			$str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
+			$str .= '   $DefaultPasswords[\'attr\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
 			$str .= '}'.LF;
 			$str .= 'if ( !empty($COMMSY_UPLOAD_PASSWD) ) {'.LF;
 			$str .= '   $EnableUpload = 1;'.LF;
