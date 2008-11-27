@@ -265,7 +265,7 @@ class cs_activity_view extends cs_view {
       $active = $context->getActiveMembers($time_spread);
       $all_users = $context->getAllUsers();
       $percentage = round($active / $all_users * 100);
-      $html .= '         <div class="gauge" style="float:right; width: 28%;">'.LF;
+      $html .= '         <div class="gauge" style="float:right; width: 25%;">'.LF;
       if ( $percentage >= 5 ) {
          $html .= '            <div class="gauge-bar" style="width:'.$percentage.'%;">'.$active.'</div>'.LF;
       } else {
