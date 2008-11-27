@@ -325,6 +325,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 
 
    if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+        and !isset($_GET['show_copies'])
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
       ) {

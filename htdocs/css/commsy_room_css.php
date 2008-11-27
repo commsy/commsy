@@ -286,6 +286,10 @@ div.tabs_bottom {
    font-size: 10pt;
 }
 
+a.titlelink{
+   color:<?php echo($color['headline_text'])?>;
+}
+
 span.navlist{
    color:<?php echo($color['headline_text'])?>;
 }
@@ -383,10 +387,26 @@ h1{
    color:<?php echo($color['headline_text'])?>;
    vertical-align:top;
    margin:0px;
-   padding:10px;
+   padding:5px 10px;
 }
 
 #profile_content{
+   margin-bottom:20px;
+   padding:0px
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
+#copy_title, .copy_title{
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   margin:0px;
+   padding:2px 10px 5px 10px;
+}
+
+#copy_content{
    margin-bottom:20px;
    padding:0px
    background-color: #FFFFFF;

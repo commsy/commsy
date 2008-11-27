@@ -287,6 +287,9 @@ class cs_page_view extends cs_view {
       }
 
       if ($this->_environment->getCurrentFunction() == 'detail' or $this->_environment->getCurrentModule() == 'help' and !$this->_is_print_page){
+         if (isset($_GET['show_copies'])){
+            $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_index_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+         }
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_detail_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          // for tex in commsy
          // see http://www.math.union.edu/~dpvc/jsMath/

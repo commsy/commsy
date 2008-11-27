@@ -46,6 +46,12 @@
       buildRoomLayer();
    }
 
+   function initLayer(id){
+      var div = document.getElementById(id);
+      var height = document.body.offsetHeight;
+      div.style.height = height + "px";
+   }
+
    function handleWidth(id,max_width,link_name){
       window.addEvent('domready', function(){
       var div = document.getElementById(id);

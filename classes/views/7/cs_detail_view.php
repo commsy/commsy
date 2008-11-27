@@ -296,7 +296,7 @@ class cs_detail_view extends cs_view {
       if ( $current_user->isUser() and !in_array($item->getItemID(), $this->_getClipboardIdArray()) ) {
          $params = array();
          $params['iid'] = $item->getItemID();
-         $params['add_to_material_clipboard'] = $item->getItemID();
+         $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
          $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),

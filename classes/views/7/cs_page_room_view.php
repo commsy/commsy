@@ -537,6 +537,13 @@ class cs_page_room_view extends cs_page_view {
             if ($this->_with_delete_box){
                $html .= ' initDeleteLayer();';
             }
+            if (isset($_GET['show_copies']) or isset($_GET['show_profile'])){
+               $html .= ' initLayer("profile");';
+            }
+            $html .= ' "';
+         }elseif(isset($_GET['show_copies']) or isset($_GET['show_profile'])){
+            $html .= ' onload="';
+            $html .= ' initLayer(\'profile\');';
             $html .= ' "';
          }
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
@@ -627,17 +634,31 @@ class cs_page_room_view extends cs_page_view {
    // @segment-end 66992
 
   function getProfileBoxAsHTML(){
-  	 $html = '';
+     $html = '';
      $environment = $this->_environment;
      $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
-     $html .= '<div style="z-index:1000; margin-top:10px; margin-bottom:10px; margin-left: 20%; width:60%; text-align:left; background-color:#FFFFFF;">';
+     $html .= '<div style="z-index:1000; margin-top:20px; margin-bottom:10px; margin-left: 20%; width:60%; text-align:left; background-color:#FFFFFF;">';
      global $profile_view;
      $html .= $profile_view->asHTML();
      $html .= '</div>';
      $html .= '</div>';
      $html .= '<div id="profile" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
      $html .= '</div>';
-  	 return $html;
+     return $html;
+  }
+
+  function getCopyBoxAsHTML(){
+     $html = '';
+     $environment = $this->_environment;
+     $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
+     $html .= '<div style="z-index:1000; margin-top:20px; margin-bottom:10px; margin-left: 15%; width:70%; text-align:left; background-color:#FFFFFF;">';
+     global $copy_view;
+     $html .= $copy_view->asHTML();
+     $html .= '</div>';
+     $html .= '</div>';
+     $html .= '<div id="profile" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
+     $html .= '</div>';
+     return $html;
   }
 
    function getDeleteBoxAsHTML(){
@@ -1052,6 +1073,9 @@ class cs_page_room_view extends cs_page_view {
          if ( isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'){
             $html .= $this->getProfileBoxAsHTML();
          }
+         if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
+            $html .= $this->getCopyBoxAsHTML();
+         }
 
          $html .= $this->_getPluginInfosForAfterContentAsHTML();
 
@@ -1150,26 +1174,19 @@ class cs_page_room_view extends cs_page_view {
             $html .= '</table>'.LF;
          }
          $html .= '</div>'.LF;
-         // @segment-end 91880
-         // @segment-begin 42747 asHTML():call-$this->_getSystemInfoAsHTML()-display-tidy&co(left-bottom-corner)
          $html .= '<div style="padding-top:5px; padding-left:10px;">'.LF;
          $html .= $this->_getSystemInfoAsHTML();
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         // @segment-end 42747
-    // @segment-begin 13839 asHTML():call-$this->_getFooterAsHTML()-(sth.with-plug-in)
-    unset($current_user);
-    unset($current_context);
-    unset($server_item);
+         unset($current_user);
+         unset($current_context);
+         unset($server_item);
          $html .= $this->_getFooterAsHTML();
-#         $html .= '</td></tr>';
-#         $html .=' </table>'.BRLF;
          $html .= '</body>'.LF;
          $html .= '</html>'.LF;
       }
       return $html;
    }
-   // @segment-end 13839
 
    private function _getFlagsAsHTML () {
       $html = '&nbsp;&nbsp;|&nbsp;&nbsp;';
@@ -1193,20 +1210,6 @@ class cs_page_room_view extends cs_page_view {
                $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>';
                $html .= $img.'&nbsp;&nbsp;';
             } elseif ( $language != 'user' ) {
-
-               /* create flags in grayscale and save them - only for developement
-               if ( !file_exists('htdocs/images/flags/'.$flag_lang.'_gray.gif') ) {
-                  $im = imagecreatefromgif('htdocs/images/flags/'.$flag_lang.'.gif');
-                  if ( $im
-                       and function_exists('imagefilter')
-                       and imagefilter($im, IMG_FILTER_GRAYSCALE)
-                     ) {
-                     imagegif($im,'htdocs/images/flags/'.$flag_lang.'_gray.gif');
-                     imagedestroy($im);
-                  }
-               }
-               */
-
                $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'_gray.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'" title="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'"/>';
                $html .= $img.'&nbsp;&nbsp;';
             } else {
@@ -1221,6 +1224,48 @@ class cs_page_room_view extends cs_page_view {
       }
       return $html;
    }
+
+
+   function _getCopyLinkAsHTML(){
+      $html = '';
+      $context_item = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $current_room_modules = $context_item->getHomeConf();
+      if ( !empty($current_room_modules) ){
+         $room_modules = explode(',',$current_room_modules);
+      } else {
+         $room_modules =  array();
+      }
+      unset($current_room_modules);
+      $modules = array();
+      foreach ( $room_modules as $module ) {
+         $link_name = explode('_', $module);
+         if ( $link_name[1] != 'none') {
+            $modules[] = $link_name[0];
+         }
+      }
+      unset($room_modules);
+      $html_array = array();
+      $rubric_copy_array = array(CS_ANNOUNCEMENT_TYPE, CS_DATE_TYPE, CS_DISCUSSION_TYPE, CS_MATERIAL_TYPE,CS_TODO_TYPE);
+      $count = 0;
+      foreach ($rubric_copy_array as $rubric){
+         $id_array = $session->getValue($rubric.'_clipboard');
+         $count += count($id_array);
+      }
+      unset($rubric_copy_array);
+      unset($context_item);
+      if ( $count > 0 ){
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['show_copies'] = 'yes';
+         unset($params['show_profile']);
+         $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_MY_COPIES'),'','','','','','','style="color:#800000"').''.LF;
+      }else{
+         $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.'<span class="disabled">'.getMessage('MYAREA_MY_COPIES').'</span>'.LF;
+      }
+      return $html;
+   }
+
+
 
 
    function getMyAreaAsHTML() {
@@ -1240,7 +1285,7 @@ class cs_page_room_view extends cs_page_view {
       unset($post_vars);
       // @segment-end 47891
       // @segment-begin 65267 titel-of-my_area_box/upper_corner_pictures
-      $html  = LF;
+      $html  = '<div style="white-space:nowrap;">';
 /*      $html .= '<table summary="layout" style="border-collapse:collapse;">';
       $html .= '<tr>';
       $html .= '<td>';
@@ -1261,9 +1306,9 @@ class cs_page_room_view extends cs_page_view {
                $params = $this->_environment->getCurrentParameterArray();
                $params['uid'] = $this->_current_user->getItemID();
                $params['show_profile'] = 'yes';
+               unset($params['show_copies']);
                $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
-               $params = $this->_environment->getCurrentParameterArray();
-               $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,'Hilfe','','','','','','','style="color:#800000"').''.LF;
+               $html .= $this->_getCopyLinkAsHTML();
                $html .= '&nbsp;'.$this->_getFlagsAsHTML();
          }
       }
@@ -1344,6 +1389,7 @@ class cs_page_room_view extends cs_page_view {
             unset($current_portal);
          }
       }
+      $html .= '</div>';
       return $html;
    }
 

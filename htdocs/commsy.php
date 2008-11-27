@@ -828,6 +828,10 @@ if ( isset($_GET['show_profile']) and ($_GET['show_profile'] == 'yes') ) {
   include_once('pages/profile_edit.php');
 }
 
+if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
+  include_once('pages/copies_index.php');
+}
+
 // display page
 include_once('functions/security_functions.php');
 if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {

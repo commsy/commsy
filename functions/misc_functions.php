@@ -634,6 +634,7 @@ function isURLValid () {
         $module != 'section' and
         $module != 'clipboard' and
         $module != 'link' and
+        $module != 'copies' and
 
         // server admin
         $module != 'server' and
