@@ -1197,6 +1197,10 @@ function setWikiGroupsAsPublic($groups){
 		}
 	}
 
+	if(isset($groups) && !(count($groups) == 0)){
+		$groups[] = 'Main';
+	}
+
 	foreach($groups as $group){
 		$this->setWikiGroupAsPublic($group);
 	}
