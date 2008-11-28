@@ -212,6 +212,20 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
+   function getCustomizedRoomIDArray(){
+     $array = array();
+      if ( $this->_issetExtra('PRIVATEROOMSELECTEDROOMLIST') ) {
+         $string = $this->_getExtra('PRIVATEROOMSELECTEDROOMLIST');
+         $array = explode('$SRID$', $string);
+      }
+      return $array;
+   }
+
+   function setCustomizedRoomIDArray($array){
+     $string = implode('$SRID$', $array);
+     $this->_addExtra('PRIVATEROOMSELECTEDROOMLIST',$string);
+   }
+
    /** set activity of the newsletter, INTERNAL
     *
     */

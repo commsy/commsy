@@ -43,6 +43,7 @@ class cs_profile_form_view extends cs_form_view {
       $html .= '<div id="profile_tabs_frame" >'.LF;
       $html .= '<div id="profile_tablist">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
+      unset($params['is_saved']);
       $params['profile_page'] = 'account';
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
@@ -115,6 +116,7 @@ class cs_profile_form_view extends cs_form_view {
       $html .='<div id="profile_content">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['show_profile']);
+      unset($params['is_saved']);
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
@@ -127,7 +129,12 @@ class cs_profile_form_view extends cs_form_view {
       $html .= $this->_getLinkRowAsHTML();
 
       $html .= '<form style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
-      $html .='<div style="width:100%; padding:10px;">'.LF;
+      $html .='<div style="width:95%; padding:10px;">'.LF;
+      if ($this->_item_saved){
+         $html .='<div style="width:100%; text-align:center; font-weight:bold; color:red; font-size:14pt;">'.LF;
+         $html .= getMessage('COMMON_ITEM_SAVED').LF;
+         $html .='</div>'.LF;
+      }
 
       #$html .= '<div class="formdate">'.$date_array[2].'. '.$month.' '.$date_array[0].'</div>';
       if (count($this->_error_array) > 0) {
@@ -328,6 +335,31 @@ class cs_profile_form_view extends cs_form_view {
          }
          $i++;
       }
+      if (isset($buttonbartext) and !empty($buttonbartext) and $this->_environment->getCurrentModule() !='buzzwords' and $this->_environment->getCurrentModule() !='labels'){
+         $html .= '<tr>'.LF;
+         $html .='      <td>';
+         $html .='      </td>';
+         if (!$this->_display_plain) {
+            if ($this->_special_color) {
+               $html .='      <td>';
+            } else {
+               if ($this->_warn_changer) {
+                  $html .='      <td style="background-color:#FF0000;">';
+               } else {
+                  $html .='      <td class="buttonbar">';
+               }
+            }
+         } else {
+            if ($this->_special_color) {
+               $html .='      <td style="border-bottom: none; xwhite-space:nowrap;">';
+            } else {
+               $html .='      <td style="border-bottom: none; xwhite-space:nowrap;">';
+            }
+         }
+         $html .= $buttonbartext;
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
+      }
       $html .= '</table>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -336,38 +368,173 @@ class cs_profile_form_view extends cs_form_view {
       $html .='</div>'.LF;
       $html .='<div style="clear:both; width:100%;">&nbsp;'.LF;
       $html .='</div>'.LF;
-      if (isset($buttonbartext) and !empty($buttonbartext) and $this->_environment->getCurrentModule() !='buzzwords' and $this->_environment->getCurrentModule() !='labels'){
-         $html .= '<div style="width: 100%; clear:both;">'.LF;
-         $html .= '<table style="width: 100%; border-collapse:collapse;">'.LF;
-         $html .= '<tr>'.LF;
-         if (!$this->_display_plain) {
-            if ($this->_special_color) {
-               $html .='      <td colspan="2">';
-            } else {
-               if ($this->_warn_changer) {
-                  $html .='      <td colspan="2" style="background-color:#FF0000;">';
-               } else {
-                  $html .='      <td colspan="2" class="buttonbar">';
-               }
-            }
-         } else {
-            if ($this->_special_color) {
-               $html .='      <td colspan="2" style="border-bottom: none; xwhite-space:nowrap;">';
-            } else {
-               $html .='      <td colspan="2" style="border-bottom: none; xwhite-space:nowrap;">';
-            }
-         }
-         $html .= '<span class="required" style="font-size:16pt;">*</span> <span class="key" style="font-weight:normal;">'.getMessage('COMMON_MANDATORY_FIELDS').'</span> '.$buttonbartext;
-         $html .= '</td>'.LF;
-         $html .= '</tr>'.LF;
-         $html .= '</table>'.LF;
-         $html .= '</div>'.LF;
-      }
       $html .= '</form>'.BRLF;
       $html .= '</div>'.LF;
       return $html;
    }
 
+   function _getCheckboxGroupAsHTML ($form_element) {
+      $html  = '';
+      if (!empty($form_element['anchor'])){
+         $html='<a name="'.$form_element['anchor'].'"></a>';
+      }
+      $options = $form_element['value'];
+      $option = reset($options);
+      if (!empty($form_element['columns'])) {
+         $html .= '<table summary="Layout" style="font-size:'.$form_element['font_size'].'pt;">'."\n";
+         $num_of_options = count($options);
+         $width = floor(100/$form_element['columns']);
+         $num_of_column = 1;
+         if ($form_element['horizontal']) {
+            while ($option) {
+               if ( !empty($form_element['chunk_text']) and $form_element['chunk_text'] > 1 ) {
+       $option['chunk_text'] = $form_element['chunk_text'];
+         }
+               if ( !empty($form_element['no_html_decode']) and $form_element['no_html_decode'] ) {
+       $option['no_html_decode'] = $form_element['no_html_decode'];
+         }
+               if ($num_of_column == 1) {
+                  $html .= '<tr>'."\n";
+               }
+               $option['name'] = $form_element['name'].'[]';
+               if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
+                  $option['ischecked'] = true;
+               } else {
+                  $option['ischecked'] = false;
+               }
+
+               $html .= '<td style="font-size:'.$form_element['font_size'].'pt; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; padding-right: 10px; border-bottom: none;">'.$this->_getCheckboxAsHTML($option,$form_element['font_size']).'</td>'."\n";
+               if ($num_of_column == $form_element['columns']) {
+                  $html .= '</tr>'."\n";
+                  $num_of_column = 0;
+               }
+               $num_of_column++;
+               $option = next($options);
+            }
+         } else {
+            $maximum = ceil($num_of_options/$form_element['columns']);
+            $num_of_column = 1;
+            for ($i=0; $i<$maximum; $i++) {
+               if ($num_of_column == 1) {
+                  $html .= '<tr>'.LF;
+               }
+               for ($j=0; $j<$form_element['columns'];$j++) {
+                  $id = $i + ($j*$maximum);
+                  if ($id<count($options)) {
+                     $option = $options[$id];
+                     if ( !empty($form_element['chunk_text']) and $form_element['chunk_text'] > 1 ) {
+             $option['chunk_text'] = $form_element['chunk_text'];
+               }
+                     if ( !empty($form_element['no_html_decode']) and $form_element['no_html_decode'] ) {
+             $option['no_html_decode'] = $form_element['no_html_decode'];
+               }
+                     $option['name'] = $form_element['name'].'[]';
+                     if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
+                        $option['ischecked'] = true;
+                     } else {
+                        $option['ischecked'] = false;
+                     }
+                     $html .= '<td style="font-size:'.$form_element['font_size'].'pt; padding-left: 0px; padding-top: 0px; padding-bottom: 0px; padding-right: 10px; border-bottom: none;">'.$this->_getCheckboxAsHTML($option,$form_element['font_size']).'</td>'."\n";
+                  }
+               }
+               if ($num_of_column == $form_element['columns'] or $i+1 == $maximum) {
+                  $html .= '</tr>'.LF;
+                  $num_of_column = 0;
+               }
+            }
+         }
+         $html .= '</table>'.LF;
+      } else {
+         $counter = 1;
+         if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
+            $html .= '<ul id="MySortable" style="padding-top:0px; margin-top:0px;">'.LF;
+         }
+         while ($option) {
+            $option['name'] = $form_element['name'].'[]';
+            if ( !empty($form_element['chunk_text']) and $form_element['chunk_text'] > 1 ) {
+               $option['chunk_text'] = $form_element['chunk_text'];
+            }
+            if ( !empty($form_element['no_html_decode']) and $form_element['no_html_decode'] ) {
+               $option['no_html_decode'] = $form_element['no_html_decode'];
+            }
+            if (!isset($form_element['with_dhtml']) or !$form_element['with_dhtml']){
+               if ( !empty($form_element['up_and_down']) and $form_element['up_and_down'] ) {
+                  $option['up_and_down'] = $form_element['up_and_down'];
+                  $option['counter'] = $counter;
+                  if ( $counter == 1 ) {
+                     $option['up_and_down_position'] = 'first';
+                  } elseif ( $counter == count($options) ) {
+                     $option['up_and_down_position'] = 'last';
+                  }
+                  if ( $counter == 1 and $counter == count($options) ) {
+                     $option['up_and_down_position'] = 'first and last';
+                  }
+               }
+               if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
+                  $option['ischecked'] = true;
+               } else {
+                  $option['ischecked'] = false;
+               }
+               if (isset($form_element['font_size'])){
+                  $html .= '         '.$this->_getCheckboxAsHTML($option,$form_element['font_size']);
+               }else{
+                  $html .= '         '.$this->_getCheckboxAsHTML($option,10);
+               }
+               if (!$form_element['horizontal'] and !empty($option)) {
+                  $html .= '<br />';
+               }
+               $html .= "\n";
+            }else{
+               $html .='<li class="form_checkbox_dhtml">'.LF;
+               if (in_array($option['value'],$form_element['selected']) or in_array($option['text'],$form_element['selected'])) {
+                  $option['ischecked'] = true;
+               } else {
+                  $option['ischecked'] = false;
+               }
+               $html .= '         '.$this->_getCheckboxAsHTML($option,10);
+               $html .='</li>'.LF;
+            }
+            $option = next($options);
+            $counter++;
+         }
+         if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
+            $html .= '</ul>'.LF;
+            $html .= '<script type="text/javascript">'.LF;
+
+            $html .='var MySortables = Sortables.extend({
+                        start: function(event, element) {
+                           if (event.target.tagName != \'A\'
+                               && event.target.tagName != \'INPUT\'
+                               && event.target.tagName != \'SELECT\'
+                               && event.target.tagName != \'TEXTAREA\'
+                           ) {
+                              this.parent(event, element);
+                           }
+                        }
+                     });
+                     window.addEvent(\'domready\', function(){
+                        new MySortables($(\'MySortable\'), {
+                           initialize: function(){
+                              var step = 0;
+                              this.elements.each(function(element, i){
+                              element.setStyle(\'width\', \'400px\');
+                           });
+                        },
+                        onDragStart: function(element, ghost){
+                           ghost.setStyle(\'width\', \'395px\');
+                           ghost.setStyle(\'list-style\', \'none\');
+                        }
+                        });
+                     });'.'</script>';
+         }
+
+      }
+      if (!empty($form_element['button_text']) and !empty($form_element['button_name'])) {
+         $html .= '         &nbsp;';
+         $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'])."\n";
+      }
+      return $html;
+   }
 
 
 }

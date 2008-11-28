@@ -752,14 +752,49 @@ class cs_page_view extends cs_view {
       return $html;
    }
 
+   function _getCustomizedRoomListForCurrentUser(){
+      $retour = array();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $current_context_id = $this->_environment->getCurrentContextID();
+      $own_room_item = $current_user->getOwnRoom();
+      $temp_array = array();
+      $temp_array['title'] = '----------------------------';
+      $temp_array['item_id'] = '-1';
+      $retour[] = $temp_array;
+      $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+    $room_manager = $this->_environment->getRoomManager();
+      foreach($customized_room_array as $room_id){
+       $room_item = $room_manager->getItem($room_id);
+         $temp_array = array();
+         $temp_array['title'] = $room_item->getTitle();
+         $temp_array['item_id'] = $room_item->getItemID();
+         if ($current_context_id == $temp_array['item_id']){
+            $temp_array['selected'] = true;
+         }
+         $retour[] = $temp_array;
+    }
+      return $retour;
+   }
+
+
    function _getAllOpenContextsForCurrentUser () {
+      $current_user = $this->_environment->getCurrentUserItem();
+      $own_room_item = $current_user->getOwnRoom();
+      $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+      if (isset($customized_room_array[0])){
+        return $this->_getCustomizedRoomListForCurrentUser();
+      }else{
       $this->translatorChangeToPortal();
       $selected = false;
       $selected_future = 0;
       $selected_future_pos = -1;
       $retour = array();
       $temp_array = array();
-      $current_user = $this->_environment->getCurrentUserItem();
+      $temp_array['item_id'] = -1;
+      $temp_array['title'] = '';
+      $retour[] = $temp_array;
+      unset($temp_array);
+      $temp_array = array();
       $community_list = $current_user->getRelatedCommunityList();
       if ( $community_list->isNotEmpty() ) {
          $temp_array['item_id'] = -1;
@@ -1002,6 +1037,7 @@ class cs_page_view extends cs_view {
       unset($portal_item);
       $this->translatorChangeToCurrentContext();
       return $retour;
+      }
    }
 
    function _getUserPersonalAreaAsHTML () {
@@ -1011,31 +1047,30 @@ class cs_page_view extends cs_view {
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();
-      if ($this->_environment->inPortal() and $current_portal->showTime()) {
-         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" selected="selected">'.$this->_translator->getMessage('MYAREA_ROOM_NO_SELECTION').'</option>'.LF;
-         if (!empty($context_array)) {
-            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+      if ( !$this->_environment->inServer() ) {
+         $title = $this->_environment->getCurrentPortalItem()->getTitle();
+         $additional = '';
+         if ($this->_environment->inPortal()){
+         	$additional = 'selected="selected"';
          }
-      } elseif ( !$this->_environment->inServer() ) {
-         $title = $this->_translator->getMessage('MYAREA_ROOM_NO_SELECTION');
+         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$this->_environment->getCurrentPortalItem()->getTitle().'</option>'.LF;
+         $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
+         $additional = '';
          $user = $this->_environment->getCurrentUser();
          $private_room_manager = $this->_environment->getPrivateRoomManager();
          $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
          if ( isset($own_room) ) {
-//            $own_cid = $own_room->getItemID();
-            $own_cid = $this->_environment->getCurrentPortalID();
+            $own_cid = $own_room->getItemID();
             $additional = '';
             if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
                $additional = ' selected="selected"';
             }
-            $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$title.'</option>'.LF;
-            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+            $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
          }
          unset($own_room);
          unset($private_room_manager);
       }
 
-      $first_time = true;
       foreach ($context_array as $con) {
          $title = $this->_text_as_html_short($con['title']);
          $additional = '';
@@ -1075,15 +1110,6 @@ class cs_page_view extends cs_view {
          $retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$this->_translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
          $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
       }
-
-//Wozu noch ein zweiter Mal "keine Auswahl"???//
-/*      if ($this->_environment->inPortal() and !$current_portal->showTime()) {
-         if (!empty($context_array)) {
-            $retour .= '            <option value="-1" disabled="disabled">&nbsp;</option>'.LF;
-            $retour .= '            <option value="-1" disabled="disabled">-------------------------</option>'.LF;
-         }
-         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" selected="selected">'.$this->_translator->getMessage('MYAREA_ROOM_NO_SELECTION').'</option>'.LF;
-      }*/
       $retour .= '         </select>'.LF;
       $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$this->_translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
       $retour .= '   </form>'.LF;

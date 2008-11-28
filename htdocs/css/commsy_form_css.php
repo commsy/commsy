@@ -277,6 +277,7 @@ span.formcounter{
     padding-left:0px;
     margin-left:0px;
     width:400px;
+    z-index:1005;
 }
 
 li.form_checkbox_dhtml{
@@ -285,6 +286,7 @@ li.form_checkbox_dhtml{
    background-color: <?php echo($color['boxes_background'])?>;
    cursor: move;
    width:400px;
+   z-index:1005;
 }
 
 

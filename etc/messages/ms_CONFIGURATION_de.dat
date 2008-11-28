@@ -117,8 +117,7 @@ $message["CONFIGURATION_NEWSLETTER_DAILY"]["de"] = "Täglicher Newsletter";
 $message["CONFIGURATION_NEWSLETTER_DESC"]["de"] = "Einstellungen zum E-Mail-Newsletter.";
 $message["CONFIGURATION_NEWSLETTER_LINK"]["de"] = "E-Mail-Newsletter";
 $message["CONFIGURATION_NEWSLETTER_NONE"]["de"] = "Kein Newsletter";
-$message["CONFIGURATION_NEWSLETTER_NOTE"]["de"] = "Es werden nur Informationen zu den Räumen verschickt, die auf der Einstiegsseite des persönlichen Raums dargestellt werden und offen sind.
-Bitte beachten Sie außerdem, dass diese E-Mail zurzeit nur im HTML-Format verschickt werden kann.";
+$message["CONFIGURATION_NEWSLETTER_NOTE"]["de"] = "Es werden nur Informationen zu den Räumen verschickt, die in dem Profilbereich &quot;Raumliste&quot; ausgewählt und offen sind. Bitte beachten Sie außerdem, dass diese E-Mail zurzeit nur im HTML-Format verschickt werden kann.";
 $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["de"] = "Hinweis";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["de"] = "E-Mail-Newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["de"] = "Wöchentlicher Newsletter";

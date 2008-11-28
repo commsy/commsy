@@ -116,7 +116,7 @@ $message["CONFIGURATION_NEWSLETTER_DAILY"]["en"] = "Daily newsletter";
 $message["CONFIGURATION_NEWSLETTER_DESC"]["en"] = "Settings for the e-mail newsletter.";
 $message["CONFIGURATION_NEWSLETTER_LINK"]["en"] = "E-mail newsletter";
 $message["CONFIGURATION_NEWSLETTER_NONE"]["en"] = "No newsletter";
-$message["CONFIGURATION_NEWSLETTER_NOTE"]["en"] = "The e-mail newsletter covers only workspaces that are viewed on the &quot;Home&quot;/ notice board page of one's private workspace.
+$message["CONFIGURATION_NEWSLETTER_NOTE"]["en"] = "The e-mail newsletter covers only workspaces that are selected at &quot;room list&quot; settings and that are open.
 Hence, one must be a member of a particular workspace for the newsletter to cover this workspace.
 
 Please note that the e-mails will be delivered in HTML format.";

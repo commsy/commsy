@@ -1306,7 +1306,9 @@ class cs_page_room_view extends cs_page_view {
                $params = $this->_environment->getCurrentParameterArray();
                $params['uid'] = $this->_current_user->getItemID();
                $params['show_profile'] = 'yes';
+               unset($params['is_saved']);
                unset($params['show_copies']);
+               unset($params['profile_page']);
                $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
                $html .= $this->_getCopyLinkAsHTML();
                $html .= '&nbsp;'.$this->_getFlagsAsHTML();
