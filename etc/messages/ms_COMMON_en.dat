@@ -517,6 +517,7 @@ $message["COMMON_RIGHTS_DESCRIPTION"]["en"] = "Rights for editing the entry and 
 $message["COMMON_ROOM"]["en"] = "workspace";
 $message["COMMON_ROOMS"]["en"] = "Workspaces";
 $message["COMMON_ROOM_EDIT_FORM_TITLE"]["en"] = "Edit Workspace";
+$message["COMMON_ROOM_INFORMATION"]["en"] = "Workspace information";
 $message["COMMON_ROOM_META"]["en"] = "Administer workspace basics";
 $message["COMMON_ROOM_META_DESC"]["en"] = "Basic configuration for this workspace (e.g. title, logo, language, approval policy).";
 $message["COMMON_ROOM_NAME"]["en"] = "Workspace title";
