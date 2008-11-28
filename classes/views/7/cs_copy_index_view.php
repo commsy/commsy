@@ -169,9 +169,11 @@ class cs_copy_index_view extends cs_index_view {
                            $params,
                            'X',
                            '','', '', '', '', '', 'class="titlelink"');
-      $html .= '<h2 class="copy_title" style="float:right">'.$title.'</h2>';
+      $html .='<div>'.LF;
+      $html .= '<div class="copy_title" style="float:right">'.$title.'</div>';
       $tempMessage = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;"/>';
       $html .= '<h2 id="copy_title">'.$tempMessage.'&nbsp;'.getMessage('MYAREA_MY_COPIES').'</h2>';
+      $html .='</div>'.LF;
       $html .='<div style="padding:10px;">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       $html .= '<form style="padding:0px; margin:0px;" action="';

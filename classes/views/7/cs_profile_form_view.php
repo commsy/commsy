@@ -123,8 +123,10 @@ class cs_profile_form_view extends cs_form_view {
                            $params,
                            'X',
                            '','', '', '', '', '', 'class="titlelink"');
-      $html .= '<h2 id="profile_title" style="float:right">'.$title.'</h2>';
+      $html .='<div>'.LF;
+      $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
       $html .= '<h2 id="profile_title">'.getMessage('COMMON_PROFILE_EDIT').'</h2>';
+      $html .='</div>'.LF;
 
       $html .= $this->_getLinkRowAsHTML();
 

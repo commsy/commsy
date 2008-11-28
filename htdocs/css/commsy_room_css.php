@@ -410,13 +410,14 @@ h1{
    background-color:<?php echo($color['boxes_background'])?>;
 }
 
-#profile_title{
+#profile_title, .profile_title{
    background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
    vertical-align:top;
    margin:0px;
    padding:5px 10px;
+   font-size: 14pt;
 }
 
 #profile_content{
@@ -433,6 +434,7 @@ h1{
    vertical-align:top;
    margin:0px;
    padding:2px 10px 5px 10px;
+   font-size: 14pt;
 }
 
 #copy_content{
