@@ -476,7 +476,19 @@ class cs_page_room_view extends cs_page_view {
          }
       }
       $html .= '<td style="verticale-align:middle;">';
-      $html .= '<h1>'.$context_item->getTitle().'</h1>'.LF;
+      $length = strlen($context_item->getTitle());
+      if ($length < 30){
+        $size = '';
+      }elseif($length < 35){
+        $size = 'style="font-size:20pt"';
+      }elseif($length < 40){
+        $size = 'style="font-size:18pt"';
+      }elseif($length < 55){
+        $size = 'style="font-size:16pt"';
+      }else{
+        $size = 'style="font-size:12pt"';
+      }
+      $html .= '<h1 '.$size.'>'.$context_item->getTitle().'</h1>'.LF;
       $breadcrump = '';
       $portal_item = $this->_environment->getCurrentPortalItem();
       $params = array();

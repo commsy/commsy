@@ -223,7 +223,7 @@ class cs_activity_view extends cs_view {
       }
       $current_context = $this->_environment->getCurrentContextItem();
       $html = '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$current_context->getTitle().'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('COMMON_ROOM_INFORMATION').'</div>';
       $html .= '<div class="right_box_main" style="font-size:10pt; padding-top:2px; padding-bottom:3px; padding-left:5px;">'.LF;
       // Search / select form
       $html .= '<div style="padding-top:2px; padding-bottom:2px;">'.LF;
