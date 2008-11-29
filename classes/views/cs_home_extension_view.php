@@ -146,7 +146,7 @@ class cs_home_extension_view extends cs_view {
            $html .= '<tr>'.LF;
            $html .= '<td style="width:10%;">'.LF;
            $html .= '<span style="white-space:nowrap;"> '.
-                                      ahref_curl($this->_environment->getCurrentContextID(),'context','forward',array('tool' => 'homepage'),
+                                      ahref_curl($this->_environment->getCurrentContextID(),'context','forward',array('tool' => 'etchat'),
                                                  $link_item->getIcon(30), '', 'chat', '', '',
                                                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').'</span>';
            $html .= '</td>'.LF;
