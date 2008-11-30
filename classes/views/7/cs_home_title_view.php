@@ -118,7 +118,7 @@ class cs_home_title_view extends cs_view {
 
 
    function asHTML () {
-      $html ='<div style="width:100%;">'.LF;
+      $html ='<div style="width:100%; height:30px;">'.LF;
       if ( $this->_environment->inProjectRoom() ) {
          $home_title  = $this->_translator->getMessage('HOME_ROOM_INDEX');
          $home_title .= ' ('.$this->_translator->getMessage('COMMON_PROJECT').')';

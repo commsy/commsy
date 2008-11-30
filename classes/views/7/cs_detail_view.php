@@ -696,7 +696,7 @@ class cs_detail_view extends cs_view {
   function _getSearchAsHTML () {
      $html  = '';
      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, 'index','').'" method="get" name="indexform">'.LF;
-     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
      $html .= '</form>';
      return $html;
@@ -707,7 +707,7 @@ class cs_detail_view extends cs_view {
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:3px; margin:0px;">'.LF;
+      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
       $html .='<div class="content_display_width">'.LF;

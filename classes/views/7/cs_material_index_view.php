@@ -63,13 +63,6 @@ class cs_material_index_view extends cs_index_view {
       return $this->_clipboard_id_array;
    }
 
-  function _getSearchAsHTML () {
-     $html  = '';
-     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     $html .= '<input style="width:130px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     return $html;
-  }
-
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
       $current_context = $this->_environment->getCurrentContextItem();

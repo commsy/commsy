@@ -1375,7 +1375,7 @@ EOD;
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:3px; margin:0px;">'.LF;
+      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
       $html .='<div>'.LF;
@@ -2128,7 +2128,7 @@ EOD;
 
   function _getSearchAsHTML () {
      $html  = '';
-     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
      return $html;
   }
