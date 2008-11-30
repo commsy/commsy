@@ -225,32 +225,6 @@ class cs_activity_view extends cs_view {
       $html = '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('COMMON_ROOM_INFORMATION').'</div>';
       $html .= '<div class="right_box_main" style="font-size:10pt; padding-top:2px; padding-bottom:3px; padding-left:5px;">'.LF;
-      // Search / select form
-      $html .= '<div style="padding-top:2px; padding-bottom:2px;">'.LF;
-#      $html .= '<div style="float:right; padding:2px 0px 0px 0px; margin:0px;">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'short','').'" method="post" name="form">'.LF;
-      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_environment->getCurrentModule()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_environment->getCurrentFunction()).'"/>'.LF;
-      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
-      $html .= '<input style="width:210px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-      $html .='</form>'.LF;
-#      $html .= '</div>'.LF;
-/*      $params = $this->_environment->getCurrentParameterArray();
-      $params['mode']='print';
-      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-      $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'detail',
-                                    $params,
-                                    $image,
-                                    getMessage('COMMON_LIST_PRINTVIEW')).LF;
-      unset($params['mode']);*/
-      $html .= '</div>'.LF;
-
-
-     $html .='<div class="listinfoborder">'.LF;
-     $html .='</div>'.LF;
 
 
       $environment = $this->getEnvironment();
@@ -261,7 +235,7 @@ class cs_activity_view extends cs_view {
          $time_spread = $context->getTimeSpread();
       }
       $html .= LF.'<!-- BEGIN OF ACTIVITY VIEW -->'.LF;
-      $html .= '         <div>'.LF;
+      $html .= '         <div style="padding-top:3px;">'.LF;
       $active = $context->getActiveMembers($time_spread);
       $all_users = $context->getAllUsers();
       $percentage = round($active / $all_users * 100);

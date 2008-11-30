@@ -316,6 +316,9 @@ class cs_index_view extends cs_view {
     * @param string  $this->_search_text
     */
     function getSearchText (){
+       if (empty($this->_search_text)){
+        $this->_search_text = getMessage('COMMON_SEARCH_IN_RUBRIC');
+       }
        return $this->_search_text;
     }
 
@@ -1371,7 +1374,11 @@ EOD;
    function _getIndexPageHeaderAsHTML(){
       $html = '';
       $html .='<div style="width:100%;">'.LF;
-      $html .='<div class="content_display_width">'.LF;
+      $html .='<div style="height:30px;">'.LF;
+      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:3px; margin:0px;">'.LF;
+      $html .= $this->_getSearchAsHTML();
+      $html .= '</div>'.LF;
+      $html .='<div>'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
       $tempMessage = '';
       switch ( strtoupper($this->_environment->getCurrentModule()) ) {
@@ -1430,7 +1437,8 @@ EOD;
 
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
+      $html .='<div style="width:100%; clear:both;">'.LF;
+      $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;
@@ -1497,7 +1505,8 @@ EOD;
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
-      $html .= $this->_getIndexPageHeaderAsHTML();
+       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
+       $html .= $this->_getIndexPageHeaderAsHTML();
 
       /*****************************/
       /*******BEGIN RIGHT BOXES*****/
@@ -1512,7 +1521,6 @@ EOD;
          $desc_string ='';
          $config_text ='';
          $size_string = '';
-         $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
          $html .= $this->_getHiddenFieldsAsHTML();
          $html .='<div id="commsy_panels">'.LF;
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
@@ -1709,7 +1717,6 @@ EOD;
             $html .='</div>'.LF;
          }
          $html .='</div>'.LF;
-         $html .= '</form>'.LF;
 
 
          /*****************Usage Information*************/
@@ -1786,6 +1793,7 @@ EOD;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
+      $html .= '</form>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
@@ -1801,14 +1809,11 @@ EOD;
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<div style="clear:both; padding-bottom:0px;">';
-      $html .= '<div style="float:right; padding:0px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
         $params = array();
         $params['iid'] = 'NEW';
-        $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+        $image = '<img src="images/commsyicons/22x22/new.png" style="float: right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                             'edit',
@@ -2123,8 +2128,8 @@ EOD;
 
   function _getSearchAsHTML () {
      $html  = '';
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     $html .= '<input style="width:150px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      return $html;
   }
 
