@@ -1505,15 +1505,14 @@ EOD;
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
-       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
        $html .= $this->_getIndexPageHeaderAsHTML();
-
       /*****************************/
       /*******BEGIN RIGHT BOXES*****/
       /*****************************/
       if(!$this->_clipboard_mode and !(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='<div id="right_boxes_area" style="float:right; width:27%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div style="width:250px;">'.LF;
+         $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
          $current_context = $this->_environment->getCurrentContextItem();
          $list_box_conf = $current_context->getListBoxConf();
          $first_box = true;
@@ -1746,6 +1745,7 @@ EOD;
             $html .='</div>'.LF;
          }
 
+         $html .= '</form>'.LF;
 
          $html .='</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;
@@ -1793,7 +1793,6 @@ EOD;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
-      $html .= '</form>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
@@ -2036,6 +2035,9 @@ EOD;
       if ( isset($params['attribute_limit']) ){
          $html .= '   <input type="hidden" name="attribute_limit" value="'.$params['attribute_limit'].'"/>'.LF;
       }
+      if ( isset($params['search']) ){
+         $html .= '   <input type="hidden" name="search" value="'.$params['search'].'"/>'.LF;
+      }
       if ( $this->hasCheckboxes() ) {
          $html .= '   <input type="hidden" name="mode" value="'.$this->_text_as_form($this->_has_checkboxes).'"/>'.LF;
       }
@@ -2128,8 +2130,11 @@ EOD;
 
   function _getSearchAsHTML () {
      $html  = '';
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="searchform">'.LF;
+     $html .= $this->_getHiddenFieldsAsHTML();
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     $html .= '</form>';
      return $html;
   }
 

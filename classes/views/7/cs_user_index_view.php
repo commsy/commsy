@@ -52,9 +52,6 @@ class cs_user_index_view extends cs_room_index_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<div style="clear:both; padding-bottom:0px;">';
-      $html .= '<div style="float:right; padding:0px; margin:0px;">'.LF;
-      $html .= $this->_getSearchAsHTML();
-      $html .= '</div>'.LF;
       $current_user = $this->_environment->getCurrentUserItem();
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
         $params = array();
@@ -270,9 +267,7 @@ class cs_user_index_view extends cs_room_index_view {
                            CS_USER_TYPE,
                            'detail',
                            $params,
-                           $html,
-                           '','', '', '', '', '', '', '',
-                           CS_USER_TYPE.$item->getItemID());
+                           $html);
       return $html;
    }
 
@@ -410,13 +405,6 @@ class cs_user_index_view extends cs_room_index_view {
       }
       return $html;
    }
-
-  function _getSearchAsHTML () {
-     $html  = '';
-     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     $html .= '<input style="width:180px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     return $html;
-  }
 
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
