@@ -81,14 +81,6 @@ class cs_date_index_view extends cs_room_index_view {
       return $params;
    }
 
-  function _getSearchAsHTML () {
-     $html  = '';
-     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
-     $html .= '<input style="width:100px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     return $html;
-  }
-
-
 
    function _getAdditionalActionsAsHTML(){
       $current_context = $this->_environment->getCurrentContextItem();
@@ -327,43 +319,122 @@ class cs_date_index_view extends cs_room_index_view {
       return $html;
    }
 
+   function _getListInfosAsHTML ($title) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html .= '<div class="right_box">'.LF;
+      $html .= '<div class="right_box_title">'.LF;
+      $html .= $this->_getBrowsingIconsAsHTML().LF;
+      $html .= '<div style="white-space:nowrap;">'.getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .='</div>'.LF;
 
 
-   function _getIndexPageHeaderAsHTML(){
-      $html = '';
-      $html .='<div style="width:100%;">'.LF;
-      $html .= '<div class="indexdate" style="width: 27%; padding-top:18px; font-size:10pt; float:right; text-align:right;">'.LF;
+      $html .= '<div class="right_box_main" >'.LF;
+      $html .= $this->_getListActionsAsHTML().LF;
+
+      $html .= '<div class="listinfoborder"></div>'.LF;
+      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .='<tr>'.LF;
+      $html .='<td>'.LF;
+      $html .= '<span class="infocolor">'.getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
+      $html .='</td>'.LF;
+      $html .='<td style="text-align:right;">'.LF;
+      $html .= '<span class="index_description">'.$this->_getDescriptionAsHTML().'</span>'.LF;
+      $html .='</td>'.LF;
+      $html .='</tr>'.LF;
+      $html .= $this->_getRestrictionTextAsHTML();
+      $html .= '</table>'.LF;
+
+
+      $html .= '<div class="listinfoborder"></div>'.LF;
+
+      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .='<tr>'.LF;
+      $html .='<td>'.LF;
+      $connection = $this->_environment->getCurrentModule();
+      $text = '';
+      $text .= $this->_translator->getMessage('DATES');
+      $html .= '<span class="infocolor">'.getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
+      $html .='</td>'.LF;
+      $html .='<td style="text-align:right;">'.LF;
+      $html .= $this->_count_all.''.LF;
+      $html .='</td>'.LF;
+      $html .='</tr>'.LF;
+      $html .='<tr>'.LF;
+      $html .= '<td class="infocolor">';
+      $html .= $this->_translator->getMessage('COMMON_PAGE_ENTRIES').':';
+      $html .='</td>'.LF;
+      $html .='<td style="text-align:right;">'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      if (!isset($params['mode']) or $params['mode'] == 'browse'){
+         $params['mode'] = 'list_actions';
+      }
+      unset($params['select']);
+      if ( $this->_interval == 20 ) {
+         $html .= '<span style="color:black">20</span>';
+      } else {
+         $params['interval'] = 20;
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                   $this->_module,
+                                   $this->_function,
+                                   $params,
+                                   '20',
+                                   '',
+                                   '',
+                                   ''
+                                  );
+      }
+
+      if ( $this->_interval == 50 ) {
+         $html .= ' | <span style="color:black">50</span>';
+      } else {
+         $params['interval'] = 50;
+         $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
+                                   $this->_module,
+                                   $this->_function,
+                                   $params,
+                                   '50',
+                                   '',
+                                   '',
+                                   ''
+                                  );
+      }
+
+      if ( $this->_interval == 0 ) {
+         $html .= ' | <span style="color:black">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL').'</span>';
+      } else {
+         $params['interval'] = 0;
+         $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
+                                   $this->_module,
+                                   $this->_function,
+                                   $params,
+                                   $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL'),
+                                   '',
+                                   '',
+                                   ''
+                                  );
+      }
+      $html .='</td>'.LF;
+      $html .='</tr>'.LF;
+      $html .='</table>'.LF;
+
+      $html .= '<div class="listinfoborder"></div>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['week']);
       unset($params['year']);
       unset($params['month']);
       unset($params['presentation_mode']);
       $params['seldisplay_mode'] = 'calendar';
-      if ($this->_environment->getCurrentFunction() != 'clipboard_index'){
-         $html .= getMessage('DATE_ALTERNATIVE_DISPLAY').': '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_CHANGE_CALENDAR')).LF;
-      }
-      $html .= '</div>'.LF;
-      $html .='<div style="width:71%;">'.LF;
-      $html .='<div>'.LF;
-      // @segment-end 17331
-      // @segment-begin 64852 asHTML():display_rubrik_title/rubrik_clipboard_title
-      $tempMessage = getMessage('DATE_INDEX');
-      $tempMessage = '<img src="images/commsyicons/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-      if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
-      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
-      }else{
-          $html .= '<h2 class="pagetitle">'.$tempMessage;
-      }
-      $html .= '</h2>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      return $html;
-   }
+      $html .= '<div style="float:right;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_CHANGE_CALENDAR')).'</div>'.LF;
+      $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
 
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+
+     return $html;
+   }
 
 
 
