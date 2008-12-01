@@ -263,7 +263,10 @@ class cs_privateroom_item extends cs_room_item {
 
             $portal = $this->getContextItem();
             $room_manager = $this->_environment->getRoomManager();
-            $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID());
+            $list = $this->getCustomizedRoomList();
+            if ( !isset($list) ) {
+               $list = $room_manager->_getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$portal->getItemID());
+            }
             $list2 = new cs_list();
             if ( !$list->isEmpty() ) {
                $item = $list->getFirst();

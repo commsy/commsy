@@ -50,6 +50,7 @@ $message["CONFIGURATION_BACKUP_LINK_DESC"]["de"] = "Einspielen eines Backups von
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["de"] = "Beschreibung";
+$message["CONFIGURATION_COLOR_DESIGN"]["de"] = "Design";
 $message["CONFIGURATION_COLOR_FORM_CHOOSE_TEXT"]["de"] = "Farbschema";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING"]["de"] = "Eröffnung von <br/> %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["de"] = "durch alle NutzerInnen";

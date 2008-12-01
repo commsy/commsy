@@ -762,7 +762,7 @@ class cs_page_view extends cs_view {
       $temp_array['item_id'] = '-1';
       $retour[] = $temp_array;
       $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
-    $room_manager = $this->_environment->getRoomManager();
+      $room_manager = $this->_environment->getRoomManager();
       foreach($customized_room_array as $room_id){
        $room_item = $room_manager->getItem($room_id);
          $temp_array = array();
@@ -1041,6 +1041,7 @@ class cs_page_view extends cs_view {
    }
 
    function _getUserPersonalAreaAsHTML () {
+      $first_time = '';
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
       $retour .= '         <select size="1" style="font-size:10pt; width:12.6em;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
@@ -1051,7 +1052,7 @@ class cs_page_view extends cs_view {
          $title = $this->_environment->getCurrentPortalItem()->getTitle();
          $additional = '';
          if ($this->_environment->inPortal()){
-         	$additional = 'selected="selected"';
+            $additional = 'selected="selected"';
          }
          $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$this->_environment->getCurrentPortalItem()->getTitle().'</option>'.LF;
          $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
