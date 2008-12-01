@@ -318,7 +318,8 @@ class cs_activity_view extends cs_view {
          if ( !empty($c_etchat_enable)
               and $c_etchat_enable
             ) {
-            if ( $current_user->isReallyGuest() ) {
+            $current_user = $this->_environment->getCurrentUserItem();
+            if ( isset($current_user) and $current_user->isReallyGuest() ) {
                $image = '<img src="images/commsyicons/22x22/etchat_grey.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
                $html = ' '.$image;
                // TBD: icon ausgrauen

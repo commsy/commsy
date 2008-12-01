@@ -761,10 +761,9 @@ class cs_page_view extends cs_view {
       $temp_array['title'] = '----------------------------';
       $temp_array['item_id'] = '-1';
       $retour[] = $temp_array;
-      $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
-      $room_manager = $this->_environment->getRoomManager();
-      foreach($customized_room_array as $room_id){
-       $room_item = $room_manager->getItem($room_id);
+      $customized_room_list = $own_room_item->getCustomizedRoomList();
+      $room_item = $customized_room_list->getFirst();
+      while ($room_item) {
          $temp_array = array();
          $temp_array['title'] = $room_item->getTitle();
          $temp_array['item_id'] = $room_item->getItemID();
@@ -772,7 +771,8 @@ class cs_page_view extends cs_view {
             $temp_array['selected'] = true;
          }
          $retour[] = $temp_array;
-    }
+         $room_item = $customized_room_list->getNext();
+      }
       return $retour;
    }
 
