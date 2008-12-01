@@ -46,6 +46,11 @@
       buildRoomLayer();
    }
 
+   function resetSearchText(id){
+      var text = document.getElementById(id);
+      text.value = "";
+   }
+
    function initLayer(id){
       var div = document.getElementById(id);
       var height = document.body.offsetHeight;

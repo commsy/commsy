@@ -78,7 +78,7 @@ class cs_user_index_view extends cs_room_index_view {
                          $image,
                          $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
       if ($current_user->isModerator() and $this->_with_modifying_actions ) {
-         $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+         $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_INDEX').'"/>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
