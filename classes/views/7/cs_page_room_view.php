@@ -448,7 +448,6 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<!-- END TABS -->'.LF;
       return $html;
    }
-   // @segment-end 92557
 
 
    function _getLogoAsHTML(){
@@ -523,7 +522,6 @@ class cs_page_room_view extends cs_page_view {
    }
 
 
-   // @segment-begin 92221 asHTMLFirstPart():call_getHTMLHeadAsHTML(): meta+link+header_title
    function asHTMLFirstPart () {
       $html ='';
       $session = $this->_environment->getSession();
@@ -533,11 +531,7 @@ class cs_page_room_view extends cs_page_view {
          $session_id = '';
       }
       unset($session);
-      // Header
       $html .= $this->_getHTMLHeadAsHTML();
-      // @segment-end 92221
-
-      // @segment-begin 374 begin<body>,width-from-room-body
       if ( !$this->_blank_page ) {
          $html .= '<body';
          $current_function = $this->_environment->getCurrentFunction();
@@ -599,9 +593,6 @@ class cs_page_room_view extends cs_page_view {
       $html .= '</div>';
       $html .= '<div style="clear:both;">';
       $html .= '</div>';
-
-
-#      $html .= 'Angemeldet als: Matthias Finck<br/>Meine aktuellen Räume:<br/>Meine Kopien';
       $html .= '</div>';
       $html .= '<div id="page_header_logo">';
       $html .= $this->_getLogoAsHTML().LF;
@@ -611,39 +602,20 @@ class cs_page_room_view extends cs_page_view {
    }
 
 
-
-   // @segment-end 87067
-
-   // @segment-begin 86468 sHTMLSecondPart():allways-show-result-from-asHTMLFirstPart()
    function asHTMLSecondPart () {
       $html = '';
       if ( !$this->_send_first_html_part ) {
          $html .= $this->asHTMLFirstPart();
       }
-      // @segment-end 86468
-      // @segment-begin 66992 if-with-left-menue-display-my_area_box:call-getMyAreaAsHTML()
       $session = $this->_environment->getSession();
       if (!empty($session)) {
          $session_id = $session->getSessionID();
       } else {
          $session_id = '';
       }
-      // Body
-/*      if ( !$this->_blank_page ) {
-         $html .= '<tr>'.LF;
-         $left_menue_status = $session->getValue('left_menue_status');
-         if ($left_menue_status != 'disapear' and !$this->_without_left_menue ) {
-            $html .= '<td style="width:13.7em;  margin-bottom:0px; padding:0px; vertical-align:top;">'.LF;
-            $html .= LF.'<!-- COMMSY_MYAREA: START -->'.LF.LF;
-            $html .= $this->getMyAreaAsHTML();
-            $html .= LF.'<!-- COMMSY_MYAEREA: END -->'.LF.LF;
-            $html .= '</td>'.LF;
-         }
-      }*/
       unset($session);
       return $html;
    }
-   // @segment-end 66992
 
   function getProfileBoxAsHTML(){
      $html = '';
@@ -766,7 +738,6 @@ class cs_page_room_view extends cs_page_view {
 
 
    function asHTML () {
-      // @segment-begin 47648 asHTML():call-_getLinkRowAsHTML()/_getBlankLinkRowAsHTML():display-tabs
       $html = '';
       $session = $this->_environment->getSession();
       if (!empty($session)) {
@@ -781,9 +752,6 @@ class cs_page_room_view extends cs_page_view {
          } else {
             $html .= $this->_getBlankLinkRowAsHTML();
          }
-         // @segment-end 47648
-         // @segment-begin 65077 asHTML():set-<div>_style/class-for-views-part(under-tabs)
-         // Content
          $width = 'width:100%;';//not used
          $html .= '<div style="padding:0px; margin:0px;">'.LF;
          $html .= '<div class="content">'.LF;
@@ -792,8 +760,6 @@ class cs_page_room_view extends cs_page_view {
          $first = true;
          $html .= '<div class="content_fader">';
 
-         // @segment-end 65077
-         // @segment-begin 97506 asHTML():???agb?
          $show_agb_again = false;
          $current_user = $this->_environment->getCurrentUserItem();
          $current_context = $this->_environment->getCurrentContextItem();

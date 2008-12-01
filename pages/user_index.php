@@ -22,6 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+$current_user = $environment->getCurrentUser();
+$current_context = $environment->getCurrentContextItem();
+
 if ($environment->inPrivateRoom()){
    $params['iid'] = $environment->getCurrentUserID();
    redirect($environment->getCurrentContextID(), $current_module, 'detail', $params);
@@ -44,7 +47,15 @@ if ($environment->inPrivateRoom()){
          $page->add($errorbox);
       }
 
-   } else {
+   } elseif(!$current_context->withRubric(CS_USER_TYPE)) {
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_RUBRIC_DOES_NOT_EXIST'));
+         $page->add($errorbox);
+   }else{
 
    include_once('classes/cs_list.php');
 
