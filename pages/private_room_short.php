@@ -39,6 +39,10 @@ $manager = $environment->getPrivateRoomManager();
 $current_context_item = $environment->getCurrentContextItem();
 $list2 = $current_context_item->getCustomizedRoomList();
 unset($current_context_item);
+if ( !isset($list2) ) {
+   // old style (CommSy6)
+   $list2 = $manager->getRelatedContextListForUserOnPrivateRoomHome($user);
+}
 $user = $environment->getCurrentUserItem();
 $my_room_manager = $environment->getMyRoomManager();
 $list_all = $my_room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
