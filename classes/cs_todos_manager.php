@@ -453,6 +453,7 @@ class cs_todos_manager extends cs_manager {
       $user = $item->getCreatorItem();
       $modificator = $item->getModificatorItem();
       $modification_date = getCurrentDateTimeInMySQL();
+      $current_datetime = getCurrentDateTimeInMySQL();
 
       if ( $item->isPublic() ) {
          $public = '1';
@@ -461,7 +462,6 @@ class cs_todos_manager extends cs_manager {
       }
 
       $date = $item->getDate();
-      $item = getCurrentDateTimeInMySQL();
       if ($item->isNotActivated()){
          $modification_date = $item->getModificationDate();
       }
