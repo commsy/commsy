@@ -222,9 +222,17 @@ class cs_activity_view extends cs_view {
          $time_spread = $context->getTimeSpread();
       }
       $current_context = $this->_environment->getCurrentContextItem();
+
+      $width = '';
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:250px;';
+      }
+
       $html = '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('COMMON_ROOM_INFORMATION').'</div>';
-      $html .= '<div class="right_box_main" style="font-size:10pt; padding-top:2px; padding-bottom:3px; padding-left:5px;">'.LF;
+      $html .= '<div class="right_box_main" style="'.$width.' font-size:10pt; padding-top:2px; padding-bottom:3px; padding-left:5px;">'.LF;
 
 
       $environment = $this->getEnvironment();

@@ -870,12 +870,20 @@ class cs_detail_view extends cs_view {
          $html .='</div>'.LF;
          $html .='</div>'.LF;
       }
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width= ' width:100%; padding-right:10px; ';
+      }else{
+         $width= '';
+      }
+
       if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
          $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
       }else{
-         $html .='<div class="infoborder_display_content"  style="margin-top:5px; vertical-align:bottom;">'.LF;
+         $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
       }
-     $html .='<div id="detail_headline">'.LF;
+      $html .='<div id="detail_headline">'.LF;
 
 
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
@@ -894,7 +902,7 @@ class cs_detail_view extends cs_view {
       $html .= '</h2>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .='<div id="detail_content">'.LF;
+      $html .='<div id="detail_content" style="'.$width.'">'.LF;
 
 
       $formal_data1 = array();
@@ -2338,7 +2346,7 @@ class cs_detail_view extends cs_view {
                $html .= $normal;
                $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                $html .= '<div style="padding-left:5px;">';
-               $text .= '<div class="bold"">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= '<div class="bold">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
                $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
                $text .= '<div class="bold">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
                $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
@@ -2348,6 +2356,7 @@ class cs_detail_view extends cs_view {
                $html .= '<div style="padding:2px;">'.LF;
                $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
                $html .= $text;
+               $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;

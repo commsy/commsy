@@ -22,12 +22,16 @@ if (!empty($_GET['cid'])) {
 }
 ?>
 
-
+#ie{
+	width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+}
 /*General Settings */
 body {
-	margin: 0px;
-	padding: 0px;
-   font-family: 'Trebuchet MS','lucida grande',tahoma,"ms sans serif",verdana,arial,sans-serif;
+   margin: 0px;
+   padding: 0px;
+   min-width:910px;
+   max-width:1200px;
+   font-family: 'Trebuchet MS','lucida grande',tahoma,'ms sans serif',verdana,arial,sans-serif;
    font-size:80%;
    font-size-adjust:none;
    font-stretch:normal;
@@ -118,6 +122,7 @@ a:hover, a:active {
 /* Room Design */
 #main{
 	padding: 10px 10px 0px 10px;
+	width:100%;
 }
 
 div.page_header_border{
@@ -172,7 +177,9 @@ div.content{
     padding:0px;
     margin:0px;
     heigth:100%;
+    width:100%;
     background-color: <?php echo($color['content_background'])?>;
+	border-right: 1px solid #C3C3C3;
 }
 
 div.content_display_width{

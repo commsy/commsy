@@ -561,7 +561,14 @@ class cs_page_room_view extends cs_page_view {
          unset($views);
          unset($view);
          $html .= ' class="body">'.LF;
-         $html .= '<div style="width: 100%; padding:0px; margin:0px;">'.LF;
+
+         $html_id = '';
+         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+            $html_id = 'id="ie"';
+         }
+         $html .= '<div '.$html_id.' style="padding:0px; margin:0px;">'.LF;
 
       }
       $this->_send_first_html_part = true;
@@ -865,7 +872,14 @@ class cs_page_room_view extends cs_page_view {
                }
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
-               $html .='<div class="content_display_width" style="padding-top:5px; vertical-align:bottom;">'.LF;
+               $current_browser = strtolower($this->_environment->getCurrentBrowser());
+               $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+               if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+                  $width= ' width:100%; padding-right:10px;';
+               }else{
+                  $width= '';
+               }
+               $html .='<div class="content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom;">'.LF;
 
                $conf = $context_item->getHomeConf();
                if ( !empty($conf) ) {

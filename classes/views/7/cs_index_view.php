@@ -1758,9 +1758,18 @@ EOD;
          $html .='</div>'.LF;
          $html .='</div>'.LF;
       }
+
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width= ' width:100%; padding-right:10px;';
+      }else{
+         $width= '';
+      }
+
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='</div>'.LF;
-         $html .='<div class="index_content_display_width" style="padding-top:5px; vertical-align:bottom;">'.LF;
+         $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom;">'.LF;
       }else{
          $html .='</div>'.LF;
          $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
@@ -1849,7 +1858,13 @@ EOD;
       $html .='</div>'.LF;
 
 
-      $html .= '<div class="right_box_main" >'.LF;
+      $width = '';
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:250px;';
+      }
+      $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
       $html .= $this->_getListActionsAsHTML().LF;
 
       $html .= '<div class="listinfoborder"></div>'.LF;

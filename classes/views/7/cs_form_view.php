@@ -2058,7 +2058,14 @@ class cs_form_view extends cs_view {
       }
       $html .= '</div>'.LF;
 
-      $html .='<div style="width:71%; margin-top:5px; vertical-align:bottom;">'.LF;
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:100%; ';
+      }else{
+         $width = 'width:71%; ';
+      }
+      $html .='<div style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
       $html .= '<!-- BEGIN OF FORM-VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       foreach ($form_element_array as $form_element) {
