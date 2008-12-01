@@ -56,7 +56,7 @@ class cs_user_index_view extends cs_room_index_view {
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
         $params = array();
         $params['iid'] = $current_user->getItemID();
-        $image = '<img src="images/commsyicons/22x22/user_own.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+        $image = '<img src="images/commsyicons/22x22/user_own.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                             CS_USER_TYPE,
                             'detail',
@@ -65,18 +65,31 @@ class cs_user_index_view extends cs_room_index_view {
                             $this->_translator->getMessage('USER_OWN_INFORMATION')).LF;
         unset($params);
      } else {
-        $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+        $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
      }
      $params = $this->_environment->getCurrentParameterArray();
      $params['mode']='print';
      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-/*     $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                         CS_MATERIAL_TYPE,
+     $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                         CS_USER_TYPE,
                          'index',
                          $params,
                          $image,
-                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;*/
+                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
+      if ($current_user->isModerator() and $this->_with_modifying_actions ) {
+         $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'account',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('ACCOUNT_INDEX')).LF;
+
+      }else{
+         $image = '<img src="images/commsyicons/22x22/config_account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
      $html .= $this->_getAdditionalActionsAsHTML();
      $html .= '</div>'.LF;
      return $html;

@@ -378,16 +378,23 @@ class cs_activity_view extends cs_view {
             }
          }
          if ($show_user_config){
+            $params = array();
+            $params['selstatus']='1';
             $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
+                                       'account',
                                        'index',
                                        '',
                                        $image,
                                        getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK')).LF;
          }else{
-            $image = '<img src="images/commsyicons/22x22/config_account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
-            $html .= '<a  title="'.getMessage('COMMON_NO_ACCESS').'" class="disabled">'.$image.'</a>'.LF;
+            $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'account',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('ACCOUNT_INDEX')).LF;
          }
          $html .= '         </td>'.LF;
          $html .= '         </tr>'.LF;
