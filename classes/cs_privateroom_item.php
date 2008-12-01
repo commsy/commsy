@@ -212,20 +212,6 @@ class cs_privateroom_item extends cs_room_item {
       return $retour;
    }
 
-   function getCustomizedRoomIDArray(){
-     $array = array();
-      if ( $this->_issetExtra('PRIVATEROOMSELECTEDROOMLIST') ) {
-         $string = $this->_getExtra('PRIVATEROOMSELECTEDROOMLIST');
-         $array = explode('$SRID$', $string);
-      }
-      return $array;
-   }
-
-   function setCustomizedRoomIDArray($array){
-     $string = implode('$SRID$', $array);
-     $this->_addExtra('PRIVATEROOMSELECTEDROOMLIST',$string);
-   }
-
    /** set activity of the newsletter, INTERNAL
     *
     */
@@ -989,6 +975,39 @@ class cs_privateroom_item extends cs_room_item {
     */
    function isShownInPrivateRoomHome ($user_id) {
       return false;
+   }
+
+   ###############################################
+   # customized room list
+   ###############################################
+
+   public function getCustomizedRoomIDArray(){
+     $array = array();
+      if ( $this->_issetExtra('PRIVATEROOMSELECTEDROOMLIST') ) {
+         $string = $this->_getExtra('PRIVATEROOMSELECTEDROOMLIST');
+         $array = explode('$SRID$', $string);
+      }
+      return $array;
+   }
+
+   public function setCustomizedRoomIDArray($array){
+     $string = implode('$SRID$', $array);
+     $this->_addExtra('PRIVATEROOMSELECTEDROOMLIST',$string);
+   }
+
+   public function getCustomizedRoomList () {
+      $retour = NULL;
+      $room_id_array = $this->getCustomizedRoomIDArray();
+      if ( !empty($room_id_array) ) {
+         $room_manager = $this->_environment->getRoomManager();
+         $room_manager->setIDArrayLimit($room_id_array);
+         $room_manager->setOrder('id_array');
+         $room_manager->select();
+         $retour = $room_manager->get();
+
+         unset($room_manager);
+      }
+      return $retour;
    }
 }
 ?>

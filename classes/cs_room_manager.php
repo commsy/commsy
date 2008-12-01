@@ -214,6 +214,10 @@ class cs_room_manager extends cs_context_manager {
 
      $query .= ' WHERE 1';
 
+     if ( !empty($this->_id_array_limit) ) {
+        $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(',',$this->_id_array_limit).')';
+     }
+
      if (!empty($this->_room_type)) {
         $query .= ' AND '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
      }
@@ -222,7 +226,9 @@ class cs_room_manager extends cs_context_manager {
      # FLAG: group room
      ###################################
      if ( empty($this->_room_type) or $this->_room_type != CS_GROUPROOM_TYPE ) {
-        if ( !isset($this->_logarchive_limit) ) {
+        if ( !isset($this->_logarchive_limit)
+             and !isset($this->_id_array_limit)
+           ) {
            $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
         }
      }
@@ -241,6 +247,7 @@ class cs_room_manager extends cs_context_manager {
      }
      if ( isset($this->_room_limit)
           and !empty($this->_room_limit)
+          and !isset($this->_id_array_limit)
         ) {
         $query .= ' AND '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      }
@@ -331,6 +338,19 @@ class cs_room_manager extends cs_context_manager {
         include_once('functions/error_functions.php');
         trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_ERROR);
      } else {
+        if ( !empty($this->_id_array_limit)
+             and $this->_order == 'id_array'
+           ) {
+           // sort result
+           $result2 = array();
+           foreach ( $result as $value ) {
+              $result2[$value['item_id']] = $value;
+           }
+           $result = array();
+           foreach ( $this->_id_array_limit as $item_id ) {
+              $result[] = $result2[$item_id];
+           }
+        }
         return $result;
      }
   }

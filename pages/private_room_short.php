@@ -36,7 +36,9 @@ if ( isset($_GET['delete_room_id']) and !empty($_GET['delete_room_id']) ){
 
 $user = $environment->getCurrentUserItem();
 $manager = $environment->getPrivateRoomManager();
-$list2 = $manager->getRelatedContextListForUserOnPrivateRoomHome($user);
+$current_context_item = $environment->getCurrentContextItem();
+$list2 = $current_context_item->getCustomizedRoomList();
+unset($current_context_item);
 $user = $environment->getCurrentUserItem();
 $my_room_manager = $environment->getMyRoomManager();
 $list_all = $my_room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());

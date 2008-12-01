@@ -434,6 +434,7 @@ if ( $context_item->isLocked() ) {
 } elseif ( $context_item->isServer() or $context_item->isPortal() ) {
    include_once('pages/home_index_guide.php');
 } else {
-   include_once('functions/error_functions.php');trigger_error('no context',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('no context',E_USER_ERROR);
 }
 ?>
