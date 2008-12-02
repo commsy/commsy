@@ -155,48 +155,48 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       /*******Farben********/
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_DEFAULT');
-	   $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
+      $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = '-----';
-	   $temp_array['value'] = '-1';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_1');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_2');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_3');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_4');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_5');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_6');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_7');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
-	   $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
 
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_8');
@@ -234,12 +234,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
       $temp_array = array();
       $temp_array['text']  = '-----';
-	   $temp_array['value'] = '-1';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = '-1';
+      $this->_array_info_text[] = $temp_array;
       $temp_array = array();
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_OWN');
-	   $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
-	   $this->_array_info_text[] = $temp_array;
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
+      $this->_array_info_text[] = $temp_array;
 
    }
 
@@ -272,9 +272,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             default:
                break;
          }
+         $languageArray[$zaehler]['value']= $item;
          $zaehler++;
       }
-      $languageArray[$zaehler]['value']= $item;
       $zaehler++;
       $message = getMessage('CONTEXT_LANGUAGE_DESC2');
       $this->_form->addSelect('language',
@@ -344,9 +344,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
                                true,
                                getMessage('COMMON_CHOOSE_BUTTON'),
                                'option',
-			                      '',
-			                      '',
-			                      '16',
+                               '',
+                               '',
+                               '16',
                                true);
       if ( !empty($this->_form_post['color_choice']) ) {
          if ( $this->_form_post['color_choice']== 'COMMON_COLOR_DEFAULT' ) {
