@@ -543,11 +543,11 @@ else {
                if (!empty($_POST['timeEnd'])) {
                   $time_end = $_POST['timeEnd'];
                } else {
-                  $time_end = '0:00';
+                  $time_end = '22:00';
                }
               //
                if (!ereg("(([2][0-3])|([01][0-9])):([0-5][0-9])",$time_end)) { //test if end_time is in a valid timeformat
-                  $time_end='0:00';
+                  $time_end='22:00';
                }
                $time2 = convertTimeFromInput($time_end);   // convertTimeFromInput
 
