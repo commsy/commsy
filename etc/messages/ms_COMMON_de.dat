@@ -83,6 +83,14 @@ $message["COMMON_CLOSED_SINCE"]["de"] = "archiviert seit dem";
 $message["COMMON_CLOSE_PARTICIPATION"]["de"] = "Teilnahme beenden";
 $message["COMMON_COLOR_1"]["de"] = "Menüleiste";
 $message["COMMON_COLOR_10"]["de"] = "Gerade Listeneinträge";
+$message["COMMON_COLOR_101"]["de"] = "Rubrikleiste";
+$message["COMMON_COLOR_102"]["de"] = "Ausgewählte<br/>Rubrik";
+$message["COMMON_COLOR_103"]["de"] = "Schrift der <br/>Rubrikleiste";
+$message["COMMON_COLOR_104"]["de"] = "Hintergrund";
+$message["COMMON_COLOR_105"]["de"] = "Hintergrund der<br/>
+rechten Boxen";
+$message["COMMON_COLOR_106"]["de"] = "Linkfarbe";
+$message["COMMON_COLOR_107"]["de"] = "Ungerade<br/>Listeneinträge";
 $message["COMMON_COLOR_11"]["de"] = "Ungerade Listeneinträge";
 $message["COMMON_COLOR_13"]["de"] = "Datum";
 $message["COMMON_COLOR_14"]["de"] = "Systemtext";

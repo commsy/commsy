@@ -47,6 +47,7 @@ $message["CONFIGURATION_AUTHENTICATION_USER"]["de"] = "Benutzername";
 $message["CONFIGURATION_AUTOSAVE_STATUS"]["de"] = "Automatisches Speichern";
 $message["CONFIGURATION_BACKUP_LINK"]["de"] = "Backup eines Raumes";
 $message["CONFIGURATION_BACKUP_LINK_DESC"]["de"] = "Einspielen eines Backups von einem Raum in CommSy.";
+$message["CONFIGURATION_BGIMAGE_REPEAT"]["de"] = "Hintergrundbild wiederholt darstellen";
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["de"] = "Beschreibung";

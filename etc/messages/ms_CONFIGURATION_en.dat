@@ -47,6 +47,7 @@ $message["CONFIGURATION_AUTHENTICATION_USER"]["en"] = "User name";
 $message["CONFIGURATION_AUTOSAVE_STATUS"]["en"] = "Save automatically";
 $message["CONFIGURATION_BACKUP_LINK"]["en"] = "Workspace backup";
 $message["CONFIGURATION_BACKUP_LINK_DESC"]["en"] = "Upload a backup of a CommSy workspace.";
+$message["CONFIGURATION_BGIMAGE_REPEAT"]["en"] = "Repeat background image";
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["en"] = "Make tag assignment mandatory";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["en"] = "Make tag assignment voluntary.";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["en"] = "Description";
