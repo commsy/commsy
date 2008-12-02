@@ -496,7 +496,7 @@ class cs_page_room_view extends cs_page_view {
       }
       $breadcrump.= ahref_curl($portal_item->getItemID(),'home','index',$params,$portal_item->getTitle(),'','','','','','','style="color:#800000"');
       if ($this->_environment->inProjectRoom()){
-      	$community_list = $context_item->getCommunityList();
+         $community_list = $context_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
             $breadcrump.= ' > '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
@@ -1328,7 +1328,6 @@ class cs_page_room_view extends cs_page_view {
 
             if (!$this->_environment->inServer()) {
 
-               unset($current_user_item);
 /*               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
                ){
                   $private_room_manager = $this->_environment->getPrivateRoomManager();

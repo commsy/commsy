@@ -1404,8 +1404,11 @@ class cs_form_view extends cs_view {
    }
 
    function _getWarningAsHTML ($form_element) {
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($this->_environment,true);
+      $params = array();
+      $params['environment'] = $this->_environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $this->_class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText($form_element['text']);
       return $errorbox->asHTML();
    }

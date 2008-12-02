@@ -198,7 +198,7 @@ class cs_index_view extends cs_view {
    }
 
    function setActivationLimit($limit){
-   	$this->_activation_limit = $limit;
+      $this->_activation_limit = $limit;
    }
 
    // @segment-begin 91360  setFrom($from)/getFrom()-beginning-counter-of-list
@@ -904,11 +904,7 @@ class cs_index_view extends cs_view {
       $margin = $depth*15;
       if ($width < 50){
          $width = 50;
-         if ( $left_menue_status !='disapear' ) {
-            $margin = 110;
-         }else{
-            $margin = 150;
-         }
+         $margin = 110;
       }
       $selected_id = '';
       if ( isset($tag_list) ) {
