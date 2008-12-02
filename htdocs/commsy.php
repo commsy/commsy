@@ -456,6 +456,8 @@ if ( !empty($SID) ) {
    }
 }
 
+$translator = $environment->getTranslationObject();
+
 /************ security: prevent session riding **************/
 if ( !empty($_SERVER['SERVER_ADDR'])
      and isset($session)
@@ -474,16 +476,24 @@ if ( !empty($_POST)
             and $environment->getCurrentFunction() == 'login'
           )
    ) {
+   $csrf_error = false;
    if ( empty($_POST['security_token']) ) {
-      include_once('functions/error_functions.php');
-      trigger_error('Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+      $csrf_error = true;
    } else {
       include_once('functions/security_functions.php');
       if ( getToken() != $_POST['security_token'] ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Cross Site Request Forgery detected. Request aborted.',E_USER_ERROR);
+         $csrf_error = true;
       }
    }
+   if ( $csrf_error ) {
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
+      $errorbox->setText($translator->getMessage('ERROR_CROSS_SITE_REQUEST_FORGERY'));
+   }
+   unset($csrf_error);
 }
 
 /************ language management **************/
@@ -552,7 +562,6 @@ if ( $environment->getCurrentModule() == 'context'
 }
 
 /*********** PAGE ***********/
-$translator = $environment->getTranslationObject();
 // with or without modifiying options
 $with_modifying_actions = $context_item_current->isOpen();
 

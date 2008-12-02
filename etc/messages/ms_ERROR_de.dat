@@ -1,4 +1,7 @@
 <?php
+$message["ERROR_CROSS_SITE_REQUEST_FORGERY"]["de"] = "Der Vorgang ist aus abgebrochen worden, da für das Speichern von Inhalten in Ihrer Sitzung ein Sicherheitsmerkmal fehlt. Dies kann passieren, wenn Sie CommSy mit Cookies in mehreren Browsertabs verwenden oder wenn Kriminelle versuchen, Ihr Sitzung zu kidnappen. 
+<br/><br/>
+Bitte melden Sie sich aus Sicherheitsgründen ab und loggen Sie sich erneut ein.";
 $message["ERROR_EMAIL_DOES_NOT_EXIST"]["de"] = "Es gibt keine Kennung mit dieser E-Mail Adresse.";
 $message["ERROR_ILLEGAL_IID"]["de"] = "Die Daten, auf die Sie zugreifen wollen, existieren nicht.
 

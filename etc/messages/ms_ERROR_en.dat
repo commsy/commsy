@@ -1,4 +1,7 @@
 <?php
+$message["ERROR_CROSS_SITE_REQUEST_FORGERY"]["en"] = "This operation was stopped because of a missing security token. This could appear if you use CommSy with cookies in several browser tabs or if somebody tries to hijack your session.
+<br/><br/>
+Please log out and login again.";
 $message["ERROR_EMAIL_DOES_NOT_EXIST"]["en"] = "There is no user account associated with this e-mail address.";
 $message["ERROR_ILLEGAL_IID"]["en"] = "Sorry, there is no data linked to the address you entered or clicked on. Please check whether you mistyped the URL or the link you clicked contains a wrong or outdated link.";
 $message["ERROR_LAST_MODERATOR"]["en"] = "There has to be at least one active user account defined as moderator per workspace.";

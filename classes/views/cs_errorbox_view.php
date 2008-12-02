@@ -31,7 +31,7 @@ $this->includeClass(TEXT_VIEW);
  */
 class cs_errorbox_view extends cs_text_view {
 
-
+   private $_with_login = false;
    var $_width = false;
 
    /** constructor: cs_errorbox_view
@@ -48,6 +48,10 @@ class cs_errorbox_view extends cs_text_view {
 
    function setWidth($value){
       $this->_width = $value;
+   }
+
+   function setWithLogin () {
+      $this->_with_login = true;
    }
 
    /** get errorbox as HTML
@@ -87,9 +91,21 @@ class cs_errorbox_view extends cs_text_view {
       $html .= '   <tr>'.LF;
       $html .= '      <td style="text-align: left;">'.$this->_text.'</td>'.LF;
       $html .= '   </tr>'.LF;
+
+      if ( $this->_with_login ) {
+         $html .= '   <tr>'.LF;
+         $html .= '      <td style="text-align: left;">'.LF;
+         $html .= '         <form method="post" action="'.curl($this->_environment->getCurrentContextID(),'context','login').'" name="login">'.LF;
+         // TBD
+         $html .= '         </form>'.LF;
+         $html .= '      </td>'.LF;
+         $html .= '   </tr>'.LF;
+      }
+
       $html .= '</table>'.LF;
       $html .= '</center>'.LF;
       $html .= '</div>'.LF;
+
       $html .= '<!-- END OF ERRORBOX -->'.LF.LF;
       return $html;
    }
