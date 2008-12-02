@@ -730,6 +730,18 @@ function withUmlaut($value) {
    return $retour;
 }
 
+function toggleUmlaut($value) {
+   $retour = $value;
+   $retour = str_replace('Ä','Ae',$retour);
+   $retour = str_replace('a','ae',$retour);
+   $retour = str_replace('Ö','Oe',$retour);
+   $retour = str_replace('ö','oe',$retour);
+   $retour = str_replace('Ü','Ue',$retour);
+   $retour = str_replace('ü','ue',$retour);
+   $retour = str_replace('ß','ss',$retour);
+   return $retour;
+}
+
 function cs_unserialize ( $extra ) {
    $retour = '';
 

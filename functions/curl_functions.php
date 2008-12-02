@@ -26,7 +26,7 @@ function curl_mailto( $mailaddress, $linktext, $title="" ) {
    if(isset($_GET['mode']) and $_GET['mode']=='print'){
       return encode(AS_HTML_SHORT,$linktext);
    } else {
-	   $linktext = encode(AS_HTML_SHORT,$linktext);
+      $linktext = encode(AS_HTML_SHORT,$linktext);
       return "<a href=\"mailto:".$mailaddress."\" title=\"".$title."\">".$linktext."</a>";
    }
 }
@@ -132,14 +132,14 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    } else {
       $address = $file;
       if ( !strstr($file,'.php') ) {
-	$address .= '.php';
+         $address .= '.php';
       }
    }
    if ($amp_flag) {
       $amp_flag = '&amp;';
    } else {
       $amp_flag = '&';
-	  // cause this are redirects and not links
+     // cause this are redirects and not links
    }
 
    if ( !empty($parameter) and is_array($parameter) ) {
@@ -157,6 +157,18 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    }
 
    if ( !empty($filehack) ) {
+      global $environment;
+      if ( isset($environment)
+           and strtoupper($environment->getCurrentOperatingSystem()) == strtoupper('Mac OS')
+           and strtoupper($environment->getCurrentBrowser()) == strtoupper('SAFARI')
+         ) {
+         $filehack = rawurldecode($filehack);
+         include_once('functions/text_functions.php');
+         if ( withUmlaut($filehack) ) {
+            $filehack = toggleUmlaut($filehack);
+         }
+         $filehack = rawurlencode($filehack);
+      }
       $address .= '/'.$filehack;
    }
 
@@ -192,13 +204,13 @@ function parameterString( $get,$post ) {
    $param = "";
    foreach ( $get as $key => $value) {
       if ( $key != 'mod' and $key != 'fct') {
-	     $param .= "&".$key."=".$value;
+        $param .= "&".$key."=".$value;
       }
    }
    foreach ( $post as $key => $value) {
       if ( $key != 'mod' and $key != 'fct') {
          $param .= "&".$key."=".$value;
-	  }
+     }
    }
    return $param;
 }
