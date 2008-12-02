@@ -2027,7 +2027,8 @@ class cs_view {
       $image_text = '';
       if ( !empty($array[1]) ) {
          $file_name_array = $this->_getItemFileListForView();
-         $file = $file_name_array[$array[1]];
+         $temp_file_name = htmlentities($array[1]);
+         $file = $file_name_array[$temp_file_name];
          if ( isset($file) ) {
 
             if ( !empty($array[2]) ) {
