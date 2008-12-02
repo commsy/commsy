@@ -121,7 +121,7 @@ a:hover, a:active {
 
 /* Room Design */
 #main{
-	padding: 10px 10px 0px 10px;
+	padding: 10px 0px 0px 0px;
 	width:100%;
 }
 
@@ -168,18 +168,16 @@ div.page_header_personal_area{
 
 div.content_fader{
     margin:0px;
-    padding: 0px 3px;
+    padding:10px 10px 0px 10px;
     background: url(images/bg-<?php echo($color['schema'])?>.jpg) repeat-x;
 }
 
 
 div.content{
-    padding:0px;
     margin:0px;
     heigth:100%;
-    width:100%;
     background-color: <?php echo($color['content_background'])?>;
-	border-right: 1px solid #C3C3C3;
+	 border-right: 1px solid #C3C3C3;
 }
 
 div.content_display_width{
