@@ -168,7 +168,7 @@ div.page_header_personal_area{
 
 div.content_fader{
     margin:0px;
-    padding:10px 10px 0px 10px;
+    padding:5px 10px 0px 10px;
     background: url(images/bg-<?php echo($color['schema'])?>.jpg) repeat-x;
 }
 
