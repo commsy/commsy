@@ -257,7 +257,7 @@ class cs_room_manager extends cs_context_manager {
      //search limit
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title');
+         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title',$this->_db_table.'.extras');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
