@@ -348,7 +348,17 @@ class cs_room_manager extends cs_context_manager {
            }
            $result = array();
            foreach ( $this->_id_array_limit as $item_id ) {
-              $result[] = $result2[$item_id];
+              if ( isset($result2[$item_id]) ) {
+                 $result[] = $result2[$item_id];
+              } else {
+                 // separator
+                 $temp_array = array();
+                 $temp_array['item_id'] = -1;
+                 $temp_array['title'] = '----------------------------';
+                 $temp_array['type'] = CS_PROJECT_TYPE;
+                 $result[] = $temp_array;
+                 unset($temp_array);
+              }
            }
         }
         return $result;

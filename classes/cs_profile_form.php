@@ -122,7 +122,7 @@ class cs_profile_form extends cs_rubric_form {
          $unchecked_link_item_array = array();
          $tmp_link_item_array = array();
          if (isset($checked_item_array[0])){
-         	$customized_list_exists = true;
+            $customized_list_exists = true;
          }else{
             $customized_list_exists = false;
          }
@@ -142,6 +142,20 @@ class cs_profile_form extends cs_rubric_form {
                }
             }
             $room_item = $room_list->getNext();
+         }
+         $count_sep = 0;
+         foreach ( $checked_item_array as $value ) {
+            if ( $value < 0 ) {
+               $this->_link_item_check_array[] = $value;
+               $tmp_link_item_array[$value] = '----------------------------';
+               $count_sep++;
+            }
+         }
+         for ( $i=$count_sep+1; $i<$count_sep+4; $i++ ) {
+            $temp_array = array();
+            $temp_array['text']  = '----------------------------';
+            $temp_array['value'] = -$i;
+            $unchecked_link_item_array[] = $temp_array;
          }
          foreach($checked_item_array as $id){
             $temp_array = array();
@@ -357,7 +371,7 @@ class cs_profile_form extends cs_rubric_form {
             }
         }
       }elseif($this->getProfilePageName() == 'newsletter'){
-     	   if (isset($this->_form_post)) {
+           if (isset($this->_form_post)) {
             $this->_values = $this->_form_post;
          }else{
             $room = $this->_environment->getCurrentUserItem()->getOwnRoom();
@@ -374,7 +388,7 @@ class cs_profile_form extends cs_rubric_form {
 
       }elseif($this->getProfilePageName() == 'room_list'){
       }else{
-      	if (!empty($this->_form_post)) {
+         if (!empty($this->_form_post)) {
             $this->_values = $this->_form_post;
             $this->_values['user_id_text'] = $this->_values['user_id'];
          } elseif (!empty($this->_item)) {

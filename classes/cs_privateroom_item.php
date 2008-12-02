@@ -274,6 +274,7 @@ class cs_privateroom_item extends cs_room_item {
                   if ( $item->isPrivateRoom()
                        or !$item->isShownInPrivateRoomHomeByItemID($id)
                        or !$item->isOpen()
+                       or $item->getItemID() < 0
                      ) {
                      // do nothing
                   } else {

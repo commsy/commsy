@@ -60,8 +60,6 @@ if ( isset($_POST['delete_option']) ) {
 $context_item = $environment->getCurrentContextItem();
 $context_type = $context_item->getType();
 
-
-
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
 } elseif ( isset($_POST['ref_iid']) ) {
@@ -197,7 +195,8 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
 
 // Get data from database
 if ( !isset($room_type) ) {
-   include_once('functions/error_functions.php');trigger_error('room_type not set',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('room_type not set',E_USER_ERROR);
 } elseif ( $room_type == CS_PROJECT_TYPE) {
    $manager = $environment->getProjectManager();
 } elseif ( $room_type == CS_COMMUNITY_TYPE) {

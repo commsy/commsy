@@ -239,14 +239,14 @@ class cs_myroom_manager extends cs_context_manager {
          $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=room.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
       }
 
-	 // time (clock pulses)
-	 if ( isset($this->_time_limit) ) {
-		 if ($this->_time_limit != -1) {
-			$query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
-			$query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
-		 } else {
-			$query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
-		 }
+    // time (clock pulses)
+    if ( isset($this->_time_limit) ) {
+       if ($this->_time_limit != -1) {
+         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
+       } else {
+         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+       }
      }
       $query .= ' WHERE 1=1';
       if ( isset($this->_topic_limit) ){
@@ -270,9 +270,9 @@ class cs_myroom_manager extends cs_context_manager {
 
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-		 $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))','room.title');
-		 $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-		 $query .= $search_limit_query_code;
+       $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))','room.title');
+       $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
+       $query .= $search_limit_query_code;
          $query .= ' )';
       }
 
@@ -282,33 +282,16 @@ class cs_myroom_manager extends cs_context_manager {
          $query .= ' AND  room.type = "'.encode(AS_DB,$this->_room_type).'"';
       }
 
-      ############################################
-      # FLAG: group room
-      ###################BEGIN####################
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      if ( !isset($current_portal) and !empty($context_id) ) {
-         $portal_manager = $this->_environment->getPortalManager();
-         $current_portal = $portal_manager->getItem($context_id);
-      }
-      if ( isset($current_portal)
-           and !$current_portal->withGroupRoomFunctions()
-         ) {
-         $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
-      }
-      ##################END#######################
-      # FLAG: group room
-      ##########################################
-
       if ($this->_delete_limit == true) {
          $query .= ' AND room.deleter_id IS NULL';
       }
-	 // time (clock pulses)
-	 if (isset($this->_time_limit)) {
-		 if ($this->_time_limit != -1) {
-			$query .= ' AND time_label.item_id = "'.encode(AS_DB,$this->_time_limit).'"';
-		 } else {
-			$query .= ' AND room_time.to_item_id IS NULL';
-		 }
+    // time (clock pulses)
+    if (isset($this->_time_limit)) {
+       if ($this->_time_limit != -1) {
+         $query .= ' AND time_label.item_id = "'.encode(AS_DB,$this->_time_limit).'"';
+       } else {
+         $query .= ' AND room_time.to_item_id IS NULL';
+       }
      }
      if (isset($this->_sort_order)) {
         if ($this->_sort_order == 'title_rev') {
@@ -347,7 +330,8 @@ class cs_myroom_manager extends cs_context_manager {
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
       } else {
          if ($mode == 'select'){
             foreach ($result as $query_result) {

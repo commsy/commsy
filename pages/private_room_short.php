@@ -42,7 +42,19 @@ unset($current_context_item);
 if ( !isset($list2) ) {
    // old style (CommSy6)
    $list2 = $manager->getRelatedContextListForUserOnPrivateRoomHome($user);
+} else {
+   // remove separators
+   $list_temp = new cs_list();
+   $list_item = $list2->getFirst();
+   while($list_item){
+      if ( $list_item->getItemID() > 0 ) {
+         $list_temp->add($list_item);
+      }
+      $list_item = $list2->getNext();
+   }
+   $list2 = $list_temp;
 }
+
 $user = $environment->getCurrentUserItem();
 $my_room_manager = $environment->getMyRoomManager();
 $list_all = $my_room_manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$environment->getCurrentPortalID());
@@ -65,16 +77,13 @@ if ($status=='detailed'){
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){
-   if ( ($i >= $from) and ($i < $end) ){
+   if ( ($i >= $from) and ($i < $end) ) {
       $list3->add($list_item);
-      $shown_room_id_array[] = $list_item->getItemID();
    }
    $i++;
    $list_item = $list2->getNext();
 }
 $countShown = $list2->getCount();
-
-
 
 if (!empty($shown_room_id_array)){
    $current_context = $environment->getCurrentContextItem();
