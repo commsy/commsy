@@ -788,7 +788,9 @@ class cs_page_view extends cs_view {
    function _getAllOpenContextsForCurrentUser () {
       $current_user = $this->_environment->getCurrentUserItem();
       $own_room_item = $current_user->getOwnRoom();
-      $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+      if ( isset($own_room_item) ) {
+         $customized_room_array = $own_room_item->getCustomizedRoomIDArray();
+      }
       if (isset($customized_room_array[0])){
          return $this->_getCustomizedRoomListForCurrentUser();
       }else{

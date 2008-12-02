@@ -986,45 +986,5 @@ class cs_room_item extends cs_context_item {
       unset($tag_root_item);
       unset($tag_manager);
    }
-
-   ######################################################
-   # switch CommSy6 / CommSy7
-   ######################################################
-
-   public function setDesignTo6 () {
-      $this->_setDesign(6);
-   }
-
-   public function setDesignTo7 () {
-      $this->_setDesign(7);
-   }
-
-   private function _setDesign ( $value ) {
-      $this->_addExtra('DESIGN',(int)$value);
-   }
-
-   public function isDesign6() {
-      $retour = true;
-      if ( $this->_getDesign() != 6 ) {
-         $retour = false;
-      }
-      return $retour;
-   }
-
-   public function isDesign7() {
-      $retour = false;
-      if ( $this->_getDesign() == 7 ) {
-         $retour = true;
-      }
-      return $retour;
-   }
-
-   private function _getDesign() {
-      $retour = 6;
-      if ( $this->_issetExtra('DESIGN')) {
-         $retour = $this->_getExtra('DESIGN');
-      }
-      return $retour;
-   }
 }
 ?>
