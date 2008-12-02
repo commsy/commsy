@@ -26,7 +26,7 @@
 
 
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 class cs_configuration_archive_form extends cs_rubric_form {
 

@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 include_once('functions/text_functions.php');
 
 /** class for commsy form: edit an account: set password

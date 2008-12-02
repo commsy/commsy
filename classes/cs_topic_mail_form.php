@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
@@ -155,7 +155,7 @@ class cs_topic_mail_form extends cs_rubric_form {
 	        $user_list = $item->getMemberItemList();
 			$counter = $counter + $user_list->getCount();
          }
- 
+
          if ($counter == 0) {
 		    $this->_error_array[] = getMessage('TOPIC_MAIL_NO_RECIPIENTS_ERROR');
             $this->_form->setFailure(CS_TOPIC_TYPE,'');

@@ -23,6 +23,13 @@
 // forms
 $form_folder = 'forms/';
 
+$class_name = 'cs_form';
+define('FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
 $class_name = 'cs_rubric_form';
 define('RUBRIC_FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;
@@ -71,6 +78,54 @@ $class_config[$class_name]['name']       = $class_name;
 $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = true;
+
+
+/************CONFIGURATION***************/
+$class_name = 'cs_configuration_account_options_form';
+define('CONFIGURATION_ACCOUNT_OPTIONS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_room_options_form';
+define('CONFIGURATION_ROOM_OPTIONS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_rubric_options_form';
+define('CONFIGURATION_RUBRIC_OPTIONS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_structure_options_form';
+define('CONFIGURATION_STRUCTURE_OPTIONS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_template_options_form';
+define('CONFIGURATION_TEMPLATE_OPTIONS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_rubric_extras_form';
+define('CONFIGURATION_RUBRIC_EXTRAS_FORM',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
+
+
+/************UNSWITCHED******************/
 
 $class_name = 'cs_configuration_agb_form';
 define('CONFIGURATION_AGB_FORM',$class_name);
@@ -361,12 +416,6 @@ $class_config[$class_name]['switchable'] = false;
 
 ######################
 
-$class_name = 'cs_form';
-define('FORM',$class_name);
-$class_config[$class_name]['name']       = $class_name;
-$class_config[$class_name]['filename']   = $class_name.'.php';
-$class_config[$class_name]['folder']     = $main_folder.$form_folder;
-$class_config[$class_name]['switchable'] = false;
 
 
 ?>

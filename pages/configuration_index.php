@@ -54,36 +54,89 @@ if ($current_user->isGuest()) {
    $list_view = $class_factory->getClass(LINK_PREFERENCE_LIST_VIEW,$params);
    unset($params);
 
-   // room configuration options
-   include_once('include/inc_configuration_room_links.php');
-   if ( $room_link_list->getFirst() ){
-      $list_view->setConfigurationRoomList($room_link_list);
-   }
-
-   // admin configuration options
-   include_once('include/inc_configuration_admin_links.php');
-   if ( $admin_link_list->getFirst() ){
-      $list_view->setConfigurationAdminList($admin_link_list);
-   }
-
-   if ( !$environment->inPortal() and !$environment->inServer() ){
-      // rubric configuration options
-      include_once('include/inc_configuration_rubric_links.php');
-      if ( $rubric_link_list->getFirst() ){
-         $list_view->setConfigurationRubricList($rubric_link_list);
+   if ($room_item->isDesign6()){
+      // room configuration options
+      include_once('include/inc_configuration_room_links.php');
+      if ( $room_link_list->getFirst() ){
+         $list_view->setConfigurationRoomList($room_link_list);
       }
-   }
 
-   // addon configuration options
-   include_once('include/inc_configuration_links_addon.php');
-   if ( $addon_link_list->getFirst() ){
-        $list_view->setAddonList($addon_link_list);
-   }
+      // admin configuration options
+      include_once('include/inc_configuration_admin_links.php');
+      if ( $admin_link_list->getFirst() ){
+         $list_view->setConfigurationAdminList($admin_link_list);
+      }
 
-   if ( $environment->inPortal() or $environment->inServer() ){
-      $page->addConfigurationListView($list_view);
-   } else {
-      $page->add($list_view);
+      if ( !$environment->inPortal() and !$environment->inServer() ){
+         // rubric configuration options
+         include_once('include/inc_configuration_rubric_links.php');
+         if ( $rubric_link_list->getFirst() ){
+            $list_view->setConfigurationRubricList($rubric_link_list);
+         }
+      }
+
+      // addon configuration options
+      include_once('include/inc_configuration_links_addon.php');
+      if ( $addon_link_list->getFirst() ){
+         $list_view->setAddonList($addon_link_list);
+      }
+
+      if ( $environment->inPortal() or $environment->inServer() ){
+         $page->addConfigurationListView($list_view);
+      } else {
+         $page->add($list_view);
+      }
+
+   }else{
+      // room configuration options
+      include_once('include/inc_configuration_important_links.php');
+      if ( $configuration_important_link_list->getFirst() ){
+         $list_view->setImportantConfigurationRoomList($configuration_important_link_list);
+      }
+
+      // admin configuration options
+      include_once('include/inc_configuration_usage_links.php');
+      if ( $usage_link_list->getFirst() ){
+         $list_view->setConfigurationUsageList($usage_link_list);
+      }
+
+      // admin configuration options
+      include_once('include/inc_configuration_rubric_extras_links.php');
+      if ( $configuration_rubric_extras_link_list->getFirst() ){
+         $list_view->setConfigurationRubricExtrasList($configuration_rubric_extras_link_list);
+      }
+      // room configuration options
+      include_once('include/inc_configuration_room_links.php');
+      if ( $room_link_list->getFirst() ){
+         $list_view->setConfigurationRoomList($room_link_list);
+      }
+
+      // admin configuration options
+      include_once('include/inc_configuration_admin_links.php');
+      if ( $admin_link_list->getFirst() ){
+         $list_view->setConfigurationAdminList($admin_link_list);
+      }
+
+      if ( !$environment->inPortal() and !$environment->inServer() ){
+         // rubric configuration options
+         include_once('include/inc_configuration_rubric_links.php');
+         if ( $rubric_link_list->getFirst() ){
+            $list_view->setConfigurationRubricList($rubric_link_list);
+         }
+      }
+
+      // addon configuration options
+      include_once('include/inc_configuration_links_addon.php');
+      if ( $addon_link_list->getFirst() ){
+         $list_view->setAddonList($addon_link_list);
+      }
+
+      if ( $environment->inPortal() or $environment->inServer() ){
+         $page->addConfigurationListView($list_view);
+      } else {
+         $page->add($list_view);
+      }
+
    }
 }
 ?>

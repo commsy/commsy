@@ -449,4 +449,22 @@ h1{
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
+.config_headline{
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   padding:2px 5px;
+   font-size: 12pt;
+   font-weight:bold;
+   margin-top:10px;
+}
+
+
+table.configuration_table{
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+   margin-bottom:20px;
+}
+
 

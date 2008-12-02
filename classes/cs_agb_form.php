@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
@@ -65,7 +65,7 @@ class cs_agb_form extends cs_rubric_form {
    function _createForm () {
       $this->setHeadline($this->_translator->getMessage('AGB_CHANGE_TITLE'));
       $this->_form->addText('agb_text','',$this->_agb_text);
-      if ( !($this->_environment->getCurrentModule() == 'agb' and 
+      if ( !($this->_environment->getCurrentModule() == 'agb' and
 		       $this->_environment->getCurrentFunction() == 'index')
 		   ) {
          $this->_form->addEmptyLine();
@@ -79,14 +79,14 @@ class cs_agb_form extends cs_rubric_form {
          	   $this->_form->addHidden('is_no_user', '1');
          	   $this->_form->addButtonBar('option',
 				   $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
-					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));	
-	
+					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
+
          	}
          	else {
          	   $this->_form->addButtonBar('option',
 				   $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
 					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
-					$this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'));	         		
+					$this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'));
          	}
          }
       }

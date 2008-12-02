@@ -231,6 +231,30 @@ $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+/**************CONFIG********************/
+$class_name = 'cs_configuration_form_view';
+define('CONFIGURATION_FORM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_link_preference_list_view';
+define('LINK_PREFERENCE_LIST_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_room_options_form_view';
+define('CONFIGURATION_ROOM_OPTIONS_FORM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+
+
 /**************MISC**********************/
 $class_name = 'cs_home_title_view';
 define('HOME_TITLE_VIEW',$class_name);
@@ -445,13 +469,6 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
-$class_name = 'cs_link_preference_list_view';
-define('LINK_PREFERENCE_LIST_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
 $class_name = 'cs_guide_list_view';
 define('LIST_GUIDE_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
@@ -650,13 +667,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_color_configuration_form_view';
 define('CONFIGURATION_COLOR_FORM_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_configuration_form_view';
-define('CONFIGURATION_FORM_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;

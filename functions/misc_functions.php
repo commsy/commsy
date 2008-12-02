@@ -732,6 +732,10 @@ function isURLValid () {
          $funct != 'portalhome' and
          $funct != 'scribd' and
 
+         $funct != 'account_options' and
+         $funct != 'structure_options' and
+         $funct != 'rubric_options' and
+
          $funct != 'item_index' and
 
          //chat

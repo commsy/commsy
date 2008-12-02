@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 class cs_configuration_informationbox_form extends cs_rubric_form {
 

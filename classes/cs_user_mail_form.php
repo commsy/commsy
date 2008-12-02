@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_form.php');
+$this->includeClass(RUBRIC_FORM);
 
 class cs_user_mail_form extends cs_rubric_form {
 
@@ -113,9 +113,9 @@ class cs_user_mail_form extends cs_rubric_form {
             $temp_array = array();
             $temp_array['value'] = $user_item->getEmail();
 			if ($user_item->isEmailVisible()) {
-               $temp_array['text'] = $user_item->getFullName().' ('.$user_item->getEmail().')';				
-			} else {				
-               $temp_array['text'] = $user_item->getFullName().' ('.$this->_translator->getMessage('USER_EMAIL_HIDDEN2').')';				
+               $temp_array['text'] = $user_item->getFullName().' ('.$user_item->getEmail().')';
+			} else {
+               $temp_array['text'] = $user_item->getFullName().' ('.$this->_translator->getMessage('USER_EMAIL_HIDDEN2').')';
 			}
             $this->_receiver_array[] = $temp_array;
             $user_item = $user_list->getNext();
@@ -187,7 +187,7 @@ class cs_user_mail_form extends cs_rubric_form {
          $this->_values['sender_email']        = $current_user->getEmail();
 		 if ($current_user->isEmailVisible()) {
             $this->_values['sender_text_hidden']  = $current_user->getFullName().' ('.$current_user->getEmail().')';
-		 } else {				
+		 } else {
             $this->_values['sender_text_hidden']  = $current_user->getFullName().' ('.$this->_translator->getMessage('USER_EMAIL_HIDDEN2').')';
 		 }
          $this->_values['sender_text']         = $this->_values['sender_text_hidden'];

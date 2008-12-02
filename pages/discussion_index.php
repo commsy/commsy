@@ -35,6 +35,7 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
 } elseif ( isset($_POST['ref_iid']) ) {

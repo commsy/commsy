@@ -25,7 +25,7 @@
 
 /** for internal data-structure
  */
-include_once('classes/cs_array_list.php');
+include ('classes/cs_array_list.php');
 
 /** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
@@ -82,8 +82,8 @@ class cs_form {
                               $value,
                               $nameText,
                               $exampleText,
-                              $vsize = 57,
-                              $hsize = 15,
+                              $vsize = 70,
+                              $hsize = 20,
                               $wrap = 'virtual',
                               $isMandatory = false,
                               $isDisabled = false,
@@ -93,10 +93,10 @@ class cs_form {
                               $help_text = true ) {
 
                 if (empty($vsize)) {
-                        $vsize = 57;
+                        $vsize = 71;
                 }
                 if (empty($hsize)) {
-                        $hsize = 15;
+                        $hsize = 20;
                 }
                  if ( strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
                      $vsize = $vsize + 6;
@@ -1007,6 +1007,16 @@ class cs_form {
                 $this -> _formElements -> addElement($element);
         }
 
+       function addExplanation($name, $text) {
+
+                $element['type'] = 'explanation';
+                $element['name'] = $name;
+                $element['description'] = $text;
+                $element['mandatory'] = false;
+
+                $this -> _formElements -> addElement($element);
+        }
+
    /** add an anchor to the form
     * this method adds an anchor to the form
     *
@@ -1091,8 +1101,28 @@ class cs_form {
                        $label='',
                        $example='',
                        $context_id='',
-                       $is_mandatory = false) {
+                       $is_mandatory = false,
+                       $width = '') {
       $element['type']       = 'image';
+      $element['name']       = $name;
+      $element['filename']   = $filename;
+      $element['label']      = $label;
+      $element['example']    = $example;
+      $element['context_id'] = $context_id;
+      $element['mandatory']  = $is_mandatory;
+      $element['width']  = $width;
+
+      $this -> _formElements -> addElement($element);
+   }
+
+   function addRoomLogo ( $name,
+                       $filename='',
+                       $label='',
+                       $example='',
+                       $context_id='',
+                       $is_mandatory = false,
+                       $width = '') {
+      $element['type']       = 'room_logo';
       $element['name']       = $name;
       $element['filename']   = $filename;
       $element['label']      = $label;
@@ -1176,6 +1206,8 @@ class cs_form {
                   } elseif ($row['type'] == 'datetime') {
                      $row['value'] = $value;
                   } elseif ($row['type'] == 'image') {
+                     $row['filename'] = $value;
+                  }elseif ($row['type'] == 'room_logo') {
                      $row['filename'] = $value;
                   }elseif ($row['type'] == 'titletext') {
                      $row['label'] = $value;
@@ -1303,7 +1335,6 @@ class cs_form {
            $result = true;
            $this -> _error_array = array();
            $this -> _formElements -> resetCursor();
-
            while ($this -> _formElements -> isCurrentValid()) {
               $current = $this -> _formElements -> getCurrent();
 
@@ -1574,5 +1605,6 @@ class cs_form {
    function getInfoForHeaderAsHTML () {
       // needed cause some forms are implemented in old style
    }
+
 }
 ?>
