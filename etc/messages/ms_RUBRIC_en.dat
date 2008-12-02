@@ -2,6 +2,9 @@
 $message["RUBRIC_ADMIN"]["en"] = "Choose workspace rubrics";
 $message["RUBRIC_ADMIN_DESC"]["en"] = "Select and configure workspace rubrics.";
 $message["RUBRIC_ALL_ATTACHMENTS"]["en"] = "... display all (%1)";
+$message["RUBRIC_CONFIG_NO"]["en"] = "Hidden on the noticed board";
+$message["RUBRIC_CONFIG_SHORT"]["en"] = "Expanded on the noticed board";
+$message["RUBRIC_CONFIG_TINY"]["en"] = "Collapsed on the noticed board";
 $message["RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON"]["en"] = "Add announc. reference/s";
 $message["RUBRIC_DO_ATTACH_DATE_BUTTON"]["en"] = "Add event reference/s";
 $message["RUBRIC_DO_ATTACH_DISCUSSION_BUTTON"]["en"] = "Add discuss. reference/s";
