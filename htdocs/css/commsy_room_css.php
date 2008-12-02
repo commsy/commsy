@@ -7,6 +7,7 @@ chdir('../..');
 include_once('etc/cs_constants.php');
 include_once('etc/cs_config.php');
 include_once('classes/cs_environment.php');
+include_once('functions/curl_functions.php');
 
 // create environment of this page
 $color = $cs_color['DEFAULT'];
@@ -169,7 +170,25 @@ div.page_header_personal_area{
 div.content_fader{
     margin:0px;
     padding:5px 10px 0px 10px;
-    background: url(images/bg-<?php echo($color['schema'])?>.jpg) repeat-x;
+    <?
+    if ($color['schema']=='SCHEMA_OWN'){
+       if ($room->getBGImageFilename()){
+           if ($room->issetBGImageRepeat()){
+              echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture='.$room->getBGImageFilename().') repeat;');
+           }else{
+              echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture='.$room->getBGImageFilename().') no-repeat;');
+           }
+       }
+    }else{
+       if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
+          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat;');
+       }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'x'){
+          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-x;');
+       }else{
+          echo('background: url(images/bg-'.$color['schema'].'.jpg) no-repeat;');
+       }
+    }
+    ?>
 }
 
 
@@ -340,7 +359,7 @@ a.navlist_current{
    padding:4px 6px 3px 6px;
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
-   background-image:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   background:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 
@@ -348,7 +367,7 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
    text-decoration:none;
-   background-image:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   background:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 
@@ -381,7 +400,7 @@ h1{
 
 /*Special Designs*/
 .top_of_page {
-	padding:5px 20px 3px 20px;
+	padding:5px 0px;
 	font-size: 8pt;
 	color: <?php echo($color['info_color'])?>;
 }

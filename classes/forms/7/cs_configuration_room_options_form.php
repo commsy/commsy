@@ -39,6 +39,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
   var $_community_room_array = array();
   var $_shown_community_room_array = array();
   var $_session_community_room_array = array();
+  var $_with_bg_image = false;
 
   /** constructor
     * the only available constructor
@@ -138,6 +139,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
 
       /**********Logo**********/
       $this->_with_logo = $current_context_item->getLogoFilename();
+      $this->_with_bg_image = $current_context_item->getBGImageFilename();
 
       /****Beschreibung*****/
       $this->_languages = $this->_environment->getAvailableLanguageArray();
@@ -215,6 +217,16 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_11');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_11';
       $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_11')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_12');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_12';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_12')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_13');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_13';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_13')] = $temp_array;
 
       ksort($array_info_text_temp);
       foreach($array_info_text_temp as $entry){
@@ -385,23 +397,32 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->combine();
             $desc = '<img src="images/color_schema_11.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_11').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_12'  ) {
+            $desc = '<img src="images/color_schema_12.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_12').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_13'  ) {
+            $desc = '<img src="images/color_schema_13.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_13').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
-            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
-            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
-	         $this->_form->addHidden('color_3','');
-	         $this->_form->addHidden('color_4','');
-            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_4'),'','',10);
-            $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
-            $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
-            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
-	         $this->_form->addHidden('color_7','');
-            $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
-            $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
-	         $this->_form->addHidden('color_12','');
-            $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
-            $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
-            $this->_form->addTextField('color_15','',getMessage('COMMON_COLOR_15'),'','',10);
-            $this->_form->addTextField('color_16','',getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_101'),'','',10);
+            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_102'),'','',10);
+            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_103'),'','',10);
+            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_104'),'','',10);
+            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_105'),'','',10);
+            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_106'),'','',10);
+            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_107'),'','',10);
+            $this->_form->addRoomLogo('bgimage',
+                             '',
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD'),
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD_DESC'),
+                             '',
+                             false,
+                             '4em'
+                             );
+            $this->_form->combine();
+            $this->_form->addCheckbox('bg_image_repeat',1,'',getMessage('CONFIGURATION_BGIMAGE_REPEAT'),getMessage('CONFIGURATION_BGIMAGE_REPEAT'));
+            $this->_form->addHidden('bgimage_hidden','');
+            $this->_form->addHidden('with_bgimage',$this->_with_logo);
             $this->_form->addEmptyLine();
          }
       } else{
@@ -444,27 +465,32 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          }elseif ( $color['schema']=='SCHEMA_11' ) {
             $desc = '<img src="images/color_schema_11.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_11').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $color['schema']=='SCHEMA_12' ) {
+            $desc = '<img src="images/color_schema_12.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_12').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $color['schema']=='SCHEMA_13' ) {
+            $desc = '<img src="images/color_schema_13.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_13').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_OWN' ) {
-            $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
-            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
-	         $this->_form->addHidden('color_3','');
-	         $this->_form->addHidden('color_4','');
-            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_5'),'','',10);
-            $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
-            $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
-            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
-	         $this->_form->addHidden('color_7','');
-            $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
-            $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
-	         $this->_form->addHidden('color_12','');
-            $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
-            $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
-            $this->_form->addTextField('color_15','',getMessage('COMMON_COLOR_15'),'','',10);
-            $this->_form->addTextField('color_16','',getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_101'),'','',10);
+            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_102'),'','',10);
+            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_103'),'','',10);
+            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_104'),'','',10);
+            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_105'),'','',10);
+            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_106'),'','',10);
+            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_107'),'','',10);
+            $this->_form->addRoomLogo('bgimage',
+                             '',
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD'),
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD_DESC'),
+                             '',
+                             false,
+                             '4em'
+                             );
+            $this->_form->combine();
+            $this->_form->addCheckbox('bg_image_repeat',1,'',getMessage('CONFIGURATION_BGIMAGE_REPEAT'),getMessage('CONFIGURATION_BGIMAGE_REPEAT'));
+            $this->_form->addHidden('bgimage_hidden','');
+            $this->_form->addHidden('with_bgimage',$this->_with_logo);
          }
 
       }
@@ -529,27 +555,18 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array = array();
       $temp_array['color_1'] = $color['tabs_background'];
       $temp_array['color_2'] = $color['tabs_focus'];
-      $temp_array['color_3'] = $color['table_background'];
-      $temp_array['color_4'] = $color['tabs_title'];
-      $temp_array['color_5'] = $color['headline_text'];
+      $temp_array['color_3'] = $color['tabs_title'];
+      $temp_array['color_4'] = $color['content_background'];
+      $temp_array['color_5'] = $color['boxes_background'];
       $temp_array['color_6'] = $color['hyperlink'];
-      $temp_array['color_7'] = $color['help_background'];
-      $temp_array['color_8'] = $color['boxes_background'];
-      $temp_array['color_9'] = $color['content_background'];
-      $temp_array['color_10'] = $color['list_entry_odd'];
-      $temp_array['color_11'] = $color['list_entry_even'];
-      $temp_array['color_12'] = $color['index_td_head_title'];
-      $temp_array['color_13'] = $color['date_title'];
-      $temp_array['color_14'] = $color['info_color'];
-      $temp_array['color_15'] = $color['disabled'];
-      $temp_array['color_16'] = $color['warning'];
+      $temp_array['color_7'] = $color['list_entry_even'];
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if (empty($this->_values['color_choice'])){
             $this->_values['color_choice'] = 'COMMON_COLOR_'.strtoupper($color['schema']);
          }
          if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
-            for ($i=1; $i<17; $i++){
+            for ($i=1; $i<8; $i++){
                if ( !empty($this->_form_post['color_'.$i]) ){
                   $this->_values['color_'.$i] = $this->_form_post['color_'.$i];
                }else{
@@ -557,30 +574,26 @@ class cs_configuration_room_options_form extends cs_rubric_form {
                }
             }
          }
-       } else {
+      } else {
+         $color_array = $context_item->getColorArray();
          $this->_values['color_choice'] = 'COMMON_COLOR_'.strtoupper($color['schema']);
-         if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
-            $this->_values['color_1'] = $color['tabs_background'];
-            $this->_values['color_2'] = $color['tabs_focus'];
-            $this->_values['color_3'] = $color['table_background'];
-            $this->_values['color_4'] = $color['tabs_title'];
-            $this->_values['color_5'] = $color['headline_text'];
-            $this->_values['color_6'] = $color['hyperlink'];
-            $this->_values['color_7'] = $color['help_background'];
-            $this->_values['color_8'] = $color['boxes_background'];
-            $this->_values['color_9'] = $color['content_background'];
-            $this->_values['color_10'] = $color['list_entry_odd'];
-            $this->_values['color_11'] = $color['list_entry_even'];
-            $this->_values['color_12'] = $color['index_td_head_title'];
-            $this->_values['color_13'] = $color['date_title'];
-            $this->_values['color_14'] = $color['info_color'];
-            $this->_values['color_15'] = $color['disabled'];
-            $this->_values['color_16'] = $color['warning'];
-         }
+         $this->_values['color_1'] = $color['tabs_background'];
+         $this->_values['color_2'] = $color['tabs_focus'];
+         $this->_values['color_3'] = $color['tabs_title'];
+         $this->_values['color_5'] = $color['boxes_background'];
+         $this->_values['color_7'] = $color['list_entry_even'];
+         $this->_values['color_6'] = $color['hyperlink'];
+         $this->_values['color_4'] = $color['content_background'];
          $this->_values['title'] = $context_item->getTitle();
       }
       if ($context_item->getLogoFilename()){
          $this->_values['logo'] = $context_item->getLogoFilename();
+      }
+      if ($context_item->getBGImageFilename()){
+         $this->_values['bgimage'] = $context_item->getBGImageFilename();
+      }
+      if ($context_item->issetBGImageRepeat()){
+         $this->_values['bg_image_repeat'] = '1';
       }
 
       $this->_values['language'] = $context_item->getLanguage();

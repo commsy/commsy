@@ -1017,7 +1017,6 @@ class cs_page_room_view extends cs_page_view {
                $html .= '</table>'.LF;
             }
          }
-         $html .= '</div>'.LF;
          // @segment-end 45532
          // @segment-begin 13258 asHTML():display-date,month,time-right_bottom_corner-of-the-page
          $html .= '<div class="top_of_page">'.LF;
@@ -1043,7 +1042,7 @@ class cs_page_room_view extends cs_page_view {
 
          // @segment-end 13258
          // @segment-begin 38811 asHTML():image+link-to page_top
-         $html .= '<div class="footer" style="padding-left:5px;">'.LF;
+         $html .= '<div class="footer">'.LF;
          $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.getMessage('COMMON_TOP_OF_PAGE').'</a>';
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
@@ -1053,6 +1052,7 @@ class cs_page_room_view extends cs_page_view {
          } else {
             $html .= $this->_getBlankLinkRowAsHTML();
          }*/
+         $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;

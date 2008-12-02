@@ -162,8 +162,11 @@ $cs_color['DEFAULT']['index_td_head_title']        = 'white';
 $cs_color['DEFAULT']['date_title']                 = '#EC930D';
 $cs_color['DEFAULT']['info_color']                 = '#827F76';
 $cs_color['DEFAULT']['disabled']                   = '#B0B0B0';
-$cs_color['DEFAULT']['warning']                    = 'red';
+$cs_color['DEFAULT']['warning']                    = '#FC1D12';
 $cs_color['DEFAULT']['head_background']            = '#2A4E72';
+
+
+
 
 //Traum in Pink
 $cs_color['SCHEMA_1']['schema']                     = 'SCHEMA_1';
@@ -371,7 +374,7 @@ $cs_color['SCHEMA_8']['headline_text']              = 'white';
 $cs_color['SCHEMA_8']['hyperlink']                  = '#69151A';
 $cs_color['SCHEMA_8']['help_background']            = '#2079D3';
 $cs_color['SCHEMA_8']['boxes_background']           = 'white';
-$cs_color['SCHEMA_8']['content_background']         = '#EAE3EB';
+$cs_color['SCHEMA_8']['content_background']         = '#CCB29C';
 $cs_color['SCHEMA_8']['list_entry_odd']             = '#FFFEFF';
 $cs_color['SCHEMA_8']['list_entry_even']            = '#EAE3EB';
 $cs_color['SCHEMA_8']['myarea_headline_background'] = '#CDCBC2';
@@ -388,6 +391,7 @@ $cs_color['SCHEMA_8']['date_title']                 = '#A50416';
 $cs_color['SCHEMA_8']['info_color']                 = '#7E7D7B';
 $cs_color['SCHEMA_8']['disabled']                   = '#B0B0B0';
 $cs_color['SCHEMA_8']['warning']                    = 'red';
+$cs_color['SCHEMA_8']['repeat_background']         = 'x';
 
 //Fade to Grey
 $cs_color['SCHEMA_9']['schema']                     = 'SCHEMA_9';
@@ -472,6 +476,77 @@ $cs_color['SCHEMA_11']['date_title']                 = '#666699';
 $cs_color['SCHEMA_11']['info_color']                 = '#7E7D7B';
 $cs_color['SCHEMA_11']['disabled']                   = '#B0B0B0';
 $cs_color['SCHEMA_11']['warning']                    = 'red';
+
+
+
+//SCHEMA 12
+/*****************************************************************/
+$cs_color['SCHEMA_12']['schema']                     = 'SCHEMA_12';
+$cs_color['SCHEMA_12']['tabs_background']            = '#36D636';
+$cs_color['SCHEMA_12']['tabs_focus']                 = '#CCFF99';
+$cs_color['SCHEMA_12']['tabs_title']                 = '#1A4120';
+$cs_color['SCHEMA_12']['content_background']         = '#9AFE66';
+$cs_color['SCHEMA_12']['boxes_background']           = '#CCFF99';
+$cs_color['SCHEMA_12']['hyperlink']                  = '#625252';
+$cs_color['SCHEMA_12']['list_entry_even']            = '#CCFF99';
+
+$cs_color['SCHEMA_12']['table_background']           = $cs_color['SCHEMA_12']['content_background'];
+$cs_color['SCHEMA_12']['headline_text']              = $cs_color['SCHEMA_12']['tabs_title'];
+$cs_color['SCHEMA_12']['help_background']            = $cs_color['SCHEMA_12']['content_background'];
+$cs_color['SCHEMA_12']['list_entry_odd']             = '#FFFFFF';
+
+$cs_color['SCHEMA_12']['date_title']                 = '#666699';
+$cs_color['SCHEMA_12']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_12']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_12']['warning']                    = '#2A4E72';
+
+$cs_color['SCHEMA_12']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_12']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_12']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_12']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_12']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_12']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_12']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_12']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_12']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_12']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_12']['repeat_background']          = 'xy';
+/*****************************************************************/
+
+//SCHEMA 13
+/*****************************************************************/
+$cs_color['SCHEMA_13']['schema']                     = 'SCHEMA_13';
+$cs_color['SCHEMA_13']['tabs_background']            = '#FFCC66';
+$cs_color['SCHEMA_13']['tabs_focus']                 = '#ECB851';
+$cs_color['SCHEMA_13']['tabs_title']                 = '#4D7104';
+$cs_color['SCHEMA_13']['content_background']         = '#FEFFD5';
+$cs_color['SCHEMA_13']['boxes_background']           = '#FFFF99';
+$cs_color['SCHEMA_13']['hyperlink']                  = '#625252';
+$cs_color['SCHEMA_13']['list_entry_even']            = '#FFFF99';
+
+$cs_color['SCHEMA_13']['table_background']           = $cs_color['SCHEMA_13']['content_background'];
+$cs_color['SCHEMA_13']['headline_text']              = $cs_color['SCHEMA_13']['tabs_title'];
+$cs_color['SCHEMA_13']['help_background']            = $cs_color['SCHEMA_13']['content_background'];
+$cs_color['SCHEMA_13']['list_entry_odd']             = '#FFFFFF';
+
+$cs_color['SCHEMA_13']['date_title']                 = '#666699';
+$cs_color['SCHEMA_13']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_13']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_13']['warning']                    = '#2A4E72';
+
+$cs_color['SCHEMA_13']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_13']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_13']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_13']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_13']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_13']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_13']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_13']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_13']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_13']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_13']['repeat_background']          = 'xy';
+/*****************************************************************/
+
 
 // color settings for print view
 $cs_color['print_background']       = '#ffffff';

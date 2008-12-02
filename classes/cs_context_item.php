@@ -2787,6 +2787,40 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   function setBGImageFilename ($name) {
+      $this->_addExtra('BGIMAGEFILENAME',$name);
+   }
+
+   function getBGImageFilename () {
+      $retour = '';
+      if ($this->_issetExtra('BGIMAGEFILENAME')) {
+         $retour = $this->_getExtra('BGIMAGEFILENAME');
+      }
+      return $retour;
+   }
+
+   function setBGImageRepeat () {
+      $this->_addExtra('BGIMAGEREPEAT',1);
+   }
+
+   function unsetBGImageRepeat () {
+      $this->_addExtra('BGIMAGEREPEAT',0);
+   }
+
+   public function issetBGImageRepeat () {
+      $retour = false;
+      if ($this->_issetExtra('BGIMAGEREPEAT')) {
+         $retour = $this->_getExtra('BGIMAGEREPEAT');
+         if ($retour == 1){
+         	$retour = true;
+         }else{
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+
    function setTagEditedByModerator () {
       $this->_addExtra('TAGEDITEDBY',2);
    }

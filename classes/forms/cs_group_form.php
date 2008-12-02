@@ -253,7 +253,6 @@ class cs_group_form extends cs_rubric_form {
 
       // group
       $this->_form->addHidden('iid','');
-      $this->_form->addHidden('has_picture','');
       if (isset($this->_item) and $this->_item->isSystemLabel()) {
          $this->_form->addTitleField('system_name',getMessage('COMMON_NAME'),$this->_item->getName(),getMessage('GROUP_ALL_NAME_DESC'),200,'',true,'','','','left','','',false);
       } else {
@@ -268,6 +267,7 @@ class cs_group_form extends cs_rubric_form {
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
 
       $this->_form->addEmptyline();      // public radio-buttons
+      $this->_form->addHidden('has_picture','');
       $this->_form->addImage('picture_upload','',getMessage('USER_PICTURE_UPLOADFILE'), getMessage('GROUP_PICTURE_FILE_DESC'),$context_id);
 
       //delete picture

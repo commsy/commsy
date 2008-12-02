@@ -160,59 +160,83 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color = $cs_color['SCHEMA_10'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_11'){
                $color = $cs_color['SCHEMA_11'];
+            }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_12'){
+               $color = $cs_color['SCHEMA_12'];
+            }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_13'){
+               $color = $cs_color['SCHEMA_13'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
                if (!empty($_POST['color_1'])){
                   $color['tabs_background'] = $_POST['color_1'];
+               }else{
+                  $color['tabs_background'] = '#FFFFFF';
                }
                if (!empty($_POST['color_2'])){
                   $color['tabs_focus'] = $_POST['color_2'];
+               }else{
+                  $color['tabs_focus'] = '#CCCCCC';
                }
                if (!empty($_POST['color_3'])){
-                  $color['table_background'] = $_POST['color_3'];
+                  $color['tabs_title'] = $_POST['color_3'];
+               }else{
+                  $color['tabs_title'] = '#000000';
                }
                if (!empty($_POST['color_4'])){
-                  $color['tabs_title'] = $_POST['color_4'];
+                  $color['content_background'] = $_POST['color_4'];
+               }else{
+                  $color['content_background'] = '#B0B0B0';
                }
                if (!empty($_POST['color_5'])){
-                  $color['headline_text'] = $_POST['color_5'];
+                  $color['boxes_background'] = $_POST['color_5'];
+               }else{
+                  $color['boxes_background'] = '#FFFFFF';
                }
                if (!empty($_POST['color_6'])){
                   $color['hyperlink'] = $_POST['color_6'];
+               }else{
+                  $color['hyperlink'] = '#1E2273';
                }
-   	         if (!empty($_POST['color_7'])){
-                  $color['help_background'] = $_POST['color_7'];
+               if (!empty($_POST['color_7'])){
+                  $color['list_entry_even'] = $_POST['color_7'];
+               }else{
+                  $color['list_entry_even'] = '#B0B0B0';
                }
-               if (!empty($_POST['color_8'])){
-                  $color['boxes_background'] = $_POST['color_8'];
-               }
-               if (!empty($_POST['color_9'])){
-                  $color['content_background'] = $_POST['color_9'];
-               }
-               if (!empty($_POST['color_10'])){
-                 $color['list_entry_odd'] = $_POST['color_10'];
-               }
-               if (!empty($_POST['color_11'])){
-                  $color['list_entry_even'] = $_POST['color_11'];
-               }
-               if (!empty($_POST['color_12'])){
-                  $color['index_td_head_title'] = $_POST['color_12'];
-               }
-               if (!empty($_POST['color_13'])){
-                  $color['date_title'] = $_POST['color_13'];
-               }
-               if (!empty($_POST['color_14'])){
-                  $color['info_color'] = $_POST['color_14'];
-               }
-               if (!empty($_POST['color_15'])){
-                 $color['disabled'] = $_POST['color_15'];
-               }
-               if (!empty($_POST['color_16'])){
-                 $color['warning'] = $_POST['color_16'];
-               }
+               $color['table_background'] = $color['content_background'];
+               $color['headline_text'] = $color['tabs_title'];
+               $color['list_entry_odd'] = '#FFFFFF';
+               $color['date_title'] = '#EC930D';
+               $color['info_color'] = '#827F76';
+               $color['disabled'] = '#B0B0B0';
+               $color['warning'] = '#FC1D12';
                $color['schema']='SCHEMA_OWN';
+               // logo: save and/or delete current logo
+               if ( isset($_POST['delete_bgimage']) ) {
+                  $disc_manager = $environment->getDiscManager();
+                  if ( $disc_manager->existsFile($context_item->getBGImageFilename()) ) {
+                     $disc_manager->unlinkFile($context_item->getBGImageFilename());
+                  }
+                  $context_item->setBGImageFilename('');
+               }
+               if ( !empty($_FILES['bgimage']['name']) ) {
+                  $bg_image = $context_item->getBGImageFilename();
+                  $disc_manager = $environment->getDiscManager();
+                  if ( !empty ($bg_image) ) {
+                     if ( $disc_manager->existsFile($context_item->getBGImageFilename()) ) {
+                        $disc_manager->unlinkFile($context_item->getBGImageFilename());
+                     }
+                     $context_item->setBGImageFilename('');
+                  }
+                  $filename = 'cid'.$environment->getCurrentContextID().'_bgimage_'.$_FILES['bgimage']['name'];
+                  $disc_manager->copyFile($_FILES['bgimage']['tmp_name'],$filename,true);
+                  $context_item->setBGImageFilename($filename);
+               }
+               if (!empty($_POST['bg_image_repeat'])){
+                  $context_item->setBGImageRepeat();
+               }else{
+                  $context_item->unsetBGImageRepeat();
+               }
+
             }
          }
-
          // logo: save and/or delete current logo
          if ( isset($_POST['delete_logo']) ) {
             $disc_manager = $environment->getDiscManager();
