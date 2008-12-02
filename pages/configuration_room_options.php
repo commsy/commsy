@@ -61,13 +61,15 @@ if ($current_user->isGuest()) {
 
 if ($command != 'error') { // only if user is allowed to edit colors
 
-   // include form
-   include_once('classes/cs_configuration_room_options_form.php');
-   $form = new cs_configuration_room_options_form($environment);
-   $form->setItem($context_item);
-   // display form
-   include_once('classes/cs_color_configuration_form_view.php');
-   $form_view = new cs_color_configuration_form_view($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(CONFIGURATION_ROOM_OPTIONS_FORM,$class_params);
+   unset($class_params);
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+   unset($params);
 
 /*   if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
       $post_community_room_array = array();
