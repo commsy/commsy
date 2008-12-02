@@ -1706,7 +1706,13 @@ class cs_detail_view extends cs_view {
          unset($params);
       } else {
          if(isset($modificator) and !$modificator->isDeleted()){
-            $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isGuest() ) {
+               $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
+            } else {
+               $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+            }
+            unset($current_user_item);
          }else{
             $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
          }
@@ -1780,7 +1786,13 @@ class cs_detail_view extends cs_view {
          unset($params);
       } else {
          if(isset($creator) and !$creator->isDeleted()){
-            $temp_html = $creator->getFullname();
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isGuest() ) {
+               $temp_html = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            } else {
+               $temp_html = $creator->getFullname();
+            }
+            unset($current_user_item);
          }else{
             $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
          }
@@ -1839,12 +1851,19 @@ class cs_detail_view extends cs_view {
             unset($params);
          } else {
             if(isset($modificator) and !$modificator->isDeleted()){
-               $modifier_array[] = $modificator->getFullname();
+               $current_user_item = $this->_environment->getCurrentUserItem();
+               if ( $current_user_item->isGuest() ) {
+                  $modifier_array[] = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               } else {
+                  $modifier_array[] = $modificator->getFullname();
+               }
+               unset($current_user_item);
             }else{
                $modifier_array[] = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
             }
          }
       }
+      $modifier_array = array_unique($modifier_array);
       $html .= '   <tr>'.LF;
       $html .= '      <td></td>'.LF;
       $html .= '      <td class="key"  style="padding-left:8px;">'.LF;

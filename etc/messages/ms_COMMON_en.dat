@@ -668,6 +668,7 @@ $message["COMMON_USER_AND_ENTRIES_DELETE_BUTTON"]["en"] = "delete all";
 $message["COMMON_USER_CLOSE_FORM_TITLE"]["en"] = "Quit membership";
 $message["COMMON_USER_EMAIL_SEND_FORM_TITLE"]["en"] = "Send e-mail";
 $message["COMMON_USER_INDEX"]["en"] = "Members";
+$message["COMMON_USER_NOT_VISIBLE"]["en"] = "Not visible";
 $message["COMMON_USER_PREFERENCES_FORM_TITLE"]["en"] = "Preferences";
 $message["COMMON_USER_REJECT_BUTTON"]["en"] = "Quit membership";
 $message["COMMON_USER_TINY_VIEW_DESCRIPTION"]["en"] = "%1 visible, %2 total";

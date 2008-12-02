@@ -669,6 +669,7 @@ $message["COMMON_USER_AND_ENTRIES_DELETE_BUTTON"]["de"] = "Alles löschen";
 $message["COMMON_USER_CLOSE_FORM_TITLE"]["de"] = "Teilnahme beenden";
 $message["COMMON_USER_EMAIL_SEND_FORM_TITLE"]["de"] = "E-Mail schicken";
 $message["COMMON_USER_INDEX"]["de"] = "Personen";
+$message["COMMON_USER_NOT_VISIBLE"]["de"] = "Nicht sichtbar";
 $message["COMMON_USER_PREFERENCES_FORM_TITLE"]["de"] = "Einstellungen";
 $message["COMMON_USER_REJECT_BUTTON"]["de"] = "Teilnahme beenden";
 $message["COMMON_USER_TINY_VIEW_DESCRIPTION"]["de"] = "%1 sichtbar, %2 insgesamt";

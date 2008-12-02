@@ -2560,7 +2560,13 @@ EOD;
    function _getItemModificator($item){
       $modificator = $item->getModificatorItem();
       if ( isset($modificator) and !$modificator->isDeleted()){
-         $fullname = $modificator->getFullName();
+         $current_user_item = $this->_environment->getCurrentUserItem();
+         if ( $current_user_item->isGuest() and $modificator->isVisibleForLoggedIn()) {
+            $fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+         } else {
+            $fullname = $modificator->getFullName();
+         }
+         unset($current_user_item);
       } else {
          $fullname = getMessage('COMMON_DELETED_USER');
       }

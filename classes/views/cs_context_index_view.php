@@ -257,15 +257,19 @@ class cs_context_index_view extends cs_index_view {
       if ( $list->isNotEmpty() ) {
          $first = true;
          $mod_item = $list->getFirst();
+         $mod_array = array();
          while ($mod_item) {
-            if ($first) {
-               $first = false;
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isGuest() and $mod_item->isVisibleForLoggedIn() ) {
+               $mod_array[] = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
             } else {
-               $retour .= ', ';
+               $mod_array[] = $mod_item->getFullname();
             }
-            $retour .= $mod_item->getFullname();
+            unset($current_user_item);
             $mod_item = $list->getNext();
          }
+         $mod_array = array_unique($mod_array);
+         $retour = implode(', ',$mod_array);
          $retour = $this->_compareWithSearchText($retour);
          return $this->_text_as_html_short($retour);
       }else{
