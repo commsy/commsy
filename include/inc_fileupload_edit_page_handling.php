@@ -50,6 +50,7 @@ if ( $session->issetValue($file_upload_rubric.'_add_files_multi')
 if ( $session->issetValue($file_upload_rubric.'_add_files_multi') ) {
    $file_multi_upload_manager = $environment->getFileMultiUploadManager();
    $file_multi_upload_manager->setSessionIDLimit($session->getSessionID());
+   $file_multi_upload_manager->setContextLimit($environment->getCurrentContextID());
    $file_array_multi = $file_multi_upload_manager->select();
    $file_multi_upload_manager->delete();
 

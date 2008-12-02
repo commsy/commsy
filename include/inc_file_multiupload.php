@@ -50,10 +50,10 @@ if ( $allow_or_deny ) {
 }
 
 if ( isset($c_virus_scan)
-	 and $c_virus_scan
-	 and isset($c_virus_scan_cron)
-	 and !empty($c_virus_scan_cron)
-	 and !$c_virus_scan_cron
+    and $c_virus_scan
+    and isset($c_virus_scan_cron)
+    and !empty($c_virus_scan_cron)
+    and !$c_virus_scan_cron
    ) {
    include_once('classes/cs_virus_scan.php');
    $virus_scanner = new cs_virus_scan($environment);
@@ -123,7 +123,7 @@ if ( isset($c_virus_scan)
    // store information about file in DB
    // can not use session because of overlapping read and save actions
    $file_multi_upload_manager = $environment->getFileMultiUploadManager();
-   $file_multi_upload_manager->addFileArray($session_item->getSessionID(),$temp_array);
+   $file_multi_upload_manager->addFileArray($session_item->getSessionID(),$temp_array,$environment->getCurrentContextID());
 
    // All replies MUST start with "POSTLET REPLY", if they don't, then Postlet will
    // not read the reply and will assume the file uploaded successfully.
