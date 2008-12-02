@@ -1002,13 +1002,39 @@ class cs_privateroom_item extends cs_room_item {
       $retour = NULL;
       $room_id_array = $this->getCustomizedRoomIDArray();
       if ( !empty($room_id_array) ) {
+         // add grouprooms
+         $current_user_item = $this->_environment->getCurrentUserItem();
+         $grouproom_list = $current_user_item->getRelatedGroupList();
+         unset($current_user_item);
+         if ( isset($grouproom_list)
+              and $grouproom_list->isNotEmpty()
+            ) {
+            $grouproom_list->reverse();
+            $grouproom_item = $grouproom_list->getFirst();
+            while ($grouproom_item) {
+               $project_room_id = $grouproom_item->getLinkedProjectItemID();
+               if ( in_array($project_room_id,$room_id_array) ) {
+                  $room_id_array_temp = array();
+                  foreach ($room_id_array as $value) {
+                     $room_id_array_temp[] = $value;
+                     if ( $value == $project_room_id) {
+                        $room_id_array_temp[] = $grouproom_item->getItemID();
+                     }
+                  }
+                  $room_id_array = $room_id_array_temp;
+               }
+               $grouproom_item = $grouproom_list->getNext();
+            }
+         }
+
+         // get room list
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->setIDArrayLimit($room_id_array);
          $room_manager->setOrder('id_array');
          $room_manager->select();
          $retour = $room_manager->get();
-
          unset($room_manager);
+
       }
       return $retour;
    }

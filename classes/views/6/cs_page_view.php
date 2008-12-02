@@ -765,7 +765,11 @@ class cs_page_view extends cs_view {
       $room_item = $customized_room_list->getFirst();
       while ($room_item) {
          $temp_array = array();
-         $temp_array['title'] = $room_item->getTitle();
+         if ( $room_item->isGrouproom() ) {
+            $temp_array['title'] = '- '.$room_item->getTitle();
+         } else {
+            $temp_array['title'] = $room_item->getTitle();
+         }
          $temp_array['item_id'] = $room_item->getItemID();
          if ($current_context_id == $temp_array['item_id']){
             $temp_array['selected'] = true;
