@@ -40,15 +40,15 @@ class cs_configuration_room_options_form extends cs_rubric_form {
   var $_shown_community_room_array = array();
   var $_session_community_room_array = array();
 
-  /** constructor: cs_internal_color_form
+  /** constructor
     * the only available constructor
     *
     * @param object environment the environment object
     *
     * @author CommSy Development Group
     */
-   function cs_configuration_room_options($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_configuration_room_options($params) {
+      $this->cs_rubric_form($params);
    }
 
    function setCurrentColor($color){

@@ -39,8 +39,8 @@ class cs_home_member2_form extends cs_rubric_form {
     *
     * @param object environment the environment object
     */
-   function cs_home_member2_form ($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_home_member2_form ($params) {
+      $this->cs_rubric_form($params);
    }
 
    function setFormGet ( $value ) {
