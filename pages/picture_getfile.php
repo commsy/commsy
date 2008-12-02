@@ -23,12 +23,19 @@
 //    along with CommSy.
 
 $disc_manager = $environment->getDiscManager();
-
 if (!empty($_GET['picture']) and $disc_manager->existsFile($_GET['picture'])) {
    header('Content-type: image');
    header('Pragma: no-cache');
    header('Expires: 0');
    readfile($disc_manager->getFilePath('picture').$_GET['picture']);
-}
+} else if(!empty($_GET['picture']) and withUmlaut($_GET['picture'])) {
+     $filename = rawurlencode($_GET['picture']);
+  	 if (file_exists($disc_manager->_getFilePath().$filename)) {
+       header('Content-type: image');
+   	   header('Pragma: no-cache');
+   	   header('Expires: 0');
+       readfile($disc_manager->getFilePath('picture').$filename);
+     }
+  }
 exit();
 ?>

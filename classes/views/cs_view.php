@@ -1823,8 +1823,9 @@ class cs_view {
       if ( empty($array[1]) ) {
          // internal resource
          $file_name_array = $this->_getItemFileListForView();
-         if ( !empty($array[2]) and !empty($file_name_array[$array[2]]) ) {
-            $file = $file_name_array[$array[2]];
+         $temp_file_name = htmlentities($array[2]);
+         if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
+            $file = $file_name_array[$temp_file_name];
          }
          if ( isset($file) ) {
             if ( stristr(strtolower($file->getFilename()),'png')
@@ -1833,7 +1834,6 @@ class cs_view {
                  or stristr(strtolower($file->getFilename()),'gif')
                ) {
                $source = $file->getUrl();
-
                $thumb_name = $this->_create_thumb_name_from_image_name($file->getDiskFileNameWithoutFolder());
                //if there is a thumb file, use it instead
                $disc_manager = $this->_environment->getDiscManager();
