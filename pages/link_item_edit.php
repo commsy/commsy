@@ -78,8 +78,10 @@ if (!$current_user->isUser()) {
 
 if ($command != 'error') { // only if user is allowed to edit item
    // include form
-   include_once('classes/cs_link_item_form.php');
-   $form = new cs_link_item_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(LINK_ITEM_FORM,$class_params);
+   unset($class_params);
    $form->setRubricConnections($rubric_connection);
 
    // cancel edit process

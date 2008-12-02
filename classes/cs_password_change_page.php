@@ -32,8 +32,10 @@ class cs_password_change_page extends cs_left_page {
    function execute () {
       $success = false;
 
-      include_once('classes/cs_password_change_form.php');
-      $form = new cs_password_change_form($this->_environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(PASSWORD_CHANGE_FORM,$class_params);
+      unset($class_params);
       // Load form data from postvars
       if ( !empty($this->_post_vars) ) {
          $form->setFormPost($this->_post_vars);

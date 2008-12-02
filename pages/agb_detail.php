@@ -96,8 +96,11 @@ if ( isOption($command, getMessage('AGB_ACCEPTANCE_BUTTON')) ) {
    }
    exit();
 } else {
-   include_once('classes/cs_agb_form.php');
-   $form = new cs_agb_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(AGB_FORM,$class_params);
+   unset($class_params);
+   $params = array();
    $form->prepareForm();
    $form->loadValues();
    $params = array();

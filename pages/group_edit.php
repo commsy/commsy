@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_group_form.php');
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
@@ -155,7 +154,10 @@ else {
    else {
 
       // Initialize the form
-      $form = new cs_group_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(GROUP_FORM,$class_params);
+      unset($class_params);
 
       // Foren:
       if ( isOption($command, getMessage('PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON')) ) {

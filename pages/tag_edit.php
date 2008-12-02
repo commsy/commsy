@@ -179,8 +179,10 @@ else {
    // Show form and/or save item
    else {
       // Initialize the form
-      include_once('classes/cs_tag_form.php');
-      $form = new cs_tag_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(TAG_FORM,$class_params);
+      unset($class_params);
       // Load form data from postvars
       if ( !empty($_POST) ) {
          $form->setFormPost($_POST);

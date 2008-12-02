@@ -52,8 +52,10 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 // show form or send email
 else {
    // include form
-   include_once('classes/cs_mail_to_moderator_form.php');
-   $form = new cs_mail_to_moderator_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(MAIL_TO_MODERATOR_FORM,$class_params);
+   unset($class_params);
    $form->prepareForm();
 
    // show form

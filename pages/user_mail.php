@@ -52,8 +52,10 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 // show form or send email
 else {
    // include form
-   include_once('classes/cs_user_mail_form.php');
-   $form = new cs_user_mail_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(USER_MAIL_FORM,$class_params);
+   unset($class_params);
 
    // Find current search text
    if ( isset($_GET['search']) ) {

@@ -23,11 +23,6 @@
 //    along with CommSy.
 
 
-if ( isset($_GET['selection']) ){
-   include_once('classes/cs_date_import_selection_form.php');
-}else{
-   include_once('classes/cs_date_import_form.php');
-}
 
 // Get the current user and room
 $current_user = $environment->getCurrentUserItem();
@@ -73,7 +68,10 @@ else {
       // Show form and/or save item
       else {
          // Initialize the form
-         $form = new cs_date_import_selection_form($environment);
+         $class_params= array();
+         $class_params['environment'] = $environment;
+         $form = $class_factory->getClass(DATE_IMPORT_SELECTION_FORM,$class_params);
+         unset($class_params);
          $form->setArray($date_array[0]);
          // Load form data from postvars
          if ( !empty($_POST) ) {
@@ -200,7 +198,10 @@ else {
       else {
 
          // Initialize the form
-         $form = new cs_date_import_form($environment);
+         $class_params= array();
+         $class_params['environment'] = $environment;
+         $form = $class_factory->getClass(DATE_IMPORT_FORM,$class_params);
+         unset($class_params);
          // Load form data from postvars
          if ( !empty($_POST) ) {
             if ( !empty($_FILES) ) {

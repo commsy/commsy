@@ -92,8 +92,10 @@ if (!$context_item->isOpen()) {
 
 if ($command != 'error') { // only if user is allowed to edit user
    // include form
-   include_once('classes/cs_profile_form.php');
-   $form = new cs_profile_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(PROFILE_FORM,$class_params);
+   unset($class_params);
    $form->setProfilePageName($profile_page);
    // cancel edit process
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {

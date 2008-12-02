@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_rubric_mail_form.php');
 include_once('classes/cs_mail.php');
 include_once('functions/text_functions.php');
 
@@ -48,7 +47,10 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
 } else {
    /* setup the form */
    // Construct the form
-   $form = new cs_rubric_mail_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(RUBRIC_MAIL_FORM,$class_params);
+   unset($class_params);
    $form->setItem($rubric_item);
 
    $group_list = $rubric_item->getLinkedItemList(CS_GROUP_TYPE);

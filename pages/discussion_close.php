@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_discussion_close_form.php');
 
 // Get the current user and context
 $current_user = $environment->getCurrentUserItem();
@@ -95,7 +94,10 @@ else {
        else {
 
           // Initialize the form
-          $form = new cs_discussion_close_form($environment);
+          $class_params= array();
+          $class_params['environment'] = $environment;
+          $form = $class_factory->getClass(DISCUSSION_CLOSE_FORM,$class_params);
+          unset($class_params);
 
           if ( !empty($_POST) ) {
              $form->setFormPost($_POST);

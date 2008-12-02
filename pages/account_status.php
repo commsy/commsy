@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 // include all classes and functions needed for this script
-include_once('classes/cs_form.php');
+$this->includeClass(FORM);
 include_once('classes/cs_mail.php');
 include_once('functions/date_functions.php');
 include_once('functions/text_functions.php');

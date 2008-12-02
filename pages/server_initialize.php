@@ -36,8 +36,10 @@ if (!empty($user_item)) {
    }
 
    // include form
-   include_once('classes/cs_server_initialize_form.php');
-   $form = new cs_server_initialize_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(SERVER_INITIALIZE_FORM,$class_params);
+      unset($class_params);
 
    // cancel
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {

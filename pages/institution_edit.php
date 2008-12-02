@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_institution_form.php');
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -128,8 +127,10 @@ else {
 
 
    // include form
-   include_once('classes/cs_institution_form.php');
-   $form = new cs_institution_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(INSTITUTION_FORM,$class_params);
+      unset($class_params);
 
    // cancel edit process
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
@@ -147,7 +148,10 @@ else {
    else {
 
       // Initialize the form
-      $form = new cs_institution_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(INSTITUTION_FORM,$class_params);
+      unset($class_params);
 
       // Redirect to attach material
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON')) ) {

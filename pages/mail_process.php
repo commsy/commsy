@@ -63,8 +63,10 @@ if (!empty($_POST['option'])) {
 
 
 if ( $command != 'error' ) {
-   include_once('classes/cs_mail_process_form.php');
-   $form = new cs_mail_process_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(MAIL_PROCESS_FORM,$class_params);
+   unset($class_params);
 
    if ( isOption($command,getMessage('MAIL_NOT_SEND_BUTTON')) ) {
       $mail_obj->goBackLink();

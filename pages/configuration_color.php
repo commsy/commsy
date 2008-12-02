@@ -64,8 +64,10 @@ if ($current_user->isGuest()) {
 if ($command != 'error') { // only if user is allowed to edit colors
 
    // include form
-   include_once('classes/cs_internal_color_form.php');
-   $form = new cs_internal_color_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(INTERNAL_COLOR_FORM,$class_params);
+   unset($class_params);
    $form->setItem($context_item);
    // display form
    $params = array();

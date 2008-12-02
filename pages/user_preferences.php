@@ -59,8 +59,10 @@ if (!$user->mayEdit($current_user)) {
 
 if ($command != 'error') { // only if user is allowed to edit user
    // include form
-   include_once('classes/cs_user_preferences_form.php');
-   $form = new cs_user_preferences_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(USER_PREFERENCES_FORM,$class_params);
+   unset($class_params);
 
    if (empty($command)) {
       $user_manager = $environment->getUserManager();

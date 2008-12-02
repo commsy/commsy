@@ -48,10 +48,14 @@ else {
    }
 
    // Initialize the form
-   include_once('classes/cs_configuration_template_options_form.php');
-   $form = new cs_configuration_template_options_form($environment);
-   include_once('classes/cs_configuration_form_view.php');
-   $form_view = new cs_configuration_form_view($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(CONFIGURATION_TEMPLATE_OPTIONS_FORM,$class_params);
+   unset($class_params);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$class_params);
+   unset($class_params);
 
    // Save item
    if ( !empty($command)

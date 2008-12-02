@@ -33,8 +33,10 @@ class cs_become_member_page extends cs_left_page {
    function execute () {
       $success = false;
 
-      include_once('classes/cs_become_member_form.php');
-      $form = new cs_become_member_form($this->_environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(BECOME_MEMBER_FORM,$class_params);
+      unset($class_params);
       // Load form data from postvars
       if ( !empty($this->_post_vars) ) {
          $form->setFormPost($this->_post_vars);

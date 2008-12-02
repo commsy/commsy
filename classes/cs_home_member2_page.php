@@ -34,8 +34,10 @@ class cs_home_member2_page extends cs_left_page {
 
       $success = false;
 
-      include_once('classes/cs_home_member2_form.php');
-      $form = new cs_home_member2_form($this->_environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(HOME_MEMBER2_FORM,$class_params);
+      unset($class_params);
 
       // Load form data from postvars
       if ( !empty($this->_post_vars) ) {

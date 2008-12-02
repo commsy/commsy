@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_section_form.php');
 
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
@@ -109,7 +108,11 @@ if ( !( ( $current_iid == 'NEW' and $current_user->isUser() )
 // Access granted
 else {
    // include form
-   $form = new cs_section_form($environment,$material_ref_iid);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $class_params['material_id'] = $material_ref_iid;
+   $form = $class_factory->getClass(SECTION_FORM,$class_params);
+   unset($class_params);
 
    // Find out what to do
    if ( isset($_POST['option']) ) {

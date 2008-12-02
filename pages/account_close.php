@@ -60,8 +60,10 @@ if (!empty($iid) and $iid != 'NEW') {
 
 if ($command != 'error') { // only if user is allowed to edit user
    // include form
-   include_once('classes/cs_user_close_form.php');
-   $form = new cs_user_close_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(USER_CLOSE_FORM,$class_params);
+   unset($class_params);
    $form->prepareForm();
    $form->loadValues();
 

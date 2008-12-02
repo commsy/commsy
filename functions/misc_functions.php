@@ -735,6 +735,7 @@ function isURLValid () {
          $funct != 'account_options' and
          $funct != 'structure_options' and
          $funct != 'rubric_options' and
+         $funct != 'room_options' and
 
          $funct != 'item_index' and
 

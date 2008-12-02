@@ -21,7 +21,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-include_once('classes/cs_todo_form.php');
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -151,7 +150,10 @@ else {
    else {
 
       // Initialize the form
-      $form = new cs_todo_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(TODO_FORM,$class_params);
+      unset($class_params);
 
       // files
       include_once('include/inc_fileupload_edit_page_handling.php');

@@ -51,8 +51,10 @@ if ( !isset($c_message_management)
       }
    }
 
-   include_once('classes/cs_language_unused_form.php');
-   $form = new cs_language_unused_form($environment);
+   $class_params= array();
+   $class_params['environment'] = $environment;
+   $form = $class_factory->getClass(LANGUAGE_UNUSED_FORM,$class_params);
+   unset($class_params);
    $form->prepareForm();
    $form->loadValues();
 

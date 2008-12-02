@@ -23,9 +23,6 @@
 //    along with CommSy.
 
 
-include_once('classes/cs_material_ims_import_form.php');
-
-
 // Get the current user and room
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
@@ -112,7 +109,10 @@ else {
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index','');
    } else {
       // Initialize the form
-      $form = new cs_material_ims_import_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(MATERIAL_IMS_IMPORT_FORM,$class_params);
+      unset($class_params);
       // Load form data from postvars
       if ( !empty($_POST) ) {
          if ( !empty($_FILES) ) {
