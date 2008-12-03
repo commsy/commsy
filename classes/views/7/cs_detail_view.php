@@ -538,33 +538,16 @@ class cs_detail_view extends cs_view {
    }
 
    function _getForwardBoxAsHTML () {
-   	  $html = '';
+   	$html = '';
       $ids = $this->getBrowseIDs();
 
-      if(!empty($this->_right_box_config['title_string'])){
-         $separator = ',';
-      }else{
-         $separator = '';
-      }
-      $this->_right_box_config['title_string'] .= $separator.'"'.'Liste ausgewählter Materialien ('.count($ids).')"';
-      $this->_right_box_config['desc_string'] .= $separator.'""';
-      $this->_right_box_config['size_string'] .= $separator.'"10"';
-      if (!(isset($_GET['path']) and !empty($_GET['path']))){
-         $this->_right_box_config['config_string'] .= $separator.'true';
-      } else {
-         $this->_right_box_config['config_string'] .= $separator.'false';
-      }
-      if(!empty($this->_right_box_config['title_string'])){
-         $separator = ',';
-      }
-      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
-      $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.LF;
-      $html .= '<div style="white-space:nowrap;">'.'Liste ausgewählter Materialien ('.count($ids).')</div>'.LF;
+      $html .= $this->_getForwardLinkAsHTML();
+#      $html .= '<div style="white-space:nowrap;">'.'Liste ausgewählter Materialien ('.count($ids).')</div>'.LF;
       $html .='</div>'.LF;
-      $html .= '         </noscript>';
-      $html .= '<div class="right_box_main" style="padding:0px;" >'.LF;
+      $html .= '<div class="right_box_main" style="padding:5px 0px 0px 0px;" >'.LF;
 
       $count = 0;
       $pos = 0;
@@ -575,14 +558,14 @@ class cs_detail_view extends cs_view {
          	$count++;
          }
       }
-      $start = $pos-2;
-      $end = $pos+2;
+      $start = $pos-4;
+      $end = $pos+4;
       if($start < 0){
       	 $end = $end - $start;
       }
       if($end > count($ids)){
         $end = count($ids);
-        $start = $end-5;
+        $start = $end-9;
         if ($start <0){
         	$start = 0;
         }
@@ -591,7 +574,7 @@ class cs_detail_view extends cs_view {
       $manager = $this->_environment->getManager($this->_environment->getCurrentModule());
       $params = $this->_environment->getCurrentParameterArray();
       $count_items = 0;
-      if ($start > 0){
+/*      if ($start > 0){
       	 $forward_start = $start-5;
       	 if ($forward_start<0){
       	 	$forward_start = 0;
@@ -601,11 +584,11 @@ class cs_detail_view extends cs_view {
       	 	$start_id = 0;
       	 }
       	 $item = $manager->getItem($ids[$start_id]);
-         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
+          $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
       	 $html .='<li style="padding:0px 5px;">';
-         $params['iid'] =	$item->getItemID();
-         unset($item);
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+          $params['iid'] =	$item->getItemID();
+          unset($item);
+          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
@@ -613,16 +596,21 @@ class cs_detail_view extends cs_view {
                                  );
       	 $html .='</li>';
       	 $html .='</ul>';
-      }
+      }*/
       $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
       foreach($ids as $id){
          if ($count_items >= $start and $count_items <= $end){
             $item = $manager->getItem($ids[$count_items]);
+            if ($count_items < 9){
+            	$style='padding:0px 5px 0px 11px;';
+            }else{
+                $style='padding:0px 5px;';
+            }
             if ($item->getItemID()== $this->_item->getItemID()){
-               $html .='<li class="detail_list_entry" style="padding:0px 5px;">';
+               $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.chunkText($item->getTitle(),35).'</span>';
             }else{
-               $html .='<li style="padding:0px 5px;">';
+               $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
                $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                  $this->_environment->getCurrentModule(),
@@ -646,7 +634,7 @@ class cs_detail_view extends cs_view {
       }
       $html .='</ul>';
       unset($params);
-      if ($end < (count($ids)-1)){
+/*      if ($end < (count($ids)-1)){
       	 $start_id = $end + 3;
       	 if($start_id > (count($ids)-1)){
       	 	$start_id = (count($ids)-1);
@@ -668,11 +656,20 @@ class cs_detail_view extends cs_view {
                                  );
       	 $html .='</li>';
       	 $html .='</ul>';
-      }
+      }*/
+      $html .= '<div style="float:right; font-size:8pt; padding: 5px 3px 3px 0px;">'.LF;
+      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                           'index',
+                           array(),
+                           $this->_translator->getMessage('COMMON_BACK_TO_LIST')
+                                 );
+      $html .= '</div>'.LF;
+      $html .='<div style="clear:both;">'.LF;
+      $html .= '</div>'.LF;
       $html .='</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= $this->_getAllPathsAsHTML();
       return $html;
    }
 
@@ -720,12 +717,12 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORDS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORDS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
       if ($buzzword_list ->isEmpty()) {
-         $html .= '   <span style="margin-left:3px; margin-right:3px;"><a><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></a></span>'.LF;
+         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
       }else{
          $buzzword_entry = $buzzword_list->getFirst();
          while($buzzword_entry){
@@ -752,15 +749,6 @@ class cs_detail_view extends cs_view {
          }
       }
       $html .= '</div>'.LF;
-/*      $html .= '<div style="width:100%; text-align:right; padding-right:2px; padding-top:3px; font-size:8pt;">';
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),'buzzwords','edit',$params,$this->_translator->getMessage('COMMON_ATTACH_LINK')).LF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_ATTACH').'</span>'.LF;
-      }
-      $html .= '</div>'.LF; */
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       unset($current_user);
@@ -784,7 +772,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_TAGS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
 
@@ -871,7 +859,7 @@ class cs_detail_view extends cs_view {
 
       }
       if ( empty($text) ){
-         $html .= '   <span style="margin-left:3px; margin-right:3px;"><a><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></a></span>'.LF;
+         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
       }else{
          $html .= $text;
       }
@@ -934,7 +922,7 @@ class cs_detail_view extends cs_view {
 
     function getSearchText (){
        if (empty($this->_search_text)){
-        $this->_search_text = getMessage('COMMON_SEARCH_IN_RUBRIC');
+        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
        }
        return $this->_search_text;
     }
@@ -942,12 +930,12 @@ class cs_detail_view extends cs_view {
 
   function _getSearchAsHTML () {
      $html  = '';
-     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), 'index','').'" method="get" name="indexform">'.LF;
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="indexform">'.LF;
      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-     $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_module).'"/>'.LF;
+     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      $html .= '</form>';
      return $html;
   }
@@ -968,48 +956,48 @@ class cs_detail_view extends cs_view {
       $tempMessage = '';
       switch ( strtoupper($this->_environment->getCurrentModule()) ) {
          case 'ANNOUNCEMENT':
-            $tempMessage = getMessage('ANNOUNCEMENT_DETAIL');
+            $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_DETAIL');
             $tempMessage = '<img src="images/commsyicons/32x32/announcement.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'DATE':
-            $tempMessage = getMessage('DATE_INDEX');
+            $tempMessage = $this->_translator->getMessage('DATE_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>'.$tempMessage;
             break;
          case 'DISCUSSION':
-            $tempMessage = getMessage('DISCUSSION_INDEX');
+            $tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'INSTITUTION':
-            $tempMessage = getMessage('INSTITUTION_INDEX');
+            $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
             break;
          case 'GROUP':
-            $tempMessage = getMessage('GROUP_INDEX');
+            $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'MATERIAL':
-            $tempMessage = getMessage('MATERIAL_INDEX');
+            $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'MYROOM':
-            $tempMessage = getMessage('MYROOM_INDEX');
+            $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
             break;
          case 'PROJECT':
-            $tempMessage = getMessage('PROJECT_INDEX');
+            $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
             break;
          case 'TODO':
-            $tempMessage = getMessage('TODO_INDEX');
+            $tempMessage = $this->_translator->getMessage('TODO_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>'.$tempMessage;
             break;
          case 'TOPIC':
-            $tempMessage = getMessage('TOPIC_INDEX');
+            $tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>'.$tempMessage;
             break;
          case 'USER':
-            $tempMessage = getMessage('USER_INDEX');
+            $tempMessage = $this->_translator->getMessage('USER_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>'.$tempMessage;
             break;
          default:
-            $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
+            $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
             break;
       }
       $html .= '<h2 class="pagetitle">'.$tempMessage;
@@ -1047,9 +1035,14 @@ class cs_detail_view extends cs_view {
          $html .='<div style="width:250px;">'.LF;
          $html .='<div id="commsy_panels">'.LF;
 
+         if(!isset($this->_browse_ids) or count($this->_browse_ids) ==0){
+             $this->_browse_ids[] = $this->_item->getItemID();
+         }
          $html .= $this->_getForwardBoxAsHTML($item);
-         $first = false;
-         $separator = '';
+
+         if ($current_context->withPath()){
+            $html .= $this->_getAllPathsAsHTML();
+         }
 
           /**********Netnaviation*********/
          if ( $this->showNetnavigation() ){
@@ -1061,7 +1054,7 @@ class cs_detail_view extends cs_view {
             if(!empty($this->_right_box_config['title_string'])){
                $separator = ',';
             }
-            $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
+            $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
             $this->_right_box_config['desc_string'] .= $separator.'""';
             $this->_right_box_config['size_string'] .= $separator.'"10"';
             if ( $current_context->isBuzzwordShowExpanded() ){
@@ -1083,7 +1076,7 @@ class cs_detail_view extends cs_view {
             if(!empty($this->_right_box_config['title_string'])){
                $separator = ',';
             }
-            $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_ATTACHED_TAGS').'"';
+            $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').'"';
             $this->_right_box_config['desc_string'] .= $separator.'""';
             $this->_right_box_config['size_string'] .= $separator.'"10"';
             if ( $current_context->isTagsShowExpanded() ){
@@ -1142,21 +1135,21 @@ class cs_detail_view extends cs_view {
       $formal_data1 = array();
       if ($item->isNotActivated()){
          $temp_array = array();
-         $temp_array[]  = getMessage('COMMON_RIGHTS');
+         $temp_array[]  = $this->_translator->getMessage('COMMON_RIGHTS');
 
          $activating_date = $item->getActivatingDate();
          if (strstr($activating_date,'9999-00-00')){
-            $title = getMessage('COMMON_NOT_ACTIVATED');
+            $title = $this->_translator->getMessage('COMMON_NOT_ACTIVATED');
          }else{
-            $title = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+            $title = $this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
          }
          $temp_array[] = $title;
          $formal_data1[] = $temp_array;
       }
       if ($this->_environment->getCurrentModule() == CS_DATE_TYPE and $item->issetPrivatDate()){
          $temp_array = array();
-         $temp_array[]  = getMessage('COMMON_PRIVATE_DATE');
-         $title = getMessage('COMMON_NOT_ACCESSIBLE');
+         $temp_array[]  = $this->_translator->getMessage('COMMON_PRIVATE_DATE');
+         $title = $this->_translator->getMessage('COMMON_NOT_ACCESSIBLE');
          $temp_array[] = $title;
          $formal_data1[] = $temp_array;
       }
@@ -1308,9 +1301,9 @@ class cs_detail_view extends cs_view {
          $curl = curl($this->_environment->getCurrentContextID(),
                       'picture', 'getfile', $params,'');
          unset($params);
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
+         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
       }else{
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
+         $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
       }
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1330,18 +1323,18 @@ class cs_detail_view extends cs_view {
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
       $html .='<div class="detail_annotations">'.LF;
-      $title = '<span class="annotation_pagetitle">'.getMessage('COMMON_ANNOTATIONS');
+      $title = '<span class="annotation_pagetitle">'.$this->_translator->getMessage('COMMON_ANNOTATIONS');
       $html .= '<img src="images/commsyicons/32x32/annotation.png" style="vertical-align:bottom; margin-left:5px;"/>&nbsp;'.$title;
       $html .= '</span>'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){
-            $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_ONE_ANNOTATION');
+            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
          }else{
-            $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_X_ANNOTATIONS',$count);
+            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
          }
       }else{
-         $html .= '<span class="sub_item_description"> ('.getMessage('COMMON_NO_ANNOTATIONS');
+         $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
       }
       $html .= ')</span>'.LF;
       $html .='</div>'.LF;
@@ -1413,12 +1406,32 @@ class cs_detail_view extends cs_view {
 
 
    function _getAllPathsAsHTML(){
-   	  $html = '';
+   	$html = '';
+      $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_PATHS').'"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if (isset($_GET['path']) and !empty($_GET['path'])){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      }else{
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
+      $html .= '         <noscript>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_PATHS').'</div>';
+      $html .= '         </noscript>';
+      $html .= '<div class="right_box_main" style="margin:0px; padding:0px;">'.LF;
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
-      $current_context = $this->_environment->getCurrentContextItem();
       $path_counter = 0;
       $path_entry_counter = 0;
+      $tmp_html = '';
       $counter = 1;
       if ($current_context->withPath()){
          $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
@@ -1456,31 +1469,17 @@ class cs_detail_view extends cs_view {
                      }
                      $params['iid'] = $topic_item->getItemID();
                      $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
-                     $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title));
-      $current_context = $this->_environment->getCurrentContextItem();
-      if(!empty($this->_right_box_config['title_string'])){
-         $separator = ',';
-      }else{
-         $separator = '';
-      }
-      $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('TOPIC_PATH').': '.$title.'"';
-      $this->_right_box_config['desc_string'] .= $separator.'""';
-      $this->_right_box_config['size_string'] .= $separator.'"10"';
-      $this->_right_box_config['config_string'] .= $separator.'true';
-      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
-				     $html .= '<div class="right_box">'.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('TOPIC_PATH').': '.$title.'</div>';
-      $html .= '         </noscript>';
-                     $html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
-				     $html .='</div>'.LF;
-				     $html .='</div>'.LF;
-                     $parameter_array = $this->_environment->getCurrentParameterArray();
-                     if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()){
-                        $show_entry = $counter;
+                     $title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
+                     if ($counter >1){
+                        $tmp_html .= '<div style="padding-top:10px; padding-left:3px;">'.LF;
                      }else{
-                        $counter++;
+                        $tmp_html .= '<div style="padding:0px 3px;">'.LF;
                      }
+                     $counter++;
+                     $tmp_html .= $title;
+                     $tmp_html .= '</div>'.LF;
+                     $tmp_html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
+                     $parameter_array = $this->_environment->getCurrentParameterArray();
                   }
                }
             }
@@ -1492,7 +1491,15 @@ class cs_detail_view extends cs_view {
             $show_entry = '-1';
          }
       }
-   	  return $html;
+      if (!empty($tmp_html)){
+      	$html .= $tmp_html;
+      }else{
+         $html .= '   <div style="padding:5px 7px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
+      }
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
+   	return $html;
    }
 
    function _getAllLinkedItemsAsHTML ($spaces=0) {
@@ -1503,7 +1510,7 @@ class cs_detail_view extends cs_view {
       }else{
          $separator = '';
       }
-      $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_NETNAVIGATION_ENTRIES').'"';
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').'"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
       $this->_right_box_config['size_string'] .= $separator.'"10"';
       if($current_context->isNetnavigationShowExpanded()){
@@ -1512,27 +1519,25 @@ class cs_detail_view extends cs_view {
          $this->_right_box_config['config_string'] .= $separator.'false';
       }
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
       $link_items = $item->getLatestLinkItemList(10);
-      $html .= '<div id="netnavigation'.$item->getItemID().'">'.LF;
-      $html .= '<div class="netnavigation" >'.LF;
-
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';
-      $html .='		<div class="no_netnavigation_panel" style="padding-top: 1px; margin-top:0px;">     '.LF;
-      $html .='				<div class="latest_netnavigation_panel"><ul style="list-style-type: circle; font-size:8pt;">'.LF;
+      $html .='		<div class="right_box_main">     '.LF;
       if ($link_items->isEmpty()) {
-         $html .= '   <li><a><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></a></li>'.LF;
+         $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
       } else {
+         $html .='     <ul style="list-style-type: circle; font-size:8pt; list-style-position:inside; margin:0px; padding:0px;">'.LF;
          $link_item = $link_items->getFirst();
          while($link_item){
             $link_creator = $link_item->getCreatorItem();
             if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                $fullname = $link_creator->getFullname();
             } else {
-               $fullname = getMessage('COMMON_DELETED_USER');
+               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
             }
           // Create the list entry
             $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
@@ -1577,7 +1582,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('COMMON_ONE_USER');
                      break;
                   default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
                      break;
                }
                $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -1599,7 +1604,7 @@ class cs_detail_view extends cs_view {
                   default:
                      $linked_iid = $linked_item->getItemID();
                }
-               $html .= '   <li>';
+               $html .= '   <li  style="padding:0px 3px;">';
                $params = array();
                $params['iid'] = $linked_iid;
                $module = Type2Module($type);
@@ -1607,9 +1612,9 @@ class cs_detail_view extends cs_view {
                if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                    $activating_date = $linked_item->getActivatingDate();
                    if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                    }else{
-                      $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                    }
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -1644,10 +1649,8 @@ class cs_detail_view extends cs_view {
             }
             $link_item = $link_items->getNext();
          }
+         $html .= '</ul>'.LF;
       }
-      $html .= '</ul></div>'.LF;
-      $html .= '</div>'.LF;
-      $html .='		<!-- END OF MENU -->';
       $html .='      </div>';
       $html .='      </div>';
       $html .='      </div>';
@@ -1663,7 +1666,7 @@ class cs_detail_view extends cs_view {
          $path_item_id = $path_item->getItemID();
          $path_item_type = $path_item->getItemType();
          if ($path_item_id == $item_id){
-            $html .='<li style="padding-left:5px;"  class="path_list">'.LF;
+            $html .='<li style="padding-left:5px;"  class="detail_list_entry">'.LF;
             $html .= '<a title="'.$path_item->getTitle().'">'.chunkText($path_item->getTitle(),25).'</a>';
          }else{
             $html .='<li style="padding-left:5px;">'.LF;
@@ -1675,9 +1678,9 @@ class cs_detail_view extends cs_view {
             if ($path_item->isNotActivated() and !($path_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                 $activating_date = $path_item->getActivatingDate();
                 if (strstr($activating_date,'9999-00-00')){
-                   $link_creator_text = $path_item->getTitle().' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                   $link_creator_text = $path_item->getTitle().' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                 }else{
-                   $link_creator_text = $path_item->getTitle().' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($path_item->getActivatingDate()).')';
+                   $link_creator_text = $path_item->getTitle().' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($path_item->getActivatingDate()).')';
                 }
                 $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                      type2Module($path_item_type),
@@ -1735,7 +1738,7 @@ class cs_detail_view extends cs_view {
                if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                   $fullname = $link_creator->getFullname();
                } else {
-                  $fullname = getMessage('COMMON_DELETED_USER');
+                  $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
                }
                $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
                $link_creator_text = $this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -1769,9 +1772,9 @@ class cs_detail_view extends cs_view {
                   if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                       $activating_date = $linked_item->getActivatingDate();
                       if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.getMessage('COMMON_NOT_ACTIVATED').')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
                       }else{
-                         $link_creator_text .= ' ('.getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                       }
                       $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           $module,
@@ -2002,6 +2005,7 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&lt;&lt;</span>'.LF;
       }
+      $html .= '|';
       if ( $browse_left > 0 ) {
          $image = '<span class="bold">&lt;</span>';
          $params = array();
@@ -2018,12 +2022,8 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&lt;</span>'.LF;
       }
+      $html .= '|';
       // Show position
-      if ( empty($ids) ) {
-         $html .= '<span class="bold"> 1 / 1 </span>'.LF;
-      } else {
-         $html .= '<span class="bold"> '.($pos+1).' / '.$count_all.' </span>'.LF;
-      }
 
       // create HTML for browsing arrows to left
       if ( $browse_right > 0 ) {
@@ -2040,6 +2040,7 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&gt;</span>'.LF;
       }
+      $html .= '|';
       if ( $browse_end > 0 ) {
          $image = '<span class="bold">&gt;&gt;</span>';
          $params = array();
@@ -2055,6 +2056,14 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&gt;&gt;</span>'.LF;
       }
+      $html .= '</div>';
+      $html .= '<div>';
+      if ( empty($ids) ) {
+         $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_ENTRY').' 1 / 1</span>'.LF;
+      } else {
+         $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_ENTRY').' '.($pos+1).' / '.$count_all.'</span>'.LF;
+      }
+      $html .= '';
       $html .= '</div>';
 
 
@@ -2122,7 +2131,7 @@ class cs_detail_view extends cs_view {
          } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
             $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
          } else {
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
@@ -2141,7 +2150,7 @@ class cs_detail_view extends cs_view {
                $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
             }
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } else {
@@ -2154,7 +2163,7 @@ class cs_detail_view extends cs_view {
             }
             unset($current_user_item);
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       }
       if ($item->isNotActivated()){
@@ -2204,7 +2213,7 @@ class cs_detail_view extends cs_view {
          } elseif ( isset($creator) and !$creator->isDeleted()){
             $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
          } else {
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       } elseif ( $user->isUser() and isset($creator) and ($creator->isVisibleForLoggedIn())
                     || (!$user->isUser() and $creator->isVisibleForAll()) ) {
@@ -2221,7 +2230,7 @@ class cs_detail_view extends cs_view {
                $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
             }
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
          unset($params);
       } else {
@@ -2234,7 +2243,7 @@ class cs_detail_view extends cs_view {
             }
             unset($current_user_item);
          }else{
-            $temp_html = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+            $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
       }
       $html .= '   <tr>'.LF;
@@ -2267,7 +2276,7 @@ class cs_detail_view extends cs_view {
             }elseif(isset($modificator) and  !$modificator->isDeleted()){
                 $temp_text = '<span class="disabled">'.$modificator->getFullname().'</span>';
             }else{
-                $temp_text = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+                $temp_text = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
             $modifier_array[] = $temp_text;
          } elseif ( ($user->isUser() and isset($modificator) and  $modificator->isVisibleForLoggedIn())
@@ -2286,7 +2295,7 @@ class cs_detail_view extends cs_view {
                   $modifier_array[] = '<span class="disabled">'.$modificator->getFullname().'</span>';
                }
             }else{
-               $modifier_array[] = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+               $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
             unset($params);
          } else {
@@ -2299,7 +2308,7 @@ class cs_detail_view extends cs_view {
                }
                unset($current_user_item);
             }else{
-               $modifier_array[] = '<span class="disabled">'.getMessage('COMMON_DELETED_USER').'</span>';
+               $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
          }
       }
@@ -2525,12 +2534,12 @@ class cs_detail_view extends cs_view {
                  or !$with_htmltextarea
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                $html .= '<div style="padding-left:5px;">';
-               $text .= '<div class="bold">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2551,12 +2560,12 @@ class cs_detail_view extends cs_view {
                     and $current_browser != 'safari')
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                $html .= '<div style="padding-left:5px;">';
-               $text .= '<div class="bold" >'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $text .= '<div class="bold" >'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2583,10 +2592,10 @@ class cs_detail_view extends cs_view {
                                               '',
                                               false
                                             );
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
                      $html .= '<div style="padding-left:5px;">';
-                     $text .= '<div class="bold">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2600,12 +2609,12 @@ class cs_detail_view extends cs_view {
                      $html .= '</div>'.LF;
                   } else {
                      $html .= $normal;
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                      $html .= '<div style="padding-left:5px;">';
-                     $text .= '<div class="bold">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2620,12 +2629,12 @@ class cs_detail_view extends cs_view {
                   }
                } else {
                   $html .= $normal;
-                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                  $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
                   $html .= '<div style="padding-left:5px;">';
-                  $text .= '<div class="bold">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                  $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                  $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                  $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                   $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                   $html .= $title;
                   $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2644,7 +2653,7 @@ class cs_detail_view extends cs_view {
             $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
             $html .= '<tr>'.LF;
             $html .= '<td style="padding-left:7px; padding-bottom:5px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
+            $html .= '<input name="option" value="'.$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
             $current_user = $this->_environment->getCurrentUser();
             $current_context = $this->_environment->getCurrentContextItem();
             if ( $current_user->isAutoSaveOn() ) {
@@ -2670,7 +2679,7 @@ class cs_detail_view extends cs_view {
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '   <script type="text/javascript">'.LF;
                $html .= '      <!--'.LF;
-               $html .= '         var breakCrit = "'.getMessage('DISCARTICLE_CHANGE_BUTTON').'"'.';'.LF;
+               $html .= '         var breakCrit = "'.$this->_translator->getMessage('DISCARTICLE_CHANGE_BUTTON').'"'.';'.LF;
                $html .= '         startclock();'.LF;
                $html .= '      -->'.LF;
                $html .= '   </script>'.LF;

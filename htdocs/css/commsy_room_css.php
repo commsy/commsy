@@ -465,7 +465,7 @@ h1{
 	float:right;
 	margin-top:3px;
 	padding:2px;
-    background:url(images/action_fader.png) repeat-x;
+   background:url(images/action_fader.png) repeat-x;
 }
 
 
