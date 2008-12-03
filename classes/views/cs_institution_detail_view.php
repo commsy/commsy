@@ -106,7 +106,15 @@ class cs_institution_detail_view extends cs_detail_view {
                                    $linktext);
                   unset($params);
                } else {
-                  $html .= '<span class="disabled">'.$linktext.'</span>';
+                  $current_user_item = $this->_environment->getCurrentUserItem();
+                  if ( $current_user_item->isGuest()
+                       and $member->isVisibleForLoggedIn()
+                     ) {
+                     $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
+                  } else {
+                     $html .= '<span class="disabled">'.$linktext.'</span>';
+                  }
+                  unset($current_user_item);
                }
                $html .= '</li>'.LF;
             }

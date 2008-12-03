@@ -1359,6 +1359,26 @@ class cs_user_item extends cs_item {
       return $user_list;
    }
 
+   public function getRelatedUserItemInContext ( $value ) {
+      $retour = NULL;
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $user_manager->setContextLimit($value);
+      $user_manager->setUserIDLimit($this->getUserID());
+      $user_manager->setAuthSourceLimit($this->getAuthSource());
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      if ( isset($user_list)
+           and $user_list->isNotEmpty()
+           and $user_list->getCount() == 1
+         ) {
+         $retour = $user_list->getFirst();
+      }
+      unset($user_manager);
+      unset($user_list);
+      return $retour;
+   }
+
    /**
     * @return object user_item User-Item from the community room
     */
@@ -1738,7 +1758,7 @@ class cs_user_item extends cs_item {
    }
 
    function getDataAsXML(){
-   	  return $this->_getDataAsXML();
+        return $this->_getDataAsXML();
    }
 }
 ?>

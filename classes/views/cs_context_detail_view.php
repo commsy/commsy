@@ -374,7 +374,17 @@ var $_room_type = 'context';
          $moda_list = $this->_item->getContactModeratorList();
          $moda_item = $moda_list->getFirst();
          while ($moda_item) {
-            $html_temp .= '<li>'.$this->_text_as_html_short($moda_item->getFullName()).'</li>';
+            $moda_item_here = $moda_item->getRelatedUserItemInContext($this->_environment->getCurrentContextID());
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isGuest()
+                 and isset($moda_item_here)
+                 and $moda_item_here->isVisibleForLoggedIn()
+               ) {
+               $html_temp .= '<li>'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</li>';
+            } else {
+               $html_temp .= '<li>'.$this->_text_as_html_short($moda_item->getFullName()).'</li>';
+            }
+            unset($current_user_item);
             $moda_item = $moda_list->getNext();
          }
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('ROOM_CONTACT').':</span>'.LF;
