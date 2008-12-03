@@ -605,6 +605,13 @@ $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_topic_form';
+define('TOPIC_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_user_close_form';
 define('USER_CLOSE_FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;
