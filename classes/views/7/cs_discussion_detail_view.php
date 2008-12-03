@@ -427,7 +427,15 @@ class cs_discussion_detail_view extends cs_detail_view {
 
             $creator = $article->getCreatorItem();
             if ( isset($creator) ) {
-               $creator_fullname = $creator->getFullName();
+               $current_user_item = $this->_environment->getCurrentUserItem();
+               if ( $current_user_item->isGuest()
+                    and $creator->isVisibleForLoggedIn()
+                  ) {
+                  $creator_fullname = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               } else {
+                  $creator_fullname = $creator->getFullName();
+               }
+               unset($current_user_item);
             } else {
                $creator_fullname = '';
             }
