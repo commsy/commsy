@@ -255,16 +255,16 @@ class cs_page_room_view extends cs_page_view {
          if ($current_context_item->isPrivateRoom()){
             switch ($link['module']) {
                case 'topic':
-                  $link_title = getMessage('COMMON_TOPICS');
+                  $link_title = $this->_translator->getMessage('COMMON_TOPICS');
                   break;
                case 'material':
-                  $link_title = getMessage('COMMON_MATERIALS');
+                  $link_title = $this->_translator->getMessage('COMMON_MATERIALS');
                   break;
                case 'user':
-                  $link_title = getMessage('COMMON_MY_USER_DESCRIPTION');
+                  $link_title = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
                   break;
                case 'myroom':
-                  $link_title = getMessage('PRIVATEROOMS');
+                  $link_title = $this->_translator->getMessage('PRIVATEROOMS');
                   break;
                default:
                   $link_title = $link['title'];
@@ -663,17 +663,17 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">';
 
       if ($this->_delete_box_mode == 'index'){
-         $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_INDEX_TITLE');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_TITLE');
          $html .= '</h2>';
          $count = 0;
          if($this->_delete_box_ids){
             $count = count($this->_delete_box_ids);
          }
          if($count == 1){
-            $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY',$count);
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY',$count);
             $html .= '</p>';
          }else{
-            $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION',$count);
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION',$count);
             $html .= '</p>';
          }
       } elseif ( $this->_environment->getCurrentFunction() == 'preferences'
@@ -682,39 +682,39 @@ class cs_page_room_view extends cs_page_view {
                    and $this->_environment->getCurrentFunction() == 'detail'
                  )
                ) {
-         $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
          $html .= '</h2>';
-         $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
          $html .= '</p>';
       } elseif ( $this->_environment->getCurrentModule() == 'material'
                    and $this->_environment->getCurrentFunction() == 'detail'
                    and (isset ($_GET['del_version']) and !empty($_GET['del_version']))
                ) {
-         $html .= '<h2>'.getMessage('COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION');
          $html .= '</h2>';
-         $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION');
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION');
          $html .= '</p>';
       }elseif ( $this->_environment->getCurrentModule() == 'configuration'
                    and $this->_environment->getCurrentFunction() == 'wiki'
                ) {
-         $html .= '<h2>'.getMessage('COMMON_DELETE_WIKI_TITLE');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WIKI_TITLE');
          $html .= '</h2>';
-         $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>';
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
-         $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE');
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');
          $html .= '</h2>';
-         $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION');
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION');
          $html .= '</p>';
          if( $user_item->isModerator() ) {
-            $html .= '<p style="text-align:left;">'.getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
             $html .= '</p>';
          }
       }
       $html .= '<div>';
-      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
-      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
+      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
+      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
       if ( ( $this->_environment->getCurrentModule() == 'configuration'
              and $this->_environment->getCurrentFunction() == 'preferences'
            )
@@ -723,7 +723,7 @@ class cs_page_room_view extends cs_page_view {
              and $this->_environment->getCurrentFunction() == 'detail'
            )
          ) {
-         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
       }
       $html .= '</div>';
       $html .= '</form>';
@@ -907,7 +907,7 @@ class cs_page_room_view extends cs_page_view {
                }
                foreach ($this->_views_left as $view) {
                   if (!$this->_environment->inPrivateRoom()){
-                     if ($view->getViewName() != getMessage('COMMON_INFORMATION_INDEX')){
+                     if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
                         $html .= '<div class="commsy_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
                      }else{
                         $html .= '<div id="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
@@ -932,9 +932,9 @@ class cs_page_room_view extends cs_page_view {
                      }else{
                         $image_text = 'material';
                      }
-                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;" alt="'.getMessage('COMMON_NEW_MATERIAL').'"/>';
+                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;" alt="'.$this->_translator->getMessage('COMMON_NEW_MATERIAL').'"/>';
                      $title = addslashes($image.' '.$view->getViewTitle());
-                     if ($view->getViewName() != getMessage('COMMON_INFORMATION_INDEX')){
+                     if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
                        $item_list = $view->getList();
                        $size = 10;
                        if ( isset($item_list) ) {
@@ -1043,7 +1043,7 @@ class cs_page_room_view extends cs_page_view {
          // @segment-end 13258
          // @segment-begin 38811 asHTML():image+link-to page_top
          $html .= '<div class="footer">'.LF;
-         $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.getMessage('COMMON_TOP_OF_PAGE').'</a>';
+         $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.$this->_translator->getMessage('COMMON_TOP_OF_PAGE').'</a>';
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
 
@@ -1089,7 +1089,7 @@ class cs_page_room_view extends cs_page_view {
           // service link
 
           if ( $current_context->withAGB() and $this->_with_agb_link ) {
-             $desc_link = ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
+             $desc_link = ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',$this->_translator->getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
           } else {
              $desc_link ='';
           }
@@ -1252,7 +1252,7 @@ class cs_page_room_view extends cs_page_view {
          unset($params['show_profile']);
          $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_MY_COPIES'),'','','','','','','style="color:#800000"').''.LF;
       }else{
-         $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.'<span class="disabled">'.getMessage('MYAREA_MY_COPIES').'</span>'.LF;
+         $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.'<span class="disabled">'.$this->_translator->getMessage('MYAREA_MY_COPIES').'</span>'.LF;
       }
       return $html;
    }

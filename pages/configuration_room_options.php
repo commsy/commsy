@@ -38,25 +38,25 @@ $context_item = $environment->getCurrentContextItem();
 if ($current_user->isGuest()) {
    if (!$context_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $context_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $context_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 } elseif (!$current_user->isModerator()) {
    include_once('classes/cs_errorbox_view.php');
    $errorbox = new cs_errorbox_view( $environment,
                                       true );
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 }
 
 if ($command != 'error') { // only if user is allowed to edit colors
@@ -118,15 +118,13 @@ if ($command != 'error') { // only if user is allowed to edit colors
       $form->setItem($context_item);
    }
 
-
-
    $form->prepareForm();
    $form->loadValues();
 
    if ( !empty($command) and isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
-	// Save item
+   // Save item
    elseif ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ($correct){
@@ -134,7 +132,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
             $context_item->setTitle($_POST['title']);
          }
          $color = $context_item->getColorArray();
-	      if ( isset($_POST['color_choice'])) {
+         if ( isset($_POST['color_choice'])) {
             global $cs_color;
             if ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_1'){
                $color = $cs_color['SCHEMA_1'];
@@ -269,9 +267,29 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
          $context_item->setCommunityListByID($community_room_array);*/
          $context_item->setColorArray($color);
-    	   $context_item->save();
-    	   // save room_item
+
+         if ( isset($_POST['language']) ) {
+            $language = $_POST['language'];
+            if ($_POST['language'] == 'enabled') {
+               $language = 'user';
+            }
+            $old_language = $context_item->getLanguage();
+            if ( $old_language != $language ) {
+               $context_item->setLanguage($language);
+               $environment->unsetSelectedLanguage();
+            }
+         }
+         $context_item->save();
+         $environment->setCurrentContextItem($context_item);
+          // save room_item
    #      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
+         $class_params= array();
+         $class_params['environment'] = $environment;
+         $form = $class_factory->getClass(CONFIGURATION_ROOM_OPTIONS_FORM,$class_params);
+         unset($class_params);
+         $form->setItem($context_item);
+         $form->prepareForm();
+         $form->loadValues();
          $form_view->setItemIsSaved();
          $is_saved = true;
       }

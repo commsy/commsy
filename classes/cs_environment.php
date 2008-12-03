@@ -169,11 +169,18 @@ class cs_environment {
    * sets the current room id.
    *
    * @var integer        id
-   *
-   * @author CommSy Development Group
    */
    function setCurrentContextID($id) {
       $this->current_context_id = $id;
+   }
+
+  /** set id of the current room
+   * sets the current room as object.
+   *
+   * @var object value context item
+   */
+   public function setCurrentContextItem ($value) {
+      $this->current_context = $value;
    }
 
   /** get the current room item
@@ -1276,6 +1283,10 @@ class cs_environment {
          }
       }
       return $this->_selected_language;
+   }
+
+   public function unsetSelectedLanguage () {
+      $this->_selected_language = NULL;
    }
 
    function getUserLanguage () {
