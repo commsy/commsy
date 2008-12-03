@@ -65,6 +65,8 @@ class cs_detail_view extends cs_view {
 
    var $_with_slimbox = false;
 
+   var $_right_box_config = array();
+
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
     *
@@ -81,6 +83,10 @@ class cs_detail_view extends cs_view {
       $this->cs_view($params);
       $this->_openCreatorInfo = $creatorInfoStatus;
       $context_item = $this->_environment->getCurrentContextItem();
+      $this->_right_box_config['title_string']  = '';
+      $this->_right_box_config['desc_string']   = '';
+      $this->_right_box_config['config_string'] = '';
+      $this->_right_box_config['size_string']   = '';
    }
 
 
@@ -255,21 +261,6 @@ class cs_detail_view extends cs_view {
          $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
-      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['action'] = 'delete';
-         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                     $this->_environment->getCurrentModule(),
-                                     'detail',
-                                     $params,
-                                     $image,
-                                     getMessage('COMMON_DELETE_ITEM')).LF;
-         unset($params);
-      } else {
-         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
       return $html;
 
    }
@@ -278,39 +269,8 @@ class cs_detail_view extends cs_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      if ( $current_user->isUser() and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = 'NEW';
-         $image = '<img src="images/commsyicons/22x22/new.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'edit',
-                                    $params,
-                                    $image,
-                                    getMessage('COMMON_NEW_ITEM')).LF;
-         unset($params);
-      } else {
-         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
+      $html .= $this->_getDetailItemActionsAsHTML($item);
       $html .= $this->_getAdditionalActionsAsHTML($item);
-      $params = $this->_environment->getCurrentParameterArray();
-      if ( $current_user->isUser() and !in_array($item->getItemID(), $this->_getClipboardIdArray()) ) {
-         $params = array();
-         $params['iid'] = $item->getItemID();
-         $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
-         $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'detail',
-                                    $params,
-                                    $image,
-                                    getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
-         unset($params);
-      } else {
-         $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
@@ -350,6 +310,38 @@ class cs_detail_view extends cs_view {
                                     getMessage('COMMON_DOWNLOAD')).LF;
       unset($params['download']);
       unset($params['mode']);
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( $current_user->isUser() and !in_array($item->getItemID(), $this->_getClipboardIdArray()) ) {
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
+         $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'detail',
+                                    $params,
+                                    $image,
+                                    getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      if ( $current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = 'NEW';
+         $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'edit',
+                                    $params,
+                                    $image,
+                                    getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
       return $html;
    }
 
@@ -411,22 +403,277 @@ class cs_detail_view extends cs_view {
    }
 
 
+   function getListEntriesAsHTML(){
+   	  $html = '';
+      $ids = $this->getBrowseIDs();
 
-
-   function _getForwardBoxAsHTML () {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $html  = '';
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }
+      $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if ( $current_context->isBuzzwordShowExpanded() ){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
-      $html .= '<div style="white-space:nowrap;">'.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div style="white-space:nowrap;">'.'Liste ausgewählter Materialien ('.count($ids).')</div>'.LF;
       $html .='</div>'.LF;
-      $html .= '<div class="right_box_main" >'.LF;
-      $html .= $this->_getDetailActionsAsHTML($this->_item);
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
+      $html .= '<div class="right_box_main" style="padding:0px;" >'.LF;
 
-     return $html;
+      $count = 0;
+      $pos = 0;
+      foreach($ids as $id){
+         if ($id == $this->_item->getItemID()){
+         	$pos = $count;
+         }else{
+         	$count++;
+         }
+      }
+      $start = $pos-2;
+      $end = $pos+2;
+      if($start < 0){
+      	 $end = $end - $start;
+      }
+      if($end > count($ids)){
+        $end = count($ids);
+        $start = $end-5;
+        if ($start <0){
+        	$start = 0;
+        }
+      }
+      $listed_ids = array();
+      $manager = $this->_environment->getManager($this->_environment->getCurrentModule());
+      $params = $this->_environment->getCurrentParameterArray();
+      $count_items = 0;
+      if ($start > 0){
+      	 $forward_start = $start-5;
+      	 if ($forward_start<0){
+      	 	$forward_start = 0;
+      	 }
+      	 $start_id = $start-3;
+      	 if($start_id <0){
+      	 	$start_id = 0;
+      	 }
+      	 $item = $manager->getItem($ids[$start_id]);
+         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
+      	 $html .='<li style="padding:0px 5px;">';
+         $params['iid'] =	$item->getItemID();
+         unset($item);
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 'Einträge '.($forward_start+1).' bis '.($start)
+                                 );
+      	 $html .='</li>';
+      	 $html .='</ul>';
+      }
+      $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
+      foreach($ids as $id){
+         if ($count_items >= $start and $count_items <= $end){
+            $item = $manager->getItem($ids[$count_items]);
+            if ($item->getItemID()== $this->_item->getItemID()){
+               $html .='<li class="detail_list_entry" style="padding:0px 5px;">';
+               $html .= '<span>'.chunkText($item->getTitle(),35).'</span>';
+            }else{
+               $html .='<li style="padding:0px 5px;">';
+               $params['iid'] =	$item->getItemID();
+               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 chunkText($item->getTitle(),35),
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 'class="detail_list"');
+            }
+            $html .='</li>';
+            unset($item);
+         }else{
+            $html .='<li style="visibility:hidden; height:0px;">&nbsp;</li>';
+         }
+         $count_items++;
+      }
+      $html .='</ul>';
+      unset($params);
+      if ($end < (count($ids)-1)){
+      	 $start_id = $end + 3;
+      	 if($start_id > (count($ids)-1)){
+      	 	$start_id = (count($ids)-1);
+      	 }
+      	 $forward_end = $end + 5;
+      	 if (($forward_end) > (count($ids)-1)){
+      	 	$forward_end = (count($ids)-1);
+      	 }
+      	 $item = $manager->getItem($ids[$start_id]);
+         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:0px; margin-top:0px; padding-bottom:2px;">  '.LF;
+      	 $html .='<li style="padding:0px 5px;">';
+         $params['iid'] =	$item->getItemID();
+         unset($item);
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 'Einträge '.($end+2).' bis '.($forward_end+1)
+                                 );
+      	 $html .='</li>';
+      	 $html .='</ul>';
+      }
+      $html .='</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+   	  return $html;
+   }
+
+   function _getForwardBoxAsHTML () {
+   	  $html = '';
+      $ids = $this->getBrowseIDs();
+
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $this->_right_box_config['title_string'] .= $separator.'"'.'Liste ausgewählter Materialien ('.count($ids).')"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if (!(isset($_GET['path']) and !empty($_GET['path']))){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
+      $html .= '         <noscript>';
+      $html .= '<div class="right_box_title">'.LF;
+      $html .= '<div style="white-space:nowrap;">'.'Liste ausgewählter Materialien ('.count($ids).')</div>'.LF;
+      $html .='</div>'.LF;
+      $html .= '         </noscript>';
+      $html .= '<div class="right_box_main" style="padding:0px;" >'.LF;
+
+      $count = 0;
+      $pos = 0;
+      foreach($ids as $id){
+         if ($id == $this->_item->getItemID()){
+         	$pos = $count;
+         }else{
+         	$count++;
+         }
+      }
+      $start = $pos-2;
+      $end = $pos+2;
+      if($start < 0){
+      	 $end = $end - $start;
+      }
+      if($end > count($ids)){
+        $end = count($ids);
+        $start = $end-5;
+        if ($start <0){
+        	$start = 0;
+        }
+      }
+      $listed_ids = array();
+      $manager = $this->_environment->getManager($this->_environment->getCurrentModule());
+      $params = $this->_environment->getCurrentParameterArray();
+      $count_items = 0;
+      if ($start > 0){
+      	 $forward_start = $start-5;
+      	 if ($forward_start<0){
+      	 	$forward_start = 0;
+      	 }
+      	 $start_id = $start-3;
+      	 if($start_id <0){
+      	 	$start_id = 0;
+      	 }
+      	 $item = $manager->getItem($ids[$start_id]);
+         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
+      	 $html .='<li style="padding:0px 5px;">';
+         $params['iid'] =	$item->getItemID();
+         unset($item);
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 'Einträge '.($forward_start+1).' bis '.($start)
+                                 );
+      	 $html .='</li>';
+      	 $html .='</ul>';
+      }
+      $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
+      foreach($ids as $id){
+         if ($count_items >= $start and $count_items <= $end){
+            $item = $manager->getItem($ids[$count_items]);
+            if ($item->getItemID()== $this->_item->getItemID()){
+               $html .='<li class="detail_list_entry" style="padding:0px 5px;">';
+               $html .= '<span>'.chunkText($item->getTitle(),35).'</span>';
+            }else{
+               $html .='<li style="padding:0px 5px;">';
+               $params['iid'] =	$item->getItemID();
+               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 chunkText($item->getTitle(),35),
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 'class="detail_list"');
+            }
+            $html .='</li>';
+            unset($item);
+         }else{
+            $html .='<li style="visibility:hidden; height:0px;">&nbsp;</li>';
+         }
+         $count_items++;
+      }
+      $html .='</ul>';
+      unset($params);
+      if ($end < (count($ids)-1)){
+      	 $start_id = $end + 3;
+      	 if($start_id > (count($ids)-1)){
+      	 	$start_id = (count($ids)-1);
+      	 }
+      	 $forward_end = $end + 5;
+      	 if (($forward_end) > (count($ids)-1)){
+      	 	$forward_end = (count($ids)-1);
+      	 }
+      	 $item = $manager->getItem($ids[$start_id]);
+         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:0px; margin-top:0px; padding-bottom:2px;">  '.LF;
+      	 $html .='<li style="padding:0px 5px;">';
+         $params['iid'] =	$item->getItemID();
+         unset($item);
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $this->_environment->getCurrentModule(),
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 'Einträge '.($end+2).' bis '.($forward_end+1)
+                                 );
+      	 $html .='</li>';
+      	 $html .='</ul>';
+      }
+      $html .='</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= $this->_getAllPathsAsHTML();
+      return $html;
    }
 
 
@@ -713,7 +960,10 @@ class cs_detail_view extends cs_view {
       $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div class="content_display_width">'.LF;
+      $html .='<div class="content_display_width" style="width:71%">'.LF;
+      $html .='<div id="action_box">';
+      $html .= $this->_getDetailActionsAsHTML($this->_item);
+      $html .='</div>';
       $html .='<div style="vertical-align:bottom;">'.LF;
       $tempMessage = '';
       switch ( strtoupper($this->_environment->getCurrentModule()) ) {
@@ -790,35 +1040,37 @@ class cs_detail_view extends cs_view {
       $html .= $this->_getDetailPageHeaderAsHTML();
 
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $title_string = '';
-         $desc_string = '';
-         $config_text = '';
-         $size_string = '';
+         $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
          $html .='<div style="float:right; width:27%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div>'.LF;
          $html .='<div style="width:250px;">'.LF;
          $html .='<div id="commsy_panels">'.LF;
 
-         $html .='<div style="margin-bottom:1px;">'.LF;
          $html .= $this->_getForwardBoxAsHTML($item);
-         $html .='</div>'.LF;
          $first = false;
          $separator = '';
 
+          /**********Netnaviation*********/
+         if ( $this->showNetnavigation() ){
+            $html .= $this->_getAllLinkedItemsAsHTML($item);
+         }
+
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
-            $title_string .= $separator.'"'.getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
-            $desc_string .= $separator.'""';
-            $size_string .= $separator.'"10"';
-            if ( $current_context->isBuzzwordShowExpanded() ){
-               $config_text .= $separator.'true';
-            } else {
-               $config_text .= $separator.'false';
+            if(!empty($this->_right_box_config['title_string'])){
+               $separator = ',';
             }
-            if ($first == false ){
-               $first = true;
-                $separator = ',';
+            $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
+            $this->_right_box_config['desc_string'] .= $separator.'""';
+            $this->_right_box_config['size_string'] .= $separator.'"10"';
+            if ( $current_context->isBuzzwordShowExpanded() ){
+               $this->_right_box_config['config_string'] .= $separator.'true';
+            } else {
+               $this->_right_box_config['config_string'] .= $separator.'false';
+            }
+            if(!empty($this->_right_box_config['title_string'])){
+               $separator = ',';
             }
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->_getBuzzwordBoxAsHTML($item);
@@ -828,46 +1080,22 @@ class cs_detail_view extends cs_view {
 
          /***********Tags*************/
          if ( $this->showTags() ) {
-            $title_string .= $separator.'"'.getMessage('COMMON_ATTACHED_TAGS').'"';
-            $desc_string .= $separator.'""';
-            $size_string .= $separator.'"10"';
-            if ( $current_context->isTagsShowExpanded() ){
-               $config_text .= $separator.'true';
-            } else {
-               $config_text .= $separator.'false';
-            }
-            if ($first == false ){
-               $first = true;
+            if(!empty($this->_right_box_config['title_string'])){
                $separator = ',';
+            }
+            $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_ATTACHED_TAGS').'"';
+            $this->_right_box_config['desc_string'] .= $separator.'""';
+            $this->_right_box_config['size_string'] .= $separator.'"10"';
+            if ( $current_context->isTagsShowExpanded() ){
+               $this->_right_box_config['config_string'] .= $separator.'true';
+            } else {
+               $this->_right_box_config['config_string'] .= $separator.'false';
             }
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->_getTagBoxAsHTML($item);
             $html .='</div>'.LF;
          }
 
-          /**********Netnaviation*********/
-         if ( $this->showNetnavigation() ){
-            $title_string .= $separator.'"'.getMessage('COMMON_NETNAVIGATION').'"';
-            $desc_string .= $separator.'""';
-            $size_string .= $separator.'"10"';
-            if($current_context->isNetnavigationShowExpanded()
-            or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
-            or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
-            or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
-            or isset($_GET['path'])
-            ){
-               $config_text .= $separator.'true';
-            } else {
-               $config_text .= $separator.'false';
-            }
-            if ($first == false ){
-               $first = true;
-               $separator = ',';
-            }
-            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
-            $html .= $this->_getAllLinkedItemsAsHTML($item);
-            $html .='</div>'.LF;
-         }
          $html .='</div>'.LF;
          $html .='</div>'.LF;
          $html .='</div>'.LF;
@@ -889,12 +1117,15 @@ class cs_detail_view extends cs_view {
       $html .='<div id="detail_headline">'.LF;
 
 
-      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
-         $html .= '<div style="float:right; padding:3px 5px 4px 5px;">'.LF;
-         $html .= $this->_getDetailItemActionsAsHTML($item);
-         $html .= '</div>'.LF;
-      }
+#      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
+#         $html .= '<div style="float:right; padding:3px 5px 4px 5px;">'.LF;
+#         $html .= $this->_getDetailItemActionsAsHTML($item);
+#         $html .= '</div>'.LF;
+#      }
       $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
+#      $html .='<div style="float:right;">';
+#      $html .= $this->_getDetailActionsAsHTML($this->_item);
+#      $html .='</div>';
       if($rubric == CS_DISCUSSION_TYPE){
          $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
       }elseif ($rubric != CS_USER_TYPE ){
@@ -984,9 +1215,9 @@ class cs_detail_view extends cs_view {
          $current_browser = strtolower($this->_environment->getCurrentBrowser());
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
-            $html .= 'preInitCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+            $html .= 'preInitCommSyPanels(Array('.$this->_right_box_config['title_string'].'),Array('.$this->_right_box_config['desc_string'].'),Array('.$this->_right_box_config['config_string'].'), Array(),Array('.$this->_right_box_config['size_string'].'));'.LF;
          }else{
-            $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+            $html .= 'initCommSyPanels(Array('.$this->_right_box_config['title_string'].'),Array('.$this->_right_box_config['desc_string'].'),Array('.$this->_right_box_config['config_string'].'), Array(),Array('.$this->_right_box_config['size_string'].'));'.LF;
          }
          $html .= '</script>'.LF;
       }
@@ -1181,12 +1412,14 @@ class cs_detail_view extends cs_view {
    }
 
 
-   function _getAllLinkedItemsAsHTML ($spaces=0) {
+   function _getAllPathsAsHTML(){
+   	  $html = '';
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
       $current_context = $this->_environment->getCurrentContextItem();
       $path_counter = 0;
       $path_entry_counter = 0;
+      $counter = 1;
       if ($current_context->withPath()){
          $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
          $path_counter = $topic_link_items->getCount();
@@ -1205,28 +1438,89 @@ class cs_detail_view extends cs_view {
             $link_item = $topic_link_items->getNext();
          }
       }
-      $link_items = $item->getLatestLinkItemList(10);
-      $count_max_entries = $link_items->getCount();
-      $count_rubrics = count($connections);
-      $rubric_height = ($count_rubrics + $path_counter) * 20;
-      if ($path_entry_counter > $count_max_entries){
-         $entry_height = 25 + ($path_entry_counter * 15);
+      $current_context = $this->_environment->getCurrentContextItem();
+      if ($current_context->withPath()){
+         $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
+         $link_item = $topic_link_items->getFirst();
+         while($link_item){
+            if (isset($link_item) and !empty($link_item)){
+               $topic_item = $link_item->getLinkedItem($item);
+               if ($topic_item->isPathActive()){
+                  $path_item_list = $topic_item->getPathItemList();
+                  $in_list = $path_item_list->inList($item);
+                  if ($in_list){
+                     $title = $topic_item->getTitle();
+                     $length = strlen($title);
+                     if ( $length > 22 ) {
+                        $title = substr($title,0,22).'...';
+                     }
+                     $params['iid'] = $topic_item->getItemID();
+                     $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
+                     $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title));
+      $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
       }else{
-         $entry_height = $count_max_entries * 15;
+         $separator = '';
       }
-      $height = 40 - $count_rubrics;
-      $final_height = $height + $entry_height + $rubric_height;
+      $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('TOPIC_PATH').': '.$title.'"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      $this->_right_box_config['config_string'] .= $separator.'true';
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+				     $html .= '<div class="right_box">'.LF;
+      $html .= '         <noscript>';
+      $html .= '<div class="right_box_title">'.getMessage('TOPIC_PATH').': '.$title.'</div>';
+      $html .= '         </noscript>';
+                     $html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
+				     $html .='</div>'.LF;
+				     $html .='</div>'.LF;
+                     $parameter_array = $this->_environment->getCurrentParameterArray();
+                     if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()){
+                        $show_entry = $counter;
+                     }else{
+                        $counter++;
+                     }
+                  }
+               }
+            }
+            $link_item = $topic_link_items->getNext();
+         }
+         $item = $this->getItem();
+         $type = $item->getItemType();
+         if ($type == CS_TOPIC_TYPE and $item->isPathActive()){
+            $show_entry = '-1';
+         }
+      }
+   	  return $html;
+   }
+
+   function _getAllLinkedItemsAsHTML ($spaces=0) {
       $html = '';
-      $html .= '<div id="netnavigation'.$item->getItemID().'" style="height:'.$final_height.'px;">'.LF;
+      $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $this->_right_box_config['title_string'] .= $separator.'"'.getMessage('COMMON_NETNAVIGATION_ENTRIES').'"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if($current_context->isNetnavigationShowExpanded()){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $connections = $this->getRubricConnections();
+      $item = $this->getItem();
+      $link_items = $item->getLatestLinkItemList(10);
+      $html .= '<div id="netnavigation'.$item->getItemID().'">'.LF;
       $html .= '<div class="netnavigation" >'.LF;
 
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';
-      if ($this->_environment->getCurrentModule() != CS_GROUP_TYPE
-          and $this->_environment->getCurrentModule() != CS_TOPIC_TYPE
-          and $this->_environment->getCurrentModule() != CS_INSTITUTION_TYPE
-      ){
       $html .='		<div class="no_netnavigation_panel" style="padding-top: 1px; margin-top:0px;">     '.LF;
       $html .='				<div class="latest_netnavigation_panel"><ul style="list-style-type: circle; font-size:8pt;">'.LF;
       if ($link_items->isEmpty()) {
@@ -1353,145 +1647,16 @@ class cs_detail_view extends cs_view {
       }
       $html .= '</ul></div>'.LF;
       $html .= '</div>'.LF;
-      }else{
-      $counter = 1;
-      foreach ( $connections as $connection ) {
-         $link_items = $item->getLinkItemList($connection);
-         $count = $link_items->getCount();
-         if ( $connection != CS_USER_TYPE){
-            $html .='		<div class="netnavigation_panel">     '.LF;
-            $context = $this->_environment->getCurrentContextItem();
-            if ($connection != CS_INSTITUTION_TYPE or $context->withRubric(CS_INSTITUTION_TYPE)) {
-               $text = '';
-               switch ( strtoupper($connection) )
-               {
-                  case 'ANNOUNCEMENT':
-                     $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
-                     break;
-                  case 'DATE':
-                     $text .= $this->_translator->getMessage('DATES');
-                     break;
-                  case 'DISCUSSION':
-                     $text .= $this->_translator->getMessage('DISCUSSIONS');
-                     break;
-                  case 'GROUP':
-                     $text .= $this->_translator->getMessage('GROUPS');
-                     break;
-                  case 'INSTITUTION':
-                     $text .= $this->_translator->getMessage('INSTITUTIONS');
-                     break;
-                  case 'MATERIAL':
-                     $text .= $this->_translator->getMessage('MATERIALS');
-                     break;
-                  case 'MYROOM':
-                     $html .= $this->_translator->getMessage('MYROOMS');
-                     break;
-                  case 'PROJECT':
-                     $text .= $this->_translator->getMessage('PROJECTS');
-                     break;
-                  case 'TODO':
-                     $text .= $this->_translator->getMessage('TODOS');
-                     break;
-                  case 'TOPIC':
-                     $text .= $this->_translator->getMessage('TOPICS');
-                     break;
-                  case 'USER':
-                     $text .= $this->_translator->getMessage('USERS');
-                     break;
-                  default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
-                     break;
-               }
-               if ( !isset($title_string) or empty($title_string) ){
-                  $title_string = '"'.$text;
-                  $title_string .= ' ('.$link_items->getCount().')"';
-               }else{
-                  $title_string .= ',"'.$text;
-                  $title_string .= ' ('.$link_items->getCount().')"';
-               }
-               if ( !isset($expanded_string) or empty($expanded_string) ){
-                  $expanded_string = 'false';
-               }else{
-                  $expanded_string .= ',false';
-               }
-               $html .= '         <noscript>';
-               $html .= '<div class="netnavigation_title">'.$text.'('.$link_items->getCount().')</div>';
-               $html .= '         </noscript>';
-               $html .= $this->_getLinkedItemsAsHTML($item, $link_items, $connection,
-               $this->_is_perspective($connection),
-                                      true,
-                                      true);
-            }
-            $html .='			</div> ';
-            $counter++;
-         }
-      }
-      }
-      $show_entry = '0';
-      if (!isset($counter)){
-         $counter = 0;
-      }
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ($current_context->withPath()){
-         $topic_link_items = $item->getLinkItemList(CS_TOPIC_TYPE);
-         $link_item = $topic_link_items->getFirst();
-         while($link_item){
-            if (isset($link_item) and !empty($link_item)){
-               $topic_item = $link_item->getLinkedItem($item);
-               if ($topic_item->isPathActive()){
-                  $path_item_list = $topic_item->getPathItemList();
-                  $in_list = $path_item_list->inList($item);
-                  if ($in_list){
-                     $title = $topic_item->getTitle();
-                     $length = strlen($title);
-                     if ( $length > 22 ) {
-                        $title = substr($title,0,22).'...';
-                     }
-                     $params['iid'] = $topic_item->getItemID();
-                     $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
-                     $title = addslashes(ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title));
-                     $html .='		<div class="netnavigation_panel">     '.LF;
-                     $html .= '         <noscript>';
-                     $html .= '<div class="netnavigation_title">'.getMessage('TOPIC_PATH').': '.$noscript_title.'</div>';
-                     $html .= '         </noscript>';
-                     $html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
-                     if (isset($title_string) and !empty($title_string)){
-                        $title_string .= ',"'.getMessage('TOPIC_PATH').': '.$title.'"';
-                     }else{
-                        $title_string = '"'.getMessage('TOPIC_PATH').': '.$title.'"';
-                     }
-                     $parameter_array = $this->_environment->getCurrentParameterArray();
-                     if (isset($parameter_array['path']) and $parameter_array['path'] == $topic_item->getItemID()){
-                        $show_entry = $counter;
-                     }else{
-                        $counter++;
-                     }
-                  }
-               }
-            }
-            $link_item = $topic_link_items->getNext();
-         }
-         $item = $this->getItem();
-         $type = $item->getItemType();
-         if ($type == CS_TOPIC_TYPE and $item->isPathActive()){
-            $show_entry = '-1';
-         }
-      }
       $html .='		<!-- END OF MENU -->';
       $html .='      </div>';
       $html .='      </div>';
-      if (isset($title_string) and !empty($title_string)){
-         $html .= '<script type="text/javascript">'.LF;
-         $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-         $html .= 'initDhtmlNetnavigation("netnavigation",Array('.$title_string.'),'.$show_entry.',"'.$item->getItemID().'");'.LF;
-         $html .= '</script>'.LF;
-      }
+      $html .='      </div>';
       return $html;
    }
 
    function _getPathItemsAsHTML($topic_item,$item_id,$path_item_list){
       $html  ='<div>'.LF;
-      $html .='<ol style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:2px; padding-bottom:2px;">  '.LF;
+      $html .='<ol style="list-style-type: decimal; list-style-position:inside; font-size:8pt; margin:0px; padding:0px;">  '.LF;
       $path_item_list = $topic_item->getPathItemList();
       $path_item = $path_item_list->getFirst();
       while($path_item){
@@ -1540,7 +1705,6 @@ class cs_detail_view extends cs_view {
       }
       $html .='</ol>'.LF;
       $html .=' </div>'.LF;
-      $html .=' </div>';
       return $html;
    }
 
@@ -1838,7 +2002,6 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&lt;&lt;</span>'.LF;
       }
-      $html .= '|';
       if ( $browse_left > 0 ) {
          $image = '<span class="bold">&lt;</span>';
          $params = array();
@@ -1855,8 +2018,12 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&lt;</span>'.LF;
       }
-      $html .= '|';
       // Show position
+      if ( empty($ids) ) {
+         $html .= '<span class="bold"> 1 / 1 </span>'.LF;
+      } else {
+         $html .= '<span class="bold"> '.($pos+1).' / '.$count_all.' </span>'.LF;
+      }
 
       // create HTML for browsing arrows to left
       if ( $browse_right > 0 ) {
@@ -1873,7 +2040,6 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&gt;</span>'.LF;
       }
-      $html .= '|';
       if ( $browse_end > 0 ) {
          $image = '<span class="bold">&gt;&gt;</span>';
          $params = array();
@@ -1889,14 +2055,6 @@ class cs_detail_view extends cs_view {
       } else {
          $html .= '         <span>&gt;&gt;</span>'.LF;
       }
-      $html .= '</div>';
-      $html .= '<div>';
-      if ( empty($ids) ) {
-         $html .= '<span class="bold">'.getMessage('COMMON_PAGE').' 1 / 1</span>'.LF;
-      } else {
-         $html .= '<span class="bold">'.getMessage('COMMON_PAGE').' '.($pos+1).' / '.$count_all.'</span>'.LF;
-      }
-      $html .= '';
       $html .= '</div>';
 
 

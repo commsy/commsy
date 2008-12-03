@@ -67,7 +67,10 @@ class cs_section_form extends cs_rubric_form {
     */
    function cs_section_form($params) {
       $this->cs_rubric_form($params);
-      $this->_material_id = $params['material_id'];
+   }
+
+   function setMaterialID($iid){
+      $this->_material_id = $iid;
    }
 
    /** set materials from session

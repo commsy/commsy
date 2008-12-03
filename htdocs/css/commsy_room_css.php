@@ -461,6 +461,14 @@ h1{
    font-size: 14pt;
 }
 
+#action_box{
+	float:right;
+	margin-top:3px;
+	padding:2px;
+    background:url(images/action_fader.png) repeat-x;
+}
+
+
 #copy_content{
    margin-bottom:20px;
    padding:0px

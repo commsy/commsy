@@ -327,6 +327,10 @@ table.creator_info td.key {
     cursor:pointer;
 }
 
+li.detail_list_entry{
+   background-color:#EFEFEF;
+}
+
 li.path_list{
    background-color: #dddddd;
 }

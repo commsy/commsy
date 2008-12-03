@@ -78,8 +78,8 @@ class cs_topic_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_topic_form($environment) {
-      $this->cs_rubric_form($environment);
+   function cs_topic_form($params) {
+      $this->cs_rubric_form($params);
    }
 
    /** set materials from session
