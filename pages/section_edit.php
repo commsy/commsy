@@ -110,9 +110,9 @@ else {
    // include form
    $class_params= array();
    $class_params['environment'] = $environment;
-   $class_params['material_id'] = $material_ref_iid;
    $form = $class_factory->getClass(SECTION_FORM,$class_params);
    unset($class_params);
+   $form->setMaterialID($material_ref_iid);
 
    // Find out what to do
    if ( isset($_POST['option']) ) {
@@ -137,7 +137,11 @@ else {
    // save section or goto attach materials
    else {
       // initialize form
-      $form = new cs_section_form($environment,$material_ref_iid);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(SECTION_FORM,$class_params);
+      unset($class_params);
+      $form->setMaterialID($material_ref_iid);
 
       // files
       include_once('include/inc_fileupload_edit_page_handling.php');
