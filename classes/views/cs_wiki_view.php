@@ -80,8 +80,9 @@ class cs_wiki_view extends cs_view {
       if ( empty($array[1]) ) {
          // internal resource
          $file_name_array = $this->_getItemFileListForView();
-         if ( !empty($array[2]) and !empty($file_name_array[$array[2]]) ) {
-            $file = $file_name_array[$array[2]];
+         $temp_file_name = htmlentities($array[2]);
+         if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
+            $file = $file_name_array[$temp_file_name];
          }
          if ( isset($file) ) {
             if ( stristr(strtolower($file->getFilename()),'png')
@@ -215,7 +216,8 @@ class cs_wiki_view extends cs_view {
       $link_text = '';
       if ( !empty($array[1]) ) {
          $file_name_array = $this->_getItemFileListForView();
-         $file = $file_name_array[$array[1]];
+         $temp_file_name = htmlentities($array[1]);
+         $file = $file_name_array[$temp_file_name];
          if ( isset($file) ) {
 
             if ( !empty($array[2]) ) {

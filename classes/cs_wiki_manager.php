@@ -925,9 +925,15 @@ function exportMaterialToWiki($current_item_id){
    global $c_commsy_url_path;
 
    // Verzeichnis fuer Die angehaengten Dateien im Wiki
+   $dir_wiki_uploads = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads';
+   $directory_handle_uploads = @opendir($dir_wiki_uploads);
+   if (!$directory_handle_uploads) {
+      mkdir($dir_wiki_uploads);
+   }
+   
    $dir_wiki_file = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy';
-   $directory_handle = @opendir($dir_wiki_file);
-   if (!$directory_handle) {
+   $directory_handle_file = @opendir($dir_wiki_file);
+   if (!$directory_handle_file) {
       mkdir($dir_wiki_file);
    }
 
@@ -947,7 +953,12 @@ function exportMaterialToWiki($current_item_id){
    if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
       $description = _text_php2html_long($description);
    }
-   $wiki_view = new cs_wiki_view($this->_environment);
+   
+   global $class_factory;
+   $params = array();
+   $params['environment'] = $this->_environment;
+   $wiki_view = $class_factory->getClass(WIKI_VIEW,$params);
+   
    $wiki_view->setItem($material_item);
    $description = $wiki_view->formatForWiki($description);
    $html_wiki_file = 'CommSy.Material' . $current_item_id . '.html';
@@ -1075,6 +1086,46 @@ function exportMaterialToWiki($current_item_id){
 
    $material_item->setExportToWiki('1');
    $material_item->save();
+   
+   $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+   $modifiers = $link_modifier_item_manager->getModifiersOfItem($material_item->getItemID());
+   
+   $user_manager = $this->_environment->getUserManager();
+   $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+   
+   foreach($modifiers as $modifier){
+       $user_manager->setUserIDLimit($modifier);
+       $user_manager->select();
+       $user_list = $user_manager->get();
+       if ($user_list->getCount() >= 1) {
+            $user_item = $user_list->getFirst();
+            $mail = new cs_mail();
+            $mail->set_to($user_item->getEmail());
+            
+            $room = $this->getContextItem();
+            $room_title = '';
+            if (isset($room)){
+               $room_title = $room->getTitle();
+            }
+            $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
+            $mail->set_from_name($from);
+            
+            $server_item = $this->_environment->getServerItem();
+            $default_sender_address = $server_item->getDefaultSenderAddress();
+            if (!empty($default_sender_address)) {
+                $mail->set_from_email($default_sender_address);
+            } else {
+                $mail->set_from_email('@');
+            }
+            
+            $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
+            $mail->set_subject($subject);
+            
+            $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY').': '.$room_title;
+            $mail->set_message($body);
+            $mail->setSendAsHTML();
+       }
+   }
 }
 
 function encodeUmlaute($html){

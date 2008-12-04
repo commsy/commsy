@@ -39,6 +39,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
     */
    function __construct ($params) {
       $this->cs_rubric_form($params);
+      $this->_translator = $this->_environment->getTranslationObject(); 
    }
 
    function setDeletionValues(){
@@ -71,19 +72,19 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       // form fields
       $this->_form->addHidden('iid','');
-      $this->_form->addTextfield('wikititle','',getMessage('COMMON_TITLE'),getMessage('DATES_TITLE_DESC'),200,28,true);
+      $this->_form->addTextfield('wikititle','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATES_TITLE_DESC'),200,28,true);
 
 
       $this->_form->addSelect( 'skin_choice',
                                $this->_array_info_text,
                                '',
-                               getMessage('CONFIGURATION_SKIN_FORM_CHOOSE_TEXT'),
+                               $this->_translator->getMessage('CONFIGURATION_SKIN_FORM_CHOOSE_TEXT'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option',
                '',
                '',
@@ -91,34 +92,34 @@ class cs_configuration_wiki_form extends cs_rubric_form {
                                true);
       $this->_form->combine();
       if ( !empty($this->_form_post['skin_choice']) ) {
-         $desc = '<img src="images/wiki/'.$this->_form_post['skin_choice'].'.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+         $desc = '<img src="images/wiki/'.$this->_form_post['skin_choice'].'.gif" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
          $this->_form->addText('example','',$desc);
       }elseif( isset($this->_item) and !$this->_set_deletion_values) {
          $skin = $this->_item->getWikiSkin();
          if (!empty ($skin) ){
-            $desc = '<img src="images/wiki/'.$this->_item->getWikiSkin().'.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $desc = '<img src="images/wiki/'.$this->_item->getWikiSkin().'.gif" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example','',$desc);
          }else{
-            $desc = '<img src="images/wiki/pmwiki.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $desc = '<img src="images/wiki/pmwiki.gif" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example','',$desc);
          }
       }else{
-         $desc = '<img src="images/wiki/pmwiki.gif" alt="'.getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
+         $desc = '<img src="images/wiki/pmwiki.gif" alt="'.$this->_translator->getMessage('COMMON_SKIN').'" style=" border:1px solid black; vertical-align: middle;"/>';
          $this->_form->addText('example','',$desc);
       }
 
-      $this->_form->addTextField('admin','',getMessage('COMMON_WIKI_PWS'),getMessage('COMMON_WIKI_PWS_DESC'),200,10,true,'','','','left',getMessage('COMMON_WIKI_ADMIN_PW'),'',false,'','10',true,false);
+      $this->_form->addTextField('admin','',$this->_translator->getMessage('COMMON_WIKI_PWS'),$this->_translator->getMessage('COMMON_WIKI_PWS_DESC'),200,10,true,'','','','left',$this->_translator->getMessage('COMMON_WIKI_ADMIN_PW'),'',false,'','10',true,false);
       $this->_form->combine();
-      $this->_form->addTextField('edit','',getMessage('COMMON_WIKI_EDIT_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_EDIT_PW'));
+      $this->_form->addTextField('edit','',$this->_translator->getMessage('COMMON_WIKI_EDIT_PW'),'',200,10,false,'','','','left',$this->_translator->getMessage('COMMON_WIKI_EDIT_PW'));
       $this->_form->combine();
-      $this->_form->addTextField('read','',getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_READ_PW'));
+      $this->_form->addTextField('read','',$this->_translator->getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',$this->_translator->getMessage('COMMON_WIKI_READ_PW'));
      
       $wiki_manager = $this->_environment->getWikiManager();
       $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
 
      if (isset($wiki_groups_array['groups'][0])){
         $this->_form->combine();
-        $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
+        $this->_form->addText('wiki_space2','','<br/>'.$this->_translator->getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
         $this->_form->combine();
         $first = true;
         for ($index = 0; $index < sizeof($wiki_groups_array['groups']); $index++) {
@@ -136,26 +137,26 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       $this->_form->addEmptyline();
 
-      $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC'),false,false,'','',true,false);
+      $this->_form->addCheckbox('use_commsy_login',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC'),false,false,'','',true,false);
 	  //$this->_form->combine();
       //$this->_form->addText('wiki_space2','',' ');
       //$this->_form->combine();
-      //$this->_form->addCheckbox('community_read_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
+      //$this->_form->addCheckbox('community_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
 	  //$this->_form->combine();
-      //$this->_form->addCheckbox('community_write_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
+      //$this->_form->addCheckbox('community_write_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
 	  //$this->_form->combine();
       //$this->_form->addText('wiki_space2','',' ');
 	  //$this->_form->combine();
-      //$this->_form->addCheckbox('portal_read_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
+      //$this->_form->addCheckbox('portal_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){
-         $this->_form->addCheckbox('wikilink',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_DESC'),false,false,'','',true,false);
+         $this->_form->addCheckbox('wikilink',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_DESC'),false,false,'','',true,false);
          $this->_form->combine();
-         $this->_form->addCheckbox('wikilink2',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE'),'');
+         $this->_form->addCheckbox('wikilink2',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE'),'');
          $this->_form->combine();
       }
-      $this->_form->addCheckbox('show_login_box',1,'',getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX'),getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE'),'');
+      $this->_form->addCheckbox('show_login_box',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE'),'');
 
 
       $this->_form->addEmptyline();
@@ -184,7 +185,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       for ($index = 0; $index < sizeof($features_media_available); $index++) {
             $array_element = $features_media_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $this->_translator->getMessage($array_element[3]), $this->_translator->getMessage($array_element[4]), $this->_translator->getMessage($array_element[5]),false,false,'','',true,false);
             if($index < sizeof($features_media_available)-1){
                 $this->_form->combine();
             }
@@ -193,25 +194,25 @@ class cs_configuration_wiki_form extends cs_rubric_form {
             $this->_form->addEmptyline();
        }
 
-//      $this->_form->addCheckbox('enable_swf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
+//      $this->_form->addCheckbox('enable_swf',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_wmplayer',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
+//      $this->_form->addCheckbox('enable_wmplayer',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE'),'',false,false,'','',true);
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_quicktime',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'',false,false,'','',true);
+//      $this->_form->addCheckbox('enable_quicktime',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE'),'',false,false,'','',true);
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');
+//      $this->_form->addCheckbox('enable_youtube_google_vimeo',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE'),'');
 
       //  new features
-      $this->_form->addCheckbox('enable_search',1,'',getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS_DESC'),false,false,'','',true,false);
+      $this->_form->addCheckbox('enable_search',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SEARCH_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_BASIC_FUNCTIONS_DESC'),false,false,'','',true,false);
       $this->_form->combine();
-      $this->_form->addCheckbox('enable_sitemap',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE'),'');
+      $this->_form->addCheckbox('enable_sitemap',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE'),'');
       // extension: section_edit
 
       if (file_exists($c_pmwiki_path_file.'/cookbook/sectionedit.php')) {
          $this->_form->combine();
-         $this->_form->addCheckbox('wiki_section_edit',1,'',getMessage('WIKI_CONFIGURATION_SECTION_EDIT'),getMessage('WIKI_CONFIGURATION_SECTION_EDIT_VALUE'),'');
+         $this->_form->addCheckbox('wiki_section_edit',1,'',$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_EDIT'),$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_EDIT_VALUE'),'');
          $this->_form->combine();
-         $this->_form->addCheckbox('wiki_section_edit_header',1,'','',getMessage('WIKI_CONFIGURATION_SECTION_HEADER_VALUE'),'');
+         $this->_form->addCheckbox('wiki_section_edit_header',1,'','',$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_HEADER_VALUE'),'');
       }
       $this->_form->addEmptyline();
 
@@ -251,7 +252,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       for ($index = 0; $index < sizeof($features_available); $index++) {
             $array_element = $features_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], getMessage($array_element[3]), getMessage($array_element[4]), getMessage($array_element[5]),false,false,'','',true,false);
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $this->_translator->getMessage($array_element[3]), $this->_translator->getMessage($array_element[4]), $this->_translator->getMessage($array_element[5]),false,false,'','',true,false);
             if($index < sizeof($features_available)-1){
                $this->_form->combine();
             }
@@ -259,19 +260,19 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
       $this->_form->addEmptyline();
 
-     $this->_form->addCheckbox('enable_discussion',1,'',getMessage('COMMON_WIKI_DISCUSSION'),getMessage('COMMON_WIKI_DISCUSSION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
+     $this->_form->addCheckbox('enable_discussion',1,'',$this->_translator->getMessage('COMMON_WIKI_DISCUSSION'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_DESC'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_ENABLE'),false,false,'','',true,false);
 
       $this->_form->combine();
-      $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_DISCUSSION_ORGANISATION').':');
+      $this->_form->addText('wiki_space2','','<br/>'.$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_ORGANISATION').':');
       $this->_form->combine();
 
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
 
 #      if (isset($discussion_array[0])){
-#        $current_discussions = getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
+#        $current_discussions = $this->_translator->getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS') . ': ';
 #      } else {
-#     	$current_discussions = getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS').': ' . getMessage('COMMON_NO_FORUM_ENTRIES');
+#     	$current_discussions = $this->_translator->getMessage('COMMON_WIKI_EXISTING_DISCUSSIONS').': ' . $this->_translator->getMessage('COMMON_NO_FORUM_ENTRIES');
 #      }
 
 #      $this->_form->addText('wiki_existing_discussions','',$current_discussions);
@@ -290,39 +291,39 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         }
       }
       $this->_form->combine();
-      $this->_form->addTextField('new_discussion','',getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,20,false,'','','','left',getMessage('COMMON_WIKI_DISCUSSION_NEW').': ');
+      $this->_form->addTextField('new_discussion','',$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NEW'),'',200,20,false,'','','','left',$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NEW').': ');
 #      $this->_form->combine();
-#      $this->_form->addText('wiki_delete_existing_discussions','',getMessage('COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS'));
+#      $this->_form->addText('wiki_delete_existing_discussions','',$this->_translator->getMessage('COMMON_WIKI_DELETE_EXISTING_DISCUSSIONS'));
 
       $this->_form->combine();
-      $this->_form->addText('wiki_space','','<br/>'.getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION').':');
+      $this->_form->addText('wiki_space','','<br/>'.$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION').':');
       $this->_form->combine();
-      $this->_form->addCheckbox('enable_discussion_notification',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_ENABLE'),false,false,'','',true,false);
+      $this->_form->addCheckbox('enable_discussion_notification',1,'',$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_DESC'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_ENABLE'),false,false,'','',true,false);
       $this->_form->combine();
-      $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
+      $this->_form->addCheckbox('enable_discussion_notification_groups',1,'',$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_DESC'),$this->_translator->getMessage('COMMON_WIKI_DISCUSSION_NOTIFICATION_GROUPS_ENABLE'),false,false,'','',true,false);
 
-//      $this->_form->addCheckbox('enable_fckeditor',1,'',getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
+//      $this->_form->addCheckbox('enable_fckeditor',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_statistic',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
+//      $this->_form->addCheckbox('enable_statistic',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),'');
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_rss',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
+//      $this->_form->addCheckbox('enable_rss',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),'');
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_calendar',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
+//      $this->_form->addCheckbox('enable_calendar',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),'');
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_gallery',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),'');
+//      $this->_form->addCheckbox('enable_gallery',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),'');
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_notice',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE'),'');
+//      $this->_form->addCheckbox('enable_notice',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE'),'');
 //      $this->_form->combine();
-//      $this->_form->addCheckbox('enable_pdf',1,'',getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),'');
+//      $this->_form->addCheckbox('enable_pdf',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),'');
 
 
       // /new features
 
       // buttons
       if ( isset($this->_item) and $this->_item->existWiki() )  {
-         $this->_form->addButtonBar('option',getMessage('COMMON_CHANGE_BUTTON'),'',getMessage('WIKI_DELETE_BUTTON'),'','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'',$this->_translator->getMessage('WIKI_DELETE_BUTTON'),'','');
       } else {
-         $this->_form->addButtonBar('option',getMessage('WIKI_SAVE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('WIKI_SAVE_BUTTON'));
       }
    }
 
@@ -443,7 +444,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            and empty($this->_form_post['new_discussion'])
            and !isset($discussion_array[0])
          ) {
-         $this->_error_array[] = getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
          $this->_form->setFailure('new_discussion','');
       }
       if ( !empty($this->_form_post['enable_discussion'])
@@ -463,7 +464,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         }
 
         if($exists){
-           $this->_error_array[] = getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
+           $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EXISTS_ERROR');
             $this->_form->setFailure('new_discussion','');
         }
 
@@ -471,7 +472,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       if ( empty($this->_form_post['enable_discussion'])
            and (!empty($this->_form_post['enable_discussion_notification']) or !empty($this->_form_post['enable_discussion_notification_groups']))
          ) {
-         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOT_SELECTED_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NOT_SELECTED_ERROR');
          $this->_form->setFailure('enable_discussion','');
       }
 
@@ -479,7 +480,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            and empty($this->_form_post['enable_discussion_notification'])
            and !empty($this->_form_post['enable_discussion_notification_groups'])
          ) {
-         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NOTIFICATION_NOT_SELECTED_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
       }
 
@@ -487,7 +488,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
           and empty($this->_form_post['new_discussion'])
           and empty($this->_form_post['enable_discussion_discussions'])
         ) {
-         $this->_error_array[] = getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
          $this->_form->setFailure('enable_discussion_notification','');
       }
       if ( !empty($this->_form_post['enable_wiki_groups'])){
@@ -501,7 +502,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       if ( empty($this->_form_post['community_read_access'])
            and (!empty($this->_form_post['community_write_access']))
          ) {
-         $this->_error_array[] = getMessage('WIKI_COOMUNITY_NO_READ_ACCESS_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('WIKI_COOMUNITY_NO_READ_ACCESS_ERROR');
          $this->_form->setFailure('community_read_access','');
       }
    }

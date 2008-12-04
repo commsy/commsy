@@ -162,19 +162,19 @@ class cs_material_detail_view extends cs_detail_view {
       } else {
          $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'</span>'.BRLF;
       }
-//      if ( $item->mayEdit($current_user) and $current_context->isWikiActive() ) {
-//         $params = array();
-//         $params['iid'] = $item->getItemID();
-//         $params['export_to_wiki'] = 'true';
-//         $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
-//                                   'material',
-//                                   'detail',
-//                                   $params,
-//                                   $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI')).BRLF;
-//         unset($params);
-//      } else {
-//         $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI').'</span>'.BRLF;
-//      }
+      if ( $item->mayEdit($current_user) and $current_context->isWikiActive() ) {
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['export_to_wiki'] = 'true';
+         $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
+                                   'material',
+                                   'detail',
+                                   $params,
+                                   $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI')).BRLF;
+         unset($params);
+      } else {
+         $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI').'</span>'.BRLF;
+      }
       return $html;
    }
 
@@ -555,12 +555,12 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array[] = $item->getBibAvailibility();
          $formal_data1[] = $temp_array;
       }
-//      if ($item->isExportToWiki()) {
-//         $temp_array = array();
-//         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
-//         $temp_array[] = $item->getExportToWikiLink();
-//         $formal_data1[] = $temp_array;
-//      }
+      if ($item->isExportToWiki()) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
+         $temp_array[] = $item->getExportToWikiLink();
+         $formal_data1[] = $temp_array;
+      }
 
       // Sections
       $this->_section_list = $item->getSectionList();
