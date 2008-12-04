@@ -1091,40 +1091,47 @@ function exportMaterialToWiki($current_item_id){
    $modifiers = $link_modifier_item_manager->getModifiersOfItem($material_item->getItemID());
    
    $user_manager = $this->_environment->getUserManager();
+   $user_manager->reset();
    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-   
-   foreach($modifiers as $modifier){
-       $user_manager->setUserIDLimit($modifier);
-       $user_manager->select();
-       $user_list = $user_manager->get();
-       if ($user_list->getCount() >= 1) {
-            $user_item = $user_list->getFirst();
-            $mail = new cs_mail();
-            $mail->set_to($user_item->getEmail());
+   $user_manager->setIDArrayLimit($modifiers);
+   $user_manager->select();
+   $user_list = $user_manager->get();
+
+   if ($user_list->getCount() >= 1) {
+      $user_item = $user_list->getFirst();
+
+      include_once('classes/cs_mail.php');
+      $translator = $this->_environment->getTranslationObject();
+
+      while($user_item){
+         $mail = new cs_mail();
+         $mail->set_to($user_item->getEmail());
             
-            $room = $this->getContextItem();
-            $room_title = '';
-            if (isset($room)){
-               $room_title = $room->getTitle();
-            }
-            $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
-            $mail->set_from_name($from);
-            
-            $server_item = $this->_environment->getServerItem();
-            $default_sender_address = $server_item->getDefaultSenderAddress();
-            if (!empty($default_sender_address)) {
-                $mail->set_from_email($default_sender_address);
-            } else {
-                $mail->set_from_email('@');
-            }
-            
-            $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
-            $mail->set_subject($subject);
-            
-            $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY').': '.$room_title;
-            $mail->set_message($body);
-            $mail->setSendAsHTML();
-       }
+         $room = $this->_environment->getCurrentContextItem();
+         $room_title = '';
+         if (isset($room)){
+            $room_title = $room->getTitle();
+         }
+         $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
+         $mail->set_from_name($from);
+        
+         $server_item = $this->_environment->getServerItem();
+         $default_sender_address = $server_item->getDefaultSenderAddress();
+         if (!empty($default_sender_address)) {
+             $mail->set_from_email($default_sender_address);
+         } else {
+             $mail->set_from_email('@');
+         }
+         
+         $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
+         $mail->set_subject($subject);
+         
+         $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY').': '.$room_title;
+         $mail->set_message($body);
+         $mail->setSendAsHTML();
+         
+         $user_item = $user_list->getNext();
+      }
    }
 }
 
