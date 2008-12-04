@@ -115,6 +115,9 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    }  else {
       $selrubric ='all';
    }
+   if ($selrubric == 'campus_search'){
+      $selrubric ='all';
+   }
 
 
    // Find current restriction selection
