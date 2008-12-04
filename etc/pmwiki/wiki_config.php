@@ -74,4 +74,5 @@ if ( !empty($COMMSY_LANGUAGE) ) {
 	#***********************************
 //}
 
+include_once("$FarmD/cookbook/slimbox.php");
 ?>
