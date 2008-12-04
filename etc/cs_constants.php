@@ -498,7 +498,7 @@ $cs_color['SCHEMA_12']['list_entry_odd']             = '#FFFFFF';
 $cs_color['SCHEMA_12']['date_title']                 = '#666699';
 $cs_color['SCHEMA_12']['info_color']                 = '#7E7D7B';
 $cs_color['SCHEMA_12']['disabled']                   = '#B0B0B0';
-$cs_color['SCHEMA_12']['warning']                    = '#2A4E72';
+$cs_color['SCHEMA_12']['warning']                    = 'red';
 
 $cs_color['SCHEMA_12']['myarea_headline_background'] = '#CDCBC2';
 $cs_color['SCHEMA_12']['myarea_headline_title']      = 'white';
@@ -532,7 +532,7 @@ $cs_color['SCHEMA_13']['list_entry_odd']             = '#FFFFFF';
 $cs_color['SCHEMA_13']['date_title']                 = '#666699';
 $cs_color['SCHEMA_13']['info_color']                 = '#7E7D7B';
 $cs_color['SCHEMA_13']['disabled']                   = '#B0B0B0';
-$cs_color['SCHEMA_13']['warning']                    = '#2A4E72';
+$cs_color['SCHEMA_13']['warning']                    = 'red';
 
 $cs_color['SCHEMA_13']['myarea_headline_background'] = '#CDCBC2';
 $cs_color['SCHEMA_13']['myarea_headline_title']      = 'white';

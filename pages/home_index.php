@@ -358,14 +358,14 @@ if ( $context_item->isLocked() ) {
          unset($params);
          $page->addRight($tag_view);
       }
-      if ( $current_context->withNetnavigation() ){
+/*      if ( $current_context->withNetnavigation() ){
          $params = array();
          $params['environment'] = $environment;
          $params['with_modifying_actions'] = $context_item->isOpen();
          $tag_view = $class_factory->getClass(HOMEPAGE_NETNAVIGATION_VIEW,$params);
          unset($params);
          $page->addRight($tag_view);
-      }
+      }*/
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = $context_item->isOpen();

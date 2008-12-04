@@ -526,6 +526,7 @@ $message["COMMON_RELEVANT_FOR_INSTITUTION_DESC"]["de"] = "Hier können Sie auswäh
 $message["COMMON_RESET"]["de"] = "Zurücksetzen";
 $message["COMMON_RESET_SEARCH"]["de"] = "zurücksetzen";
 $message["COMMON_RESET_SEARCH_DESC"]["de"] = "Dies setzt die Einschränkung durch die Suche nach %1 zurück. Es werden wieder alle Einträge angezeigt.";
+$message["COMMON_RESTRICTIONS"]["de"] = "Einschränkungen der Liste";
 $message["COMMON_RESTRICT_SEARCH"]["de"] = "Einschränkung";
 $message["COMMON_RIGHTS"]["de"] = "Zugriffsrechte";
 $message["COMMON_RIGHTS_DESCRIPTION"]["de"] = "Einstellung von Bearbeitungsrechten und Veröffentlichungstermin";

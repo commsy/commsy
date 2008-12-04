@@ -934,6 +934,7 @@ class cs_detail_view extends cs_view {
      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+     $html .= '   <input type="hidden" name="rubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
      $html .= '</form>';
@@ -1573,7 +1574,7 @@ class cs_detail_view extends cs_view {
       if (!empty($tmp_html)){
       	$html .= $tmp_html;
       }else{
-         $html .= '   <div style="padding:5px 7px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
+         $html .= '   <div style="padding:0px 7px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
       }
       $html .='</div>'.LF;
       $html .='</div>'.LF;

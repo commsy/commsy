@@ -317,7 +317,7 @@ class cs_index_view extends cs_view {
     */
     function getSearchText (){
        if (empty($this->_search_text)){
-        $this->_search_text = getMessage('COMMON_SEARCH_IN_RUBRIC');
+        $this->_search_text = getMessage('COMMON_SEARCH_IN_ROOM');
        }
        return $this->_search_text;
     }
@@ -1374,7 +1374,10 @@ EOD;
       $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div>'.LF;
+      $html .='<div style="width:71%;">'.LF;
+      $html .='<div id="action_box">';
+      $html .= $this->_getListActionsAsHTML();
+      $html .='</div>';
       $html .='<div style="vertical-align:bottom;">'.LF;
       $tempMessage = '';
       switch ( strtoupper($this->_environment->getCurrentModule()) ) {
@@ -1576,9 +1579,9 @@ EOD;
                $additional_text =',';
             }
             if ($this->_environment->getCurrentModule() != 'campus_search'){
-               $title_string .= $additional_text.'"'.getMessage('COMMON_EXPERT_SEARCH').'"';
+               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
             }else{
-               $title_string .= $additional_text.'"'.getMessage('COMMON_EXPERT_SEARCH').'"';
+               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
             }$desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
             $parameter_array = $this->_environment->getCurrentParameterArray();
@@ -1662,7 +1665,7 @@ EOD;
          }
 
          /*******************Netnavigation************/
-         if ( $this->showNetnavigation() ) {
+/*         if ( $this->showNetnavigation() ) {
             if ( $first_box ){
                $first_box = false;
                $additional_text ='';
@@ -1673,23 +1676,7 @@ EOD;
             // @segment-begin 22698 asHTML:no_clipboard_mode+mode=""_or_mode><print:select-box-right-side
             $title_string .= $additional_text.'"';
             $title_string .= getMessage('COMMON_NETNAVIGATION').' ';
-/*            $rubic_additional_text = '';
-            if ($current_context->withRubric(CS_GROUP_TYPE)){
-                $rubic_additional_text .= ' '.getMessage('GROUP_INDEX');
-            }
-            if ($current_context->withRubric(CS_TOPIC_TYPE)){
-               if (!empty($rubic_additional_text)){
-                  $rubic_additional_text .= ' '.getMessage('COMMON_AND');
-               }
-                $rubic_additional_text .= ' '.getMessage('TOPIC_INDEX');
-            }
-            if ($current_context->withRubric(CS_INSTITUTION_TYPE)){
-               if (!empty($rubic_additional_text)){
-                  $rubic_additional_text .= ' '.getMessage('COMMON_AND');
-               }
-                $rubic_additional_text .= ' '.getMessage('CS_INSTITUTION_TYPE');
-            }
-            $title_string .= $rubic_additional_text;*/
+
             $title_string .= '"';
             $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
@@ -1708,7 +1695,7 @@ EOD;
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->getNetnavigationAsHTML();
             $html .='</div>'.LF;
-         }
+         }*/
          $html .='</div>'.LF;
 
 
@@ -1812,33 +1799,33 @@ EOD;
       $html  = '';
       $html .= '<div style="clear:both; padding-bottom:0px;">';
       $current_user = $this->_environment->getCurrentUserItem();
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-        $params = array();
-        $params['iid'] = 'NEW';
-        $image = '<img src="images/commsyicons/22x22/new.png" style="float: right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                            'edit',
-                            $params,
-                            $image,
-                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
-        unset($params);
-     } else {
-        $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-        $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-     }
-     $params = $this->_environment->getCurrentParameterArray();
-     $params['mode']='print';
-     $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-     $html .= ahref_curl($this->_environment->getCurrentContextID(),
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['mode']='print';
+      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),
                          $this->_environment->getCurrentModule(),
                          'index',
                          $params,
                          $image,
                          $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
-     $html .= $this->_getAdditionalActionsAsHTML();
-     $html .= '</div>'.LF;
-     return $html;
+      $html .= $this->_getAdditionalActionsAsHTML();
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = 'NEW';
+         $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
+                           $this->_environment->getCurrentModule(),
+                            'edit',
+                            $params,
+                            $image,
+                            $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      $html .= '</div>'.LF;
+      return $html;
    }
 
 
@@ -1861,9 +1848,7 @@ EOD;
          $width = 'width:250px;';
       }
       $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
-      $html .= $this->_getListActionsAsHTML().LF;
 
-      $html .= '<div class="listinfoborder"></div>'.LF;
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
@@ -2080,7 +2065,7 @@ EOD;
       return $html;
    }
 
-  function getNetnavigationAsHTML () {
+/*  function getNetnavigationAsHTML () {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
@@ -2091,7 +2076,7 @@ EOD;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
-   }
+   }*/
 
   function _getExpertSearchAsHTML(){
      $html  = '';
@@ -2107,7 +2092,7 @@ EOD;
          $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
          $html .= '<div class="right_box">'.LF;
          $html .= '         <noscript>';
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_EXPERT_SEARCH').'</div>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
          $html .= '         </noscript>';
          $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
          if ($context_item->withActivatingContent()){
@@ -2128,6 +2113,7 @@ EOD;
             $html .='</div>';
          }
          $html .= $this->_getAdditionalRestrictionBoxAsHTML('14.5').LF;
+         $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
@@ -2138,8 +2124,11 @@ EOD;
 
   function _getSearchAsHTML () {
      $html  = '';
-     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="searchform">'.LF;
-     $html .= $this->_getHiddenFieldsAsHTML();
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="searchform">'.LF;
+     $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+     $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+     $html .= '   <input type="hidden" name="rubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
      $html .= '</form>';

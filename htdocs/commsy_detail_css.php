@@ -242,7 +242,7 @@ li.path_list{
    background-color: #dddddd;
 }
 
-#detail_content{
-#	width:520px;
+.detail_annotations{
+	background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
 }
-

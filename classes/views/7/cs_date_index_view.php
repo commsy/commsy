@@ -331,9 +331,6 @@ class cs_date_index_view extends cs_room_index_view {
 
 
       $html .= '<div class="right_box_main" >'.LF;
-      $html .= $this->_getListActionsAsHTML().LF;
-
-      $html .= '<div class="listinfoborder"></div>'.LF;
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;

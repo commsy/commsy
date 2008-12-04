@@ -53,33 +53,33 @@ class cs_user_index_view extends cs_room_index_view {
       $html  = '';
       $html .= '<div style="clear:both; padding-bottom:0px;">';
       $current_user = $this->_environment->getCurrentUserItem();
-      if ($current_user->isUser() and $this->_with_modifying_actions ) {
-        $params = array();
-        $params['iid'] = $current_user->getItemID();
-        $image = '<img src="images/commsyicons/22x22/user_own.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                            CS_USER_TYPE,
-                            'detail',
-                            $params,
-                            $image,
-                            $this->_translator->getMessage('USER_OWN_INFORMATION')).LF;
-        unset($params);
-     } else {
-        $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
-        $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-     }
-     $params = $this->_environment->getCurrentParameterArray();
-     $params['mode']='print';
-     $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-     $html .= ahref_curl($this->_environment->getCurrentContextID(),
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['mode']='print';
+      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),
                          CS_USER_TYPE,
                          'index',
                          $params,
                          $image,
                          $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
-      if ($current_user->isModerator() and $this->_with_modifying_actions ) {
-         $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_INDEX').'"/>';
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = $current_user->getItemID();
+         $image = '<img src="images/commsyicons/22x22/user_own.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                            CS_USER_TYPE,
+                            'detail',
+                            $params,
+                            $image,
+                            $this->_translator->getMessage('USER_OWN_INFORMATION')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+       if ($current_user->isModerator() and $this->_with_modifying_actions ) {
+          $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_INDEX').'"/>';
+          $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
                                        '',
@@ -88,11 +88,10 @@ class cs_user_index_view extends cs_room_index_view {
 
       }else{
          $image = '<img src="images/commsyicons/22x22/config_account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
-     $html .= $this->_getAdditionalActionsAsHTML();
-     $html .= '</div>'.LF;
-     return $html;
+      $html .= '</div>'.LF;
+      return $html;
    }
 
    function _getTableheadAsHTML () {
