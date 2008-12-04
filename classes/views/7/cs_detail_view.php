@@ -1318,45 +1318,124 @@ class cs_detail_view extends cs_view {
    }
 
 
+   function _getAnnotationBrowsingIconsAsHTML($current_item, $pos_number, $count){
+      $html ='';
+      $i =0;
+      if ( $pos_number == 1 ) {
+         $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" style="vertical-align:bottom;"/>';
+         $html .= '<a href="#top">'.$image.'</a>'.LF;
+      }elseif ( $pos_number > 1 ) {
+         $i = $pos_number-1;
+         $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" style="vertical-align:bottom;"/>';
+         $html .= '<a href="#annotation_'.$i.'">'.$image.'</a>'.LF;
+      } else {
+         $html .= '         <span class="disabled"><img src="images/commsyicons/16x16/browse_left_grey2.png" alt="&lt;" style="vertical-align:bottom;"/></span>'.LF;
+      }
+      $html .= '';
+      if ( $pos_number < $count) {
+         $i = $pos_number+1;
+         $image = '<img src="images/commsyicons/16x16/browse_right2.png" alt="&gt;" style="vertical-align:bottom;"/>';
+         $html .= '<a href="#annotation_'.$i.'">'.$image.'</a>'.LF;
+      } else {
+         $html .= '         <span class="disabled"><img src="images/commsyicons/16x16/browse_right_grey2.png" alt="&gt;" style="vertical-align:bottom;"/></span>'.LF;
+      }
+      return $html;
+   }
+
+
    function _getAnnotationsAsHTML () {
+      $item = $this->_item;
       $html = '</div>'.LF.LF;
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
       $html .='<div class="detail_annotations">'.LF;
-      $title = '<span class="annotation_pagetitle">'.$this->_translator->getMessage('COMMON_ANNOTATIONS');
-      $html .= '<img src="images/commsyicons/32x32/annotation.png" style="vertical-align:bottom; margin-left:5px;"/>&nbsp;'.$title;
-      $html .= '</span>'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){
-            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
+            $desc = ' ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
          }else{
-            $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
+            $desc = ' ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
          }
       }else{
-         $html .= '<span class="sub_item_description"> ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
+         $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
       }
-      $html .= ')</span>'.LF;
+      $desc .= ')'.LF;
+      $html .='<div id="detail_annotation_headline">'.LF;
+      $html .= '<h3>'.$this->_translator->getMessage('COMMON_ANNOTATIONS').$desc;
+      $html .= '</h3>'.LF;
       $html .='</div>'.LF;
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
          $html .='<div class="sub_item_main">'.LF;
       }else{
-         $html .='<div class="sub_item_main" style="background-color:white;">'.LF;
+         $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
       }
-      $html .='<div>'.LF;
       $html .= '<a name="annotations"></a>'.LF;
-      $html .='<div style="width:100%;">'.LF;
+      $html .='<div style="padding:5px 5px; background-color:#FFFFFF;">'.LF;
       if ( !empty($this->_annotation_list) ){
          $annotation_item = $this->_annotation_list->getFirst();
       }
       if ( empty($annotation_item) ){
       }else{
-         $annotation_item = $this->_annotation_list->getFirst();
-         while( $annotation_item ){
-            $html .='<table summary="layout" class="detail_annotation_table">'.LF;
-            $image = $this->_getItemPicture($annotation_item->getModificatorItem());
+         $pos_number = 1;
+         $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+         $current_item = $this->_annotation_list->getFirst();
+         while( $current_item ){
+               $image = $this->_getItemPicture($current_item->getModificatorItem());
+               $html .='<tr>'.LF;
+               $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
+               $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
+               $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
+               $html .='<div style="padding-top:10px;">'.LF;
+               $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
+               $html .= '<h3 class="subitemtitle">'.$pos_number.'. '.$this->_getSubItemTitleAsHTML($current_item, $pos_number);
+               $html .= '</h3>'.LF;
+               $html .='</div>'.LF;
+               $html .='</td>'.LF;
+               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .= $this->getAnnotationActionsAsHTML($current_item);
+                  $html .='</td>'.LF;
+               }else{
+                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .= '&nbsp';
+                  $html .='</td>'.LF;
+               }
+               $html .='</tr>'.LF;
+               $html .='<tr>'.LF;
+               $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
+               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                  $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
+                  $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
+                  $html .='</div>'.LF;
+               }
+               $html .= $this->_getAnnotationContentAsHTML($current_item).LF;
+               $html .='</td>'.LF;
+               $html .='</tr>'.LF;
+               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                  $html .='<tr>'.LF;
+                  $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                  $mode = 'short';
+                  if (!$item->isA(CS_USER_TYPE)) {
+                     $mode = 'short';
+                     if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
+                        $mode = 'long';
+                     }
+                     $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                  }
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+               }else{
+                  $html .='<tr>'.LF;
+                  $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+               }
+
+
+
+/*            $image = $this->_getItemPicture($annotation_item->getModificatorItem());
             $html .='<tr><td rowspan="2" style="width:70px; padding:5px; vertical-align:top;">'.$image.'</td>'.LF;
-            $html .='<td class="detail_annotation_headline">'.LF;
+            $html .='<td class="annotationtitle">'.LF;
             $html .= '<a id="anchor'.$annotation_item->getItemID().'" name="anchor'.$annotation_item->getItemID().'"></a>'.LF;
             $html .= '<div style="float:right">';
             $html .= $this->getAnnotationActionsAsHTML($annotation_item);
@@ -1380,12 +1459,12 @@ class cs_detail_view extends cs_view {
                $html .='</div>'.LF;
             }
             $html .='</td></tr>'.LF;
-            $html .='</table>'.LF;
-            $html .='<div style="clear:both;"/>'.LF;
-            $annotation_item = $this->_annotation_list->getNext();
+            $html .='<div style="clear:both;"/>'.LF;*/
+            $pos_number++;
+            $current_item = $this->_annotation_list->getNext();
          }
+         $html .='</table>'.LF;
       }
-      $html .='</div>'.LF;
       $html .= '<!-- END OF ANNOTATION VIEW -->'.LF.LF;
       return $html;
 }
@@ -2492,13 +2571,24 @@ class cs_detail_view extends cs_view {
    }
 
 
-      function _getDiscussionFormAsHTML(){
+
+   function _getDiscussionFormAsHTML(){
         if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
-         $html = '<!-- BEGIN OF DISCARTICLE FORM VIEW -->'.LF.LF;
+         $html = '<!-- BEGIN OF ANNOTATION FORM VIEW -->'.LF.LF;
          $item = $this->getItem();
+            $count = 1;
+            $subitems = $item->getAnnotationList();
+            if ( isset($subitems) and !empty($subitems) ){
+               $count = $subitems->getCount();
+               $count++;
+            }
             $html .='</div>'.LF;
             $html .='</div>'.LF;
-            $html .='<div id="annotation_form">'.LF;
+            if ($count != 1){
+               $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin:20px 5px 0px 5px; padding-top:20px; background-color:white;">'.LF;
+            }else{
+               $html .='<div class="sub_item_main" style="margin-top:0px; padding:5px; background-color:white;">'.LF;
+            }
             $html .='<div style="width:100%;" >'.LF;
             $html .= '<a name="form"></a>'.LF;
             $params['ref_iid'] = $item->getItemID();
@@ -2508,11 +2598,25 @@ class cs_detail_view extends cs_view {
             $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'annotation', 'edit',$params).'" method="post" enctype="multipart/form-data" name="f">'.LF;
             $html .= '   <input type="hidden" name="version" value="'.$item->getVersionID().'"/>'.LF;
             $html .= '   <input type="hidden" name="ref_iid" value="'.$item->getItemID().'"/>'.LF;
-            $html .= '<div class="detail_annotation_headline" style="padding:2px 0px 3px 7px;">'.LF;
-            $html .= '<input name="title" style="font-size:12pt; width: 98%; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
-            $html .= '</div>'.LF;
-            $html .= '<div style="margin:0px;padding:7px;">'.LF;
-            $normal = '<textarea style="font-size:10pt; width:100%" name="description" rows="10" tabindex="8"></textarea>';
+            $html .= '<table style="width:100%; border-collapse:collapse; margin-bottom:0px; padding-bottom:0px;" summary="Layout">'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="width:70px; vertical-align:middle;">'.LF;
+            $html .= '<h3 class="subitemtitle">'.$this->_translator->getMessage('COMMON_SUBJECT').': </h3>';
+            $html .= '</td>'.LF;
+            $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
+            $html .= '<h3 class="subitemtitle">'.$count.'.&nbsp;</h3>';
+            $html .= '</td>'.LF;
+            $html .= '<td style="padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
+            $html .= '<input name="title" style="width:98%; font-size:12pt; font-weight:bold; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="width:70px; padding-top:5px; vertical-align:top;">'.LF;
+            $html .= $this->_translator->getMessage('COMMON_TEXT').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td colspan="2">'.LF;
+            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="10" tabindex="8"></textarea>';
             $text = '';
             global $c_html_textarea;
             $current_context = $this->_environment->getCurrentContextItem();
@@ -2525,19 +2629,18 @@ class cs_detail_view extends cs_view {
                  or !$with_htmltextarea
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-left:5px;">';
-               $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $html .= '<div style="padding-top:5px;">';
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
                $html .= '<div style="padding:2px;">'.LF;
                $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
                $html .= $text;
-               $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
@@ -2551,19 +2654,18 @@ class cs_detail_view extends cs_view {
                     and $current_browser != 'safari')
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-left:5px;">';
-               $text .= '<div class="bold" >'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $html .= '<div style="padding-top:5px;">';
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                $html .= $title;
                $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
                $html .= '<div style="padding:2px;">'.LF;
                $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
                $html .= $text;
-               $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
@@ -2577,16 +2679,16 @@ class cs_detail_view extends cs_view {
                      $html_area = new cs_html_textarea();
                      $html .= $html_area->getAsHTML( 'description',
                                               '',
-                                              15,
-                                              1,
+                                              20,
+                                              $html_status,
                                               '',
                                               '',
                                               false
                                             );
-                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
-                     $html .= '<div style="padding-left:5px;">';
-                     $text .= '<div class="bold">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+                     $html .= '<div style="padding-top:0px;">';
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2596,23 +2698,21 @@ class cs_detail_view extends cs_view {
                      $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
+                     $html .= '</div>'.BRLF;
                   } else {
                      $html .= $normal;
-                     $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                     $html .= '<div style="padding-left:5px;">';
-                     $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                     $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                     $html .= '<div style="padding-top:5px;">';
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                      $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                      $html .= $title;
                      $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
                      $html .= '<div style="padding:2px;">'.LF;
                      $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
                      $html .= $text;
-                     $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
@@ -2620,12 +2720,12 @@ class cs_detail_view extends cs_view {
                   }
                } else {
                   $html .= $normal;
-                  $title = '&nbsp;'.$this->_translator->getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                  $html .= '<div style="padding-left:5px;">';
-                  $text .= '<div class="bold">'.$this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                  $text .= $this->_translator->getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                  $text .= $this->_translator->getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                  $html .= '<div style="padding-top:5px;">';
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
                   $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
                   $html .= $title;
                   $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
@@ -2636,17 +2736,17 @@ class cs_detail_view extends cs_view {
                   $html .= '</div>'.LF;
                   $html .= '</div>'.LF;
                   $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
                }
             }
-
-            // files
-            $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
+            $html .= '</div>';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
             $html .= '<tr>'.LF;
-            $html .= '<td style="padding-left:7px; padding-bottom:5px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
+            $html .= '<td>&nbsp;'.LF;
+            $html .= '</td>'.LF;
+            $html .= '<td colspan="2" style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
+            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
             $current_user = $this->_environment->getCurrentUser();
-            $current_context = $this->_environment->getCurrentContextItem();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;
                global $c_autosave_mode;
@@ -2663,24 +2763,24 @@ class cs_detail_view extends cs_view {
             }
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
-            $html .= '</table>'.LF;
+            $html .= '</table>'.BRLF;
             $html .= '</form>';
 
             $html .='<script type="text/javascript">initTextFormatingInformation("'.$current_context->getItemID().'",false)</script>';
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '   <script type="text/javascript">'.LF;
                $html .= '      <!--'.LF;
-               $html .= '         var breakCrit = "'.$this->_translator->getMessage('DISCARTICLE_CHANGE_BUTTON').'"'.';'.LF;
+               $html .= '         var breakCrit = "'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'"'.';'.LF;
                $html .= '         startclock();'.LF;
                $html .= '      -->'.LF;
                $html .= '   </script>'.LF;
             }
+         $html .='</div>'.LF;
 
-            $html .= '<!-- END OF DISCARTICLE FORM VIEW -->'.LF.LF;
+         $html .= '<!-- END OF ANNOTATION FORM VIEW -->'.LF.LF;
          return $html;
         }
    }
-
 
 
 

@@ -167,11 +167,6 @@ div.detail_sub_items_title{
    padding:20px 11px 3px 11px;
 }
 
-.detail_annotations{
-  margin-top:40px;
-  margin-bottom:10px;
-}
-
 div.sub_item_main{
   margin:0px;
   padding: 0px 0px;
@@ -181,15 +176,20 @@ div.sub_item_main{
    width:100%;
    border-collapse:collapse;
    padding:0px 5px;
-   margin-top:0px;
+   margin-right:5px;
    margin-bottom:20px;
-   background-color: #FFFFFF;
-   border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
 #detail_content, .detail_content{
 	margin:0px;
    padding:5px 5px;
+   background-color: #FFFFFF;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
+.detail_annotations{
+   margin:40px 0px 0px 0px;
+   padding:0px;
    background-color: #FFFFFF;
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }
@@ -201,7 +201,7 @@ div.sub_item_main{
    vertical-align:top;
 }
 
-.detail_annotation_headline{
+#detail_annotation_headline{
    background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
