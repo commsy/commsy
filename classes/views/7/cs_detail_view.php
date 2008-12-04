@@ -1426,7 +1426,7 @@ class cs_detail_view extends cs_view {
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_PATHS').'</div>';
       $html .= '         </noscript>';
-      $html .= '<div class="right_box_main" style="margin:0px; padding:0px;">'.LF;
+      $html .= '<div class="right_box_main" style="margin:0px; padding:5px 0px;">'.LF;
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
       $path_counter = 0;
@@ -1471,12 +1471,12 @@ class cs_detail_view extends cs_view {
                      $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
                      $title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
                      if ($counter >1){
-                        $tmp_html .= '<div style="padding-top:10px; padding-left:3px;">'.LF;
+                        $tmp_html .= '<div style="padding-top:10px; padding-left:5px;">'.LF;
                      }else{
-                        $tmp_html .= '<div style="padding:0px 3px;">'.LF;
+                        $tmp_html .= '<div style="padding:0px 5px;">'.LF;
                      }
                      $counter++;
-                     $tmp_html .= $title;
+                     $tmp_html .= $this->_translator->getMessage('TOPIC_PATH').': '.$title;
                      $tmp_html .= '</div>'.LF;
                      $tmp_html .= $this->_getPathItemsAsHTML($topic_item,$item->getItemID(),$path_item_list);
                      $parameter_array = $this->_environment->getCurrentParameterArray();
@@ -1620,7 +1620,7 @@ class cs_detail_view extends cs_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($linked_item->getTitle(),27),
+                                       chunkText($linked_item->getTitle(),35),
                                        $link_creator_text,
                                        '_self',
                                        $fragment,
@@ -1637,7 +1637,7 @@ class cs_detail_view extends cs_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($linked_item->getTitle(),27),
+                                       chunkText($linked_item->getTitle(),35),
                                        $link_creator_text,
                                        '_self',
                                        $fragment);
@@ -1666,10 +1666,10 @@ class cs_detail_view extends cs_view {
          $path_item_id = $path_item->getItemID();
          $path_item_type = $path_item->getItemType();
          if ($path_item_id == $item_id){
-            $html .='<li style="padding-left:5px;"  class="detail_list_entry">'.LF;
-            $html .= '<a title="'.$path_item->getTitle().'">'.chunkText($path_item->getTitle(),25).'</a>';
+            $html .='<li style="padding-left:7px;"  class="detail_list_entry">'.LF;
+            $html .= '<a title="'.$path_item->getTitle().'">'.chunkText($path_item->getTitle(),35).'</a>';
          }else{
-            $html .='<li style="padding-left:5px;">'.LF;
+            $html .='<li style="padding-left:7px;">'.LF;
             $params = array();
             $params['iid'] = $path_item_id;
             $params['path'] = $topic_item->getItemID();
@@ -1686,20 +1686,11 @@ class cs_detail_view extends cs_view {
                                      type2Module($path_item_type),
                                      'detail',
                                      $params,
-                                     chunkText($path_item->getTitle(),25),
-                                     $link_creator_text,
-                                     '',
-                                     '',
-                                     '',
-                                     '',
-                                     '',
-                                     'class="disabled"',
-                                     '',
-                                     '',
-                                     true);
+                                     chunkText($path_item->getTitle(),35),
+                                     $link_creator_text);
                 unset($params);
             }else{
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),type2Module($path_item_type),'detail',$params,chunkText($path_item->getTitle(),25),$path_item->getTitle());
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),type2Module($path_item_type),'detail',$params,chunkText($path_item->getTitle(),35),$path_item->getTitle());
                unset($params);
             }
          }
@@ -1780,7 +1771,7 @@ class cs_detail_view extends cs_view {
                                           $module,
                                           'detail',
                                           $params,
-                                          chunkText($linked_item->getTitle(),27),
+                                          chunkText($linked_item->getTitle(),35),
                                           $link_creator_text,
                                           '_self',
                                           $fragment,
@@ -1797,7 +1788,7 @@ class cs_detail_view extends cs_view {
                                           $module,
                                           'detail',
                                           $params,
-                                          chunkText($linked_item->getTitle(),27),
+                                          chunkText($linked_item->getTitle(),35),
                                           $link_creator_text,
                                           '_self',
                                           $fragment);
