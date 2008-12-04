@@ -1149,6 +1149,11 @@ EOD;
             $html_text .='<td style="text-align:right;">'.LF;
             $ref_item = $this->getRefItem();
             $ref_item_type = $ref_item->getItemType();
+            if($ref_item_type == CS_USER_TYPE){
+               $link_title = $ref_item->getFullName();
+            } else {
+               $link_title = $ref_item->getTitle();
+            }
             if ( $ref_item_type == CS_ANNOTATION_TYPE ) {
               $ref_item2 = $ref_item->getLinkedItem();
               $module = type2module($ref_item2->getItemType());
@@ -1158,7 +1163,7 @@ EOD;
                                   $module,
                                   'detail',
                                   $link_params,
-                                  chunkText($ref_item->getTitle(),13),
+                                  chunkText($link_title,20),
                                   '',
                                   '',
                                   $ref_item->getItemID()
@@ -1173,7 +1178,7 @@ EOD;
                                   CS_MATERIAL_TYPE,
                                   'detail',
                                   $link_params,
-                                  chunkText($ref_item->getTitle(),13),
+                                  chunkText($link_title,20),
                                   '',
                                   '',
                                   $ref_item->getItemID()
@@ -1188,7 +1193,7 @@ EOD;
                                   CS_DISCUSSION_TYPE,
                                   'detail',
                                   $link_params,
-                                  chunkText($ref_item->getTitle(),13),
+                                  chunkText($link_title,20),
                                   '',
                                   '',
                                   $ref_item->getItemID()
@@ -1203,7 +1208,7 @@ EOD;
                                   $module,
                                   'detail',
                                   $link_params,
-                                  chunkText($ref_item->getTitle(),13),
+                                  chunkText($link_title,20),
                                   '',
                                   '',
                                   $this->getFragment()
@@ -1211,7 +1216,7 @@ EOD;
               unset($link_params);
               $html .= '</span>'.LF;
            }
-            $html_text .= '<span><a title="'.$ref_item->getTitle().'">'.$title.'</a></span>';
+            $html_text .= '<span><a title="'.$link_title.'">'.$title.'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['ref_iid']);
