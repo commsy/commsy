@@ -188,7 +188,7 @@ class cs_material_detail_view extends cs_detail_view {
 
 
    function _getBrowsingIconsAsHTML($current_item, $pos_number, $count){
-      $html ='<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>';
+      $html ='';
       $i =0;
       if ( $pos_number == 1 ) {
          $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" border="0"/>';
