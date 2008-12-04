@@ -706,6 +706,7 @@ var $_sel_rubric = '';
       $name_text = $this->_compareWithSearchText($name);
       $params = array();
       $params['iid'] = $item->getItemID();
+      $params['search_path'] = 'true';
       $name = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_USER_TYPE,
                            'detail',
@@ -875,6 +876,7 @@ var $_sel_rubric = '';
       $module = $item->getItemType();
       $params = array();
       $params['iid'] = $item->getItemID();
+      $params['search_path'] = 'true';
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $module,
                            'detail',

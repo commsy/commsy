@@ -539,13 +539,29 @@ class cs_detail_view extends cs_view {
 
    function _getForwardBoxAsHTML () {
    	$html = '';
-      $ids = $this->getBrowseIDs();
 
       $html .= '<div style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
-      $html .= $this->_getForwardLinkAsHTML();
-#      $html .= '<div style="white-space:nowrap;">'.'Liste ausgewählter Materialien ('.count($ids).')</div>'.LF;
+      if (isset($_GET['path']) and !empty($_GET['path'])){
+         $topic_manager = $this->_environment->getManager(CS_TOPIC_TYPE);
+         $topic_item = $topic_manager->getItem($_GET['path']);
+         $path_item_list = $topic_item->getPathItemList();
+         $path_item = $path_item_list->getFirst();
+         $ids = array();
+         while ($path_item){
+            $ids[] = $path_item->getItemID();
+            $path_item = $path_item_list->getNext();
+         }
+         $html .= $this->_getForwardLinkAsHTML($ids,'path');
+      }elseif(isset($_GET['search_path']) and !empty($_GET['search_path'])){
+         $session = $this->_environment->getSessionItem();
+         $ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_index_ids');
+         $html .= $this->_getForwardLinkAsHTML($ids,'search');
+       }else{
+         $ids = $this->getBrowseIDs();
+         $html .= $this->_getForwardLinkAsHTML($ids);
+      }
       $html .='</div>'.LF;
       $html .= '<div class="right_box_main" style="padding:5px 0px 0px 0px;" >'.LF;
 
@@ -571,35 +587,14 @@ class cs_detail_view extends cs_view {
         }
       }
       $listed_ids = array();
-      $manager = $this->_environment->getManager($this->_environment->getCurrentModule());
       $params = $this->_environment->getCurrentParameterArray();
       $count_items = 0;
-/*      if ($start > 0){
-      	 $forward_start = $start-5;
-      	 if ($forward_start<0){
-      	 	$forward_start = 0;
-      	 }
-      	 $start_id = $start-3;
-      	 if($start_id <0){
-      	 	$start_id = 0;
-      	 }
-      	 $item = $manager->getItem($ids[$start_id]);
-          $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
-      	 $html .='<li style="padding:0px 5px;">';
-          $params['iid'] =	$item->getItemID();
-          unset($item);
-          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $this->_environment->getCurrentModule(),
-                                 $this->_environment->getCurrentFunction(),
-                                 $params,
-                                 'Einträge '.($forward_start+1).' bis '.($start)
-                                 );
-      	 $html .='</li>';
-      	 $html .='</ul>';
-      }*/
       $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
       foreach($ids as $id){
          if ($count_items >= $start and $count_items <= $end){
+            $item_manager = $this->_environment->getItemManager();
+            $tmp_item = $item_manager->getItem($id);
+            $manager = $this->_environment->getManager($tmp_item->getItemType());
             $item = $manager->getItem($ids[$count_items]);
             if($this->_environment->getCurrentModule() == CS_USER_TYPE){
                 $link_title = $item->getFullName();
@@ -618,7 +613,7 @@ class cs_detail_view extends cs_view {
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
                $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $this->_environment->getCurrentModule(),
+                                 $tmp_item->getItemType(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
                                  chunkText($link_title,35),
@@ -639,36 +634,33 @@ class cs_detail_view extends cs_view {
       }
       $html .='</ul>';
       unset($params);
-/*      if ($end < (count($ids)-1)){
-      	 $start_id = $end + 3;
-      	 if($start_id > (count($ids)-1)){
-      	 	$start_id = (count($ids)-1);
-      	 }
-      	 $forward_end = $end + 5;
-      	 if (($forward_end) > (count($ids)-1)){
-      	 	$forward_end = (count($ids)-1);
-      	 }
-      	 $item = $manager->getItem($ids[$start_id]);
-         $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:0px; margin-top:0px; padding-bottom:2px;">  '.LF;
-      	 $html .='<li style="padding:0px 5px;">';
-         $params['iid'] =	$item->getItemID();
-         unset($item);
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $this->_environment->getCurrentModule(),
-                                 $this->_environment->getCurrentFunction(),
-                                 $params,
-                                 'Einträge '.($end+2).' bis '.($forward_end+1)
-                                 );
-      	 $html .='</li>';
-      	 $html .='</ul>';
-      }*/
       $html .= '<div style="float:right; font-size:8pt; padding: 5px 3px 3px 0px;">'.LF;
-      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+      if (isset($_GET['path']) and !empty($_GET['path'])){
+         $topic_manager = $this->_environment->getTopicManager();
+         $topic_item = $topic_manager->getItem($_GET['path']);
+         $params = array();
+         $params['iid'] = $_GET['path'];
+         $html .= $this->_translator->getMessage('COMMON_BACK_TO_PATH').': '.ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_TOPIC_TYPE,
+                           'detail',
+                           $params,
+                           chunkText($topic_item->getTitle(),30)
+                           );
+      }elseif (isset($_GET['search_path']) and !empty($_GET['search_path'])){
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                           'campus_search',
+                           'index',
+                           array(),
+                           $this->_translator->getMessage('COMMON_BACK_TO_SEARCH')
+                           );
+      }else{
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            'index',
                            array(),
                            $this->_translator->getMessage('COMMON_BACK_TO_LIST')
-                                 );
+                           );
+      }
       $html .= '</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
       $html .= '</div>'.LF;
@@ -1046,9 +1038,9 @@ class cs_detail_view extends cs_view {
          }
          $html .= $this->_getForwardBoxAsHTML($item);
 
-         if ($current_context->withPath()){
-            $html .= $this->_getAllPathsAsHTML();
-         }
+#         if ($current_context->withPath()){
+#            $html .= $this->_getAllPathsAsHTML();
+#         }
 
           /**********Netnaviation*********/
          if ( $this->showNetnavigation() ){
@@ -2025,9 +2017,9 @@ class cs_detail_view extends cs_view {
 
 
 
-   function _getForwardLinkAsHTML () {
+   function _getForwardLinkAsHTML ($ids,$forward_type='') {
       $pos       = $this->getPosition();  // zero-based!
-      $ids       = $this->getBrowseIDs(); // zero-based!
+      $item_manager = $this->_environment->getItemManager();
       $count_all = count($ids);
       // Determine the position if it is not (correctly) given
       if ( $pos < 0 || $pos >= $count_all ) {
@@ -2073,7 +2065,13 @@ class cs_detail_view extends cs_view {
          unset($params['add_to_'.$this->_module.'_clipboard']);
          $params['iid'] = $browse_start;
          $params['pos'] = 0;
-         $html .= '   '.ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
+            $item = $item_manager->getItem($browse_start);
+            $module = $item->getItemType();
+         }else{
+         	$module = $this->_module;
+         }
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_START_DESC'),
                                    '','','','','','class="detail_system_link"').LF;
@@ -2089,8 +2087,14 @@ class cs_detail_view extends cs_view {
          unset($params[$this->_module.'_option']);
          unset($params['add_to_'.$this->_module.'_clipboard']);
          $params['iid'] = $browse_left;
+         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
+            $item = $item_manager->getItem($browse_left);
+            $module = $item->getItemType();
+         }else{
+            $module = $this->_module;
+         }
          $params['pos'] = $pos-1;
-         $html .= '   '.ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
                                    '','','','','','class="detail_system_link"').LF;
@@ -2109,8 +2113,15 @@ class cs_detail_view extends cs_view {
          unset($params[$this->_module.'_option']);
          unset($params['add_to_'.$this->_module.'_clipboard']);
          $params['iid'] = $browse_right;
+         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
+            $item = $item_manager->getItem($browse_right);
+            $module = $item->getItemType();
+         }else{
+            $module = $this->_module;
+         }
+
          $params['pos'] = $pos+1;
-         $html .= '   '.ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
                                    $params, $image, $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC'),'','','','','','class="detail_system_link"').LF;
          unset($params);
       } else {
@@ -2124,8 +2135,14 @@ class cs_detail_view extends cs_view {
          unset($params[$this->_module.'_option']);
          unset($params['add_to_'.$this->_module.'_clipboard']);
          $params['iid'] = $browse_end;
+         if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
+            $item = $item_manager->getItem($browse_end);
+            $module = $item->getItemType();
+         }else{
+            $module = $this->_module;
+         }
          $params['pos'] = $count_all-1;
-         $html .= '   '.ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_END_DESC'),'','','','','','class="detail_system_link"').LF;
          unset($params);
@@ -2134,10 +2151,59 @@ class cs_detail_view extends cs_view {
       }
       $html .= '</div>';
       $html .= '<div>';
-      if ( empty($ids) ) {
-         $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_ENTRY').' 1 / 1</span>'.LF;
-      } else {
-         $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_ENTRY').' '.($pos+1).' / '.$count_all.'</span>'.LF;
+      if (!empty($forward_type) and $forward_type =='path'){
+         if ( empty($ids) ) {
+            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_PATH_ENTRIES').' 1 / 1</span>'.LF;
+         } else {
+            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_PATH_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
+         }
+      }elseif(!empty($forward_type) and $forward_type =='search'){
+         if ( empty($ids) ) {
+            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_SEARCH_ENTRIES').' 1 / 1</span>'.LF;
+         } else {
+            $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_SEARCH_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
+         }
+      }else{
+         switch ( strtoupper($this->_environment->getCurrentModule()) ){
+            case 'ANNOUNCEMENT':
+               $text = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
+               break;
+            case 'DATE':
+               $text = $this->_translator->getMessage('COMMON_DATE');
+               break;
+            case 'DISCUSSION':
+               $text = $this->_translator->getMessage('COMMON_DISCUSSION');
+               break;
+            case 'GROUP':
+               $text = $this->_translator->getMessage('COMMON_GROUP');
+               break;
+            case 'INSTITUTION':
+               $text = $this->_translator->getMessage('COMMON_INSTITUTION');
+               break;
+            case 'MATERIAL':
+               $text = $this->_translator->getMessage('COMMON_MATERIAL');
+               break;
+            case 'PROJECT':
+               $text = $this->_translator->getMessage('COMMON_PROJECT');
+               break;
+            case 'TODO':
+               $text = $this->_translator->getMessage('COMMON_TODO');
+               break;
+            case 'TOPIC':
+               $text = $this->_translator->getMessage('COMMON_TOPIC');
+               break;
+            case 'USER':
+               $text = $this->_translator->getMessage('COMMON_USER');
+               break;
+            default:
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
+               break;
+         }
+         if ( empty($ids) ) {
+            $html .= '<span class="bold">'.$text.' 1 / 1</span>'.LF;
+         } else {
+            $html .= '<span class="bold">'.$text.' '.($pos+1).' / '.$count_all.'</span>'.LF;
+         }
       }
       $html .= '';
       $html .= '</div>';

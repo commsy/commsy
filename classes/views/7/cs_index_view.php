@@ -2297,7 +2297,7 @@ EOD;
       if ( $browse_start > 0 ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
-         $html .= '         '.ahref_curl($this->_environment->getCurrentContextID(),
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
                                          $this->_function,
                                          $params, $image,
@@ -2316,7 +2316,7 @@ EOD;
       if ( $browse_left > 0 ) {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
-         $html .= '         '.ahref_curl($this->_environment->getCurrentContextID(),
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
                                          $params, $image,
                                          $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
@@ -2334,7 +2334,7 @@ EOD;
       if ( $browse_right > 0 ) {
          $params['from'] = $browse_right;
          $image = '<span class="bold">&gt;</span>';
-         $html .= '         '.ahref_curl($this->_environment->getCurrentContextID(),
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
                                          $this->_function,
                                          $params,
@@ -2354,7 +2354,7 @@ EOD;
       if ( $browse_end > 0 ) {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
-         $html .= '         '.ahref_curl($this->_environment->getCurrentContextID(),
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
                                          $params,
                                          $image,
