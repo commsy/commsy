@@ -133,10 +133,10 @@ class cs_home_title_view extends cs_view {
          $home_title .= ' ('.$this->_translator->getMessage('COMMON_COMMUNITY').')';
       }
       $html .= '<div style="float:right; text-align:left; padding-top: 5px; width:27%; white-space:nowrap;">'.LF;
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'short','').'" method="post" name="form">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_environment->getCurrentModule()).'"/>'.LF;
-      $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_environment->getCurrentFunction()).'"/>'.LF;
+      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
       $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>';
       $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
       $html .='</form>'.LF;

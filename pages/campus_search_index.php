@@ -67,6 +67,16 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $search = '';
    }
 
+   // Find current search text
+   if ( isset($_POST['$selrubric']) ) {
+      $selrubric = $_POST['$selrubric'];
+      $from = 1;
+   } elseif ( isset($_GET['$selrubric']) ) {
+      $selrubric = $_GET['$selrubric'];
+   }  else {
+      $selrubric = '';
+   }
+
    // Find current buzzword selection
    if ( isset($_GET['selbuzzword']) and $_GET['selbuzzword'] !='-2') {
       $selbuzzword = $_GET['selbuzzword'];
@@ -105,6 +115,8 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    }  else {
       $selrubric ='all';
    }
+
+
    // Find current restriction selection
    if ( isset($_POST['selrestriction']) ) {
       $selrestriction = $_POST['selrestriction'];
@@ -149,7 +161,18 @@ foreach ( $room_modules as $module ) {
                  or in_array($link_name[0],$file_rubric_array)
                )
          ) {
-         $rubric_array[] = $link_name[0];
+         if ( (empty($selbuzzword)
+                 and empty($selfiles)
+                 and empty($last_selected_tag)
+              )
+             or ($link_name[0] != CS_USER_TYPE
+                 and $link_name[0] != CS_TOPIC_TYPE
+                 and $link_name[0] != CS_GROUP_TYPE
+                 and $link_name[0] != CS_INSTITUTION_TYPE)
+         ){
+            $rubric_array[] = $link_name[0];
+         }
+
       }
    }
 }
@@ -157,6 +180,55 @@ foreach ( $room_modules as $module ) {
 if ( $selrubric != 'all' ) {
    $rubric_array = array();
    $rubric_array[] = $selrubric;
+}
+
+$context_item = $environment->getCurrentContextItem();
+$current_room_modules = $context_item->getHomeConf();
+if ( !empty($current_room_modules) ){
+   $room_modules = explode(',',$current_room_modules);
+} else {
+   $room_modules =  $default_room_modules;
+}
+$sel_array = array();
+foreach ( $room_modules as $module ) {
+   $link_name = explode('_', $module);
+   if ( $link_name[1] != 'none' ) {
+      if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+         // Find current institution selection
+         $string = 'sel'.$link_name[0];
+         if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
+            $sel_array[$link_name[0]] = $_GET[$string];
+         } else {
+            $sel_array[$link_name[0]] = 0;
+         }
+      }
+   }
+}
+
+
+// Find current sel_activating_status selection
+if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
+   $sel_activating_status = $_GET['selactivatingstatus'];
+} else {
+   $sel_activating_status = 2;
+}
+
+// Find current search text
+if ( isset($_GET['attribute_limit']) ) {
+   $attribute_limit = $_GET['attribute_limit'];
+   switch( $attribute_limit  ){
+     case 1 :
+         $attribute_limit = 'title';
+         break;
+     case 2 :
+         $attribute_limit = 'author';
+         break;
+     case 3 :
+         $attribute_limit = 'file';
+         break;
+   }
+} else {
+   $attribute_limit = '';
 }
 
 // Get available buzzwords
@@ -167,76 +239,108 @@ $buzzword_manager->setTypeLimit('buzzword');
 $buzzword_manager->setGetCountLinks();
 $buzzword_manager->select();
 $buzzword_list = $buzzword_manager->get();
+$count_all = 0;
+
+/*Durchführung möglicher Einschränkungen*/
+foreach($sel_array as $rubric => $value){
+   $label_manager = $environment->getManager($rubric);
+   $label_manager->setContextLimit($environment->getCurrentContextID());
+   $label_manager->select();
+   $rubric_list = $label_manager->get();
+   $temp_rubric_list = clone $rubric_list;
+   $view->setAvailableRubric($rubric,$temp_rubric_list);
+   $view->setSelectedRubric($rubric,$value);
+   unset($rubric_list);
+}
+
 
 // Get data from database
 foreach ($rubric_array as $rubric) {
-   if ( !( (!empty($selbuzzword) or !empty($last_selected_tag) ) and
-    ( $rubric == CS_USER_TYPE or $rubric == CS_GROUP_TYPE or $rubric == CS_TOPIC_TYPE or $rubric == CS_INSTITUTION_TYPE )
-   )){
-      $rubric_ids = array();
-      $rubric_list = new cs_list();
-      $rubric_manager = $environment->getManager($rubric);
-      if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
-         $rubric_manager->setContextLimit($environment->getCurrentContextID());
-      }
-      $rubric_manager->setSearchLimit($search);
-      $rubric_manager->setAttributeLimit($selrestriction);
-      if ( !empty($selbuzzword) ) {
-         $rubric_manager->setBuzzwordLimit($selbuzzword);
-      }
-      if ( !empty($last_selected_tag) ){
-         $rubric_manager->setTagLimit($last_selected_tag);
-      }
+   $rubric_ids = array();
+   $rubric_list = new cs_list();
+   $rubric_manager = $environment->getManager($rubric);
 
-      if ($rubric=='user') {
-         $rubric_manager->setUserLimit();
-         $current_user= $environment->getCurrentUser();
-         if ( $current_user->isUser() ) {
-             $rubric_manager->setVisibleToAllAndCommsy();
-         } else {
-             $rubric_manager->setVisibleToAll();
-         }
-      } elseif ($rubric == CS_DATE_TYPE) {
-         $rubric_manager->setWithoutDateModeLimit();
-      }
-      if ( !empty($selfiles) ) {
-         $rubric_manager->setOnlyFilesLimit();
-      }
-      if ( $rubric != CS_MYROOM_TYPE ) {
-         $rubric_manager->selectDistinct();
-         $rubric_list = $rubric_manager->get();
-      } else {
-         $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
-      }
-      $search_list->addList($rubric_list);
-      if ($rubric!=CS_MYROOM_TYPE) {
-         $temp_rubric_ids = $rubric_manager->getIDArray();
-      } else {
-         $current_user= $environment->getCurrentUser();
-         $temp_rubric_ids = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');;
-      }
-      if (!empty($temp_rubric_ids)){
-         $rubric_ids = $temp_rubric_ids;
-      }
-      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
-      $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
+   /*Vorbereitung der Manager und Abzählen aller Einträge */
+   if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
+      $rubric_manager->setContextLimit($environment->getCurrentContextID());
    }
+   if ($rubric == CS_DATE_TYPE) {
+      $rubric_manager->setWithoutDateModeLimit();
+   }
+   if ($rubric==CS_USER_TYPE) {
+      $rubric_manager->setUserLimit();
+      $current_user= $environment->getCurrentUser();
+      if ( $current_user->isUser() ) {
+          $rubric_manager->setVisibleToAllAndCommsy();
+      } else {
+          $rubric_manager->setVisibleToAll();
+      }
+   }
+   $count_all = $count_all + $rubric_manager->getCountAll();
+
+   foreach($sel_array as $rubric => $value){
+      if (!empty($value)){
+         $rubric_manager->setRubricLimit($rubric,$value);
+      }
+   }
+
+
+
+
+   if ( $sel_activating_status != '1') {
+      $rubric_manager->showNoNotActivatedEntries();
+   }
+   $rubric_manager->setSearchLimit($search);
+   $rubric_manager->setAttributeLimit($selrestriction);
+
+   if ( !empty($selbuzzword) ) {
+      $rubric_manager->setBuzzwordLimit($selbuzzword);
+   }
+   if ( !empty($last_selected_tag) ){
+      $rubric_manager->setTagLimit($last_selected_tag);
+   }
+
+   if ( !empty($selfiles) ) {
+      $rubric_manager->setOnlyFilesLimit();
+   }
+
+   if ( $rubric != CS_MYROOM_TYPE ) {
+      $rubric_manager->selectDistinct();
+      $rubric_list = $rubric_manager->get();
+   } else {
+      $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
+   }
+
+   $search_list->addList($rubric_list);
+   if ($rubric!=CS_MYROOM_TYPE) {
+      $temp_rubric_ids = $rubric_manager->getIDArray();
+   } else {
+      $current_user= $environment->getCurrentUser();
+      $temp_rubric_ids = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');;
+   }
+   if (!empty($temp_rubric_ids)){
+      $rubric_ids = $temp_rubric_ids;
+   }
+   $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
+   $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
+
 }
 
 // Set data for view
 $sublist = $search_list->getSubList($from-1,$interval);
 $view->setList($sublist);
 $view->setCountAllShown(count($campus_search_ids));
-$view->setCountAll(count($campus_search_ids));
+$view->setCountAll($count_all);
 $view->setFrom($from);
 $view->setInterval($interval);
 $view->setSearchText($search);
 $view->setSelectedRestriction($selrestriction);
-$view->setSelectedRubric($selrubric);
 $view->setSelectedFile($selfiles);
 $view->setAvailableBuzzwords($buzzword_list);
+$view->setChoosenRubric($selrubric);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
+$view->setActivationLimit($sel_activating_status);
 
 // Add list view to page
 $page->add($view);

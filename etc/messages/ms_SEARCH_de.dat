@@ -1,13 +1,16 @@
 <?php
 $message["SEARCH_ANNOUNCEMENTS"]["de"] = "Ankündigungen";
 $message["SEARCH_EDIT_TITLE"]["de"] = "Erweiterte Suche in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG_SUB_DATS_BIG";
+$message["SEARCH_FIELD_RESTRICTION"]["de"] = "begrenzt auf";
 $message["SEARCH_GO_BUTTON"]["de"] = "Suchen";
 $message["SEARCH_ITEM_ATTRIBUTE"]["de"] = "Suchkriterien";
 $message["SEARCH_ITEM_ATTRIBUTE_DESC"]["de"] = "Sie können die Suche auf einzelne Kriterien einschränken.";
 $message["SEARCH_MATERIALS"]["de"] = "Materialien";
 $message["SEARCH_ONLY_FILES_TEXT"]["de"] = "nur Einträge mit Dateien";
+$message["SEARCH_ONLY_IN_FILES_TEXT"]["de"] = "Nur in Einträge mit Dateien suchen";
 $message["SEARCH_RUBRIC_CHOICE"]["de"] = "Suchen in";
 $message["SEARCH_RUBRIC_CHOICE_DESC"]["de"] = "Wählen Sie die Rubrik/Rubriken, in der/denen gesucht werden soll.";
+$message["SEARCH_RUBRIC_RESTRICTION"]["de"] = "Auswahl der Rubrik";
 $message["SEARCH_TEXT"]["de"] = "Suchtext";
 $message["SEARCH_TEXT_DESC"]["de"] = "Geben Sie einen Begriff ein, nachdem Sie suchen wollen.";
 $message["SEARCH_TOPICS"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";

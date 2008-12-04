@@ -375,6 +375,9 @@ class cs_index_view extends cs_view {
        $this->_attribute_limit = (string)$attribute_limit;
     }
 
+    function getAttributeLimit () {
+       return $this->_attribute_limit;
+    }
 
     function getSortKey () {
        return $this->_sort_key;
@@ -1216,7 +1219,7 @@ EOD;
               unset($link_params);
               $html .= '</span>'.LF;
            }
-            $html_text .= '<span><a title="'.$link_title.'">'.$title.'</a></span>';
+            $html_text .= '<span><a title="'.$ref_item->getTitle().'">'.$title.'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['ref_iid']);
@@ -1586,7 +1589,7 @@ EOD;
             if ($this->_environment->getCurrentModule() != 'campus_search'){
                $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
             }else{
-               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
+               $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTION_SEARCH').'"';
             }$desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
             $parameter_array = $this->_environment->getCurrentParameterArray();
@@ -1594,6 +1597,9 @@ EOD;
                 (isset($parameter_array['attribute_limit']) and $parameter_array['attribute_limit']!='0')
                 or (isset($parameter_array['selactivatingstatus']) and $parameter_array['selactivatingstatus']!='0')
                 or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
+                or (isset($parameter_array['selrubric']) and !empty($parameter_array['selrubric']))
+                or (isset($parameter_array['selrestriction']) and !empty($parameter_array['selrestriction']))
+                or ($this->_environment->getCurrentModule() == 'campus_search')
                ){
                 if ($this->_environment->getCurrentModule() != CS_USER_TYPE or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']=='3')){
                    $config_text .= $additional_text.'true';
@@ -1911,8 +1917,11 @@ EOD;
          case 'ACCOUNT':
             $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
             break;
+         case 'CAMPUS_SEARCH':
+            $text .= $this->_translator->getMessage('COMMON_ENTRIES');
+            break;
          default:
-            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1762) ';
+            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1913) ';
             break;
       }
       $html .= '<span class="infocolor">'.getMessage('COMMON_ALL_LIST_ENTRIES',$text).':</span> ';
@@ -2092,6 +2101,7 @@ EOD;
           or $module == CS_USER_TYPE
           or $module == CS_MATERIAL_TYPE
           or $module == CS_TODO_TYPE
+          or $module == 'campus_search'
       ){
          $width = '235';
          $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
@@ -2133,7 +2143,7 @@ EOD;
      $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
      $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
-     $html .= '   <input type="hidden" name="rubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
+     $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
      $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
      $html .= '</form>';
