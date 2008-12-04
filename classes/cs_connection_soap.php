@@ -1497,6 +1497,20 @@ class cs_connection_soap {
       $log_manager->saveArray($array);
    }
    
+   public function _log_in_file ($params) {
+      global $c_commsy_path_file;
+      if(!file_exists($c_commsy_path_file . '/var/soap.log')){
+      	$logFileName = $c_commsy_path_file . '/var/soap.log';
+		$logFileHandle = fopen($logFileName, 'w');
+		fclose($logFileHandle);
+      }
+      $file_contents = file_get_contents($c_commsy_path_file . '/var/soap.log');
+      foreach($params as $param){
+      	$file_contents =  $file_contents . "\n" . time() . ' - ' . $param[0] . ' - ' . $param[1];
+      }
+      file_put_contents($c_commsy_path_file . '/var/soap.log', $file_contents);
+   }
+   
    public function getUserInfo ($session_id, $context_id) {
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
@@ -1524,10 +1538,6 @@ class cs_connection_soap {
    }
    
    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
-   		// User Moderator im Raum -> admin
-   		// User Mitglied in Raum -> edit
-   		// User Mitglied in Gemeinschaftsraum zu dme der Raum zugeordnet ist -> read
-   		// sonst -> notAuthenticated
    		$result = 'notAuthenticated';
    		$session_id = $this->_encode_input($session_id);
       	if ($this->_isSessionValid($session_id)) {
@@ -1536,7 +1546,7 @@ class cs_connection_soap {
 			$user_manager->setUserIDLimit($user_id);
 	        $user_manager->select();
 	        $user_list = $user_manager->get();
-	        if ($user_list->getCount() == 1) {
+	        if ($user_list->getCount() >= 1) {
 	        	$user_item = $user_list->getFirst();
 	        	if($user_item->getStatus() == 3){
 	   				$result = 'moderator';
@@ -1548,8 +1558,13 @@ class cs_connection_soap {
 	   				$result = 'notAuthenticated';
 	   			}
 	        }
-			//      $projectList = $project_manager->getRelatedProjectListForUser($user_item);
-			//      pr($projectList);
+//	        else {
+//				$this->_environment->setCurrentContextID($context_id);
+//				$context_item = $this->_environment->getCurrentContextItem();
+//				if($context_item->WikiPortalReadAccess() == '1'){
+//					$result = 'read';
+//	            }
+//	        }
       	} else {
         	$info = 'ERROR: GET AUTHENTICATION FOR WIKI';
          	$info_text = 'session id ('.$session_id.') is not valid';

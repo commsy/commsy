@@ -4,6 +4,7 @@ $message["WIKI_CONFIGURATION_LINK"]["en"] = "Workspace wiki";
 $message["WIKI_CONFIGURATION_SECTION_EDIT"]["en"] = "SectionEdit<br/>(Addon)";
 $message["WIKI_CONFIGURATION_SECTION_EDIT_VALUE"]["en"] = "Activate section edit.";
 $message["WIKI_CONFIGURATION_SECTION_HEADER_VALUE"]["en"] = "Recognize headlines as sections";
+$message["WIKI_COOMUNITY_NO_READ_ACCESS_ERROR"]["en"] = "Community-room users don't have read-access.";
 $message["WIKI_DELETE_BUTTON"]["en"] = "Delete wiki";
 $message["WIKI_DISCUSSION_EMPTY_ERROR"]["en"] = "";
 $message["WIKI_DISCUSSION_EXISTS_ERROR"]["en"] = "";

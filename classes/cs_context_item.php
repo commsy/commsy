@@ -2641,6 +2641,57 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setWikiCommunityReadAccess(){
+      $this->_addExtra('WIKICOMMUNITYREADACCESS','1');
+   }
+
+   function unsetWikiCommunityReadAccess(){
+      $this->_addExtra('WIKICOMMUNITYREADACCESS','-1');
+   }
+
+   function WikiCommunityReadAccess(){
+      if ( $this->_issetExtra('WIKICOMMUNITYREADACCESS') ) {
+         $retour = $this->_getExtra('WIKICOMMUNITYREADACCESS');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+   
+   function setWikiCommunityWriteAccess(){
+      $this->_addExtra('WIKICOMMUNITYWRITEACCESS','1');
+   }
+
+   function unsetWikiCommunityWriteAccess(){
+      $this->_addExtra('WIKICOMMUNITYWRITEACCESS','-1');
+   }
+
+   function WikiCommunityWriteAccess(){
+      if ( $this->_issetExtra('WIKICOMMUNITYWRITEACCESS') ) {
+         $retour = $this->_getExtra('WIKICOMMUNITYWRITEACCESS');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+   
+   function setWikiPortalReadAccess(){
+      $this->_addExtra('WIKIPORTALREADACCESS','1');
+   }
+
+   function unsetWikiPortalReadAccess(){
+      $this->_addExtra('WIKIPORTALREADACCESS','-1');
+   }
+
+   function WikiPortalReadAccess(){
+      if ( $this->_issetExtra('WIKIPORTALREADACCESS') ) {
+         $retour = $this->_getExtra('WIKIPORTALREADACCESS');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
 
    ##########################################
    # Pfad

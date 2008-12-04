@@ -112,19 +112,9 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addTextField('edit','',getMessage('COMMON_WIKI_EDIT_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_EDIT_PW'));
       $this->_form->combine();
       $this->_form->addTextField('read','',getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',getMessage('COMMON_WIKI_READ_PW'));
-      $this->_form->combine();
-      $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),'');
-
-     $wiki_manager = $this->_environment->getWikiManager();
-     $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
-
-//	  if (isset($wiki_groups_array['groups'][0])){
-//        $this->_form->combine();
-//        $this->_form->addText('wiki_space2','','<br/>'.getMessage('COMMON_WIKI_GROUP_ORGANISATION').':');
-//        $this->_form->combine();
-//        //$this->_form->addCheckbox('enable_wiki_groups[]',$wiki_groups_array,false,$wiki_group,$wiki_group,$wiki_group,false,false,'','',true,false);
-//        $this->_form->addCheckBoxGroup('enable_wiki_groups',$wiki_groups_array['groups'],$wiki_groups_array['public'],getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);
-//      }
+     
+      $wiki_manager = $this->_environment->getWikiManager();
+      $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
 
      if (isset($wiki_groups_array['groups'][0])){
         $this->_form->combine();
@@ -141,8 +131,22 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            if($first){
               $first = false;
            }
+      	}
       }
-      }
+
+      $this->_form->addEmptyline();
+
+      $this->_form->addCheckbox('use_commsy_login',1,'',getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC'),false,false,'','',true,false);
+	  //$this->_form->combine();
+      //$this->_form->addText('wiki_space2','',' ');
+      //$this->_form->combine();
+      //$this->_form->addCheckbox('community_read_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
+	  //$this->_form->combine();
+      //$this->_form->addCheckbox('community_write_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
+	  //$this->_form->combine();
+      //$this->_form->addText('wiki_space2','',' ');
+	  //$this->_form->combine();
+      //$this->_form->addCheckbox('portal_read_access',1,'',getMessage('COMMON_CONFIGURATION_WIKI'),getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){
@@ -399,6 +403,15 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          if ($this->_item->WikiUseCommSyLogin() == "1"){
             $this->_values['use_commsy_login'] = 1;
          }
+         if ($this->_item->WikiCommunityReadAccess() == "1"){
+            $this->_values['community_read_access'] = 1;
+         }
+         if ($this->_item->WikiCommunityWriteAccess() == "1"){
+            $this->_values['community_write_access'] = 1;
+         }
+         if ($this->_item->WikiPortalReadAccess() == "1"){
+            $this->_values['portal_read_access'] = 1;
+         }
          $this->_values['new_discussion'] = '';
          // /new features
          if ( $this->_item->wikiWithSectionEdit() ) {
@@ -483,6 +496,13 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       } else {
          $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->setWikiGroupsAsPublic(array());
+      }
+      
+      if ( empty($this->_form_post['community_read_access'])
+           and (!empty($this->_form_post['community_write_access']))
+         ) {
+         $this->_error_array[] = getMessage('WIKI_COOMUNITY_NO_READ_ACCESS_ERROR');
+         $this->_form->setFailure('community_read_access','');
       }
    }
 }

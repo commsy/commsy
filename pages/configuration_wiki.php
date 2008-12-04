@@ -237,6 +237,24 @@ else {
          } else {
             $item->unsetWikiUseCommSyLogin();
          }
+         
+         if ( isset($_POST['community_read_access']) ) {
+            $item->setWikiCommunityReadAccess();
+         } else {
+            $item->unsetWikiCommunityReadAccess();
+         }
+         
+         if ( isset($_POST['community_write_access']) ) {
+            $item->setWikiCommunityWriteAccess();
+         } else {
+            $item->unsetWikiCommunityWriteAccess();
+         }
+         
+         if ( isset($_POST['portal_read_access']) ) {
+            $item->setWikiPortalReadAccess();
+         } else {
+            $item->unsetWikiPortalReadAccess();
+         }
 
          if ( isset($_POST['show_login_box']) ) {
             $item->setWikiShowCommSyLogin();
