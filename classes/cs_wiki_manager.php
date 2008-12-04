@@ -1126,7 +1126,9 @@ function exportMaterialToWiki($current_item_id){
          $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
          $mail->set_subject($subject);
          
-         $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY').': "'.$material_item->getTitle() . '" (' . $material_item->getExportToWikiLink() . ')';
+         $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
+         $body .= '<br/><br/>';
+         $body .= $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY').': "'.$material_item->getTitle() . '" (' . $material_item->getExportToWikiLink() . ')';
          $mail->set_message($body);
          $mail->setSendAsHTML();
 
