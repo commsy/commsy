@@ -601,6 +601,11 @@ class cs_detail_view extends cs_view {
       foreach($ids as $id){
          if ($count_items >= $start and $count_items <= $end){
             $item = $manager->getItem($ids[$count_items]);
+            if($this->_environment->getCurrentModule() == CS_USER_TYPE){
+                $link_title = $item->getFullName();
+            } else {
+                $link_title = $item->getTitle();
+            }
             if ($count_items < 9){
             	$style='padding:0px 5px 0px 11px;';
             }else{
@@ -608,7 +613,7 @@ class cs_detail_view extends cs_view {
             }
             if ($item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="'.$style.'">';
-               $html .= '<span>'.chunkText($item->getTitle(),35).'</span>';
+               $html .= '<span>'.chunkText($link_title,35).'</span>';
             }else{
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
@@ -616,7 +621,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 chunkText($item->getTitle(),35),
+                                 chunkText($link_title,35),
                                  '',
                                  '',
                                  '',
