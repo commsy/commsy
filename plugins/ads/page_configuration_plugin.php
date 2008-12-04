@@ -66,8 +66,10 @@ else {
    }
 
       // Initialize the form
-      include_once('plugins/ads/class_configuration_plugin_form.php');
-      $form = new class_configuration_plugin_form($environment);
+      $class_params= array();
+      $class_params['environment'] = $environment;
+      $form = $class_factory->getClass(CONFIGURATION_PLUGIN_FORM,$class_params);
+      unset($class_params);
       // display form
       $params = array();
       $params['environment'] = $environment;
