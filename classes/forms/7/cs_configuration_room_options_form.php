@@ -413,8 +413,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addTextField('color_7','',$this->_translator->getMessage('COMMON_COLOR_107'),'','',10);
             $this->_form->addRoomLogo('bgimage',
                              '',
-                             $this->_translator->$this->_translator->getMessage('BG_IMAGE_UPLOAD'),
-                             $this->_translator->$this->_translator->getMessage('BG_IMAGE_UPLOAD_DESC'),
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD'),
+                             $this->_translator->getMessage('BG_IMAGE_UPLOAD_DESC'),
                              '',
                              false,
                              '4em'
