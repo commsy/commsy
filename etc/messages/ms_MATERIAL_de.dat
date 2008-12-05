@@ -50,12 +50,12 @@ $message["MATERIAL_EDITOR_DESC"]["de"] = "/Müller, Michael; Meier, Christine/";
 $message["MATERIAL_ENTER_NEW"]["de"] = "Material eingeben";
 $message["MATERIAL_EXPORT_TO_WIKI"]["de"] = "Im Wiki darstellen";
 $message["MATERIAL_EXPORT_TO_WIKI_LINK"]["de"] = "Seite im Wiki";
-$message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["de"] = "Im CommSy-Raum &quot;%1&quot; wurde folgendes, auch von Ihnen bearbeitete, Material im Raum-Wiki veröffentlicht:
-
-&quot;%2&quot;
-
-Die öffentliche Version im Raum-Wiki finden Sie unter:
-
+$message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["de"] = "Im CommSy-Raum &quot;%1&quot; wurde folgendes, auch von Ihnen bearbeitete, Material im Raum-Wiki veröffentlicht:<br/>
+<br/>
+&quot;%2&quot;<br/>
+<br/>
+Die öffentliche Version im Raum-Wiki finden Sie unter:<br/>
+<br/>
 %3";
 $message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["de"] = "Material-Export ins Wiki";
 $message["MATERIAL_FACULTY"]["de"] = "Fakultät";
