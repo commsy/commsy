@@ -34,6 +34,17 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['seltopic'] = $index_search_parameter_array['seltopic'];
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
+
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
 } elseif ( isset($_POST['ref_iid']) ) {
@@ -321,4 +332,13 @@ if (empty($action)){
 }else{
    $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids');
 }
+
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+$index_search_parameter_array['seltopic'] = $seltopic;
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+
 ?>

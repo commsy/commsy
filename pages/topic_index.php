@@ -35,6 +35,22 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   if ($environment->inCommunityRoom()){
+      $params['selinstitution'] = $index_search_parameter_array['selinstitution'];
+   }else{
+      $params['selgroup'] = $index_search_parameter_array['selgroup'];
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
+
+
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
 } elseif ( isset($_POST['ref_iid']) ) {
@@ -365,4 +381,18 @@ $page->add($view);
 $session->setValue('interval', $interval); // interval is applied to all rubrics
 $session->setValue('cid'.$context_item->getItemID().'_topic_index_ids', $ids);
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
+
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+if ($environment->inCommunityRoom()){
+   $index_search_parameter_array['selinstitution'] = $selinstitution;
+}else{
+   $index_search_parameter_array['selgroup'] = $selgroup;
+}
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+
+
 ?>

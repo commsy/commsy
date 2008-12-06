@@ -225,11 +225,11 @@ class cs_user_index_view extends cs_room_index_view {
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
 
-         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
-         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
+#         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
+         $html .= '      <td colspan="2"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }else{
-         $html .= '      <td colspan="2" '.$style.' style="text-align:center; font-size:10pt;">'.$this->_getItemPicture($item).'</td>'.LF;
-         $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
+#         $html .= '      <td colspan="2" '.$style.' style="text-align:center; font-size:10pt;">'.$this->_getItemPicture($item).'</td>'.LF;
+         $html .= '      <td colspan="3"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">';
@@ -390,6 +390,34 @@ class cs_user_index_view extends cs_room_index_view {
    function getSelectedStatus () {
       return $this->_selected_status;
    }
+
+  function _getExpertSearchAsHTML(){
+     $html  = '';
+     $context_item = $this->_environment->getCurrentContextItem();
+     $module = $this->_environment->getCurrentModule();
+     if ($context_item->withActivatingContent()
+          or $module == CS_DATE_TYPE
+          or $module == CS_USER_TYPE
+          or $module == CS_MATERIAL_TYPE
+          or $module == CS_TODO_TYPE
+          or $module == 'campus_search'
+      ){
+         $width = '235';
+         $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+         $html .= '<div class="right_box">'.LF;
+         $html .= '         <noscript>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
+         $html .= '         </noscript>';
+         $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
+         $html .= $this->_getAdditionalRestrictionBoxAsHTML('14.5').LF;
+         $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+      }
+      return $html;
+  }
+
 
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';

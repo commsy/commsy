@@ -22,6 +22,21 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['selstatus'] = $index_search_parameter_array['selstatus'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $sel_array = $index_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
+
 $current_user = $environment->getCurrentUser();
 $current_context = $environment->getCurrentContextItem();
 
@@ -140,27 +155,29 @@ if ( isset($_GET['interval']) ) {
       } else {
          $search = '';
       }
+   $context_item = $environment->getCurrentContextItem();
+   $current_room_modules = $context_item->getHomeConf();
+   if ( !empty($current_room_modules) ){
+      $room_modules = explode(',',$current_room_modules);
+   } else {
+      $room_modules =  $default_room_modules;
+   }
 
-      // Find current group selection
-      if ( isset($_GET['selgroup'])  and $_GET['selgroup'] !='-2') {
-         $selgroup = $_GET['selgroup'];
-      } else {
-         $selgroup = 0;
+   $sel_array = array();
+   foreach ( $room_modules as $module ) {
+      $link_name = explode('_', $module);
+      if ( $link_name[1] != 'none' ) {
+         if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+            // Find current institution selection
+            $string = 'sel'.$link_name[0];
+            if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
+               $sel_array[$link_name[0]] = $_GET[$string];
+            } else {
+               $sel_array[$link_name[0]] = 0;
+            }
+         }
       }
-
-      // Find current topic selection
-      if ( isset($_GET['seltopic'])  and $_GET['seltopic'] !='-2') {
-         $seltopic = $_GET['seltopic'];
-      } else {
-         $seltopic = 0;
-      }
-
-      // Find current institution selection
-      if ( isset($_GET['selinstitution'])  and $_GET['selinstitution'] !='-2') {
-         $selinstitution = $_GET['selinstitution'];
-      } else {
-         $selinstitution = 0;
-      }
+   }
 
       // Find current status selection
       if ( isset($_GET['selstatus']) and $_GET['selstatus']!=2 and $_GET['selstatus']!='-2' ) {
@@ -323,9 +340,27 @@ if ( isset($_GET['interval']) ) {
          $user_manager->setVisibleToAll();
       }
    }
-   if ( !empty($selinstitution) ) {
-      $user_manager->setInstitutionLimit($selinstitution);
+   // Prepare view object
+   $context_item = $environment->getCurrentContextItem();
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $context_item->isOpen();
+   $view = $class_factory->getClass(USER_INDEX_VIEW,$params);
+   unset($params);
+
+foreach($sel_array as $rubric => $value){
+   if (!empty($value)){
+      $user_manager->setRubricLimit($rubric,$value);
    }
+   $label_manager = $environment->getManager($rubric);
+   $label_manager->setContextLimit($environment->getCurrentContextID());
+   $label_manager->select();
+   $rubric_list = $label_manager->get();
+   $temp_rubric_list = clone $rubric_list;
+   $view->setAvailableRubric($rubric,$temp_rubric_list);
+   $view->setSelectedRubric($rubric,$value);
+   unset($rubric_list);
+}
    $ids = $user_manager->getIDArray();       // returns an array of item ids
    $count_all_shown = count($ids);
    if ( $interval > 0 ) {
@@ -344,41 +379,6 @@ if ( isset($_GET['interval']) ) {
       }
    }
 
-   // Prepare view object
-   $context_item = $environment->getCurrentContextItem();
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $context_item->isOpen();
-   $view = $class_factory->getClass(USER_INDEX_VIEW,$params);
-   unset($params);
-
-   // Get available groups
-         if($context_item->withRubric(CS_GROUP_TYPE)){
-      $group_manager = $environment->getGroupManager();
-      $group_manager->resetLimits();
-      $group_manager->select();
-      $group_list = $group_manager->get();
-      $view->setSelectedGroup($selgroup);
-      $view->setAvailableGroups($group_list);
-         }
-         if($context_item->withRubric(CS_TOPIC_TYPE)){
-        // Get available topics
-      $topic_manager = $environment->getTopicManager();
-      $topic_manager->resetLimits();
-      $topic_manager->select();
-      $topic_list = $topic_manager->get();
-      $view->setSelectedTopic($seltopic);
-      $view->setAvailableTopics($topic_list);
-         }
-         if($context_item->withRubric(CS_INSTITUTION_TYPE)){
-      // Get available institutions
-      $institution_manager = $environment->getInstitutionManager();
-      $institution_manager->resetLimits();
-      $institution_manager->select();
-      $institution_list = $institution_manager->get();
-      $view->setSelectedInstitution($selinstitution);
-      $view->setAvailableInstitutions($institution_list);
-         }
 
 
 $id_array = array();
@@ -429,6 +429,17 @@ $noticed_manager->getLatestNoticedByIDArray($id_array);
    $session->setValue('interval', $interval); // interval is applied to all rubrics
    $session->setValue('cid'.$environment->getCurrentContextID().'_user_index_ids', $ids);
    $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
+
+   $index_search_parameter_array = array();
+   $index_search_parameter_array['interval'] = $interval;
+   $index_search_parameter_array['sort'] = $sort;
+   $index_search_parameter_array['search'] = $search;
+   $index_search_parameter_array['sel_array'] = $sel_array;
+   $index_search_parameter_array['selstatus'] = $selstatus;
+   $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+   $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+
 }
+
 }
 ?>
