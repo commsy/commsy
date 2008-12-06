@@ -554,7 +554,9 @@ class cs_index_view extends cs_view {
       $params['from'] = $this->_from;
       $params['interval'] = $this->_interval;
       $params['sort'] = $this->_sort_key;
-      $params['search'] = rawurlencode($this->_search_text);
+      if (isset($this->_search_text) and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')){
+         $params['search'] = rawurlencode($this->_search_text);
+      }
       if ( $this->_environment->inProjectRoom() ) {
          $params['selgroup'] = $this->getSelectedGroup();
       } else {
@@ -2043,7 +2045,7 @@ EOD;
       if ( isset($params['attribute_limit']) ){
          $html .= '   <input type="hidden" name="attribute_limit" value="'.$params['attribute_limit'].'"/>'.LF;
       }
-      if ( isset($params['search']) ){
+      if ( isset($params['search']) and $params['search'] != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')){
          $html .= '   <input type="hidden" name="search" value="'.$params['search'].'"/>'.LF;
       }
       if ( $this->hasCheckboxes() ) {

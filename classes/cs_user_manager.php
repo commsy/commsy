@@ -587,10 +587,10 @@ class cs_user_manager extends cs_manager {
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' AND (';
+         $query .= ' AND ( 1 = 1';
    if (!isset($this->_attribute_limit) || ('all'==$this->_attribute_limit)){
       $field_array = array('user.city','user.user_id','user.firstname','user.lastname','user.email','user.modification_date','TRIM(CONCAT(user.firstname," ",user.lastname))');
-      $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
+      $search_limit_query_code = ' AND '.$this->_generateSearchLimitCode($field_array);
       $query .= $search_limit_query_code;
    } else {
       if ('description' == $this->_attribute_limit) {

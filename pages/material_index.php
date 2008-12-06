@@ -34,6 +34,22 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['selbuzzword'] = $index_search_parameter_array['selbuzzword'];
+   $params['seltag_array'] = $index_search_parameter_array['seltag_array'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sel_activating_status'] = $index_search_parameter_array['sel_activating_status'];
+   $sel_array = $index_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
 
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
@@ -182,43 +198,30 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
 /*********************/
 
 
-   if ( $context_item->isProjectRoom() ) {
-
-      // Find current group selection
-      if ( $context_item->withRubric(CS_GROUP_TYPE) ) {
-         if ( isset($_GET['selgroup']) and $_GET['selgroup'] !='-2') {
-            $selgroup = $_GET['selgroup'];
-         } else {
-            $selgroup = 0;
-         }
-      }
-
-      // Find current topic selection
-      if ( isset($_GET['seltopic']) and $_GET['seltopic'] !='-2') {
-         $seltopic = $_GET['seltopic'];
-      } else {
-         $seltopic = 0;
-      }
-
-
+   $context_item = $environment->getCurrentContextItem();
+   $current_room_modules = $context_item->getHomeConf();
+   if ( !empty($current_room_modules) ){
+      $room_modules = explode(',',$current_room_modules);
    } else {
+      $room_modules =  $default_room_modules;
+   }
 
-      // Find current topic selection
-      if ( isset($_GET['seltopic']) and $_GET['seltopic'] !='-2') {
-         $seltopic = $_GET['seltopic'];
-      } else {
-         $seltopic = 0;
-      }
-
-      // Find current institution selection
-      if ( $context_item->withRubric(CS_INSTITUTION_TYPE) ) {
-         if ( isset($_GET['selinstitution']) and $_GET['selinstitution'] !='-2') {
-            $selinstitution = $_GET['selinstitution'];
-         } else {
-            $selinstitution = 0;
+   $sel_array = array();
+   foreach ( $room_modules as $module ) {
+      $link_name = explode('_', $module);
+      if ( $link_name[1] != 'none' ) {
+         if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+            // Find current institution selection
+            $string = 'sel'.$link_name[0];
+            if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
+               $sel_array[$link_name[0]] = $_GET[$string];
+            } else {
+               $sel_array[$link_name[0]] = 0;
+            }
          }
       }
    }
+
    $last_selected_tag = '';
 
    // Find current topic selection
@@ -442,6 +445,27 @@ if ( $context_item->isProjectRoom() ){
 if ( !empty($last_selected_tag) ){
    $material_manager->setTagLimit($last_selected_tag);
 }
+
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
+unset($params);
+foreach($sel_array as $rubric => $value){
+   if (!empty($value)){
+      $material_manager->setRubricLimit($rubric,$value);
+   }
+   $label_manager = $environment->getManager($rubric);
+   $label_manager->setContextLimit($environment->getCurrentContextID());
+   $label_manager->select();
+   $rubric_list = $label_manager->get();
+   $temp_rubric_list = clone $rubric_list;
+   $view->setAvailableRubric($rubric,$temp_rubric_list);
+   $view->setSelectedRubric($rubric,$value);
+   unset($rubric_list);
+}
+
+
 $ids = $material_manager->getIDs();       // returns an array of item ids
 $material_manager->select();
 $list = $material_manager->get();        // returns a cs_list of material_items
@@ -514,41 +538,8 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
-$view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
-unset($params);
 
-   // Get available groups
-   if ( $context_item->withRubric(CS_GROUP_TYPE) ) {
-      $group_manager = $environment->getGroupManager();
-      $group_manager->resetLimits();
-      $group_manager->select();
-      $group_list = $group_manager->get();
-      $view->setSelectedGroup($selgroup);
-      $view->setAvailableGroups($group_list);
-   }
-
-   // Get available topics
-   if ( $context_item->withRubric(CS_TOPIC_TYPE) ) {
-      $topic_manager = $environment->getTopicManager();
-      $topic_manager->resetLimits();
-      $topic_manager->select();
-      $topic_list = $topic_manager->get();
-      $view->setSelectedTopic($seltopic);
-      $view->setAvailableTopics($topic_list);
-   }
-
-   if ( $context_item->withRubric(CS_INSTITUTION_TYPE) ) {
-      $institution_manager = $environment->getInstitutionManager();
-      $institution_manager->resetLimits();
-      $institution_manager->select();
-      $institution_list = $institution_manager->get();
-      $view->setSelectedInstitution($selinstitution);
-      $view->setAvailableInstitutions($institution_list);
-   }
-   $view->setSelectedTagArray($seltag_array);
+$view->setSelectedTagArray($seltag_array);
 
 
 
@@ -612,4 +603,16 @@ $session->setValue('material_clipboard', $clipboard_id_array);
 $session->setValue('interval', $interval); // interval is applied to all rubrics
 $session->setValue('cid'.$environment->getCurrentContextID().'_material_index_ids', $ids);
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
+
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+$index_search_parameter_array['sel_array'] = $sel_array;
+$index_search_parameter_array['selbuzzword'] = $selbuzzword;
+$index_search_parameter_array['seltag_array'] = $seltag_array;
+$index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+
 ?>

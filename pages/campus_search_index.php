@@ -22,6 +22,25 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if (isset($_GET['back_to_search']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array')){
+   $campus_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+   $params['search'] = $campus_search_parameter_array['search'];
+   $params['selrestriction'] = $campus_search_parameter_array['selrestriction'];
+   $params['selrubric'] = $campus_search_parameter_array['selrubric'];
+   $params['selbuzzword'] = $campus_search_parameter_array['selbuzzword'];
+   $params['seltag_array'] = $campus_search_parameter_array['seltag_array'];
+   $params['selfiles'] = $campus_search_parameter_array['selfiles'];
+   $params['interval'] = $campus_search_parameter_array['interval'];
+   $params['sel_activating_status'] = $campus_search_parameter_array['sel_activating_status'];
+   $sel_array = $campus_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids');
+   redirect($environment->getCurrentContextID(),'campus_search', 'index', $params);
+}
+
 $file_rubric_array = array();
 $file_rubric_array[] = CS_DISCUSSION_TYPE;
 $file_rubric_array[] = CS_MATERIAL_TYPE;
@@ -68,13 +87,16 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    }
 
    // Find current search text
-   if ( isset($_POST['$selrubric']) ) {
-      $selrubric = $_POST['$selrubric'];
+   if ( isset($_POST['selrubric']) ) {
+      $selrubric = $_POST['selrubric'];
       $from = 1;
-   } elseif ( isset($_GET['$selrubric']) ) {
-      $selrubric = $_GET['$selrubric'];
+   } elseif ( isset($_GET['selrubric']) ) {
+      $selrubric = $_GET['selrubric'];
    }  else {
       $selrubric = '';
+   }
+   if ($selrubric == 'campus_search'){
+      $selrubric ='all';
    }
 
    // Find current buzzword selection
@@ -106,18 +128,6 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $seltag_array = array();
    }
 
-   // Find current rubric selection
-   if ( isset($_POST['selrubric']) ) {
-      $selrubric = $_POST['selrubric'];
-      $from = 1;
-   } elseif ( isset($_GET['selrubric']) ) {
-      $selrubric = $_GET['selrubric'];
-   }  else {
-      $selrubric ='all';
-   }
-   if ($selrubric == 'campus_search'){
-      $selrubric ='all';
-   }
 
 
    // Find current restriction selection
@@ -139,6 +149,30 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $selfiles = '';
    }
 }
+$context_item = $environment->getCurrentContextItem();
+$current_room_modules = $context_item->getHomeConf();
+if ( !empty($current_room_modules) ){
+   $room_modules = explode(',',$current_room_modules);
+} else {
+   $room_modules =  $default_room_modules;
+}
+
+$sel_array = array();
+foreach ( $room_modules as $module ) {
+   $link_name = explode('_', $module);
+   if ( $link_name[1] != 'none' ) {
+      if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+         // Find current institution selection
+         $string = 'sel'.$link_name[0];
+         if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
+            $sel_array[$link_name[0]] = $_GET[$string];
+         } else {
+            $sel_array[$link_name[0]] = 0;
+         }
+      }
+   }
+}
+
 
 $search_list = new cs_list();
 $campus_search_ids = array();
@@ -179,34 +213,11 @@ foreach ( $room_modules as $module ) {
       }
    }
 }
-
-if ( $selrubric != 'all' ) {
+if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search') {
    $rubric_array = array();
    $rubric_array[] = $selrubric;
 }
 
-$context_item = $environment->getCurrentContextItem();
-$current_room_modules = $context_item->getHomeConf();
-if ( !empty($current_room_modules) ){
-   $room_modules = explode(',',$current_room_modules);
-} else {
-   $room_modules =  $default_room_modules;
-}
-$sel_array = array();
-foreach ( $room_modules as $module ) {
-   $link_name = explode('_', $module);
-   if ( $link_name[1] != 'none' ) {
-      if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
-         // Find current institution selection
-         $string = 'sel'.$link_name[0];
-         if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
-            $sel_array[$link_name[0]] = $_GET[$string];
-         } else {
-            $sel_array[$link_name[0]] = 0;
-         }
-      }
-   }
-}
 
 
 // Find current sel_activating_status selection
@@ -256,13 +267,11 @@ foreach($sel_array as $rubric => $value){
    unset($rubric_list);
 }
 
-
 // Get data from database
 foreach ($rubric_array as $rubric) {
    $rubric_ids = array();
    $rubric_list = new cs_list();
    $rubric_manager = $environment->getManager($rubric);
-
    /*Vorbereitung der Manager und Abzählen aller Einträge */
    if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
       $rubric_manager->setContextLimit($environment->getCurrentContextID());
@@ -349,5 +358,16 @@ $view->setActivationLimit($sel_activating_status);
 $page->add($view);
 
 // Safe information in session for later use
+$campus_search_parameter_array = array();
+$campus_search_parameter_array['search'] = $search;
+$campus_search_parameter_array['selrestriction'] = $selrestriction;
+$campus_search_parameter_array['selrubric'] = $selrubric;
+$campus_search_parameter_array['selbuzzword'] = $selbuzzword;
+$campus_search_parameter_array['seltag_array'] = $seltag_array;
+$campus_search_parameter_array['selfiles'] = $selfiles;
+$campus_search_parameter_array['sel_array'] = $sel_array;
+$campus_search_parameter_array['interval'] = $interval;
+$campus_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+$session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids', $campus_search_ids);
 ?>

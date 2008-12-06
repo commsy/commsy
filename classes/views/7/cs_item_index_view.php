@@ -1054,7 +1054,7 @@ var $_sel_rubric = '';
                   $text = $this->_translator->getMessage('USER_INDEX');
                   break;
                default:
-                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
+                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(1057) ' );
                   break;
             }
             $html .= '>'.$text.'</option>'.LF;
@@ -1326,7 +1326,19 @@ var $_sel_rubric = '';
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
       $context_item = $this->_environment->getCurrentContextItem();
-      if ( isset($params['only_files']) and $params['only_files'] == 1){
+      $session = $this->_environment->getSessionItem();
+      if (isset($_GET['back_to_search']) and $session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')){
+         $campus_search_parameter_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
+         $params['search'] = $campus_search_parameter_array['search'];
+         $params['selrestriction'] = $campus_search_parameter_array['selrestriction'];
+         $params['selrubric'] = $campus_search_parameter_array['selrubric'];
+         $params['selbuzzword'] = $campus_search_parameter_array['selbuzzword'];
+         $params['seltag_array'] = $campus_search_parameter_array['seltag_array'];
+         $params['only_files'] = $campus_search_parameter_array['selfiles'];
+         $params['interval'] = $campus_search_parameter_array['interval'];
+         $params['sel_activating_status'] = $campus_search_parameter_array['sel_activating_status'];
+      }
+      if ( isset($params['only_files']) and !empty($params['only_files']) and $params['only_files'] == 1){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
@@ -1342,7 +1354,7 @@ var $_sel_rubric = '';
          $html_text .='</tr>'.LF;
          $html .= $html_text;
       }
-      if ( (isset($params['selrubric']) and $params['selrubric'] != 'all' ) ){
+      if ( (isset($params['selrubric']) and !empty($params['selrubric']) and $params['selrubric'] != 'all' ) ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
@@ -1381,7 +1393,7 @@ var $_sel_rubric = '';
                $text = $this->_translator->getMessage('USER_INDEX');
                break;
             default:
-               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(1396) ' );
                break;
          }
          $html_text .= '<span>'.$text.'</span>';
@@ -1393,7 +1405,7 @@ var $_sel_rubric = '';
          $html_text .='</tr>'.LF;
          $html .= $html_text;
       }
-      if ( isset($params['selrestriction']) and $params['selrestriction'] != 'all'  ){
+      if ( isset($params['selrestriction']) and !empty($params['selrestriction']) and $params['selrestriction'] != 'all'  ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;

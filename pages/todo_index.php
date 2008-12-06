@@ -33,6 +33,22 @@ include_once('classes/cs_list.php');
 //                  do not changes, but leave in session
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['selbuzzword'] = $index_search_parameter_array['selbuzzword'];
+   $params['seltag_array'] = $index_search_parameter_array['seltag_array'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sel_activating_status'] = $index_search_parameter_array['sel_activating_status'];
+   $sel_array = $index_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
 
 if ( isset($_GET['ref_iid']) ) {
    $ref_iid = $_GET['ref_iid'];
@@ -170,18 +186,28 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $seltag_array = array();
    }
 
-   // Find current group selection
-   if ( isset($_GET['selgroup'])  and $_GET['selgroup'] !='-2') {
-      $selgroup = $_GET['selgroup'];
+   $context_item = $environment->getCurrentContextItem();
+   $current_room_modules = $context_item->getHomeConf();
+   if ( !empty($current_room_modules) ){
+      $room_modules = explode(',',$current_room_modules);
    } else {
-      $selgroup = 0;
+      $room_modules =  $default_room_modules;
    }
 
-   // Find current topic selection
-   if ( isset($_GET['seltopic'])  and $_GET['seltopic'] !='-2') {
-      $seltopic = $_GET['seltopic'];
-   } else {
-      $seltopic = 0;
+   $sel_array = array();
+   foreach ( $room_modules as $module ) {
+      $link_name = explode('_', $module);
+      if ( $link_name[1] != 'none' ) {
+         if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+            // Find current institution selection
+            $string = 'sel'.$link_name[0];
+            if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
+               $sel_array[$link_name[0]] = $_GET[$string];
+            } else {
+               $sel_array[$link_name[0]] = 0;
+            }
+         }
+      }
    }
    // Find current status selection
    if ( isset($_GET['selstatus']) and $_GET['selstatus'] !='-2') {
@@ -397,12 +423,6 @@ if ( $sel_activating_status == 2 ) {
 if ( !empty($search) ) {
    $todo_manager->setSearchLimit($search);
 }
-if ( !empty($selgroup) ) {
-   $todo_manager->setGroupLimit($selgroup);
-}
-if ( !empty($seltopic) ) {
-   $todo_manager->setTopicLimit($seltopic);
-}
 if ( !empty($selstatus) ) {
    $todo_manager->setStatusLimit($selstatus);
 }
@@ -411,6 +431,25 @@ if ( !empty($selbuzzword) ) {
 }
 if ( !empty($last_selected_tag) ){
    $todo_manager->setTagLimit($last_selected_tag);
+}
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $with_modifying_actions;
+$view = $class_factory->getClass(TODO_INDEX_VIEW,$params);
+unset($params);
+
+foreach($sel_array as $rubric => $value){
+   if (!empty($value)){
+      $todo_manager->setRubricLimit($rubric,$value);
+   }
+   $label_manager = $environment->getManager($rubric);
+   $label_manager->setContextLimit($environment->getCurrentContextID());
+   $label_manager->select();
+   $rubric_list = $label_manager->get();
+   $temp_rubric_list = clone $rubric_list;
+   $view->setAvailableRubric($rubric,$temp_rubric_list);
+   $view->setSelectedRubric($rubric,$value);
+   unset($rubric_list);
 }
 
 if ( $interval > 0 ) {
@@ -471,31 +510,7 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
-$view = $class_factory->getClass(TODO_INDEX_VIEW,$params);
-unset($params);
 
-if ( $context_item->withRubric(CS_GROUP_TYPE) ) {
-   // Get available groups
-   $group_manager = $environment->getGroupManager();
-   $group_manager->resetLimits();
-   $group_manager->select();
-   $group_list = $group_manager->get();
-   $view->setSelectedGroup($selgroup);
-   $view->setAvailableGroups($group_list);
-}
-
-if ( $context_item->withRubric(CS_TOPIC_TYPE) ) {
-   // Get available topics
-   $topic_manager = $environment->getTopicManager();
-   $topic_manager->resetLimits();
-   $topic_manager->select();
-   $topic_list = $topic_manager->get();
-   $view->setSelectedTopic($seltopic);
-   $view->setAvailableTopics($topic_list);
-}
 
 // Set data for view
 $view->setList($list);
@@ -552,4 +567,16 @@ $session->setValue('todo_clipboard', $clipboard_id_array);
 $session->setValue('interval', $interval); // interval is applied to all rubrics
 $session->setValue('cid'.$environment->getCurrentContextID().'_todo_index_ids', $ids);
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
+
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+$index_search_parameter_array['sel_array'] = $sel_array;
+$index_search_parameter_array['selbuzzword'] = $selbuzzword;
+$index_search_parameter_array['seltag_array'] = $seltag_array;
+$index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
+
 ?>

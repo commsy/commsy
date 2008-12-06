@@ -404,7 +404,7 @@ class cs_detail_view extends cs_view {
 
 
    function getListEntriesAsHTML(){
-   	  $html = '';
+   	$html = '';
       $ids = $this->getBrowseIDs();
 
       if(!empty($this->_right_box_config['title_string'])){
@@ -543,6 +543,7 @@ class cs_detail_view extends cs_view {
       $html .= '<div style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
+      $ids = array();
       if (isset($_GET['path']) and !empty($_GET['path'])){
          $topic_manager = $this->_environment->getManager(CS_TOPIC_TYPE);
          $topic_item = $topic_manager->getItem($_GET['path']);
@@ -561,6 +562,10 @@ class cs_detail_view extends cs_view {
        }else{
          $ids = $this->getBrowseIDs();
          $html .= $this->_getForwardLinkAsHTML($ids);
+      }
+      if (empty($ids)){
+      	$ids = array();
+         $ids[] = $this->_item->getItemID();
       }
       $html .='</div>'.LF;
       $html .= '<div class="right_box_main" style="padding:5px 0px 0px 0px;" >'.LF;
@@ -647,17 +652,21 @@ class cs_detail_view extends cs_view {
                            chunkText($topic_item->getTitle(),30)
                            );
       }elseif (isset($_GET['search_path']) and !empty($_GET['search_path'])){
+         $params = array();
+         $params['back_to_search'] = 'true';
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                            'campus_search',
                            'index',
-                           array(),
+                           $params,
                            $this->_translator->getMessage('COMMON_BACK_TO_SEARCH')
                            );
       }else{
+         $params = array();
+         $params['back_to_index'] = 'true';
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            'index',
-                           array(),
+                           $params,
                            $this->_translator->getMessage('COMMON_BACK_TO_LIST')
                            );
       }

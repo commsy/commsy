@@ -35,6 +35,24 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['selbuzzword'] = $index_search_parameter_array['selbuzzword'];
+   $params['seltag_array'] = $index_search_parameter_array['seltag_array'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sel_activating_status'] = $index_search_parameter_array['sel_activating_status'];
+   $sel_array = $index_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
+
+
 
 // @segment-begin 4803 read:ref_iid-and/ref_user-from-GET/POST
 if ( isset($_GET['ref_iid']) ) {
@@ -81,6 +99,8 @@ if ( isset($_POST['delete_option']) ) {
 } else {
    $delete_command = '';
 }
+
+
 
 // @segment-end 5810
 
@@ -145,7 +165,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    $sel_activating_status = '';
 
    // Find current search text
-   if ( isset($_GET['search']) ) {
+   if ( isset($_GET['search']) and $_GET['search'] != getMessage('COMMON_SEARCH_IN_ROOM')) {
       $search = $_GET['search'];
    }  else {
       $search = '';
@@ -189,18 +209,6 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    }
 
 
-   // Find current group selection
-   if ( isset($_GET['selgroup'])  and $_GET['selgroup'] !='-2') {
-      $selgroup = $_GET['selgroup'];
-   } else {
-      $selgroup = 0;
-   }
-
-// @segment-end 34622
-
-//***********************************
-
-// @segment-begin 5578 put-values-of-select-parameters-like-'selgroup'-in-array
    $context_item = $environment->getCurrentContextItem();
    $current_room_modules = $context_item->getHomeConf();
    if ( !empty($current_room_modules) ){
@@ -224,8 +232,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
          }
       }
    }
-// @segment-end 5578
-//************************************
+
 
 }//End Search / Select Area
 
@@ -512,7 +519,6 @@ $view->setFrom($from);
 $view->setInterval($interval);
 $view->setSortKey($sort);
 $view->setSearchText($search);
-$view->setSelectedGroup($selgroup);
 $view->setClipboardIDArray($clipboard_id_array);
 
 $view->setAvailableBuzzwords($buzzword_list);
@@ -563,17 +569,23 @@ $page->add($view);
 
 // @segment-end 40245
 
-// @segment-begin 40294 safe-announcement-related-in-session
-// Safe information in session for later use
-$detail_session_text='';
-$sel_array = array();
-if (!empty($search)){
-$sel_array[] = '"'.$search.'"';
-}
 
 $session->setValue('announcement_clipboard', $clipboard_id_array);
 $session->setValue('cid'.$environment->getCurrentContextID().'_announcement_index_ids', $ids);
 $session->setValue('interval', $interval);
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
-// @segment-end 40294
+
+
+
+
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+$index_search_parameter_array['sel_array'] = $sel_array;
+$index_search_parameter_array['selbuzzword'] = $selbuzzword;
+$index_search_parameter_array['seltag_array'] = $seltag_array;
+$index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
 ?>

@@ -459,11 +459,11 @@ class cs_labels_manager extends cs_manager {
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
-         $query .= ' AND (';
+         $query .= ' AND ( 1 = 1';
                         if (!isset($this->_attribute_limit) || ('all' == $this->_attribute_limit)){
                            $field_array = array('labels.name','labels.description','labels.modification_date','TRIM(CONCAT(user.firstname," ",user.lastname))');
                                 $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
-                                $query .= $search_limit_query_code;
+                                $query .= ' AND '.$search_limit_query_code;
                         } else {
             if ( 'title'==$this->_attribute_limit ){
                $query .= $this->_generateSearchLimitCode(array('labels.name'));

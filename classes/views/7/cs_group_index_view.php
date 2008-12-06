@@ -280,20 +280,44 @@ class cs_group_index_view extends cs_index_view {
       return $text;
    }
 
+
+
+  function _getExpertSearchAsHTML(){
+     $html  = '';
+     $context_item = $this->_environment->getCurrentContextItem();
+     $module = $this->_environment->getCurrentModule();
+     if ($context_item->withActivatingContent()
+          or $module == CS_DATE_TYPE
+          or $module == CS_USER_TYPE
+          or $module == CS_MATERIAL_TYPE
+          or $module == CS_TODO_TYPE
+          or $module == 'campus_search'
+      ){
+         $width = '235';
+         $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+         $html .= '<div class="right_box">'.LF;
+         $html .= '         <noscript>';
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
+         $html .= '         </noscript>';
+         $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
+         $html .= $this->_getAdditionalRestrictionBoxAsHTML('14.5').LF;
+         $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+      }
+      return $html;
+  }
+
+
    function _getAdditionalFormFieldsAsHTML () {
 	   $context_item = $this->_environment->getCurrentContextItem();
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
-      if ($left_menue_status !='disapear'){
-	     $width = '14.3';
-      }else{
-	     $width = '18.3';
-      }
+      $width = '235';
       if ($context_item->withRubric(CS_TOPIC_TYPE)){
          $topic_list = $this->getAvailableTopics();
          $seltopic = $this->getSelectedTopic();
-         $html = '<div style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TOPIC').BRLF;
-         $html .= '   <select name="seltopic" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+         $html = '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TOPIC').BRLF;
+         $html .= '   <select name="seltopic" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
          $html .= '      <option value="0"';
          if ( !isset($seltopic) || $seltopic == 0 ) {
             $html .= ' selected="selected"';

@@ -215,6 +215,7 @@ $message["COMMON_CONTINUOUS"]["de"] = "kontinuierlich";
 $message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
 $message["COMMON_CREATED_BY"]["de"] = "erstellt von";
 $message["COMMON_CREATE_ANNOTATION"]["de"] = "Anmerkung hinzufügen";
+$message["COMMON_DATE"]["de"] = "Termin";
 $message["COMMON_DATES"]["de"] = "Termin";
 $message["COMMON_DATES_PL"]["de"] = "Termine";
 $message["COMMON_DATE_APRIL_LONG"]["de"] = "April";

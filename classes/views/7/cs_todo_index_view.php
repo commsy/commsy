@@ -436,7 +436,7 @@ class cs_todo_index_view extends cs_room_index_view {
       $html = '';
       $selstatus = $this->getSelectedStatus();
       $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('TODO_STATUS').BRLF;
-      $html .= '   <select name="selstatus" size="1" style="width: '.$width.'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selstatus" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '      <option value="0"';
       if ( !isset($selstatus) || $selstatus == 0 ) {
          $html .= ' selected="selected"';

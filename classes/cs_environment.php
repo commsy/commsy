@@ -440,6 +440,10 @@ class cs_environment {
             $retour[$temp_parameter_array[0]] = $temp_parameter_array[1];
          }
       }
+      $translator = $this->getTranslationObject();
+      if (isset($retour['search']) and $retour['search'] == $translator->getMessage('COMMON_SEARCH_IN_ROOM')){
+         unset($retour['search']);
+      }
       return $retour;
    }
 

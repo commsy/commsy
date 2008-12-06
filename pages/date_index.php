@@ -35,6 +35,22 @@ include_once('classes/cs_list.php');
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
 
+if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+   $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sort'] = $index_search_parameter_array['sort'];
+   $params['selbuzzword'] = $index_search_parameter_array['selbuzzword'];
+   $params['seltag_array'] = $index_search_parameter_array['seltag_array'];
+   $params['interval'] = $index_search_parameter_array['interval'];
+   $params['sel_activating_status'] = $index_search_parameter_array['sel_activating_status'];
+   $sel_array = $index_search_parameter_array['sel_array'];
+   foreach($sel_array as $key => $value){
+      $params['sel'.$key] = $value;
+   }
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids');
+   redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), 'index', $params);
+}
 
 
 if ( isset($_GET['ref_iid']) ) {
@@ -294,9 +310,6 @@ if ( isset($_GET['option'])
      and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
    $from = 1;
    $search = '';
-   $selgroup = '';
-   $seltopic = '';
-   $selinstitution = '';
    $last_selected_tag = '';
    $seltag_array = array();
    $sel_activating_status = '';
@@ -581,12 +594,6 @@ if ( !empty($sort) and ($seldisplay_mode!='calendar' or $mode == 'formattach' or
 if ( !empty($search) ) {
    $dates_manager->setSearchLimit($search);
 }
-if ( !empty($selgroup) ) {
-   $dates_manager->setGroupLimit($selgroup);
-}
-if ( !empty($seltopic) ) {
-   $dates_manager->setTopicLimit($seltopic);
-}
 if ( !empty($selstatus) ) {
    $dates_manager->setDateModeLimit($selstatus);
 }
@@ -797,4 +804,14 @@ $session->setValue('date_clipboard', $clipboard_id_array);
 $session->setValue('interval', $interval); // interval is applied to all rubrics
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_selected_ids', $selected_ids);
 $session->setValue('cid'.$environment->getCurrentContextID().'_dates_index_ids', $ids);
+$index_search_parameter_array = array();
+$index_search_parameter_array['interval'] = $interval;
+$index_search_parameter_array['sort'] = $sort;
+$index_search_parameter_array['search'] = $search;
+$index_search_parameter_array['sel_array'] = $sel_array;
+$index_search_parameter_array['selbuzzword'] = $selbuzzword;
+$index_search_parameter_array['seltag_array'] = $seltag_array;
+$index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
+$session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
 ?>

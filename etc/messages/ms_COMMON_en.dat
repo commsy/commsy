@@ -208,6 +208,7 @@ $message["COMMON_CONTINUOUS"]["en"] = "continuous";
 $message["COMMON_COPY_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_CREATED_BY"]["en"] = "created by";
 $message["COMMON_CREATE_ANNOTATION"]["en"] = "Add comment";
+$message["COMMON_DATE"]["en"] = "Date";
 $message["COMMON_DATES"]["en"] = "Event";
 $message["COMMON_DATES_PL"]["en"] = "Events";
 $message["COMMON_DATE_APRIL_LONG"]["en"] = "April";
