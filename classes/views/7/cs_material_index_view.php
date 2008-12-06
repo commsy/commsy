@@ -375,12 +375,12 @@ class cs_material_index_view extends cs_index_view {
                $params = array();
                $params['iid'] = $item->getItemID();
                $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                                  CS_ANNOUNCEMENT_TYPE,
+                                  CS_MATERIAL_TYPE,
                                   'detail',
                                   $params,
                                   $title,
                                   '','', '', '', '', '', '', '',
-                                  CS_ANNOUNCEMENT_TYPE.$item->getItemID());
+                                  CS_MATERIAL_TYPE.$item->getItemID());
                unset($params);
                if ($this->_environment->inProjectRoom()) {
                   $title .= $this->_getItemChangeStatus($item);
