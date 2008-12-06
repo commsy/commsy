@@ -405,19 +405,22 @@ class cs_topic_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      if ( $current_user->isUser() and $this->_with_modifying_actions ) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
          $params = array();
-         $params['iid'] = 'NEW';
-         $image = '<img src="images/commsyicons/22x22/new.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'edit',
-                                    $params,
-                                    $image,
-                                    getMessage('COMMON_NEW_ITEM')).LF;
+         $params['iid'] = $item->getItemID();
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                          $this->_environment->getCurrentModule(),
+                                          'edit',
+                                          $params,
+                                          $image,
+                                          getMessage('COMMON_EDIT_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       $params = $this->_environment->getCurrentParameterArray();
@@ -442,6 +445,22 @@ class cs_topic_detail_view extends cs_detail_view {
                                     getMessage('COMMON_DOWNLOAD')).LF;
       unset($params['download']);
       unset($params['mode']);
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( $current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = 'NEW';
+         $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'edit',
+                                    $params,
+                                    $image,
+                                    getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;'.'<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
       return $html;
    }
 

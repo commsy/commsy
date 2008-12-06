@@ -604,12 +604,14 @@ if ($command != 'error') { // only if user is allowed to edit user
             if ( $form->check() ) {
                // change password
                if (empty($error_string)) {
-                  $auth_manager = $authentication->getAuthManager($user->getAuthSource());
-                  $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
-                  $params['is_saved'] = true;
-                  $error_number = $auth_manager->getErrorNumber();
-                  if (!empty($error_number)) {
-                     $error_string .= getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+                  if (!empty($_POST['password'])){
+                     $auth_manager = $authentication->getAuthManager($user->getAuthSource());
+                     $auth_manager->changePassword($_POST['user_id'],$_POST['password']);
+                     $params['is_saved'] = true;
+                     $error_number = $auth_manager->getErrorNumber();
+                     if (!empty($error_number)) {
+                        $error_string .= getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+                     }
                   }
                   if ( !$environment->inPortal() ) {
                      $portal_user = $environment->getPortalUserItem();
