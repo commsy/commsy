@@ -448,7 +448,7 @@ h1{
    margin-bottom:20px;
    padding:0px
    background-color: #FFFFFF;
-   border: 1px solid <?php echo($color['tabs_background'])?>;
+   border: 2px solid <?php echo($color['tabs_background'])?>;
 }
 
 #copy_title, .copy_title{

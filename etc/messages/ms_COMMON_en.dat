@@ -68,6 +68,7 @@ $message["COMMON_BROWSE_RIGHT_DESC"]["en"] = "next page";
 $message["COMMON_BROWSE_START_DESC"]["en"] = "first page";
 $message["COMMON_BUZZWORDS"]["en"] = "Tags";
 $message["COMMON_BUZZWORDS_EDIT_FORM_TITLE"]["en"] = "Edit tags";
+$message["COMMON_BUZZWORD_ATTACH"]["en"] = "Add buzzwords";
 $message["COMMON_BUZZWORD_BOX"]["en"] = "Browse tags";
 $message["COMMON_BUZZWORD_BOX_EDIT"]["en"] = "Add tag/s";
 $message["COMMON_BUZZWORD_RESTRICTION"]["en"] = "Appl. tag";

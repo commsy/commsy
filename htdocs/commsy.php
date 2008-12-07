@@ -839,6 +839,14 @@ if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
   include_once('pages/copies_index.php');
 }
 
+if ( isset($_GET['attach_view']) and ($_GET['attach_view'] == 'yes') and isset($_GET['attach_type']) and !empty($_GET['attach_type'])) {
+  switch ( $_GET['attach_type'] ) {
+     case 'buzzword':
+        include_once('pages/buzzword_attach.php');
+        break;
+  }
+}
+
 // display page
 include_once('functions/security_functions.php');
 if ( isset($_GET['download']) and ($_GET['download'] == 'zip') ) {

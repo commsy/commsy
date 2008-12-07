@@ -546,12 +546,20 @@ class cs_page_room_view extends cs_page_view {
             if (isset($_GET['show_copies']) or isset($_GET['show_profile'])){
                $html .= ' initLayer("profile");';
             }
+            if(isset($_GET['attach_view']) and isset($_GET['attach_type']) and $_GET['attach_type'] == 'buzzword'){
+                $html .= ' initLayer("buzzword");';
+            }
             $html .= ' "';
          }elseif(isset($_GET['show_copies']) or isset($_GET['show_profile'])){
             $html .= ' onload="';
             $html .= ' initLayer(\'profile\');';
             $html .= ' "';
+         }elseif(isset($_GET['attach_view']) and isset($_GET['attach_type']) and $_GET['attach_type'] == 'buzzword'){
+            $html .= ' onload="';
+            $html .= ' initLayer(\'buzzword\');';
+            $html .= ' "';
          }
+
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
          $view = reset($views);
          while ($view) {
@@ -648,6 +656,20 @@ class cs_page_room_view extends cs_page_view {
      $html .= '</div>';
      $html .= '</div>';
      $html .= '<div id="profile" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
+     $html .= '</div>';
+     return $html;
+  }
+
+  function getBuzzwordBoxAsHTML(){
+     $html = '';
+     $environment = $this->_environment;
+     $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
+     $html .= '<div style="z-index:1000; margin-top:40px; margin-bottom:10px; margin-left: 15%; width:70%; text-align:left; background-color:#FFFFFF;">';
+     global $buzzword_view;
+     $html .= $buzzword_view->asHTML();
+     $html .= '</div>';
+     $html .= '</div>';
+     $html .= '<div id="buzzword" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
      $html .= '</div>';
      return $html;
   }
@@ -1067,6 +1089,14 @@ class cs_page_room_view extends cs_page_view {
          }
          if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
             $html .= $this->getCopyBoxAsHTML();
+         }
+         if ( isset($_GET['attach_view'])
+              and ($_GET['attach_view'] == 'yes')
+              and isset($_GET['attach_type'])
+              and !empty($_GET['attach_type'])
+              and $_GET['attach_type'] == 'buzzword'
+            ) {
+            $html .= $this->getBuzzwordBoxAsHTML();
          }
 
          $html .= $this->_getPluginInfosForAfterContentAsHTML();
