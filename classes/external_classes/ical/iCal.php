@@ -1424,7 +1424,7 @@ class iCal {
    */
    public function outputFile($filename, $format = 'ics') {
       if ($format == 'ics') {
-         header('Content-Type: text/Calendar; charset=iso-8859-1');
+         header('Content-Type: text/Calendar; charset=utf-8');
          header('Content-Disposition: attachment; filename='.$filename.'.ics');
          echo utf8_encode($this->getOutput('ics'));
       } elseif ($format == 'xcs') {
