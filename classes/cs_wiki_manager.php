@@ -190,10 +190,13 @@ class cs_wiki_manager extends cs_manager {
 
       // section edit
       if ( $item->wikiWithSectionEdit() ) {
+         $str .= '$group_temp = PageVar($pagename, \'$Group\');'.LF;
+         $str .= 'if(!file_exists($FarmD . \'/wikis/\' . $COMMSY_PORTAL_ID . \'/\' . $COMMSY_ROOM_ID . \'/wiki.d/\' . $group_temp  . \'.ForumConfig\')){'.LF;
          if ( !$item->wikiWithHeaderForSectionEdit() ) {
             $str .= '$SectionEditWithoutHeaders = true;'.LF;
          }
          $str .= '@include_once("$FarmD/cookbook/sectionedit.php");'.LF;
+         $str .= '}'.LF.LF;
       }
 
       // Additional features - not activated by default.
