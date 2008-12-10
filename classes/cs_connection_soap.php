@@ -1496,21 +1496,21 @@ class cs_connection_soap {
       $log_manager = $this->_environment->getLogManager();
       $log_manager->saveArray($array);
    }
-   
+
    public function _log_in_file ($params) {
       global $c_commsy_path_file;
-      if(!file_exists($c_commsy_path_file . '/var/soap.log')){
-      	$logFileName = $c_commsy_path_file . '/var/soap.log';
-		$logFileHandle = fopen($logFileName, 'w');
-		fclose($logFileHandle);
+      if ( !file_exists($c_commsy_path_file . '/var/soap.log') ) {
+         $logFileName = $c_commsy_path_file . '/var/soap.log';
+         $logFileHandle = fopen($logFileName, 'w');
+         fclose($logFileHandle);
       }
       $file_contents = file_get_contents($c_commsy_path_file . '/var/soap.log');
-      foreach($params as $param){
-      	$file_contents =  $file_contents . "\n" . time() . ' - ' . $param[0] . ' - ' . $param[1];
+      foreach ($params as $param) {
+         $file_contents =  $file_contents . "\n" . time() . ' - ' . $param[0] . ' - ' . $param[1];
       }
       file_put_contents($c_commsy_path_file . '/var/soap.log', $file_contents);
    }
-   
+
    public function getUserInfo ($session_id, $context_id) {
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
@@ -1519,7 +1519,7 @@ class cs_connection_soap {
          $user_id = $session->getValue('user_id');
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
-		 $user_manager->setUserIDLimit($user_id);
+         $user_manager->setUserIDLimit($user_id);
          $user_manager->select();
          $user_list = $user_manager->get();
          $user_info = '';
@@ -1536,28 +1536,28 @@ class cs_connection_soap {
       $project_manager = $this->_environment->getProjectManager;
       return $result;
    }
-   
+
    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
-   		$result = 'notAuthenticated';
-   		$session_id = $this->_encode_input($session_id);
-      	if ($this->_isSessionValid($session_id)) {
-	   		$user_manager = $this->_environment->getUserManager();
-	        $user_manager->setContextLimit($context_id);
-			$user_manager->setUserIDLimit($user_id);
-	        $user_manager->select();
-	        $user_list = $user_manager->get();
-	        if ($user_list->getCount() >= 1) {
-	        	$user_item = $user_list->getFirst();
-	        	if($user_item->getStatus() == 3){
-	   				$result = 'moderator';
-	   			}
-	   			if($user_item->getStatus() == 2){
-	   				$result = 'user';
-	   			}
-	   			if($user_item->getStatus() == 1){
-	   				$result = 'notAuthenticated';
-	   			}
-	        }
+         $result = 'notAuthenticated';
+         $session_id = $this->_encode_input($session_id);
+         if ($this->_isSessionValid($session_id)) {
+            $user_manager = $this->_environment->getUserManager();
+           $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+           $user_manager->select();
+           $user_list = $user_manager->get();
+           if ($user_list->getCount() >= 1) {
+              $user_item = $user_list->getFirst();
+              if($user_item->getStatus() == 3){
+                  $result = 'moderator';
+               }
+               if($user_item->getStatus() == 2){
+                  $result = 'user';
+               }
+               if($user_item->getStatus() == 1){
+                  $result = 'notAuthenticated';
+               }
+           }
 //	        else {
 //				$this->_environment->setCurrentContextID($context_id);
 //				$context_item = $this->_environment->getCurrentContextItem();
@@ -1565,12 +1565,12 @@ class cs_connection_soap {
 //					$result = 'read';
 //	            }
 //	        }
-      	} else {
-        	$info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-         	$info_text = 'session id ('.$session_id.') is not valid';
-         	$result = new SoapFault($info,$info_text);
-      	}
-   		return $result;
+         } else {
+           $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
+            $info_text = 'session id ('.$session_id.') is not valid';
+            $result = new SoapFault($info,$info_text);
+         }
+         return $result;
    }
 }
 ?>
