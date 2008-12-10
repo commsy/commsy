@@ -23,6 +23,17 @@
 //    along with CommSy.
 
 // Function used for redirecting to connected rubrics
+if (isset($_GET['return_attach_buzzword_list'])){
+   $_POST = $session->getValue('buzzword_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+if (isset($_GET['return_attach_tag_list'])){
+   $_POST = $session->getValue('tag_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
    $infix = '_'.$rubric_type;
@@ -91,6 +102,26 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $discussion_manager = $environment->getDiscussionManager();
    $discussion_item = $discussion_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $buzzword_array = array();
+      $buzzwords = $discussion_item->getBuzzwordList();
+      $buzzword = $buzzwords->getFirst();
+      while($buzzword){
+         $buzzword_array[] = $buzzword->getItemID();
+         $buzzword = $buzzwords->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
+   }
+   if(empty($_POST)){
+      $tag_array = array();
+      $tags = $discussion_item->getTagList();
+      $tag = $tags->getFirst();
+      while($tag){
+         $tag_array[] = $tag->getItemID();
+         $tag = $tags->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
+   }
 }
 
 // Check access rights
@@ -134,6 +165,10 @@ else {
 
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      $session->unsetValue('buzzword_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      $session->unsetValue('tag_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'discussion', 'index', '');
@@ -202,6 +237,7 @@ else {
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
+      include_once('include/inc_right_boxes_handling.php');
 
       // Add a new buzzword
       if ( isOption($command, getMessage('COMMON_ADD_BUZZWORD_BUTTON')) or isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
@@ -315,7 +351,9 @@ else {
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-         $session_post_vars = $_POST;
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($command) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
             $session_post_vars['new_buzzword']='';
          }
@@ -629,6 +667,14 @@ else {
                $tag_array[] = $_POST['tag'];
             }
             $discussion_item->setTagListByID($tag_array);
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+               $discussion_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
+               $discussion_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            }
 
             // Save item
             $discussion_item->save();
@@ -680,6 +726,10 @@ else {
 
             // Redirect
             cleanup_session($current_iid);
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            $session->unsetValue('buzzword_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            $session->unsetValue('tag_post_vars');
             $params = array();
             $params['iid'] = $discussion_item->getItemID();;
             redirect($environment->getCurrentContextID(),

@@ -22,6 +22,18 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+set_time_limit(0);
+if (isset($_GET['return_attach_buzzword_list'])){
+   $_POST = $session->getValue('buzzword_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+if (isset($_GET['return_attach_tag_list'])){
+   $_POST = $session->getValue('tag_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
@@ -53,12 +65,6 @@ function attach_return ($rubric_type, $current_iid) {
 // deletes ALL session variables this page writes.
 function cleanup_session ($current_iid) {
    global $session,$environment;
-
-/***buzzwords and tags ***/
-   $session->unsetValue($environment->getCurrentModule().'_add_buzzwords');
-   $session->unsetValue($environment->getCurrentModule().'_add_tags');
-/***buzzwords and tags ***/
-
    $session->unsetValue($environment->getCurrentModule().'_add_files');
    $session->unsetValue($current_iid.'_post_vars');
    $session->unsetValue($current_iid.'_material_attach_ids');
@@ -98,6 +104,26 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $announcement_manager = $environment->getAnnouncementManager();
    $announcement_item = $announcement_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $buzzword_array = array();
+      $buzzwords = $announcement_item->getBuzzwordList();
+      $buzzword = $buzzwords->getFirst();
+      while($buzzword){
+         $buzzword_array[] = $buzzword->getItemID();
+         $buzzword = $buzzwords->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
+   }
+   if(empty($_POST)){
+      $tag_array = array();
+      $tags = $announcement_item->getTagList();
+      $tag = $tags->getFirst();
+      while($tag){
+         $tag_array[] = $tag->getItemID();
+         $tag = $tags->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
+   }
 }
 
 // Check access rights
@@ -137,6 +163,10 @@ else {
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      $session->unsetValue('buzzword_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      $session->unsetValue('tag_post_vars');
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'index', '');
       } else {
@@ -203,6 +233,8 @@ else {
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
+
+     include_once('include/inc_right_boxes_handling.php');
 
 
 /***buzzwords and tags ***/
@@ -318,7 +350,9 @@ else {
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-         $session_post_vars = $_POST;
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($command) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
             $session_post_vars['new_buzzword']='';
          }
@@ -635,6 +669,14 @@ else {
             $announcement_item->setTagListByID($tag_array);
 /***buzzwords and tags ***/
 
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+               $announcement_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
+               $announcement_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            }
 
             // files
             $item_files_upload_to = $announcement_item;
@@ -679,6 +721,10 @@ else {
 
             // Save item
             $announcement_item->save();
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            $session->unsetValue('buzzword_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            $session->unsetValue('tag_post_vars');
 
             //Add modifier to all users who ever edited this item
             $manager = $environment->getLinkModifierItemManager();

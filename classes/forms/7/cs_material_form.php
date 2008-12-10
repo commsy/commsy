@@ -127,90 +127,6 @@ class cs_material_form extends cs_rubric_form {
          $this->_headline = getMessage('MATERIAL_ENTER_NEW');
       }
 
-
-      // buzzwords
-      $buzzword_manager = $this->_environment->getLabelManager();
-      $buzzword_manager->resetLimits();
-      $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
-      $buzzword_manager->setTypeLimit('buzzword');
-      $buzzword_manager->select();
-      $buzzword_list = $buzzword_manager->get();
-      $buzzword_array = array();
-      $temp_array['text'] = '*'.getMessage('MATERIAL_NO_BUZZWORDS');
-      $temp_array['value'] = '-2';
-      $buzzword_array[] = $temp_array;
-      if ($buzzword_list->getCount() > 0) {
-         $buzzword_item =  $buzzword_list->getFirst();
-         while ($buzzword_item) {
-            $temp_array['text'] = $buzzword_item->getName();
-            $temp_array['value'] = $buzzword_item->getItemID();
-            $buzzword_array[] = $temp_array;
-            $buzzword_item =  $buzzword_list->getNext();
-         }
-      }
-      $this->_buzzword_array = $buzzword_array;
-      $buzzword_array = array();
-      if (!empty($this->_session_buzzword_array)) {
-         foreach ( $this->_session_buzzword_array as $buzzword ) {
-            $temp_array['text'] = $buzzword['name'];
-            $temp_array['value'] = $buzzword['id'];
-            $buzzword_array[] = $temp_array;
-         }
-      } elseif (isset($this->_item)) {
-         $buzzword_list = $this->_item->getBuzzwordList();
-         $buzzword_list->sortby('name');
-         if ($buzzword_list->getCount() > 0) {
-            $buzzword_item = $buzzword_list->getFirst();
-            while ($buzzword_item) {
-               $temp_array['text'] = $buzzword_item->getTitle();
-               $temp_array['value'] = $buzzword_item->getItemID();
-               $buzzword_array[] = $temp_array;
-               $buzzword_item = $buzzword_list->getNext();
-            }
-         }
-      }
-      $this->_shown_buzzword_array = $buzzword_array;
-
-      // tags
-      $current_context = $this->_environment->getCurrentContextItem();
-      $temp_array['text'] = '*'.getMessage('MATERIAL_NO_TAGS');
-      $temp_array['value'] = '-2';
-      $this->_tag_array[] = $temp_array;
-      $tag_manager = $this->_environment->getTagManager();
-      $root_item = $tag_manager->getRootTagItem();
-      $this->_initTagArray($root_item,0);
-
-      $tag_array = array();
-      $tag2tag_manager = $this->_environment->getTag2TagManager();
-      if (!empty($this->_session_tag_array)) {
-         foreach ( $this->_session_tag_array as $tag ) {
-            $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag['id']);
-            $text = '';
-            if( !empty($shown_tag_array) ) {
-               foreach( $shown_tag_array as $shown_tag ){
-                  $father_tag_item = $tag_manager->getItem($shown_tag);
-                  $text .= $father_tag_item->getTitle().' > ';
-               }
-            }
-            $temp_array['text'] = $text.$tag['name'];
-            $temp_array['value'] = $tag['id'];
-            $tag_array[] = $temp_array;
-         }
-      } elseif (isset($this->_item)) {
-         $tag_list = $this->_item->getTagList();
-         if ($tag_list->getCount() > 0) {
-            $tag_item = $tag_list->getFirst();
-            while ($tag_item) {
-               $temp_array['text'] = $tag_item->getTitle();
-               $temp_array['value'] = $tag_item->getItemID();
-               $tag_array[] = $temp_array;
-               $tag_item = $tag_list->getNext();
-            }
-         }
-      }
-      $this->_shown_tag_array = $tag_array;
-
-
       // files
       $file_array = array();
       if (!empty($this->_session_file_array)) {
@@ -451,23 +367,6 @@ class cs_material_form extends cs_rubric_form {
       } else {
          $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',20);
       }
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ( $current_context->withTags() ){
-         // tags
-         if ( !empty ($this->_shown_tag_array) ) {
-            $this->_form->addCheckBoxGroup('taglist',$this->_shown_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'),false,false,0,'','','','',false,false,false,8);
-            $this->_form->combine();
-         }
-         if ( $current_context->isTagMandatory() ){
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,true,false,'','','','',14,false,false,8);
-         }else{
-            $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('COMMON_TAGS'),getMessage('COMMON_TAG_DESC'), 1, false,false,false,'','','','',14,false,false,8);
-         }
-         $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',70,false,'','',8);
-      }
-
       // files
       $this->_form->addAnchor('fileupload');
       $val = ini_get('upload_max_filesize');
@@ -633,37 +532,6 @@ class cs_material_form extends cs_rubric_form {
             $this->_values['filelist'] = $file_array;
          }
 
-         // buzzword
-         $buzzword_array = array();
-         $buzzword_list = $this->_item->getBuzzwordList();
-         if ($buzzword_list->getCount() > 0) {
-            $buzzword_item = $buzzword_list->getFirst();
-            while ($buzzword_item) {
-               $buzzword_array[] = $buzzword_item->getItemID();
-               $buzzword_item = $buzzword_list->getNext();
-            }
-         }
-         if(isset($this->_form_post['buzzwordlist'])){
-            $this->_values['buzzwordlist'] = $this->_form_post['buzzwordlist'];
-         }else{
-            $this->_values['buzzwordlist'] = $buzzword_array;
-         }
-
-         // tag
-         $tag_array = array();
-         $tag_list = $this->_item->getTagList();
-         if ($tag_list->getCount() > 0) {
-            $tag_item = $tag_list->getFirst();
-            while ($tag_item) {
-               $tag_array[] = $tag_item->getItemID();
-               $tag_item = $tag_list->getNext();
-            }
-         }
-         if(isset($this->_form_post['taglist'])){
-            $this->_values['taglist'] = $this->_form_post['taglist'];
-         }else{
-            $this->_values['taglist'] = $tag_array;
-         }
          if ($current_context->withActivatingContent()){
             if ($this->_item->isPrivateEditing()){
                $this->_values['private_editing'] = 1;
@@ -728,22 +596,22 @@ class cs_material_form extends cs_rubric_form {
     */
    function _checkValues () {
       $current_context = $this->_environment->getCurrentContextItem();
+/*** Neue Schlagwörter und Tags***/
       if ( $current_context->isTagMandatory() ){
-         if ($this->_form_post['tag'] == -2 and empty($this->_form_post['taglist'])) {
-            $this->_form_post['tag'] = -2;
-            $this->_form->setFailure('tag','mandatory');
+         $session = $this->_environment->getSessionItem();
+         $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
+         if (count($tag_ids) == 0){
             $this->_error_array[] = getMessage('COMMON_ERROR_TAG_ENTRY',getMessage('MATERIAL_TAGS'));
          }
       }
       if ( $current_context->isBuzzwordMandatory() ){
-/*** Neue Schlagwörter***/
          $session = $this->_environment->getSessionItem();
          $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
          if (count($buzzword_ids) == 0){
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
-/*** Neue Schlagwörter***/
       }
+/*** Neue Schlagwörter und Tags***/
    }
 
 }

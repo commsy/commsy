@@ -1,5 +1,4 @@
 <?PHP
-// $Id$
 //
 // Release $Name$
 //
@@ -24,10 +23,10 @@
 
 $this->includeClass(RUBRIC_FORM);
 
-/** class for commsy form: discussion
+/** class for commsy forms
  * this class implements an interface for the creation of forms in the commsy style
  */
-class cs_discussion_form extends cs_rubric_form {
+class cs_todo_form extends cs_rubric_form {
 
   /**
    * string - containing the headline of the form
@@ -35,15 +34,29 @@ class cs_discussion_form extends cs_rubric_form {
    var $_headline = NULL;
 
   /**
+   * array - containing the materials of a todo
+   */
+   var $_material_array = array();
+
+  /**
    * array - containing an array of groups in the context
    */
    var $_group_array = array();
+
+  /**
+   * array - containing an array of materials form the session
+   */
+   var $_session_material_array = array();
 
    /**
    * array - containing the values for the edit status for the item (everybody or creator)
    */
    var $_public_array = array();
-   var $_discussion_array = array();
+
+   /**
+   * array - containing the values for the edit status for the item (everybody or creator)
+   */
+   var $_status_array = array();
    var $_buzzword_array = array();
 
    var $_tag_array = array();
@@ -63,7 +76,7 @@ class cs_discussion_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_discussion_form($params) {
+   function cs_todo_form($params) {
       $this->cs_rubric_form($params);
    }
 
@@ -109,24 +122,6 @@ class cs_discussion_form extends cs_rubric_form {
       }
    }
 
-   /** set materials from session
-    * set an array with the materials from the session
-    *
-    * @param array array of materials out of session
-    *
-    * @author CommSy Development Group
-    */
-   function setSessionMaterialArray ($value) {
-      $this->_session_material_array = (array)$value;
-   }
-
-   /** code documentation (TBD)
-    *
-    * @author CommSy Development Group
-    */
-   function setNewDiscussion ($value) {
-      $this->_is_new_discussion = $value;
-   }
 
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups
@@ -140,7 +135,7 @@ class cs_discussion_form extends cs_rubric_form {
          $creator_item = $this->_item->getCreatorItem();
          $fullname = $creator_item->getFullname();
       } elseif (!empty($this->_form_post['iid'])) {
-         $manager = $this->_environment->getManager(CS_DISCUSSION_TYPE);
+         $manager = $this->_environment->getManager(CS_TODO_TYPE);
          $item = $manager->getItem($this->_form_post['iid']);
          $creator_item = $item->getCreatorItem();
          $fullname = $creator_item->getFullname();
@@ -157,28 +152,30 @@ class cs_discussion_form extends cs_rubric_form {
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
 
-      $discussion_type_array = array();
-      $temp_array['text']  = getMessage('DISCUSSION_SIMPLE');
-      $temp_array['value'] = 1;
-      $discussion_type_array[] = $temp_array;
-      $temp_array['text']  = getMessage('DISCUSSION_THREADED', $fullname);
-      $temp_array['value'] = 2;
-      $discussion_type_array[] = $temp_array;
-      $this->_discussion_array = $discussion_type_array;
+      $status_array = array();
+      $temp_array['text']  = getMessage('TODO_NOT_STARTED');
+      $temp_array['value'] = '1';
+      $status_array[] = $temp_array;
+      $temp_array['text']  = getMessage('TODO_IN_POGRESS');
+      $temp_array['value'] = '2';
+      $status_array[] = $temp_array;
+      $temp_array['text']  = getMessage('TODO_DONE');
+      $temp_array['value'] = '3';
+      $status_array[] = $temp_array;
+      $this->_status_array = $status_array;
 
       // headline
-      if (!empty($this->_item)) {
-         $this->_headline = getMessage('DISCUSSION_EDIT');
-      } elseif (!empty($this->_form_post)) {
+      if ( !empty($this->_item) ) {
+         $this->_headline = getMessage('TODO_EDIT');
+      } elseif ( !empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('DISCUSSION_EDIT');
+            $this->_headline = getMessage('TODO_EDIT');
          } else {
-            $this->_headline = getMessage('DISCUSSION_ENTER_NEW');
+            $this->_headline = getMessage('TODO_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('DISCUSSION_ENTER_NEW');
+         $this->_headline = getMessage('TODO_ENTER_NEW');
       }
-      $this->setHeadline($this->_headline);
 
       // groups
       $label_manager =  $this->_environment->getLabelManager();
@@ -199,6 +196,31 @@ class cs_discussion_form extends cs_rubric_form {
       }
       $this->_group_array = $label_array;
 
+      // materials
+      $material_array = array();
+      if (isset($this->_session_material_array)) {
+         $material_manager = $this->_environment->getMaterialManager();
+         foreach ( $this->_session_material_array as $material ) {
+            $material_item = $material_manager->getItem($material['iid']);
+            $temp_array['text'] = $material_item->getTitle();
+            $temp_array['value'] = '<VALUE><ID>'.$material['iid'].'</ID><VERSION>'.$material['vid'].'</VERSION></VALUE>';
+            $material_array[] = $temp_array;
+         }
+      } elseif (isset($this->_item)) {
+         $material_list = $this->_item->getMaterialList();
+         $material_array_for_session = array();
+         if ($material_list->getCount() > 0) {
+            $material_item = $material_list->getFirst();
+            while ($material_item) {
+               $temp_array['text'] = $material_item->getTitle();
+               $temp_array['value'] = '<VALUE><ID>'.$material_item->getItemID().'</ID><VERSION>'.$material_item->getVersionID().'</VERSION></VALUE>';
+               $material_array[] = $temp_array;
+               $material_item = $material_list->getNext();
+            }
+         }
+      }
+      $this->_material_array = $material_array;
+
       // files
       $file_array = array();
       if (!empty($this->_session_file_array)) {
@@ -207,59 +229,80 @@ class cs_discussion_form extends cs_rubric_form {
             $temp_array['value'] = $file['file_id'];
             $file_array[] = $temp_array;
          }
+      } elseif (isset($this->_item)) {
+         $file_list = $this->_item->getFileList();
+         if ($file_list->getCount() > 0) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $temp_array['text'] = $file_item->getDisplayname();
+               $temp_array['value'] = $file_item->getFileID();
+               $file_array[] = $temp_array;
+               $file_item = $file_list->getNext();
+            }
+         }
       }
       $this->_file_array = $file_array;
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
+    *
+    * @author CommSy Development Group
     */
    function _createForm () {
 
-      // discussion
+      // todo
       $this->_form->addHidden('iid','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,47,true);
+      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,46,true);
+#      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,48,true);
+      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
+                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
+                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
+                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
+      $this->_form->addDateTimeField('end_date_time','',
+                              'dayEnd','timeEnd',10,10,
+                              getMessage('TODO_DATE'),
+                              getMessage('DATES_END_DAY'),
+                              getMessage('DATES_END_TIME'),
+                              getMessage('TODO_TIME_DAY_END_DESC'),true,false);
+      $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
+
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
 
-      if ( $this->_is_new_discussion ) {
-         $this->_form->addTextField('subject','',getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,59,true);
-         $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-         $this->_form->addTextArea('description','',getMessage('DISCUSSION_INIT_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',15);
-      }
+      $this->_form->addEmptyline();
+
       $current_context = $this->_environment->getCurrentContextItem();
 
-        // files
-         $this->_form->addAnchor('fileupload');
-         $val = ini_get('upload_max_filesize');
-         $val = trim($val);
-         $last = $val[strlen($val)-1];
-         switch($last) {
-            case 'k':
-            case 'K':
-               $val = $val * 1024;
-               break;
-            case 'm':
-            case 'M':
-               $val = $val * 1048576;
-               break;
-         }
-         $meg_val = round($val/1048576);
-         if ( !empty($this->_file_array) ) {
-            $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
-            $this->_form->combine('vertical');
-         }
-         $this->_form->addHidden('MAX_FILE_SIZE', $val);
-         $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      // files
+      $this->_form->addAnchor('fileupload');
+      $val = ini_get('upload_max_filesize');
+      $val = trim($val);
+      $last = $val[strlen($val)-1];
+      switch($last) {
+         case 'k':
+         case 'K':
+            $val = $val * 1024;
+            break;
+         case 'm':
+         case 'M':
+            $val = $val * 1048576;
+            break;
+      }
+      $meg_val = round($val/1048576);
+      if ( !empty($this->_file_array) ) {
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
-         if ($this->_with_multi_upload) {
-            // do nothing
-         } else {
-            #$px = '245';
+      }
+      $this->_form->addHidden('MAX_FILE_SIZE', $val);
+      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->combine('vertical');
+      if ($this->_with_multi_upload) {
+         // do nothing
+      } else {
+         #$px = '245';
          $px = '331';
          $browser = $this->_environment->getCurrentBrowser();
          if ($browser == 'MSIE') {
@@ -284,18 +327,11 @@ class cs_discussion_form extends cs_rubric_form {
             }
          }
          $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
-         }
-         $this->_form->combine('vertical');
-         $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
-
-
-      if ( $this->_is_new_discussion ) {
-          $current_context = $this->_environment->getCurrentContextItem();
-         $discussion_status = $current_context->getDiscussionStatus();
-         if ($discussion_status == 3){
-             $this->_form->addRadioGroup('discussion_type',getMessage('DISCUSSION_FORM_TYPE_1').BRLF.getMessage('DISCUSSION_FORM_TYPE_2'),'',$this->_discussion_array);
-         }
       }
+      $this->_form->combine('vertical');
+      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+
+
       if ( !$this->_environment->inPrivateRoom() ){
          // public radio-buttons
          if ($current_context->withActivatingContent()){
@@ -326,35 +362,36 @@ class cs_discussion_form extends cs_rubric_form {
 
       // buttons
       $id = 0;
-      if ( isset($this->_item) ) {
+      if (isset($this->_item)) {
          $id = $this->_item->getItemID();
-      } elseif ( isset($this->_form_post) ) {
-         if ( isset($this->_form_post['iid']) ) {
+      } elseif (isset($this->_form_post)) {
+         if (isset($this->_form_post['iid'])) {
             $id = $this->_form_post['iid'];
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('DISCUSSIONS_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',getMessage('TODO_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('DISCUSSIONS_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',getMessage('TODO_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
+    *
+    * @author CommSy Development Group
     */
    function _prepareValues () {
       $current_context = $this->_environment->getCurrentContextItem();
       $this->_values = array();
-      if ( !empty($this->_form_post) ) {
-         $this->_values = $this->_form_post;
-         if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
-         }
 
-         if ( !isset($this->_values['discussion_type']) ) {
-            $this->_values['discussion_type'] = '1';
-         }
+      if ( !empty($this->_form_post) ) {
+         $this->_form_post['end_date_time'] = array();
+         $this->_form_post['end_date_time'][] = !empty($this->_form_post['dayEnd']) ? $this->_form_post['dayEnd'] : NULL;
+         $this->_form_post['end_date_time'][] = !empty($this->_form_post['timeEnd']) ? $this->_form_post['timeEnd'] : NULL;
+         unset($this->_form_post['dayEnd']);
+         unset($this->_form_post['timeEnd']);
+         $this->_values = $this->_form_post;
          $tmp_array = array();
          if (isset($this->_form_post['dayStart'])){
             $tmp_array['dayStart'] = $this->_form_post['dayStart'];
@@ -370,9 +407,36 @@ class cs_discussion_form extends cs_rubric_form {
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
+         $this->_values['description'] = $this->_item->getDescription();
          $this->_values['public'] = $this->_item->isPublic();
+         $this->_values['status'] = $this->_item->getInternalStatus();
+         if (!$this->_item->getDate() == '') {
+            $this->_values['end_date_time'][] = getDateInLang($this->_item->getDate());
+         } else {
+            $this->_values['end_date_time'][]= '';
+         }
+         if (!$this->_item->getDate()== '') {
+            $this->_values['end_date_time'][] = getTimeInLang($this->_item->getDate());
+         } else {
+            $this->_values['end_date_time'][]= '';
+         }
          $this->_setValuesForRubricConnections();
 
+         // file
+         $file_array = array();
+         $file_list = $this->_item->getFileList();
+         if ($file_list->getCount() > 0) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $file_array[] = $file_item->getFileID();
+               $file_item = $file_list->getNext();
+            }
+         }
+         if (isset($this->_form_post['filelist'])) {
+            $this->_values['filelist'] = $this->_form_post['filelist'];
+         } else {
+            $this->_values['filelist'] = $file_array;
+         }
          if ($current_context->withActivatingContent()){
             if ($this->_item->isPrivateEditing()){
                $this->_values['private_editing'] = 1;
@@ -392,9 +456,6 @@ class cs_discussion_form extends cs_rubric_form {
                $this->_values['start_date_time'] = $array;
             }
          }
-      } else {
-         $this->_values['discussion_type'] = '1';
-         $this->_values['subject'] = $this->_translator->getMessage('INITIALARTICLE');
       }
       if ($current_context->withActivatingContent()){
          if ( !isset($this->_values['private_editing']) ) {
@@ -406,7 +467,6 @@ class cs_discussion_form extends cs_rubric_form {
          }
       }
    }
-
    /** specific check the values of the form
     * this methods check the entered values
     *
@@ -429,8 +489,5 @@ class cs_discussion_form extends cs_rubric_form {
          }
       }
    }
-
-
-
 }
 ?>

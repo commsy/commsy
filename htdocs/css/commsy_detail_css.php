@@ -391,4 +391,7 @@ table.list {
    font-weight:bold;
    text-align: right;
 }
+.even{
+   background-color: <?php echo($color['list_entry_even'])?>;
+}
 

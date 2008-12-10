@@ -1122,8 +1122,8 @@ class cs_page_room_view extends cs_page_view {
               and !empty($_GET['attach_type'])
               and $_GET['attach_type'] == 'buzzword')
               or(
-                 isset($_POST['option'])
-                 and isOption($_POST['option'], getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
+                 isset($_POST['right_box_option'])
+                 and isOption($_POST['right_box_option'], getMessage('COMMON_BUZZWORD_NEW_ATTACH'))
                  and (!isset($_POST['return_attach_buzzword_list']))
               )
             ) {
@@ -1135,8 +1135,8 @@ class cs_page_room_view extends cs_page_view {
               and !empty($_GET['attach_type'])
               and $_GET['attach_type'] == 'tag')
               or(
-                 isset($_POST['option'])
-                 and isOption($_POST['option'], getMessage('COMMON_TAG_NEW_ATTACH'))
+                 isset($_POST['right_box_option'])
+                 and isOption($_POST['right_box_option'], getMessage('COMMON_TAG_NEW_ATTACH'))
                  and (!isset($_POST['return_attach_tag_list']))
               )
             ) {

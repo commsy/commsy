@@ -23,6 +23,17 @@
 
 
 // Function used for redirecting to connected rubrics
+if (isset($_GET['return_attach_buzzword_list'])){
+   $_POST = $session->getValue('buzzword_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+if (isset($_GET['return_attach_tag_list'])){
+   $_POST = $session->getValue('tag_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
    $infix = '_'.$rubric_type;
@@ -93,6 +104,26 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $todo_manager = $environment->getToDosManager();
    $todo_item = $todo_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $buzzword_array = array();
+      $buzzwords = $todo_item->getBuzzwordList();
+      $buzzword = $buzzwords->getFirst();
+      while($buzzword){
+         $buzzword_array[] = $buzzword->getItemID();
+         $buzzword = $buzzwords->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
+   }
+   if(empty($_POST)){
+      $tag_array = array();
+      $tags = $todo_item->getTagList();
+      $tag = $tags->getFirst();
+      while($tag){
+         $tag_array[] = $tag->getItemID();
+         $tag = $tags->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
+   }
 }
 
 // Check access rights
@@ -136,6 +167,10 @@ else {
 
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      $session->unsetValue('buzzword_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      $session->unsetValue('tag_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'todo', 'index', '');
@@ -198,6 +233,8 @@ else {
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
          attach_redirect(CS_TOPIC_TYPE, $current_iid);
       }
+
+      include_once('include/inc_right_boxes_handling.php');
 
       // Add a new buzzword
       if ( isOption($command, getMessage('COMMON_ADD_BUZZWORD_BUTTON')) or isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
@@ -311,7 +348,9 @@ else {
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-         $session_post_vars = $_POST;
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($command) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
             $session_post_vars['new_buzzword']='';
          }
@@ -641,6 +680,14 @@ else {
             // files
             $item_files_upload_to = $todo_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+               $todo_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
+               $todo_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            }
 
             // Save item
             $todo_item->save();
@@ -651,6 +698,10 @@ else {
 
             // Redirect
             cleanup_session($current_iid);
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+            $session->unsetValue('buzzword_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+            $session->unsetValue('tag_post_vars');
             $params = array();
             $params['iid'] = $todo_item->getItemID();
             redirect($environment->getCurrentContextID(), 'todo', 'detail', $params);

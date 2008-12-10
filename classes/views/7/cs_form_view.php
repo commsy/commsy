@@ -2009,8 +2009,13 @@ class cs_form_view extends cs_view {
       $room = $this->_environment->getCurrentContextItem();
       if ($user->isUser() and $funct !='info_text_form_edit' and $funct !='info_text_edit'){
          $html .='<div id="commsy_panels_form" style="width:250px;">'.LF;
+         $html .= '<input id="right_box_option" type="hidden" style="font-size:8pt;" name="right_box_option" value=""/>';
+         $html .= ''.LF;
          if ($room->withBuzzwords()){
             $html .= $this->_getBuzzwordBoxAsHTML();
+         }
+         if ($room->withTags()){
+            $html .= $this->_getTagBoxAsHTML();
          }
           if (  $this->_environment->getCurrentModule() !='buzzwords' and
                $this->_environment->getCurrentModule() !='labels' and
@@ -2028,14 +2033,6 @@ class cs_form_view extends cs_view {
                foreach ($form_element_array as $form_element) {
                   if ( isset($form_element['type']) and $form_element['type'] == 'netnavigation' ) {
                      $netnavigation_array[] = $form_element;
-                  }
-               }
-               foreach ($form_element_array as $form_element) {
-                  if ( (isset($form_element[0]['name']) and $form_element[0]['name'] == 'taglist')
-                    or (isset($form_element[0]['name']) and $form_element[0]['name'] == 'tag') ) {
-                     $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-                     $html .= $this->_getTagBoxAsHTML($form_element);
-                     $html .='</div>'.LF;
                   }
                }
                if ($this->_environment->getCurrentModule() != 'account'){
@@ -2337,13 +2334,7 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<a href="#" onclick="javascript:document.f.submit()">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
-      $html .= '<input type="hidden" style="font-size:8pt;" name="option"';
-      $html .= ' value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"';
-      $html .= '/>'.LF;
-#      $html .= '<input type="submit" style="font-size:8pt;" name="option"';
-#      $html .= ' value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"';
-#      $html .= '/>'.LF;
+      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -2386,7 +2377,20 @@ class cs_form_view extends cs_view {
       }
       $html  = '';
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
+      $error_display = false;
+      if ( isset($this->_error_array) and !empty($this->_error_array) ){
+         foreach ($this->_error_array as $error){
+            if ($error == getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
+               $error_display = true;
+            }
+         }
+      }
+      $current_context = $this->_environment->getCurrentContextItem();
+      $html_text = '';
+      if ($current_context->isTagMandatory()){
+        $html_text = ' *';
+      }
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').$html_text.'</div>';
       $html .= '<div class="right_box_main" >'.LF;
 
       $text = '';
@@ -2475,6 +2479,10 @@ class cs_form_view extends cs_view {
       }else{
          $html .= $text;
       }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $params = $this->_environment->getCurrentParameterArray();
+      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'</a>'.LF;
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 

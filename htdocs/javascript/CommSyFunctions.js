@@ -76,4 +76,9 @@
       });
    }
 
+function right_box_send(form,option,value)
+{
+  document.getElementById(option).value = value;
+  document.getElementById(form).submit()
+}
 

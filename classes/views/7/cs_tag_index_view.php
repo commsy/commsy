@@ -121,16 +121,11 @@ var $_count_entries = 0;
       if ( isset($item) ) {
          $list = $item->getChildrenList();
          if ( isset($list) and !$list->isEmpty() ) {
-            if ($this->_count_entries%2 == 0){
-               $style='class="even"';
-            }else{
-               $style='';
-            }
             $this->_count_entries++;
             if ($ebene == 1){
-               $html.= '<div '.$style.' style="padding-bottom:5px;">'.LF;
+               $html.= '<div style="padding-bottom:5px;">'.LF;
             }else{
-               $html.= '<div '.$style.' style="padding-bottom:0px;">'.LF;
+               $html.= '<div style="padding-bottom:0px;">'.LF;
             }
             $current_item = $list->getFirst();
             $distance = $distance +1;
@@ -205,17 +200,12 @@ var $_count_entries = 0;
                   $font_style = 'normal';
                }
                $font_color = 20;
-               if ($this->_count_entries%2 == 0){
-                  $style='class="even"';
-               }else{
-                  $style='';
-               }
                $this->_count_entries++;
 
                if (($ebene*15) <= 30){
-                  $html .= '<div '.$style.' style="padding-left:'.($ebene*30).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                  $html .= '<div style="padding-left:'.($ebene*30).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
                }else{
-                  $html .= '<div  '.$style.' style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                  $html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
                }
                $title = $current_item->getTitle();
                $params['seltag_'.$ebene] = $current_item->getItemID();
@@ -233,7 +223,7 @@ var $_count_entries = 0;
                }
                $checkbox .= '/>'.LF;
                $checkbox .= '         <input type="hidden" name="shown['.$this->_text_as_form($current_item->getItemID()).']" value="1"/>'.LF;
-               $html .= '<div style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
+               $html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
                $html .= $checkbox;
                $html .= $title;
                $html .= '</div>'.LF;
@@ -282,10 +272,10 @@ var $_count_entries = 0;
          $tag2tag_manager =  $this->_environment->getTag2TagManager();
          $father_id_array = $tag2tag_manager->getFatherItemIDArray($selected_id);
       }
-      $html_text = '<div style="padding:5px;">';
-      $html_text .= $this->_getTagContentAsHTML($root_item,0,$selected_id, $father_id_array);
+      $html .= '<div style="padding:5px;">';
+      $html_text = $this->_getTagContentAsHTML($root_item,0,$selected_id, $father_id_array);
       if ( empty($html_text) ){
-         $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html_text = '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $html .= $html_text.'</div>';
       return $html;
@@ -321,7 +311,7 @@ var $_count_entries = 0;
    function _getViewActionsAsHTML () {
       $html = '   <input type="hidden" name="return_attach_tag_list" value="true"/>'.LF;
       $html .= '<input type="submit" style="font-size:10pt;" name="option"';
-      $html .= ' value="'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'"';
+      $html .= ' value="'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'"';
       $html .= '/>'.LF;
 
       return $html;

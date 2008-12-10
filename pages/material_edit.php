@@ -27,13 +27,14 @@ set_time_limit(0);
 if (isset($_GET['return_attach_buzzword_list'])){
    $_POST = $session->getValue('buzzword_post_vars');
    unset($_POST['option']);
+   unset($_POST['right_box_option']);
 }
 if (isset($_GET['return_attach_tag_list'])){
    $_POST = $session->getValue('tag_post_vars');
    unset($_POST['option']);
+   unset($_POST['right_box_option']);
 }
 /*** Neue Schlagwörter und Tags***/
-
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -115,9 +116,12 @@ if ( $current_iid == 'NEW' ) {
    $material_item = NULL;
 } else {
    $buzzword_array = array();
+   $tag_array = array();
    $material_manager = $environment->getMaterialManager();
    $material_item = $material_manager->getItem($current_iid);
+/*** Neue Schlagwörter und Tags***/
    if(empty($_POST)){
+      $buzzword_array = array();
       $buzzwords = $material_item->getBuzzwordList();
       $buzzword = $buzzwords->getFirst();
       while($buzzword){
@@ -126,6 +130,17 @@ if ( $current_iid == 'NEW' ) {
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
    }
+   if(empty($_POST)){
+      $tag_array = array();
+      $tags = $material_item->getTagList();
+      $tag = $tags->getFirst();
+      while($tag){
+         $tag_array[] = $tag->getItemID();
+         $tag = $tags->getNext();
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
+   }
+/*** Neue Schlagwörter und Tags***/
 }
 
 // Check access rights
@@ -172,8 +187,12 @@ else {
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
+/*** Neue Schlagwörter und Tags***/
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
       $session->unsetValue('buzzword_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      $session->unsetValue('tag_post_vars');
+/*** Neue Schlagwörter und Tags***/
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'material', 'index', '');
       } else {
@@ -238,122 +257,9 @@ else {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
 
-
 /*** Neue Schlagwörter und Tags***/
-      if ( isOption($command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
-         if (isset($_POST['return_attach_buzzword_list'])){
-            $buzzword_array = array();
-            if (isset($_POST['buzzwordlist'])){
-               $selected_id_array = $_POST['buzzwordlist'];
-               foreach($selected_id_array as $id => $value){
-                  $buzzword_array[] = $id;
-               }
-            }
-
-            if ( !empty($_POST['attach_new_buzzword']) ) {
-               $buzzword_manager = $environment->getLabelManager();
-               $buzzword_manager->reset();
-               $buzzword_manager->setContextLimit($environment->getCurrentContextID());
-               $buzzword_manager->setTypeLimit('buzzword');
-               $buzzword_manager->select();
-               $buzzword_list = $buzzword_manager->get();
-               $exist = NULL;
-               if ( !empty($buzzword_list) ){
-                  $buzzword = $buzzword_list->getFirst();
-                  while ( $buzzword ){
-                     if ( strcmp($buzzword->getName(), ltrim($_POST['attach_new_buzzword'])) == 0 ){
-                        $exist = $buzzword->getItemID();
-                     }
-                     $buzzword = $buzzword_list->getNext();
-                  }
-               }
-               if ( !isset($exist) ) {
-                  $temp_array = array();
-                  $buzzword_manager = $environment->getLabelManager();
-                  $buzzword_manager->reset();
-                  $buzzword_item = $buzzword_manager->getNewItem();
-                  $buzzword_item->setLabelType('buzzword');
-                  $buzzword_item->setTitle(ltrim($_POST['attach_new_buzzword']));
-                  $buzzword_item->setContextID($environment->getCurrentContextID());
-                  $user = $environment->getCurrentUserItem();
-                  $buzzword_item->setCreatorItem($user);
-                  $buzzword_item->setCreationDate(getCurrentDateTimeInMySQL());
-                  $buzzword_item->save();
-                  $buzzword_array[] = $buzzword_item->getItemID();
-               } elseif ( isset($exist) and !in_array($exist,$buzzword_array) ) {
-                  $temp_array = array();
-                  $buzzword_manager = $environment->getLabelManager();
-                  $buzzword_manager->reset();
-                  $buzzword_item = $buzzword_manager->getItem($exist);
-                  $buzzword_array[] = $buzzword_item->getItemID();
-               }
-            }
-            $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids',$buzzword_array);
-            $session_post_vars = $session->getValue('buzzword_post_vars');
-         }else{
-            $session->setValue('buzzword_post_vars', $_POST);
-            $buzzword_array = array();
-            $buzzword_manager = $environment->getLabelManager();
-            $buzzword_manager->resetLimits();
-            $buzzword_manager->setContextLimit($environment->getCurrentContextID());
-            $buzzword_manager->setTypeLimit('buzzword');
-            $buzzword_manager->setGetCountLinks();
-            $buzzword_manager->select();
-            $buzzword_list = $buzzword_manager->get();
-            $count_all = $buzzword_list->getCount();
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $buzzword_view = $class_factory->getClass(BUZZWORD_INDEX_VIEW,$params);
-            unset($params);
-            $ids = $buzzword_manager->getIDArray();
-            $count_all_shown = count($ids);
-            // Set data for buzzword_view
-            $buzzword_view->setList($buzzword_list);
-            $buzzword_view->setCountAllShown($count_all_shown);
-            $buzzword_view->setCountAll($count_all);
-         }
-      }elseif ( isOption($command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
-         if (isset($_POST['return_attach_tag_list'])){
-            $tag_array = array();
-            if (isset($_POST['taglist'])){
-               $selected_id_array = $_POST['taglist'];
-               foreach($selected_id_array as $id => $value){
-                  $tag_array[] = $id;
-               }
-            }
-
-            $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
-            $session_post_vars = $session->getValue('tag_post_vars');
-         }else{
-            $session->setValue('tag_post_vars', $_POST);
-            $buzzword_array = array();
-            $buzzword_manager = $environment->getLabelManager();
-            $buzzword_manager->resetLimits();
-            $buzzword_manager->setContextLimit($environment->getCurrentContextID());
-            $buzzword_manager->setTypeLimit('buzzword');
-            $buzzword_manager->setGetCountLinks();
-            $buzzword_manager->select();
-            $buzzword_list = $buzzword_manager->get();
-            $count_all = $buzzword_list->getCount();
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = $with_modifying_actions;
-            $buzzword_view = $class_factory->getClass(TAG_INDEX_VIEW,$params);
-            unset($params);
-            $ids = $buzzword_manager->getIDArray();
-            $count_all_shown = count($ids);
-            // Set data for buzzword_view
-            $buzzword_view->setList($buzzword_list);
-            $buzzword_view->setCountAllShown($count_all_shown);
-            $buzzword_view->setCountAll($count_all);
-         }
-      }
-
+      include_once('include/inc_right_boxes_handling.php');
 /*** Neue Schlagwörter und Tags***/
-
-
-
 
       // Add a new buzzword
       if ( isOption($command, getMessage('COMMON_ADD_BUZZWORD_BUTTON')) or isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
@@ -824,14 +730,6 @@ else {
          $buzzword_array[] = $_POST['buzzword'];
       }
       $material_item->setBuzzwordListByID($buzzword_array);
-
-/*** Neue Schlagwörter***/
-      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-         $material_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-      }
-/*** Neue Schlagwörter***/
-
             // tags
       $tag_array = array();
       if ( isset($_POST['taglist']) ) {
@@ -841,6 +739,18 @@ else {
          $tag_array[] = $_POST['tag'];
       }
       $material_item->setTagListByID($tag_array);
+
+
+/*** Neue Schlagwörter und Tags***/
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+         $material_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      }
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
+         $material_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      }
+/*** Neue Schlagwörter und Tags***/
 
 
 
@@ -1047,8 +957,12 @@ else {
 
                // Redirect
                cleanup_session($current_iid);
+/*** Neue Schlagwörter und Tags***/
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
                $session->unsetValue('buzzword_post_vars');
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+               $session->unsetValue('tag_post_vars');
+/*** Neue Schlagwörter und Tags***/
                $params = array();
                $params['iid'] = $material_item->getItemID();
                if (!empty($infoBox_forAutoNewVersion)) {
