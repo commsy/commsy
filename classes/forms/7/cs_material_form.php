@@ -453,29 +453,6 @@ class cs_material_form extends cs_rubric_form {
       }
       $current_context = $this->_environment->getCurrentContextItem();
       $current_context = $this->_environment->getCurrentContextItem();
-      if ( $current_context->withBuzzwords() ){
-         // buzzwords
-         if ( !empty ($this->_shown_buzzword_array) ) {
-            if ( $current_context->isBuzzwordMandatory() ){
-               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
-               $this->_form->combine();
-            }else{
-               $this->_form->addCheckBoxGroup('buzzwordlist',$this->_shown_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'),false,false,0,'','','','',false,false,false,8);
-               $this->_form->combine();
-            }
-         }
-         if ( $current_context->isBuzzwordMandatory() ){
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,true,false,'','','','',14,false,false,8);
-         }else{
-            $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('COMMON_BUZZWORDS'),getMessage('COMMON_BUZZWORD_DESC'), 1, false,false,false,'','','','',14,false,false,8);
-         }
-         $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',70,false,'','',8);
-         $this->_form->combine('vertical');
-         $this->_form->addTextField('new_buzzword',"","","","", 24, false,'','','','left','','',false,'',8);
-         $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',70,false,'','',8);
-      }
       if ( $current_context->withTags() ){
          // tags
          if ( !empty ($this->_shown_tag_array) ) {
@@ -759,11 +736,13 @@ class cs_material_form extends cs_rubric_form {
          }
       }
       if ( $current_context->isBuzzwordMandatory() ){
-         if ($this->_form_post['buzzword'] == -2 and empty($this->_form_post['buzzwordlist']) and empty($this->_form_post['new_buzzword'])) {
-            $this->_form_post['buzzword'] = -2;
-            $this->_form->setFailure('buzzword','mandatory');
+/*** Neue Schlagwörter***/
+         $session = $this->_environment->getSessionItem();
+         $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
+         if (count($buzzword_ids) == 0){
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
+/*** Neue Schlagwörter***/
       }
    }
 

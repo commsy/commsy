@@ -39,18 +39,30 @@ if ( isset($_POST['option']) ) {
    $option = '';
 }
 
-$params = $environment->getCurrentParameterArray();
-$item_manager = $environment->getItemManager();
-$tmp_item = $item_manager->getItem($params['iid']);
-$manager = $environment->getManager($tmp_item->getItemType());
-$item = $manager->getItem($params['iid']);
+if ( isset($_POST['return_attach_buzzword_list']) ) {
+   $second_call = true;
+} elseif ( isset($_GET['return_attach_buzzword_list']) ) {
+   $second_call = true;
+} else {
+   $second_call = false;
+}
 
+
+
+if ($environment->getCurrentFunction() != 'edit'){
+   $params = $environment->getCurrentParameterArray();
+   $item_manager = $environment->getItemManager();
+   $tmp_item = $item_manager->getItem($params['iid']);
+   $manager = $environment->getManager($tmp_item->getItemType());
+   $item = $manager->getItem($params['iid']);
+
+}
 if ( !empty($option)
       and (isOption($option, getMessage('COMMON_BUZZWORD_ATTACH')))
     ) {
     $buzzword_array = array();
-    if (isset($_POST['attach'])){
-       $selected_id_array = $_POST['attach'];
+    if (isset($_POST['buzzwordlist'])){
+       $selected_id_array = $_POST['buzzwordlist'];
        foreach($selected_id_array as $id => $value){
           $buzzword_array[] = $id;
        }
@@ -101,12 +113,6 @@ if ( !empty($option)
     redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), $environment->getCurrentFunction(), $params);
 }
 
-if ( $session->issetValue('announcement_clipboard') ) {
-   $clipboard_id_array = $session->getValue('announcement_clipboard');
-} else {
-   $clipboard_id_array = array();
-}
-
 $buzzword_manager = $environment->getLabelManager();
 $buzzword_manager->resetLimits();
 $buzzword_manager->setContextLimit($environment->getCurrentContextID());
@@ -130,4 +136,5 @@ $buzzword_view->setList($buzzword_list);
 $buzzword_view->setItem($item);
 $buzzword_view->setCountAllShown($count_all_shown);
 $buzzword_view->setCountAll($count_all);
+
 ?>

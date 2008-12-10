@@ -359,3 +359,61 @@ li.path_list{
     float:left; /* Firefox - to avoid blank white space above panel */
     padding-left:10px;  /* A little space at the left */
 }
+
+/*List Layout*/
+.list {
+   border-collapse: collapse;
+   width: 100%;
+   font-size:10pt;
+}
+
+.list tr{
+}
+
+table.list {
+   width: 100%;
+   font-size:10pt;
+   border: 1px solid <?php echo($color['tabs_background'])?>;
+}
+
+.list td, td.odd {
+   background-color: #FFFFFF;
+   padding: 2px 3px;
+   font-size:10pt;
+}
+.list td.even  {
+   background-color: <?php echo($color['list_entry_even'])?>;
+}
+.list td.head {
+   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   line-height:17px;
+   padding: 3px 3px;
+   font-weight:bold;
+   white-space:nowrap;
+}
+.list td.head_nav {
+   border-bottom: none;
+   padding: 3px 3px;
+   font-weight:bold;
+   text-align: right;
+}
+.list td.foot_left {
+   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background-color: <?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   padding: 2px 2px;
+   font-weight:bold;
+}
+.list td.foot_right {
+   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   background-color: <?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   padding: 2px 2px;
+   font-weight:bold;
+   text-align: right;
+}

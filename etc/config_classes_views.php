@@ -155,6 +155,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_tag_index_view';
+define('TAG_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
 
 
 

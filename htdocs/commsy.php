@@ -839,10 +839,17 @@ if ( isset($_GET['show_copies']) and ($_GET['show_copies'] == 'yes') ) {
   include_once('pages/copies_index.php');
 }
 
-if ( isset($_GET['attach_view']) and ($_GET['attach_view'] == 'yes') and isset($_GET['attach_type']) and !empty($_GET['attach_type'])) {
+if ( $current_function !='edit'
+     and isset($_GET['attach_view'])
+     and ($_GET['attach_view'] == 'yes')
+     and isset($_GET['attach_type'])
+     and !empty($_GET['attach_type'])) {
   switch ( $_GET['attach_type'] ) {
      case 'buzzword':
         include_once('pages/buzzword_attach.php');
+        break;
+     case 'tag':
+        include_once('pages/tag_attach.php');
         break;
   }
 }

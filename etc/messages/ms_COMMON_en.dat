@@ -71,6 +71,7 @@ $message["COMMON_BUZZWORDS_EDIT_FORM_TITLE"]["en"] = "Edit tags";
 $message["COMMON_BUZZWORD_ATTACH"]["en"] = "Add buzzwords";
 $message["COMMON_BUZZWORD_BOX"]["en"] = "Browse tags";
 $message["COMMON_BUZZWORD_BOX_EDIT"]["en"] = "Add tag/s";
+$message["COMMON_BUZZWORD_NEW_ATTACH"]["en"] = "Add buzzwords";
 $message["COMMON_BUZZWORD_RESTRICTION"]["en"] = "Appl. tag";
 $message["COMMON_BY"]["en"] = "by";
 $message["COMMON_CANCEL_BUTTON"]["en"] = "Cancel";

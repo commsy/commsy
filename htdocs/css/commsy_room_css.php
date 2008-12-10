@@ -67,6 +67,10 @@ a:hover, a:active {
 	color: <?php echo($color['info_color'])?>;
 }
 
+.link_text{
+	color: <?php echo($color['hyperlink'])?>;
+}
+
 .disabled, .key .infocolor{
 	color: <?php echo($color['disabled'])?>;
 }

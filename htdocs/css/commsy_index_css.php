@@ -132,6 +132,10 @@ table.list {
 .list td.even  {
    background-color: <?php echo($color['list_entry_even'])?>;
 }
+
+.even{
+   background-color: <?php echo($color['list_entry_even'])?>;
+}
 .list td.head {
    background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
    background-color:<?php echo($color['tabs_background'])?>;

@@ -71,6 +71,7 @@ $message["COMMON_BUZZWORDS_EDIT_FORM_TITLE"]["de"] = "Schlagwörter bearbeiten";
 $message["COMMON_BUZZWORD_ATTACH"]["de"] = "Schlagwörter zuordnen";
 $message["COMMON_BUZZWORD_BOX"]["de"] = "Schlagwörter";
 $message["COMMON_BUZZWORD_BOX_EDIT"]["de"] = "Schlagwörter zuordnen";
+$message["COMMON_BUZZWORD_NEW_ATTACH"]["de"] = "Schlagwörter zuordnen";
 $message["COMMON_BUZZWORD_RESTRICTION"]["de"] = "Schlagwort";
 $message["COMMON_BY"]["de"] = "von";
 $message["COMMON_CANCEL_BUTTON"]["de"] = "Abbrechen";

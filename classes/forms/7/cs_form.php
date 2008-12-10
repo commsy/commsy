@@ -1115,6 +1115,24 @@ class cs_form {
       $this -> _formElements -> addElement($element);
    }
 
+   function addImageButton ( $name,
+                             $label='',
+                             $src='',
+                             $alt='',
+                             $border='',
+                             $width='',
+                             $height='') {
+      $element['type']       = 'imagebutton';
+      $element['name']       = $name;
+      $element['src']        = $src;
+      $element['alt']        = $alt;
+      $element['border']     = $border;
+      $element['height']     = $height;
+      $element['width']      = $width;
+
+      $this -> _formElements -> addElement($element);
+   }
+
    function addRoomLogo ( $name,
                        $filename='',
                        $label='',

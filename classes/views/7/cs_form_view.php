@@ -345,16 +345,19 @@ class cs_form_view extends cs_view {
     *
     * @author CommSy Development Group
     */
-   function _getLineAsHTML ($form_element) {
+   function _getImageButtonAsHTML ($form_element) {
       // for AS_HTML_LONG use _getTextAsHTML
       $html  = '';
-      $html .= '<!-- BEGIN OF FORM-ELEMENT: textline -->'."\n";
-      $html .= '   <td colspan="3" style="border-bottom: none;">'."\n";
-      $html .= '      '.$form_element['description']."\n";
-      $html .= '   </td>'."\n";
-      $html .= '<!-- END OF FORM-ELEMENT: textline -->'."\n";
+      $html .= '<!-- BEGIN OF FORM-ELEMENT: Imagebutton -->'."\n";
+      $html .= '<input type="image"'.LF;
+      $html .=' src="'.$form_element['src'].'"'.LF;
+      $html .=' name="'.$form_element['name'].'"'.LF;
+      $html .=' width="'.$form_element['width'].'" height="'.$form_element['height'].'"'.LF;
+      $html .= 'alt="'.$form_element['alt'].'"/>'.LF;
+      $html .= '<!-- END OF FORM-ELEMENT: Imagebutton -->'."\n";
       return $html;
    }
+
 
    /** get textline as HTML - internal, do not use
     * this method returns a string contains a text in HMTL-Code
@@ -1592,6 +1595,8 @@ class cs_form_view extends cs_view {
                $html .= '         '.$this->_getCheckboxAsHTML($form_element,10).LF;
             } elseif ($form_element['type'] == 'checkboxgroup') {
                $html .= $this->_getCheckboxGroupAsHTML($form_element);
+            }elseif ($form_element['type'] == 'imagebutton') {
+               $html .= $this->_getImageButtonAsHTML($form_element);
             } elseif ($form_element['type'] == 'file') {
                $html .= '         '.$this->_getFileFieldAsHTML($form_element);
             } elseif ($form_element['type'] == 'radio') {
@@ -1738,7 +1743,7 @@ class cs_form_view extends cs_view {
    function asHTML () {
       $html  = '';
       $netnavigation_array = array();
-      $html .= '<form style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
+      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
       $html .='<div style="width:100%;">'.LF;
 
       #$html .= '<div class="formdate">'.$date_array[2].'. '.$month.' '.$date_array[0].'</div>';
@@ -2004,7 +2009,10 @@ class cs_form_view extends cs_view {
       $room = $this->_environment->getCurrentContextItem();
       if ($user->isUser() and $funct !='info_text_form_edit' and $funct !='info_text_edit'){
          $html .='<div id="commsy_panels_form" style="width:250px;">'.LF;
-         if (  $this->_environment->getCurrentModule() !='buzzwords' and
+         if ($room->withBuzzwords()){
+            $html .= $this->_getBuzzwordBoxAsHTML();
+         }
+          if (  $this->_environment->getCurrentModule() !='buzzwords' and
                $this->_environment->getCurrentModule() !='labels' and
                $this->_environment->getCurrentFunction() !='close' and
                $this->_environment->getCurrentModule() !='configuration' and
@@ -2020,15 +2028,6 @@ class cs_form_view extends cs_view {
                foreach ($form_element_array as $form_element) {
                   if ( isset($form_element['type']) and $form_element['type'] == 'netnavigation' ) {
                      $netnavigation_array[] = $form_element;
-                  }
-               }
-               $this->_count_form_elements = $this->_count_form_elements + 50;
-               foreach ($form_element_array as $form_element) {
-                  if ( (isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzwordlist')
-                    or (isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzword') ) {
-                     $html .='<div class="commsy_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-                     $html .= $this->_getBuzzwordBoxAsHTML($form_element);
-                     $html .='</div>'.LF;
                   }
                }
                foreach ($form_element_array as $form_element) {
@@ -2236,7 +2235,57 @@ class cs_form_view extends cs_view {
 
 
 
-   function _getBuzzwordBoxAsHTML ($form_element) {
+
+
+   function getBuzzwordSizeLogarithmic( $count, $mincount=0, $maxcount=30, $minsize=8, $maxsize=16, $tresholds=0 ) {
+      if( empty($tresholds) ) {
+         $tresholds = $maxsize-$minsize;
+         $treshold = 1;
+      } else {
+         $treshold = ($maxsize-$minsize)/($tresholds-1);
+      }
+      $a = $tresholds*log($count - $mincount+2)/log($maxcount - $mincount+2)-1;
+      return round($minsize+round($a)*$treshold);
+   }
+
+   function getBuzzwordColorLogarithmic( $count, $mincount=0, $maxcount=30, $minsize=30, $maxsize=70, $tresholds=0 ) {
+      if( empty($tresholds) ) {
+         $tresholds = $maxsize-$minsize;
+         $treshold = 1;
+      } else {
+         $treshold = ($maxsize-$minsize)/($tresholds-1);
+      }
+      $a = $tresholds*log($count - $mincount+2)/log($maxcount - $mincount+2)-1;
+      return round($minsize+round($a)*$treshold);
+   }
+
+
+
+   function _getBuzzwordBoxAsHTML () {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $params = $this->_environment->getCurrentParameterArray();
+      $session = $this->_environment->getSessionItem();
+      $buzzword_ids = array();
+      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids')){
+         $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
+      }
+      $buzzword_manager = $this->_environment->getLabelManager();
+      $buzzword_manager->reset();
+      $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $buzzword_manager->setTypeLimit('buzzword');
+      $buzzword_list = $buzzword_manager->getItemList($buzzword_ids);
+      $buzzword_entry = $buzzword_list->getFirst();
+      $item_id_array = array();
+      while($buzzword_entry){
+         $item_id_array[] = $buzzword_entry->getItemID();
+         $buzzword_entry = $buzzword_list->getNext();
+      }
+      if ( isset($item_id_array[0]) ){
+         $links_manager = $this->_environment->getLinkManager();
+         $count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array,'buzzword');
+      }
+      $html  = '';
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
@@ -2250,50 +2299,186 @@ class cs_form_view extends cs_view {
       if ($current_context->isBuzzwordMandatory()){
         $html_text = ' *';
       }
-      $html = '<div class="right_box">'.LF;
+      $html = '<div class="right_box" style="margin-bottom:1px;">'.LF;
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_BUZZWORD_BOX').$html_text.'</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_BUZZWORDS').$html_text.'</div>';
       }else{
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORD_BOX_EDIT').$html_text.'</div>';
+         $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORDS').$html_text.'</div>';
       }
       $html .= '<div class="right_box_main">'.LF;
-      $html .= '<table style="margin:0px; padding:0px;"><tr><td>'.LF;
-      $html .= $this->_getFormElementAsHTML($form_element,true);
-      $html .= '</tr></table></div>'.LF;
+      $html .= '<div>'.LF;
+      if ($buzzword_list ->isEmpty()) {
+         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
+      }else{
+         $buzzword_entry = $buzzword_list->getFirst();
+         while($buzzword_entry){
+            $count = 0;
+            if ( isset($count_array[$buzzword_entry->getItemID()]) ){
+                $count = $count_array[$buzzword_entry->getItemID()];
+            }
+            $font_size = $this->getBuzzwordSizeLogarithmic($count);
+            $font_color = 100 - $this->getBuzzwordColorLogarithmic($count);
+            $params['selbuzzword'] = $buzzword_entry->getItemID();
+            $temp_text = '';
+            $style_text  = 'style="margin-left:2px; margin-right:2px;';
+            $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            $style_text .= 'font-size:'.$font_size.'px;"';
+            $title  = '<span  '.$style_text.'>'.LF;
+            $title .= $buzzword_entry->getName().LF;
+            $title .= '</span> ';
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                $this->_environment->getCurrentModule(),
+                                'index',
+                                $params,
+                                $title,$title).LF;
+           $buzzword_entry = $buzzword_list->getNext();
+         }
+      }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $params = $this->_environment->getCurrentParameterArray();
+      $html .= '<a href="#" onclick="javascript:document.f.submit()">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
+      $html .= '<input type="hidden" style="font-size:8pt;" name="option"';
+      $html .= ' value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"';
+      $html .= '/>'.LF;
+#      $html .= '<input type="submit" style="font-size:8pt;" name="option"';
+#      $html .= ' value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"';
+#      $html .= '/>'.LF;
       $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      unset($current_user);
       unset($current_context);
       return $html;
    }
 
 
-   function _getTagBoxAsHTML ($form_element) {
-      $error_display = false;
-      if ( isset($this->_error_array) and !empty($this->_error_array) ){
-         foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
-               $error_display = true;
-            }
-         }
+   function getTagColorLogarithmic( $count, $mincount=0, $maxcount=5, $minsize=0, $maxsize=40, $tresholds=0 ) {
+      if( empty($tresholds) ) {
+         $tresholds = $maxsize-$minsize;
+         $treshold = 1;
+      } else {
+         $treshold = ($maxsize-$minsize)/($tresholds-1);
       }
+      $a = $tresholds*log($count - $mincount+2)/log($maxcount - $mincount+2)-1;
+      return round($minsize+round($a)*$treshold);
+   }
+
+   function _getTagBoxAsHTML(){
       $current_context = $this->_environment->getCurrentContextItem();
-      $color = $current_context->getColorArray();
-      $html_text = '';
-      if ($current_context->isTagMandatory()){
-        $html_text = ' *';
+      $current_user = $this->_environment->getCurrentUserItem();
+      $params = $this->_environment->getCurrentParameterArray();
+      $session = $this->_environment->getSessionItem();
+      $tag_ids = array();
+      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids')){
+         $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
       }
-      $html = '<div class="right_box">'.LF;
-      if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_TAG_BOX').$html_text.'</div>';
+      $tag_manager = $this->_environment->getTagManager();
+      $tag_manager->reset();
+      $tag_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $tag_list = $tag_manager->getItemList($tag_ids);
+      $tag_entry = $tag_list->getFirst();
+      $item_id_array = array();
+      while($tag_entry){
+         $item_id_array[] = $tag_entry->getItemID();
+         $tag_entry = $tag_list->getNext();
+      }
+      $html  = '';
+      $html .= '<div class="right_box">'.LF;
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').'</div>';
+      $html .= '<div class="right_box_main" >'.LF;
+
+      $text = '';
+      $tag2tag_manager = $this->_environment->getTag2TagManager();
+      $tag_manager = $this->_environment->getTagManager();
+      $tag_item = $tag_list->getFirst();
+      if ( isset ($tag_item) ){
+         $params = $this->_environment->getCurrentParameterArray();
+         while( $tag_item ){
+            $text .= '<div style="margin-bottom:5px;">';
+            $count_all = 1;
+            $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag_item->getItemID());
+            $i = 1;
+            if( !empty($shown_tag_array) ) {
+               $count_all = count($shown_tag_array);
+               $shown_tag_array = array_reverse($shown_tag_array);
+               foreach( $shown_tag_array as $shown_tag ){
+                  $father_tag_item = $tag_manager->getItem($shown_tag);
+                  $count = $count_all - $i + 1;
+                  $ebene = $i-1;
+                  $font_size = round(13 - (($count*0.2)+$count));
+                  $font_weight = 'normal';
+                  $font_style = 'normal';
+                  if ($font_size < 8){
+                     $font_size = 8;
+                  }
+                  $font_color = 20 + $this->getTagColorLogarithmic($count);
+                  $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+                  if (($ebene*15) <= 30){
+                     $text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                  }else{
+                     $text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                  }
+                  $params['seltag'] = 'yes';
+                  if ( isset($father_tag_item) ) {
+                     $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
+                  }
+                  $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+                                $this->_environment->getCurrentModule(),
+                                'index',
+                                $params,
+                                $father_tag_item->getTitle(),
+                                $father_tag_item->getTitle(),
+                                '',
+                                '',
+                                '',
+                                '',
+                                '',
+                                'style="color:'.$color.'"').LF;
+                  $text .= '- '.$title_link;
+                  $text .= '</div>';
+                  $i++;
+               }
+            }
+            $params['seltag'] = 'yes';
+            $params['seltag_'.($count_all-1)] = $tag_item->getItemID();
+            $count = $count_all - $i + 1;
+            $ebene = $i-1;
+            $font_size = 13;
+            $font_weight = 'normal';
+            $font_style = 'normal';
+            $font_color = 20 + $this->getTagColorLogarithmic($count);
+            $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $params,
+                             $tag_item->getTitle(),
+                             $tag_item->getTitle(),
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'style="color:'.$color.'"').LF;
+            $text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+            $text .= '- '.$title_link;
+            $text .= '</div>';
+            $text .= '</div>';
+            $tag_item = $tag_list->getNext();
+         }
+
+      }
+      if ( empty($text) ){
+         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
       }else{
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_TAG_BOX_EDIT').$html_text.'</div>';
+         $html .= $text;
       }
-      $html .= '<div class="right_box_main">'.LF;
-      $html .= '<table><tr><td>'.LF;
-      $html .= $this->_getFormElementAsHTML($form_element,true);
-      $html .= '</tr></table></div>'.LF;
       $html .= '</div>'.LF;
-      unset($current_context);
+      $html .= '</div>'.LF;
+
+      unset($current_user);
       return $html;
    }
 

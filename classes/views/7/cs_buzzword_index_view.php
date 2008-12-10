@@ -58,9 +58,17 @@ var $_item = NULL;
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
 
       $html .='<div id="profile_content">'.LF;
+      $html .= '<form style="padding:0px; margin:0px;" action="';
+      $params = $this->_environment->getCurrentParameterArray();
+      $html .= curl($this->_environment->getCurrentContextID(),
+                    $this->_environment->getCurrentModule(),
+                    $this->_environment->getCurrentFunction(),
+                    $params
+                   ).'" method="post">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['attach_view']);
       unset($params['attach_type']);
+      $params['return_attach_buzzword_list']= 'true';
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
@@ -69,7 +77,7 @@ var $_item = NULL;
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
-      $html .= '<h2 id="profile_title">'.getMessage('COMMON_BUZZWORD_ATTACH').'</h2>';
+      $html .= '<h2 id="profile_title">'.getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</h2>';
       $html .='</div>'.LF;
       $current_browser = strtolower($this->_environment->getCurrentBrowser());
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
@@ -79,41 +87,39 @@ var $_item = NULL;
          $width= '';
       }
 
-      $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
-      $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<form style="padding:0px; margin:0px;" action="';
-      $html .= curl($this->_environment->getCurrentContextID(),
-                    $this->_environment->getCurrentModule(),
-                    $this->_environment->getCurrentFunction(),
-                    $params
-                   ).'" method="post">'.LF;
-      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
-      }
+      $html .='<div style="width:100%; padding-top:0px; vertical-align:bottom;">'.LF;
       $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
       $html .= $this->_getContentAsHTML();
       $html .= '</table>'.LF;
       $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
       $html .= $this->_getTablefootAsHTML();
       $html .= '</table>'.LF;
-      $html .= '</form>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .= '</form>'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
 
    function _getContentAsHTML() {
-      $buzzword_list = $this->_item->getBuzzwordList();
-      $checked_buzzword_array = array();
-      if ($buzzword_list->getCount() > 0) {
-         $buzzword_item = $buzzword_list->getFirst();
-         while ($buzzword_item) {
-            $checked_buzzword_array[] = $buzzword_item->getItemID();
-            $buzzword_item = $buzzword_list->getNext();
+      if( $this->_environment->getCurrentFunction() == 'edit'){
+         $session = $this->_environment->getSessionItem();
+         $checked_buzzword_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
+      }else{
+         $buzzword_list = $this->_item->getBuzzwordList();
+         $checked_buzzword_array = array();
+         if ($buzzword_list->getCount() > 0) {
+            $buzzword_item = $buzzword_list->getFirst();
+            while ($buzzword_item) {
+               $checked_buzzword_array[] = $buzzword_item->getItemID();
+               $buzzword_item = $buzzword_list->getNext();
+            }
          }
+      }
+      if(empty($checked_buzzword_array)){
+      	$checked_buzzword_array= array();
       }
       $html = '';
       $list = $this->getList();
@@ -135,7 +141,7 @@ var $_item = NULL;
                   $checked_ids = $this->getCheckedIDs();
                   $dontedit_ids = $this->getDontEditIDs();
                   $key = $item->getItemID();
-                  $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" name="attach['.$key.']" value="1"';
+                  $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" name="buzzwordlist['.$key.']" value="1"';
                   if ( isset($checked_buzzword_array) and !empty($checked_buzzword_array) and in_array($key, $checked_buzzword_array)) {
                      $text .= ' checked="checked"'.LF;
                      if ( in_array($key, $dontedit_ids) ) {
@@ -216,7 +222,8 @@ var $_item = NULL;
    }
 
    function _getViewActionsAsHTML () {
-      $html  = '<input type="submit" style="font-size:10pt;" name="option"';
+      $html = '   <input type="hidden" name="return_attach_buzzword_list" value="true"/>'.LF;
+      $html .= '<input type="submit" style="font-size:10pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_BUZZWORD_ATTACH').'"';
       $html .= '/>'.LF;
 

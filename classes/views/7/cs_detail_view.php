@@ -594,7 +594,7 @@ class cs_detail_view extends cs_view {
       $listed_ids = array();
       $params = $this->_environment->getCurrentParameterArray();
       $count_items = 0;
-      $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
+      $html .='<ul style="list-style-type: none; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;      $i = 1;
       foreach($ids as $id){
          if ($count_items >= $start and $count_items <= $end){
             $item_manager = $this->_environment->getItemManager();
@@ -607,17 +607,17 @@ class cs_detail_view extends cs_view {
                 $link_title = $item->getTitle();
             }
             if ($count_items < 9){
-            	$style='padding:0px 5px 0px 11px;';
+            	$style='padding:0px 5px 0px 10px;';
             }else{
-                $style='padding:0px 5px;';
+                $style='padding:0px 5px 0px 5px;';
             }
             if ($item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="'.$style.'">';
-               $html .= '<span>'.chunkText($link_title,35).'</span>';
+               $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
             }else{
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
-               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+               $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
                                  $tmp_item->getItemType(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
@@ -632,8 +632,6 @@ class cs_detail_view extends cs_view {
             }
             $html .='</li>';
             unset($item);
-         }else{
-            $html .='<li style="visibility:hidden; height:0px;">&nbsp;</li>';
          }
          $count_items++;
       }
@@ -768,7 +766,7 @@ class cs_detail_view extends cs_view {
                              ).LF;
          unset($params);
       } else {
-         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_EDIT').'</span>'.LF;
+         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_BUZZWORD_ATTACH').'</span>'.LF;
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -886,6 +884,23 @@ class cs_detail_view extends cs_view {
       }else{
          $html .= $text;
       }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['attach_view'] = 'yes';
+         $params['attach_type'] = 'tag';
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             $this->_environment->getCurrentFunction(),
+                             $params,
+                             $this->_translator->getMessage('COMMON_TAG_ATTACH')
+                             ).LF;
+         unset($params);
+      } else {
+         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_TAG_ATTACH').'</span>'.LF;
+      }
+      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 
