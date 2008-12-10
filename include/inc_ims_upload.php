@@ -46,21 +46,23 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
       $material_item->setDescription($values_array['abstract']);
    }
    if (isset($values_array['ppn'])){
-      $availability = '<span id="status"></span>' .
-      		  '<script type="text/javascript" src="javascript/seealso.js"></script>' .
-      		  '<script type="text/javascript" src="javascript/daia2seealso.js"></script>' .
-      		  '<script type="text/javascript">' .
-      		  'var id = \''.$values_array['ppn'].'\';' .
-      		  'var isil = \'DE-18\';' .
-      		  'var url = "http://daia.subhh.ath.cx/daia?format=json&isil=" + isil;' .
-      		  'var service = new DAIAService(url);' .
-      		  'var view = new SeeAlsoCSV();' .
-      		  'var statusSpan = document.getElementById(\'status\');' .
-      		  'statusSpan.innerHTML = "";' .
-      		  'service.query(id, function(response) {' .
-      		  '   view.display(statusSpan, response);' .
-      		  '});' .
+               $availability = '<span  id="status"></span>' .
+      		  '<script type="text/javascript" src="javascript/beluga/seealso.js"></script>' .LF.
+      		  '<script type="text/javascript" src="javascript/beluga/daia2seealso.js"></script>' .LF.
+      		  '<script type="text/javascript" src="javascript/beluga/php.js"></script>' .LF.
+      		  '<script type="text/javascript">' .LF.
+      		  'var id = \''.$values_array['ppn'].'\';' .LF.
+      		  'var isil = \'DE-18\';' .LF.
+      		  'var url = "http://ws.gbv.de/daia/?format=json&isil=" + isil + "&id=" + id;' .LF.
+      		  'var service = new DAIAService(url);' .LF.
+      		  'var view = new SeeAlsoCSV();' .LF.
+      		  'var statusSpan = document.getElementById(\'status\');' .LF.
+      		  'statusSpan.innerHTML = "";' .LF.
+      		  'utf8_decode(service.query(id, function(response) {' .LF.
+      		  '   view.display(statusSpan, response);' .LF.
+      		  '}));' .LF.
       		  '</script>';
+            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
       $material_item->setBibAvailibility($availability);
    }
    $file_man = $environment->getFileManager();
@@ -88,7 +90,9 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
             $material_item->setBibURL(utf8_decode($bib_values_array[$key]['value']));
             break;
          case 'beluga_cite':
-            $material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
+            if(isset($bib_values_array[$key]['value'])){
+               $material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
+            }
             break;
 #         case 'availability':
 #            $availability = utf8_decode($bib_values_array[$key]['value']);
