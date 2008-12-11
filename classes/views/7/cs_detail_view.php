@@ -1082,12 +1082,7 @@ class cs_detail_view extends cs_view {
 #         if ($current_context->withPath()){
 #            $html .= $this->_getAllPathsAsHTML();
 #         }
-
-          /**********Netnaviation*********/
-         if ( $this->showNetnavigation() ){
-            $html .= $this->_getAllLinkedItemsAsHTML($item);
-         }
-
+         $separator = '';
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
             if(!empty($this->_right_box_config['title_string'])){
@@ -1127,6 +1122,12 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getTagBoxAsHTML($item);
             $html .='</div>'.LF;
          }
+
+          /**********Netnaviation*********/
+         if ( $this->showNetnavigation() ){
+            $html .= $this->_getAllLinkedItemsAsHTML($item);
+         }
+
 
          $html .='</div>'.LF;
          $html .='</div>'.LF;
@@ -1640,7 +1641,7 @@ class cs_detail_view extends cs_view {
       $html .= '<div class="right_box">'.LF;
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
-      $link_items = $item->getLatestLinkItemList(10);
+      $link_items = $item->getAllLinkItemList();
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';
@@ -1769,6 +1770,24 @@ class cs_detail_view extends cs_view {
          }
          $html .= '</ul>'.LF;
       }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['attach_view'] = 'yes';
+         $params['attach_type'] = 'item';
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             $this->_environment->getCurrentFunction(),
+                             $params,
+                             $this->_translator->getMessage('COMMON_ITEM_ATTACH')
+                             ).LF;
+         unset($params);
+      } else {
+         $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'</span>'.LF;
+      }
+      $html .= '</div>'.LF;
       $html .='      </div>';
       $html .='      </div>';
       $html .='      </div>';

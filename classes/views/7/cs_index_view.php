@@ -201,6 +201,10 @@ class cs_index_view extends cs_view {
       $this->_activation_limit = $limit;
    }
 
+   function getActivationLimit(){
+      return $this->_activation_limit;
+   }
+
    // @segment-begin 91360  setFrom($from)/getFrom()-beginning-counter-of-list
    /** set from counter of the list view
     * this method sets the counter of the beginning of the list view

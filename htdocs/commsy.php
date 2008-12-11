@@ -851,6 +851,9 @@ if ( $current_function !='edit'
      case 'tag':
         include_once('pages/tag_attach.php');
         break;
+     case 'item':
+        include_once('pages/item_attach.php');
+        break;
   }
 }
 

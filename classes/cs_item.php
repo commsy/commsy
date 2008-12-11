@@ -1347,6 +1347,33 @@ class cs_item {
       return $link_list;
    }
 
+   function getAllLinkItemList () {
+      $link_list = new cs_list();
+      $link_item_manager = $this->_environment->getLinkItemManager();
+      $link_item_manager->setLinkedItemLimit($this);
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      $conf = $context_item->getHomeConf();
+      if ( !empty($conf) ) {
+         $rubrics = explode(',', $conf);
+      } else {
+         $rubrics = array();
+      }
+      $type_array = array();
+      foreach ( $rubrics as $rubric ) {
+         $rubric_array = explode('_', $rubric);
+         if ( $rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) {
+            $type_array[] = $rubric_array[0];
+         }
+      }
+      $link_item_manager->setTypeArrayLimit($type_array);
+      $link_item_manager->setRoomLimit($this->getContextID());
+      $link_item_manager->select();
+      $link_list = $link_item_manager->get();
+      $link_item_manager->resetLimits();
+      return $link_list;
+   }
+
 
    function getLinkItemList ($type) {
       $link_list = new cs_list();
@@ -1392,6 +1419,24 @@ class cs_item {
       return $result_list;
    }
 
+
+   function getAllLinkedItemIDArray() {
+      $id_array = array();
+      $link_list = $this->getAllLinkItemList();
+      $link_item = $link_list->getFirst();
+      while ($link_item) {
+         $link_item_id = $link_item->getFirstLinkedItemID();
+         if ($link_item_id == $this->getItemID()){
+            $id_array[] = $link_item->getSecondLinkedItemID();
+         } else {
+            $id_array[] = $link_item->getFirstLinkedItemID();
+         }
+         $link_item = $link_list->getNext();
+      }
+      return $id_array;
+   }
+
+
    function getLinkedItemIDArray($type) {
       $id_array = array();
       $link_list = $this->getLinkItemList($type);
@@ -1415,6 +1460,45 @@ class cs_item {
          $data[] = $tmp;
       }
       $this->_setValue($rubric, $data, FALSE);
+   }
+
+   function setLinkedItemsByIDArray ($id_array) {
+      $data = array();
+      $item_manager = $this->_environment->getItemManager();
+      $rubric_sorted_array = array();
+      foreach ( $id_array as $iid ) {
+         $item = $item_manager->getItem($iid);
+         $rubric = $item->getItemType();
+         if($rubric == CS_LABEL_TYPE){
+         	$label_manager = $this->_environment->getLabelManager();
+            $label_item = $label_manager->getItem($iid);
+            $rubric = $label_item->getLabelType();
+         }
+         $tmp['iid'] = $iid;
+         $rubric_sorted_array[$rubric][] = $tmp;
+      }
+      $context_item = $this->_environment->getCurrentContextItem();
+      $current_room_modules = $context_item->getHomeConf();
+      if ( !empty($current_room_modules) ){
+         $room_modules = explode(',',$current_room_modules);
+      } else {
+         $room_modules =  array();
+      }
+      foreach ( $room_modules as $module ) {
+         $link_name = explode('_', $module);
+         if ( $link_name[1] != 'none' ) {
+            if ( !($this->_environment->inPrivateRoom() and $link_name =='user') ){
+               $rubric_array[] = $link_name[0];
+            }
+         }
+      }
+      foreach($rubric_array as $rubric){
+         if (isset($rubric_sorted_array[$rubric])){
+            $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
+         }else{
+            $this->_setValue($rubric, array(), FALSE);
+         }
+      }
    }
 
   /** change creator and modificator - INTERNAL should be called from methods in subclasses
