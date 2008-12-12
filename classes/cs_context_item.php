@@ -2381,6 +2381,40 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setWikiEnableRater(){
+      $this->_addExtra('WIKIENABLERATER','1');
+   }
+
+   function unsetWikiEnableRater(){
+      $this->_addExtra('WIKIENABLERATER','-1');
+   }
+
+   function WikiEnableRater(){
+      if ( $this->_issetExtra('WIKIENABLERATER') ) {
+         $retour = $this->_getExtra('WIKIENABLERATER');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+   
+   function setWikiEnableListCategories(){
+      $this->_addExtra('WIKIENABLELISTCATEGORIES','1');
+   }
+
+   function unsetWikiEnableListCategories(){
+      $this->_addExtra('WIKIENABLELISTCATEGORIES','-1');
+   }
+
+   function WikiEnableListCategories(){
+      if ( $this->_issetExtra('WIKIENABLELISTCATEGORIES') ) {
+         $retour = $this->_getExtra('WIKIENABLELISTCATEGORIES');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
 
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');

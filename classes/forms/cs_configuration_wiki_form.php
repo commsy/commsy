@@ -249,6 +249,14 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         // PDF
         $features_available[] = array('enable_pdf',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
       }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/rater.php')) {
+        // Rater
+        $features_available[] = array('enable_rater',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RATER_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
+      if (file_exists($c_pmwiki_path_file.'/cookbook/listcategories.php')) {
+        // List Categories
+        $features_available[] = array('enable_listcategories',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+      }
 
       for ($index = 0; $index < sizeof($features_available); $index++) {
             $array_element = $features_available[$index];
@@ -378,6 +386,12 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          }
          if ($this->_item->WikiEnablePdf() == "1"){
             $this->_values['enable_pdf'] = 1;
+         }
+         if ($this->_item->WikiEnableRater() == "1"){
+            $this->_values['enable_rater'] = 1;
+         }
+         if ($this->_item->WikiEnableListCategories() == "1"){
+            $this->_values['enable_listcategories'] = 1;
          }
 
          if ($this->_item->WikiEnableSwf() == "1"){

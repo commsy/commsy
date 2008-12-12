@@ -244,7 +244,7 @@ class cs_wiki_manager extends cs_manager {
       if ( $item->WikiEnableNotice() == "1" ) {
          $str .= '$GUIButtons["stickyNote"] = array(700, "(:note Comment: |", ":)\\n", "$[Text]",'.LF;
          $str .= '"$GUIButtonDirUrlFmt/sticky.gif\"$[Yellow Sticky Note]\"");'.LF;
-         $str .= '@include_once("$FarmD/cookbook/postitnotes.php");'.LF.LF;
+         $str .= '@include_once("$FarmD/cookbook/postitnotes.php");'.LF;
          $str .= '$SHOW_NOTICE = "1";'.LF.LF;
       }
 
@@ -478,37 +478,43 @@ class cs_wiki_manager extends cs_manager {
 
       // LI-Pedia Erweiterungen
         $str .= '# FoxCommentBox'.LF;
-        $str .= '$FoxPagePermissions[\'*.*\'] = \'all\';'.LF;
+        $str .= '$FoxPagePermissions[\'*.*\'] = \'all\';'.LF.LF;
         //$str .= '$EnableCommentPostCaptchaRequired = true;'.LF.LF;
 
-        $str .= '# Rater'.LF;
-        $str .= '$Rater[\'star_color\'] = "yellow";'.LF;
-        $str .= '$Rater[\'reverse_buttons\'] = 0; '.LF;
-        $str .= '$Rater[\'button_text\'] = "Bewerten";'.LF;
-        $str .= '$Rater[\'zero_choice\'] = 0;'.LF;
-        $str .= '$Rater[\'header\'] = "";'.LF;
-        $str .= '$Rater[\'5star\'] = "Ausgezeichnet";'.LF;
-        $str .= '$Rater[\'4star\'] = "Sehr gut";'.LF;
-        $str .= '$Rater[\'3star\'] = "Gut";'.LF;
-        $str .= '$Rater[\'2star\'] = "Ausreichend";'.LF;
-        $str .= '$Rater[\'1star\'] = "Schlecht";'.LF;
-        $str .= '$Rater[\'0star\'] = "";'.LF;
-        $str .= '$Rater[\'ip_voting_restrictions\'] = false; # if you want to allow multiple votes from the same IP'.LF;
-        $str .= '$Rater[\'ip_vote_qty\'] = 3; # if you want to allow as many as 3 votes from the same IP'.LF;
-        $str .= '$Rater[\'stats\'] = "({votes} Stimmen)";'.LF;
-        $str .= '$Rater[\'thankyou_msg\'] = "[Danke f&uuml;r die Bewertung!]";'.LF;
-        $str .= '$Rater[\'not_selected_msg\'] = "[Sie haben keine Bewertung ausgew&auml;hlt.]";'.LF;
-        $str .= '$Rater[\'already_rated_msg\'] = "[Sie haben diese Seite schon bewertet. Sie durften nur] ".$Rater[\'ip_vote_qty\']." [Stimmen abgeben].";'.LF;
-        $str .= '$Rater[\'notauthorised_msg\'] = "[Sie d&uuml;rfen diese Seite nicht bewerten!]";'.LF;
-        $str .= '$Rater[\'not_rated\'] = "[Noch nicht bewertet]";'.LF;
-        $str .= 'include_once($FarmD.\'/cookbook/rater.php\');'.LF.LF;
+      if ( $item->WikiEnableRater() == "1" ) {
+         $str .= '# Rater'.LF;
+         $str .= '$Rater[\'star_color\'] = "yellow";'.LF;
+         $str .= '$Rater[\'reverse_buttons\'] = 0; '.LF;
+         $str .= '$Rater[\'button_text\'] = "Bewerten";'.LF;
+         $str .= '$Rater[\'zero_choice\'] = 0;'.LF;
+         $str .= '$Rater[\'header\'] = "";'.LF;
+         $str .= '$Rater[\'5star\'] = "Ausgezeichnet";'.LF;
+         $str .= '$Rater[\'4star\'] = "Sehr gut";'.LF;
+         $str .= '$Rater[\'3star\'] = "Gut";'.LF;
+         $str .= '$Rater[\'2star\'] = "Ausreichend";'.LF;
+         $str .= '$Rater[\'1star\'] = "Schlecht";'.LF;
+         $str .= '$Rater[\'0star\'] = "";'.LF;
+         $str .= '$Rater[\'ip_voting_restrictions\'] = false; # if you want to allow multiple votes from the same IP'.LF;
+         $str .= '$Rater[\'ip_vote_qty\'] = 3; # if you want to allow as many as 3 votes from the same IP'.LF;
+         $str .= '$Rater[\'stats\'] = "({votes} Stimmen)";'.LF;
+         $str .= '$Rater[\'thankyou_msg\'] = "[Danke f&uuml;r die Bewertung!]";'.LF;
+         $str .= '$Rater[\'not_selected_msg\'] = "[Sie haben keine Bewertung ausgew&auml;hlt.]";'.LF;
+         $str .= '$Rater[\'already_rated_msg\'] = "[Sie haben diese Seite schon bewertet. Sie durften nur] ".$Rater[\'ip_vote_qty\']." [Stimmen abgeben].";'.LF;
+         $str .= '$Rater[\'notauthorised_msg\'] = "[Sie d&uuml;rfen diese Seite nicht bewerten!]";'.LF;
+         $str .= '$Rater[\'not_rated\'] = "[Noch nicht bewertet]";'.LF;
+         $str .= 'include_once($FarmD.\'/cookbook/rater.php\');'.LF;
+         $str .= '$ENABLE_RATER = "1";'.LF.LF;
+      }
 
-        $str .= '# Categories'.LF;
-        $str .= 'include_once($FarmD.\'/cookbook/listcategories.php\');'.LF;
-        $str .= '$ListCategories_SizedlistMinFontSize = 7;'.LF;
-        $str .= '$ListCategories_SizedlistMaxFontSize = 16;'.LF;
-        $str .= '$ListCategories_SizedlistNum = 20;'.LF;
-        $str .= '$ListCategories_ExcludeCategories = "/^(GroupFooter)$/";'.LF.LF;
+      if ( $item->WikiEnableListCategories() == "1" ) {
+         $str .= '# Categories'.LF;
+         $str .= 'include_once($FarmD.\'/cookbook/listcategories.php\');'.LF;
+         $str .= '$ListCategories_SizedlistMinFontSize = 7;'.LF;
+         $str .= '$ListCategories_SizedlistMaxFontSize = 16;'.LF;
+         $str .= '$ListCategories_SizedlistNum = 20;'.LF;
+         $str .= '$ListCategories_ExcludeCategories = "/^(GroupFooter)$/";'.LF;
+         $str .= '$ENABLE_LISTCATEGORIES = "1";'.LF.LF;
+      }
 
       // Li-Pedia Erweiterungen
 

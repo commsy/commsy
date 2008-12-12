@@ -316,6 +316,18 @@ else {
          } else {
             $item->unsetWikiEnablePdf();
          }
+         
+         if ( isset($_POST['enable_rater']) ) {
+            $item->setWikiEnableRater();
+         } else {
+            $item->unsetWikiEnableRater();
+         }
+
+         if ( isset($_POST['enable_listcategories']) ) {
+            $item->setWikiEnableListCategories();
+         } else {
+            $item->unsetWikiEnableListCategories();
+         }
 
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();
