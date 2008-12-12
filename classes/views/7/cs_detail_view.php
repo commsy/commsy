@@ -712,9 +712,24 @@ class cs_detail_view extends cs_view {
 
    function _getBuzzwordBoxAsHTML ($item) {
       $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $item = $this->getItem();
+      $buzzword_list = $item->getBuzzwordList();
+      $count_link_item = $buzzword_list->getCount();
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_link_item.')"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if($current_context->isBuzzwordShowExpanded()){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
       $current_user = $this->_environment->getCurrentUserItem();
       $params = $this->_environment->getCurrentParameterArray();
-      $buzzword_list = $item->getBuzzwordList();
       $buzzword_entry = $buzzword_list->getFirst();
       $item_id_array = array();
       while($buzzword_entry){
@@ -728,7 +743,7 @@ class cs_detail_view extends cs_view {
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_BUZZWORDS').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
@@ -797,6 +812,22 @@ class cs_detail_view extends cs_view {
 
    function _getTagBoxAsHTML($item){
       $current_user = $this->_environment->getCurrentUserItem();
+      $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $tag_list = $item->getTagList();
+      $count_link_item = $tag_list->getCount();
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').' ('.$count_link_item.')"';
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if($current_context->isTagsShowExpanded()){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
@@ -804,7 +835,6 @@ class cs_detail_view extends cs_view {
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" >'.LF;
 
-      $tag_list = $item->getTagList();
       $text = '';
       $tag2tag_manager = $this->_environment->getTag2TagManager();
       $tag_manager = $this->_environment->getTagManager();
@@ -1092,21 +1122,7 @@ class cs_detail_view extends cs_view {
          $separator = '';
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
-            if(!empty($this->_right_box_config['title_string'])){
-               $separator = ',';
-            }
-            $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_BUZZWORDS').'"';
-            $this->_right_box_config['desc_string'] .= $separator.'""';
-            $this->_right_box_config['size_string'] .= $separator.'"10"';
-            if ( $current_context->isBuzzwordShowExpanded() ){
-               $this->_right_box_config['config_string'] .= $separator.'true';
-            } else {
-               $this->_right_box_config['config_string'] .= $separator.'false';
-            }
-            if(!empty($this->_right_box_config['title_string'])){
-               $separator = ',';
-            }
-            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+           $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->_getBuzzwordBoxAsHTML($item);
             $html .='</div>'.LF;
          }
@@ -1114,17 +1130,6 @@ class cs_detail_view extends cs_view {
 
          /***********Tags*************/
          if ( $this->showTags() ) {
-            if(!empty($this->_right_box_config['title_string'])){
-               $separator = ',';
-            }
-            $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_TAGS').'"';
-            $this->_right_box_config['desc_string'] .= $separator.'""';
-            $this->_right_box_config['size_string'] .= $separator.'"10"';
-            if ( $current_context->isTagsShowExpanded() ){
-               $this->_right_box_config['config_string'] .= $separator.'true';
-            } else {
-               $this->_right_box_config['config_string'] .= $separator.'false';
-            }
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->_getTagBoxAsHTML($item);
             $html .='</div>'.LF;
@@ -1635,7 +1640,10 @@ class cs_detail_view extends cs_view {
       }else{
          $separator = '';
       }
-      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').'"';
+      $item = $this->getItem();
+      $link_items = $item->getAllLinkItemList();
+      $count_link_item = $link_items->getCount();
+      $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_NETNAVIGATION_ENTRIES').' ('.$count_link_item.')"';
       $this->_right_box_config['desc_string'] .= $separator.'""';
       $this->_right_box_config['size_string'] .= $separator.'"10"';
       if($current_context->isNetnavigationShowExpanded()){
@@ -1646,8 +1654,6 @@ class cs_detail_view extends cs_view {
       $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $connections = $this->getRubricConnections();
-      $item = $this->getItem();
-      $link_items = $item->getAllLinkItemList();
       $html .= '         <noscript>';
       $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
       $html .= '         </noscript>';

@@ -2291,6 +2291,7 @@ class cs_form_view extends cs_view {
          $links_manager = $this->_environment->getLinkManager();
          $count_array = $links_manager->getCountLinksFromItemIDArray($item_id_array,'buzzword');
       }
+      $count_buzzword_ids = count($buzzword_ids);
       $html  = '';
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
@@ -2303,14 +2304,14 @@ class cs_form_view extends cs_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $html_text = '';
       if ($current_context->isBuzzwordMandatory()){
-        $html_text = ' *';
+        $html_text = '* ';
       }
       $html = '<div class="right_box" style="margin-bottom:1px;">'.LF;
       $color = $current_context->getColorArray();
       if ($error_display){
-         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.getMessage('COMMON_BUZZWORDS').$html_text.'</div>';
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
       }else{
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_BUZZWORDS').$html_text.'</div>';
+         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_BUZZWORDS').' ('.$count_buzzword_ids.')</div>';
       }
       $html .= '<div class="right_box_main">'.LF;
       $html .= '<div>'.LF;
@@ -2374,6 +2375,7 @@ class cs_form_view extends cs_view {
       if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids')){
          $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
       }
+      $count_tag_ids = count($tag_ids);
       $tag_manager = $this->_environment->getTagManager();
       $tag_manager->reset();
       $tag_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -2389,7 +2391,7 @@ class cs_form_view extends cs_view {
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
-            if ($error == getMessage('COMMON_ERROR_BUZZWORD_ENTRY')){
+            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
                $error_display = true;
             }
          }
@@ -2397,9 +2399,14 @@ class cs_form_view extends cs_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $html_text = '';
       if ($current_context->isTagMandatory()){
-        $html_text = ' *';
+        $html_text = '* ';
       }
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_TAGS').$html_text.'</div>';
+      $color = $current_context->getColorArray();
+      if ($error_display){
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+      }else{
+         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+      }
       $html .= '<div class="right_box_main" >'.LF;
 
       $text = '';
@@ -2515,9 +2522,10 @@ class cs_form_view extends cs_view {
       if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids')){
          $attached_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
       }
+      $count_linked_items = count($attached_ids);
       $item_manager = $this->_environment->getItemManager();
       $linked_items = $item_manager->getItemList($attached_ids);
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').' ('.$count_linked_items.')</div>';
       $html .='     <div class="right_box_main">     '.LF;
       if ($linked_items->isEmpty()) {
          $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
