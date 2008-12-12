@@ -36,7 +36,7 @@ class cs_home_member_page extends cs_left_page {
 
       $class_params= array();
       $class_params['environment'] = $this->_environment;
-      $form = $class_factory->getClass(HOME_MEMBER_FORM,$class_params);
+      $form = $this->_class_factory->getClass(HOME_MEMBER_FORM,$class_params);
       unset($class_params);
       // Load form data from postvars
       if ( !empty($this->_post_vars) ) {
