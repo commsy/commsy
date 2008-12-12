@@ -34,6 +34,11 @@ if (isset($_GET['return_attach_tag_list'])){
    unset($_POST['option']);
    unset($_POST['right_box_option']);
 }
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
 /*** Neue Schlagwörter und Tags***/
 
 // Function used for redirecting to connected rubrics
@@ -140,6 +145,11 @@ if ( $current_iid == 'NEW' ) {
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
    }
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $material_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 /*** Neue Schlagwörter und Tags***/
 }
 
@@ -192,6 +202,8 @@ else {
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
       $session->unsetValue('tag_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
 /*** Neue Schlagwörter und Tags***/
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'material', 'index', '');
@@ -741,16 +753,6 @@ else {
       $material_item->setTagListByID($tag_array);
 
 
-/*** Neue Schlagwörter und Tags***/
-      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-         $material_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-      }
-      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
-         $material_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
-         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-      }
-/*** Neue Schlagwörter und Tags***/
 
 
 
@@ -820,6 +822,22 @@ else {
                }
 
             }
+
+/*** Neue Schlagwörter und Tags***/
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
+         $material_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+      }
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
+         $material_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+      }
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+         $material_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+         $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      }
+/*** Neue Schlagwörter und Tags***/
+
 
             if ( isset($_POST['public']) ) {
                if ( $material_item->isPublic() != $_POST['public'] ) {
@@ -962,6 +980,8 @@ else {
                $session->unsetValue('buzzword_post_vars');
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
                $session->unsetValue('tag_post_vars');
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+               $session->unsetValue('linked_items_post_vars');
 /*** Neue Schlagwörter und Tags***/
                $params = array();
                $params['iid'] = $material_item->getItemID();

@@ -601,6 +601,13 @@ class cs_detail_view extends cs_view {
             $tmp_item = $item_manager->getItem($id);
             $manager = $this->_environment->getManager($tmp_item->getItemType());
             $item = $manager->getItem($ids[$count_items]);
+            $type = $tmp_item->getItemType();
+            if ($type == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($tmp_item->getItemID());
+               $type = $label_item->getLabelType();
+            }
+
             if($this->_environment->getCurrentModule() == CS_USER_TYPE){
                 $link_title = $item->getFullName();
             } else {
@@ -618,7 +625,7 @@ class cs_detail_view extends cs_view {
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
                $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
-                                 $tmp_item->getItemType(),
+                                 $type,
                                  $this->_environment->getCurrentFunction(),
                                  $params,
                                  chunkText($link_title,35),
@@ -1222,8 +1229,7 @@ class cs_detail_view extends cs_view {
          $html .= $this->_getAnnotationsAsHTML();
          $html .= $this->_getDiscussionFormAsHTML();
       }
-      if ($rubric == CS_GROUP_TYPE
-      or $rubric == CS_TOPIC_TYPE
+      if ($rubric == CS_TOPIC_TYPE
       ){
          $html .= $this->_getNewestLinkedItemsAsHTML($item);
       }
@@ -1236,8 +1242,8 @@ class cs_detail_view extends cs_view {
       }
 
       $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -1838,144 +1844,6 @@ class cs_detail_view extends cs_view {
       $html .=' </div>'.LF;
       return $html;
    }
-
-   function _getLinkedItemsAsHTML ($item, $link_items, $connection, $is_perspective=false, $always=false, $attach_link=false) {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $user = $this->_environment->getCurrentUserItem();
-      $mod = $this->_with_modifying_actions;
-      $module = Type2Module($connection);
-      $html  ='<div>'.LF;
-      $html .='<ul style="list-style-type: circle; font-size:8pt;">  '.LF;
-      if (isset($link_items) and $link_items->isEmpty()) {
-         $html .= '   <li><a><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></a></li>'.LF;
-      } else {
-            $count = $link_items->getCount();
-            if ( !$is_perspective and $count > 10 ) {  // Only show up to five items
-               $limit = 9;
-               $count_shown = 1;
-            } else {
-               $limit = 0;
-               $count_shown = 0;
-            }
-            $link_item = $link_items->getFirst();
-            while ( $link_item and $count_shown <= $limit ) {
-
-               // Get link creator
-
-               $link_creator = $link_item->getCreatorItem();
-               if ( isset($link_creator) and !$link_creator->isDeleted() ) {
-                  $fullname = $link_creator->getFullname();
-               } else {
-                  $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
-               }
-               $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
-               $link_creator_text = $this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
-                                    $fullname.', '.
-                                    $link_created;
-
-               // Create the list entry
-               $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
-               if ( isset($linked_item) ) {
-                  $fragment = '';    // there is no anchor defined by default
-                  switch ( $connection ) {
-                     case CS_DISCARTICLE_TYPE:
-                        $linked_iid = $linked_item->getDiscussionID();
-                        $fragment = $linked_item->getItemID();
-                        $discussion_manager = $this->_environment->getDiscussionManager();
-                        $linked_item = $discussion_manager->getItem($linked_iid);
-                        break;
-                     case CS_SECTION_TYPE:
-                        $linked_iid = $linked_item->getLinkedItemID();
-                        $fragment = $linked_item->getItemID();
-                        $material_manager = $this->_environment->getMaterialManager();
-                        $linked_item = $material_manager->getItem($linked_iid);
-                        break;
-                     default:
-                        $linked_iid = $linked_item->getItemID();
-                  }
-                  $html .= '   <li>';
-                  $params = array();
-                  $params['iid'] = $linked_iid;
-                  $user = $this->_environment->getCurrentUser();
-                  if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-                      $activating_date = $linked_item->getActivatingDate();
-                      if (strstr($activating_date,'9999-00-00')){
-                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
-                      }else{
-                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
-                      }
-                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $module,
-                                          'detail',
-                                          $params,
-                                          chunkText($linked_item->getTitle(),35),
-                                          $link_creator_text,
-                                          '_self',
-                                          $fragment,
-                                          '',
-                                          '',
-                                          '',
-                                          'class="disabled"',
-                                          '',
-                                          '',
-                                          true);
-                     unset($params);
-                  }else{
-                     $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $module,
-                                          'detail',
-                                          $params,
-                                          chunkText($linked_item->getTitle(),35),
-                                          $link_creator_text,
-                                          '_self',
-                                          $fragment);
-                     unset($params);
-                  }
-                  $html .= '</li>'.LF;
-               }
-
-               // Show all linked perspectives
-               if ( $limit > 0 ) {
-                  $count_shown++;
-               }
-               $link_item = $link_items->getNext();
-            }
-            if ( $limit > 0 ) {
-               $html .= '   <li>';
-               $params = array();
-               $params['ref_iid'] = $item->getItemID();
-               $params['mode'] = 'attached';
-               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                    $module,
-                                    'index',
-                                    $params,
-                                    $this->_translator->getMessage('RUBRIC_ALL_ATTACHMENTS', $link_items->getCount()));
-               unset($params);
-               $html .= '</li>'.LF;
-            }
-      }
-      $html .='</ul> ';
-      $html .='				<div style="text-align:right; border-top:0px solid black; padding-bottom:5px; font-size:8pt; padding-right: 3px; font-size:8pt;">'.LF;
-      if ( $attach_link ) {
-         if ( $user->isUser() and $mod ) {
-               $params = array();
-               $params['ref_iid'] = $item->getItemID();
-               $params['mode'] = 'detailattach';
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $module,
-                                         'index',
-                                         $params,
-                                         $this->_translator->getMessage('COMMON_ATTACH_LINK')).LF;
-            unset($params);
-         } else {
-            $html .= $this->_translator->getMessage('COMMON_ATTACH_LINK').LF;
-         }
-      }
-      $html .='				</div>'.LF;
-      $html .=' </div>';
-      return $html;
-   }
-
 
 
    function _getBrowsingIconsAsHTML($current_item, $pos_number, $count){

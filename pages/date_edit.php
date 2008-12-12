@@ -33,6 +33,12 @@ if (isset($_GET['return_attach_tag_list'])){
    unset($_POST['option']);
    unset($_POST['right_box_option']);
 }
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
@@ -251,6 +257,11 @@ if ( $current_iid == 'NEW' ) {
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
    }
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $dates_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 // Check access rights
@@ -299,6 +310,8 @@ else {
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
       $session->unsetValue('tag_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if (isset($_POST['seldisplay_mode'])){
          $params = array();
@@ -952,6 +965,10 @@ else {
                $dates_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $dates_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
 
             $item_files_upload_to = $dates_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
@@ -969,6 +986,8 @@ else {
             $session->unsetValue('buzzword_post_vars');
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             $session->unsetValue('tag_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
             $context_item = $environment->getCurrentContextItem();
             $seldisplay_mode = $session->getValue($environment->getCurrentContextID().'_dates_seldisplay_mode');
             if (empty($seldisplay_mode)){

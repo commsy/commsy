@@ -55,6 +55,14 @@ function cleanupSession($session, $environment){
            $session->unsetValue('cid'.$environment->getCurrentContextID().'_account_selected_ids');
         }
      }
+     if ($environment->getCurrentFunction() != 'edit'){
+        $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
+        $session->unsetValue('buzzword_post_vars');
+        $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
+        $session->unsetValue('tag_post_vars');
+        $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+        $session->unsetValue('linked_items_post_vars');
+     }
 }
 
 // include base-config

@@ -76,9 +76,9 @@
       });
    }
 
-function right_box_send(form,option,value)
+function right_box_send(form_id,option,value)
 {
   document.getElementById(option).value = value;
-  document.getElementById(form).submit()
+  document.getElementById(form_id).submit()
 }
 

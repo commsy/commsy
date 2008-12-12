@@ -226,6 +226,9 @@ class cs_item_manager extends cs_manager {
      }
    }
 
+  function getItemList ($id_array) {
+     return $this->_getItemList('items', $id_array);
+  }
 
    function getAllUsedRubricsOfRoomList($room_ids){
         $rs = array();

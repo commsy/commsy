@@ -549,6 +549,9 @@ class cs_page_room_view extends cs_page_view {
             if(isset($_GET['attach_view']) and isset($_GET['attach_type']) and $_GET['attach_type'] == 'buzzword'){
                 $html .= ' initLayer("buzzword");';
             }
+            if(isset($_GET['attach_view']) and isset($_GET['attach_type']) and $_GET['attach_type'] == 'item'){
+                $html .= ' initLayer("item");';
+            }
             $html .= ' "';
          }elseif(isset($_GET['show_copies']) or isset($_GET['show_profile'])){
             $html .= ' onload="';
@@ -570,16 +573,21 @@ class cs_page_room_view extends cs_page_view {
             $html .= ' onload="';
             $html .= ' initLayer(\'tag\');';
             $html .= ' "';
-         }elseif(isset($_GET['attach_view'])
-                 and isset($_GET['attach_type'])
-                 and $_GET['attach_type'] == 'item'
-                 and !isset($_POST['return_attach_item_list'])
-                 ){
+         }elseif ( (isset($_GET['attach_view'])
+              and ($_GET['attach_view'] == 'yes')
+              and isset($_GET['attach_type'])
+              and !empty($_GET['attach_type'])
+              and $_GET['attach_type'] == 'item')
+              or(
+                 isset($_POST['right_box_option'])
+                 and isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH'))
+                 and (!isset($_POST['return_attach_tag_list']))
+              )
+            ) {
             $html .= ' onload="';
             $html .= ' initLayer(\'item_list\');';
             $html .= ' "';
-         }
-
+            }
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
          $view = reset($views);
          while ($view) {

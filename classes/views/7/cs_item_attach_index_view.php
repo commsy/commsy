@@ -33,6 +33,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
 
 var $_checked_ids = array();
 var $_ref_iid = '';
+var $_hidden_field_array = array();
 
    /** constructor: cs_item_list_view
     * the only available constructor, initial values for internal variables
@@ -73,6 +74,10 @@ var $_ref_iid = '';
 
    function getSelectedRestriction () {
       return $this->_selected_restriction;
+   }
+
+   function setHiddenFields($array){
+   	$this->_hidden_field_array = $array;
    }
 
    function setLongTitle(){
@@ -745,6 +750,11 @@ var $_ref_iid = '';
       if (!isset($params['mode']) or $params['mode'] == 'browse'){
          $params['mode'] = 'list_actions';
       }
+      if ($this->_environment->getCurrentFunction()=='edit'){
+      	$edit_page = true;
+      }else{
+      	$edit_page = false;
+      }
       unset($params['select']);
       if ($interval > 0) {
          if ($count_all_shown != 0) {
@@ -776,13 +786,18 @@ var $_ref_iid = '';
          $browse_right = 0;     // 0 means: do not browse
          $browse_end = 0;       // 0 means: do not browse
       }
-
       // create HTML for browsing icons
       $html = '<div style="float:right;">';
       if ( $browse_start > 0 ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+         if ($edit_page){
+            $html .= '<input type="hidden" name="from" value="'.$browse_start.'"/>';
+            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+         }else{
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
                                          $this->_function,
                                          $params, $image,
@@ -794,6 +809,8 @@ var $_ref_iid = '';
                                          '',
                                          'class="index_system_link"'
                                         ).LF;
+
+         }
       } else {
          $html .= '         <span style="font-weight:normal;">&lt;&lt;</span>'.LF;
       }
@@ -801,7 +818,13 @@ var $_ref_iid = '';
       if ( $browse_left > 0 ) {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+         if ($edit_page){
+            $html .= '<input type="hidden" name="from" value="'.$browse_left.'"/>';
+            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+         }else{
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
                                          $params, $image,
                                          $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
@@ -812,6 +835,7 @@ var $_ref_iid = '';
                                          '',
                                          'class="index_system_link"'
                                         ).LF;
+         }
       } else {
          $html .= '         <span style="font-weight:normal;">&lt;</span>'.LF;
       }
@@ -819,7 +843,13 @@ var $_ref_iid = '';
       if ( $browse_right > 0 ) {
          $params['from'] = $browse_right;
          $image = '<span class="bold">&gt;</span>';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+         if ($edit_page){
+            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+            $html .= '<input type="hidden" name="from" value="'.$browse_right.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+         }else{
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
                                          $this->_function,
                                          $params,
@@ -832,6 +862,7 @@ var $_ref_iid = '';
                                          '',
                                          'class="index_system_link"'
                                         ).LF;
+         }
       } else {
          $html .= '         <span style="font-weight:normal;">&gt;</span>'.LF;
       }
@@ -839,7 +870,13 @@ var $_ref_iid = '';
       if ( $browse_end > 0 ) {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+         if ($edit_page){
+            $html .= '<input type="hidden" name="from" value="'.$browse_end.'"/>';
+            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+         }else{
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
                                          $params,
                                          $image,
@@ -851,6 +888,7 @@ var $_ref_iid = '';
                                          '',
                                          'class="index_system_link"'
                                         ).LF;
+         }
       } else {
          $html .= '         <span style="font-weight:normal;">&gt;&gt;</span>'.LF;
       }
@@ -1009,7 +1047,16 @@ var $_ref_iid = '';
                     $this->_environment->getCurrentModule(),
                     $this->_environment->getCurrentFunction(),
                     $params
-                   ).'" name="item_list_form" method="post">'.LF;
+                   ).'" name="item_list_form" id="item_list_form" method="post">'.LF;
+/*      foreach($this->_hidden_field_array as $field_name => $value){
+         if ($field_name != 'from' and
+             $field_name != 'count_all_shown' and
+             $field_name != 'interval'
+         ){
+            $html .= '<input type="hidden" name="'.$field_name.'" value="'.$value.'"/>';
+         }
+      }*/
+
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
       if (count($this->_checked_ids)>0){
@@ -1034,46 +1081,8 @@ var $_ref_iid = '';
          $html .='<div>'.LF;
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-         $tempMessage = '';
-         switch ( strtoupper($this->_environment->getCurrentModule()) ) {
-            case 'ANNOUNCEMENT':
-               $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
-               break;
-            case 'DATE':
-               $tempMessage = $this->_translator->getMessage('DATE_INDEX');
-               break;
-            case 'DISCUSSION':
-               $tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
-               break;
-            case 'INSTITUTION':
-               $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
-               break;
-            case 'GROUP':
-               $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
-               break;
-            case 'MATERIAL':
-               $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
-               break;
-            case 'MYROOM':
-               $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
-               break;
-            case 'PROJECT':
-               $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
-               break;
-            case 'TODO':
-               $tempMessage = $this->_translator->getMessage('TODO_INDEX');
-               break;
-            case 'TOPIC':
-               $tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
-               break;
-            case 'USER':
-               $tempMessage = $this->_translator->getMessage('USER_INDEX');
-               break;
-            default:
-               $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(1455) ');
-               break;
-         }
-          $html .= $this->_getListInfosAsHTML();
+         $tempMessage = getRubricMessageTageName($this->_environment->getCurrentModule(),true);
+         $html .= $this->_getListInfosAsHTML();
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $context_item = $this->_environment->getCurrentContextItem();

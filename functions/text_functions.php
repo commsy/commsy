@@ -224,6 +224,79 @@ function encode ($mode, $value) {
    }
 }
 
+function getRubricMessageTageName($rubric,$plural = false){
+   global $environment;
+   $translator = $environment->getTranslationObject();
+   switch ($rubric) {
+      case CS_MATERIAL_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_MATERIAL_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_MATERIAL');
+         }
+      case CS_ANNOUNCEMENT_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_ANNOUNCEMENT');
+         }
+      case CS_DATE_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_DATE_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_DATE');
+         }
+      case CS_TODO_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_TODO_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_TODO');
+         }
+      case CS_GROUP_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_GROUP_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_GROUP');
+         }
+      case CS_TOPIC_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_TOPIC_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_TOPIC');
+         }
+      case CS_INSTITUTION_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_INSTITUTION_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_INSTITUTION');
+         }
+      case CS_USER_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_USER_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_USER');
+         }
+      case CS_DISCUSSION_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_DISCUSSION_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_DISCUSSION');
+         }
+      case CS_MYROOM_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_MYROOM_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_MYROOM');
+         }
+      case CS_PROJECT_TYPE :
+         if ($plural){
+            return $translator->getMessage('COMMON_PROJECT_INDEX');
+         }else{
+            return $translator->getMessage('COMMON_PROJECT');
+         }
+   }
+}
+
 function _text_encode ($text, $mode) {
    switch ($mode) {
       case NONE :

@@ -458,6 +458,11 @@ class cs_link_manager extends cs_manager {
      }
   }
 
+  function getItemList ($id_array) {
+     return $this->_getItemList('link_items', $id_array);
+  }
+
+
   /** create a link item - internal, do not use -> use method save
     * this method creates a link item
     *

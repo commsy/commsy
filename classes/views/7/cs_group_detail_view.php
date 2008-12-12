@@ -478,6 +478,7 @@ class cs_group_detail_view extends cs_detail_view {
          $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
+      $html .= $this->_getDetailItemActionsAsHTML($item);
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
@@ -541,23 +542,6 @@ class cs_group_detail_view extends cs_detail_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $context_item = $this->_environment->getCurrentContextItem();
-
-      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = $item->getItemID();
-         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $this->_environment->getCurrentModule(),
-                                          'edit',
-                                          $params,
-                                          $image,
-                                          getMessage('COMMON_EDIT_ITEM')).LF;
-         unset($params);
-      } else {
-         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
-
       ##############################
       # FLAG: group room
       ##############################

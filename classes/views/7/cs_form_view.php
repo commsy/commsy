@@ -2011,13 +2011,7 @@ class cs_form_view extends cs_view {
          $html .='<div id="commsy_panels_form" style="width:250px;">'.LF;
          $html .= '<input id="right_box_option" type="hidden" style="font-size:8pt;" name="right_box_option" value=""/>';
          $html .= ''.LF;
-         if ($room->withBuzzwords()){
-            $html .= $this->_getBuzzwordBoxAsHTML();
-         }
-         if ($room->withTags()){
-            $html .= $this->_getTagBoxAsHTML();
-         }
-          if (  $this->_environment->getCurrentModule() !='buzzwords' and
+         if (  $this->_environment->getCurrentModule() !='buzzwords' and
                $this->_environment->getCurrentModule() !='labels' and
                $this->_environment->getCurrentFunction() !='close' and
                $this->_environment->getCurrentModule() !='configuration' and
@@ -2027,20 +2021,35 @@ class cs_form_view extends cs_view {
                !($this->_environment->inPortal() and $this->_environment->getCurrentModule() =='account') and
                $funct !='mail'
             ) {
+            if ($room->withBuzzwords()
+                and (
+                   $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                   or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                   or $this->_environment->getCurrentModule() == CS_DATE_TYPE
+                   or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                   or $this->_environment->getCurrentModule() == CS_TODO_TYPE
+                )
+            ){
+               $html .= $this->_getBuzzwordBoxAsHTML();
+            }
+            if ($room->withTags()
+                and (
+                   $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                   or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                   or $this->_environment->getCurrentModule() == CS_DATE_TYPE
+                   or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                   or $this->_environment->getCurrentModule() == CS_TODO_TYPE
+                )
+            ){
+               $html .= $this->_getTagBoxAsHTML();
+            }
             if ($this->_environment->getCurrentModule() != CS_USER_TYPE and
-               $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
-               $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE){
-               foreach ($form_element_array as $form_element) {
-                  if ( isset($form_element['type']) and $form_element['type'] == 'netnavigation' ) {
-                     $netnavigation_array[] = $form_element;
-                  }
-               }
-               if ($this->_environment->getCurrentModule() != 'account'){
-                  $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-                  $html .= $this->_getAllLinkedItemsAsHTML($netnavigation_array);
-                  $html .='</div>'.LF;
-               }
-               $this->_count_form_elements = $this->_count_form_elements - 50;
+                $this->_environment->getCurrentModule() != 'account' and
+                $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
+                $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE and
+                $room->withNetnavigation()
+            ){
+               $html .= $this->_getAllLinkedItemsAsHTML($netnavigation_array);
             }
          }
          $rubric_info_array = $room->getUsageInfoFormArray();
@@ -2376,7 +2385,7 @@ class cs_form_view extends cs_view {
          $tag_entry = $tag_list->getNext();
       }
       $html  = '';
-      $html .= '<div class="right_box">'.LF;
+      $html .= '<div style="margin-bottom:1px;" class="right_box">'.LF;
       $error_display = false;
       if ( isset($this->_error_array) and !empty($this->_error_array) ){
          foreach ($this->_error_array as $error){
@@ -2491,225 +2500,56 @@ class cs_form_view extends cs_view {
    }
 
 
-   function _getAllLinkedItemsAsHTML ($rubric_array) {
-      if ( !empty($rubric_array) ) {
-         $connections = $this->getRubricConnections();
-      if ( !empty($connections) ) {
-         $item = $this->_item;
-         $html = '';
-         $html .= '<div id="netnavigation1">'.LF;
-         $html .= '<div class="netnavigation" >'.LF;
-#         $html .= '         <noscript>';
-         $html .= '<div class="right_box_title">'.getMessage('COMMON_NETNAVIGATION').'</div>';
-#         $html .= '         </noscript>';
-         $i = 0;
-         $first = true;
-         $pos = '-1';
-         foreach ( $connections as $connection ) {
-            if ( $connection != CS_USER_TYPE){
-            $html .= $this->_getLinkedItemsAsHTML($rubric_array[$i], $connection, $this->_is_perspective($connection));
-            if (isset($rubric_array[$i]['selected'])){
-               $count = count($rubric_array[$i]['selected']);
-            }else{
-               $count = 0;
-            }
-            if (isset($_GET['backfrom']) and !empty($_GET['backfrom']) and $connection == $_GET['backfrom']){
-               $pos = $i;
-            }
-            if ($connection != CS_SECTION_TYPE and $connection != CS_DISCARTICLE_TYPE){
-               switch ( strtoupper($connection) )
-               {
-                 case 'ANNOUNCEMENT':
-                     $temp_title = $this->_translator->getMessage('ANNOUNCEMENTS');
-                     break;
-                  case 'DATE':
-                     $temp_title = $this->_translator->getMessage('DATES');
-                     break;
-                  case 'DISCUSSION':
-                     $temp_title = $this->_translator->getMessage('DISCUSSIONS');
-                     break;
-                  case 'GROUP':
-                     $temp_title = $this->_translator->getMessage('GROUPS');
-                     break;
-                  case 'INSTITUTION':
-                     $temp_title = $this->_translator->getMessage('INSTITUTIONS');
-                     break;
-                  case 'MATERIAL':
-                     $temp_title = $this->_translator->getMessage('MATERIALS');
-                     break;
-                  case 'PROJECT':
-                     $temp_title = $this->_translator->getMessage('PROJECTS');
-                     break;
-                  case 'TODO':
-                     $temp_title = $this->_translator->getMessage('TODOS');
-                     break;
-                  case 'TOPIC':
-                     $temp_title = $this->_translator->getMessage('TOPICS');
-                     break;
-                  case 'USER':
-                     $temp_title = $this->_translator->getMessage('USERS');
-                     break;
-                  default:
-                     $temp_title = getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
-                     break;
-               }
-            }else{
-               $temp_title = $this->_translator->getMessage('MATERIALS');
-               if ($connection == CS_DISCARTICLE_TYPE) {
-                  $temp_title = $this->_translator->getMessage('DISCUSSIONS');
-               }
-            }
-            if ($first){
-               $first = false;
-               $title_string = '"'.$temp_title;
-               $title_string .= ' ('.$count.')"';
-            }else{
-               $title_string .= ',"'.$temp_title;
-               $title_string .= ' ('.$count.')"';
-            }
-            $i ++;
-         }
-         }
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '<script type="text/javascript">'.LF;
-         $html .= 'initDhtmlNetnavigation("netnavigation",Array('.$title_string.'),"'.$pos.'","1");'.LF;
-         $html .= '</script>'.LF;
-         return $html;
-      }
-      }
-   }
-
-   /**
-    * Internal methods for printing out connected rubrics.
-    * Generally, these methods need not be overridden.
-    */
-   function _is_perspective ($rubric) {
-      $in_array = in_array($rubric, array(CS_GROUP_TYPE,CS_TOPIC_TYPE, CS_INSTITUTION_TYPE)) ;
-      if ($rubric == CS_INSTITUTION_TYPE) {
-         $context = $this->_environment->getCurrentContextItem();
-         $in_array = $context->withRubric(CS_INSTITUTION_TYPE);
-      }
-      return $in_array;
-   }
-
-
-   function _getLinkedItemsAsHTML ($link_array, $connection, $is_perspective=false, $always=true, $attach_link=false) {
+   function _getAllLinkedItemsAsHTML ($spaces=0) {
+      $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
-      $user = $this->_environment->getCurrentUserItem();
-      $html  = '';
-      $mod = $this->_with_modifying_actions;
-      $module = Type2Module($connection);
-      if ($connection != CS_SECTION_TYPE and $connection != CS_DISCARTICLE_TYPE){
-            switch ( strtoupper($connection) )
-            {
-               case 'ANOUNCEMENT':
-                  $temp_title = $this->_translator->getMessage('ANNOUNCEMENTS');
-                  break;
-               case 'DATE':
-                  $temp_title = $this->_translator->getMessage('DATES');
-                  break;
-               case 'DISCUSSION':
-                  $temp_title = $this->_translator->getMessage('DISCUSSIONS');
-                  break;
-               case 'GROUP':
-                  $temp_title = $this->_translator->getMessage('GROUPS');
-                  break;
-               case 'INSTITUTION':
-                  $temp_title = $this->_translator->getMessage('INSTITUTIONS');
-                  break;
-               case 'MATERIAL':
-                  $temp_title = $this->_translator->getMessage('MATERIALS');
-                  break;
-               case 'PROJECT':
-                  $temp_title = $this->_translator->getMessage('PROJECTS');
-                  break;
-               case 'TODO':
-                  $temp_title = $this->_translator->getMessage('TODOS');
-                  break;
-               case 'TOPIC':
-                  $temp_title = $this->_translator->getMessage('TOPICS');
-                  break;
-               case 'USER':
-                  $temp_title = $this->_translator->getMessage('USERS');
-                  break;
-               default:
-                  $temp_title = getMessage('COMMON_MESSAGETAG_ERROR').' cs_form_view(2009) ';
-                  break;
-            }
-         }else{
-            $temp_title = $this->_translator->getMessage('MATERIALS');
-            if ($connection == CS_DISCARTICLE_TYPE) {
-               $temp_title = $this->_translator->getMessage('DISCUSSIONS');
-            }
-         }
+      $html .= '<div style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
+      $connections = $this->getRubricConnections();
 
-      $html .='		<div class="netnavigation_panel">     '.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="netnavigation_title">'.$temp_title.'</div>';
-      $html .= '         </noscript>';
-      $html .= '         <div>';
-      $html .= '<div class="netnavigation_list" style="border-top:1px solid #B0B0B0;">'.LF;
-      if ( empty($link_array['value']) ) {
-         $html .= '<ul style="padding-top:0px;">'.LF;
-         $html .= '   <li>';
-         $html .= '   <span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>'.LF;
-         $html .= '   </li>';
-         $html .= '   </ul>';
-      }else{
-         $html .= '<ul style="padding-top:0px; list-style:none; margin-left:0px; padding-left:0px;">'.LF;
-         $html .= '   <li>';
-         $link_array['font_size'] = '8';
-         $html .= $this->_getCheckboxGroupAsHTML($link_array);
-         $html .= '   </li>';
-         $html .= '   </ul>';
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $params = $this->_environment->getCurrentParameterArray();
+      $session = $this->_environment->getSessionItem();
+      $attached_ids = array();
+      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+         $attached_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
       }
-      $html .= '</div>'.LF;
-      if ( $link_array['link_text']) {
-         $html .= '<div style="border-top:0px; text-align:center; padding-bottom:3px;">'.LF;
-         $params = array();
-         $tempMessage = "";
-         switch( strtoupper($connection) )
-         {
-            case 'GROUP':                 // Button: Gruppen zuordnen (erst ab 20 vorhand. Gruppen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON');
-                break;
-            case 'INSTITUTION':           // Button: Institutionen suchen (erst ab 20 vorhand. Institutionen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON');
-               break;
-            case 'MATERIAL':              // Button: Materialien zuordnen (erst ab 20 vorhand. Materialien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON');
-               break;
-            case 'DATE':              // Button: DATEien zuordnen (erst ab 20 vorhand. DATEien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON');
-               break;
-            case 'ANNOUNCEMENT':              // Button: ANNOUNCEMENTien zuordnen (erst ab 20 vorhand. ANNOUNCEMENTien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON');
-               break;
-            case 'DISCUSSION':              // Button: DISCUSSIONien zuordnen (erst ab 20 vorhand. DISCUSSIONien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON');
-               break;
-            case 'TODO':              // Button: TODOien zuordnen (erst ab 20 vorhand. TODOien) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON');
-               break;
-            case 'PROJECT':               // Button: Projekträume zuordnen (erst ab 20 vorhand. Projekträumen) OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON');
-               break;
-            case 'TOPIC':                 // Button: Themen suchen (erst ab 20 vorhand. Themen)OK
-               $tempMessage = getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON');
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR') . " cs_form_view(2062) ";
-               break;
+      $item_manager = $this->_environment->getItemManager();
+      $linked_items = $item_manager->getItemList($attached_ids);
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
+      $html .='     <div class="right_box_main">     '.LF;
+      if ($linked_items->isEmpty()) {
+         $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
+      } else {
+         $html .='     <ul style="list-style-type: circle; font-size:8pt; list-style-position:inside; margin:0px; padding:0px;">'.LF;
+         $linked_item = $linked_items->getFirst();
+         while($linked_item){
+            $fragment = '';    // there is no anchor defined by default
+            $type = $linked_item->getItemType();
+            if ($type == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($linked_item->getItemID());
+               $type = $label_item->getLabelType();
+            }
+            $manager = $this->_environment->getManager($type);
+            $item = $manager->getItem($linked_item->getItemID());
+            $text = getRubricMessageTageName($type);
+            $text .= ' - '.$item->getTitle();
+            $html .= '   <li  style="padding:0px 3px;">';
+            $html .= '<a title="'.$text.'">'.chunkText($item->getTitle(),35).'</a>';
+            $html .= '</li>'.LF;
+            $linked_item = $linked_items->getNext();
          }
-         $params['option'] = $tempMessage;
-         $html .= '<input style="width:150px; font-size:8pt;" type="submit" name="option"';
-         $html .= ' value="'.$tempMessage.'"';
-         $html .= '/>';
-         $html .= '</div>'.LF;
+         $html .= '</ul>'.LF;
       }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $params = $this->_environment->getCurrentParameterArray();
+      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'</a>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .='      </div>';
       return $html;
    }
 

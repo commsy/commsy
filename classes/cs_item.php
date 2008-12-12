@@ -1493,10 +1493,12 @@ class cs_item {
          }
       }
       foreach($rubric_array as $rubric){
-         if (isset($rubric_sorted_array[$rubric])){
-            $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
-         }else{
-            $this->_setValue($rubric, array(), FALSE);
+         if ($rubric !=CS_USER_TYPE){
+            if (isset($rubric_sorted_array[$rubric])){
+               $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
+            }else{
+               $this->_setValue($rubric, array(), FALSE);
+            }
          }
       }
    }

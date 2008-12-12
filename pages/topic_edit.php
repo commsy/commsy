@@ -22,6 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -90,6 +96,11 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $topic_manager = $environment->getTopicManager();
    $topic_item = $topic_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $topic_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 // Check access rights
@@ -133,6 +144,8 @@ else {
 
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), CS_TOPIC_TYPE, 'index', '');
@@ -215,17 +228,18 @@ else {
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
+      include_once('include/inc_right_boxes_handling.php');
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-         $form->setFormPost($_POST);
-      }
-
-      // Back from attaching material
-      elseif ( $backfrom == CS_MATERIAL_TYPE ) {
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
+         $form->setFormPost($session_post_vars);
+      }elseif ( $backfrom == CS_MATERIAL_TYPE ) {
          $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
          $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-   $with_anchor = true;
+         $with_anchor = true;
          $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
@@ -413,6 +427,10 @@ else {
                   $topic_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
             }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $topic_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
             // Save item
             $topic_item->save();
 
@@ -453,6 +471,8 @@ else {
                                   array($topic_item->getItemID()));
 
             // Redirect
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
             cleanup_session($current_iid);
             $params = array();
             $params['iid'] = $topic_item->getItemID();

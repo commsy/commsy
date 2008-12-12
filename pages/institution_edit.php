@@ -22,6 +22,17 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if (isset($_GET['return_attach_buzzword_list'])){
+   $_POST = $session->getValue('buzzword_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+if (isset($_GET['return_attach_tag_list'])){
+   $_POST = $session->getValue('tag_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -95,6 +106,11 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $institution_manager = $environment->getLabelManager();
    $institution_item = $institution_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $institution_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 if ( $current_iid != 'NEW' and !isset($institution_item) ) {
@@ -134,6 +150,8 @@ else {
 
    // cancel edit process
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if ( empty($_POST['iid']) ) {    // cancel new institution item
          redirect($environment->getCurrentContextID(), 'institution', 'index', '');
@@ -199,9 +217,13 @@ else {
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
+      include_once('include/inc_right_boxes_handling.php');
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($_FILES) ) {
             if ( !empty($_FILES['picture_upload']['tmp_name']) ) {
                $new_temp_name = $_FILES['picture_upload']['tmp_name'].'_TEMP_'.$_FILES['picture_upload']['name'];
@@ -213,9 +235,9 @@ else {
                   $session_item->setValue($environment->getCurrentContextID().'_institution_'.$current_iid.'_picture_name',$_FILES['picture_upload']['name']);
                }
             }
-            $values = array_merge($_POST,$_FILES);
+            $values = array_merge($session_post_vars,$_FILES);
          } else {
-            $values = $_POST;
+            $values = $session_post_vars;
          }
          $form->setFormPost($values);
       }
@@ -444,6 +466,10 @@ else {
                   $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
       }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $institution_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
             // Save item
             $institution_item->save();
 
@@ -452,6 +478,8 @@ else {
                                   array($institution_item->getItemID()));
 
             // Redirect
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
             cleanup_session($current_iid);
             $params = array();
             $params['iid'] = $institution_item->getItemID();

@@ -26,6 +26,12 @@
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
 // Function used for redirecting to connected rubrics
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
    $infix = '_'.$rubric_type;
@@ -99,6 +105,11 @@ if ( $current_iid == 'NEW' ) {
 } else {
    $group_manager = $environment->getGroupManager();
    $group_item = $group_manager->getItem($current_iid);
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $group_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 // Check access rights
@@ -140,6 +151,8 @@ else {
 
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'group', 'index', '');
@@ -226,8 +239,12 @@ else {
          attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
       }
 
+      include_once('include/inc_right_boxes_handling.php');
       // Load form data from postvars
       if ( !empty($_POST) ) {
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($_FILES) ) {
             if ( !empty($_FILES['picture_upload']['tmp_name']) ) {
                $new_temp_name = $_FILES['picture_upload']['tmp_name'].'_TEMP_'.$_FILES['picture_upload']['name'];
@@ -239,9 +256,9 @@ else {
                   $session_item->setValue($environment->getCurrentContextID().'_group_'.$current_iid.'_picture_name',$_FILES['picture_upload']['name']);
                }
             }
-            $values = array_merge($_POST,$_FILES);
+            $values = array_merge($session_post_vars,$_FILES);
          } else {
-            $values = $_POST;
+            $values = $session_post_vars;
          }
          // Foren:
          if ( isset($post_discussion_notification_array) AND !empty($post_discussion_notification_array) ) {
@@ -510,6 +527,10 @@ else {
             }
 
             $group_item->setDiscussionNotificationArray($discussion_notification_array);
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $group_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
 
             // Save item
             $group_item->save();
@@ -519,6 +540,8 @@ else {
                                array($group_item->getItemID()));
 
             // Redirect
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
             cleanup_session($current_iid);
             $params = array();
             $params['iid'] = $group_item->getItemID();

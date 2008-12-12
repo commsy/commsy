@@ -40,14 +40,6 @@ if ( isset($_POST['option']) ) {
    $option = '';
 }
 
-if ( isset($_POST['mode']) ) {
-   $mode = $_POST['mode'];
-} elseif ( isset($_GET['mode']) ) {
-   $mode = $_GET['mode'];
-} else {
-   $mode = '';
-}
-
 if ( isset($_POST['return_attach_item_list']) ) {
    $second_call = true;
 } elseif ( isset($_GET['return_attach_item_list']) ) {
@@ -60,6 +52,13 @@ if ( isset($_GET['search']) ) {
    $search = $_GET['search'];
 } else {
    $search = '';
+}
+if ( isset($_POST['mode']) ) {
+   $mode = $_POST['mode'];
+} elseif ( isset($_GET['mode']) ) {
+   $mode = $_GET['mode'];
+} else {
+   $mode = '';
 }
 $sel_activating_status = '';
 if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {

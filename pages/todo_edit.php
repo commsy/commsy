@@ -124,6 +124,11 @@ if ( $current_iid == 'NEW' ) {
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
    }
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $todo_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 // Check access rights
@@ -171,6 +176,8 @@ else {
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
       $session->unsetValue('tag_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       cleanup_session($current_iid);
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'todo', 'index', '');
@@ -688,6 +695,10 @@ else {
                $todo_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $todo_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
 
             // Save item
             $todo_item->save();
@@ -702,6 +713,8 @@ else {
             $session->unsetValue('buzzword_post_vars');
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             $session->unsetValue('tag_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
             $params = array();
             $params['iid'] = $todo_item->getItemID();
             redirect($environment->getCurrentContextID(), 'todo', 'detail', $params);

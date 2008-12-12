@@ -33,6 +33,12 @@ if (isset($_GET['return_attach_tag_list'])){
    unset($_POST['option']);
    unset($_POST['right_box_option']);
 }
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
+
 
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
@@ -124,6 +130,11 @@ if ( $current_iid == 'NEW' ) {
       }
       $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids',$tag_array);
    }
+   if(empty($_POST)){
+      $link_item_array = array();
+      $link_item_array = $announcement_item->getAllLinkedItemIDArray();
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
 }
 
 // Check access rights
@@ -167,6 +178,8 @@ else {
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
       $session->unsetValue('tag_post_vars');
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'index', '');
       } else {
@@ -677,6 +690,10 @@ else {
                $announcement_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             }
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $announcement_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
 
             // files
             $item_files_upload_to = $announcement_item;
@@ -725,6 +742,8 @@ else {
             $session->unsetValue('buzzword_post_vars');
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
             $session->unsetValue('tag_post_vars');
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
 
             //Add modifier to all users who ever edited this item
             $manager = $environment->getLinkModifierItemManager();
