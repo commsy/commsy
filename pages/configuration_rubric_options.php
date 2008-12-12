@@ -30,21 +30,25 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
@@ -77,12 +81,12 @@ else {
    elseif ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
       $correct = $form->check();
       if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
-	      $home_conf = $room_item->getHomeConf();
-	      $home_conf_array = explode(',',$home_conf);
-	      $current_room_modules = array();
-	      foreach ($home_conf_array as $rubric_conf) {
-	      $rubric_conf_array[] = explode('_',$rubric_conf);
-	   }
+         $home_conf = $room_item->getHomeConf();
+         $home_conf_array = explode(',',$home_conf);
+         $current_room_modules = array();
+         foreach ($home_conf_array as $rubric_conf) {
+         $rubric_conf_array[] = explode('_',$rubric_conf);
+      }
 
       if ($room_item->isPrivateRoom()){
          $time = '7';
@@ -100,28 +104,28 @@ else {
       }elseif (!empty($_POST['time_spread'])) {
          $room_item->setTimeSpread($_POST['time_spread']);
       }
-	   $temp_array = array();
-	   $j = 0;
-	   $count = 8;
-	   if ( $room_item->isCommunityRoom()
-	        or $room_item->isGroupRoom()
-	      ) {
-	      $count = 7;
-	   } elseif ($room_item->isPrivateRoom()) {
-	      $count = 5;
-	   }
-	   for ($i=0; $i<$count; $i++){
-	      $rubric = '';
+      $temp_array = array();
+      $j = 0;
+      $count = 8;
+      if ( $room_item->isCommunityRoom()
+           or $room_item->isGroupRoom()
+         ) {
+         $count = 7;
+      } elseif ($room_item->isPrivateRoom()) {
+         $count = 5;
+      }
+      for ($i=0; $i<$count; $i++){
+         $rubric = '';
          if (!empty($_POST['rubric_'.$i])){
          if ($_POST['rubric_'.$i] != 'none') {
-	         $temp_array[$i] = $_POST['rubric_'.$i].'_'.$_POST['show_'.$i];
-	         $j++;
-	      }
+            $temp_array[$i] = $_POST['rubric_'.$i].'_'.$_POST['show_'.$i];
+            $j++;
          }
-	   }
+         }
+      }
       $room_item->setHomeConf(implode($temp_array,','));
-	   // save room_item
-	   $room_item->save();
+      // save room_item
+      $room_item->save();
       $form_view->setItemIsSaved();
       $is_saved = true;
       if (!isset($_GET['option'])){
@@ -145,11 +149,15 @@ else {
    $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
    $form_view->setForm($form);
    if (!$form->check()){
-      include_once('classes/cs_errorbox_view.php');
-      $errorbox = new cs_errorbox_view($environment, true, 500);
+      $params = array();
+      $params['environment'] = $environment;
+      $params['with_modifying_actions'] = true;
+      $params['width'] = 500;
+      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+      unset($params);
       $errorbox->setText(getMessage('CONFIGURATION_RUBRIC_ERROR_DESCRIPTION'));
       $page->add($errorbox);
-	}
+   }
    $page->add($form_view);
 }
 ?>

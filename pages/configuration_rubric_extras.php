@@ -36,25 +36,29 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    if (!$context_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $context_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $context_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 } elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 } elseif (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
-	$command = 'error';
+   $command = 'error';
 }
 
 if ($command != 'error') {
@@ -64,17 +68,17 @@ if ($command != 'error') {
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];
    } else {
-	  $command = '';
+     $command = '';
    }
 
-	// Cancel editing
+   // Cancel editing
 #	if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
 #	   redirect($environment->getCurrentContextID(),'configuration','dates');
 #	}
 
-	// Show form and/or save item
+   // Show form and/or save item
 #    else {
-	    // Initialize the form
+       // Initialize the form
       $class_params= array();
       $class_params['environment'] = $environment;
       $form = $class_factory->getClass(CONFIGURATION_RUBRIC_EXTRAS_FORM,$class_params);
@@ -84,17 +88,17 @@ if ($command != 'error') {
       $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$class_params);
       unset($class_params);
 
-		// Save item
-		if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
+      // Save item
+      if ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON') ) ) {
 
-		   $correct = $form->check();
-		   if ( $correct ) {
+         $correct = $form->check();
+         if ( $correct ) {
 
-		      // Terminoptionen
-		      if ( isset($_POST['dates_status']) ) {
+            // Terminoptionen
+            if ( isset($_POST['dates_status']) ) {
 
-		         $context_item->setDatesPresentationStatus($_POST['dates_status']);
-		      }
+               $context_item->setDatesPresentationStatus($_POST['dates_status']);
+            }
 
             // Diskussionsoptionen
             if ( isset($_POST['discussion_status']) ) {
@@ -123,27 +127,31 @@ if ($command != 'error') {
             $context_item->save();
             $form_view->setItemIsSaved();
             $is_saved = true;
-		   }
+         }
       }	// Load form data from postvars
-		if ( !empty($_POST) and !$is_saved) {
-			$form->setFormPost($_POST);
-		}
+      if ( !empty($_POST) and !$is_saved) {
+         $form->setFormPost($_POST);
+      }
 
-		$form->setItem($context_item);
-		$form->prepareForm();
-		$form->loadValues();
-		if (isset($context_item) and !$context_item->mayEditRegular($current_user)) {
-			$form_view->warnChanger();
-                         include_once('classes/cs_errorbox_view.php');
-			$errorbox = new cs_errorbox_view($environment, true, 500);
-			$errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
-			$page->add($errorbox);
-		}
+      $form->setItem($context_item);
+      $form->prepareForm();
+      $form->loadValues();
+      if (isset($context_item) and !$context_item->mayEditRegular($current_user)) {
+         $form_view->warnChanger();
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = true;
+         $params['width'] = 500;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $page->add($errorbox);
+      }
 
-		include_once('functions/curl_functions.php');
-		$form_view->setAction(curl($environment->getCurrentContextID(),'configuration','rubric_extras',''));
-		$form_view->setForm($form);
-		$page->add($form_view);
+      include_once('functions/curl_functions.php');
+      $form_view->setAction(curl($environment->getCurrentContextID(),'configuration','rubric_extras',''));
+      $form_view->setForm($form);
+      $page->add($form_view);
 #   }
 }
 ?>

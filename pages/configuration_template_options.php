@@ -31,9 +31,11 @@ if ( !empty($_GET['reload']) ) {
 }
 
 if (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
@@ -87,8 +89,8 @@ else {
          if ( isset($_POST['description'])){
             $room_item->setTemplateDescription($_POST['description']);
          }
-	      // Save item
-	      $room_item->save();
+         // Save item
+         $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
 

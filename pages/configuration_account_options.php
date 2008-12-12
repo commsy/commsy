@@ -31,15 +31,17 @@ $is_saved = false;
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
-	} else {
+   } else {
       $params = array() ;
-		$params['cid'] = $room_item->getItemId();
-	   redirect($environment->getCurrentPortalId(),'home','index',$params);
-	}
+      $params['cid'] = $room_item->getItemId();
+      redirect($environment->getCurrentPortalId(),'home','index',$params);
+   }
 }  elseif (!$current_user->isModerator()) {
-   include_once('classes/cs_errorbox_view.php');
-   $errorbox = new cs_errorbox_view( $environment,
-                                      true );
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }else{
@@ -114,9 +116,9 @@ if ($current_user->isGuest()) {
          }
 
          if(($agbtext_array != $commsy->getAGBTextArray()) or ($_POST['agb_status'] != $commsy->getAGBStatus())) {
-         	$commsy->setAGBStatus($_POST['agb_status']);
-         	$commsy->setAGBTextArray($agbtext_array);
-         	$commsy->setAGBChangeDate();
+            $commsy->setAGBStatus($_POST['agb_status']);
+            $commsy->setAGBTextArray($agbtext_array);
+            $commsy->setAGBChangeDate();
          }
          // check member
          if ( isset($_POST['member_check']) ) {
