@@ -47,7 +47,6 @@ class cs_home_buzzword_view extends cs_view {
 
    function asHTML(){
       $current_user = $this->_environment->getCurrentUserItem();
-      $session = $this->_environment->getSession();
       $buzzword_manager = $this->_environment->getLabelManager();
       $buzzword_manager->resetLimits();
       $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -55,12 +54,6 @@ class cs_home_buzzword_view extends cs_view {
       $buzzword_manager->setGetCountLinks();
       $buzzword_manager->select();
       $buzzword_list = $buzzword_manager->get();
-      $left_menue_status = $session->getValue('left_menue_status');
-      if ( $left_menue_status !='disapear' ) {
-        $width = '190';
-      } else {
-        $width = '225';
-      }
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
@@ -94,7 +87,7 @@ class cs_home_buzzword_view extends cs_view {
          }
          $buzzword = $buzzword_list->getNext();
       }
-      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px;">';
+      $html .= '<div style="width:235px; text-align:right; padding-right:2px; padding-top:5px;">';
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();
          $params['module'] = $this->_environment->getCurrentModule();
@@ -107,7 +100,6 @@ class cs_home_buzzword_view extends cs_view {
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       unset($current_user);
-      unset($session);
       return $html;
    }
 

@@ -69,13 +69,6 @@ class cs_home_tag_view extends cs_view {
 
    function asHTML(){
       $current_user = $this->_environment->getCurrentUserItem();
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
-      if ( $left_menue_status !='disapear' ) {
-        $width = '190';
-      } else {
-        $width = '230';
-      }
       $html  = '';
       $html .= '<div class="right_box">'.LF;
       $html .= '         <noscript>';
@@ -93,7 +86,7 @@ class cs_home_tag_view extends cs_view {
          $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $html .= $html_text;
-      $html .= '<div style="width:'.$width.'px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';
+      $html .= '<div style="width:235px; text-align:right; padding-right:2px; padding-top:5px; font-size:8pt;">';
       if ( ($current_user->isUser() and $this->_with_modifying_actions)
           and ($current_context->isTagEditedByAll() or $current_user->isModerator() ) ) {
          $params = array();
