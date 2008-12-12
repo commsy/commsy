@@ -33,7 +33,7 @@ class cs_password_change_page extends cs_left_page {
       $success = false;
 
       $class_params= array();
-      $class_params['environment'] = $environment;
+      $class_params['environment'] = $this->_environment;
       $form = $class_factory->getClass(PASSWORD_CHANGE_FORM,$class_params);
       unset($class_params);
       // Load form data from postvars

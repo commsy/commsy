@@ -24,7 +24,7 @@
 
 /** upper class of the form view
  */
-include_once('classes/cs_configuration_form_view.php');
+$this->includeClass(CONFIGURATION_FORM_VIEW);
 include_once('classes/cs_link.php');
 include_once('classes/cs_list.php');
 
@@ -57,9 +57,9 @@ class cs_configuration_room_options_form_view extends cs_configuration_form_view
    function _getTextAsHTML ($form_element) {
       $html  = '';
       if (!empty($form_element['anchor'])){
-		  $html='<a name="'.$form_element['anchor'].'"></a>';
-	   }
-	   if (!empty($form_element['value'])) {
+        $html='<a name="'.$form_element['anchor'].'"></a>';
+      }
+      if (!empty($form_element['value'])) {
          if ($form_element['isbold']) {
             $html .= '<b>'.$this->_text_as_html_long($form_element['value']).'<b>';
          } else {
