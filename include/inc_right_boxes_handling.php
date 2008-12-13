@@ -132,7 +132,10 @@ if ( isOption($right_box_command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
 }
 
 
-if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
+if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
+     isOption($command, getMessage('COMMON_GROUP_ATTACH')) or
+     isOption($command, getMessage('COMMON_INSTITUTION_ATTACH'))
+ ) {
 
     $entry_array = array();
     $entry_new_array = array();
@@ -142,9 +145,24 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
                                                '_linked_items_index_selected_ids');
     }
     if (isset($_POST['itemlist'])){
-       $selected_id_array = $_POST['itemlist'];
-       foreach($selected_id_array as $id => $value){
+       $selected_ids = $_POST['itemlist'];
+       foreach($selected_ids as $id => $value){
           $entry_new_array[] = $id;
+       }
+    }
+    if ( isset($_COOKIE['itemlist']) ) {
+       foreach ( $_COOKIE['itemlist'] as $key => $val ) {
+          setcookie ('itemlist['.$key.']', '', time()-3600);
+          if ( $val == '1' ) {
+             if ( !in_array($key, $selected_ids) ) {
+                $selected_ids[] = $key;
+             }
+          } else {
+             $idx = array_search($key, $selected_ids);
+             if ( $idx !== false ) {
+                unset($selected_ids[$idx]);
+             }
+          }
        }
     }
     $entry_array = array_merge($entry_array,$entry_new_array);
@@ -159,7 +177,6 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
    } else {
       $mode = '';
    }
-   $iid = '';
    if ( isset($_GET['from']) ) {
       $from = $_GET['from'];
    }elseif ( isset($_POST['from']) ) {
@@ -215,7 +232,10 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
    if (!empty($selected_ids)){
       $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
    }
-   if ( isOption($right_box_command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
+   if ( isOption($right_box_command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
+        isOption($right_box_command, getMessage('COMMON_GROUP_ATTACH')) or
+        isOption($right_box_command, getMessage('COMMON_INSTITUTION_ATTACH'))
+   ) {
       $session->setValue('linked_items_post_vars', $_POST);
       $item_list = new cs_list();
       $item_ids = array();
@@ -244,6 +264,16 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
       if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search') {
          $rubric_array = array();
          $rubric_array[] = $selrubric;
+      }
+      if ($environment->getCurrentModule() == CS_USER_TYPE){
+         $rubric_array = array();
+         if ($context_item->withRubric(CS_GROUP_TYPE)){
+            $rubric_array[] = CS_GROUP_TYPE;
+         }
+         if ($context_item->withRubric(CS_INSTITUTION_TYPE)){
+            $rubric_array[] = CS_INSTITUTION_TYPE;
+         }
+         $interval = 100;
       }
       foreach ($rubric_array as $rubric) {
          $rubric_ids = array();
@@ -293,7 +323,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
          $item_attach_index_view->setHiddenFields($_POST);
       }
       $item_attach_index_view->setLinkedItemIDArray($selected_ids);
-      $item_attach_index_view->setRefItemID($iid);
+#      $item_attach_index_view->setRefItemID($iid);
       $item_attach_index_view->setCountAllShown(count($item_ids));
       $item_attach_index_view->setCountAll($count_all);
       $item_attach_index_view->setFrom($from);

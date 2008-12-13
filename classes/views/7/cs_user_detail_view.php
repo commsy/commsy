@@ -371,6 +371,7 @@ class cs_user_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
+      $html  = $this->_getDetailItemActionsAsHTML($item);
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
@@ -822,7 +823,195 @@ class cs_user_detail_view extends cs_detail_view {
       return ($rubric == CS_TOPIC_TYPE or $rubric == CS_INSTITUTION_TYPE);
    }
 
+
    function _getAllLinkedItemsAsHTML ($spaces=0) {
+      $html = '';
+      $current_context = $this->_environment->getCurrentContextItem();
+      if(!empty($this->_right_box_config['title_string'])){
+         $separator = ',';
+      }else{
+         $separator = '';
+      }
+      $item = $this->getItem();
+      if ($this->_environment->inCommunityRoom()){
+         $link_items = $item->getLinkItemList(CS_INSTITUTION_TYPE);
+      }else{
+         $link_items = $item->getLinkItemList(CS_GROUP_TYPE);
+      }
+      $count_link_item = $link_items->getCount();
+      if ($this->_environment->inCommunityRoom()){
+         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_INSTITUTIONS').' ('.$count_link_item.')"';
+      }else{
+         $this->_right_box_config['title_string'] .= $separator.'"'.$this->_translator->getMessage('COMMON_ATTACHED_GROUPS').' ('.$count_link_item.')"';
+      }
+      $this->_right_box_config['desc_string'] .= $separator.'""';
+      $this->_right_box_config['size_string'] .= $separator.'"10"';
+      if($current_context->isNetnavigationShowExpanded()){
+         $this->_right_box_config['config_string'] .= $separator.'true';
+      } else {
+         $this->_right_box_config['config_string'] .= $separator.'false';
+      }
+      $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+      $html .= '<div class="right_box">'.LF;
+      $connections = $this->getRubricConnections();
+      $html .= '         <noscript>';
+      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').'</div>';
+      $html .= '         </noscript>';
+      $html .='     <div class="right_box_main">     '.LF;
+      if ($link_items->isEmpty()) {
+         $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
+      } else {
+         $html .='     <ul style="list-style-type: circle; font-size:8pt; list-style-position:inside; margin:0px; padding:0px;">'.LF;
+         $link_item = $link_items->getFirst();
+         while($link_item){
+            $link_creator = $link_item->getCreatorItem();
+            if ( isset($link_creator) and !$link_creator->isDeleted() ) {
+               $fullname = $link_creator->getFullname();
+            } else {
+               $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
+            }
+          // Create the list entry
+            $linked_item = $link_item->getLinkedItem($item);  // Get the linked item
+            if ( isset($linked_item) ) {
+               $fragment = '';    // there is no anchor defined by default
+               $type = $linked_item->getType();
+               if ($type =='label'){
+                  $type = $linked_item->getLabelType();
+               }
+               $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
+               $text = '';
+               switch ( strtoupper($type) )
+               {
+                  case 'ANNOUNCEMENT':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+                     break;
+                  case 'DATE':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
+                     break;
+                  case 'DISCUSSION':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
+                     break;
+                  case 'GROUP':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
+                     break;
+                  case 'INSTITUTION':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
+                     break;
+                  case 'MATERIAL':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
+                     break;
+                  case 'PROJECT':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
+                     break;
+                  case 'TODO':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
+                     break;
+                  case 'TOPIC':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
+                     break;
+                  case 'USER':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
+                     break;
+                  default:
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     break;
+               }
+               $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
+                                    $fullname.', '.
+                                    $link_created;
+               switch ( $type ) {
+                  case CS_DISCARTICLE_TYPE:
+                     $linked_iid = $linked_item->getDiscussionID();
+                     $fragment = $linked_item->getItemID();
+                     $discussion_manager = $this->_environment->getDiscussionManager();
+                     $linked_item = $discussion_manager->getItem($linked_iid);
+                     break;
+                  case CS_SECTION_TYPE:
+                     $linked_iid = $linked_item->getLinkedItemID();
+                     $fragment = $linked_item->getItemID();
+                     $material_manager = $this->_environment->getMaterialManager();
+                     $linked_item = $material_manager->getItem($linked_iid);
+                     break;
+                  default:
+                     $linked_iid = $linked_item->getItemID();
+               }
+               $html .= '   <li  style="padding:0px 3px;">';
+               $params = array();
+               $params['iid'] = $linked_iid;
+               $module = Type2Module($type);
+               $user = $this->_environment->getCurrentUser();
+               if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
+                   $activating_date = $linked_item->getActivatingDate();
+                   if (strstr($activating_date,'9999-00-00')){
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
+                   }else{
+                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                   }
+                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       chunkText($linked_item->getTitle(),35),
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
+                  unset($params);
+               }else{
+                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       chunkText($linked_item->getTitle(),35),
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment);
+                  unset($params);
+               }
+
+
+               $html .= '</li>'.LF;
+            }
+            $link_item = $link_items->getNext();
+         }
+         $html .= '</ul>'.LF;
+      }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ($this->_environment->inCommunityRoom()){
+         $message = $this->_translator->getMessage('COMMON_INSTITUTION_ATTACH');
+      }else{
+         $message = $this->_translator->getMessage('COMMON_GROUP_ATTACH');
+      }
+      if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['attach_view'] = 'yes';
+         $params['attach_type'] = 'item';
+         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             $this->_environment->getCurrentFunction(),
+                             $params,
+                             $message
+                             ).LF;
+         unset($params);
+      } else {
+         $html .= '<span class="disabled">'.$message.'</span>'.LF;
+      }
+      $html .= '</div>'.LF;
+      $html .='      </div>';
+      $html .='      </div>';
+      $html .='      </div>';
+      return $html;
+   }
+
+/*   function _getAllLinkedItemsAsHTML ($spaces=0) {
       $connections = $this->getRubricConnections();
       $item = $this->getItem();
       $html = '';
@@ -949,7 +1138,7 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= 'initDhtmlNetnavigation("netnavigation",Array('.$title_string.'),"0","'.$item->getItemID().'");'.LF;
       $html .= '</script>'.LF;
       return $html;
-   }
+   }*/
 
    function _getModifiedItemsAsHTML ($item) {
       $html = '';
@@ -1297,17 +1486,18 @@ class cs_user_detail_view extends cs_detail_view {
       return $html;
    }
 
+
    function _getSubItemsAsHTML($item){
       $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
       $current_item = $item;
-      $html .='<div class="detail_annotation_headline" style="margin-top:40px;">'.LF;
+      $html .='<div class="detail_annotation_headline" style="margin-top:60px;">'.LF;
       $html .= '<div style="float:right">';
       $html .= $this->getAccountActionsAsHTML($item);
       $html .= '</div>';
       $html .= '<h3 class="annotationtitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
       $html .= '</h3>'.LF;
       $html .='</div>'.LF;
-      $html .='<div class="detail_content">'.LF;
+      $html .='<div class="detail_content" style=" margin-top: 5px; border-top:1px solid #B0B0B0; border-left:0px solid #B0B0B0; border-right:0px solid #B0B0B0; border-bottom:0px solid #B0B0B0;">'.LF;
       $html .= $this->_getSubItemAsHTML($current_item,1).LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
@@ -1316,13 +1506,12 @@ class cs_user_detail_view extends cs_detail_view {
       return $html;
    }
 
-
    /** get detail view as HTML
     * this method returns the detail view in HTML-Code
     *
     * @returns string detail view as HMTL
     */
-   function asHTML () {
+ /*  function asHTML () {
       $item = $this->getItem();
       $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
@@ -1405,6 +1594,6 @@ class cs_user_detail_view extends cs_detail_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       return $html;
-   }
+   }*/
 }
 ?>

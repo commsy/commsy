@@ -84,8 +84,17 @@ $tmp_item = $item_manager->getItem($ref_iid);
 $manager = $environment->getManager($tmp_item->getItemType());
 $item = $manager->getItem($ref_iid);
 
+if ($environment->getCurrentModule() == CS_USER_TYPE){
+   if ($environment->inCommunityRoom()){
+      $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+   }else{
+      $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+   }
 
-$selected_ids = $item->getAllLinkedItemIDArray();
+}else{
+   $selected_ids = $item->getAllLinkedItemIDArray();
+}
+
 if ($mode == '') {
    $session->unsetValue('cid'.$environment->getCurrentContextID().
                               '_linked_items_index_selected_ids');
@@ -189,6 +198,16 @@ foreach ( $room_modules as $module ) {
 if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search') {
    $rubric_array = array();
    $rubric_array[] = $selrubric;
+}
+if ($environment->getCurrentModule() == CS_USER_TYPE){
+   $rubric_array = array();
+   if ($context_item->withRubric(CS_GROUP_TYPE)){
+      $rubric_array[] = CS_GROUP_TYPE;
+   }
+   if ($context_item->withRubric(CS_INSTITUTION_TYPE)){
+      $rubric_array[] = CS_INSTITUTION_TYPE;
+   }
+   $interval = 100;
 }
 
 foreach ($rubric_array as $rubric) {

@@ -22,6 +22,11 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if (isset($_GET['return_attach_item_list'])){
+   $_POST = $session->getValue('linked_items_post_vars');
+   unset($_POST['option']);
+   unset($_POST['right_box_option']);
+}
 // Function used for redirecting to connected rubrics
 function attach_redirect ($rubric_type, $current_iid) {
    global $session, $environment;
@@ -86,14 +91,20 @@ if ( !empty($_GET['backfrom']) ) {
 } else {
    $backfrom = false;
 }
-
 if (!empty($_GET['iid'])) {
    $iid = $_GET['iid'];
 } elseif (!empty($_POST['iid'])) {
    $iid = $_POST['iid'];
 } else {
-   include_once('functions/error_functions.php');
-   trigger_error('No user selected!',E_USER_ERROR);
+   if ($session->issetValue('linked_items_post_vars')){
+   	$session_values = $session->getValue('linked_items_post_vars');
+      if (isset($session_values['iid'])){
+      	$iid = $session_values['iid'];
+      }
+   }else{
+      include_once('functions/error_functions.php');
+      trigger_error('No user selected!',E_USER_ERROR);
+   }
 }
 
 $user_manager = $environment->getUserManager();
@@ -103,6 +114,15 @@ $room_item = $environment->getCurrentContextItem();
 // Check access rights
 if (!empty($iid) and $iid != 'NEW') {
    $current_user = $environment->getCurrentUserItem();
+   if(empty($_POST)){
+      $link_item_array = array();
+      if ($environment->inCommunityRoom()){
+         $link_item_array = $user_item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+      }else{
+         $link_item_array = $user_item->getLinkedItemIDArray(CS_GROUP_TYPE);
+      }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
+   }
    if (!$user_item->mayEdit($current_user)) { // only user should be allowed to edit her/his own account
       $params = array();
       $params['environment'] = $environment;
@@ -134,9 +154,10 @@ if ($command != 'error') { // only if user is allowed to edit user
    $class_params['environment'] = $environment;
    $form = $class_factory->getClass(USER_FORM,$class_params);
    unset($class_params);
-
    // cancel edit process
    if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+      $session->unsetValue('linked_items_post_vars');
       if ( empty($_POST['iid']) ) {
          redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
       } else {
@@ -179,6 +200,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
          attach_redirect(CS_GROUP_TYPE, $iid);
       }
+      include_once('include/inc_right_boxes_handling.php');
 
 #      // Redirect to attach topics
 #      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
@@ -187,6 +209,9 @@ if ($command != 'error') { // only if user is allowed to edit user
 
       // init data display
       if (!empty($_POST)) {
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
          if ( !empty($_FILES) ) {
          if ( !empty($_FILES['upload']['tmp_name']) ) {
             $new_temp_name = $_FILES['upload']['tmp_name'].'_TEMP_'.$_FILES['upload']['name'];
@@ -233,17 +258,17 @@ if ($command != 'error') { // only if user is allowed to edit user
                imagedestroy($im);
                imagedestroy($newimg);
             }
-            $values = array_merge($_POST,$_FILES);
+            $values = array_merge($session_post_vars,$_FILES);
          } else {
-            $values = $_POST;
+            $values = $session_post_vars;
          }
          $form->setFormPost($values);
-         if (!empty($_POST['is_moderator'])) {
+         if (!empty($session_post_vars['is_moderator'])) {
             $form->setIsModerator(true);
          } else {
             $form->setIsModerator(false);
          }
-         if (!empty($_POST['with_picture'])) {
+         if (!empty($session_post_vars['with_picture'])) {
             $form->setWithPicture(true);
          } else {
             $form->setWithPicture(false);
@@ -480,6 +505,15 @@ if ($command != 'error') { // only if user is allowed to edit user
             #########################################################
             # Gruppen können im Formular nicht mehr gesetzt werden
             #########################################################
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $id_array = array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));
+               if ($environment->inCommunityRoom()){
+                  $user_item->setLinkedItemsByID(CS_INSITUTION_TYPE,$id_array);
+               }else{
+                  $user_item->setLinkedItemsByID(CS_GROUP_TYPE,$id_array);
+               }
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            }
 
             if (isset($_POST['want_mail_get_account'])) {
                $user_item->setAccountWantMail($_POST['want_mail_get_account']);
@@ -674,6 +708,8 @@ if ($command != 'error') { // only if user is allowed to edit user
             //Add modifier to all users who ever edited this item
             $manager = $environment->getLinkModifierItemManager();
             $manager->markEdited($user->getItemID());
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+            $session->unsetValue('linked_items_post_vars');
 
             // redirect
             $params = array();
@@ -687,6 +723,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $class_params['environment'] = $environment;
       $class_params['with_modifying_actions'] = true;
       $form_view = $class_factory->getClass(FORM_VIEW,$class_params);
+      $form_view->setItem($user_item);
       unset($class_params);
       $room_item = $environment->getCurrentContextItem();
       // Define rubric connections

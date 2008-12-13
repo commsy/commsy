@@ -580,7 +580,11 @@ class cs_page_room_view extends cs_page_view {
               and $_GET['attach_type'] == 'item')
               or(
                  isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH'))
+                 and (
+                      isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH')) or
+                      isOption($_POST['right_box_option'], getMessage('COMMON_GROUP_ATTACH')) or
+                      isOption($_POST['right_box_option'], getMessage('COMMON_INSTITUTION_ATTACH'))
+                 )
                  and (!isset($_POST['return_attach_tag_list']))
               )
             ) {
@@ -1180,7 +1184,11 @@ class cs_page_room_view extends cs_page_view {
               and $_GET['attach_type'] == 'item')
               or(
                  isset($_POST['right_box_option'])
-                 and isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH'))
+                 and (
+                     isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH')) or
+                     isOption($_POST['right_box_option'], getMessage('COMMON_GROUP_ATTACH')) or
+                     isOption($_POST['right_box_option'], getMessage('COMMON_INSTITUTION_ATTACH'))
+                    )
                  and (!isset($_POST['return_attach_tag_list']))
               )
             ) {

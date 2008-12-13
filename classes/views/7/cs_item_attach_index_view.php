@@ -1172,15 +1172,20 @@ var $_hidden_field_array = array();
             $html .='</div>'.LF;
             $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
          }
+         $params = $this->_environment->getCurrentParameterArray();
+         if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
+            $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
+         }
+         $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
       }else{
          $html .='</div>'.LF;
          $html .='<div style="width:100%; vertical-align:bottom; padding:5px;">'.LF;
+         $params = $this->_environment->getCurrentParameterArray();
+         if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
+            $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
+         }
+         $html .= '<table class="list" style="width: 690px; border-collapse: collapse;" summary="Layout">'.LF;
       }
-      $params = $this->_environment->getCurrentParameterArray();
-      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
-      }
-      $html .= '<table class="list" style="width: 690px; border-collapse: collapse;" summary="Layout">'.LF;
       $html .= $this->_getTableheadAsHTML();
       if (!$this->_clipboard_mode){
          $html .= $this->_getContentAsHTML();
