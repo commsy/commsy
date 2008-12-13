@@ -434,6 +434,7 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
 }
 
 if ( $environment->inServer() ) {
+
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
