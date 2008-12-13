@@ -597,6 +597,7 @@ class cs_page_room_view extends cs_page_view {
          unset($views);
          unset($view);
          $html .= ' class="body">'.LF;
+         $html .= '<a id="top" name="top"/>'.LF;
 
          $html_id = '';
          $current_browser = strtolower($this->_environment->getCurrentBrowser());

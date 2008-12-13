@@ -231,7 +231,7 @@ class cs_announcement_form extends cs_rubric_form {
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->_form->addDateTimeField('end_date_time','',
                               'dayEnd','timeEnd',10,10,
-                              getMessage('ANNOUNCEMENT_TIME_DAY_END'),
+                              getMessage('ANNOUNCEMENT_SHOW_HOME_DATE'),
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
                               getMessage('ANNOUNCEMENT_TIME_DAY_END_DESC'),true,false);

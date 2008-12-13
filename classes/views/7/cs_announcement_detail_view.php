@@ -63,7 +63,7 @@ class cs_announcement_detail_view extends cs_detail_view {
    function _getItemAsHTML($item) {
       $html  = LF.'<!-- BEGIN OF ANNOUNCEMENT ITEM DETAIL -->'.LF;
       $formal_data = array();
-      $temp_array[0] = $this->_translator->getMessage('ANNOUNCEMENT_VALIDITY_DATE');
+      $temp_array[0] = $this->_translator->getMessage('ANNOUNCEMENT_SHOW_HOME_DATE');
       $temp_array[1] = getDateTimeInLang($item->getSeconddateTime());
       $formal_data[] = $temp_array;
 
