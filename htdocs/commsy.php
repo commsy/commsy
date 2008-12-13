@@ -615,7 +615,23 @@ if (isset($parameters['mode']) and $parameters['mode']=='print') {
          $params['with_modifying_actions'] = $with_modifying_actions;
          $page = $class_factory->getClass(PAGE_ROOM_VIEW,$params);
          unset($params);
-      } else {
+      } elseif ($environment->inPortal()){
+         $context_item = $environment->getCurrentContextItem();
+         $filename = 'external_pages/'.$context_item->getItemID().'/cs_external_page_portal_view.php';
+         if (file_exists  ($filename)){
+            include_once($filename);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $with_modifying_actions;
+            $page = new cs_external_page_portal_view($params);
+         }else{
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $with_modifying_actions;
+            $page = $class_factory->getClass(PAGE_GUIDE_VIEW,$params);
+            unset($params);
+         }
+      }else {
          $params = array();
          $params['environment'] = $environment;
          $params['with_modifying_actions'] = $with_modifying_actions;

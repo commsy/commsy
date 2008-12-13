@@ -431,8 +431,13 @@ if ( $context_item->isLocked() ) {
 
 
 
-} elseif ( $context_item->isServer() or $context_item->isPortal() ) {
-   include_once('pages/home_index_guide.php');
+}elseif ( $context_item->isServer() or $context_item->isPortal() ) {
+   $filename = 'external_pages/'.$context_item->getItemID().'/home_index_guide.php';
+   if (file_exists  ($filename)){
+      include_once($filename);
+   }else{
+      include_once('pages/home_index_guide.php');
+   }
 } else {
    include_once('functions/error_functions.php');
    trigger_error('no context',E_USER_ERROR);
