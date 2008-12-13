@@ -1829,6 +1829,10 @@ class cs_form_view extends cs_view {
                   $tempMessage = getMessage('COMMON_GROUP_EDIT');
                   $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
+               case 'USER_EDIT':
+                  $tempMessage = $this->_item->getFullname();
+                  $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  break;
                case 'TOPIC_EDIT':
                   $tempMessage = getMessage('COMMON_TOPIC_EDIT');
                   $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -2043,8 +2047,7 @@ class cs_form_view extends cs_view {
             ){
                $html .= $this->_getTagBoxAsHTML();
             }
-            if ($this->_environment->getCurrentModule() != CS_USER_TYPE and
-                $this->_environment->getCurrentModule() != 'account' and
+            if ($this->_environment->getCurrentModule() != 'account' and
                 $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
                 $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE and
                 $room->withNetnavigation()
@@ -2525,7 +2528,13 @@ class cs_form_view extends cs_view {
       $count_linked_items = count($attached_ids);
       $item_manager = $this->_environment->getItemManager();
       $linked_items = $item_manager->getItemList($attached_ids);
-      $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').' ('.$count_linked_items.')</div>';
+      if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_INSTITUTIONS').' ('.$count_linked_items.')</div>';
+      }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_GROUPS').' ('.$count_linked_items.')</div>';
+      }else{
+         $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_ATTACHED_ENTRIES').' ('.$count_linked_items.')</div>';
+      }
       $html .='     <div class="right_box_main">     '.LF;
       if ($linked_items->isEmpty()) {
          $html .= '  <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
@@ -2553,7 +2562,13 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'</a>'.LF;
+      if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
+         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'</a>'.LF;
+      }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
+         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'</a>'.LF;
+      }else{
+         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'</a>'.LF;
+      }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

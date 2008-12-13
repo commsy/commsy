@@ -988,6 +988,8 @@ class cs_detail_view extends cs_view {
                 or $this->_environment->getCurrentModule() == CS_DATE_TYPE
                 or $this->_environment->getCurrentModule() == CS_GROUP_TYPE
                 or $this->_environment->getCurrentModule() == CS_TOPIC_TYPE
+                or $this->_environment->getCurrentModule() == CS_INSTITUTION_TYPE
+                or ($this->_environment->getCurrentModule() == CS_USER_TYPE and ($context_item->withRubric(CS_GROUP_TYPE) or($context_item->withRubric(CS_INSTITUTION_TYPE))))
                 or $this->_environment->getCurrentModule() == 'campus_search')
       ){
          $retour = true;

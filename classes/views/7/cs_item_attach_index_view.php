@@ -106,6 +106,30 @@ var $_hidden_field_array = array();
       return $html;
    }
 
+   function _getGroupItemAsLongHTML($item, $style) {
+      $html = '   <tr>'.LF;
+      $checked_item_array = $this->_checked_ids;
+      $key = $item->getItemID();
+      $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" onClick="quark(this)" type="checkbox" name="itemlist['.$key.']" value="1"';
+      $tmp_text = '';
+      if ( isset($checked_item_array) and !empty($checked_item_array) and in_array($key, $checked_item_array)) {
+         $tmp_text .= ' checked="checked"'.LF;
+      }
+      if ($item->getItemID() == $this->_ref_iid){
+         $tmp_text .= ' disabled="disabled"'.LF;
+      }
+      if($item->isSystemLabel()){
+         $tmp_text .= ' checked="checked" disabled="disabled"'.LF;
+      }
+      $text .= $tmp_text.'/>'.LF;
+      $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
+      $html .= '      <td   '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td   '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
+      $html .= '   </tr>'.LF;
+      return $html;
+   }
+
    function _getInstitutionItemAsLongHTML($item, $style) {
       $html = '   <tr>'.LF;
       $checked_item_array = $this->_checked_ids;
@@ -460,7 +484,7 @@ var $_hidden_field_array = array();
               $html .= $this->_translator->getMessage('COMMON_GROUPS');
               $html .= '</td>'.LF;
             }
-            $html .= $this->_getTopicItemAsLongHtml($item,$style);
+            $html .= $this->_getGroupItemAsLongHtml($item,$style);
             break;
          case CS_INSTITUTION_TYPE:
             if ($this->_first_institution){
@@ -1068,6 +1092,7 @@ var $_hidden_field_array = array();
       $html .='</div>'.LF;
 
       $html .='<div style="padding:5px;">'.LF;
+      if (($this->_environment->getCurrentModule() != CS_USER_TYPE) ){
          $html .='<div id="right_boxes_area" style="float:right; width:27%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div style="width:180px;">'.LF;
          $current_context = $this->_environment->getCurrentContextItem();
@@ -1132,27 +1157,30 @@ var $_hidden_field_array = array();
 
 
          $html .='</div>'.LF;
+         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+            $width= ' width:100%; padding-right:10px;';
+         }else{
+            $width= '';
+         }
 
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
-      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-         $width= ' width:100%; padding-right:10px;';
-      }else{
-         $width= '';
-      }
-
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='</div>'.LF;
-         $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom;">'.LF;
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .='</div>'.LF;
+            $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom;">'.LF;
+         }else{
+            $html .='</div>'.LF;
+            $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
+         }
       }else{
          $html .='</div>'.LF;
-         $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
+         $html .='<div style="width:100%; vertical-align:bottom; padding:5px;">'.LF;
       }
       $params = $this->_environment->getCurrentParameterArray();
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
          $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
       }
-      $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
+      $html .= '<table class="list" style="width: 690px; border-collapse: collapse;" summary="Layout">'.LF;
       $html .= $this->_getTableheadAsHTML();
       if (!$this->_clipboard_mode){
          $html .= $this->_getContentAsHTML();
