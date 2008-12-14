@@ -5,6 +5,7 @@ $message["SEARCH_FIELD_RESTRICTION"]["de"] = "begrenzt auf";
 $message["SEARCH_GO_BUTTON"]["de"] = "Suchen";
 $message["SEARCH_ITEM_ATTRIBUTE"]["de"] = "Suchkriterien";
 $message["SEARCH_ITEM_ATTRIBUTE_DESC"]["de"] = "Sie können die Suche auf einzelne Kriterien einschränken.";
+$message["SEARCH_LINKED_ENTRIES_ONLY"]["de"] = "nur verknüpfte Beiträge";
 $message["SEARCH_MATERIALS"]["de"] = "Materialien";
 $message["SEARCH_ONLY_FILES_TEXT"]["de"] = "nur Einträge mit Dateien";
 $message["SEARCH_ONLY_IN_FILES_TEXT"]["de"] = "Nur in Einträge mit Dateien suchen";
