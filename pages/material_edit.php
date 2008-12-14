@@ -567,7 +567,8 @@ else {
       }
 
       else {
-         include_once('functions/error_functions.php');trigger_error('material_edit was called in an unknown manner', E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('material_edit was called in an unknown manner', E_USER_ERROR);
       }
 
       // Init form, create form and load values
