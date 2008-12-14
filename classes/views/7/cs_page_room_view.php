@@ -255,19 +255,24 @@ class cs_page_room_view extends cs_page_view {
          if ($current_context_item->isPrivateRoom()){
             switch ($link['module']) {
                case 'topic':
-                  $link_title = $this->_translator->getMessage('COMMON_TOPICS');
-                  break;
+                  $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                  $link_title .= $link['title'];
+                   break;
                case 'material':
-                  $link_title = $this->_translator->getMessage('COMMON_MATERIALS');
+                  $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                  $link_title .= $link['title'];
                   break;
-               case 'user':
-                  $link_title = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
+               case 'date':
+                  $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                  $link_title .= $link['title'];
                   break;
                case 'myroom':
-                  $link_title = $this->_translator->getMessage('PRIVATEROOMS');
+                  $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                  $link_title .= $this->_translator->getMessage('PRIVATEROOMS');
                   break;
                default:
-                  $link_title = $link['title'];
+                  $link_title = '';
+                  $link_title .= $link['title'];
             }
          } else {
             $link_title = '';
@@ -487,7 +492,12 @@ class cs_page_room_view extends cs_page_view {
       }else{
         $size = 'style="font-size:12pt"';
       }
-      $html .= '<h1 '.$size.'>'.$context_item->getTitle().'</h1>'.LF;
+      if ($this->_environment->inPrivateRoom()){
+         $html .= '<h1 '.$size.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</h1>'.LF;
+      }else{
+         $html .= '<h1 '.$size.'>'.$context_item->getTitle().'</h1>'.LF;
+
+      }
       $breadcrump = '';
       $portal_item = $this->_environment->getCurrentPortalItem();
       $params = array();
@@ -512,7 +522,11 @@ class cs_page_room_view extends cs_page_view {
          $breadcrump.= ' > '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
          $breadcrump.= ' > '.$context_item->getTitle();
       }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
-         $breadcrump.= ' > '.$context_item->getTitle();
+         if ($this->_environment->inPrivateRoom()){
+            $breadcrump.= ' > '.$this->_translator->getMessage('COMMON_PRIVATEROOM');
+         }else{
+            $breadcrump.= ' > '.$context_item->getTitle();
+         }
       }
       $html .= '<span style="font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
       $html .= '</td>';

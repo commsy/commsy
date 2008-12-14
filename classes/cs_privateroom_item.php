@@ -52,6 +52,19 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
    }
 
+   function getHomeConf () {
+      $retour = array();
+      $rubrics = $this->_default_rubrics_array;
+      foreach ($rubrics as $rubric){
+         if (!$this->isDesign7() or $rubric != CS_USER_TYPE){
+            $retour[] = $rubric.'_'.'short';
+         }
+      }
+      $retour = implode(',',$retour);
+      return $retour;
+   }
+
+
    function isPrivateRoom () {
       return true;
    }

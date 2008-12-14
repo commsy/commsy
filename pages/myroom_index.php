@@ -84,6 +84,10 @@ if ( isset($_GET['interval']) ) {
 } else{
    $interval = $context_item->getListLength();
 }
+if ($context_item->isDesign7()){
+   $interval = 10;
+}
+
 
 // Find current sort key
 if ( isset($_GET['sort']) ) {

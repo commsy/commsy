@@ -22,6 +22,8 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+$used_rubrics_for_room_array = array();
+$shown_room_id_array = array();
 
 if ( isset($_GET['delete_room_id']) and !empty($_GET['delete_room_id']) ){
    $manager = $environment->getPrivateRoomManager();
@@ -54,6 +56,26 @@ if ( !isset($list2) ) {
    }
    $list2 = $list_temp;
 }
+if ( isset($_GET['from']) ) {
+   $from = $_GET['from'];
+}  else {
+   $from = 1;
+}
+
+$i=1;
+$end = $from+5;
+$list3 = new cs_list();
+$list_item = $list2->getFirst();
+while($list_item){
+   if ( ($i >= $from) and ($i < $end) ){
+      $list3->add($list_item);
+      $shown_room_id_array[] = $list_item->getItemID();
+   }
+   $i++;
+   $list_item = $list2->getNext();
+}
+$countShown = $list2->getCount();
+
 
 $user = $environment->getCurrentUserItem();
 $my_room_manager = $environment->getMyRoomManager();
@@ -69,11 +91,7 @@ if ( isset($_GET['from']) ) {
 
 $i=1;
 $status = $current_context->getHomeStatus();
-if ($status=='detailed'){
-   $end = $from+5;
-}else{
-   $end = $from+10;
-}
+$end = $from+5;
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){

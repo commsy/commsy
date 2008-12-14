@@ -1058,6 +1058,7 @@ class cs_detail_view extends cs_view {
             break;
          case 'MYROOM':
             $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'PROJECT':
             $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
@@ -1117,10 +1118,6 @@ class cs_detail_view extends cs_view {
              $this->_browse_ids[] = $this->_item->getItemID();
          }
          $html .= $this->_getForwardBoxAsHTML($item);
-
-#         if ($current_context->withPath()){
-#            $html .= $this->_getAllPathsAsHTML();
-#         }
          $separator = '';
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
@@ -1162,17 +1159,7 @@ class cs_detail_view extends cs_view {
          $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
       }
       $html .='<div id="detail_headline">'.LF;
-
-
-#      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
-#         $html .= '<div style="float:right; padding:3px 5px 4px 5px;">'.LF;
-#         $html .= $this->_getDetailItemActionsAsHTML($item);
-#         $html .= '</div>'.LF;
-#      }
       $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
-#      $html .='<div style="float:right;">';
-#      $html .= $this->_getDetailActionsAsHTML($this->_item);
-#      $html .='</div>';
       if($rubric == CS_DISCUSSION_TYPE){
          $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
       }elseif ($rubric != CS_USER_TYPE ){
@@ -1233,8 +1220,10 @@ class cs_detail_view extends cs_view {
       and $rubric != CS_USER_TYPE
       and $rubric != CS_DISCUSSION_TYPE
       and $this->_environment->getCurrentModule() !='account'){
-         $html .= $this->_getAnnotationsAsHTML();
-         $html .= $this->_getDiscussionFormAsHTML();
+         if (!$current_context->isPrivateRoom()){
+            $html .= $this->_getAnnotationsAsHTML();
+            $html .= $this->_getDiscussionFormAsHTML();
+         }
       }
       if ($rubric == CS_TOPIC_TYPE
       ){
@@ -1483,36 +1472,6 @@ class cs_detail_view extends cs_view {
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
                }
-
-
-
-/*            $image = $this->_getItemPicture($annotation_item->getModificatorItem());
-            $html .='<tr><td rowspan="2" style="width:70px; padding:5px; vertical-align:top;">'.$image.'</td>'.LF;
-            $html .='<td class="annotationtitle">'.LF;
-            $html .= '<a id="anchor'.$annotation_item->getItemID().'" name="anchor'.$annotation_item->getItemID().'"></a>'.LF;
-            $html .= '<div style="float:right">';
-            $html .= $this->getAnnotationActionsAsHTML($annotation_item);
-            $html .= '</div>';
-            $html .= '<h3 class="annotationtitle">'.$this->_text_as_html_short($annotation_item->getTitle());
-            $html .= '</h3>'.LF;
-            $html .='</td></tr>'.LF;
-            $html .='<tr><td style="padding-left:5px;">'.LF;
-            $html .='<div class="infoborder_annotation" style="width:100%; margin-top:10px; vertical-align:bottom;">'.LF;
-            $html .= $this->_getAnnotationContentAsHTML($annotation_item);
-            $html .='</div>'.LF;
-            if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-               $mode = 'short';
-               if (in_array($annotation_item->getItemID(),$this->_openCreatorInfo)) {
-                  $mode = 'long';
-               }
-               $html .='<div class="detail_creator_information" style="margin:0px 0px 5px 0px;">';
-               $html .='<div class="infoborder" style="margin:5px 5px 0px 0px;">'.LF;
-               $html .= $this->_getCreatorInformationAsHTML($annotation_item, 0,'long').LF;
-               $html .='</div>'.LF;
-               $html .='</div>'.LF;
-            }
-            $html .='</td></tr>'.LF;
-            $html .='<div style="clear:both;"/>'.LF;*/
             $pos_number++;
             $current_item = $this->_annotation_list->getNext();
          }
@@ -2130,6 +2089,9 @@ class cs_detail_view extends cs_view {
                break;
             case 'USER':
                $text = $this->_translator->getMessage('COMMON_USER');
+               break;
+            case 'MYROOM':
+               $text = $this->_translator->getMessage('COMMON_ROOM');
                break;
             default:
                $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );

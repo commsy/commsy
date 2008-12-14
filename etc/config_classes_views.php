@@ -162,6 +162,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_myroom_index_view';
+define('MYROOM_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
 
 
 
@@ -229,6 +236,21 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_myroom_detail_view';
+define('MYROOM_DETAIL_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_context_detail_view';
+define('CONTEXT_DETAIL_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+
 
 /**************FORM********************/
 $class_name = 'cs_form_view';
@@ -291,6 +313,20 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_private_room_detailed_short_view';
+define('PRIVATEROOM_DETAILED_SHORT_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_private_room_short_view';
+define('PRIVATEROOM_SHORT_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
 
 
 /**************UNSWITCHED***************/
@@ -324,13 +360,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_community_index_view';
 define('COMMUNITY_INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_context_detail_view';
-define('CONTEXT_DETAIL_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
@@ -532,20 +561,6 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
-$class_name = 'cs_myroom_detail_view';
-define('MYROOM_DETAIL_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_myroom_index_view';
-define('MYROOM_INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
 $class_name = 'cs_page_guide_view';
 define('PAGE_GUIDE_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
@@ -576,20 +591,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_page_print_view';
 define('PAGE_PRINT_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_private_room_detailed_short_view';
-define('PRIVATEROOM_DETAILED_SHORT_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_private_room_short_view';
-define('PRIVATEROOM_SHORT_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;

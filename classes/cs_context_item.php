@@ -2381,7 +2381,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableRater(){
       $this->_addExtra('WIKIENABLERATER','1');
    }
@@ -2398,7 +2398,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiEnableListCategories(){
       $this->_addExtra('WIKIENABLELISTCATEGORIES','1');
    }
@@ -2675,7 +2675,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiCommunityReadAccess(){
       $this->_addExtra('WIKICOMMUNITYREADACCESS','1');
    }
@@ -2692,7 +2692,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiCommunityWriteAccess(){
       $this->_addExtra('WIKICOMMUNITYWRITEACCESS','1');
    }
@@ -2709,7 +2709,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiPortalReadAccess(){
       $this->_addExtra('WIKIPORTALREADACCESS','1');
    }
@@ -4720,6 +4720,46 @@ class cs_context_item extends cs_item {
       $item_manager =  $this->_environment->getItemManager();
       $item_manager->setContextLimit($this->getItemID());
       $item_manager->setExistenceLimit($timespread);
+#      $item_manager->setAgeLimit(7);
+      $item_manager->showNoNotActivatedEntries();
+      $item_manager->setTypeArrayLimit($check_managers);
+      $item_manager->select();
+      $new_entries = $item_manager->getIDArray();
+      $count_total = count($new_entries);
+      unset($item_manager);
+      return $count_total;
+  }
+
+   function getNotReadEntries($external_timespread = 0, $user_id) {
+      if($external_timespread != 0){
+         $timespread = $external_timespread;
+      }else{
+         $timespread = $this->getTimeSpread();
+      }
+      $new_entries = 0;
+      $conf = $this->getHomeConf();
+      $rubrics = array();
+      if ( !empty($conf) ) {
+          $rubrics = explode(',', $conf);
+      }
+      $check_managers = array();
+      foreach ( $rubrics as $rubric ) {
+         list($rubric_name, $rubric_status) = explode('_', $rubric);
+         if ( $rubric_status != 'none' ){
+            $check_managers[] = $rubric_name;
+            if ( $rubric_name == CS_DISCUSSION_TYPE ) {
+               $check_managers[] = 'discarticle';
+            }
+            if ( $rubric_name == CS_MATERIAL_TYPE ) {
+               $check_managers[] = CS_SECTION_TYPE;
+            }
+         }
+      }
+      $check_managers[] = CS_ANNOTATION_TYPE;
+      $item_manager =  $this->_environment->getItemManager();
+      $item_manager->setContextLimit($this->getItemID());
+      $item_manager->setReadLimit($user_id);
+      $item_manager->setAgeLimit($timespread);
       $item_manager->showNoNotActivatedEntries();
       $item_manager->setTypeArrayLimit($check_managers);
       $item_manager->select();
