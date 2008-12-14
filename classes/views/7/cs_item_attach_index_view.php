@@ -318,14 +318,10 @@ var $_hidden_field_array = array();
       return $html;
    }
 
-
-
    /** get the content of the list view as HTML
     * this method returns the content in HTML-Code
     *
     * @return string $this->_list as HMTL
-    *
-    * @author CommSy Development Group
     */
    function _getContentAsHTML() {
       $html = '';
@@ -588,7 +584,7 @@ var $_hidden_field_array = array();
                   $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(1057) ' );
                   break;
             }
-            $html .= '>'.$text.'</option>'.LF;
+            $html .= '>'.$this->_text_as_form($text).'</option>'.LF;
          }
       }
 
@@ -604,7 +600,7 @@ var $_hidden_field_array = array();
       # textfield for search term
       $html .= '   <input type="textfield" name="search" style="width: 135px;"';
       if ( !empty($_POST['search']) ) {
-         $html .= ' value="'.$_POST['search'].'"';
+         $html .= ' value="'.$this->_text_as_form($_POST['search']).'"';
       }
       $html .= '/>'.LF;
       $html .= '   <input src="images/commsyicons/22x22/search.png" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
@@ -1083,23 +1079,37 @@ var $_hidden_field_array = array();
                            $params,
                            'X',
                            '','', '', '', '', '', 'class="titlelink"');
-       $html .= '<form style="padding:0px; margin:0px;" action="';
-         $params = $this->_environment->getCurrentParameterArray();
-         $html .= curl($this->_environment->getCurrentContextID(),
+      $html .= '<form style="padding:0px; margin:0px;" action="';
+      $params = $this->_environment->getCurrentParameterArray();
+      $html .= curl($this->_environment->getCurrentContextID(),
                     $this->_environment->getCurrentModule(),
                     $this->_environment->getCurrentFunction(),
                     $params
-                   ).'" name="item_list_form" id="item_list_form" method="post">'.LF;
-/*      foreach($this->_hidden_field_array as $field_name => $value){
-         if ($field_name != 'from' and
-             $field_name != 'count_all_shown' and
-             $field_name != 'interval'
-         ){
-            $html .= '<input type="hidden" name="'.$field_name.'" value="'.$value.'"/>';
-         }
-      }*/
+                   ).'" name="item_list_form" id="item_list_form"';
+      $html .= ' method="post">'.LF;
 
-      $html .='<div>'.LF;
+      # post values from real item
+      $post_values_orig = array();
+      foreach ($this->_hidden_field_array as $field_name => $value) {
+         if ( $field_name != 'from'
+              and $field_name != 'count_all_shown'
+              and $field_name != 'interval'
+            ) {
+            if ( is_array($value) ) {
+               foreach ( $value as $key2 => $value2 ) {
+                  $html .= '<input type="hidden" name="'.$field_name.'['.$key2.']" value="'.$this->_text_as_form($value2).'"/>'.LF;
+               }
+            } else {
+               $html .= '<input type="hidden" name="'.$field_name.'" value="'.$this->_text_as_form($value).'"/>'.LF;
+            }
+            $post_values_orig[] = $field_name;
+         }
+      }
+      if ( !empty($post_values_orig) ) {
+         $html .= '<input type="hidden" name="orig_post_keys" value="'.$this->_text_as_form(implode('§',$post_values_orig)).'" />'.LF;
+      }
+
+      $html .= '<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
       if (count($this->_checked_ids)>0){
          $desc = ' ('.count($this->_checked_ids).' '.$this->_translator->getMessage('COMMON_ACTUAL_ATTACHED').')';

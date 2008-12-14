@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
 if ( isset($_POST['right_box_option']) ) {
    $right_box_command = $_POST['right_box_option'];
 }elseif ( isset($_GET['right_box_option']) ) {
@@ -200,6 +199,20 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       $sel_activating_status = 2;
    }
 
+   if ( isset($_GET['search']) ) {
+      $search = $_GET['search'];
+   } elseif ( isset($_POST['search']) ) {
+      $search = $_POST['search'];
+   } else {
+      $search = '';
+   }
+
+   if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
+      $linked_only = true;
+   } else {
+      $linked_only = false;
+   }
+
    if ( isset($_POST['selrubric']) ) {
       $selrubric = $_POST['selrubric'];
       $from = 1;
@@ -295,6 +308,15 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
             }
          }
          $count_all = $count_all + $rubric_manager->getCountAll();
+
+         if ( !empty($search) ) {
+            $rubric_manager->setSearchLimit($search);
+         }
+
+         if ( $linked_only ) {
+            $rubric_manager->setIDArrayLimit($selected_ids);
+         }
+
          if ( $sel_activating_status == 2 ) {
             $rubric_manager->showNoNotActivatedEntries();
          }
@@ -319,8 +341,17 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       }
       $sublist = $item_list->getSubList($from-1,$interval);
       $item_attach_index_view->setList($sublist);
-      if (!empty($_POST)){
-         $item_attach_index_view->setHiddenFields($_POST);
+      if ( !empty($_POST) ) {
+         if ( !empty($_POST['orig_post_keys']) ) {
+            $post_values = array();
+            $post_array = explode('§',$_POST['orig_post_keys']);
+            foreach ( $post_array as $key ) {
+               $post_values_orig[$key] = $_POST[$key];
+            }
+         } else {
+            $post_values_orig = $_POST;
+         }
+         $item_attach_index_view->setHiddenFields($post_values_orig);
       }
       $item_attach_index_view->setLinkedItemIDArray($selected_ids);
 #      $item_attach_index_view->setRefItemID($iid);

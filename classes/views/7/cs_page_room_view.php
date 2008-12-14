@@ -737,15 +737,16 @@ class cs_page_room_view extends cs_page_view {
 
   function getItemListBoxAsHTML(){
      $html = '';
-     $environment = $this->_environment;
-     $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
-     $html .= '<div style="z-index:1000; margin-top:40px; margin-bottom:10px; margin-left: 15%; width:70%; text-align:center;">';
      global $item_attach_index_view;
-     $html .= $item_attach_index_view->asHTML();
-     $html .= '</div>';
-     $html .= '</div>';
-     $html .= '<div id="item_list" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
-     $html .= '</div>';
+     if ( isset($item_attach_index_view) ) {
+        $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
+        $html .= '<div style="z-index:1000; margin-top:40px; margin-bottom:10px; margin-left: 15%; width:70%; text-align:center;">';
+        $html .= $item_attach_index_view->asHTML();
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div id="item_list" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
+        $html .= '</div>';
+     }
      return $html;
   }
 
