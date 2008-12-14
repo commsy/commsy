@@ -873,7 +873,7 @@ class cs_view {
 
                      $width_string = 'width:200px;';
                      if (function_exists('gd_info')) {
-                        $image_in_info = GetImageSize($file->getDiskFileName());
+                        $image_in_info = @GetImageSize($file->getDiskFileName());
                         $x_orig= $image_in_info[0];
                         if ($x_orig < 200) {
                            $width_string = '';
