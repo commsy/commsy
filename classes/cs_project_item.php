@@ -875,6 +875,9 @@ class cs_project_item extends cs_room_item {
             case 'CONFIGURATION_ROOM_OPTIONS':    // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_ROOM_OPTIONS_FORM',$link);
                break;
+            case 'CONFIGURATION_STRUCTURE_OPTIONS':    // getestet
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_STRUCTURE_OPTIONS_FORM',$link);
+               break;
             case 'DATE_EDIT':                  // getestet
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_EDIT_FORM',$link);
                break;
