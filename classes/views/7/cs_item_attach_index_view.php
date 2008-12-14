@@ -535,6 +535,7 @@ var $_hidden_field_array = array();
          $html .= ' selected="selected"';
       }
       $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
+      $html .= '      <option value="-1" disabled="disabled">-------------------------</option>'.LF;
 
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
@@ -593,12 +594,22 @@ var $_hidden_field_array = array();
 
       $html .= '   </select>'.BRLF;
 
+      # checkbox for only linked items
       $html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
       if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
          $html .= ' checked="checked"';
       }
-      $html .= '/>'.$this->_translator->getMessage('SEARCH_LINKED_ENTRIES_ONLY').LF;
+      $html .= '/>'.$this->_translator->getMessage('SEARCH_LINKED_ENTRIES_ONLY').BRLF;
 
+      # textfield for search term
+      $html .= '   <input type="textfield" name="search" style="width: 135px;"';
+      if ( !empty($_POST['search']) ) {
+         $html .= ' value="'.$_POST['search'].'"';
+      }
+      $html .= '/>'.LF;
+      $html .= '   <input src="images/commsyicons/22x22/search.png" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
+
+      # div end
       $html .= '</div>'.LF;
 
 /*      if ($context_item->withActivatingContent()){

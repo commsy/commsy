@@ -50,6 +50,8 @@ if ( isset($_POST['return_attach_item_list']) ) {
 
 if ( isset($_GET['search']) ) {
    $search = $_GET['search'];
+} elseif ( isset($_POST['search']) ) {
+   $search = $_POST['search'];
 } else {
    $search = '';
 }
@@ -198,7 +200,11 @@ foreach ( $room_modules as $module ) {
       }
    }
 }
-if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search') {
+if ( !empty($selrubric)
+     and $selrubric != 'all'
+     and $selrubric != 'campus_search'
+     and $selrubric != -1
+   ) {
    $rubric_array = array();
    $rubric_array[] = $selrubric;
 }
@@ -234,8 +240,9 @@ foreach ($rubric_array as $rubric) {
    }
    $count_all = $count_all + $rubric_manager->getCountAll();
 
-
-#   $rubric_manager->setSearchLimit($search);
+   if ( !empty($search) ) {
+      $rubric_manager->setSearchLimit($search);
+   }
 
    if ( $linked_only ) {
       $rubric_manager->setIDArrayLimit($selected_ids);
