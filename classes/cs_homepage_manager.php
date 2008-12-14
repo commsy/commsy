@@ -61,16 +61,6 @@ class cs_homepage_manager extends cs_manager {
      $this->_from_limit = NULL;
   }
 
-   /** set limit to array of announcement item_ids
-    *
-    * @param array array of ids to be loaded from db
-    *
-    * @author CommSy Development Group
-    */
-   public function setIDArrayLimit ($id_array){
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    /** set interval limit
     * this method sets a interval limit
     *

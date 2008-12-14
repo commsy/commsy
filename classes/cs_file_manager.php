@@ -278,10 +278,6 @@ class cs_file_manager extends cs_manager {
    }
 
 
-   function setIDArrayLimit($id_array) {
-      $this->_id_array_limit = $id_array;
-   }
-
    function setScanLimit () {
       $this->_limit_scan = 1;
    }

@@ -252,14 +252,6 @@ class cs_user_manager extends cs_manager {
      $this->_setVisibleLimit (' >= "1"');
   }
 
-  /** set limit to array of user item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array){
-     $this->_id_array_limit = (array)$id_array;
-   }
-
   /** set status limit to "rejected"
     * this method sets the status limit to "rejected"
     */

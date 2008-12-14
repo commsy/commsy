@@ -125,6 +125,7 @@ class cs_manager {
    var $_cache_on = true;
 
    public $_class_factory = NULL;
+   public $_id_array_limit = NULL;
 
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
@@ -181,6 +182,7 @@ class cs_manager {
      $this->_only_files_limit = NULL;
      $this->_room_array_limit = NULL;
      $this->_show_not_activated_entries_limit = true;
+     $this->_id_array_limit = NULL;
   }
 
   /** reset data
@@ -190,6 +192,14 @@ class cs_manager {
      $this->_data = NULL;
      $this->_id_array = NULL;
   }
+
+   /** set limit to array of announcement item_ids
+    *
+    * @param array array of ids to be loaded from db
+    */
+   function setIDArrayLimit ($id_array){
+      $this->_id_array_limit = (array)$id_array;
+   }
 
   function showNoNotActivatedEntries(){
      $this->_show_not_activated_entries_limit = false;

@@ -77,6 +77,11 @@ if ( isset($_POST['selrubric']) ) {
    $selrubric = '';
 }
 
+if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
+   $linked_only = true;
+} else {
+   $linked_only = false;
+}
 
 $params = $environment->getCurrentParameterArray();
 $item_manager = $environment->getItemManager();
@@ -121,8 +126,6 @@ if ( isset($_COOKIE['itemlist']) ) {
    }
 }
 $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
-
-
 
 // Find current browsing starting point
 if ( isset($_GET['from']) ) {
@@ -233,6 +236,10 @@ foreach ($rubric_array as $rubric) {
 
 
 #   $rubric_manager->setSearchLimit($search);
+
+   if ( $linked_only ) {
+      $rubric_manager->setIDArrayLimit($selected_ids);
+   }
 
    if ( $sel_activating_status == 2 ) {
       $rubric_manager->showNoNotActivatedEntries();

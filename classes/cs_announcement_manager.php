@@ -124,14 +124,6 @@ class cs_announcement_manager extends cs_manager {
       $this->_from_limit = (int)$from;
    }
 
-   /** set limit to array of announcement item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array){
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    function setInstitutionLimit ($limit) {
       $this->_institution_limit = (int)$limit;
    }
@@ -279,7 +271,7 @@ class cs_announcement_manager extends cs_manager {
          $query .= ' AND announcement.creation_date <= '."'".encode(AS_DB,$this->_date_limit)."'".' AND announcement.enddate >= '."'".encode(AS_DB,$this->_date_limit)."'".' ';
       }
       if( !empty($this->_id_array_limit) ) {
-         $query .= ' AND announcement.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
       }
 
       // restrict sql-statement by search limit, create wheres

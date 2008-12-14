@@ -140,17 +140,6 @@ class cs_discussion_manager extends cs_manager {
       $this->_sort_order = (string)$order;
    }
 
-
-  /** set limit to array of discussion item_ids
-    *
-    * @param array array of ids to be loaded from db
-    *
-    * @author CommSy Development Group
-    */
-   function setIDArrayLimit ($id_array){
-     $this->_id_array_limit = (array)$id_array;
-   }
-
    function getIDs () {
       return $this->getIDArray();
    }

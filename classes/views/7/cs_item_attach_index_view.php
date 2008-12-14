@@ -46,7 +46,7 @@ var $_hidden_field_array = array();
    }
 
    function setRefItemID($iid){
-   	$this->_ref_iid = $iid;
+      $this->_ref_iid = $iid;
    }
 
    function setLinkedItemIDArray($array){
@@ -57,11 +57,11 @@ var $_hidden_field_array = array();
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
       $html .= '      <td class="head" colspan="4" style="vertical-align:middle;">&nbsp;'.LF;
-      $html .= '   <input type="hidden" name="return_attach_item_list" value="true"/>'.LF;
-      $html .= '<input type="hidden" style="font-size:10pt;" name="iid" value="'.$this->_ref_iid.'"/>';
-      $html .= '<input type="submit" style="font-size:10pt;" name="option"';
-      $html .= ' value="'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'"';
-      $html .= '/>'.LF;
+      $html .= '         <input type="hidden" name="return_attach_item_list" value="true"/>'.LF;
+      $html .= '         <input type="hidden" style="font-size:10pt;" name="iid" value="'.$this->_ref_iid.'"/>';
+      $html .= '         <input type="submit" style="font-size:10pt;" name="option"';
+      $html .= '          value="'.$this->_translator->getMessage('COMMON_ITEM_ATTACH').'"';
+      $html .= '         />'.LF;
       $html .= '      </td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
@@ -77,7 +77,7 @@ var $_hidden_field_array = array();
    }
 
    function setHiddenFields($array){
-   	$this->_hidden_field_array = $array;
+      $this->_hidden_field_array = $array;
    }
 
    function setLongTitle(){
@@ -524,7 +524,7 @@ var $_hidden_field_array = array();
       $html  = '';
       $context_item = $this->_environment->getCurrentContextItem();
       $module = $this->_environment->getCurrentModule();
-      $width = '180';
+      $width = '168';
 
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
       $html .= $this->_translator->getMessage('SEARCH_RUBRIC_RESTRICTION').'&nbsp;'.LF;
@@ -591,7 +591,14 @@ var $_hidden_field_array = array();
          }
       }
 
-      $html .= '   </select>'.LF;
+      $html .= '   </select>'.BRLF;
+
+      $html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
+      if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
+         $html .= ' checked="checked"';
+      }
+      $html .= '/>'.$this->_translator->getMessage('SEARCH_LINKED_ENTRIES_ONLY').LF;
+
       $html .= '</div>'.LF;
 
 /*      if ($context_item->withActivatingContent()){
@@ -775,9 +782,9 @@ var $_hidden_field_array = array();
          $params['mode'] = 'list_actions';
       }
       if ($this->_environment->getCurrentFunction()=='edit'){
-      	$edit_page = true;
+         $edit_page = true;
       }else{
-      	$edit_page = false;
+         $edit_page = false;
       }
       unset($params['select']);
       if ($interval > 0) {
@@ -1084,9 +1091,9 @@ var $_hidden_field_array = array();
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
       if (count($this->_checked_ids)>0){
-      	$desc = ' ('.count($this->_checked_ids).' '.$this->_translator->getMessage('COMMON_ACTUAL_ATTACHED').')';
+         $desc = ' ('.count($this->_checked_ids).' '.$this->_translator->getMessage('COMMON_ACTUAL_ATTACHED').')';
       }else{
-      	$desc = '';
+         $desc = '';
       }
       $html .= '<h2 id="profile_title">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').$desc.'</h2>';
       $html .='</div>'.LF;

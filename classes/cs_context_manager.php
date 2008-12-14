@@ -87,14 +87,6 @@ class cs_context_manager extends cs_manager {
       $this->_id_array_limit = NULL;
    }
 
-   /** set limit to array of announcement item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array){
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    /** set status limit
     */
    function setStatusLimit($limit) {

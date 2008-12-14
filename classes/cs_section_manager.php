@@ -164,14 +164,6 @@ class cs_section_manager extends cs_manager {
      $this->_search_limit = cs_strtoupper($this->_search_limit);
    }
 
-    /** set limit to array of section item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array){
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    function getIDs () {
       return $this->getIDArray();
    }

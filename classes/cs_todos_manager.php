@@ -126,14 +126,6 @@ class cs_todos_manager extends cs_manager {
       $this->_from_limit = (int)$from;
    }
 
-   /** set limit to array of todo item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array){
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    function setGroupLimit ($limit) {
       $this->_group_limit = (int)$limit;
    }

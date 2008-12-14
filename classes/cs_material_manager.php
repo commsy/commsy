@@ -663,6 +663,11 @@ class cs_material_manager extends cs_manager {
          $id_string = implode(', ',$this->_id_limit);
          $query .= ' AND materials.item_id IN ('.encode(AS_DB,$id_string).')';
       }
+
+      if( !empty($this->_id_array_limit) ) {
+         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+      }
+
       if (isset($this->_attribute_limit) and !($this->_attribute_limit=='all')
       and isset($this->_search_array) and !empty($this->_search_array)){
          if ( 'modificator'== $this->_attribute_limit ) {

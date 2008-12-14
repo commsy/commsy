@@ -134,14 +134,6 @@ class cs_tag_manager extends cs_manager {
      $this->_from_limit = (int)$from;
   }
 
-   /** set limit to array of announcement item_ids
-    *
-    * @param array array of ids to be loaded from db
-    */
-   function setIDArrayLimit ($id_array) {
-      $this->_id_array_limit = (array)$id_array;
-   }
-
    function setSortOrder ($order) {
       $this->_sort_order = (string)$order;
    }

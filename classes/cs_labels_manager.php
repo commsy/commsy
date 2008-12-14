@@ -457,6 +457,10 @@ class cs_labels_manager extends cs_manager {
          }
       }
 
+      if( !empty($this->_id_array_limit) ) {
+         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(", ",encode(AS_DB,$this->_id_array_limit)).')';
+      }
+
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
