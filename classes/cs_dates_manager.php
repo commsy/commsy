@@ -419,20 +419,22 @@ class cs_dates_manager extends cs_manager {
             $query .= ' ORDER BY dates.title DESC';
          }
       } elseif ($this->_future_limit) {
-          $query .= ' ORDER BY dates.datetime_start ASC';
+         $query .= ' ORDER BY dates.datetime_start ASC';
       } else {
-          $query .= ' ORDER BY dates.datetime_start ASC';
+         $query .= ' ORDER BY dates.datetime_start DESC';
       }
 
-       if ($mode == 'select') {
-          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
-             $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
-          }
-       }
+      if ($mode == 'select') {
+         if (isset($this->_interval_limit) and isset($this->_from_limit)) {
+            $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
+         }
+      }
+
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-          include_once('functions/error_functions.php');trigger_error('Problems selecting dates.',E_USER_WARNING);
+          include_once('functions/error_functions.php');
+          trigger_error('Problems selecting dates.',E_USER_WARNING);
       } else {
           return $result;
       }

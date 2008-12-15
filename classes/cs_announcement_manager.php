@@ -307,6 +307,8 @@ class cs_announcement_manager extends cs_manager {
          } elseif ( $this->_sort_order == 'modificator_rev' ) {
             $query .= ' ORDER BY people.lastname DESC';
          }
+      } else {
+         $query .= ' ORDER BY announcement.modification_date DESC';
       }
 
       if ( $mode == 'select' ) {

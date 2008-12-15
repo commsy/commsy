@@ -608,7 +608,7 @@ var $_hidden_field_array = array();
       # div end
       $html .= '</div>'.LF;
 
-/*      if ($context_item->withActivatingContent()){
+      if ( $context_item->withActivatingContent() ) {
          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.item_list_form.submit()">'.LF;
          $html .= '      <option value="1"';
@@ -624,7 +624,7 @@ var $_hidden_field_array = array();
          $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
          $html .= '   </select>'.LF;
          $html .='</div>';
-      }*/
+      }
       return $html;
   }
 

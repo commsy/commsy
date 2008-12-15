@@ -271,7 +271,6 @@ foreach ($rubric_array as $rubric) {
    }
    $session->setValue('cid'.$environment->getCurrentContextID().'_item_attach_index_ids', $rubric_ids);
    $item_ids = array_merge($item_ids, $rubric_ids);
-
 }
 
 
