@@ -681,7 +681,7 @@ if (!isset($action)) {
    echo '</tr>';
    echo '<tr>';
    echo '<td>'.$language[$lang]['abspath'].':&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-   echo "<td><input type=\"text\" name=\"abspath\" value=\"".substr($path, 0, -18)."\" class=\"formular\" /></td>";
+   echo "<td><input type=\"text\" name=\"abspath\" value=\"".substr($path, 0, -25)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '</table>';
 
