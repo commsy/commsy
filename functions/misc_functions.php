@@ -189,7 +189,9 @@ function XMLToArray($xml) {
          if ($counter > 0) {
             $return[$element] = XMLToArray($value);
          } else {
-            if ( isset($value) ) {
+            if ( !empty($element) and $element == 'extras') {
+               $value = unserialize(utf8_decode((string)$value));
+            } elseif ( isset($value) ) {
                // convert > and < to their html entities (gt; and &lt;)
                if ( strstr($value,"%CS_AND;") ) {
                   $value = ereg_replace("%CS_AND;", "&", $value);
@@ -205,7 +207,11 @@ function XMLToArray($xml) {
                $value = '';
             }
             if (!isset($return[$element])) {
-               $return[$element] = (string)$value;
+               if ( is_array($value) ) {
+                  $return[$element] = $value;
+               } else {
+                  $return[$element] = (string)$value;
+               }
             } else {
                if (!is_array($return[$element])) {
                   $return[$element] = array($return[$element], (string)$value);

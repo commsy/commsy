@@ -1470,7 +1470,7 @@ class cs_item {
          $item = $item_manager->getItem($iid);
          $rubric = $item->getItemType();
          if($rubric == CS_LABEL_TYPE){
-         	$label_manager = $this->_environment->getLabelManager();
+            $label_manager = $this->_environment->getLabelManager();
             $label_item = $label_manager->getItem($iid);
             $rubric = $label_item->getLabelType();
          }
@@ -1550,6 +1550,7 @@ class cs_item {
       $retour = '';
       foreach ($this->_data as $key => $value) {
          if ($key == 'extras') {
+            /*
             $xml = array2XML($value);
             if ( strstr($xml,"%CS_AND;") ) {
                $xml = ereg_replace("%CS_AND;", "&", $xml);
@@ -1561,6 +1562,8 @@ class cs_item {
                $xml = ereg_replace("%CS_GT;", ">", $xml);
             }
             $retour .= '<'.$key.'>'.$xml.'</'.$key.'>'.LF;
+            */
+            $retour .= '<'.$key.'><![CDATA['.serialize($value).']]></'.$key.'>'.LF;
          } elseif ( !empty($value) ) {
             $retour .= '<'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
          }
