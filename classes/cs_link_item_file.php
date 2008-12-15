@@ -67,7 +67,9 @@ class cs_link_item_file extends cs_item {
          $item_manager = $this->_environment->getItemManager();
          $item_type = $item_manager->getItemType($item_id);
          $manager = $this->_environment->getManager($item_type);
-         $retour = $manager->getItem($item_id);
+         if ( isset($manager) ) {
+            $retour = $manager->getItem($item_id);
+         }
          unset($manager);
          unset($item_manager);
       }
