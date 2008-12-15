@@ -967,6 +967,7 @@ class cs_view {
       $reg_exp_array['(:googlevideo'] = '/\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:lecture2go']  = '/\\(:lecture2go (.*?)(\\s.*?)?\\s*?:\\)/e';
       if($this->_environment->isScribdAvailable()){
         $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
@@ -1040,6 +1041,9 @@ class cs_view {
                      break;
                   } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
                      $value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
+                     break;
+                  } elseif ( $key == '(:lecture2go' and stristr($value_new,'(:lecture2go') ) {
+                     $value_new = $this->_format_lecture2go($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
                   } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
                      $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -1699,6 +1703,100 @@ class cs_view {
          $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
          $image_text .= '</script>'.LF;
 
+         $text = str_replace($array[0],$image_text,$text);
+      }
+      $retour = $text;
+      return $retour;
+   }
+
+   // experimental
+   function _format_lecture2go ( $text, $array ) {
+      $server = 'rtmp://fms.rrz.uni-hamburg.de:1936/vod';
+
+      $retour = '';
+      $source = $array[1];
+      $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+
+      if ( !empty($array[2]) ) {
+         $args = $this->_parseArgs($array[2]);
+      } else {
+         $args = array();
+      }
+
+      if ( !empty($args['play']) ) {
+         $play = $args['play'];
+      } else {
+         $play = 'false';
+      }
+
+      $factor = 0.625; // orig = 1;
+      if ( !empty($args['width']) ) {
+         $width = $args['width'];
+      } else {
+         $width = 960*$factor;
+      }
+      if ( !empty($args['height']) ) {
+         $height = $args['height'];
+      } else {
+         $height = 500*$factor+(14/$factor)-14;
+      }
+
+      if ( !empty($args['image']) ) {
+         $image = $args['image'];
+      } else {
+         // http://lecture2go.rrz.uni-hamburg.de/dini/dini.jpg
+         $image = '';
+      }
+
+      if ( !empty($args['float'])
+           and ( $args['float'] == 'left'
+                 or $args['float'] == 'right'
+               )
+         ) {
+         $float = 'float:'.$args['float'].';';
+      } elseif ( !empty($args['lfloat']) ) {
+         $float = 'float:left;';
+      } elseif ( !empty($args['rfloat']) ) {
+         $float = 'float:right;';
+      } else {
+         $float = '';
+      }
+
+      if ( !empty($source) ) {
+         $image_text = '';
+         $div_number = $this->_getDivNumber();
+         $image_text .= '<script type="text/javascript" src="http://lecture2go.rrz.uni-hamburg.de/jw/swfobject.js"></script>
+<script src="http://lecture2go.rrz.uni-hamburg.de/dini/flash_detect/new_detection_kit/AC_OETags.js" language="javascript" type="text/javascript"></script>
+<script type="text/javascript">
+function showPlayer(serv,file,autostart){
+    var requiredMajorVersion=9;
+    var requiredMinorVersion=0;
+    var requiredRevision=115;
+
+    // Version check based upon the values entered above in "Globals"
+    var hasReqestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+
+    // Check to see if the version meets the requirements for playback
+    if (hasReqestedVersion) {
+        insertFile(serv,file,autostart);
+    }
+
+}
+
+function insertFile(serv,file,autostart){
+    //forward
+    var s1 = new SWFObject("http://lecture2go.rrz.uni-hamburg.de/jw/player.swf","ply","'.$width.'","'.$height.'","9","#FFFFFF");
+    s1.addParam("allowfullscreen","true");
+    s1.addParam("allowscriptaccess","always");
+    s1.addParam("flashvars","fullscreen=true&bufferlength=2&streamer="+serv+"&file="+file+"&autostart="+autostart+"&image='.$image.'&screencolor=#343434");
+    s1.addVariable("screencolor","#FFFFFF");
+    s1.write("id'.$div_number.'");
+}
+</script>';
+
+         $text_without_flash = '<div>'.$this->_translator->getMessage('COMMON_GET_FLASH_LECTURE2GO').'</div>';
+         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
+         $image_text .= '<script type="text/javascript">showPlayer("'.$server.'","'.$source.'","'.$play.'")</script>'.LF;
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
