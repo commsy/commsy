@@ -361,7 +361,7 @@ class cs_user_detail_view extends cs_detail_view {
          $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
-      return $html;
+      return $html.'&nbsp;&nbsp;&nbsp;';
 
    }
 

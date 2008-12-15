@@ -276,6 +276,7 @@ class cs_detail_view extends cs_view {
          $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
+      $html .='&nbsp;&nbsp;&nbsp;';
       return $html;
 
    }
@@ -346,7 +347,7 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['iid'] = 'NEW';
          $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
-         $html .= '&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
+         $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'edit',
                                     $params,

@@ -423,6 +423,22 @@ class cs_topic_detail_view extends cs_detail_view {
          $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
+      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions) {
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                     $this->_environment->getCurrentModule(),
+                                     'detail',
+                                     $params,
+                                     $image,
+                                     getMessage('COMMON_DELETE_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      $html .= '&nbsp;&nbsp;&nbsp;';
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';

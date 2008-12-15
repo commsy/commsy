@@ -225,7 +225,7 @@ class cs_todo_detail_view extends cs_detail_view {
       }
 
 
-      return $html;
+      return $html.'&nbsp;&nbsp;&nbsp;';
    }
 
 }
