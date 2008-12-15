@@ -626,11 +626,7 @@ var $_hidden_field_array = array();
          $html .='</div>';
       }
       return $html;
-  }
-
-
-
-
+   }
 
    function _getAdditionalFormFieldsAsHTML ($field_length=14.5) {
       $current_context = $this->_environment->getCurrentContextItem();
@@ -1094,6 +1090,7 @@ var $_hidden_field_array = array();
          if ( $field_name != 'from'
               and $field_name != 'count_all_shown'
               and $field_name != 'interval'
+              and $field_name != 'iid'
             ) {
             if ( is_array($value) ) {
                foreach ( $value as $key2 => $value2 ) {
