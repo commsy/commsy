@@ -112,22 +112,21 @@ class cs_homepagelink_manager extends cs_manager {
   function _update ($homepagelink_item) {
      $current_datetime = getCurrentDateTimeInMySQL();
 
+     $query  = 'UPDATE '.$this->_db_table.' SET '.
+               'from_item_id="'.encode(AS_DB,$homepagelink_item->getFatherItemID()).'",'.
+               'modifier_id="'.encode(AS_DB,$homepagelink_item->getModifierItemID()).'",'.
+               'modification_date="'.$current_datetime.'",';
      if ($homepagelink_item->getSortingPlace()) {
-        $sorting_place = '"'.$homepagelink_item->getSortingPlace().'"';
+        $query .= 'sorting_place="'.encode(AS_DB,$homepagelink_item->getSortingPlace()).'"';
      } else {
-        $sorting_place = 'NULL';
+        $query .= 'sorting_place=NULL';
      }
-
-     $query = 'UPDATE '.$this->_db_table.' SET '.
-              'from_item_id="'.encode(AS_DB,$homepagelink_item->getFatherItemID()).'",'.
-              'modifier_id="'.encode(AS_DB,$homepagelink_item->getModifierItemID()).'",'.
-              'modification_date="'.$current_datetime.'",'.
-              'sorting_place='.encode(AS_DB,$sorting_place).''.
-              ' WHERE link_id="'.encode(AS_DB,$homepagelink_item->getLinkID()).'"';
+     $query .= ' WHERE link_id="'.encode(AS_DB,$homepagelink_item->getLinkID()).'"';
 
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) or !$result ) {
-        include_once('functions/error_functions.php');trigger_error('Problems updating homepage link from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems updating homepage link from query: "'.$query.'"',E_USER_WARNING);
      }
   }
 
