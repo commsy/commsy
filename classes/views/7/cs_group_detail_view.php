@@ -638,7 +638,7 @@ class cs_group_detail_view extends cs_detail_view {
       ##############################
       # FLAG: group room
       ##############################
-      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
+      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions and !$item->isSystemLabel()) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
          $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
