@@ -700,6 +700,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
                $html .='<div style="padding-top:10px;">'.LF;
                $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
+               $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
                $pos = $current_item->getPosition();
                $number_array = explode('.',$pos);
                $number = '';
