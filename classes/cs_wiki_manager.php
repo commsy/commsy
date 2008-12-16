@@ -939,7 +939,6 @@ function exportMaterialToWiki($current_item_id){
    if (!$directory_handle_uploads) {
       mkdir($dir_wiki_uploads);
    }
-   
    $dir_wiki_file = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy';
    $directory_handle_file = @opendir($dir_wiki_file);
    if (!$directory_handle_file) {
@@ -970,6 +969,8 @@ function exportMaterialToWiki($current_item_id){
    
    $wiki_view->setItem($material_item);
    $description = $wiki_view->formatForWiki($description);
+   $description = $this->encodeUmlaute($description);
+   $description = $this->encodeUrl($description);
    $html_wiki_file = 'CommSy.Material' . $current_item_id . '.html';
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
@@ -981,7 +982,6 @@ function exportMaterialToWiki($current_item_id){
    if($returnstatus == 0){
       // Mit Perl
       $returnwiki = implode('%0a', $returnwiki);
-      $returnwiki = $this->encodeUmlaute($returnwiki);
    } else {
       // Ohne Perl
       $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
@@ -997,8 +997,11 @@ function exportMaterialToWiki($current_item_id){
       $file_array = $file_list->to_array();
       $file_link_array = array();
       foreach ($file_array as $file) {
-         copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder());
-         $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder() . '|' . $file->getFileName() . ']]';
+         $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
+         $new_filename = preg_replace("/cid([0-9]*)_/", "", $new_filename);
+         copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
+         $new_link = $this->encodeUrlToHtml($file->getFileName());
+         $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
       }
       $file_links = implode('\\\\%0a', $file_link_array);
       $informations .= '(:cellnr:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
@@ -1027,7 +1030,11 @@ function exportMaterialToWiki($current_item_id){
          unset($params);
          $wiki_view->setItem($section);
          $description = $wiki_view->formatForWiki($description);
+         $description = $this->encodeUmlaute($description);
+         $description = $this->encodeUrl($description);
          $html_wiki_file = 'CommSy.Material' . $current_item_id . '.section.' . $section->getItemID() . '.html';
+         $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
+         $html_wiki_file = $this->encodeUrl($html_wiki_file);
          $old_dir = getcwd();
          chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
          file_put_contents($html_wiki_file, $description);
@@ -1036,7 +1043,6 @@ function exportMaterialToWiki($current_item_id){
          if($returnstatus == 0){
             // Mit Perl
             $returnwiki = implode('%0a', $returnwiki);
-            $returnwiki = $this->encodeUmlaute($returnwiki);
          } else {
             // Ohne Perl
             $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
@@ -1052,8 +1058,11 @@ function exportMaterialToWiki($current_item_id){
             $file_array = $file_list->to_array();
             $file_link_array = array();
             foreach ($file_array as $file) {
-               copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder());
-               $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder() . '|' . $file->getFileName() . ']]';
+               $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
+               $new_filename = preg_replace("/cid([0-9]*)_/", "", $new_filename);
+               copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
+               $new_link = $this->encodeUrlToHtml($file->getFileName());
+               $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
             }
             $file_links = implode('\\\\%0a', $file_link_array);
             $files .= '(:table border=0 style="margin-left:0px;":)%0a';
@@ -1154,6 +1163,28 @@ function encodeUmlaute($html){
         $html = str_replace("ü", "&uuml;", $html);
         $html = str_replace("Ü", "&Uuml;", $html);
         $html = str_replace("ß", "&szlig;", $html);
+        return $html;
+}
+
+function encodeUrl($html){
+        $html = str_replace("%E4", "ae", $html);
+        $html = str_replace("%C4", "AE", $html);
+        $html = str_replace("%F6", "oe", $html);
+        $html = str_replace("%D6", "OE", $html);
+        $html = str_replace("%FC", "ue", $html);
+        $html = str_replace("%DC", "UE", $html);
+        $html = str_replace("%DF", "ss", $html);
+        return $html;
+}
+
+function encodeUrlToHtml($html){
+        $html = str_replace("%E4", "&auml;", $html);
+        $html = str_replace("%C4", "&Auml;", $html);
+        $html = str_replace("%F6", "&ouml;", $html);
+        $html = str_replace("%D6", "&Ouml;", $html);
+        $html = str_replace("%FC", "&uuml;", $html);
+        $html = str_replace("%DC", "&Uuml;", $html);
+        $html = str_replace("%DF", "&szlig;", $html);
         return $html;
 }
 
