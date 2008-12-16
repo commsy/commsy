@@ -1064,21 +1064,38 @@ class cs_page_view extends cs_view {
             $additional = 'selected="selected"';
          }
          $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$this->_environment->getCurrentPortalItem()->getTitle().'</option>'.LF;
-         $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
-         $additional = '';
-         $user = $this->_environment->getCurrentUser();
-         $private_room_manager = $this->_environment->getPrivateRoomManager();
-         $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-         if ( isset($own_room) ) {
-            $own_cid = $own_room->getItemID();
-            $additional = '';
-            if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
-               $additional = ' selected="selected"';
+
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+            $link_active = true;
+         } else {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isRoomMember() ) {
+               $link_active = true;
+            } else {
+               $link_active = false;
             }
-            $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+            unset($current_user_item);
          }
-         unset($own_room);
-         unset($private_room_manager);
+         unset($current_portal_item);
+
+         if ( $link_active ) {
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
+            $additional = '';
+            $user = $this->_environment->getCurrentUser();
+            $private_room_manager = $this->_environment->getPrivateRoomManager();
+            $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
+            if ( isset($own_room) ) {
+               $own_cid = $own_room->getItemID();
+               $additional = '';
+               if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
+                  $additional = ' selected="selected"';
+               }
+               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+            }
+            unset($own_room);
+            unset($private_room_manager);
+         }
       }
 
       $first_time = true;
