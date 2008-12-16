@@ -777,7 +777,16 @@ if ( $show_agb_again ) {
          $page->setWithoutPersonalArea();
       }
    } else {
-      include('pages/'.$current_module.'_'.$current_function.'.php');
+      if ($current_function =='edit' and $current_context->isDesign7()
+          and (
+                $current_module == CS_MATERIAL_TYPE
+             )
+          ){
+         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
+#          include('pages/'.$current_module.'_'.$current_function.'.php');
+      }else{
+         include('pages/'.$current_module.'_'.$current_function.'.php');
+      }
    }
 } else {
    $page->add($errorbox);

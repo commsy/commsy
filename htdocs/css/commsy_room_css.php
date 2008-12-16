@@ -188,6 +188,8 @@ div.content_fader{
           echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat;');
        }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'x'){
           echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-x;');
+       }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'y'){
+          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-y;');
        }else{
           echo('background: url(images/bg-'.$color['schema'].'.jpg) no-repeat;');
        }
@@ -399,6 +401,7 @@ h1{
    padding-top:0px;
    font-size: 16pt;
    font-weight:bold;
+   color: <?php echo($color['page_title'])?>;
 }
 
 
@@ -418,24 +421,24 @@ h1{
    margin-bottom:0px;
    width:93%;
    padding:5px;
-   border: 1px #B0B0B0 dashed;
-   background-color:<?php echo($color['boxes_background'])?>;
+   border: 1px #666 dashed;
+   background-color:#B0B0B0;
 }
 .form_formatting_checkbox_box{
    margin-top:0px;
    margin-bottom:0px;
    width:93%;
    padding:5px 10px 5px 10px;
-   border: 1px #B0B0B0 dashed;
-   background-color:<?php echo($color['boxes_background'])?>;
+   border: 1px #666 dashed;
+   background-color:#B0B0B0;
 }
 
 #template_information_box{
    margin-top:5px;
    margin-bottom:0px;
    padding:5px;
-   border: 1px #B0B0B0 dashed;
-   background-color:<?php echo($color['boxes_background'])?>;
+   border: 1px #666 dashed;
+   background-color:#B0B0B0;
 }
 
 #profile_title, .profile_title{

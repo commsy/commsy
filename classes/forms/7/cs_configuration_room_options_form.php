@@ -228,6 +228,16 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_13';
       $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_13')] = $temp_array;
 
+      $temp_array = array();
+      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_14');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_14';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_14')] = $temp_array;
+
+      $temp_array = array();
+      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_15');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_15';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_15')] = $temp_array;
+
       ksort($array_info_text_temp);
       foreach($array_info_text_temp as $entry){
          $this->_array_info_text[] = $entry;
@@ -403,6 +413,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_13'  ) {
             $desc = '<img src="images/color_schema_13.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_13').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_14'  ) {
+            $desc = '<img src="images/color_schema_14.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_14').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_15'  ) {
+            $desc = '<img src="images/color_schema_15.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_15').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
             $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_101'),'','',10);
             $this->_form->addTextField('color_2','',$this->_translator->getMessage('COMMON_COLOR_102'),'','',10);
@@ -470,6 +486,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_13' ) {
             $desc = '<img src="images/color_schema_13.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_13').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $color['schema']=='SCHEMA_14' ) {
+            $desc = '<img src="images/color_schema_14.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_14').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+         }elseif ( $color['schema']=='SCHEMA_15' ) {
+            $desc = '<img src="images/color_schema_15.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_15').'" style=" width:200px; border:1px solid black; vertical-align: middle;"/>';
             $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_OWN' ) {
             $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_101'),'','',10);

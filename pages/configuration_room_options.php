@@ -166,6 +166,10 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color = $cs_color['SCHEMA_12'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_13'){
                $color = $cs_color['SCHEMA_13'];
+            }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_14'){
+               $color = $cs_color['SCHEMA_14'];
+            }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_15'){
+               $color = $cs_color['SCHEMA_15'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
                if (!empty($_POST['color_1'])){
                   $color['tabs_background'] = $_POST['color_1'];

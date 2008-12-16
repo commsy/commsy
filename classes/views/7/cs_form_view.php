@@ -662,13 +662,13 @@ class cs_form_view extends cs_view {
          $url .= str_replace('commsy.php','',$_SERVER['PHP_SELF']);
          $curl_upload = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'upload',array('SID' => $session_id));
          $curl_end = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
-         $html .= '<div style="background: '.$color_array['boxes_background'].'; border: 1px dashed #B0B0B0; width: 600px">'.LF;
+         $html .= '<div style="background: #F0F0F0; border: 1px dashed #B0B0B0; width: 600px">'.LF;
          $html .= '<applet name="postlet" code="Main.class" archive="applet/postlet.jar" width="600px" height="150">'.LF;
          $html .= '   <param name = "maxthreads"         value = "5" />'.LF;
          $html .= '   <param name = "language"           value = "'.$this->_environment->getSelectedLanguage().'" />'.LF;
          $html .= '   <param name = "type"               value = "application/x-java-applet;version=1.3.1" />'.LF;
          $html .= '   <param name = "destination"        value = "'.$curl_upload.'" />'.LF;
-         $html .= '   <param name = "backgroundcolour"   value = "'.$backgroundcolor.'" />'.LF;
+         $html .= '   <param name = "backgroundcolour"   value = "#F0F0F0" />'.LF;
          $html .= '   <param name = "tableheaderbackgroundcolour" value = "14079989" />'.LF;
          $html .= '   <param name = "tableheadercolour"  value = "0" />'.LF;
          $html .= '   <param name = "warnmessage"        value = "false" />'.LF;
