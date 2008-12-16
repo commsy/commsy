@@ -131,7 +131,7 @@ $title_view = $class_factory->getClass(HOME_TITLE_VIEW,$params);
 unset($params);
 $page->add($title_view);
 
-if ($status=='detailed'){
+if ($status=='detailed' or $context_item->isDesign7()){
 #   include_once('classes/cs_private_room_short_view.php');
    $params = array();
    $params['environment'] = $environment;
