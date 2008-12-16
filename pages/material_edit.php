@@ -22,8 +22,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+set_time_limit(0); // ???
+
 /*** Neue Schlagwörter und Tags***/
-set_time_limit(0);
 if (isset($_GET['return_attach_buzzword_list'])){
    $_POST = $session->getValue('buzzword_post_vars');
    unset($_POST['option']);

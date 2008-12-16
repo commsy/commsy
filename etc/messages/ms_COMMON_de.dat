@@ -334,6 +334,7 @@ $message["COMMON_FORWARD_BUTTON"]["de"] = "Weiter";
 $message["COMMON_FROM2"]["de"] = "von";
 $message["COMMON_FULL_TEXT"]["de"] = "Volltext";
 $message["COMMON_GET_FLASH"]["de"] = "Zur Darstellung benötigen Sie das Flash-Plugin des Browsers.";
+$message["COMMON_GET_FLASH_LECTURE2GO"]["de"] = "Um die Videoinhalte sehen zu können, müssen Sie <strong><em>javascript</em></strong> aktiviert haben und über ein <a href=&quot;http://www.macromedia.com/go/getflashplayer&quot; target=&quot;_blank&quot;><em>Flashplayer-Plugin Version 9.0.115</em></a> (oder höher) verfügen!";
 $message["COMMON_GO_BUTTON"]["de"] = "Raum wechseln";
 $message["COMMON_GO_BUTTON2"]["de"] = "go";
 $message["COMMON_GROUP"]["de"] = "Gruppe";
