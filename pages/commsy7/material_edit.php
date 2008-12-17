@@ -504,12 +504,16 @@ else {
 
                // Save material
                $material_item->save();
-               if ($item_is_new){
-               	$id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_material_index_ids'));
-                  $id_array[] = $material_item->getItemID();
-                  $id_array = array_reverse($id_array);
-                  $session->setValue('cid'.$environment->getCurrentContextID().'_material_index_ids',$id_array);
-               }
+	           if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
+	              $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
+	           }else{
+	              $id_array =  array();
+	           }
+	           if ($item_is_new){
+	              $id_array[] = $material_item->getItemID();
+	              $id_array = array_reverse($id_array);
+	              $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
+	          }
 
                // send notifications if world public status is requested
                if ( $material_item->getWorldPublic() == 1

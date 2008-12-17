@@ -780,6 +780,13 @@ if ( $show_agb_again ) {
       if ($current_function =='edit' and $current_context->isDesign7()
           and (
                 $current_module == CS_MATERIAL_TYPE
+                or $current_module == CS_ANNOUNCEMENT_TYPE
+                or $current_module == CS_DATE_TYPE
+                or $current_module == CS_DISCUSSION_TYPE
+                or $current_module == CS_GROUP_TYPE
+                or $current_module == CS_TODO_TYPE
+                or $current_module == CS_TOPIC_TYPE
+                or $current_module == CS_INSTITUTION_TYPE
              )
           ){
          include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
