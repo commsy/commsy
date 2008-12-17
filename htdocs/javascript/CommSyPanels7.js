@@ -369,6 +369,7 @@
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;
       img.src = img.src.replace('.gif','_over.gif');
+      document.body.style.cursor = "pointer";
    }
 
    function mouseoutTopbarBar(){
@@ -376,4 +377,5 @@
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;
       img.src = img.src.replace('_over.gif','.gif');
+      document.body.style.cursor = "default";
    }
