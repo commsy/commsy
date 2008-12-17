@@ -30,7 +30,10 @@ function attach_redirect ($rubric_type, $current_iid) {
         and $session->getValue('cookie') == 1 ) {
       $session_id = $session->getSessionID();
       $session_manager = $environment->getSessionManager();
-      $session = $session_manager->get($session->getValue('commsy_session_id'));
+      $session2 = $session_manager->get($session->getValue('commsy_session_id'));
+      if ( isset($session2) ) {
+         $session = $session2;
+      }
       $session->setValue('homepage_session_id',$session_id);
    }
 
