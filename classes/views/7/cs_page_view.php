@@ -310,6 +310,7 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentFunction() == 'info_text_form_edit'
                or $this->_environment->getCurrentFunction() =='close'
                or $this->_environment->getCurrentFunction() =='import'
+               or $this->_environment->getCurrentFunction() =='ims_import'
                or $this->_environment->getCurrentFunction() =='preferences'
                or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='preferences')
                or ($this->_environment->getCurrentModule() =='user' and $this->_environment->getCurrentFunction() =='action')
