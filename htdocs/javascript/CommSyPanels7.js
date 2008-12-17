@@ -282,6 +282,7 @@
             info.style.cssFloat = 'left';
             
             var span = document.createElement('SPAN');
+            span.id = 'span' + commsy_panel_index;
             span.innerHTML = panelTitles[commsy_panel_index].replace(/&COMMSYDHTMLTAG&/g,'</');
             info.appendChild(span);
 
@@ -326,9 +327,11 @@
                }
                img.src = 'images/arrow_down.gif';
                klick.id = klick.id + 'down';
+               span.id = span.id + 'down';
                span2.id = span2.id + 'down';
             } else {
             	klick.id = klick.id + 'up';
+            	span.id = span.id + 'up';
             	span2.id = span2.id + 'up';
             }
 
@@ -336,6 +339,19 @@
             divs[no].appendChild(topBar);
             divs[no].appendChild(outerContentDiv);
             commsy_panel_index++;
+
+				var childrenSpan = span.getElementsByTagName('*');
+				var hasLink = false;
+				for(var index=0; index<childrenSpan.length; index++) {
+					if(childrenSpan[index].tagName == 'A'){
+						hasLink = true;
+					}
+				}
+				if(!hasLink){
+					span.onclick = showHidePaneContentTopBar;
+					span.onmouseover = mouseoverTopbarBar;
+            	span.onmouseout = mouseoutTopbarBar;
+				}
 
 				span2.onclick = showHidePaneContentTopBar;
 				span2.onmouseover = mouseoverTopbarBar;
