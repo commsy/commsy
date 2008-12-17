@@ -68,6 +68,19 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_home_buzzword_view';
+define('HOME_BUZZWORD_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_home_tag_view';
+define('HOME_TAG_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
 
 /*************INDEX**************/
 
@@ -435,13 +448,6 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
-$class_name = 'cs_home_buzzword_view';
-define('HOME_BUZZWORD_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
 $class_name = 'cs_home_configuration_view';
 define('HOME_CONFIGURATION_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
@@ -458,13 +464,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_home_informationbox_view';
 define('HOME_INFORMATIONBOX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_home_tag_view';
-define('HOME_TAG_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;

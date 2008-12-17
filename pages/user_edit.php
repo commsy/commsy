@@ -508,7 +508,7 @@ if ($command != 'error') { // only if user is allowed to edit user
             if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
                $id_array = array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));
                if ($environment->inCommunityRoom()){
-                  $user_item->setLinkedItemsByID(CS_INSITUTION_TYPE,$id_array);
+                  $user_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,$id_array);
                }else{
                   $user_item->setLinkedItemsByID(CS_GROUP_TYPE,$id_array);
                }
