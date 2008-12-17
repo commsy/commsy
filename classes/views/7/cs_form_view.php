@@ -1726,6 +1726,28 @@ class cs_form_view extends cs_view {
       }
    }
 
+    function getSearchText (){
+       if (empty($this->_search_text)){
+        $this->_search_text = $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM');
+       }
+       return $this->_search_text;
+    }
+
+
+  function _getSearchAsHTML () {
+     $html  = '';
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="indexform">'.LF;
+     $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+     $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+     $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:220px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.$this->_translator->getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     $html .= '</form>';
+     return $html;
+  }
+
+
    /** get form element as HTML ROW and in commsy-style- internal, do not use
     * this method returns a string contains a form element in commsy-style in HMTL-Code
     *
@@ -1743,7 +1765,6 @@ class cs_form_view extends cs_view {
    function asHTML () {
       $html  = '';
       $netnavigation_array = array();
-      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
       $html .='<div style="width:100%;">'.LF;
 
       #$html .= '<div class="formdate">'.$date_array[2].'. '.$month.' '.$date_array[0].'</div>';
@@ -1801,7 +1822,14 @@ class cs_form_view extends cs_view {
          foreach ($form_element_array as $form_element) {
             $temp_array[] = $form_element;
          }
+
+
          $html .='<div style="width:100%;">'.LF;
+         $html .='<div style="height:30px;">'.LF;
+         $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+         $html .= $this->_getSearchAsHTML();
+         $html .= '</div>'.LF;
+         $html .='<div class="content_display_width" style="width:71%">'.LF;
          if ( $this->_environment->getCurrentFunction() == 'mail' ) {
             $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
          } else {
@@ -1988,7 +2016,11 @@ class cs_form_view extends cs_view {
             }
             $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
          }
-         $html .= '</div>';
+         $html .='</div>'.LF;
+         $html .='<div style="width:100%; clear:both;">'.LF;
+         $html .='</div>'.LF;
+         $html .='</div>'.LF;
+#         $html .= '</div>';
 
 
       //Berechnung der Buttonleiste
@@ -2007,6 +2039,7 @@ class cs_form_view extends cs_view {
 
       $temp_array = array();
       $html .='<div style="width: 100%;">'.LF;
+      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
       $funct = $this->_environment->getCurrentFunction();
       $html .='<div style="float:right; width:27%; margin-top:0px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
       $user = $this->_environment->getCurrentUserItem();
@@ -2236,9 +2269,9 @@ class cs_form_view extends cs_view {
          $html .= '</td>'.LF;
          $html .= '</tr>'.LF;
          $html .= '</table>'.LF;
-         $html .= '</div>'.LF;
       }
       $html .= '</form>'.BRLF;
+      $html .= '</div>'.LF;
       return $html;
    }
 
