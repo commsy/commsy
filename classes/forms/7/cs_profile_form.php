@@ -104,10 +104,10 @@ class cs_profile_form extends cs_rubric_form {
       if ($this->getProfilePageName() == 'user'){
          // headline
          if (!empty($this->_item)) {
-            $this->_headline = getMessage('USER_EDIT_FORM_TITLE');
+            $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
          } elseif (!empty($this->_form_post)) {
             if (!empty($this->_form_post['iid'])) {
-               $this->_headline = getMessage('USER_EDIT_FORM_TITLE');
+               $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
             }
          } else {
             $this->_headline = '';
@@ -126,15 +126,17 @@ class cs_profile_form extends cs_rubric_form {
          }else{
             $customized_list_exists = false;
          }
-         while($room_item){
-            if (!$room_item->isPrivateRoom()){
+         while ($room_item) {
+            if ( !$room_item->isPrivateRoom()
+                 and $room_item->isUser($this->_environment->getCurrentUserItem())
+               ) {
                $temp_array = array();
                $temp_array['text']  = $room_item->getTitle();
                $temp_array['value'] = $room_item->getItemID();
                if (in_array($room_item->getItemID(),$checked_item_array)){
                   $tmp_link_item_array[$room_item->getItemID()] = $room_item->getTitle();
                   $this->_link_item_check_array[] = $room_item->getItemID();
-               }else{
+               } else {
                   if (!$customized_list_exists){
                      $this->_link_item_check_array[] = $room_item->getItemID();
                   }
@@ -157,11 +159,13 @@ class cs_profile_form extends cs_rubric_form {
             $temp_array['value'] = -$i;
             $unchecked_link_item_array[] = $temp_array;
          }
-         foreach($checked_item_array as $id){
-            $temp_array = array();
-            $temp_array['text']  = $tmp_link_item_array[$id];
-            $temp_array['value'] = $id;
-            $this->_link_item_array[] = $temp_array;
+         foreach ($checked_item_array as $id) {
+            if ( !empty($tmp_link_item_array[$id]) ) {
+               $temp_array = array();
+               $temp_array['text']  = $tmp_link_item_array[$id];
+               $temp_array['value'] = $id;
+               $this->_link_item_array[] = $temp_array;
+            }
          }
          $this->_link_item_array = array_merge($this->_link_item_array,$unchecked_link_item_array);
       }else{
@@ -250,25 +254,26 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'','','','');
       }elseif($this->getProfilePageName() == 'newsletter'){
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_NEWSLETTER_NONE');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NONE');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_NEWSLETTER_WEEKLY');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_WEEKLY');
          $radio_values[1]['value'] = '2';
-         $radio_values[2]['text'] = getMessage('CONFIGURATION_NEWSLETTER_DAILY');
+         $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_DAILY');
          $radio_values[2]['value'] = '3';
-         $this->_form->addRadioGroup('newsletter',getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('newsletter',$this->_translator->getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
 
-         $this->_form->addText('newsletter_note', getMessage('CONFIGURATION_NEWSLETTER_NOTE_LABEL'), getMessage('CONFIGURATION_NEWSLETTER_NOTE'));
+         $this->_form->addText('newsletter_note', $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NOTE_LABEL'), $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NOTE'));
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
 
       }elseif($this->getProfilePageName() == 'room_list'){
 #         $this->_form->addHidden('place_array',$this->_link_item_place_array);
 #         $this->_form->combine('vertical');
-         $this->_form->addText('activate_path','',getMessage('PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION'));
+         $this->_form->addText('activate_path','',$this->_translator->getMessage('PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION'));
          $this->_form->addCheckboxGroup('sorting',$this->_link_item_array,$this->_link_item_check_array,'','','','','','','','',50,true,false,true);
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+         $this->_form->addCheckbox('delete',1,false,'',$this->_translator->getMessage('PROFILE_ROOMLIST_DELETE_OPTION'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
       }else{
 
          // headline and hidden fields
@@ -283,15 +288,15 @@ class cs_profile_form extends cs_rubric_form {
 
 
          $this->_form->addHidden('user_id','');
-              // content form fields
-         $this->_form->addTextField('user_id','',getMessage('USER_USER_ID'),'',100,'30',true);
-         $this->_form->addPassword('password','',getMessage('PROFILE_USER_PASSWORD'),'','','20',false);
-         $this->_form->addPassword('password2','',getMessage('PROFILE_USER_PASSWORD2'),'','','20',false);
+         // content form fields
+         $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'',100,'30',true);
+         $this->_form->addPassword('password','',$this->_translator->getMessage('PROFILE_USER_PASSWORD'),'','','20',false);
+         $this->_form->addPassword('password2','',$this->_translator->getMessage('PROFILE_USER_PASSWORD2'),'','','20',false);
 
          $i=0;
          $options = array();
          $options[$i]['value'] = 'browser';
-         $options[$i]['text'] = getMessage('USER_BROWSER_LANGUAGE');
+         $options[$i]['text'] = $this->_translator->getMessage('USER_BROWSER_LANGUAGE');
          $i++;
          $options[$i]['value'] = 'disabled';
          $options[$i]['text'] = '------------------';
@@ -302,15 +307,15 @@ class cs_profile_form extends cs_rubric_form {
             $options[$i]['text'] = $this->_translator->getLanguageLabelOriginally($language);
             $i++;
          }
-         $this->_form->addSelect('language',$options,'',getMessage('USER_LANGUAGE'),'','','',true,'','','','','','11.5');
+         $this->_form->addSelect('language',$options,'',$this->_translator->getMessage('USER_LANGUAGE'),'','','',true,'','','','','','11.5');
          if ($this->_user->isModerator()){
-            $this->_form->addCheckbox('email_account_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
-            $this->_form->addCheckbox('email_room_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
+            $this->_form->addCheckbox('email_account_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
+            $this->_form->addCheckbox('email_room_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
          }
 
          // buttons
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'));
       }
    }
 
@@ -411,7 +416,8 @@ class cs_profile_form extends cs_rubric_form {
             $this->_values['user_id'] = $this->_item->getUserID();
             $this->_values['user_id_text'] = $this->_item->getUserID();
          } else {
-            include_once('functions/error_functions.php');trigger_error('lost values',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('lost values',E_USER_WARNING);
          }
       }
    }
@@ -419,7 +425,7 @@ class cs_profile_form extends cs_rubric_form {
    function _checkValues () {
       if ($this->getProfilePageName() == 'account'){
          if (isset($this->_form_post['password']) and $this->_form_post['password'] != $this->_form_post['password2']) {
-            $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
             $this->_form->setFailure('password');
             $this->_form->setFailure('password2');
          }
@@ -431,14 +437,14 @@ class cs_profile_form extends cs_rubric_form {
             $authentication = $this->_environment->getAuthenticationObject();
             $this->_user = $this->_environment->getPortalUserItem();
             if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$auth_source)) {
-               $this->_error_array[] = getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-               $this->_error_array[] = getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             }
          } else {
-            $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR');
          }
       }
    }

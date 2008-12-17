@@ -1007,19 +1007,24 @@ class cs_privateroom_item extends cs_room_item {
       return $array;
    }
 
-   public function setCustomizedRoomIDArray($array){
-     $string = implode('$SRID$', $array);
-     $this->_addExtra('PRIVATEROOMSELECTEDROOMLIST',$string);
+   public function setCustomizedRoomIDArray ($array) {
+      if ( !empty($array) ) {
+         $string = implode('$SRID$', $array);
+         $this->_addExtra('PRIVATEROOMSELECTEDROOMLIST',$string);
+      } else {
+         $this->_unsetExtra('PRIVATEROOMSELECTEDROOMLIST');
+      }
    }
 
    public function getCustomizedRoomList () {
       $retour = NULL;
       $room_id_array = $this->getCustomizedRoomIDArray();
-      if ( !empty($room_id_array) ) {
+      if ( !empty($room_id_array)
+           and !empty($room_id_array[0])
+         ) {
          // add grouprooms
          $current_user_item = $this->_environment->getCurrentUserItem();
          $grouproom_list = $current_user_item->getRelatedGroupList();
-         unset($current_user_item);
          if ( isset($grouproom_list)
               and $grouproom_list->isNotEmpty()
             ) {
@@ -1045,10 +1050,12 @@ class cs_privateroom_item extends cs_room_item {
          $room_manager = $this->_environment->getRoomManager();
          $room_manager->setIDArrayLimit($room_id_array);
          $room_manager->setOrder('id_array');
+         $room_manager->setUserIDLimit($current_user_item->getUserID());
+         $room_manager->setAuthSourceLimit($current_user_item->getUserID());
          $room_manager->select();
          $retour = $room_manager->get();
          unset($room_manager);
-
+         unset($current_user_item);
       }
       return $retour;
    }

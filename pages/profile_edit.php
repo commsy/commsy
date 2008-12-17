@@ -112,7 +112,7 @@ if ($command != 'error') { // only if user is allowed to edit user
       $profile_view = $class_factory->getClass(PROFILE_FORM_VIEW,$class_params);
       unset($class_params);
       if (isset($_GET['is_saved'])){
-      	$profile_view->setItemIsSaved();
+         $profile_view->setItemIsSaved();
       }
 
 /**************User********/
@@ -544,15 +544,22 @@ if ($command != 'error') { // only if user is allowed to edit user
 
              $correct = $form->check();
              if ( $correct ){
-                if (isset($_POST['sorting'])){
-                  if (isset($_POST['sorting'][0])){
-                     $current_user = $environment->getCurrentUserItem();
-                     $own_room_item = $current_user->getOwnRoom();
-                     $own_room_item->setCustomizedRoomIDArray($_POST['sorting']);
-                     $own_room_item->save();
-                     $is_saved = true;
-
-                  }
+                if ( isset($_POST['sorting'])
+                     or !empty($_POST['delete'])
+                   ) {
+                   if ( isset($_POST['sorting'][0])
+                        or !empty($_POST['delete'])
+                      ) {
+                      $current_user = $environment->getCurrentUserItem();
+                      $own_room_item = $current_user->getOwnRoom();
+                      if ( !empty($_POST['delete']) and $_POST['delete'] == 1 ) {
+                         $own_room_item->setCustomizedRoomIDArray(array());
+                      } else {
+                         $own_room_item->setCustomizedRoomIDArray($_POST['sorting']);
+                      }
+                      $own_room_item->save();
+                      $is_saved = true;
+                   }
                 }
              }
              // redirect
@@ -562,6 +569,7 @@ if ($command != 'error') { // only if user is allowed to edit user
              }
             redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
           }
+
       }elseif ($profile_page =='newsletter'){
           $form->prepareForm();
           $form->loadValues();

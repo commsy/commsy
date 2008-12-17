@@ -762,24 +762,26 @@ class cs_page_view extends cs_view {
       $temp_array['item_id'] = '-1';
       $retour[] = $temp_array;
       $customized_room_list = $own_room_item->getCustomizedRoomList();
-      $room_item = $customized_room_list->getFirst();
-      while ($room_item) {
-         $temp_array = array();
-         if ( $room_item->isGrouproom() ) {
-            $temp_array['title'] = '- '.$room_item->getTitle();
-         } else {
-            $temp_array['title'] = $room_item->getTitle();
+      if ( isset($customized_room_list) ) {
+         $room_item = $customized_room_list->getFirst();
+         while ($room_item) {
+            $temp_array = array();
+            if ( $room_item->isGrouproom() ) {
+               $temp_array['title'] = '- '.$room_item->getTitle();
+            } else {
+               $temp_array['title'] = $room_item->getTitle();
+            }
+            if ( strlen($temp_array['title']) > 28 ) {
+               $temp_array['title'] = substr($temp_array['title'],0,28);
+               $temp_array['title'] .= '...';
+            }
+            $temp_array['item_id'] = $room_item->getItemID();
+            if ($current_context_id == $temp_array['item_id']){
+               $temp_array['selected'] = true;
+            }
+            $retour[] = $temp_array;
+            $room_item = $customized_room_list->getNext();
          }
-         if ( strlen($temp_array['title']) > 28 ) {
-            $temp_array['title'] = substr($temp_array['title'],0,28);
-            $temp_array['title'] .= '...';
-         }
-         $temp_array['item_id'] = $room_item->getItemID();
-         if ($current_context_id == $temp_array['item_id']){
-            $temp_array['selected'] = true;
-         }
-         $retour[] = $temp_array;
-         $room_item = $customized_room_list->getNext();
       }
       return $retour;
    }

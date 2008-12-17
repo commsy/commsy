@@ -1137,6 +1137,26 @@ class cs_user_manager extends cs_manager {
         }
      }
 
+     // customized room list
+     if ( empty($item_id) ) {
+        $private_room = $item->getOwnRoom();
+        if ( isset($private_room) ) {
+           $customized_room_id_array = $private_room->getCustomizedRoomIDArray();
+           if ( !empty($customized_room_id_array)
+                and !in_array($item->getContextID(),$customized_room_id_array)
+              ) {
+              $new_array = array();
+              $new_array[] = $item->getContextID();
+              $new_array = array_merge($new_array,$customized_room_id_array);
+              $private_room->setCustomizedRoomIDArray($new_array);
+              $private_room->save();
+              unset($new_array);
+              unset($customized_room_id_array);
+           }
+           unset($private_room);
+        }
+     }
+
      //Add modifier to all users who ever edited this user
      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
      $link_modifier_item_manager->markEdited($item->getItemID());
