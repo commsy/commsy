@@ -286,6 +286,7 @@
             info.appendChild(span);
 
             var span2 = document.createElement('SPAN');
+            span2.id = 'spanKlick' + commsy_panel_index;
             span2.innerHTML = panelDesc[commsy_panel_index];
             span2.className = 'small';
             info.appendChild(span2);
@@ -325,14 +326,20 @@
                }
                img.src = 'images/arrow_down.gif';
                klick.id = klick.id + 'down';
+               span2.id = span2.id + 'down';
             } else {
             	klick.id = klick.id + 'up';
+            	span2.id = span2.id + 'up';
             }
 
             topBar.className='topBar';
             divs[no].appendChild(topBar);
             divs[no].appendChild(outerContentDiv);
             commsy_panel_index++;
+
+				span2.onclick = showHidePaneContentTopBar;
+				span2.onmouseover = mouseoverTopbarBar;
+            span2.onmouseout = mouseoutTopbarBar;
 
             klick.onclick = showHidePaneContentTopBar;
 				klick.onmouseover = mouseoverTopbarBar;
