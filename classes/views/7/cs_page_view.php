@@ -280,7 +280,7 @@ class cs_page_view extends cs_view {
       }else{
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/javascript/slimbox/css/slimbox.css"/>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
       }
       if ($left_menue_status !='disapear'){
          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
@@ -481,7 +481,7 @@ class cs_page_view extends cs_view {
       }
 
       if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
       }
       if($this->_environment->inPortal() or
              ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE and
