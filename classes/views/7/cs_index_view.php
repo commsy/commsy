@@ -1388,7 +1388,14 @@ EOD;
       $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div style="width:71%;">'.LF;
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $html .='<div style="width: 99%;">'.LF;
+      }else{
+         $html .='<div style="width: 71%;">'.LF;
+
+      }
       $html .='<div id="action_box">';
       $html .= $this->_getListActionsAsHTML();
       $html .='</div>';
@@ -1450,8 +1457,8 @@ EOD;
 
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .='<div style="width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;
