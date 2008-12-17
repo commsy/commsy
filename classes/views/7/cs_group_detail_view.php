@@ -626,7 +626,7 @@ class cs_group_detail_view extends cs_detail_view {
                                        $this->_translator->getMessage('GROUP_ENTER')).LF;
             unset($params);
          } else {
-            $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+            $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
             $html .= '<a title="'.$this->_translator->getMessage('GROUP_ENTER').' "class="disabled">'.$image.'</a>'.LF;
          }
       }

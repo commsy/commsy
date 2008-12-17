@@ -1240,6 +1240,7 @@ class cs_detail_view extends cs_view {
       }
       if ($rubric != CS_GROUP_TYPE
       and $rubric != CS_TOPIC_TYPE
+      and $rubric != CS_INSTITUTION_TYPE
       and $rubric != CS_USER_TYPE
       and $rubric != CS_DISCUSSION_TYPE
       and $this->_environment->getCurrentModule() !='account'){
@@ -1253,6 +1254,13 @@ class cs_detail_view extends cs_view {
          $html .= $this->_getNewestLinkedItemsAsHTML($item);
       }
       if($rubric == CS_TOPIC_TYPE){
+         $anno_list = $item->getAnnotationList();
+         $anno_item = $anno_list->getFirst();
+         if (isset($anno_item) and !empty($anno_item)){
+            $html .= $this->_getAnnotationsAsHTML();
+         }
+      }
+      if($rubric == CS_INSTITUTION_TYPE){
          $anno_list = $item->getAnnotationList();
          $anno_item = $anno_list->getFirst();
          if (isset($anno_item) and !empty($anno_item)){

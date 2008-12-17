@@ -422,7 +422,7 @@ h1{
    width:93%;
    padding:5px;
    border: 1px #666 dashed;
-   background-color:#B0B0B0;
+   background-color:#F0F0F0;
 }
 .form_formatting_checkbox_box{
    margin-top:0px;
@@ -430,7 +430,7 @@ h1{
    width:93%;
    padding:5px 10px 5px 10px;
    border: 1px #666 dashed;
-   background-color:#B0B0B0;
+   background-color:#F0F0F0;
 }
 
 #template_information_box{
@@ -438,7 +438,7 @@ h1{
    margin-bottom:0px;
    padding:5px;
    border: 1px #666 dashed;
-   background-color:#B0B0B0;
+   background-color:#F0F0F0;
 }
 
 #profile_title, .profile_title{
