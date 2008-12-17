@@ -806,7 +806,7 @@ function withUmlaut($value) {
 function toggleUmlaut($value) {
    $retour = $value;
    $retour = str_replace('Ä','Ae',$retour);
-   $retour = str_replace('a','ae',$retour);
+   $retour = str_replace('ä','ae',$retour);
    $retour = str_replace('Ö','Oe',$retour);
    $retour = str_replace('ö','oe',$retour);
    $retour = str_replace('Ü','Ue',$retour);
