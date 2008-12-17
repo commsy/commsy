@@ -2063,7 +2063,7 @@ class cs_form_view extends cs_view {
                    $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                    or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                    or $this->_environment->getCurrentModule() == CS_DATE_TYPE
-                   or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                   or ($this->_environment->getCurrentModule() == CS_MATERIAL_TYPE AND $this->_environment->getCurrentFunction() == 'edit')
                    or $this->_environment->getCurrentModule() == CS_TODO_TYPE
                 )
             ){
@@ -2074,7 +2074,7 @@ class cs_form_view extends cs_view {
                    $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                    or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                    or $this->_environment->getCurrentModule() == CS_DATE_TYPE
-                   or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                   or ($this->_environment->getCurrentModule() == CS_MATERIAL_TYPE AND $this->_environment->getCurrentFunction() == 'edit')
                    or $this->_environment->getCurrentModule() == CS_TODO_TYPE
                 )
             ){
@@ -2083,7 +2083,9 @@ class cs_form_view extends cs_view {
             if ($this->_environment->getCurrentModule() != 'account' and
                 $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
                 $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE and
-                $room->withNetnavigation()
+                $room->withNetnavigation() and
+                $this->_environment->getCurrentFunction() == 'edit'
+
             ){
                $html .= $this->_getAllLinkedItemsAsHTML($netnavigation_array);
             }

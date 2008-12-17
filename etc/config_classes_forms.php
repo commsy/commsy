@@ -72,6 +72,13 @@ $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_material_ims_import_form';
+define('MATERIAL_IMS_IMPORT_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = true;
+
 $class_name = 'cs_date_form';
 define('DATE_FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;
@@ -551,13 +558,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_mail_to_moderator_form';
 define('MAIL_TO_MODERATOR_FORM',$class_name);
-$class_config[$class_name]['name']       = $class_name;
-$class_config[$class_name]['filename']   = $class_name.'.php';
-$class_config[$class_name]['folder']     = $main_folder.$form_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_material_ims_import_form';
-define('MATERIAL_IMS_IMPORT_FORM',$class_name);
 $class_config[$class_name]['name']       = $class_name;
 $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
