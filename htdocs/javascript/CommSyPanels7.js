@@ -335,9 +335,8 @@
             commsy_panel_index++;
 
             klick.onclick = showHidePaneContentTopBar;
-
-				topBar.onmouseover = mouseoverTopbarBar;
-            topBar.onmouseout = mouseoutTopbarBar;
+				klick.onmouseover = mouseoverTopbarBar;
+            klick.onmouseout = mouseoutTopbarBar;
          }
       }
    }
