@@ -288,7 +288,11 @@
 
             var span2 = document.createElement('SPAN');
             span2.id = 'spanKlick' + commsy_panel_index;
-            span2.innerHTML = panelDesc[commsy_panel_index];
+            if(panelDesc[commsy_panel_index] == ''){
+            	span2.innerHTML = '&nbsp;';
+            } else {
+            	span2.innerHTML = panelDesc[commsy_panel_index];
+            }
             span2.className = 'small';
             info.appendChild(span2);
 
