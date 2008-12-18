@@ -116,7 +116,7 @@ class cs_configuration_form_view extends cs_form_view {
 
 
 
-      $html .= '<form style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
+      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="edit">'."\n";
       $html .='<div style="width:100%;">'.LF;
       if ($this->_item_saved){
        $html .='<div style="width:27%; padding-top:5px; float:right;">'.LF;

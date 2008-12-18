@@ -192,7 +192,7 @@ class cs_configuration_account_options_form extends cs_rubric_form {
             if ($html_status =='1'){
                $html_status ='2';
             }
-            $this->_form->addTextArea('agb_text_'.cs_strtoupper($language),'','','','','5','virtual',false,false,true,$html_status);
+            $this->_form->addTextArea('agb_text_'.cs_strtoupper($language),'','','','60','5','virtual',false,false,true,$html_status);
          } else {
             $this->_form->addHidden('agb_text_'.cs_strtoupper($language),'');
          }

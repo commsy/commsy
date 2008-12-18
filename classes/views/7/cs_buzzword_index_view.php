@@ -184,13 +184,16 @@ var $_item = NULL;
          }else{
             $style='class="odd"';
          }
-         $html .= '<tr>'.LF;
-         $html .= '<td colspan ="'.$num_rows.'" '.$style.' >'.LF;
-         $html .= '<span class="infocolor">'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').':&nbsp;'.'</span>';
-         $html .= '         <input style="font-size:10pt; width:150px; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" name="attach_new_buzzword" value=""/>';
-         $html .= '</td>'.LF;
-         $html .= '</tr>'.LF;
       }
+      if (!isset($style)){
+         $style='class="odd"';
+      }
+      $html .= '<tr>'.LF;
+      $html .= '<td colspan ="3" '.$style.' >'.LF;
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON').':&nbsp;'.'</span>';
+      $html .= '         <input style="font-size:10pt; width:150px; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" name="attach_new_buzzword" value=""/>';
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
       return $html;
    }
 

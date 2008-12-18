@@ -309,7 +309,7 @@ var $_room_type = 'context';
 
       //Projektraum User
       $html .= '<tr>'.LF;
-      $html .= '<td  colspan="2" style="background-color: '.$color_array['content_background'].'; padding:5px;">'.LF;
+      $html .= '<td  colspan="2" class="room_content_fader">'.LF;
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());
       $user_manager->setAuthSourceLimit($current_user->getAuthSource());
@@ -351,7 +351,7 @@ var $_room_type = 'context';
                                 'home',
                                 'index',
                                 '');
-          $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
+          $html .= '<div style="margin-top: 5px; padding:3px; text-align:left;">';
                if (!$this->isPrintableView()) {
                  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER').'</a></div>'.LF;
              }
@@ -678,11 +678,32 @@ var $_room_type = 'context';
          }
          $session = $this->_environment->getSession();
          $session_id = $session->getSessionID();
-         $retour .= '    table.room_window { background-color: '.$cs_color['room_title'].'; width: 31em;}'.LF;
+     #    $retour .= '    table.room_window { background-color: '.$cs_color['room_title'].'; width: 31em;}'.LF;
          $retour .= '    td.detail_view_content_room_window {background-color:'.$cs_color['room_background'].';padding: 3px;text-align: left;}'.LF;
-         $retour .= '    td.header_left_no_logo { text-align: left; width:1%; vertical-align: middle; font-size: x-large; font-weight: bold; height: 50px; padding-top: 3px;padding-bottom: 3px;padding-right: 3px; padding-left: 15px; }'.LF;
+         $retour .= '    td.header_left_no_logo {text-align: left; width:1%; vertical-align: middle; font-size: x-large; font-weight: bold; height: 50px; padding-top: 3px;padding-bottom: 3px;padding-right: 3px; padding-left: 15px; }'.LF;
          $retour .= '    img { border: 0px; }'.LF;
          $retour .= '    img.logo_small { height: 40px; }'.LF;
+         $retour .= '    table.room_window {margin:0px; padding:5px 10px 5px 10px; ';
+         $retour .= ' color: '.$color_array['page_title'].';';
+         if ($color_array['schema']=='SCHEMA_OWN'){
+            if ($this->_item->getBGImageFilename()){
+               if ($this->_item->issetBGImageRepeat()){
+                  $retour .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') repeat; ';
+               }else{
+                  $retour .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
+               }
+            }
+         }else{
+            if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
+               $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
+            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
+               $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
+            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
+               $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
+            }else{
+               $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
+            }
+         }
          $retour .= '   </style>'."\n";
          $retour .= '   <!-- END Styles -->'."\n";
       }

@@ -949,7 +949,7 @@ class cs_form_view extends cs_view {
       }else{
          $html.=' style="font-size:'.$form_element['font_size'].'pt;"';
       }
-      $html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
+      $html .= $form_element['event'] ? " onChange='javascript:document.edit.submit()'" : '';
       if ( isset($form_element['extention']) and !empty($form_element['extention']) ) {
          $html .= ' '.$form_element['extention'];
       }
@@ -2022,6 +2022,7 @@ class cs_form_view extends cs_view {
          $html .='</div>'.LF;
 #         $html .= '</div>';
 
+      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="edit">'."\n";
 
       //Berechnung der Buttonleiste
       $form_element_array = $temp_array;
@@ -2039,7 +2040,6 @@ class cs_form_view extends cs_view {
 
       $temp_array = array();
       $html .='<div style="width: 100%;">'.LF;
-      $html .= '<form id="edit" style="font-size:10pt; margin:0px; padding:0px;" action="'.$this->_action.'" method="'.$this->_action_type.'" enctype="multipart/form-data" name="f">'."\n";
       $funct = $this->_environment->getCurrentFunction();
       $html .='<div style="float:right; width:27%; margin-top:0px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
       $user = $this->_environment->getCurrentUserItem();
@@ -2243,9 +2243,6 @@ class cs_form_view extends cs_view {
       $html .= '</div>'.LF;
 
       $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both; width:100%;">&nbsp;'.LF;
-      $html .='</div>'.LF;
       if (isset($buttonbartext) and !empty($buttonbartext) and $this->_environment->getCurrentModule() !='buzzwords' and $this->_environment->getCurrentModule() !='labels'){
          $html .= '<div style="width: 100%; clear:both;">'.LF;
          $html .= '<table style="width: 100%; border-collapse:collapse;">'.LF;
@@ -2272,8 +2269,12 @@ class cs_form_view extends cs_view {
          $html .= '</tr>'.LF;
          $html .= '</table>'.LF;
       }
-      $html .= '</form>'.BRLF;
       $html .= '</div>'.LF;
+      $html .= '</form>'.BRLF;
+      $html .='</div>'.LF;
+      $html .='<div style="clear:both; width:100%;">&nbsp;'.LF;
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
       return $html;
    }
 
@@ -2382,7 +2383,7 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
+      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'\');">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -2845,11 +2846,11 @@ class cs_form_view extends cs_view {
          $html .= LF;
          $html .= '         function setfocus() {'.LF;
          if ( $this->getFocusElementOnload() != '' ) {
-           $html .= '           document.f.elements["'.$this->getFocusElementOnLoad().'"].focus();'.LF;
+           $html .= '           document.edit.elements["'.$this->getFocusElementOnLoad().'"].focus();'.LF;
          } elseif ( $this->getFocusElementAnchor() != '' ) {
            $html .= '           location.hash="'.$this->getFocusElementAnchor().'";'.LF;
          } else {
-           $html .= '           document.f.elements["'.$this->_getFirstInputFieldName().'"].focus();'.LF;
+           $html .= '           document.edit.elements["'.$this->_getFirstInputFieldName().'"].focus();'.LF;
          }
          $html .= '         }'.LF;
          if (isset($this->_form) and !empty($this->_form)) {

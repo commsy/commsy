@@ -481,12 +481,33 @@ class cs_myroom_index_view extends cs_context_index_view {
                $cs_color['room_background']  = '';
                $cs_color['tableheader']  = '';
          }
-            $retour .= '    table.room_window'.$item->getItemID().' { background-color: '.$cs_color['tableheader'].'; width: 17em; border:1px solid  '.$cs_color['tableheader'].';}'.LF;
-            $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; background-color: '.$cs_color['room_background'].'; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
+            $retour .= '    table.room_window'.$item->getItemID().' {width: 17em; border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
+            if ($color_array['schema']=='SCHEMA_OWN'){
+               if ($item->getBGImageFilename()){
+                  if ($item->issetBGImageRepeat()){
+                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
+                  }else{
+                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
+                  }
+               }
+            }else{
+               if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
+               }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
+               }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
+               }else{
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
+               }
+            }
+            $retour .= 'background-color: '.$color_array['content_background'].';';
+            $retour .= 'color:'.$color_array['page_title'].' }';
+            $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' a {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' a:hover {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
-            $retour .= ' .gauge'.$item->getItemID().' { background-color: '.$cs_color['room_background'].'; width: 100%; margin: 2px 0px; border: 1px solid #666; }'.LF;
+            $retour .= ' .gauge'.$item->getItemID().' { background-color: #FFFFFF; width: 100%; margin: 2px 0px; border: 1px solid #666; }'.LF;
             $retour .= ' .gauge-bar'.$item->getItemID().' { background-color: '.$cs_color['tableheader'].'; text-align: right; font-size: 8pt; color: black; }'.LF;
 
 

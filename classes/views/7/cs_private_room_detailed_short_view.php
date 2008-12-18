@@ -616,7 +616,6 @@ class cs_private_room_detailed_short_view extends cs_view{
 
 
 
-      $html .='<table style="width:100%;" summary="Layout">';
       $conf = $item->getHomeConf();
       if ( !empty($conf) ) {
          $rubrics = explode(',', $conf);
@@ -647,6 +646,7 @@ class cs_private_room_detailed_short_view extends cs_view{
       $display_count = count($display_rubrics);
       for ( $i =0; $i<$display_count; $i++){
          $rubric_array = explode('_', $display_rubrics[$i]);
+         $html .='<table style="width:100%; margin-bottom:5px; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].';" summary="Layout">';
          $html .='<tr>'.LF;
          $html .='<td class="detail_view_title_room_window'.$item->getItemID().'" style="padding:2px;">'.LF;
          $count_entries = 0;
@@ -657,18 +657,18 @@ class cs_private_room_detailed_short_view extends cs_view{
             if ($rubric_array[0] == CS_MATERIAL_TYPE){
                $rubric_manager->_handle_tmp_manual = true;
             }
-      $rubric_manager->setContextLimit($item->getItemID());
-      $rubric_manager->setAgeLimit($current_context->getTimeSpread());
-      if ( $rubric_manager instanceof cs_dates_manager ) {
-         $rubric_manager->setDateModeLimit(2);
-      }
-      if ( $rubric_manager instanceof cs_user_manager ) {
-         $rubric_manager->setUserLimit(2);
-      }
-      $rubric_manager->showNoNotActivatedEntries();
-      $rubric_manager->select();
-      $rubric_list = $rubric_manager->get();
-      $ids = $rubric_manager->getIDs();
+            $rubric_manager->setContextLimit($item->getItemID());
+            $rubric_manager->setAgeLimit($current_context->getTimeSpread());
+            if ( $rubric_manager instanceof cs_dates_manager ) {
+               $rubric_manager->setDateModeLimit(2);
+            }
+            if ( $rubric_manager instanceof cs_user_manager ) {
+               $rubric_manager->setUserLimit(2);
+            }
+            $rubric_manager->showNoNotActivatedEntries();
+            $rubric_manager->select();
+            $rubric_list = $rubric_manager->get();
+            $ids = $rubric_manager->getIDs();
             $noticed_manager = $this->_environment->getNoticedManager();
             $noticed_manager->getLatestNoticedByIDArrayAndUser($ids,$ref_user->getItemID() );
             if ($rubric_array[0] != CS_DISCUSSION_TYPE and
@@ -701,7 +701,9 @@ class cs_private_room_detailed_short_view extends cs_view{
                   $temp_html .='</td>';
                   $temp_html .='</tr>';
                   $temp_html .='<tr>';
-                  $temp_html .='<td class="detail_view_content_room_window'.$item->getItemID().'" style="padding:2px;">';
+                  $style=' style=" padding:2px; background-color:'.$color_array['content_background'].';"';
+                  $style=' style=" padding:2px; background-color:#FFFFFF;"';
+                  $temp_html .='<td class="detail_view_content_room_window'.$item->getItemID().'" '.$style.'>';
                   $params = array();
                   $params['iid'] = $rubric_item->getItemID();
                   $title ='';
@@ -775,8 +777,8 @@ $html .= ahref_curl( $item->getItemID(),
          $html .= $temp_html;
          $html .='</td>';
          $html .='</tr>';
+         $html .='</table>';
       }
-      $html .='</table>';
 
       $html .= '</td><td style="width:30%; vertical-align:top;" class="detail_view_content_room_window'.$item->getItemID().'">'.LF;
       $html .='<table style="width:95%;" class="room_window_border'.$item->getItemID().'" summary="Layout">';
@@ -912,16 +914,34 @@ $html .= ahref_curl( $item->getItemID(),
                $cs_color['room_background']  = '';
                $cs_color['tableheader']  = '';
          }
-            $retour .= '    table.room_window'.$item->getItemID().' { background-color: '.$cs_color['tableheader'].'; width: 17em; border:1px solid  '.$cs_color['tableheader'].';}'.LF;
-            $retour .= '    table.room_window_border'.$item->getItemID().' {width: 150px; margin:2px; border: 1px solid '.$cs_color['tableheader'].';}'.LF;
-            $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; background-color: '.$cs_color['room_background'].'; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
+            $retour .= '    table.room_window_border'.$item->getItemID().' {background-color: '.$color_array['boxes_background'].'; width: 150px; margin:2px; border: 1px solid '.$cs_color['tableheader'].';}'.LF;
+            $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' a {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' a:hover {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
-            $retour .= ' .gauge'.$item->getItemID().' { background-color: '.$cs_color['room_background'].'; width: 100%; margin: 2px 0px; border: 1px solid #666; }'.LF;
-            $retour .= ' .gauge-bar'.$item->getItemID().' { background-color: '.$cs_color['tableheader'].'; text-align: right; font-size: 8pt; color: black; }'.LF;
-
-
+            $retour .= ' .gauge'.$item->getItemID().' { background-color: #FFFFFF; width: 100%; margin: 2px 0px; border: 1px solid #666; }'.LF;
+            $retour .= ' .gauge-bar'.$item->getItemID().' { background-color: '.$color_array['tabs_background'].'; text-align: right; font-size: 8pt; color: black; }'.LF;
+            $retour .= '    table.room_window'.$item->getItemID().' {width: 17em; border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
+            if ($color_array['schema']=='SCHEMA_OWN'){
+               if ($item->getBGImageFilename()){
+                  if ($item->issetBGImageRepeat()){
+                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
+                  }else{
+                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
+                  }
+               }
+            }else{
+               if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
+               }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
+               }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
+               }else{
+                  $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
+               }
+            }
+            $retour .= 'background-color: '.$color_array['content_background'].'; }';
             $item = $this->_list->getNext();
          }
          $retour .= '   </style>'."\n";

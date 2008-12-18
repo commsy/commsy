@@ -1360,17 +1360,20 @@ class cs_user_detail_view extends cs_detail_view {
          if ( $user->isRoot() and isset($own_room) ) {
             $params = array();
             $params['iid'] = $own_room->getItemID();
-            $html .=  ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).' '.LF;
+            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+            $html .=  ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$image,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).' '.LF;
             unset($params);
          }
 
          if ($this->_environment->inCommunityRoom()) {
             $params = array();
             $params['iid'] = $item->getItemID();
+            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
             $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                       $this->_environment->getCurrentModule(),
                                       'preferences',
                                       $params,
+                                      $image,
                                       $this->_translator->getMessage('USER_EDIT_PREFERENCES')).' '.LF;
             unset($params);
          }
