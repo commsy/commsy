@@ -821,7 +821,14 @@ class cs_page_guide_view extends cs_page_view {
                   if ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
                      $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN','<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a>');
                   } else {
-                     $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
+                     $current_user_item = $this->_environment->getCurrentUserItem();
+                     $current_user_item = $current_user_item->getRelatedCommSyUserItem();
+                     if ( isset($current_user_item) and $current_user_item->isUser() ) {
+                        $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN_NOT_ALLOWED');
+                     } else {
+                        $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
+                     }
+                     unset($current_user_item);
                   }
                   $html .= '</p></div>'.LF;
                   $session_item->unsetValue('login_redirect');

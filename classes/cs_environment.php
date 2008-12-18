@@ -105,11 +105,9 @@ class cs_environment {
    * returns the current user. If there is no current user it will be returned an emtpy user_item.
    *
    * @return object                                cs_user_item
-   *
-   * @author CommSy Development Group
    */
    function getCurrentUserItem () {
-      if (!isset($this->current_user)) {
+      if ( !isset($this->current_user) ) {
          require_once('classes/cs_user_item.php');
          $this->current_user = new cs_user_item($this);
       }
