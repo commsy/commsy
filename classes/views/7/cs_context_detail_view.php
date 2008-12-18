@@ -116,6 +116,21 @@ var $_room_type = 'context';
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
          }
       }
+      if ( $current_user->isUser() and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = 'NEW';
+         $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    $this->_environment->getCurrentModule(),
+                                    'edit',
+                                    $params,
+                                    $image,
+                                    getMessage('COMMON_NEW_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
       return $html;
    }
 
