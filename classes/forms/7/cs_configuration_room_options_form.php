@@ -237,6 +237,11 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_15');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_15';
       $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_15')] = $temp_array;
+      
+      $temp_array = array();
+      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_16');
+      $temp_array['value'] = 'COMMON_COLOR_SCHEMA_16';
+      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_16')] = $temp_array;
 
       ksort($array_info_text_temp);
       foreach($array_info_text_temp as $entry){

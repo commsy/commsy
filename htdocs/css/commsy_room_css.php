@@ -184,15 +184,27 @@ div.content_fader{
            }
        }
     }else{
-       if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
-          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat;');
-       }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'x'){
-          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-x;');
-       }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'y'){
-          echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-y;');
-       }else{
-          echo('background: url(images/bg-'.$color['schema'].'.jpg) no-repeat;');
-       }
+        if (!isset($color['background_image'])){
+           if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
+              echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat;');
+           }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'x'){
+              echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-x;');
+           }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'y'){
+              echo('background: url(images/bg-'.$color['schema'].'.jpg) repeat-y;');
+           }else{
+              echo('background: url(images/bg-'.$color['schema'].'.jpg) no-repeat;');
+           }
+        } else {
+           if (isset($color['repeat_background']) and $color['repeat_background'] == 'xy'){
+              echo('background: url(images/'.$color['background_image'].') repeat;');
+           }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'x'){
+              echo('background: url(images/'.$color['background_image'].') repeat-x;');
+           }elseif (isset($color['repeat_background']) and $color['repeat_background'] == 'y'){
+              echo('background: url(images/'.$color['background_image'].') repeat-y;');
+           }else{
+              echo('background: url(images/'.$color['background_image'].') no-repeat;');
+           }
+        }
     }
     ?>
 }
