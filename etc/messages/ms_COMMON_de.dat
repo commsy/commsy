@@ -37,6 +37,7 @@ $message["COMMON_ALL_LIST_ENTRIES"]["de"] = "Alle %1";
 $message["COMMON_ALL_MODIFIERS"]["de"] = "bearbeitet von";
 $message["COMMON_AND"]["de"] = "und";
 $message["COMMON_ANNOTATIONS"]["de"] = "Anmerkungen";
+$message["COMMON_ANNOTATION_EDIT"]["de"] = "Anmerkung bearbeiten";
 $message["COMMON_ANNOUNCEMENT"]["de"] = "Ankündigung";
 $message["COMMON_ANNOUNCEMENTS"]["de"] = "Ankündigungen";
 $message["COMMON_ANNOUNCEMENT_EDIT"]["de"] = "Ankündigung bearbeiten";

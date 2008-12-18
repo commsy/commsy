@@ -2010,6 +2010,9 @@ class cs_form_view extends cs_view {
                case 'MATERIAL_IMS_IMPORT':      //
                   $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
                   break;
+               case 'ANNOTATION_EDIT':      //
+                  $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');
+                  break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
                   break;
