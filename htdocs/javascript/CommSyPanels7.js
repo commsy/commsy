@@ -133,17 +133,28 @@
    function showHidePaneContentTopBar(e,inputObj){
       if(!inputObj)inputObj = this;
 
-		var klick = inputObj;
-      //var bar = inputObj;
-      var numericId = klick.id.replace(/[^0-9]/g,'');
-      var bar = document.getElementById('topBar' + numericId);
+      var numericId = inputObj.id.replace(/[^0-9]/g,'');
+      if(inputObj.id.toLowerCase().indexOf('up')>=0){
+      	var klick = document.getElementById('klick' + numericId + 'up');
+      	var span = document.getElementById('span' + numericId + 'up');
+      	var span2 = document.getElementById('spanKlick' + numericId + 'up');
+      	var bar = document.getElementById('topBar' + numericId + 'up');
+      } else {
+      	var klick = document.getElementById('klick' + numericId + 'down');
+     		var span = document.getElementById('span' + numericId + 'down');
+      	var span2 = document.getElementById('spanKlick' + numericId + 'down');
+      	var bar = document.getElementById('topBar' + numericId + 'down');
+      }
       var img = document.getElementById('showHideButton' + numericId);
       var obj = document.getElementById('paneContent' + numericId);
+      	
       xpPanel_slideSpeed = speedArray[numericId];
 
-      if(klick.id.toLowerCase().indexOf('up')>=0){
+      if(inputObj.id.toLowerCase().indexOf('up')>=0){
          currentlyExpandedPane = false;
          klick.id = klick.id.replace('up','down');
+         span.id = span.id.replace('up','down');
+         span2.id = span2.id.replace('up','down');
          img.src = img.src.replace('up','down');
          if(xpPanel_slideActive && xpPanel_slideSpeed<200){
             obj.style.display='block';
@@ -165,6 +176,8 @@
             currentlyExpandedPane = false;
          }
          klick.id = klick.id.replace('down','up');
+         span.id = span.id.replace('down','up');
+         span2.id = span2.id.replace('down','up');
          img.src = img.src.replace('down','up');
          if(xpPanel_slideActive && xpPanel_slideSpeed<200){
             if(document.all){
@@ -271,11 +284,6 @@
             var topBar = document.createElement('DIV');
             topBar.id = 'topBar' + commsy_panel_index;
             topBar.onselectstart = cancelXpWidgetEvent;
-            
-            var innerBar = document.createElement('DIV');
-            innerBar.id = 'innerBar' + commsy_panel_index;
-            innerBar.style.cssFloat = 'left';
-            innerBar.style.width = '100%';
             
             var info = document.createElement('DIV');
             info.id = 'info' + commsy_panel_index;
