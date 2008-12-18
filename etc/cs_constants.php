@@ -121,6 +121,9 @@ $xml_string = '<RUBRIC_CONNECTIONS>
                </DISCARTICLE>
                </RUBRIC_CONNECTIONS>';
 define('CS_RUBIC_CONNECTIONS',$xml_string);
+define('CS_GRADIENT_24','cs_gradient_24.png');
+define('CS_GRADIENT_24_FOCUS','cs_gradient_24_focus.png');
+define('CS_GRADIENT_32','cs_gradient_32.png');
 
 //old colors
 $cs_color['background']       = '#f5f2ec';

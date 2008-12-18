@@ -195,15 +195,17 @@ div.sub_item_main{
 }
 
 #detail_headline{
-   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
-   background-color:<?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
    vertical-align:top;
 }
 
 #detail_annotation_headline{
-   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color:<?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
    padding:4px 5px 5px 5px;
    border:0px;
@@ -359,8 +361,9 @@ table.list {
    background-color: <?php echo($color['list_entry_even'])?>;
 }
 .list td.head {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color:<?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>background-color:<?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    line-height:17px;
@@ -375,16 +378,18 @@ table.list {
    text-align: right;
 }
 .list td.foot_left {
-   background-image:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;
    font-weight:bold;
 }
 .list td.foot_right {
-   background-image:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;

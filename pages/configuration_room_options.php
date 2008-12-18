@@ -216,6 +216,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color['disabled'] = '#B0B0B0';
                $color['warning'] = '#FC1D12';
                $color['schema']='SCHEMA_OWN';
+               
                // logo: save and/or delete current logo
                if ( isset($_POST['delete_bgimage']) ) {
                   $disc_manager = $environment->getDiscManager();
@@ -245,6 +246,30 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
             }
          }
+         
+           global $c_commsy_path_file;
+           $disc_manager = $environment->getDiscManager();
+           $image_24 = generate_colour_gradient(24, $color['tabs_background']);
+           if ( $disc_manager->existsFile(CS_GRADIENT_24) ) {
+                $disc_manager->unlinkFile(CS_GRADIENT_24);
+           }
+           imagePNG($image_24, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24);
+           imagedestroy($image_24);
+           
+           $image_24_focus = generate_colour_gradient(24, $color['tabs_focus']);
+           if ( $disc_manager->existsFile(CS_GRADIENT_24_FOCUS) ) {
+                $disc_manager->unlinkFile(CS_GRADIENT_24_FOCUS);
+           }
+           imagePNG($image_24_focus, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24_FOCUS);
+           imagedestroy($image_24_focus);
+           
+           $image_32 = generate_colour_gradient(32, $color['tabs_background']);
+           if ( $disc_manager->existsFile(CS_GRADIENT_32) ) {
+                $disc_manager->unlinkFile(CS_GRADIENT_32);
+           }
+           imagePNG($image_32, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_32);
+           imagedestroy($image_32);
+         
          // logo: save and/or delete current logo
          if ( isset($_POST['delete_logo']) ) {
             $disc_manager = $environment->getDiscManager();
@@ -313,5 +338,24 @@ if ($command != 'error') { // only if user is allowed to edit colors
    }else{
       $page->add($form_view);
    }
+}
+
+function generate_colour_gradient($height, $rgb){
+    $image = imagecreate(1, $height);
+
+    $rgb = str_ireplace('#', '', $rgb);
+
+    $r = hexdec(substr($rgb, 0, 2));
+    $g = hexdec(substr($rgb, 2, 2));
+    $b = hexdec(substr($rgb, 4, 2));
+
+    $border = ImageColorAllocate($image,$r,$g,$b);
+
+    for ($i=0; $i<($height/2); $i++) {
+        $line = ImageColorAllocate($image,$r-(($r/255)*($i*5)),$g-(($g/255)*($i*5)),$b-(($b/255)*($i*5)));
+        imageline($image, 0, $i, 0, $i, $line);
+        imageline($image, 0, (($height-1)-$i), 500, (($height-1)-$i), $line);
+    }
+    return $image;
 }
 ?>

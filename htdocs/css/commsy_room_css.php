@@ -257,7 +257,9 @@ div.content_bottom {
 }
 
 #commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['tabs_title'])?>;
    padding: 0px 0px;
@@ -324,7 +326,9 @@ ul.item_list {
 /* Tab Style */
 #tabs_frame {
    position:relative;
-   background:url(images/tab_menu_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color: <?php echo($color['tabs_background'])?>;
    padding:0px;
    margin:0px;
@@ -377,7 +381,9 @@ a.navlist_current{
    padding:4px 6px 3px 6px;
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
-   background:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 
@@ -385,7 +391,9 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
    text-decoration:none;
-   background:url(images/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 
@@ -496,7 +504,9 @@ h1{
 }
 
 .config_headline{
-   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
    vertical-align:top;

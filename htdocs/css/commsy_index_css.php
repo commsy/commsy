@@ -137,7 +137,9 @@ table.list {
    background-color: <?php echo($color['list_entry_even'])?>;
 }
 .list td.head {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
@@ -153,16 +155,18 @@ table.list {
    text-align: right;
 }
 .list td.foot_left {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;
    font-weight:bold;
 }
 .list td.foot_right {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;
