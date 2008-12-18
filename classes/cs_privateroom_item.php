@@ -1051,7 +1051,7 @@ class cs_privateroom_item extends cs_room_item {
          $room_manager->setIDArrayLimit($room_id_array);
          $room_manager->setOrder('id_array');
          $room_manager->setUserIDLimit($current_user_item->getUserID());
-         $room_manager->setAuthSourceLimit($current_user_item->getUserID());
+         $room_manager->setAuthSourceLimit($current_user_item->getAuthSource());
          $room_manager->select();
          $retour = $room_manager->get();
          unset($room_manager);
