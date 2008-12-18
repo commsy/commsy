@@ -153,13 +153,13 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
        foreach ( $_COOKIE['itemlist'] as $key => $val ) {
           setcookie ('itemlist['.$key.']', '', time()-3600);
           if ( $val == '1' ) {
-             if ( !in_array($key, $selected_ids) ) {
-                $selected_ids[] = $key;
+             if ( !in_array($key, $entry_array) ) {
+                $entry_array[] = $key;
              }
           } else {
-             $idx = array_search($key, $selected_ids);
+             $idx = array_search($key, $entry_array);
              if ( $idx !== false ) {
-                unset($selected_ids[$idx]);
+                unset($entry_array[$idx]);
              }
           }
        }

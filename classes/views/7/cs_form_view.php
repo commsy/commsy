@@ -2386,7 +2386,17 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'\');">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
+      $session = $this->_environment->getSessionItem();
+      if ($session->issetValue('javascript')) {
+         $javascript = $session->getValue('javascript');
+         if ($javascript == 1) {
+            $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'\');">'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'</a>'.LF;
+         }else{
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"/>';
+         }
+      }else{
+         $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_BUZZWORD_NEW_ATTACH').'"/>';
+      }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -2539,7 +2549,17 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'</a>'.LF;
+      $session = $this->_environment->getSessionItem();
+      if ($session->issetValue('javascript')) {
+         $javascript = $session->getValue('javascript');
+         if ($javascript == 1) {
+            $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'\');">'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'</a>'.LF;
+         }else{
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'"/>';
+         }
+      }else{
+         $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'"/>';
+      }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -2601,13 +2621,37 @@ class cs_form_view extends cs_view {
       }
       $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
       $params = $this->_environment->getCurrentParameterArray();
-      if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
-         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'</a>'.LF;
-      }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
-         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'</a>'.LF;
+
+      if ($session->issetValue('javascript')) {
+         $javascript = $session->getValue('javascript');
+         if ($javascript == 1) {
+            if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
+               $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'</a>'.LF;
+            }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
+               $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'</a>'.LF;
+            }else{
+               $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'</a>'.LF;
+            }
+         }else{
+            if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
+               $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'"/>';
+            }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
+               $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'"/>';
+            }else{
+               $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'"/>';
+            }
+         }
       }else{
-         $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'</a>'.LF;
+         if ($this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_USER_TYPE){
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_INSTITUTION_ATTACH').'"/>';
+         }elseif($this->_environment->getCurrentModule() == CS_USER_TYPE){
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_GROUP_ATTACH').'"/>';
+         }else{
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'"/>';
+         }
       }
+
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
