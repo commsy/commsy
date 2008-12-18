@@ -49,7 +49,7 @@ class cs_profile_form_view extends cs_form_view {
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
                            $params,
-                           getMessage('PROFILE_ACCOUNT_DATA'));
+                           $this->_translator->getMessage('PROFILE_ACCOUNT_DATA'));
       if (!isset($_GET['profile_page']) or $_GET['profile_page'] == 'account'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
               }else{
@@ -60,29 +60,38 @@ class cs_profile_form_view extends cs_form_view {
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
                            $params,
-                           getMessage('PROFILE_USER_DATA'));
+                           $this->_translator->getMessage('PROFILE_USER_DATA'));
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'user'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
       }else{
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
       $params['profile_page'] = 'room_list';
-      $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                           $this->_environment->getCurrentFunction(),
-                           $params,
-                           getMessage('PROFILE_ROOM_LIST_DATA'));
+      $current_user_item = $this->_environment->getCurrentUserItem();
+      if ( $current_user_item->isRoomMember() ) {
+         $title = '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessage('PROFILE_ROOM_LIST_DATA').'</a>';
+      } else {
+         $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                              $this->_environment->getCurrentModule(),
+                              $this->_environment->getCurrentFunction(),
+                              $params,
+                              $this->_translator->getMessage('PROFILE_ROOM_LIST_DATA'));
+      }
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'room_list'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
       }else{
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
       $params['profile_page'] = 'newsletter';
-      $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           $this->_environment->getCurrentModule(),
-                           $this->_environment->getCurrentFunction(),
-                           $params,
-                           getMessage('PROFILE_NEWSLETTER_DATA'));
+      if ( $current_user_item->isRoomMember() ) {
+         $title = '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessage('PROFILE_NEWSLETTER_DATA').'</a>';
+      } else {
+         $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                              $this->_environment->getCurrentModule(),
+                              $this->_environment->getCurrentFunction(),
+                              $params,
+                              $this->_translator->getMessage('PROFILE_NEWSLETTER_DATA'));
+      }
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'newsletter'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
       }else{
@@ -91,6 +100,8 @@ class cs_profile_form_view extends cs_form_view {
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
+
+      unset($current_user_item);
       return $html;
    }
 
@@ -125,7 +136,7 @@ class cs_profile_form_view extends cs_form_view {
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
-      $html .= '<h2 id="profile_title">'.getMessage('COMMON_PROFILE_EDIT').'</h2>';
+      $html .= '<h2 id="profile_title">'.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</h2>';
       $html .='</div>'.LF;
 
       $html .= $this->_getLinkRowAsHTML();
@@ -134,7 +145,7 @@ class cs_profile_form_view extends cs_form_view {
       $html .='<div style="width:95%; padding:10px;">'.LF;
       if ($this->_item_saved){
          $html .='<div style="width:100%; text-align:center; font-weight:bold; color:red; font-size:14pt;">'.LF;
-         $html .= getMessage('COMMON_ITEM_SAVED').LF;
+         $html .= $this->_translator->getMessage('COMMON_ITEM_SAVED').LF;
          $html .='</div>'.LF;
       }
 
@@ -537,7 +548,5 @@ class cs_profile_form_view extends cs_form_view {
       }
       return $html;
    }
-
-
 }
 ?>
