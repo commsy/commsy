@@ -1711,8 +1711,6 @@ class cs_view {
 
    // experimental
    function _format_lecture2go ( $text, $array ) {
-      $server = 'rtmp://fms.rrz.uni-hamburg.de:1936/vod';
-
       $retour = '';
       $source = $array[1];
       $ext = cs_strtolower(substr(strrchr($source,'.'),1));
@@ -1744,8 +1742,13 @@ class cs_view {
       if ( !empty($args['image']) ) {
          $image = $args['image'];
       } else {
-         // http://lecture2go.rrz.uni-hamburg.de/dini/dini.jpg
-         $image = '';
+         $image = 'http://lecture2go.uni-hamburg.de/logo/l2g-flash.jpg';
+      }
+
+      if ( !empty($args['server']) ) {
+         $server = $args['server'];
+      } else {
+         $server = 'rtmp://fms.rrz.uni-hamburg.de:1936/vod';
       }
 
       if ( !empty($args['float'])
@@ -1769,18 +1772,17 @@ class cs_view {
 <script src="http://lecture2go.rrz.uni-hamburg.de/dini/flash_detect/new_detection_kit/AC_OETags.js" language="javascript" type="text/javascript"></script>
 <script type="text/javascript">
 function showPlayer(serv,file,autostart){
-    var requiredMajorVersion=9;
-    var requiredMinorVersion=0;
-    var requiredRevision=115;
+   var requiredMajorVersion=9;
+   var requiredMinorVersion=0;
+   var requiredRevision=115;
 
-    // Version check based upon the values entered above in "Globals"
-    var hasReqestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+   // Version check based upon the values entered above in "Globals"
+   var hasReqestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
 
-    // Check to see if the version meets the requirements for playback
-    if (hasReqestedVersion) {
+   // Check to see if the version meets the requirements for playback
+   if (hasReqestedVersion) {
         insertFile(serv,file,autostart);
-    }
-
+   }
 }
 
 function insertFile(serv,file,autostart){
@@ -1792,7 +1794,7 @@ function insertFile(serv,file,autostart){
     s1.addVariable("screencolor","#FFFFFF");
     s1.write("id'.$div_number.'");
 }
-</script>';
+</script>'.LF;
 
          $text_without_flash = '<div>'.$this->_translator->getMessage('COMMON_GET_FLASH_LECTURE2GO').'</div>';
          $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
