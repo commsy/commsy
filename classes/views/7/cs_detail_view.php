@@ -608,9 +608,10 @@ class cs_detail_view extends cs_view {
         }
       }
       $listed_ids = array();
-      $params = $this->_environment->getCurrentParameterArray();
+      $params = array();
       $count_items = 0;
-      $html .='<ul style="list-style-type: none; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;      $i = 1;
+      $html .='<ul style="list-style-type: none; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
+      $i = 1;
       foreach($ids as $id){
          if ($count_items >= $start and $count_items <= $end){
             $item_manager = $this->_environment->getItemManager();
@@ -1140,11 +1141,13 @@ class cs_detail_view extends cs_view {
          if(!isset($this->_browse_ids) or count($this->_browse_ids) ==0){
              $this->_browse_ids[] = $this->_item->getItemID();
          }
+         $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
          $html .= $this->_getForwardBoxAsHTML($item);
+         $html .='</div>'.LF;
          $separator = '';
          /***********Buzzwords*************/
          if ( $this->showBuzzwords() ) {
-           $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->_getBuzzwordBoxAsHTML($item);
             $html .='</div>'.LF;
          }
@@ -1162,7 +1165,8 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getAllLinkedItemsAsHTML($item);
          }
 
-
+         $html .='<div>&nbsp;'.LF;
+         $html .='</div>'.LF;
          $html .='</div>'.LF;
          $html .='</div>'.LF;
          $html .='</div>'.LF;
