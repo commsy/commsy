@@ -4921,7 +4921,7 @@ class cs_context_item extends cs_item {
         $border = ImageColorAllocate($image,$r,$g,$b);
     
         for ($i=0; $i<($height/2); $i++) {
-            $line = ImageColorAllocate($image,$r-(($r/255)*($i*5)),$g-(($g/255)*($i*5)),$b-(($b/255)*($i*5)));
+            $line = ImageColorAllocate($image,$r-(($r/255)*($i*3)),$g-(($g/255)*($i*3)),$b-(($b/255)*($i*3)));
             imageline($image, 0, $i, 0, $i, $line);
             imageline($image, 0, (($height-1)-$i), 500, (($height-1)-$i), $line);
         }
