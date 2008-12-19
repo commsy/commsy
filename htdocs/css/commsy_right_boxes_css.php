@@ -65,7 +65,7 @@ a.right_box_title {
 
 div.right_box_title{
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_background'])?>;
    height:18px;

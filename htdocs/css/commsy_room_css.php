@@ -258,7 +258,7 @@ div.content_bottom {
 
 #commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['tabs_title'])?>;
@@ -327,7 +327,7 @@ ul.item_list {
 #tabs_frame {
    position:relative;
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
    padding:0px;
@@ -382,7 +382,7 @@ a.navlist_current{
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
@@ -392,7 +392,7 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    padding:4px 6px 3px 6px;
    text-decoration:none;
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
@@ -505,7 +505,7 @@ h1{
 
 .config_headline{
    <?
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;

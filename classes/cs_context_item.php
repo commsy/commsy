@@ -4891,21 +4891,21 @@ class cs_context_item extends cs_item {
        if ( $disc_manager->existsFile(CS_GRADIENT_24) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_24);
        }
-       imagePNG($image_24, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24);
+       imagePNG($image_24, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_24);
        imagedestroy($image_24);
        
        $image_24_focus = $this->generateColourGradient(24, $color_array['tabs_focus']);
        if ( $disc_manager->existsFile(CS_GRADIENT_24_FOCUS) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_24_FOCUS);
        }
-       imagePNG($image_24_focus, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24_FOCUS);
+       imagePNG($image_24_focus, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_24_FOCUS);
        imagedestroy($image_24_focus);
        
        $image_32 = $this->generateColourGradient(32, $color_array['tabs_background']);
        if ( $disc_manager->existsFile(CS_GRADIENT_32) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_32);
        }
-       imagePNG($image_32, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_32);
+       imagePNG($image_32, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_32);
        imagedestroy($image_32);
     }
 
