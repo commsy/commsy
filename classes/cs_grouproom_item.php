@@ -136,6 +136,7 @@ class cs_grouproom_item extends cs_room_item {
 
          // send mail to moderation
          $this->_sendMailRoomOpen();
+         $this->generateLayoutImages();
       }
 
       else {

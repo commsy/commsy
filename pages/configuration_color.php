@@ -159,6 +159,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
       }
 
       $context_item->setColorArray($color);
+      $context_item->generateLayoutImages();
 
       // switch CommSy6 / CommSy7
       $redirect = false;

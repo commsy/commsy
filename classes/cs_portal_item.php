@@ -644,12 +644,16 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function save () {
+      $item_id = $this->getItemID();
       parent::save();
       $this->_time_list = NULL;
       $manager = $this->_environment->getPortalManager();
       $this->setServiceLinkActive();
       $this->_save($manager);
       unset($manager);
+      if ( empty($item_id) ) {
+         $this->generateLayoutImages();
+      }
    }
 
    /** delete portal

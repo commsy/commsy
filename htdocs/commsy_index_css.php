@@ -123,7 +123,9 @@ span.select_link{
    background-color: <?php echo($color['list_entry_even'])?>;
 }
 .list td.head {
-   background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
@@ -139,7 +141,9 @@ span.select_link{
    text-align: right;
 }
 .list td.foot_left {
-   background-image:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>
    background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
@@ -147,7 +151,9 @@ span.select_link{
    font-weight:bold;
 }
 .list td.foot_right {
-   background-image:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_32.png) repeat-x;');
+   ?>
    background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;

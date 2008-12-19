@@ -282,6 +282,7 @@ class cs_project_item extends cs_room_item {
             $this->_sendMailRoomLink();
             $this->_changed_room_link = false;
          }
+         $this->generateLayoutImages();
       }
 
       else {

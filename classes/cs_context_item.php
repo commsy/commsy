@@ -4078,7 +4078,7 @@ class cs_context_item extends cs_item {
       $this->_save($manager);
       $this->_changes = array();
    }
-
+   
    function saveWithoutChangingModificationInformation () {
       $manager = $this->_environment->getManager($this->_type);
       $manager->saveWithoutChangingModificationInformation();
@@ -4858,5 +4858,74 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function generateLayoutImages(){
+       global $c_commsy_path_file;
+       $color_array = $this->getColorArray();
+       $disc_manager = $this->_environment->getDiscManager();
+       if($this->isPortal()){
+          $disc_manager->setPortalID($this->getItemID());
+          $disc_manager->setContextID($this->getItemID());
+          $var_folder = @opendir($c_commsy_path_file . '/var/' . $this->getItemID());
+          if (!$var_folder) {
+             mkdir($c_commsy_path_file . '/var/' . $this->getItemID());
+          }
+          $var_folder = @opendir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
+          if (!$var_folder) {
+             mkdir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
+          }
+       } else {
+          $disc_manager->setPortalID($this->_environment->getCurrentPortalItem()->getItemID());
+          $disc_manager->setContextID($this->getItemID());
+          $var_folder = @opendir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalItem()->getItemID());
+          if (!$var_folder) {
+             mkdir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalItem()->getItemID());
+          }
+          $var_folder = @opendir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
+          if (!$var_folder) {
+             mkdir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
+          }
+       }
+       
+       $image_24 = $this->generateColourGradient(24, $color_array['tabs_background']);
+       if ( $disc_manager->existsFile(CS_GRADIENT_24) ) {
+            $disc_manager->unlinkFile(CS_GRADIENT_24);
+       }
+       imagePNG($image_24, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24);
+       imagedestroy($image_24);
+       
+       $image_24_focus = $this->generateColourGradient(24, $color_array['tabs_focus']);
+       if ( $disc_manager->existsFile(CS_GRADIENT_24_FOCUS) ) {
+            $disc_manager->unlinkFile(CS_GRADIENT_24_FOCUS);
+       }
+       imagePNG($image_24_focus, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_24_FOCUS);
+       imagedestroy($image_24_focus);
+       
+       $image_32 = $this->generateColourGradient(32, $color_array['tabs_background']);
+       if ( $disc_manager->existsFile(CS_GRADIENT_32) ) {
+            $disc_manager->unlinkFile(CS_GRADIENT_32);
+       }
+       imagePNG($image_32, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . CS_GRADIENT_32);
+       imagedestroy($image_32);
+    }
+
+    function generateColourGradient($height, $rgb){
+        $image = imagecreate(1, $height);
+    
+        $rgb = str_ireplace('#', '', $rgb);
+    
+        $r = hexdec(substr($rgb, 0, 2));
+        $g = hexdec(substr($rgb, 2, 2));
+        $b = hexdec(substr($rgb, 4, 2));
+    
+        $border = ImageColorAllocate($image,$r,$g,$b);
+    
+        for ($i=0; $i<($height/2); $i++) {
+            $line = ImageColorAllocate($image,$r-(($r/255)*($i*5)),$g-(($g/255)*($i*5)),$b-(($b/255)*($i*5)));
+            imageline($image, 0, $i, 0, $i, $line);
+            imageline($image, 0, (($height-1)-$i), 500, (($height-1)-$i), $line);
+        }
+        return $image;
+    }
 }
 ?>

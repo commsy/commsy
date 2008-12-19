@@ -124,7 +124,9 @@ div.portal_tabs_frame {
    position:relative;
    margin:2px 5px 5px 6px;
    padding:0px;
-   background:url(images/layout/tab_menu_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color: <?php echo($color['tabs_background'])?>;
 }
 
@@ -278,7 +280,9 @@ div.search_link a{
     line-height:18px;
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
-    background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+    <?
+    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+    ?>
     background-color: <?php echo($color['tabs_background'])?>;
 }
 
@@ -292,7 +296,9 @@ div.search_link a{
     line-height:18px;
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
-    background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+    <?
+    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+    ?>
     background-color: <?php echo($color['tabs_background'])?>;
 }
 
@@ -412,7 +418,9 @@ span.template_description{
 /* Tab Style */
 div.tabs_frame {
    position:relative;
-   background:url(images/layout/tab_menu_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color: <?php echo($color['tabs_background'])?>;
    padding:0px;
    margin:0px;
@@ -448,7 +456,9 @@ a.navlist_current{
    padding:4px 6px 3px 6px;
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
-   background-image:url(images/layout/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 
@@ -456,7 +466,9 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
    text-decoration:none;
-   background-image:url(images/layout/tab_menu_fader_aktiv_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24_focus.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
 

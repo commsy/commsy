@@ -56,7 +56,9 @@ a.right_box_title {
 }
 
 div.right_box_title{
-   background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?
+   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    height:18px;
    color:<?php echo($color['headline_text'])?>;
