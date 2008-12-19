@@ -1422,10 +1422,11 @@ class cs_detail_view extends cs_view {
 
    function _getAnnotationsAsHTML () {
       $item = $this->_item;
-      $html = '</div>'.LF.LF;
+      $html = '';
+      $html .= '</div>'.LF.LF;
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
-      $html .='<div class="detail_annotations">'.LF;
+      $html .='<div class="detail_annotations" style="width:100%;">'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){
