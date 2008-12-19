@@ -246,8 +246,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
             }
          }
-           
-         $context_item->generateLayoutImages();
          
          // logo: save and/or delete current logo
          if ( isset($_POST['delete_logo']) ) {
@@ -294,6 +292,9 @@ if ($command != 'error') { // only if user is allowed to edit colors
             }
          }
          $context_item->save();
+         
+         $context_item->generateLayoutImages();
+         
          $environment->setCurrentContextItem($context_item);
           // save room_item
    #      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
