@@ -70,8 +70,22 @@ if ( isset($_POST['delete_option']) ) {
    $delete_command = '';
 }
 if ( isset($_GET['action']) and $_GET['action'] == 'delete' ) {
-   $params = $environment->getCurrentParameterArray();
-   $page->addDeleteBox(curl($environment->getCurrentContextID(),'home','index',$params));
+   $current_user_item = $environment->getCurrentUserItem();
+   $room_manager = $environment->getRoomManager();
+   if ( !empty($current_item_id) ) {
+      $room_item = $room_manager->getItem($current_item_id);
+      if ( $current_user_item->isModerator()
+           or ( isset($room_item)
+                and $room_item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+              )
+         ) {
+         $params = $environment->getCurrentParameterArray();
+         $page->addDeleteBox(curl($environment->getCurrentContextID(),'home','index',$params));
+      }
+      unset($room_item);
+   }
+   unset($room_manager);
+   unset($current_user_item);
 }
 
 // Cancel editing
@@ -83,25 +97,48 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
    unset($params['iid']);
    redirect($environment->getCurrentContextID(), 'home', 'index', $params);
 }
+
 // Delete item
 elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
-    $manager = $environment->getRoomManager();
-    $item = $manager->getItem($current_item_id);
-    $item->delete();
-    redirect($environment->getCurrentContextID(), 'home', 'index', '');
+   $manager = $environment->getRoomManager();
+   $item = $manager->getItem($current_item_id);
+   $current_user_item = $environment->getCurrentUserItem();
+   if ( $current_user_item->isModerator()
+        or ( isset($item)
+             and $item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+           )
+      ) {
+      $item->delete();
+   }
+   unset($item);
+   unset($manager);
+   unset($current_user_item);
+   redirect($environment->getCurrentContextID(), 'home', 'index', '');
 }
+
 // Archiv item
 elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
-    $manager = $environment->getRoomManager();
-    $item = $manager->getItem($current_item_id);
-    $item->close();
-    $item->save();
-    $params = $environment->getCurrentParameterArray();
-    $anchor = '';
-    $params['room_id'] = $current_item_id;
-    unset($params['action']);
-    unset($params['iid']);
-    redirect($environment->getCurrentContextID(), 'home', 'index', $params);
+   $manager = $environment->getRoomManager();
+   $item = $manager->getItem($current_item_id);
+   $current_user_item = $environment->getCurrentUserItem();
+   if ( $current_user_item->isModerator()
+        or ( isset($item)
+             and $item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+           )
+      ) {
+      $item->close();
+      $item->save();
+   }
+   unset($item);
+   unset($manager);
+   unset($current_user_item);
+
+   $params = $environment->getCurrentParameterArray();
+   $anchor = '';
+   $params['room_id'] = $current_item_id;
+   unset($params['action']);
+   unset($params['iid']);
+   redirect($environment->getCurrentContextID(), 'home', 'index', $params);
 }
 
 // get translation object
