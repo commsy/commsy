@@ -1325,10 +1325,6 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getDiscussionFormAsHTML();
          }
       }
-      if ($rubric == CS_TOPIC_TYPE
-      ){
-         $html .= $this->_getNewestLinkedItemsAsHTML($item);
-      }
       if($rubric == CS_TOPIC_TYPE){
          $anno_list = $item->getAnnotationList();
          $anno_item = $anno_list->getFirst();

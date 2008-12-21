@@ -54,47 +54,18 @@ class cs_group_detail_view extends cs_detail_view {
    function _getNewestLinkedItemsAsHTML($item){
       $title_string =$this->_translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES');
       $link_items = $item->getLatestLinkItemList(10);
-      $title_string .= ' ('.getMessage('COMMON_REFERENCED_LATEST_ONE').' '.$link_items->getCount().')';
-      $html = '</div>'.LF.LF;
-      $html .= '</div>';
-      $html .= '<h3 class="annotationtitle" style="margin-top:40px; margin-bottom:5px;">'.$title_string;
+      if ($link_items->getCount() >0){
+         $title_string .= ' ('.getMessage('COMMON_REFERENCED_LATEST_ONE').' '.$link_items->getCount().')';
+      }
+      $html = '<h3 class="subitemtitle" style="margin-top:0px; margin-bottom:0px;">'.$title_string;
       $html .= '</h3>'.LF;
-      $html .='<div id="newest_link_box">'.LF;
-      $html .= '<div style="width:100%; background-color:white;">'.LF.LF;
-      $i = 0;
-      $html .= '<table class="list">';
-      $html .= '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:55%;">';
-      $html .= $this->_translator->getMessage('COMMON_TITLE');
-      $html .= '</td>'.LF;
-
-      $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
-      $html .= $this->_translator->getMessage('COMMON_RUBRIC');
-      $html .= '</td>'.LF;
-
-      $html .= '      <td style="width:20%; font-size:8pt;"  class="head">';
-      $html .= $this->_translator->getMessage('COMMON_LINK_CREATOR');
-      $html .= '</td>'.LF;
-      $html .= '      <td style="width:10%; font-size:8pt;"  class="head">';
-      $html .= $this->_translator->getMessage('COMMON_AT');
-      $html .= '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
-      $html .= '</td>'.LF;
-      $html .= '   </tr>'.LF;
-
-
+      $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
       if ($link_items->isEmpty()) {
-         $html .= '   <tr class="list">'.LF;
-         $html .= '      <td '.'class="odd"'.' style="font-size:10pt;">'.getMessage('COMMON_NONE').'</td>'.LF;
-         $html .= '</td>';
-         $html .= '</tr>';
+         $html .= getMessage('COMMON_NONE').LF;
       } else {
+         $i = 0;
          $link_item = $link_items->getFirst();
          while($link_item){
-            if ($i%2 == 0){
-               $style='class="odd"';
-            }else{
-               $style='class="even"';
-            }
             $link_creator = $link_item->getCreatorItem();
             if ( isset($link_creator) and !$link_creator->isDeleted() ) {
                $fullname = $link_creator->getFullname();
@@ -207,33 +178,13 @@ class cs_group_detail_view extends cs_detail_view {
 
 
 
-            $html .= '   <tr class="list">'.LF;
-            $html .= '      <td '.$style.' style="font-size:10pt;">'.$html_text.'</td>'.LF;
-            $html .= '      <td '.$style.' style="font-size:8pt;">'.$text.'</td>'.LF;
-            $html .= '      <td '.$style.' style="font-size:8pt;">' .LF;
-            $params = array();
-            $params['iid'] = $link_item->getCreatorItem()->getItemID();
-            $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                       'user',
-                                       'detail',
-                                       $params,
-                                       $fullname);
-            $html .= '</td>'.LF;
-            $html .= '      <td '.$style.' style="font-size:8pt;">' .LF;
-            $html .= $link_created;
-            $html .= '</td>'.LF;
-            $html .= '   </tr>'.LF;
-            $i++;
+            $html .= '      <li style="font-size:10pt;">'.$html_text.'</li>'.LF;
+             $i++;
             $link_item = $link_items->getNext();
          }
+         }
       }
-      }
-      $html .= '</table>'.LF.LF;
-
-      $html .= '</div>'.LF.LF;
-      $html .= '</div>';
-      $html .= '<div>'.LF.LF;
-      $html .= '<div>&nbsp;'.LF.LF;
+      $html .= '</ul>'.LF.LF;
       return $html;
    }
 
@@ -246,6 +197,7 @@ class cs_group_detail_view extends cs_detail_view {
     * @author CommSy Development Group
     */
    function _getItemAsHTML($item) {
+      $current_context = $this->_environment->getCurrentContextItem();
 
       $html  = LF.'<!-- BEGIN OF GROUP ITEM DETAIL -->'.LF;
 
@@ -293,6 +245,7 @@ class cs_group_detail_view extends cs_detail_view {
          $desc = $this->_text_as_html_long($desc);
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
+
 
       #########################################
       # FLAG: group room
@@ -343,6 +296,7 @@ class cs_group_detail_view extends cs_detail_view {
       #########################################
 
       // Members
+#      $html .= $this->_getNewestLinkedItemsAsHTML($item);
       $html .= '<h3 class="subitemtitle" style="margin-top:10px;">'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;
       $context_item = $this->_environment->getCurrentContextItem();
       $members = $item->getMemberItemList();
@@ -406,20 +360,21 @@ class cs_group_detail_view extends cs_detail_view {
       $html .= '<table summary = "layout">'.LF;
       $html .= '<tr>'.LF;
       $html .= '<td style="vertical-align:top;">'.LF;
-      $html .= '<ul>'.LF;
+      $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+#      $html .= '<ul>'.LF;
       $html .= $html1.LF;
       $html .= '</ul>'.LF;
       $html .= '</td>'.LF;
       if (!empty($html2)){
          $html .= '<td style="vertical-align:top;">'.LF;
-         $html .= '<ul>'.LF;
+         $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
          $html .= $html2;
          $html .= '</ul>'.LF;
          $html .= '</td>'.LF;
       }
       if (!empty($html3)){
          $html .= '<td style="vertical-align:top;">'.LF;
-         $html .= '<ul>'.LF;
+         $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
          $html .= $html3;
          $html .= '</ul>'.LF;
          $html .= '</td>'.LF;
@@ -679,8 +634,7 @@ class cs_group_detail_view extends cs_detail_view {
       $may_enter = $item->mayEnter($current_user);
       $color_array = $item->getColorArray();
       $title = $item->getTitle();
-      $html  = '';
-      $html .= '<table class="room_window" style="width: 100%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
+      $html = '<table class="room_window" style="margin-left:20px; width: 80%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
       $html .= '<tr><td style="padding:0px;">'.LF.LF;
       $logo = $item->getLogoFilename();
       $html .= '<table style="width: 100%; padding:0px; border-collapse:collapse;" summary="Layout">'.LF;
@@ -728,7 +682,30 @@ class cs_group_detail_view extends cs_detail_view {
 
       // group room user
       $html .= '<tr>'.LF;
-      $html .= '<td  colspan="2" style="background-color: '.$color_array['content_background'].'; padding:5px;">'.LF;
+      $html .= '<td  colspan="2" style="';
+      $style = ' color: '.$color_array['page_title'].';';
+         if ($color_array['schema']=='SCHEMA_OWN'){
+            if ($this->_item->getBGImageFilename()){
+               if ($this->_item->issetBGImageRepeat()){
+                  $style .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') repeat; ';
+               }else{
+                  $style .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
+               }
+            }
+         }else{
+            if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
+               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
+            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
+               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
+            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
+               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
+            }else{
+               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
+            }
+         }
+      $style .= ' background-color:'.$color_array['content_background'].'; ';
+
+      $html .= $style.' padding:5px;">'.LF;
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());
       $user_manager->setAuthSourceLimit($current_user->getAuthSource());
@@ -757,7 +734,7 @@ class cs_group_detail_view extends cs_detail_view {
          } else {
             $may_enter = false;
          }
-         $html .= '<div style="float:right; width:15em; padding:5px; vertical-align: middle; text-align: center;">'.LF;
+         $html .= '<div style="float:right; width:10em; padding:5px; vertical-align: middle; text-align: center;">'.LF;
 
          // Eintritt erlaubt
          if ( $may_enter ) {

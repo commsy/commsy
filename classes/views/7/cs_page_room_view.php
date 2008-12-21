@@ -514,10 +514,10 @@ class cs_page_room_view extends cs_page_view {
          $breadcrump.= ' > '.$context_item->getTitle();
       }elseif($this->_environment->inGroupRoom()){
          $project_item = $context_item->getLinkedProjectItem();
-         $community_list = $project_item->getLinkedCommunityListForBreadCrump();
+         $community_list = $project_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
-            $breadcrump.= ' > '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
+             $breadcrump.= ' > '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
          }
          $breadcrump.= ' > '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
          $breadcrump.= ' > '.$context_item->getTitle();

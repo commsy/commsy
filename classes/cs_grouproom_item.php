@@ -159,6 +159,33 @@ class cs_grouproom_item extends cs_room_item {
       }
    }
 
+   public function isDesign6() {
+      $retour = true;
+      if ( $this->_getDesign() != 6 ) {
+         $retour = false;
+      }
+      return $retour;
+   }
+
+   public function isDesign7() {
+      $retour = false;
+      if ( $this->_getDesign() == 7 ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+
+   private function _getDesign() {
+      $retour = 6;
+      $project_item = $this->getLinkedProjectItem();
+      if ( $project_item->isDesign7()) {
+         $retour = 7;
+      }
+      return $retour;
+   }
+
+
    /** save news item
     * this methode save the news item into the database
     */
