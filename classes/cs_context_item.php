@@ -2192,7 +2192,12 @@ class cs_context_item extends cs_item {
       if ( $this->_issetExtra('WIKITITLE') ) {
          $retour = $this->_getExtra('WIKITITLE');
       } else {
-         $retour = $this->getTitle();
+         if ($this->isPrivateRoom()){
+            $translator = $this->_environment->getTranslationObject();
+            $retour = $translator->getMessage('COMMON_PRIVATE_ROOM');
+         }else{
+            $retour = $this->getTitle();
+         }
       }
       return $retour;
    }
