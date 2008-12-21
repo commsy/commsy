@@ -177,8 +177,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
       }
 
-      $context_item->save();
-
       // save room_item
       $context_item->save();
 

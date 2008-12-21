@@ -633,7 +633,6 @@ $cs_color['SCHEMA_15']['index_td_head_title']        = 'white';
 $cs_color['SCHEMA_15']['repeat_background']          = 'y';
 /*****************************************************************/
 
-
 //Daytime
 $date = date("H:i:s");
 $date_array = explode(':', $date);
@@ -705,6 +704,42 @@ $cs_color['print_table_body']       = '#ffffff';
 $cs_color['print_table_head']       = '#c2c2c2';
 $cs_color['print_room_title']       = $cs_color['print_title'];
 $cs_color['print_room_background']  = $cs_color['print_background'];
+
+//SCHEMA 16
+/*****************************************************************/
+$cs_color['SCHEMA_17']['schema']                     = 'SCHEMA_17';
+$cs_color['SCHEMA_17']['tabs_background']            = '#3B658E';
+$cs_color['SCHEMA_17']['tabs_focus']                 = '#6090BF';
+$cs_color['SCHEMA_17']['tabs_title']                 = '#FFFFFF';
+$cs_color['SCHEMA_17']['content_background']         = '#EDF5FF';
+$cs_color['SCHEMA_17']['boxes_background']           = '#FFFFFF';
+$cs_color['SCHEMA_17']['hyperlink']                  = '#01458A';
+$cs_color['SCHEMA_17']['list_entry_even']            = '#F0F0F0';
+
+$cs_color['SCHEMA_17']['table_background']           = $cs_color['SCHEMA_17']['content_background'];
+$cs_color['SCHEMA_17']['headline_text']              = $cs_color['SCHEMA_17']['tabs_title'];
+$cs_color['SCHEMA_17']['help_background']            = $cs_color['SCHEMA_17']['content_background'];
+$cs_color['SCHEMA_17']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_17']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_17']['date_title']                 = '#666699';
+$cs_color['SCHEMA_17']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_17']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_17']['warning']                    = 'red';
+
+$cs_color['SCHEMA_17']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_17']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_17']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_17']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_17']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_17']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_17']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_17']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_17']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_17']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_17']['repeat_background']          = 'y';
+/*****************************************************************/
+
 
 
 

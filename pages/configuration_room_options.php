@@ -172,6 +172,8 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color = $cs_color['SCHEMA_15'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_16'){
                $color = $cs_color['SCHEMA_16'];
+            }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_17'){
+               $color = $cs_color['SCHEMA_17'];
             }elseif ($_POST['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
                if (!empty($_POST['color_1'])){
                   $color['tabs_background'] = $_POST['color_1'];
@@ -216,7 +218,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color['disabled'] = '#B0B0B0';
                $color['warning'] = '#FC1D12';
                $color['schema']='SCHEMA_OWN';
-               
+
                // logo: save and/or delete current logo
                if ( isset($_POST['delete_bgimage']) ) {
                   $disc_manager = $environment->getDiscManager();
@@ -246,7 +248,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
             }
          }
-         
+
          // logo: save and/or delete current logo
          if ( isset($_POST['delete_logo']) ) {
             $disc_manager = $environment->getDiscManager();
@@ -291,10 +293,27 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $environment->unsetSelectedLanguage();
             }
          }
+        $redirect = false;
+         if ( !empty($_POST['design']) ) {
+            if ( $_POST['design'] == 7 ) {
+               if ( $context_item->isDesign6() ) {
+                  $redirect = true;
+               }
+               $context_item->setDesignTo7();
+            } else {
+               if ( $context_item->isDesign7() ) {
+                  $redirect = true;
+               }
+               $context_item->setDesignTo6();
+            }
+         }
          $context_item->save();
-         
+         if ( $redirect ) {
+            redirect($environment->getCurrentContextID(),'configuration','index');
+         }
+
          $context_item->generateLayoutImages();
-         
+
          $environment->setCurrentContextItem($context_item);
           // save room_item
    #      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
