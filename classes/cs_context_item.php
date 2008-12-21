@@ -2023,6 +2023,7 @@ class cs_context_item extends cs_item {
       } elseif ( $this->isProjectRoom()
                  or $this->isCommunityRoom()
                  or $this->isGroupRoom()
+                 or $this->isPrivateRoom()
                ) {
          $portal_room = $this->getContextItem();
          if ( $portal_room->withWikiFunctions() ) {
