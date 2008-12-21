@@ -731,7 +731,7 @@ class cs_context_item extends cs_item {
          $retour = $retour_temp;
       }
 
-      if (!strstr($retour['schema'],'OWN')){
+      if (!strstr($retour['schema'],'OWN') and !$this->isDesign6() ){
          $retour = $cs_color[$retour['schema']];
       }
       return $retour;
@@ -4078,7 +4078,7 @@ class cs_context_item extends cs_item {
       $this->_save($manager);
       $this->_changes = array();
    }
-   
+
    function saveWithoutChangingModificationInformation () {
       $manager = $this->_environment->getManager($this->_type);
       $manager->saveWithoutChangingModificationInformation();
@@ -4858,7 +4858,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function generateLayoutImages(){
        global $c_commsy_path_file;
        $color_array = $this->getColorArray();
@@ -4886,21 +4886,21 @@ class cs_context_item extends cs_item {
              mkdir($c_commsy_path_file . '/' . $disc_manager->getFilePath());
           }
        }
-       
+
        $image_24 = $this->generateColourGradient(24, $color_array['tabs_background']);
        if ( $disc_manager->existsFile(CS_GRADIENT_24) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_24);
        }
        imagePNG($image_24, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_24);
        imagedestroy($image_24);
-       
+
        $image_24_focus = $this->generateColourGradient(24, $color_array['tabs_focus']);
        if ( $disc_manager->existsFile(CS_GRADIENT_24_FOCUS) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_24_FOCUS);
        }
        imagePNG($image_24_focus, $c_commsy_path_file . '/' . $disc_manager->getFilePath() . $color_array['schema'] . '_' .CS_GRADIENT_24_FOCUS);
        imagedestroy($image_24_focus);
-       
+
        $image_32 = $this->generateColourGradient(32, $color_array['tabs_background']);
        if ( $disc_manager->existsFile(CS_GRADIENT_32) ) {
             $disc_manager->unlinkFile(CS_GRADIENT_32);
@@ -4911,15 +4911,15 @@ class cs_context_item extends cs_item {
 
     function generateColourGradient($height, $rgb){
         $image = imagecreate(1, $height);
-    
+
         $rgb = str_ireplace('#', '', $rgb);
-    
+
         $r = hexdec(substr($rgb, 0, 2));
         $g = hexdec(substr($rgb, 2, 2));
         $b = hexdec(substr($rgb, 4, 2));
-    
+
         $border = ImageColorAllocate($image,$r,$g,$b);
-    
+
         for ($i=0; $i<($height/2); $i++) {
             $line = ImageColorAllocate($image,$r-(($r/255)*($i*3)),$g-(($g/255)*($i*3)),$b-(($b/255)*($i*3)));
             imageline($image, 0, $i, 0, $i, $line);
