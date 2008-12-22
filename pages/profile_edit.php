@@ -22,7 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
 // function for page edit
 // - to check files for virus
 if (isset($c_virus_scan) and $c_virus_scan) {
@@ -96,9 +95,30 @@ if ($command != 'error') { // only if user is allowed to edit user
    $class_params['environment'] = $environment;
    $form = $class_factory->getClass(PROFILE_FORM,$class_params);
    unset($class_params);
+
+   # language
+   $portal_user_item = $environment->getPortalUserItem();
+   $portal_language = $portal_user_item->getLanguage();
+   $current_language = $translator->getSelectedLanguage();
+   $change_language = false;
+   if ( strtoupper($portal_language) != strtoupper($current_language) ) {
+      if ( $portal_language == 'browser' ) {
+         $portal_language = $environment->getBrowserLanguage();
+         if ( empty($portal_language)
+              or !$translator->isLanguageAvailable($portal_language)
+            ) {
+            $portal_language = $environment->getSelectedLanguage();
+         }
+      }
+      $form->setLanguage($portal_language);
+      $change_language = true;
+   }
+   unset($current_language);
+   unset($portal_user_item);
+
    $form->setProfilePageName($profile_page);
    // cancel edit process
-   if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command,$translator->getMessageInLang($portal_language,'COMMON_CANCEL_BUTTON')) ) {
       $params = $environment->getCurrentParameterArray();
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
    }
@@ -110,6 +130,9 @@ if ($command != 'error') { // only if user is allowed to edit user
       $class_params['with_modifying_actions'] = true;
       global $class_factory;
       $profile_view = $class_factory->getClass(PROFILE_FORM_VIEW,$class_params);
+      if ( $change_language ) {
+         $profile_view->setLanguage($portal_language);
+      }
       unset($class_params);
       if (isset($_GET['is_saved'])){
          $profile_view->setItemIsSaved();
@@ -202,7 +225,7 @@ if ($command != 'error') { // only if user is allowed to edit user
           $form->prepareForm();
           $form->loadValues();
 
-          if ( !empty($command) AND isOption($command,getMessage('COMMON_CHANGE_BUTTON')) ) {
+          if ( !empty($command) AND isOption($command,$translator->getMessageInLang($portal_language,'COMMON_CHANGE_BUTTON')) ) {
 
              $correct = $form->check();
              if ( $correct
@@ -328,13 +351,13 @@ if ($command != 'error') { // only if user is allowed to edit user
                 }
 
                 if ( ( isset($_POST['deletePicture'])
-                       or ( !empty($_FILES['upload']['name'])
-                 and !empty($_FILES['upload']['tmp_name'])
-               )
+                        or ( !empty($_FILES['upload']['name'])
+                        and !empty($_FILES['upload']['tmp_name'])
+                        )
                      )
-               and $user_item->getPicture()
+                     and $user_item->getPicture()
                    ) {
-             $disc_manager = $environment->getDiscManager();
+                   $disc_manager = $environment->getDiscManager();
                    if ( $disc_manager->existsFile($user_item->getPicture()) ) {
                       $disc_manager->unlinkFile($user_item->getPicture());
                    }
@@ -540,7 +563,7 @@ if ($command != 'error') { // only if user is allowed to edit user
           $form->prepareForm();
           $form->loadValues();
 
-          if ( !empty($command) AND isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+          if ( !empty($command) AND isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_SAVE_BUTTON')) ) {
 
              $correct = $form->check();
              if ( $correct ){
@@ -574,7 +597,7 @@ if ($command != 'error') { // only if user is allowed to edit user
           $form->prepareForm();
           $form->loadValues();
 
-          if ( !empty($command) AND isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+          if ( !empty($command) AND isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_SAVE_BUTTON')) ) {
 
              $correct = $form->check();
              if ( $form->check() ) {
@@ -602,7 +625,7 @@ if ($command != 'error') { // only if user is allowed to edit user
             redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
           }
       }else{
-          if ( isOption($command,getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+          if ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_SAVE_BUTTON')) ) {
             $authentication = $environment->getAuthenticationObject();
             $error_string = '';
             $form->setFormPost($_POST);
@@ -618,7 +641,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $params['is_saved'] = true;
                      $error_number = $auth_manager->getErrorNumber();
                      if (!empty($error_number)) {
-                        $error_string .= getMessage('COMMON_ERROR_DATABASE').$error_number.'<br />';
+                        $error_string .= $translator->getMessageInLang($portal_language,'COMMON_ERROR_DATABASE').$error_number.'<br />';
                      }
                   }
                   if ( !$environment->inPortal() ) {
@@ -631,7 +654,8 @@ if ($command != 'error') { // only if user is allowed to edit user
                   $success_2 = false;
                   $success_3 = false;
                   if ( !empty($_POST['user_id'])
-                       and $_POST['user_id'] != $portal_user->getUserID()) {
+                       and $_POST['user_id'] != $portal_user->getUserID()
+                     ) {
                      if ($authentication->changeUserID($_POST['user_id'],$portal_user)) {
                         $session = $environment->getSessionItem();
                         $session_id_old = $session->getSessionID();
@@ -650,6 +674,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $success_1 = true;
                   }
                   $save = false;
+                  #pr($_POST);
                   if (!empty($_POST['language']) and $_POST['language'] != $portal_user->getLanguage()) {
                      $portal_user->setLanguage($_POST['language']);
                      $save = true;
@@ -729,8 +754,9 @@ if ($command != 'error') { // only if user is allowed to edit user
          $params['width'] = 500;
          $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
          unset($params);
-         $errorbox->setText(getMessage('COMMON_EDIT_AS_MODERATOR'));
+         $errorbox->setText($translator->getMessageInLang($portal_language,'COMMON_EDIT_AS_MODERATOR'));
       }
+
       $profile_view->setForm($form);
    }
 }

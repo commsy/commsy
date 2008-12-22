@@ -33,10 +33,16 @@ $this->includeClass(ERRORBOX_VIEW);
  */
 class cs_profile_form_view extends cs_form_view {
 
+   private $_language = NULL;
+
    function cs_profile_form_view ($params) {
       $this->cs_form_view($params);
-    }
+      $this->_language = $this->_environment->getSelectedLanguage();
+   }
 
+   public function setLanguage ( $value ) {
+      $this->_language = (string)$value;
+   }
 
    function _getLinkRowAsHTML () {
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
@@ -49,7 +55,7 @@ class cs_profile_form_view extends cs_form_view {
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
                            $params,
-                           $this->_translator->getMessage('PROFILE_ACCOUNT_DATA'));
+                           $this->_translator->getMessageInLang($this->_language,'PROFILE_ACCOUNT_DATA'));
       if (!isset($_GET['profile_page']) or $_GET['profile_page'] == 'account'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
               }else{
@@ -60,7 +66,7 @@ class cs_profile_form_view extends cs_form_view {
                            $this->_environment->getCurrentModule(),
                            $this->_environment->getCurrentFunction(),
                            $params,
-                           $this->_translator->getMessage('PROFILE_USER_DATA'));
+                           $this->_translator->getMessageInLang($this->_language,'PROFILE_USER_DATA'));
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'user'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
       }else{
@@ -69,13 +75,13 @@ class cs_profile_form_view extends cs_form_view {
       $params['profile_page'] = 'room_list';
       $current_user_item = $this->_environment->getCurrentUserItem();
       if ( $current_user_item->isRoomMember() ) {
-         $title = '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessage('PROFILE_ROOM_LIST_DATA').'</a>';
+         $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOM_LIST_DATA').'</a>';
       } else {
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
                               $this->_environment->getCurrentModule(),
                               $this->_environment->getCurrentFunction(),
                               $params,
-                              $this->_translator->getMessage('PROFILE_ROOM_LIST_DATA'));
+                              $this->_translator->getMessageInLang($this->_language,'PROFILE_ROOM_LIST_DATA'));
       }
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'room_list'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
@@ -84,13 +90,13 @@ class cs_profile_form_view extends cs_form_view {
       }
       $params['profile_page'] = 'newsletter';
       if ( $current_user_item->isRoomMember() ) {
-         $title = '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessage('PROFILE_NEWSLETTER_DATA').'</a>';
+         $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA').'</a>';
       } else {
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
                               $this->_environment->getCurrentModule(),
                               $this->_environment->getCurrentFunction(),
                               $params,
-                              $this->_translator->getMessage('PROFILE_NEWSLETTER_DATA'));
+                              $this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA'));
       }
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'newsletter'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
@@ -136,7 +142,7 @@ class cs_profile_form_view extends cs_form_view {
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
-      $html .= '<h2 id="profile_title">'.$this->_translator->getMessage('COMMON_PROFILE_EDIT').'</h2>';
+      $html .= '<h2 id="profile_title">'.$this->_translator->getMessageInLang($this->_language,'COMMON_PROFILE_EDIT').'</h2>';
       $html .='</div>'.LF;
 
       $html .= $this->_getLinkRowAsHTML();
@@ -145,7 +151,7 @@ class cs_profile_form_view extends cs_form_view {
       $html .='<div style="width:95%; padding:10px;">'.LF;
       if ($this->_item_saved){
          $html .='<div style="width:100%; text-align:center; font-weight:bold; color:red; font-size:14pt;">'.LF;
-         $html .= $this->_translator->getMessage('COMMON_ITEM_SAVED').LF;
+         $html .= $this->_translator->getMessageInLang($this->_language,'COMMON_ITEM_SAVED').LF;
          $html .='</div>'.LF;
       }
 
@@ -240,7 +246,7 @@ class cs_profile_form_view extends cs_form_view {
                   $html .= ':';
                }
                if (!empty($form_element_array[0]['mandatory'])) {
-                  $html .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
+                  $html .= '<span class="required">'.$this->_translator->getMessageInLang($this->_language,'MARK').'</span>';
                }
             }
             $html .= '&nbsp;'.$this->_getTitleFieldAsHTML($form_element);
@@ -267,7 +273,7 @@ class cs_profile_form_view extends cs_form_view {
                   $html .= ':';
                }
                if (!empty($form_element_array[0][0]['mandatory'])) {
-                  $html .= '<span class="required">'.$this->_translator->getMessage('MARK').'</span>';
+                  $html .= '<span class="required">'.$this->_translator->getMessageInLang($this->_language,'MARK').'</span>';
                }
             }
             $html .= '</td>';

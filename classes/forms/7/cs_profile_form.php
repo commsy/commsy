@@ -63,6 +63,8 @@ class cs_profile_form extends cs_rubric_form {
 
    var $_user = NULL;
 
+   private $_language = NULL;
+
   /** constructor
     * the only available constructor
     *
@@ -70,8 +72,9 @@ class cs_profile_form extends cs_rubric_form {
     *
     * @author CommSy Development Group
     */
-   function cs_user_form($params) {
+   function __CONSTRUCT($params) {
       $this->cs_rubric_form($params);
+      $this->_language = $this->_environment->getSelectedLanguage();
    }
 
   /**
@@ -92,7 +95,11 @@ class cs_profile_form extends cs_rubric_form {
     $this->_profile_page_name = $name;
    }
    function getProfilePageName(){
-    return $this->_profile_page_name;
+      return $this->_profile_page_name;
+   }
+
+   public function setLanguage ( $value ) {
+      $this->_language = (string)$value;
    }
 
    /** init data for form, INTERNAL
@@ -104,10 +111,10 @@ class cs_profile_form extends cs_rubric_form {
       if ($this->getProfilePageName() == 'user'){
          // headline
          if (!empty($this->_item)) {
-            $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
+            $this->_headline = $this->_translator->getMessageInLang($this->_language,'USER_EDIT_FORM_TITLE');
          } elseif (!empty($this->_form_post)) {
             if (!empty($this->_form_post['iid'])) {
-               $this->_headline = $this->_translator->getMessage('USER_EDIT_FORM_TITLE');
+               $this->_headline = $this->_translator->getMessageInLang($this->_language,'USER_EDIT_FORM_TITLE');
             }
          } else {
             $this->_headline = '';
@@ -181,67 +188,67 @@ class cs_profile_form extends cs_rubric_form {
    function _createForm () {
       if ($this->getProfilePageName() == 'user'){
          $this->_form->addHidden('uid','');
-         $this->_form->addTextField('title','',$this->_translator->getMessage('USER_TITLE'),'','','30',false);
+         $this->_form->addTextField('title','',$this->_translator->getMessageInLang($this->_language,'USER_TITLE'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('title_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('birthday','',$this->_translator->getMessage('USER_BIRTHDAY'),'','','30',false);
+         $this->_form->addCheckbox('title_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('birthday','',$this->_translator->getMessageInLang($this->_language,'USER_BIRTHDAY'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('birthday_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('street','',$this->_translator->getMessage('USER_STREET'),'','','30',false);
+         $this->_form->addCheckbox('birthday_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('street','',$this->_translator->getMessageInLang($this->_language,'USER_STREET'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('street_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('zipcode','',$this->_translator->getMessage('USER_ZIPCODE'),'','','30',false);
+         $this->_form->addCheckbox('street_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('zipcode','',$this->_translator->getMessageInLang($this->_language,'USER_ZIPCODE'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('zipcode_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('city','',$this->_translator->getMessage('USER_CITY'),'','','30',false);
+         $this->_form->addCheckbox('zipcode_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('city','',$this->_translator->getMessageInLang($this->_language,'USER_CITY'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('city_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('room','',$this->_translator->getMessage('USER_ROOM'),'','','30',false);
+         $this->_form->addCheckbox('city_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('room','',$this->_translator->getMessageInLang($this->_language,'USER_ROOM'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('room_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('telephone','',$this->_translator->getMessage('USER_TELEPHONE'),'','','30',false);
+         $this->_form->addCheckbox('room_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('telephone','',$this->_translator->getMessageInLang($this->_language,'USER_TELEPHONE'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('telephone_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('cellularphone','',$this->_translator->getMessage('USER_CELLULARPHONE'),'','','30',false);
+         $this->_form->addCheckbox('telephone_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('cellularphone','',$this->_translator->getMessageInLang($this->_language,'USER_CELLULARPHONE'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('cellularphone_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('email','',$this->_translator->getMessage('USER_EMAIL'),'','','30',true);
+         $this->_form->addCheckbox('cellularphone_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('email','',$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'),'','','30',true);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('email_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('homepage','',$this->_translator->getMessage('USER_HOMEPAGE'),'','','30',false);
+         $this->_form->addCheckbox('email_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('homepage','',$this->_translator->getMessageInLang($this->_language,'USER_HOMEPAGE'),'','','30',false);
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('homepage_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('icq','',$this->_translator->getMessage('USER_MESSENGER_NUMBERS'),'','','18',false,'','','','left',$this->_translator->getMessage('USER_ICQ').':&nbsp;&nbsp;&nbsp;<span style="font-size: 13px;">&nbsp;</span>','',false,'');
+         $this->_form->addCheckbox('homepage_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addTextField('icq','',$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS'),'','','18',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_ICQ').':&nbsp;&nbsp;&nbsp;<span style="font-size: 13px;">&nbsp;</span>','',false,'');
          $this->_form->combine('horizontal');
          /*
-         $this->_form->addTextField('jabber','',$this->_translator->getMessage('USER_JABBER'),'','','19',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('USER_JABBER').':','',false,'');
+         $this->_form->addTextField('jabber','',$this->_translator->getMessageInLang($this->_language,'USER_JABBER'),'','','19',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('USER_JABBER').':','',false,'');
          $this->_form->combine();
          */
-         $this->_form->addTextField('msn','',$this->_translator->getMessage('USER_MSN'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('USER_MSN').':','',false,'');
+         $this->_form->addTextField('msn','',$this->_translator->getMessageInLang($this->_language,'USER_MSN'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_MSN').':','',false,'');
          $this->_form->combine();
-         $this->_form->addTextField('skype','',$this->_translator->getMessage('USER_SKYPE'),'','','18',false,'','','','left',$this->_translator->getMessage('USER_SKYPE').':<span style="font-size: 1px;">&nbsp;</span>','',false,'');
+         $this->_form->addTextField('skype','',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE'),'','','18',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE').':<span style="font-size: 1px;">&nbsp;</span>','',false,'');
          $this->_form->combine('horizontal');
-         $this->_form->addTextField('yahoo','',$this->_translator->getMessage('USER_YAHOO'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('USER_YAHOO').':','',false,'');
+         $this->_form->addTextField('yahoo','',$this->_translator->getMessageInLang($this->_language,'USER_YAHOO'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_YAHOO').':','',false,'');
          $this->_form->combine();
-         $this->_form->addText('messenger_text',$this->_translator->getMessage('USER_MESSENGER_NUMBERS'),$this->_translator->getMessage('USER_MESSENGER_NUMBERS_TEXT'));
+         $this->_form->addText('messenger_text',$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS'),$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS_TEXT'));
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('messenger_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addCheckbox('messenger_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
          ##################################################
          # messenger - END
          ##################################################
-         $this->_form->addTextArea('description','',$this->_translator->getMessage('USER_DESCRIPTION'),'','40','10',false);
+         $this->_form->addTextArea('description','',$this->_translator->getMessageInLang($this->_language,'USER_DESCRIPTION'),'','40','10',false);
          $this->_form->combine();
-         $this->_form->addCheckbox('description_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addCheckbox('description_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
          $this->_form->addEmptyline();
-         $this->_form->addImage('upload','',$this->_translator->getMessage('USER_PICTURE_UPLOADFILE'), $this->_translator->getMessage('USER_PICTURE_FILE_DESC'));
+         $this->_form->addImage('upload','',$this->_translator->getMessageInLang($this->_language,'USER_PICTURE_UPLOADFILE'), $this->_translator->getMessageInLang($this->_language,'USER_PICTURE_FILE_DESC'));
 
          //delete picture
          if ( $this->_with_picture) {
             $this->_form->combine();
-            $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
+            $this->_form->addCheckbox('deletePicture',$this->_translator->getMessageInLang($this->_language,'USER_DEL_PIC'),false,$this->_translator->getMessageInLang($this->_language,'USER_DEL_PIC'),$this->_translator->getMessageInLang($this->_language,'USER_DEL_PIC_BUTTON'),'');
          }
          $this->_form->combine();
-         $this->_form->addCheckbox('picture_change_all',$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessage('USER_CHANGE_IN_ALL_ROOMS'),'');
+         $this->_form->addCheckbox('picture_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
          $id = 0;
          if (isset($this->_item)) {
             $id = $this->_item->getItemID();
@@ -251,7 +258,7 @@ class cs_profile_form extends cs_rubric_form {
             }
          }
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CHANGE_BUTTON'),'','','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'COMMON_CHANGE_BUTTON'),'','','','');
       }elseif($this->getProfilePageName() == 'newsletter'){
          $radio_values = array();
          $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NONE');
@@ -269,11 +276,11 @@ class cs_profile_form extends cs_rubric_form {
       }elseif($this->getProfilePageName() == 'room_list'){
 #         $this->_form->addHidden('place_array',$this->_link_item_place_array);
 #         $this->_form->combine('vertical');
-         $this->_form->addText('activate_path','',$this->_translator->getMessage('PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION'));
+         $this->_form->addText('activate_path','',$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOMLIST_CUSTOMIZING_DESCRIPTION'));
          $this->_form->addCheckboxGroup('sorting',$this->_link_item_array,$this->_link_item_check_array,'','','','','','','','',50,true,false,true);
          $this->_form->addEmptyline();
-         $this->_form->addCheckbox('delete',1,false,'',$this->_translator->getMessage('PROFILE_ROOMLIST_DELETE_OPTION'));
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
+         $this->_form->addCheckbox('delete',1,false,'',$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOMLIST_DELETE_OPTION'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),'');
       }else{
 
          // headline and hidden fields
@@ -281,22 +288,23 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addHidden('iid','');
 
          $this->_form->addHidden('uid','');
-         $this->_form->addTextField('firstname','',$this->_translator->getMessage('USER_FIRSTNAME'),'','','30',true);
-         $this->_form->addTextField('lastname','',$this->_translator->getMessage('USER_LASTNAME'),'','','30',true);
+         $this->_form->addTextField('firstname','',$this->_translator->getMessageInLang($this->_language,'USER_FIRSTNAME'),'','','30',true);
+         $this->_form->addTextField('lastname','',$this->_translator->getMessageInLang($this->_language,'USER_LASTNAME'),'','','30',true);
          $this->_form->addHidden('lastname_hidden','');
          $this->_form->addHidden('firstname_hidden','');
 
 
          $this->_form->addHidden('user_id','');
          // content form fields
-         $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'',100,'30',true);
-         $this->_form->addPassword('password','',$this->_translator->getMessage('PROFILE_USER_PASSWORD'),'','','20',false);
-         $this->_form->addPassword('password2','',$this->_translator->getMessage('PROFILE_USER_PASSWORD2'),'','','20',false);
+         $this->_form->addTextField('user_id','',$this->_translator->getMessageInLang($this->_language,'USER_USER_ID'),'',100,'30',true);
+         $this->_form->addPassword('password_old','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD_OLD'),'','','20',false);
+         $this->_form->addPassword('password','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD'),'','','20',false);
+         $this->_form->addPassword('password2','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD2'),'','','20',false);
 
          $i=0;
          $options = array();
          $options[$i]['value'] = 'browser';
-         $options[$i]['text'] = $this->_translator->getMessage('USER_BROWSER_LANGUAGE');
+         $options[$i]['text'] = $this->_translator->getMessageInLang($this->_language,'USER_BROWSER_LANGUAGE');
          $i++;
          $options[$i]['value'] = 'disabled';
          $options[$i]['text'] = '------------------';
@@ -307,15 +315,15 @@ class cs_profile_form extends cs_rubric_form {
             $options[$i]['text'] = $this->_translator->getLanguageLabelOriginally($language);
             $i++;
          }
-         $this->_form->addSelect('language',$options,'',$this->_translator->getMessage('USER_LANGUAGE'),'','','',true,'','','','','','11.5');
+         $this->_form->addSelect('language',$options,'',$this->_translator->getMessageInLang($this->_language,'USER_LANGUAGE'),'','','',true,'','','','','','11.5');
          if ($this->_user->isModerator()){
-            $this->_form->addCheckbox('email_account_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
-            $this->_form->addCheckbox('email_room_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
+            $this->_form->addCheckbox('email_account_want','1',false,$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'),$this->_translator->getMessageInLang($this->_language,'USER_MAIL_GET_ACCOUNT'),'','','','','');
+            $this->_form->addCheckbox('email_room_want','1',false,$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'),$this->_translator->getMessageInLang($this->_language,'USER_MAIL_OPEN_ROOM_PO'),'','','','','');
          }
 
          // buttons
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'));
       }
    }
 
@@ -415,6 +423,7 @@ class cs_profile_form extends cs_rubric_form {
             $this->_values['lastname_hidden'] = $this->_item->getLastname();
             $this->_values['user_id'] = $this->_item->getUserID();
             $this->_values['user_id_text'] = $this->_item->getUserID();
+            $this->_values['language'] = $this->_user->getLanguage();
          } else {
             include_once('functions/error_functions.php');
             trigger_error('lost values',E_USER_WARNING);
@@ -424,8 +433,23 @@ class cs_profile_form extends cs_rubric_form {
 
    function _checkValues () {
       if ($this->getProfilePageName() == 'account'){
+         if ( !empty($this->_form_post['password_old']) ) {
+            $current_user = $this->_environment->getCurrentUserItem();
+            $authentication = $this->_environment->getAuthenticationObject();
+            if ( !$authentication->isAccountGranted($current_user->getUserID(),$this->_form_post['password_old'],$current_user->getAuthSource()) ) {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR');
+               $this->_form->setFailure('password_old');
+            }
+         }
+         if ( empty($this->_form_post['password_old'])
+              and !empty($this->_form_post['password'])
+              and !empty($this->_form_post['password2'])
+            ) {
+            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR2');
+            $this->_form->setFailure('password_old');
+         }
          if (isset($this->_form_post['password']) and $this->_form_post['password'] != $this->_form_post['password2']) {
-            $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
+            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_ERROR');
             $this->_form->setFailure('password');
             $this->_form->setFailure('password2');
          }
@@ -437,18 +461,16 @@ class cs_profile_form extends cs_rubric_form {
             $authentication = $this->_environment->getAuthenticationObject();
             $this->_user = $this->_environment->getPortalUserItem();
             if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$auth_source)) {
-               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             }
          } else {
-            $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR');
+            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE_ERROR');
          }
       }
    }
-
-
 }
 ?>
