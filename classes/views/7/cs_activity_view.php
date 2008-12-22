@@ -297,7 +297,9 @@ class cs_activity_view extends cs_view {
          global $c_pmwiki_path_url;
          $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
          $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
-         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'" target="_blank">'.$image.'</a>'.LF;
+         $session_item = $this->_environment->getSessionItem();
+         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/?commsy_session_id='.$session_item->getSessionID().'" target="_blank">'.$image.'</a>'.LF;
+         unset($session_item);
       }
       if ( $current_context->showHomepageLink() ) {
          $image = '<img src="images/commsyicons/22x22/commsy_homepage.png" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
