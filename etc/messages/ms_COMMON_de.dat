@@ -137,6 +137,7 @@ $message["COMMON_COMMUNITY_INDEX"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["COMMON_COMMUNITY_PL"]["de"] = "%_COMMUNITY_SUB_GENPL_BIG";
 $message["COMMON_COMMUNITY_ROOM_TITLE"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG";
 $message["COMMON_CONFIGURATION"]["de"] = "Einstellungen";
+$message["COMMON_CONFIGURATION_ADDON_OPTIONS"]["de"] = "Weitere Optionen";
 $message["COMMON_CONFIGURATION_ADMIN_OPTIONS"]["de"] = "Moderation";
 $message["COMMON_CONFIGURATION_AGB_FORM_TITLE"]["de"] = "Nutzungsvereinbarungen";
 $message["COMMON_CONFIGURATION_ARCHIVE_DESC"]["de"] = "Hier können Sie den Raum archivieren und dann eine Vorlage für neue Räume erstellen.";

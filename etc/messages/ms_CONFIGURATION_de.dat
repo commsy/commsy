@@ -161,7 +161,7 @@ $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt 
 </li><li>in <b>welcher Reihenfolge</b> diese Rubriken dargestellt werden sollen.</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewählen.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span>, <span style=&quot;font-weight:bold&quot;>Pfaden</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
 $message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["de"] = "Zusätzliche Rubrikeinstellungen";
 $message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["de"] = "Wählen Sie die Rubriken im Raum aus und deren Darstellung auf der Home.";
 $message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["de"] = "Einstellung der Rubriken";
@@ -187,7 +187,7 @@ $message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["de"] = "nach Aktivität (Standard)
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["de"] = "nach Titel";
 $message["CONFIGURATION_SPONSOR_DESC"]["de"] = "Hier können Sie die Anzeige von Sponsoren und Werbung konfigurieren.";
 $message["CONFIGURATION_SPONSOR_LINK"]["de"] = "Sponsoren und Werbung";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>Schlagwörter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span>.";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>Schlagwörter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span> (mit <span style=&quot;font-weight:bold&quot;>Pfaden</span>).";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TEXT"]["de"] = "Um die Suche nach Einträgen zu erleichtern, können Sie den Einträgen Schlagworte und Kategorien zuordnen. Kategorien werden in CommSy hierarchisch, Schlagworte als &quot;Wolke&quot; dargestellt.
 
 Mit der Netznavigation können Sie Ihren Beitrag anderen Einträgen zuordnen.";
@@ -208,7 +208,7 @@ $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DEFAULT_TITLE"]["de"] = "Default-V
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC"]["de"] = "Der Raum muss archiviert sein und kann dann bei der Eröffnung eines neuen Raumes als Vorlage ausgesucht werden. Alle Inhalte (außer den Informationen zu Personen) werden in den neuen Raum kopiert.";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE"]["de"] = "Vorlage";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE"]["de"] = "Vorlage erstellen";
-$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["de"] = "Archivierten Raum als Vorlage verfügbar machen.";
+$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["de"] = "Raum als Vorlage verfügbar machen.";
 $message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC"]["de"] = "Bei Auswahl einer Vorlage werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["de"] = "Zielgruppe";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["de"] = "leerer Raum";

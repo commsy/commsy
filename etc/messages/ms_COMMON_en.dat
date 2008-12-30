@@ -136,6 +136,7 @@ $message["COMMON_COMMUNITY_INDEX"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["COMMON_COMMUNITY_PL"]["en"] = "%_COMMUNITY_SUB_GENPL_BIG";
 $message["COMMON_COMMUNITY_ROOM_TITLE"]["en"] = "%_COMMUNITY_SUB_NOMS_BIG";
 $message["COMMON_CONFIGURATION"]["en"] = "Settings";
+$message["COMMON_CONFIGURATION_ADDON_OPTIONS"]["en"] = "Additional settings";
 $message["COMMON_CONFIGURATION_ADMIN_OPTIONS"]["en"] = "Administration";
 $message["COMMON_CONFIGURATION_AGB_FORM_TITLE"]["en"] = "Edit Terms and Conditions";
 $message["COMMON_CONFIGURATION_ARCHIVE_DESC"]["en"] = "You can archive this workspace in a freezed condition, additionaly, you have an option to extract a workspace template from it for further use.";

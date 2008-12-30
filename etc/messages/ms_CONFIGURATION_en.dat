@@ -190,7 +190,7 @@ $message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["en"] = "by activity (default)";
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["en"] = "by title";
 $message["CONFIGURATION_SPONSOR_DESC"]["en"] = "Configure the sponsoring notices and advertisements here.";
 $message["CONFIGURATION_SPONSOR_LINK"]["en"] = "Sponsoring and adverteisement";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>buzzwords</span> or the <span class=&quot;bold&quot;>netnavigation</span> for structuring entries.";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>buzzwords</span> or the <span class=&quot;bold&quot;>netnavigation</span> (with <span class=&quot;bold&quot;>paths</span>) for structuring entries.";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TEXT"]["en"] = "TBD";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "structuring the room";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["en"] = "Configure categories and tags";
@@ -209,7 +209,7 @@ $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DEFAULT_TITLE"]["en"] = "Default t
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC"]["en"] = "An archived workspace can be defined as a workspace template. Workspace templates will be offered to moderators who set up a new workspace. When selected, the whole content of a workspace template (excluding individual and personal data from the original workspace) will be copied to the new workspace.";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE"]["en"] = "Template";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE"]["en"] = "Create template";
-$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["en"] = "Provide archived workspace as a template for new workspaces.";
+$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["en"] = "Provide workspace as a template for new workspaces.";
 $message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC"]["en"] = "By choosing a template, you will get a prepopulated workspace with contents from an archived workspace except for user information.";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["en"] = "Target group";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["en"] = "empty workspace";
