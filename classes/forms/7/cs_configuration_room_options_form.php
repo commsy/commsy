@@ -79,7 +79,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $current_context_item = $this->_environment->getCurrentContextItem();
 
       /********Zuordnung********/
-/*      $community_room_array = array();
+      $community_room_array = array();
       // links to community room
       $current_portal = $this->_environment->getCurrentPortalItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -123,7 +123,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $community_room_array[] = $temp_array;
          }
       } else{
-         $community_room_list = $this->_item->getCommunityList();
+         $community_room_list = $current_context_item->getCommunityList();
          if ($community_room_list->getCount() > 0) {
             $community_room_item = $community_room_list->getFirst();
             while ($community_room_item) {
@@ -135,7 +135,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          }
       }
       $this->_shown_community_room_array = $community_room_array;
-*/
+
 
       /**********Logo**********/
       $this->_with_logo = $current_context_item->getLogoFilename();
@@ -327,7 +327,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $this->_form->addHidden('with_logo',$this->_with_logo);
 
       /**********Zuordnung**************/
-/*      if ( !empty($this->_community_room_array) ) {
+      if ( !empty($this->_community_room_array) ) {
          $portal_item = $this->_environment->getCurrentPortalItem();
          $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
          if ($project_room_link_status =='optional'){
@@ -347,7 +347,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->combine('horizontal');
             $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
          }
-      }*/
+      }
 
       /***************Farben************/
       if ( !empty($this->_form_post['color_choice']) and $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
@@ -667,7 +667,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
 
       $this->_values['language'] = $context_item->getLanguage();
-/*      $community_room_array = array();
+      $community_room_array = array();
       if (!empty($this->_session_community_room_array)) {
          foreach ( $this->_session_community_room_array as $community_room ) {
             $community_room_array[] = $community_room['id'];
@@ -685,7 +685,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['communityroomlist'] = $this->_form_post['communityroomlist'];
       } else {
          $this->_values['communityroomlist'] = $community_room_array;
-      }*/
+      }
 
       $description_array = $context_item->getDescriptionArray();
       $languages = $this->_environment->getAvailableLanguageArray();
@@ -699,6 +699,18 @@ class cs_configuration_room_options_form extends cs_rubric_form {
 
    }
 
+   function _checkValues () {
+      $portal_item = $this->_environment->getCurrentPortalItem();
+      if (isset($portal_item) ) {
+         $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
+         if ( isset($this->_form_post['communityrooms']) and $project_room_link_status !='optional'){
+            if ( ($this->_form_post['communityrooms'] == -1 or $this->_form_post['communityrooms'] == 'disabled' or $this->_form_post['communityrooms']=='--------------------') and !isset($this->_form_post['communityroomlist']) ){
+               $this->_form->setFailure('communityrooms','mandatory');
+               $this->_error_array[] = getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',getMessage('PREFERENCES_COMMUNITY_ROOMS'));
+            }
+         }
+      }
+   }
 
 }
 ?>

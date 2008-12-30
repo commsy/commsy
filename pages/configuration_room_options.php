@@ -75,7 +75,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
    $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
    unset($params);
 
-/*   if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
+   if ( isOption($command, getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON')) ) {
       $post_community_room_array = array();
       $focus_element_onload = 'communityrooms';
       $post_community_room_ids = array();
@@ -106,17 +106,17 @@ if ($command != 'error') { // only if user is allowed to edit colors
          $temp_array['id'] = $community_item->getItemID();
          $post_community_room_array[] = $temp_array;
       }
-   }*/
+   }
 
    if ( !empty($_POST)) {
       if ($_POST['color_choice']=='-1'){
          $_POST['color_choice'] = '';
       }
       $values = $_POST;
-/*      if ( isset($post_community_room_ids) AND !empty($post_community_room_ids) ) {
+      if ( isset($post_community_room_ids) AND !empty($post_community_room_ids) ) {
          $values['communityroomlist'] = $post_community_room_ids;
          $form->setSessionCommunityRoomArray($post_community_room_array);
-      }*/
+      }
       $form->setFormPost($values);
    } elseif ( isset($context_item) ) {
       $form->setItem($context_item);
@@ -272,14 +272,14 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
 
 
-/*         $community_room_array = array();
+         $community_room_array = array();
          if ( isset($_POST['communityroomlist']) ) {
             $community_room_array = $_POST['communityroomlist'];
          }
          if ( isset($_POST['communityrooms']) and !in_array($_POST['communityrooms'],$community_room_array) and $_POST['communityrooms'] > 0) {
             $community_room_array[] = $_POST['communityrooms'];
          }
-         $context_item->setCommunityListByID($community_room_array);*/
+         $context_item->setCommunityListByID($community_room_array);
          $context_item->setColorArray($color);
 
          if ( isset($_POST['language']) ) {
