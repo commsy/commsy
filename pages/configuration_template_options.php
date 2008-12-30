@@ -71,7 +71,7 @@ else {
          if ( isset($_POST['template'])
             and !empty($_POST['template'])
          ) {
-            if ( $_POST['template'] == 1 and $room_item->isClosed() ) {
+            if ( $_POST['template'] == 1 ) {
                $room_item->setTemplate();
             } else {
                $room_item->setNotTemplate();

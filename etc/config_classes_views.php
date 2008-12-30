@@ -330,6 +330,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_account_index_view';
+define('ACCOUNT_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
 
 
 /**************MISC**********************/
@@ -371,13 +378,6 @@ $class_config[$class_name]['switchable'] = true;
 
 
 /**************UNSWITCHED***************/
-$class_name = 'cs_account_index_view';
-define('ACCOUNT_INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
 $class_name = 'cs_announcement_short_view';
 define('ANNOUNCEMENT_SHORT_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;

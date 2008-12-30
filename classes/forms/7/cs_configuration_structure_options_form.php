@@ -79,8 +79,9 @@ var $_with_tags = false;
       //netnavigation
       $this->_form->addCheckbox('netnavigation','yes','',getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION'),getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION_VALUE'),'','','','onclick="cs_toggleNetnavigation()"');
       $this->_form->combine();
+      $this->_form->addCheckbox('path','yes','',getMessage('TOPIC_INDEX'),getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
+      $this->_form->combine();
       $this->_form->addCheckbox('netnavigation_show','yes','',getMessage('CONFIGURATION_SHOW_EXPANDED'),getMessage('CONFIGURATION_SHOW_EXPANDED'));
-
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -95,6 +96,9 @@ var $_with_tags = false;
       }else{
          $room = $this->_environment->getCurrentContextItem();
 
+         if ($room->withPath()){
+            $this->_values['path'] = 'yes';
+         }
          //buzzwords
          if ($room->withBuzzwords()){
             $this->_values['buzzword'] = 'yes';
@@ -134,59 +138,68 @@ var $_with_tags = false;
    function getInfoForHeaderAsHTML () {
       $retour  = '';
       $retour .= '        window.addEvent(\'domready\', function(){'.LF;
-      $retour .= '           if (document.f.buzzword.checked) {'.LF;
+      $retour .= '           if (document.edit.buzzword.checked) {'.LF;
       $retour .= '               cs_enable_buzzword();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable_buzzword();'.LF;
       $retour .= '            }'.LF;
-      $retour .= '           if (document.f.tags.checked) {'.LF;
+      $retour .= '           if (document.edit.tags.checked) {'.LF;
       $retour .= '               cs_enable_tags();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable_tags();'.LF;
       $retour .= '            }'.LF;
-      $retour .= '           if (document.f.netnavigation.checked) {'.LF;
+      $retour .= '           if (document.edit.netnavigation.checked) {'.LF;
       $retour .= '               cs_enable_netnavigation();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable_netnavigation();'.LF;
       $retour .= '            }'.LF;
       $retour .= '         });'.LF;
       $retour .= '         function cs_toggleBuzzwords() {'.LF;
-      $retour .= '            if (document.f.buzzword.checked) {'.LF;
+      $retour .= '            if (document.edit.buzzword.checked) {'.LF;
       $retour .= '               cs_enable_buzzword();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable_buzzword();'.LF;
       $retour .= '            }'.LF;
       $retour .= '         }'.LF;
+      $retour .= '         function cs_toggleNetnavigation() {'.LF;
+      $retour .= '            if (document.edit.netnavigation.checked) {'.LF;
+      $retour .= '               cs_enable_netnavigation();'.LF;
+      $retour .= '            } else {'.LF;
+      $retour .= '               cs_disable_netnavigation();'.LF;
+      $retour .= '            }'.LF;
+      $retour .= '         }'.LF;
       $retour .= '         function cs_toggleTags() {'.LF;
-      $retour .= '            if (document.f.tags.checked) {'.LF;
+      $retour .= '            if (document.edit.tags.checked) {'.LF;
       $retour .= '               cs_enable_tags();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable_tags();'.LF;
       $retour .= '            }'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_disable_buzzword() {'.LF;
-      $retour .= '            document.f.buzzword_mandatory.disabled = true;'.LF;
-      $retour .= '            document.f.buzzword_show.disabled = true;'.LF;
+      $retour .= '            document.edit.buzzword_mandatory.disabled = true;'.LF;
+      $retour .= '            document.edit.buzzword_show.disabled = true;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_enable_buzzword() {'.LF;
-      $retour .= '            document.f.buzzword_mandatory.disabled = false;'.LF;
-      $retour .= '            document.f.buzzword_show.disabled = false;'.LF;
+      $retour .= '            document.edit.buzzword_mandatory.disabled = false;'.LF;
+      $retour .= '            document.edit.buzzword_show.disabled = false;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_enable_tags() {'.LF;
-      $retour .= '            document.f.tags_mandatory.disabled = false;'.LF;
-      $retour .= '            document.f.tags_show.disabled = false;'.LF;
-      $retour .= '            document.f.tags_edit.disabled = false;'.LF;
+      $retour .= '            document.edit.tags_mandatory.disabled = false;'.LF;
+      $retour .= '            document.edit.tags_show.disabled = false;'.LF;
+      $retour .= '            document.edit.tags_edit.disabled = false;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_disable_tags() {'.LF;
-      $retour .= '            document.f.tags_mandatory.disabled = true;'.LF;
-      $retour .= '            document.f.tags_show.disabled = true;'.LF;
-      $retour .= '            document.f.tags_edit.disabled = true;'.LF;
+      $retour .= '            document.edit.tags_mandatory.disabled = true;'.LF;
+      $retour .= '            document.edit.tags_show.disabled = true;'.LF;
+      $retour .= '            document.edit.tags_edit.disabled = true;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_enable_netnavigation() {'.LF;
-      $retour .= '            document.f.netnavigation_show.disabled = false;'.LF;
+      $retour .= '            document.edit.netnavigation_show.disabled = false;'.LF;
+      $retour .= '            document.edit.path.disabled = false;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_disable_netnavigation() {'.LF;
-      $retour .= '            document.f.netnavigation_show.disabled = true;'.LF;
+      $retour .= '            document.edit.netnavigation_show.disabled = true;'.LF;
+      $retour .= '            document.edit.path.disabled = true;'.LF;
       $retour .= '         }'.LF;
       return $retour;
    }

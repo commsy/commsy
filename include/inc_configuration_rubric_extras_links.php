@@ -36,7 +36,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_TEXTAREA_TITLE'));
       $link_item->setDescription(getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
-      $link_item->setIconPath('images/cs_config/CONFIGURATION_TEXTAREA_TITLE.gif');
+      $link_item->setIconPath('images/commsyicons/48x48/config/htmltextarea.png');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('htmltextarea');
@@ -52,7 +52,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('WIKI_CONFIGURATION_LINK'));
-      $link_item->setIconPath('images/cs_config/WIKI_CONFIGURATION_IMAGE.gif');
+      $link_item->setIconPath('images/commsyicons/48x48/config/pmwiki.png');
       $link_item->setDescription(getMessage('WIKI_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -69,7 +69,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
-      $link_item->setIconPath('images/cs_config/CHAT_CONFIGURATION_IMAGE.gif');
+      $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
       $link_item->setDescription(getMessage('CHAT_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');

@@ -105,13 +105,6 @@ if ($command != 'error') {
                $context_item->setDiscussionStatus($_POST['discussion_status']);
             }
 
-            //Diskussionsoptionen
-            if ( isset($_POST['path']) and !empty($_POST['path']) and $_POST['path'] == 'yes') {
-               $context_item->setWithPath();
-            } else {
-               $context_item->setWithoutPath();
-            }
-
             //Gruppenoptionen
             $current_user = $environment->getCurrentUserItem();
             $context_item->setModificatorItem($current_user);

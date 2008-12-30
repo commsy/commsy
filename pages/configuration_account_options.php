@@ -93,15 +93,11 @@ if ($current_user->isGuest()) {
          if ( isset($_POST['status']) ) {
             if ($_POST['status'] == '') {
                $current_context->open();
-               $current_context->setNotTemplate();
             } elseif ($_POST['status'] == 2) {
                $current_context->close();
             }
          }else{
             $current_context->open();
-            if ($current_context->isProjectRoom()  or $current_context->isCommunityRoom() ) {
-               $current_context->setNotTemplate();
-            }
          }
 
 

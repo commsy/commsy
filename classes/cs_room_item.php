@@ -251,7 +251,7 @@ class cs_room_item extends cs_context_item {
 
    function setTemplate () {
       $this->_setValue('template',1,true);
-      $this->close();
+#      $this->close();
    }
 
    function setNotTemplate () {

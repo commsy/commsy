@@ -120,6 +120,13 @@ else {
          } else {
             $room_item->unsetNetnavigationShowExpanded();
          }
+         //Diskussionsoptionen
+         if ( isset($_POST['path']) and !empty($_POST['path']) and $_POST['path'] == 'yes') {
+            $room_item->setWithPath();
+         } else {
+            $room_item->setWithoutPath();
+         }
+
 
 
          // Save item

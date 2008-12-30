@@ -93,12 +93,6 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUP_INDEX'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
      $this->_form->combine();
      $this->_form->addExplanation('groups',getMessage('GROUPROOM_EXPLANATION_VALUE'));
-     $this->_form->addEmptyline();
-
-     //Themenoptionen
-     $this->_form->addCheckbox('path','yes','',getMessage('TOPIC_INDEX'),getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
-     $this->_form->combine();
-     $this->_form->addExplanation('topics',getMessage('TOPIC_ACTIVATE_PATH_DESCRIPTION'));
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -115,9 +109,6 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
          $this->_values['dates_status'] = $this->_item->getDatesPresentationStatus();
          $this->_values['discussion_status'] = $this->_item->getDiscussionStatus();
          $this->_values['grouproom'] = $this->_item->isGrouproomActive();
-         if ($this->_item->withPath()){
-            $this->_values['path'] = 'yes';
-         }
   	   } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
          if ( !isset($this->_values['dates_status']) ) {

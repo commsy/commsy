@@ -100,6 +100,10 @@ class cs_view {
       if ( !empty($params['with_modifying_actions']) ) {
          $this->_with_modifying_actions = $params['with_modifying_actions'];
       }
+      $current_context = $this->_environment->getCurrentContextItem();
+      if ($current_context->isClosed()){
+         $this->_with_modifying_actions = false;
+      }
       $this->_class_factory = $this->_environment->getClassFactory();
       $this->_room_id = $this->_environment->getCurrentContextID();
       $this->_module = $this->_environment->getCurrentModule();

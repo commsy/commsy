@@ -742,6 +742,7 @@ function isURLValid () {
          $funct != 'structure_options' and
          $funct != 'rubric_options' and
          $funct != 'room_options' and
+         $funct != 'template_options' and
          $funct != 'rubric_extras' and
 
          $funct != 'item_index' and

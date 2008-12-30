@@ -213,7 +213,8 @@ class cs_configuration_form_view extends cs_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');	// Backup eines Raumes einspielen (Server)
                break;
             case 'CONFIGURATION_CHAT':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');	// Raum-Chat einstellen
+               $image = '<img src="images/commsyicons/32x32/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
+               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');                break;
                break;
             case 'CONFIGURATION_COLOR':
                $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');	// Farbkonfiguration OK
@@ -249,8 +250,8 @@ class cs_configuration_form_view extends cs_form_view {
                $tempMessage = getMessage('CONFIGURATION_LISTVIEWS_FORM_TITLE');	// Konfiguration der Tags OK
                break;
             case 'CONFIGURATION_HTMLTEXTAREA':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');	// FCK-Editor-Konfiguration ??
-                break;
+               $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');                break;
             case 'CONFIGURATION_IMS':
                $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');	// IMS-Account Einstellungen (Server)
                break;
@@ -293,7 +294,8 @@ class cs_configuration_form_view extends cs_form_view {
                $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
                break;
             case 'CONFIGURATION_WIKI':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');	// Nutzungshinweise bearbeiten OK
+               $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
+               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');                break;
                break;
             case 'CONFIGURATION_OUTOFSERVICE':
                $tempMessage = getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE');	// Wartungsseite OK
@@ -568,6 +570,61 @@ class cs_configuration_form_view extends cs_form_view {
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
 
+        $html .='<div class="listinfoborder">'.LF;
+        $html .='</div>'.LF;
+
+        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+        $html .= '         <tr>'.LF;
+        $html .= '         <td style="font-size:10pt; white-space:nowrap;" class="infocolor">'.LF;
+        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADDON_OPTIONS').': ';
+        $html .= '         </td>'.LF;
+        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+        global $c_html_textarea;
+        if ( $c_html_textarea ) {
+           $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'htmltextarea',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
+        }
+        $context_item = $this->_environment->getCurrentContextItem();
+        if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
+           $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'wiki',
+                                       '',
+                                       $image,
+                                       getMessage('WIKI_CONFIGURATION_LINK')).LF;
+        }
+        if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
+        $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'chat',
+                                       '',
+                                       $image,
+                                       getMessage('CHAT_CONFIGURATION_LINK')).LF;
+        }
+        $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'template_options',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'rubric_extras',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
+        $html .= '         </td>'.LF;
+        $html .= '         </tr>'.LF;
+        $html .= '         </table>'.LF;
 
 
         $html .= '</div>'.LF;
