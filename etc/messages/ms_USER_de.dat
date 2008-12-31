@@ -118,6 +118,7 @@ $message["USER_NAME"]["de"] = "Name";
 $message["USER_NEVER_LOGIN"]["de"] = "noch nie";
 $message["USER_NORMAL_USER"]["de"] = "BenutzerIn";
 $message["USER_OLD_PASSWORD_ERROR"]["de"] = "Das aktuelle Passwort ist falsch.";
+$message["USER_OLD_PASSWORD_ERROR2"]["de"] = "Bitte geben Sie Ihr aktuelles Passwort an.";
 $message["USER_OWN_INFORMATION"]["de"] = "Eigene Personendaten";
 $message["USER_PASSWORD"]["de"] = "Passwort";
 $message["USER_PASSWORD2"]["de"] = "Passwort wiederholen";

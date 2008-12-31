@@ -7,4 +7,5 @@ $message["PROFILE_ROOM_LIST_DATA"]["en"] = "Workspace list";
 $message["PROFILE_USER_DATA"]["en"] = "User data";
 $message["PROFILE_USER_PASSWORD"]["en"] = "New password";
 $message["PROFILE_USER_PASSWORD2"]["en"] = "Repeat new password";
+$message["PROFILE_USER_PASSWORD_OLD"]["en"] = "current password";
 ?>

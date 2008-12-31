@@ -10,4 +10,5 @@ $message["PROFILE_ROOM_LIST_DATA"]["de"] = "Raumliste";
 $message["PROFILE_USER_DATA"]["de"] = "Personendaten";
 $message["PROFILE_USER_PASSWORD"]["de"] = "Neues Passwort";
 $message["PROFILE_USER_PASSWORD2"]["de"] = "Neues Passwort wiederholen";
+$message["PROFILE_USER_PASSWORD_OLD"]["de"] = "aktuelles Passwort";
 ?>
