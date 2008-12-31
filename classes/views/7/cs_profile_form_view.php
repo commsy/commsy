@@ -74,7 +74,7 @@ class cs_profile_form_view extends cs_form_view {
       }
       $params['profile_page'] = 'room_list';
       $current_user_item = $this->_environment->getCurrentUserItem();
-      if ( $current_user_item->isRoomMember() ) {
+      if ( !$current_user_item->isRoomMember() ) {
          $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOM_LIST_DATA').'</a>';
       } else {
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
@@ -89,7 +89,7 @@ class cs_profile_form_view extends cs_form_view {
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
       $params['profile_page'] = 'newsletter';
-      if ( $current_user_item->isRoomMember() ) {
+      if ( !$current_user_item->isRoomMember() ) {
          $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA').'</a>';
       } else {
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
