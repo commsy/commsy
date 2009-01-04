@@ -1320,24 +1320,29 @@ class cs_user_detail_view extends cs_detail_view {
                if ( $auth_source_item->allowAddAccount() ) {
                   $params = array();
                   $params['iid'] = $item->getItemID();
-                  $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
+                  $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                             $this->_environment->getCurrentModule(),
                                             'password',
                                             $params,
-                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
+                                            $image,
+                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).LF;
                   unset($params);
                } else {
-                  $html .= '<span class="disabled">> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.BRLF;
+                  $image = '<img src="images/commsyicons/22x22/config/account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_PASSWORD_CHANGE').'"/>';
+                  $html .= '<span class="disabled"> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.LF;
                }
             }
 
             $params = array();
             $params['iid'] = $item->getItemID();
-            $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
+            $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_STATUS_CHANGE').'"/>';
+            $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                $this->_environment->getCurrentModule(),
                                'status',
                                $params,
-                               $this->_translator->getMessage('ACCOUNT_STATUS_CHANGE')).BRLF;
+                               $image,
+                               getMessage('ACCOUNT_STATUS_CHANGE')).LF;
             unset($params);
          }
 
@@ -1360,7 +1365,7 @@ class cs_user_detail_view extends cs_detail_view {
          if ( $user->isRoot() and isset($own_room) ) {
             $params = array();
             $params['iid'] = $own_room->getItemID();
-            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
+            $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('USER_EDIT_PREFERENCES').'"/>';
             $html .=  ahref_curl($this->_environment->getCurrentContextID(),'configuration','export',$params,$image,$this->_translator->getMessage('PRIVATEROOM_EXPORT')).' '.LF;
             unset($params);
          }
@@ -1598,5 +1603,176 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       return $html;
    }*/
+
+ function _getConfigurationOverviewAsHTML(){
+        $html='';
+        $room = $this->_environment->getCurrentContextItem();
+        $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
+        $html .= '<div class="right_box">'.LF;
+        $array = $this->_environment->getCurrentParameterArray();
+        $html .= '<div class="right_box_title">'.getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
+        $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
+        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+        $html .= '         <tr>'.LF;
+        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
+        $html .= $this->_translator->getMessage('COMMON_COMMSY_CONFIGURE').': ';
+        $html .= '         </td>'.LF;
+        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+        $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_COMMSY_CONFIGURE')).LF;
+        $html .= '         </td>'.LF;
+        $html .= '         </tr>'.LF;
+        $html .= '         </table>'.LF;
+        $html .='<div class="listinfoborder">'.LF;
+        $html .='</div>'.LF;
+
+        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+        $html .= '         <tr>'.LF;
+        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
+        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').': ';
+        $html .= '         </td>'.LF;
+        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+        $image = '<img src="images/commsyicons/22x22/config/room_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'room_options',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/rubric_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'rubric_options',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/structure_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'structure_options',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'account_options',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE')).LF;
+        $html .= '         </td>'.LF;
+        $html .= '         </tr>'.LF;
+        $html .= '         </table>'.LF;
+
+        $html .='<div class="listinfoborder">'.LF;
+        $html .='</div>'.LF;
+
+        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+        $html .= '         <tr>'.LF;
+        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
+        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').': ';
+        $html .= '         </td>'.LF;
+        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+        $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'account',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'informationbox',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_INFORMATION_BOX')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'usageinfo',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'mail',
+                                       '',
+                                       $image,
+                                       getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE')).LF;
+        $html .= '         </td>'.LF;
+        $html .= '         </tr>'.LF;
+        $html .= '         </table>'.LF;
+
+        $html .='<div class="listinfoborder">'.LF;
+        $html .='</div>'.LF;
+
+        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+        $html .= '         <tr>'.LF;
+        $html .= '         <td style="font-size:10pt; white-space:nowrap;" class="infocolor">'.LF;
+        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADDON_OPTIONS').': ';
+        $html .= '         </td>'.LF;
+        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+        global $c_html_textarea;
+        if ( $c_html_textarea ) {
+           $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'htmltextarea',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
+        }
+        $context_item = $this->_environment->getCurrentContextItem();
+        if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
+           $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'wiki',
+                                       '',
+                                       $image,
+                                       getMessage('WIKI_CONFIGURATION_LINK')).LF;
+        }
+        if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
+        $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'chat',
+                                       '',
+                                       $image,
+                                       getMessage('CHAT_CONFIGURATION_LINK')).LF;
+        }
+        $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'template_options',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
+        $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'rubric_extras',
+                                       '',
+                                       $image,
+                                       getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
+        $html .= '         </td>'.LF;
+        $html .= '         </tr>'.LF;
+        $html .= '         </table>'.LF;
+
+
+        $html .= '</div>'.LF;
+        $html .='</div>'.LF;
+        $html .= '</div>'.LF;
+        return $html;
+     }
+
+
 }
 ?>

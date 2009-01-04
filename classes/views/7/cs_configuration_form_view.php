@@ -202,6 +202,7 @@ class cs_configuration_form_view extends cs_form_view {
          {
             case 'ACCOUNT_STATUS':
                $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ändern (Portal)
+               $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                break;
             case 'CONFIGURATION_AGB':
                $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');	// Nutzungsvereinbarungen OK

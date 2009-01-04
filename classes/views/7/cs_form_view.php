@@ -1883,12 +1883,15 @@ class cs_form_view extends cs_view {
                   break;
                case 'ACCOUNT_PASSWORD':      // Password ändern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
+                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
+                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'ACCOUNT_STATUS':        // Status ändern (Portal)
                   $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
+                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
                   $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');

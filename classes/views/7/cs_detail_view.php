@@ -664,16 +664,22 @@ class cs_detail_view extends cs_view {
                case 'USER':
                   $text .= $this->_translator->getMessage('COMMON_ONE_USER');
                   break;
+               case 'ACCOUNT':
+                  $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
+                  break;
                default:
                   $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(665) ';
                   break;
             }
 
 
-            if($this->_environment->getCurrentModule() == CS_USER_TYPE){
+            if($this->_environment->getCurrentModule() == CS_USER_TYPE or $this->_environment->getCurrentModule() == 'account'){
                 $link_title = $item->getFullName();
             } else {
                 $link_title = $item->getTitle();
+            }
+            if ($this->_environment->getCurrentModule() == 'account'){
+            	$type = 'account';
             }
             if ($count_items < 9){
             	$style='padding:0px 5px 0px 10px;';
@@ -1171,6 +1177,10 @@ class cs_detail_view extends cs_view {
             $tempMessage = $this->_translator->getMessage('USER_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>'.$tempMessage;
             break;
+         case 'ACCOUNT':
+            $tempMessage = $this->_translator->getMessage('COMMON_ACCOUNTS');
+            $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+            break;
          default:
             $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
             break;
@@ -1224,6 +1234,10 @@ class cs_detail_view extends cs_view {
             $html .='</div>'.LF;
          }
 
+         if ( $this->_environment->getCurrentModule() == 'account'){
+         	$html .=  $this->_getConfigurationOverviewAsHTML();
+         }
+
 
          /***********Tags*************/
          if ( $this->showTags() ) {
@@ -1261,8 +1275,10 @@ class cs_detail_view extends cs_view {
       $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
       if($rubric == CS_DISCUSSION_TYPE){
          $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
-      }elseif ($rubric != CS_USER_TYPE ){
+      }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
          $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($item->getTitle());
+      }elseif ($rubric == 'account' ){
+         $html .= '<h2 class="contenttitle">'.$item->getFullName();
       }else{
         $html .= '<h2 class="contenttitle">'.$item->getFullName();
       }
@@ -2204,7 +2220,9 @@ class cs_detail_view extends cs_view {
             case 'MYROOM':
                $text = $this->_translator->getMessage('COMMON_ROOM');
                break;
-            default:
+            case 'ACCOUNT':
+               $text = $this->_translator->getMessage('COMMON_ACCOUNTS');
+            break;            default:
                $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
                break;
          }
