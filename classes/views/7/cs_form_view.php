@@ -1867,7 +1867,7 @@ class cs_form_view extends cs_view {
                   break;
                case 'INSTITUTION_EDIT':
                   $tempMessage = getMessage('COMMON_INSTITUTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/institution.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'DISCUSSION_EDIT':
                   $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');

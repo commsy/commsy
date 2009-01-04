@@ -1149,6 +1149,7 @@ class cs_detail_view extends cs_view {
             break;
          case 'INSTITUTION':
             $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'GROUP':
             $tempMessage = $this->_translator->getMessage('GROUP_INDEX');

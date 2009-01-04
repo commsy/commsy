@@ -295,6 +295,9 @@ class cs_page_room_view extends cs_page_view {
                case 'group':
                   $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
                   break;
+               case 'institution':
+                  $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
+                  break;
                case 'todo':
                   $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
                   break;
@@ -1024,6 +1027,8 @@ class cs_page_room_view extends cs_page_view {
                         $image_text = 'date';
                      }elseif ($view instanceof cs_group_short_view or $view instanceof cs_group_tiny_view){
                         $image_text = 'group';
+                     }elseif ($view instanceof cs_institution_short_view or $view instanceof cs_institution_tiny_view){
+                        $image_text = 'group';
                      }elseif ($view instanceof cs_todo_short_view or $view instanceof cs_todo_tiny_view){
                         $image_text = 'todo';
                      }elseif ($view instanceof cs_topic_short_view or $view instanceof cs_topic_tiny_view){
@@ -1035,7 +1040,7 @@ class cs_page_room_view extends cs_page_view {
                      }else{
                         $image_text = 'material';
                      }
-                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;" alt="'.$this->_translator->getMessage('COMMON_NEW_MATERIAL').'"/>';
+                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;"/>';
                      $title = addslashes($image.' '.$view->getViewTitle());
                      if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
                        $item_list = $view->getList();

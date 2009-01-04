@@ -1416,6 +1416,7 @@ EOD;
             break;
          case 'INSTITUTION':
             $tempMessage = getMessage('INSTITUTION_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'GROUP':
             $tempMessage = getMessage('GROUP_INDEX');
