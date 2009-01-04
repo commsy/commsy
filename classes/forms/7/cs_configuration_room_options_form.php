@@ -327,28 +327,44 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $this->_form->addHidden('with_logo',$this->_with_logo);
 
       /**********Zuordnung**************/
-      if ( !empty($this->_community_room_array) ) {
-         $portal_item = $this->_environment->getCurrentPortalItem();
-         $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
-         if ($project_room_link_status =='optional'){
-            if ( !empty ($this->_shown_community_room_array) ) {
-               $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-               $this->_form->combine();
+      if ($this->_environment->inProjectRoom()){
+         if ( !empty($this->_community_room_array) ) {
+            $portal_item = $this->_environment->getCurrentPortalItem();
+            $project_room_link_status = $portal_item->getProjectRoomLinkStatus();
+            if ($project_room_link_status =='optional'){
+               if ( !empty ($this->_shown_community_room_array) ) {
+                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
+                  $this->_form->combine();
+               }
+               $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',16);
+               $this->_form->combine('horizontal');
+               $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
+            }else{
+               if ( !empty ($this->_shown_community_room_array) ) {
+                  $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
+                  $this->_form->combine();
+               }
+               $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',16);
+               $this->_form->combine('horizontal');
+               $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
             }
-            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,false,false,'','','','',16);
-            $this->_form->combine('horizontal');
-            $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
-         }else{
-            if ( !empty ($this->_shown_community_room_array) ) {
-               $this->_form->addCheckBoxGroup('communityroomlist',$this->_shown_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'',false,false);
-               $this->_form->combine();
-            }
-            $this->_form->addSelect('communityrooms',$this->_community_room_array,'',getMessage('PREFERENCES_COMMUNITY_ROOMS'),'', 1, false,true,false,'','','','',16);
-            $this->_form->combine('horizontal');
-            $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',100);
          }
+      }elseif($this->_environment->inCommunityRoom()){
+      	$radio_values = array();
+         $radio_values[0]['text'] = getMessage('COMMON_ASSIGMENT_ON');
+         $radio_values[0]['value'] = 'open';
+         $radio_values[1]['text'] = getMessage('COMMON_ASSIGMENT_OFF');
+         $radio_values[1]['value'] = 'closed';
+         $this->_form->addRadioGroup('room_assignment',
+                                     getMessage('PREFERENCES_ROOM_ASSIGMENT'),
+                                     getMessage('PREFERENCES_ASSIGMENT_OPEN_FOR_GUESTS_DESC'),
+                                     $radio_values,
+                                     '',
+                                     true,
+                                     false
+                                    );
+         unset($radio_values);
       }
-
       /***************Farben************/
       if ( !empty($this->_form_post['color_choice']) and $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
           $this->_form->addEmptyLine();
@@ -655,6 +671,11 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['color_6'] = $color['hyperlink'];
          $this->_values['color_4'] = $color['content_background'];
          $this->_values['title'] = $context_item->getTitle();
+         if ($context_item->isAssignmentOnlyOpenForRoomMembers()) {
+            $this->_values['room_assignment'] = 'closed';
+         } else {
+            $this->_values['room_assignment'] = 'open';
+         }
       }
       if ($context_item->getLogoFilename()){
          $this->_values['logo'] = $context_item->getLogoFilename();
@@ -665,7 +686,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       if ($context_item->issetBGImageRepeat()){
          $this->_values['bg_image_repeat'] = '1';
       }
-
       $this->_values['language'] = $context_item->getLanguage();
       $community_room_array = array();
       if (!empty($this->_session_community_room_array)) {

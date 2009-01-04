@@ -272,16 +272,28 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
 
 
-         $community_room_array = array();
-         if ( isset($_POST['communityroomlist']) ) {
-            $community_room_array = $_POST['communityroomlist'];
+         if ($context_item->isProjectRoom()){
+         	$community_room_array = array();
+            if ( isset($_POST['communityroomlist']) ) {
+               $community_room_array = $_POST['communityroomlist'];
+            }
+            if ( isset($_POST['communityrooms']) and !in_array($_POST['communityrooms'],$community_room_array) and $_POST['communityrooms'] > 0) {
+               $community_room_array[] = $_POST['communityrooms'];
+            }
+            $context_item->setCommunityListByID($community_room_array);
+            $context_item->setColorArray($color);
          }
-         if ( isset($_POST['communityrooms']) and !in_array($_POST['communityrooms'],$community_room_array) and $_POST['communityrooms'] > 0) {
-            $community_room_array[] = $_POST['communityrooms'];
-         }
-         $context_item->setCommunityListByID($community_room_array);
-         $context_item->setColorArray($color);
 
+         if ($context_item->isCommunityRoom()){
+            // Room association
+            if ( isset($_POST['room_assignment']) ) {
+               if ($_POST['room_assignment'] == 'open') {
+                  $context_item->setAssignmentOpenForAnybody();
+               } elseif ($_POST['room_assignment'] == 'closed') {
+                  $context_item->setAssignmentOnlyOpenForRoomMembers();
+               }
+            }
+         }
          if ( isset($_POST['language']) ) {
             $language = $_POST['language'];
             if ($_POST['language'] == 'enabled') {
