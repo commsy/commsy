@@ -86,13 +86,15 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      $this->_form->addRadioGroup('discussion_status',getMessage('DISCUSSION_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
      $this->_form->combine();
      $this->_form->addExplanation('discussions',getMessage('CONFIGURATION_DISCUSSION_WARNING'));
-     $this->_form->addEmptyline();
 
-     //Gruppenoptionen
-     $picture = '<img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-     $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUP_INDEX'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
-     $this->_form->combine();
-     $this->_form->addExplanation('groups',getMessage('GROUPROOM_EXPLANATION_VALUE'));
+     if ($this->_environment->inProjectRoom()){
+        $this->_form->addEmptyline();
+        //Gruppenoptionen
+        $picture = '<img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUP_INDEX'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
+        $this->_form->combine();
+        $this->_form->addExplanation('groups',getMessage('GROUPROOM_EXPLANATION_VALUE'));
+     }
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');

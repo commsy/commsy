@@ -105,16 +105,17 @@ if ($command != 'error') {
                $context_item->setDiscussionStatus($_POST['discussion_status']);
             }
 
-            //Gruppenoptionen
-            $current_user = $environment->getCurrentUserItem();
-            $context_item->setModificatorItem($current_user);
-            $context_item->setModificationDate(getCurrentDateTimeInMySQL());
-            if ( isset($_POST['grouproom']) and !empty($_POST['grouproom']) and $_POST['grouproom'] == 1 ) {
-                $context_item->setGrouproomActive();
-            } else {
-                $context_item->setGrouproomInactive();
+            if ($environment->inProjectRoom()){
+               //Gruppenoptionen
+               $current_user = $environment->getCurrentUserItem();
+               $context_item->setModificatorItem($current_user);
+               $context_item->setModificationDate(getCurrentDateTimeInMySQL());
+               if ( isset($_POST['grouproom']) and !empty($_POST['grouproom']) and $_POST['grouproom'] == 1 ) {
+                   $context_item->setGrouproomActive();
+               } else {
+                   $context_item->setGrouproomInactive();
+               }
             }
-
 
             // Save item
             $context_item->save();
