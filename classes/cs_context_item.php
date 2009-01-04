@@ -2989,8 +2989,9 @@ class cs_context_item extends cs_item {
    }
 
    function withNetnavigation(){
-      $retour = false;
+      $retour = true;
       if ( $this->_issetExtra('WITHNETNAVIGATION') ){
+         $retour = false;
          $re = $this->_getExtra('WITHNETNAVIGATION');
          if ($re == 2){
             $retour = true;
