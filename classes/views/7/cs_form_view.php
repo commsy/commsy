@@ -1967,6 +1967,7 @@ class cs_form_view extends cs_view {
                   break;
                case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
                   $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
                   $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
@@ -2012,6 +2013,7 @@ class cs_form_view extends cs_view {
                   break;
                case 'MATERIAL_IMS_IMPORT':      //
                   $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
+                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'ANNOTATION_EDIT':      //
                   $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');

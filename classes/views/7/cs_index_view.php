@@ -1427,9 +1427,11 @@ EOD;
             break;
          case 'MYROOM':
             $tempMessage = getMessage('MYROOM_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'PROJECT':
             $tempMessage = getMessage('PROJECT_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'TODO':
             $tempMessage = getMessage('TODO_INDEX');

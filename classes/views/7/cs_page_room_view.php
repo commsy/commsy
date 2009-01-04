@@ -301,6 +301,9 @@ class cs_page_room_view extends cs_page_view {
                case 'topic':
                   $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
                   break;
+               case 'project':
+                  $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                  break;
                default:
                   $link_title = '';
             }
@@ -1015,6 +1018,8 @@ class cs_page_room_view extends cs_page_view {
                         $image_text = 'user';
                      }elseif ($view instanceof cs_announcement_short_view or $view instanceof cs_announcement_tiny_view){
                         $image_text = 'announcement';
+                     }elseif ($view instanceof cs_project_short_view or $view instanceof cs_project_tiny_view){
+                        $image_text = 'room';
                      }elseif ($view instanceof cs_date_short_view or $view instanceof cs_date_tiny_view){
                         $image_text = 'date';
                      }elseif ($view instanceof cs_group_short_view or $view instanceof cs_group_tiny_view){

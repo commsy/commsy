@@ -1164,6 +1164,7 @@ class cs_detail_view extends cs_view {
             break;
          case 'PROJECT':
             $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
+            $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'TODO':
             $tempMessage = $this->_translator->getMessage('TODO_INDEX');
