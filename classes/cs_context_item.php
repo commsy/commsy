@@ -2902,9 +2902,9 @@ class cs_context_item extends cs_item {
       $retour = false;
       if ($this->_issetExtra('BGIMAGEREPEAT')) {
          $retour = $this->_getExtra('BGIMAGEREPEAT');
-         if ($retour == 1){
-         	$retour = true;
-         }else{
+         if ( $retour == 1 ) {
+            $retour = true;
+         } else {
             $retour = false;
          }
       }
@@ -4844,7 +4844,23 @@ class cs_context_item extends cs_item {
 
    public function isDesign6() {
       $retour = true;
-      if ( $this->_getDesign() != 6 ) {
+      $design = $this->_getDesign();
+      if ( empty($design) ) {
+         if ( $this->isGroupRoom() ) {
+            $context = $this->getLinkedProjectItem();
+            $retour = $context->isDesign6();
+            unset($context);
+         }
+         if ( $this->isProjectRoom()
+              or $this->isCommunityRoom()
+              or $this->isPrivateRoom()
+              or $this->isPortal()
+            ) {
+            $context = $this->getContextItem();
+            $retour = $context->isDesign6();
+            unset($context);
+         }
+      } elseif ( $design != 6 ) {
          $retour = false;
       }
       return $retour;
@@ -4852,14 +4868,30 @@ class cs_context_item extends cs_item {
 
    public function isDesign7() {
       $retour = false;
-      if ( $this->_getDesign() == 7 ) {
+      $design = $this->_getDesign();
+      if ( empty($design) ) {
+         if ( $this->isGroupRoom() ) {
+            $context = $this->getLinkedProjectItem();
+            $retour = $context->isDesign7();
+            unset($context);
+         }
+         if ( $this->isProjectRoom()
+              or $this->isCommunityRoom()
+              or $this->isPrivateRoom()
+              or $this->isPortal()
+            ) {
+            $context = $this->getContextItem();
+            $retour = $context->isDesign7();
+            unset($context);
+         }
+      } elseif ( $design == 7 ) {
          $retour = true;
       }
       return $retour;
    }
 
    private function _getDesign() {
-      $retour = 6;
+      $retour = '';
       if ( $this->_issetExtra('DESIGN')) {
          $retour = $this->_getExtra('DESIGN');
       }
@@ -4870,7 +4902,7 @@ class cs_context_item extends cs_item {
        global $c_commsy_path_file;
        $color_array = $this->getColorArray();
        $disc_manager = $this->_environment->getDiscManager();
-       if($this->isPortal()){
+       if ( $this->isPortal() or $this->isServer() ) {
           $disc_manager->setPortalID($this->getItemID());
           $disc_manager->setContextID($this->getItemID());
           $var_folder = @opendir($c_commsy_path_file . '/var/' . $this->getItemID());

@@ -49,6 +49,18 @@ var $_configuration_rubric_list = NULL;
       $current_context = $this->_environment->getCurrentContextItem();
    }
 
+    function setImportantConfigurationRoomList ($list){
+       #$this->_important_configuration_room_list = $list;
+    }
+
+    function setConfigurationUsageList ($list){
+       #$this->_configuration_usage_list = $list;
+    }
+
+    function setConfigurationRubricExtrasList ($list){
+       #$this->_configuration_rubric_extras_list = $list;
+    }
+
     /** get the item of the list view as HTML
     * this method returns the single item in HTML-Code
     *

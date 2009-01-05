@@ -350,7 +350,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             }
          }
       }elseif($this->_environment->inCommunityRoom()){
-      	$radio_values = array();
+         $radio_values = array();
          $radio_values[0]['text'] = getMessage('COMMON_ASSIGMENT_ON');
          $radio_values[0]['value'] = 'open';
          $radio_values[1]['text'] = getMessage('COMMON_ASSIGMENT_OFF');
@@ -552,7 +552,28 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addHidden('bgimage_hidden','');
             $this->_form->addHidden('with_bgimage',$this->_with_logo);
          }
+      }
 
+      // switch CommSy6 and CommSy7
+      if ( $this->_environment->inProjectRoom()
+           or $this->_environment->inCommunityRoom()
+           or $this->_environment->inGroupRoom()
+           or $this->_environment->inPrivateRoom()
+           or $this->_environment->inPortal()
+           or $this->_environment->inServer()
+         ) {
+         $value_array = array();
+         $temp_array = array();
+         $temp_array['text'] = 'CommSy6';
+         $temp_array['value'] = '6';
+         $value_array[] = $temp_array;
+         unset($temp_array);
+         $temp_array = array();
+         $temp_array['text'] = 'CommSy7';
+         $temp_array['value'] = '7';
+         $value_array[] = $temp_array;
+         unset($temp_array);
+         $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
       }
 
       /*****Beschreibung****/
@@ -597,26 +618,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          } else {
             $this->_form->addHidden('description_'.$language,'');
          }
-      }
-
-      // switch CommSy6 and CommSy7
-      if ( $this->_environment->inProjectRoom()
-           or $this->_environment->inCommunityRoom()
-           or $this->_environment->inGroupRoom()
-           or $this->_environment->inPrivateRoom()
-         ) {
-         $value_array = array();
-         $temp_array = array();
-         $temp_array['text'] = 'CommSy6';
-         $temp_array['value'] = '6';
-         $value_array[] = $temp_array;
-         unset($temp_array);
-         $temp_array = array();
-         $temp_array['text'] = 'CommSy7';
-         $temp_array['value'] = '7';
-         $value_array[] = $temp_array;
-         unset($temp_array);
-         $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
       }
 
       /******** buttons***********/

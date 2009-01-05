@@ -305,6 +305,8 @@ class cs_internal_color_form extends cs_rubric_form {
            or $this->_environment->inCommunityRoom()
            or $this->_environment->inGroupRoom()
            or $this->_environment->inPrivateRoom()
+           or $this->_environment->inPortal()
+           or $this->_environment->inServer()
          ) {
          $value_array = array();
          $temp_array = array();
