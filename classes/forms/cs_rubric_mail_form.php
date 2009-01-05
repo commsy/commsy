@@ -359,6 +359,25 @@ class cs_rubric_mail_form extends cs_rubric_form {
    function _prepareValues () {
       $this->_values = array();
       if (empty($this->_form_post)) {
+         // group all will be marked at entering the form
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ( empty($this->_groups) and $current_context->withRubric(CS_GROUP_TYPE)) {
+            $group_manager = $this->_environment->getGroupManager();
+            $group_manager->select();
+            $group_list = $group_manager->get();
+            if ( $group_list->isNotEmpty() ) {
+               $group_item = $group_list->getFirst();
+               while ( $group_item ) {
+                  if ( $group_item->isSystemLabel() ) {
+                     $this->_groups[] = $group_item->getItemID();
+                  }
+                  $group_item = $group_list->getNext();
+               }
+            }
+            unset($group_list);
+            unset($group_manager);
+         }
+         unset($current_context);
          $this->_values['groups'] = $this->_groups;
          $this->_values['institutions'] = $this->_institutions;
       } elseif (isset($this->_form_post)) {
