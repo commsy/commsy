@@ -1155,6 +1155,10 @@ class cs_detail_view extends cs_view {
             $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
+         case 'MATERIAL_ADMIN':
+            $tempMessage = $this->_translator->getMessage('MATERIAL_ADMIN_INDEX').' ('.getMessage('MATERIAL_INDEX').')';
+            $tempMessage = '<img src="images/commsyicons/32x32/config/material_admin.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+            break;
          case 'MATERIAL':
             $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1184,7 +1188,7 @@ class cs_detail_view extends cs_view {
             $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          default:
-            $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
+            $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_detail_view(1187) ');
             break;
       }
       $html .= '<h2 class="pagetitle">'.$tempMessage;
@@ -2207,6 +2211,9 @@ class cs_detail_view extends cs_view {
             case 'MATERIAL':
                $text = $this->_translator->getMessage('COMMON_MATERIAL');
                break;
+            case 'MATERIAL_ADMIN':
+               $text = $this->_translator->getMessage('COMMON_MATERIAL');
+               break;
             case 'PROJECT':
                $text = $this->_translator->getMessage('COMMON_PROJECT');
                break;
@@ -2225,7 +2232,7 @@ class cs_detail_view extends cs_view {
             case 'ACCOUNT':
                $text = $this->_translator->getMessage('COMMON_ACCOUNTS');
             break;            default:
-               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_detail_view(2232) ' );
                break;
          }
          if ( empty($ids) ) {
