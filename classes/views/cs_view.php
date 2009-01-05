@@ -1568,16 +1568,29 @@ class cs_view {
             // use flv media player for swf, flv
             // see: http://www.jeroenwijering.com/?item=JW_FLV_Media_Player
             if ( empty($args['width']) ) {
-               $args['width'] = '300';
-                if ( $this->_environment->getCurrentBrowser() == 'MSIE' ) {
-                     $args['width'] += 20;
-                }
+               $current_item = $this->_environment->getCurrentContextItem();
+               if ( $current_item->isDesign7() ) {
+                  $args['width'] = '600'; // 16:9
+               } else {
+                  $args['width'] = '300'; // old
+               }
+               unset($current_item);
             }
             if ( empty($args['height']) ) {
-                $args['height'] = '250';
-                if ( $this->_environment->getCurrentBrowser() == 'MSIE' ) {
-                    $args['height'] += 10;
-                }
+               $current_item = $this->_environment->getCurrentContextItem();
+               if ( $current_item->isDesign7() ) {
+                  $args['height'] = '337.5';  // 16:9
+               } else {
+                  $args['height'] = '250'; // old
+               }
+            }
+            if ( $this->_environment->getCurrentBrowser() == 'MSIE' ) {
+               $args['height'] -= 10;
+               if ( $args['height'] > 0 ) {
+                  $args['width'] -= round(($args['width']*10/$args['height']),0);
+               } else {
+                  $args['width'] = 0;
+               }
             }
             $source = str_replace('&amp;','&',$source);
             $source = urlencode($source);
