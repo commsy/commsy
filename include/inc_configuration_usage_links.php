@@ -59,7 +59,6 @@ if ( !isset($environment) and isset($this->_environment) ) {
    }
 
 
-
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->isCommunityRoom()
         and $context_item->isOpenForGuests()

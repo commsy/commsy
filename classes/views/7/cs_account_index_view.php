@@ -1089,6 +1089,19 @@ class cs_account_index_view extends cs_index_view {
                                        '',
                                        $image,
                                        getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
+        $context_item = $this->_environment->getCurrentContextItem();
+        if ( $context_item->isCommunityRoom()
+           and $context_item->isOpenForGuests()
+           and $context_item->withRubric(CS_MATERIAL_TYPE)
+        ) {
+           $image = '<img src="images/commsyicons/22x22/config/material_admin.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'material_admin',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION')).LF;
+        }
         $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',

@@ -1426,6 +1426,10 @@ EOD;
             $tempMessage = getMessage('MATERIAL_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
+         case 'MATERIAL_ADMIN':
+            $tempMessage = getMessage('MATERIAL_ADMIN_INDEX').' ('.getMessage('MATERIAL_INDEX').')';
+            $tempMessage = '<img src="images/commsyicons/32x32/config/material_admin.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+            break;
          case 'MYROOM':
             $tempMessage = getMessage('MYROOM_INDEX');
             $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1915,6 +1919,9 @@ EOD;
          case 'MATERIAL':
             $text .= $this->_translator->getMessage('MATERIALS');
             break;
+         case 'MATERIAL_ADMIN':
+            $text .= $this->_translator->getMessage('MATERIALS');
+            break;
          case 'MYROOM':
             $text .= $this->_translator->getMessage('COMMON_ROOMS');
             break;
@@ -2095,18 +2102,6 @@ EOD;
       return $html;
    }
 
-/*  function getNetnavigationAsHTML () {
-      $html  = '';
-      $html .= '<div class="right_box">'.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_INDEX_NETNAVIGATION').'</div>';
-      $html .= '         </noscript>';
-      $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
-      $html .= $this->_getAdditionalFormFieldsAsHTML();
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      return $html;
-   }*/
 
   function _getExpertSearchAsHTML(){
      $html  = '';
