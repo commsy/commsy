@@ -22,9 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
 include_once('classes/cs_list.php');
-
 
 if ( isset($_GET['iid']) ) {
    $ref_iid = $_GET['iid'];
@@ -273,11 +271,11 @@ foreach ($rubric_array as $rubric) {
    $item_ids = array_merge($item_ids, $rubric_ids);
 }
 
-
 $sublist = $item_list->getSubList($from-1,$interval);
 $item_attach_index_view->setList($sublist);
 $item_attach_index_view->setLinkedItemIDArray($selected_ids);
 $item_attach_index_view->setRefItemID($_GET['iid']);
+$item_attach_index_view->setRefItem($item);
 $item_attach_index_view->setCountAllShown(count($item_ids));
 $item_attach_index_view->setCountAll($count_all);
 $item_attach_index_view->setFrom($from);
@@ -285,6 +283,4 @@ $item_attach_index_view->setInterval($interval);
 $item_attach_index_view->setSearchText($search);
 $item_attach_index_view->setChoosenRubric($selrubric);
 $item_attach_index_view->setActivationLimit($sel_activating_status);
-
-
 ?>

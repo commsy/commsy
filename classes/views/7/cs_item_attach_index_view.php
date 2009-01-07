@@ -30,10 +30,9 @@ $this->includeClass(ITEM_INDEX_VIEW);
  */
 class cs_item_attach_index_view extends cs_item_index_view {
 
-
-var $_checked_ids = array();
-var $_ref_iid = '';
-var $_hidden_field_array = array();
+   var $_checked_ids = array();
+   var $_ref_iid = '';
+   var $_hidden_field_array = array();
 
    /** constructor: cs_item_list_view
     * the only available constructor, initial values for internal variables
@@ -52,7 +51,6 @@ var $_hidden_field_array = array();
    function setLinkedItemIDArray($array){
       $this->_checked_ids = $array;
    }
-
 
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
@@ -100,8 +98,8 @@ var $_hidden_field_array = array();
       $text .= '/>'.LF;
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -113,19 +111,27 @@ var $_hidden_field_array = array();
       $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" onClick="quark(this)" type="checkbox" name="itemlist['.$key.']" value="1"';
       $tmp_text = '';
       if ( isset($checked_item_array) and !empty($checked_item_array) and in_array($key, $checked_item_array)) {
-         $tmp_text .= ' checked="checked"'.LF;
+         $tmp_text .= ' checked="checked"';
       }
       if ($item->getItemID() == $this->_ref_iid){
-         $tmp_text .= ' disabled="disabled"'.LF;
+         $tmp_text .= ' disabled="disabled"';
       }
-      if($item->isSystemLabel()){
-         $tmp_text .= ' checked="checked" disabled="disabled"'.LF;
+      $add_hidden = false;
+      if ( $item->isSystemLabel()
+           and isset($this->_ref_item)
+           and $this->_ref_item->isA(CS_USER_TYPE)
+         ) {
+         $tmp_text .= ' checked="checked" disabled="disabled"';
+         $add_hidden = true;
       }
       $text .= $tmp_text.'/>'.LF;
+      if ($add_hidden) {
+         $text .= '         <input type="hidden" name="itemlist['.$key.']" value="1"/>'.LF;
+      }
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.LF.$text.'      </td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -145,8 +151,8 @@ var $_hidden_field_array = array();
       $text .= '/>'.LF;
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td   '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -512,7 +518,7 @@ var $_hidden_field_array = array();
       $title .= $this->_getItemChangeStatus($item);
       $title .= $this->_getItemAnnotationChangeStatus($item);
       $title .= ' '.$this->_getItemFiles($item);
-      return $title;
+      return trim($title);
    }
 
 
