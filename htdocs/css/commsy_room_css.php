@@ -26,6 +26,9 @@ if (!empty($_GET['cid'])) {
 #ie{
 	width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
+#ie_footer{
+	width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+}
 /*General Settings */
 body {
    margin: 0px;
