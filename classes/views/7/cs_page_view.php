@@ -1056,17 +1056,18 @@ class cs_page_view extends cs_view {
    function _getUserPersonalAreaAsHTML () {
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
-      $retour .= '         <select size="1" style="font-size:10pt; width:17em;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $retour .= '         <select size="1" style="font-size:8pt; width:17em;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( !$this->_environment->inServer() ) {
          $title = $this->_environment->getCurrentPortalItem()->getTitle();
+         $title .= ' ('.$this->_translator->getMessage('COMMON_PORTAL').')';
          $additional = '';
          if ($this->_environment->inPortal()){
             $additional = 'selected="selected"';
          }
-         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$this->_environment->getCurrentPortalItem()->getTitle().'</option>'.LF;
+         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$title.'</option>'.LF;
 
          $current_portal_item = $this->_environment->getCurrentPortalItem();
          if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {

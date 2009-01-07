@@ -217,7 +217,7 @@ class cs_page_room_view extends cs_page_view {
       }else{
          $html .= '<div id="tabs">'.LF;
       }
-      $html .= '<div style="float:right; margin:0px; padding:0px 20px;">'.LF;
+      $html .= '<div style="float:right; margin:0px; padding:0px 12px;">'.LF;
 
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();
@@ -465,7 +465,7 @@ class cs_page_room_view extends cs_page_view {
       $html  = '';
       $logo_filename = '';
       $context_item = $this->_environment->getCurrentContextItem();
-      $html .='<table summary="layout">';
+      $html .='<table summary="layout" style="height:55px;">';
       $html .= '<tr>';
       if ( $this->_environment->inCommunityRoom()
            or $this->_environment->inProjectRoom()
@@ -480,12 +480,12 @@ class cs_page_room_view extends cs_page_view {
             unset($params);
             $html .= '<td>';
             $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
-            $html .= '     <img style="height:4em; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= '     <img style="height:55px; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= '</div>'.LF;
             $html .= '</td>';
          }
       }
-      $html .= '<td style="verticale-align:middle;">';
+      $html .= '<td style="verticale-align:middle; padding-top:5px;">';
       $length = strlen($context_item->getTitle());
       if ($length < 30){
         $size = '';
@@ -644,13 +644,13 @@ class cs_page_room_view extends cs_page_view {
       if ($browser == 'MSIE') {
          $html .='<div style="float:right; padding-top:20px; white-space:nowrap;">';
       }else{
-         $html .='<div style="float:right; padding-top:27px; white-space:nowrap;">';
+         $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
       }
       $html .= '<div style="float:right; vertical-align:bottom;">';
-      $html .= '<table style="font-size:10pt; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .= '<tr>';
-      $html .= '<td>';
-      $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').' '.LF;
+      $html .= '<td style="vertical-align:bottom;">';
+      $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
       $html .= '</td>';
       $html .= '<td>';
       $html .= $this->_getUserPersonalAreaAsHTML().LF;
@@ -1223,8 +1223,8 @@ class cs_page_room_view extends cs_page_view {
 
          // @segment-end 35577
          // @segment-begin 91880 asHTML(): link"email_to_moderator"&co(right-bottom-corner)
-         $html .= '<div style="border-top:1px solid #B0B0B0; background-color:white;">'.LF;
-         $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:20px; padding-top:5px; padding-bottom:10px; background-color:white;">'.LF;
+         $html .= '<div id="ie_footer" style="border-top:1px solid #B0B0B0; background-color:white;">'.LF;
+         $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:12px; padding-top:5px; padding-bottom:10px; background-color:white;">'.LF;
          $email_to_moderators = '';
          $current_user = $this->_environment->getCurrentUserItem();
          $current_context = $this->_environment->getCurrentContextItem();
@@ -1411,7 +1411,6 @@ class cs_page_room_view extends cs_page_view {
 
 
    function getMyAreaAsHTML() {
-      // @segment-begin 47891 read cs_mode-from-GET/POST(values_user_logged_in=password_change/account_change/become_member;values_user_logged_out=portalmember/account_forget/passwort_forget)
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
       $current_context = $this->_environment->getCurrentContextItem();
@@ -1425,15 +1424,7 @@ class cs_page_room_view extends cs_page_view {
       }
       unset($get_vars);
       unset($post_vars);
-      // @segment-end 47891
-      // @segment-begin 65267 titel-of-my_area_box/upper_corner_pictures
       $html  = '<div style="white-space:nowrap;">';
-/*      $html .= '<table summary="layout" style="border-collapse:collapse;">';
-      $html .= '<tr>';
-      $html .= '<td>';
-      $html .= $this->_translator->getMessage('MYAREA_LOGGED_ON_AS').' ';
-      $html .= '</td>';
-      $html .= '<td>';*/
       if ( $this->_with_personal_area) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
             $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
@@ -1462,20 +1453,9 @@ class cs_page_room_view extends cs_page_view {
       ) {
          $html .= '<span class="bold">'.$this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST').'</span>';
       }
-#      $html .= '</td>';
-#      $html .= '</tr>';
-      // @segment-end 65267
-      // personal area
-      // @segment-begin 77327 no-cs_modus/user=guest:no-user-logged-in-message
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
             $params = array();
-
-            // @segment-end 70706
-            // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
-            // @segment-end 23516
-            // @segment-begin 67550 no-cs_modus/user-status><0:link-log_out
-
             if (!$this->_environment->inServer()) {
 
 /*               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
@@ -1526,8 +1506,6 @@ class cs_page_room_view extends cs_page_view {
                   $html .= '</tr>';
                }
             }
-            // @segment-begin 7294 link-to:own-room/room-overview
-
             unset($current_context);
             unset($current_portal);
          }
