@@ -274,7 +274,7 @@ foreach ($rubric_array as $rubric) {
 $sublist = $item_list->getSubList($from-1,$interval);
 $item_attach_index_view->setList($sublist);
 $item_attach_index_view->setLinkedItemIDArray($selected_ids);
-$item_attach_index_view->setRefItemID($_GET['iid']);
+$item_attach_index_view->setRefItemID($ref_iid);
 $item_attach_index_view->setRefItem($item);
 $item_attach_index_view->setCountAllShown(count($item_ids));
 $item_attach_index_view->setCountAll($count_all);

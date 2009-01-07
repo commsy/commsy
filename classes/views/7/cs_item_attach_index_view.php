@@ -117,12 +117,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $tmp_text .= ' disabled="disabled"';
       }
       $add_hidden = false;
-      if ( $item->isSystemLabel()
-           and isset($this->_ref_item)
-           and $this->_ref_item->isA(CS_USER_TYPE)
-         ) {
-         $tmp_text .= ' checked="checked" disabled="disabled"';
-         $add_hidden = true;
+      if ( $item->isSystemLabel() ) {
+         $ref_item = $this->_getRefItem();
+         if ( !empty($ref_item)
+              and $ref_item->isA(CS_USER_TYPE)
+            ) {
+            $tmp_text .= ' checked="checked" disabled="disabled"';
+            $add_hidden = true;
+         }
+         unset($ref_item);
       }
       $text .= $tmp_text.'/>'.LF;
       if ($add_hidden) {
@@ -513,11 +516,14 @@ class cs_item_attach_index_view extends cs_item_index_view {
    }
 
    function _getItemTitle ($item) {
-      $title = $item->getTitle();
-      $title = $this->_compareWithSearchText($title);
-      $title .= $this->_getItemChangeStatus($item);
-      $title .= $this->_getItemAnnotationChangeStatus($item);
-      $title .= ' '.$this->_getItemFiles($item);
+      $title = '';
+      if ( !empty($item) ) {
+         $title = $item->getTitle();
+         $title = $this->_compareWithSearchText($title);
+         $title .= $this->_getItemChangeStatus($item);
+         $title .= $this->_getItemAnnotationChangeStatus($item);
+         $title .= ' '.$this->_getItemFiles($item);
+      }
       return trim($title);
    }
 
@@ -1237,6 +1243,19 @@ class cs_item_attach_index_view extends cs_item_index_view {
       return $html;
    }
 
-
+   function _getRefItem () {
+      $retour = $this->_ref_item;
+      if ( empty($this->_ref_item) and !empty($this->_ref_iid) ) {
+         $item_manager = $this->_environment->getItemManager();
+         $tmp_item = $item_manager->getItem($this->_ref_iid);
+         $manager = $this->_environment->getManager($tmp_item->getItemType());
+         $this->_ref_item = $item = $manager->getItem($this->_ref_iid);
+         $retour = $this->_ref_item;
+         unset($item_manager);
+         unset($tmp_item);
+         unset($manager);
+      }
+      return $retour;
+   }
 }
 ?>

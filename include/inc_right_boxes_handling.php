@@ -22,6 +22,14 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+if ( empty($iid) ) {
+   if ( !empty($_GET['iid']) ) {
+      $iid = $_GET['iid'];
+   } elseif ( !empty($_POST['iid']) ) {
+      $iid = $_POST['iid'];
+   }
+}
+
 if ( isset($_POST['right_box_option']) ) {
    $right_box_command = $_POST['right_box_option'];
 }elseif ( isset($_GET['right_box_option']) ) {
@@ -29,7 +37,6 @@ if ( isset($_POST['right_box_option']) ) {
 } else {
    $right_box_command = '';
 }
-
 
 if ( isOption($command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    if (isset($_POST['return_attach_buzzword_list'])){
@@ -354,7 +361,9 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
          $item_attach_index_view->setHiddenFields($post_values_orig);
       }
       $item_attach_index_view->setLinkedItemIDArray($selected_ids);
-#      $item_attach_index_view->setRefItemID($iid);
+      // muss drin bleiben, da sonst ein neues Item angelegt wird
+      $item_attach_index_view->setRefItemID($iid);
+      // -----------------------------------------
       $item_attach_index_view->setCountAllShown(count($item_ids));
       $item_attach_index_view->setCountAll($count_all);
       $item_attach_index_view->setFrom($from);
@@ -363,6 +372,4 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       $item_attach_index_view->setActivationLimit($sel_activating_status);
    }
 }
-
-
 ?>
