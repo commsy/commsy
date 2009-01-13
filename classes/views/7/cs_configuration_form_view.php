@@ -519,13 +519,16 @@ class cs_configuration_form_view extends cs_form_view {
                                        '',
                                        $image,
                                        getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+
+        if (!$room->isPrivateRoom()){
+           $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'account_options',
                                        '',
                                        $image,
                                        getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE')).LF;
+        }
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
@@ -539,20 +542,22 @@ class cs_configuration_form_view extends cs_form_view {
         $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').': ';
         $html .= '         </td>'.LF;
         $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+        if (!$room->isPrivateRoom()){
+           $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
                                        '',
                                        $image,
                                        getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+           $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'informationbox',
                                        '',
                                        $image,
                                        getMessage('COMMON_INFORMATION_BOX')).LF;
+        }
         $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
@@ -560,13 +565,15 @@ class cs_configuration_form_view extends cs_form_view {
                                        '',
                                        $image,
                                        getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+        if (!$room->isPrivateRoom()){
+           $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'mail',
                                        '',
                                        $image,
                                        getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE')).LF;
+        }
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
@@ -600,7 +607,7 @@ class cs_configuration_form_view extends cs_form_view {
                                        $image,
                                        getMessage('WIKI_CONFIGURATION_LINK')).LF;
         }
-        if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
+        if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateRoom()) {
         $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
@@ -609,13 +616,15 @@ class cs_configuration_form_view extends cs_form_view {
                                        $image,
                                        getMessage('CHAT_CONFIGURATION_LINK')).LF;
         }
-        $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+        if (!$context_item->isPrivateRoom()){
+           $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'template_options',
                                        '',
                                        $image,
                                        getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
+        }
         $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',

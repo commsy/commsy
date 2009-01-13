@@ -77,9 +77,9 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
           or $this->_environment->inGroupRoom()
         ) {
          $count =7;
-         }elseif($this->_environment->inPrivateRoom()){
-            $count =5;
-         }
+     }elseif($this->_environment->inPrivateRoom()){
+         $count =4;
+     }
      for ( $i = 0; $i < $count; $i++ ) {
         $nameArray[0] = 'module['.$i.']';
         $nameArray[1] = 'view['.$i.']';
@@ -159,6 +159,9 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
      $home_conf_array = explode(',',$home_conf);
      $i=0;
      $count =8;
+     if($this->_environment->inPrivateRoom()){
+        $count = 4;
+     }
      $value_array = array();
      foreach ($home_conf_array as $rubric_conf) {
         $rubric_conf_array = explode('_',$rubric_conf);
@@ -193,14 +196,15 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                                 false,
                                 '',
                                 'id="id'.$i.'" onChange="javascript:cs_toggleSelect('.$i.')"');
-       $this->_form->combine('horizontal');
-       if ($value_array[$i]) {
-          $disabled = false;
-       } else {
-          $disabled = true;
-       }
+       if(!$this->_environment->inPrivateRoom()){
+          $this->_form->combine('horizontal');
+          if ($value_array[$i]) {
+             $disabled = false;
+          } else {
+             $disabled = true;
+          }
 
-       $this->_form->addSelect('show_'.$i,$view_mod_array,
+          $this->_form->addSelect('show_'.$i,$view_mod_array,
                                 '',
                                 '',
                                 '',
@@ -217,6 +221,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                                 $disabled,
                                 '',
                                 'id="nr'.$i.'" ');
+       }
       }
       if ($this->_environment->inProjectRoom() or $this->_environment->inGroupRoom()){
          $this->_form->addTextField('time_spread',
@@ -239,6 +244,9 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
       $count =8;
       if ($this->_environment->inCommunityRoom()){
          $count =7;
+      }
+      if ($this->_environment->inPrivateRoom()){
+         $count =4;
       }
       $this->_values = array();
       $home_conf = $this->_environment->getCurrentContextItem()->getHomeConf();
@@ -273,7 +281,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
          ) {
          $count =7;
       } elseif ($this->_environment->inPrivateRoom()){
-         $count =5;
+         $count =4;
       }
     if (isset ($_POST['rubric_0'])){
          $post_array=array();

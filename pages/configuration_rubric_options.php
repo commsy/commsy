@@ -112,18 +112,20 @@ else {
          ) {
          $count = 7;
       } elseif ($room_item->isPrivateRoom()) {
-         $count = 5;
+         $count = 4;
       }
-      for ($i=0; $i<$count; $i++){
-         $rubric = '';
-         if (!empty($_POST['rubric_'.$i])){
-         if ($_POST['rubric_'.$i] != 'none') {
-            $temp_array[$i] = $_POST['rubric_'.$i].'_'.$_POST['show_'.$i];
-            $j++;
+      if (!$room_item->isPrivateRoom()) {
+         for ($i=0; $i<$count; $i++){
+            $rubric = '';
+            if (!empty($_POST['rubric_'.$i])){
+            if ($_POST['rubric_'.$i] != 'none') {
+               $temp_array[$i] = $_POST['rubric_'.$i].'_'.$_POST['show_'.$i];
+               $j++;
+            }
+            }
          }
-         }
+         $room_item->setHomeConf(implode($temp_array,','));
       }
-      $room_item->setHomeConf(implode($temp_array,','));
       // save room_item
       $room_item->save();
       $form_view->setItemIsSaved();

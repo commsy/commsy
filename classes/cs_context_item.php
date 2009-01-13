@@ -3173,6 +3173,9 @@ class cs_context_item extends cs_item {
    function getAvailableDefaultRubricArray () {
      $retour = array();
      $temp = $this->_default_rubrics_array;
+     if ($this->isPrivateRoom() and $this->isDesign7()){
+        unset($temp[4]);
+     }
      foreach ($temp as $rubric) {
         if ($rubric=='contact'){
            $rubric = 'user';

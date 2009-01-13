@@ -64,15 +64,17 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setParameter(array());
    $configuration_important_link_list->add($link_item);
 
-   $link_item = new cs_link();
-   $link_item->setTitle(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE'));
-   $link_item->setDescription(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_DESC'));
-   $link_item->setIconPath('images/commsyicons/48x48/config/account_options.png');
-   $link_item->setContextID($environment->getCurrentContextID());
-   $link_item->setModule('configuration');
-   $link_item->setFunction('account_options');
-   $link_item->setParameter('');
-   $configuration_important_link_list->add($link_item);
+   if (!$environment->inPrivateRoom()){
+      $link_item = new cs_link();
+      $link_item->setTitle(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE'));
+      $link_item->setDescription(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_DESC'));
+      $link_item->setIconPath('images/commsyicons/48x48/config/account_options.png');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('account_options');
+      $link_item->setParameter('');
+      $configuration_important_link_list->add($link_item);
+   }
 
 
 #   $configuration_important_link_list->sortby('title');

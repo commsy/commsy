@@ -116,25 +116,27 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $this->_community_room_array = $community_room_array;
       $community_room_array = array();
 
-      if (!empty($this->_session_community_room_array)) {
-         foreach ( $this->_session_community_room_array as $community_room ) {
-            $temp_array['text'] = $community_room['name'];
-            $temp_array['value'] = $community_room['id'];
-            $community_room_array[] = $temp_array;
-         }
-      } else{
-         $community_room_list = $current_context_item->getCommunityList();
-         if ($community_room_list->getCount() > 0) {
-            $community_room_item = $community_room_list->getFirst();
-            while ($community_room_item) {
-               $temp_array['text'] = $community_room_item->getTitle();
-               $temp_array['value'] = $community_room_item->getItemID();
+      if ($this->_environment->inProjectRoom()){
+         if (!empty($this->_session_community_room_array)) {
+            foreach ( $this->_session_community_room_array as $community_room ) {
+               $temp_array['text'] = $community_room['name'];
+               $temp_array['value'] = $community_room['id'];
                $community_room_array[] = $temp_array;
-               $community_room_item = $community_room_list->getNext();
+            }
+         } else{
+            $community_room_list = $current_context_item->getCommunityList();
+            if ($community_room_list->getCount() > 0) {
+               $community_room_item = $community_room_list->getFirst();
+               while ($community_room_item) {
+                  $temp_array['text'] = $community_room_item->getTitle();
+                  $temp_array['value'] = $community_room_item->getItemID();
+                  $community_room_array[] = $temp_array;
+                  $community_room_item = $community_room_list->getNext();
+               }
             }
          }
+         $this->_shown_community_room_array = $community_room_array;
       }
-      $this->_shown_community_room_array = $community_room_array;
 
 
       /**********Logo**********/
@@ -269,8 +271,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
-
+      if (!$this->_environment->inPrivateRoom()){
+         $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
+      }
       /********Sprache*******/
       $languageArray = array();
       $zaehler = 0;
@@ -672,6 +675,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['color_6'] = $color['hyperlink'];
          $this->_values['color_4'] = $color['content_background'];
          $this->_values['title'] = $context_item->getTitle();
+         if ($context_item->isPrivateRoom() and $context_item->getTitle() == 'PRIVATEROOM' ){
+            $this->_values['title'] = $this->_translator->getMessage('COMMON_PRIVATEROOM');
+         }
          if ($context_item->isAssignmentOnlyOpenForRoomMembers()) {
             $this->_values['room_assignment'] = 'closed';
          } else {
@@ -688,24 +694,26 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['bg_image_repeat'] = '1';
       }
       $this->_values['language'] = $context_item->getLanguage();
-      $community_room_array = array();
-      if (!empty($this->_session_community_room_array)) {
-         foreach ( $this->_session_community_room_array as $community_room ) {
-            $community_room_array[] = $community_room['id'];
+      if ($this->_environment->inProjectRoom()){
+         $community_room_array = array();
+         if (!empty($this->_session_community_room_array)) {
+            foreach ( $this->_session_community_room_array as $community_room ) {
+               $community_room_array[] = $community_room['id'];
+            }
          }
-      }
-      $community_room_list = $context_item->getCommunityList();
-      if ($community_room_list->getCount() > 0) {
-         $community_room_item = $community_room_list->getFirst();
-         while ($community_room_item) {
-            $community_room_array[] = $community_room_item->getItemID();
-            $community_room_item = $community_room_list->getNext();
+         $community_room_list = $context_item->getCommunityList();
+         if ($community_room_list->getCount() > 0) {
+            $community_room_item = $community_room_list->getFirst();
+            while ($community_room_item) {
+               $community_room_array[] = $community_room_item->getItemID();
+               $community_room_item = $community_room_list->getNext();
+            }
          }
-      }
-      if ( isset($this->_form_post['communityroomlist']) ) {
-         $this->_values['communityroomlist'] = $this->_form_post['communityroomlist'];
-      } else {
-         $this->_values['communityroomlist'] = $community_room_array;
+         if ( isset($this->_form_post['communityroomlist']) ) {
+            $this->_values['communityroomlist'] = $this->_form_post['communityroomlist'];
+         } else {
+            $this->_values['communityroomlist'] = $community_room_array;
+         }
       }
 
       $description_array = $context_item->getDescriptionArray();
