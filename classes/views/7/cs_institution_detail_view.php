@@ -172,16 +172,16 @@ class cs_institution_detail_view extends cs_detail_view {
          if ( $current_user->isUser() and $this->_with_modifying_actions ) {
             $params = array();
             $params['iid'] = $item->getItemID();
-            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.getMessage('GROUPS_EMAIL_TO_GROUP').'"/>';
             $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    'rubric',
+                                    CS_INSTITUTION_TYPE,
                                     'mail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_EMAIL_TO')).LF;
+                                    getMessage('GROUPS_EMAIL_TO_GROUP')).LF;
             unset($params);
          } else {
-            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUPS_EMAIL_TO_GROUP').'"/>';
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
          }
       }
