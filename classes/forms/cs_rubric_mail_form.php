@@ -116,6 +116,12 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $manager = $this->_environment->getItemManager();
       $item = $manager->getItem($iid);
       $module = $item->getItemType();
+      $link_module = $module;
+      if ($module== 'label' or $module== 'labels') {
+          $label_manager = $this->_environment->getLabelManager();
+          $label = $label_manager->getItem($iid);
+          $link_module= $label->getLabelType();
+      }
       $item_manager = $this->_environment->getManager($module);
       $item = $item_manager->getItem($iid);
       $item_name = $item->getTitle();
@@ -123,7 +129,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $article = '';
       $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']
              .'?cid='.$this->_environment->getCurrentContextID()
-             .'&mod='.$module
+             .'&mod='.$link_module
              .'&fct=detail'
              .'&iid='.$item->getItemID();
 
