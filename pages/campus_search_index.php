@@ -349,7 +349,9 @@ $view->setSearchText($search);
 $view->setSelectedRestriction($selrestriction);
 $view->setSelectedFile($selfiles);
 $view->setAvailableBuzzwords($buzzword_list);
-$view->setChoosenRubric($selrubric);
+if($context_item->isDesign7()){
+   $view->setChoosenRubric($selrubric);
+}
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setActivationLimit($sel_activating_status);
