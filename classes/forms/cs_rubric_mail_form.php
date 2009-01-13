@@ -266,7 +266,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
           $announcement_content = getMessage('COMMON_ANNOUNCEMENT').': '.$item->getTitle().LF;
           $content = $announcement_content;
        }  elseif ($module== 'label' or $module== 'labels') {
-          $label_manager = $environment->getLabelManager();
+          $label_manager = $this->_environment->getLabelManager();
           $label = $label_manager->getItem($iid);
           $module= $label->getLabelType();
           if ($module== 'group' or $module== 'groups') {
