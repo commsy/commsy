@@ -1692,6 +1692,18 @@ class cs_user_detail_view extends cs_detail_view {
                                        '',
                                        $image,
                                        getMessage('COMMON_INFORMATION_BOX')).LF;
+        if ( $room->isCommunityRoom()
+           and $room->isOpenForGuests()
+           and $room->withRubric(CS_MATERIAL_TYPE)
+        ) {
+           $image = '<img src="images/commsyicons/22x22/config/material_admin.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'material_admin',
+                                       'index',
+                                       '',
+                                       $image,
+                                       getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION')).LF;
+        }
         $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',

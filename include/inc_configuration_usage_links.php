@@ -67,7 +67,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
       $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
-      $link_item->setIconPath('images/cs_config/MATERIAL_ADMIN_TINY_DESCRIPTION.gif');
+      $link_item->setIconPath('images/commsyicons/48x48/config/material_admin.png');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('material_admin');
       $link_item->setFunction('index');

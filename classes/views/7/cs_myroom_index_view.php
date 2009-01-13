@@ -502,7 +502,11 @@ class cs_myroom_index_view extends cs_context_index_view {
                }
             }
             $retour .= 'background-color: '.$color_array['content_background'].';';
-            $retour .= 'color:'.$color_array['page_title'].' }';
+            if (isset($color_array['page_title'])){
+               $retour .= 'color:'.$color_array['page_title'].' }';
+            }else{
+               $retour .= 'color:#000000; }';
+            }
             $retour .= '    td.detail_view_content_room_window'.$item->getItemID().' { width: 17em; padding: 3px;text-align: left; border-bottom: 1px solid '.$cs_color['tableheader'].';}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
             $retour .= '    td.detail_view_title_room_window'.$item->getItemID().' a {background-color: '.$cs_color['tableheader'].'; color: '.$cs_color['room_title'].'; padding: 0px;text-align: left;}'.LF;
