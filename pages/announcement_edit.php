@@ -669,6 +669,7 @@ else {
             if ( isset($_POST['buzzword']) and !in_array($_POST['buzzword'],$buzzword_array) and $_POST['buzzword'] > 0) {
                $buzzword_array[] = $_POST['buzzword'];
             }
+
             $announcement_item->setBuzzwordListByID($buzzword_array);
 
             // tags
@@ -681,19 +682,6 @@ else {
             }
             $announcement_item->setTagListByID($tag_array);
 /***buzzwords and tags ***/
-
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
-               $announcement_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
-            }
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids')){
-               $announcement_item->setTagListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids'));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
-            }
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-               $announcement_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-            }
 
             // files
             $item_files_upload_to = $announcement_item;
