@@ -1,6 +1,6 @@
 <?php
-$message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["en"] = "TBD";
-$message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["en"] = "Enter conditions";
+$message["CONFIGURATION_ACCOUNT_OPTIONS_DESC"]["en"] = "Please set approval policy, terms and conditions.";
+$message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["en"] = "Conditions of approval / usage";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["en"] = "General Terms and Conditions";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["en"] = "Description";
 $message["CONFIGURATION_AGB_FORM_WANT"]["en"] = "Activate?";
@@ -64,7 +64,12 @@ $message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events or calendar 
 $message["CONFIGURATION_DATES_DESC_0"]["en"] = "As list of events";
 $message["CONFIGURATION_DATES_DESC_1"]["en"] = "As calendar";
 $message["CONFIGURATION_DEFAULTS"]["en"] = "Workspace presets";
-$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["en"] = "";
+$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["en"] = "<span class=&quot;bold&quot;>Please note:</span><br/>
+If you want to test CommSy 7, you are free to do so. Just turn the according switch on the workspace preferences panel from &quot;CommSy 6.x&quot; to &quot;CommSy 7&quot;. You should be aware of the following:
+<ul>
+<li>You can switch back to CommSy 6.x at any time. (You will find the switch in the &quot;workspace configuration&quot; section of &quot;settings&quot; in CommSy 7)</li>
+<li>Switching between versions is free of risk, all data will be preserved while switching.</li>
+<li>CommSy 7 is a prerelease candidate version. It is stable, safe and secure to use, but there is still some surface work to do. We are working on it.</li></ul>";
 $message["CONFIGURATION_DISCUSSION"]["en"] = "Choose discussion style";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["en"] = "'Flat' discussions";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["en"] = "Threaded discussions";
@@ -157,7 +162,7 @@ $message["CONFIGURATION_ROOM_HOME"]["en"] = "Configure Home / notice board";
 $message["CONFIGURATION_ROOM_HOME_DESC"]["en"] = "Configure display of workspace rubric teasers and boxes on Home.";
 $message["CONFIGURATION_ROOM_OPENING_LINK"]["en"] = "New workspaces";
 $message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["en"] = "Define who is permitted to create new workspaces.";
-$message["CONFIGURATION_ROOM_OPTIONS_DESC"]["en"] = "TBD";
+$message["CONFIGURATION_ROOM_OPTIONS_DESC"]["en"] = "Please define workspace basics, i.e. <span class=&quot;bold&quot;>title</span>, <span class=&quot;bold&quot;>logo</span>, <span class=&quot;bold&quot;>color theme</span>.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["en"] = "Design workspace";
 $message["CONFIGURATION_RUBRIC_DESC"]["en"] = "Use the following select boxes to
 <ul>
@@ -165,9 +170,9 @@ $message["CONFIGURATION_RUBRIC_DESC"]["en"] = "Use the following select boxes to
 </li><li><b>arrange</b> these workspace rubrics in the correct order</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["en"] = "Please remember: workspace rubrics cannot be selected twice.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["en"] = "TBD";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["en"] = "Preferences for <span style=&quot;font-weight:bold&quot;>events</span>, <span style=&quot;font-weight:bold&quot;>discussions</span>, <span style=&quot;font-weight:bold&quot;>group workspaces</span>.";
 $message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["en"] = "Additional rubric settings";
-$message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["en"] = "TBD";
+$message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["en"] = "Please choose workspace rubrics and configure their display on Home.";
 $message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["en"] = "Configure rubrics";
 $message["CONFIGURATION_SCRIBD_LINK"]["en"] = "Office-documents";
 $message["CONFIGURATION_SCRIBD_LINK_DESC"]["en"] = "Account information for Scribd integration.";
@@ -193,7 +198,7 @@ $message["CONFIGURATION_SPONSOR_DESC"]["en"] = "Configure the sponsoring notices
 $message["CONFIGURATION_SPONSOR_LINK"]["en"] = "Sponsoring and adverteisement";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>buzzwords</span> or the <span class=&quot;bold&quot;>netnavigation</span> (with <span class=&quot;bold&quot;>paths</span>) for structuring entries.";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TEXT"]["en"] = "TBD";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "structuring the room";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "Structural auxilaries";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["en"] = "Configure categories and tags";
 $message["CONFIGURATION_TAG_EDIT"]["en"] = "Permissions";
 $message["CONFIGURATION_TAG_EDIT_BY_ALL"]["en"] = "Access to categories management for all users";

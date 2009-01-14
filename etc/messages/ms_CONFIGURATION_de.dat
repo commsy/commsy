@@ -64,7 +64,7 @@ $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendars
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
 $message["CONFIGURATION_DEFAULTS"]["de"] = "Voreinstellungen für Räume";
-$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung</span> Wer CommSy 7 ausprobieren möchte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
+$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung:</span><br/> Wer CommSy 7 ausprobieren möchte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
  
 Wichtig sind dabei drei Dinge:
 <ul>
