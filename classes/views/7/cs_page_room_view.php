@@ -465,6 +465,7 @@ class cs_page_room_view extends cs_page_view {
       $html  = '';
       $logo_filename = '';
       $context_item = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
       $html .='<table summary="layout" style="height:55px;">';
       $html .= '<tr>';
       if ( $this->_environment->inCommunityRoom()
@@ -509,8 +510,14 @@ class cs_page_room_view extends cs_page_view {
 
       }
       $breadcrump = '';
-      $portal_item = $this->_environment->getCurrentPortalItem();
       $params = array();
+      if ($current_user->isRoot()){
+         $server_item = $this->_environment->getServerItem();
+         $breadcrump.= ahref_curl($server_item->getItemID(),'home','index',$params,$server_item->getTitle(),'','','','','','','style="color:#800000"');
+         $breadcrump .= ' &gt; ';
+      }
+      $portal_item = $this->_environment->getCurrentPortalItem();
+
       if ($this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()){
          $params['room_id'] = $context_item->getItemID();
       }
@@ -519,23 +526,23 @@ class cs_page_room_view extends cs_page_view {
          $community_list = $context_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
-            $breadcrump.= ' > '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
+            $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
          }
-         $breadcrump.= ' > '.$context_item->getTitle();
+         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
       }elseif($this->_environment->inGroupRoom()){
          $project_item = $context_item->getLinkedProjectItem();
          $community_list = $project_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
-             $breadcrump.= ' > '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
+             $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
          }
-         $breadcrump.= ' > '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
-         $breadcrump.= ' > '.$context_item->getTitle();
+         $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
+         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
       }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
          if ($this->_environment->inPrivateRoom()){
-            $breadcrump.= ' > '.$this->_translator->getMessage('COMMON_PRIVATEROOM');
+            $breadcrump.= ' &gt; '.$this->_translator->getMessage('COMMON_PRIVATEROOM');
          }else{
-            $breadcrump.= ' > '.$context_item->getTitle();
+            $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
          }
       }
       $html .= '<span style="font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
