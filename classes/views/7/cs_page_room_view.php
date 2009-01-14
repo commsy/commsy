@@ -487,21 +487,25 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '<td style="verticale-align:middle; padding-top:5px;">';
       $length = strlen($context_item->getTitle());
-      if ($length < 30){
+      $title = $context_item->getTitle();
+      if ($length < 25){
         $size = '';
-      }elseif($length < 35){
+      }elseif($length < 30){
         $size = 'style="font-size:20pt"';
-      }elseif($length < 40){
+      }elseif($length < 35){
         $size = 'style="font-size:18pt"';
-      }elseif($length < 55){
+      }elseif($length < 40){
         $size = 'style="font-size:16pt"';
+      }elseif($length < 50){
+        $size = 'style="font-size:12pt"';
       }else{
         $size = 'style="font-size:12pt"';
+      	$title = chunkText($title,50);
       }
       if ($this->_environment->inPrivateRoom()){
          $html .= '<h1 '.$size.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</h1>'.LF;
       }else{
-         $html .= '<h1 '.$size.'>'.$context_item->getTitle().'</h1>'.LF;
+         $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
 
       }
       $breadcrump = '';
