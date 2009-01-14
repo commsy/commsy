@@ -64,6 +64,14 @@ $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendars
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
 $message["CONFIGURATION_DEFAULTS"]["de"] = "Voreinstellungen für Räume";
+$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung</span> Wer CommSy 7 ausprobieren möchte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
+ 
+Wichtig sind dabei drei Dinge:
+<ul>
+<li>Man kann den Schalter jederzeit wieder auf CommSy 6 umstellen (im Bereich &quot;Raumgestaltung&quot; des Konfigurationsbereichs von CommSy 7)
+</li>
+<li>Die erstellten Einträge stehen immer zur Verfügung, egal wie oft ich zwischen den Versionen hin- und herschalte. Das Umschalten ist also völlig risikolos!
+</li><li>CommSy 7 ist noch eine Testversion: Sie läuft nach unser Einschätzung bereits zuverlässig und stabil. Es sind aber z.B. im Layout noch kleine Restarbeiten zu erledigen.</li></ul>";
 $message["CONFIGURATION_DISCUSSION"]["de"] = "Art der Diskussion";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";

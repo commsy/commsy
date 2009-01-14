@@ -320,6 +320,8 @@ class cs_internal_color_form extends cs_rubric_form {
          $value_array[] = $temp_array;
          unset($temp_array);
          $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
+         $this->_form->combine();
+         $this->_form->addText('design_desc',getMessage('CONFIGURATION_DESIGN_SWITCH_DESC'),getMessage('CONFIGURATION_DESIGN_SWITCH_DESC'));
       }
 
       // buttons

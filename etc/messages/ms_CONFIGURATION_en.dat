@@ -64,6 +64,7 @@ $message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events or calendar 
 $message["CONFIGURATION_DATES_DESC_0"]["en"] = "As list of events";
 $message["CONFIGURATION_DATES_DESC_1"]["en"] = "As calendar";
 $message["CONFIGURATION_DEFAULTS"]["en"] = "Workspace presets";
+$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["en"] = "";
 $message["CONFIGURATION_DISCUSSION"]["en"] = "Choose discussion style";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["en"] = "'Flat' discussions";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["en"] = "Threaded discussions";
