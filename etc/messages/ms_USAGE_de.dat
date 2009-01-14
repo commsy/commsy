@@ -15,7 +15,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX"]["de"]
 (3) fügen diese durch Knopfdruck ein.
 
 <span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
-$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX"]["de"] = "Mit einer Ankündigung können Sie wie an einem Schwarzen Brett aktuelle Informationen für einen selbst gewählten Zeitraum auf der Einstiegsseite veröffentlichen. 
 Nach älteren Ankündigungen können Sie mit einem Suchbegriff gezielt suchen.";
@@ -54,7 +54,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX"]["de"] = "Um E
 (3) fügen diese durch Knopfdruck ein.
 
 <span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
-$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX"]["de"] = "Tragen Sie hier allgemeine Termine für die Gruppe oder Ihre privaten Termine (z.B. Abwesenheiten) ein (Letztere werden nicht auf der Einstiegsseite dargestellt).
 Sie können zwischen einer Listen- und einer Kalenderdarstellung wählen.";
@@ -69,7 +69,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX"]["de"] =
 <span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_DETAIL_FORM"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
 Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
-$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
 Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
@@ -87,7 +87,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX"]["de"] = "
 
 <span style=&quot;font-style:italic&quot;>Diese &quot;Zwischenablage&quot; steht in keiner Verbindung zur Zwischen- ablage Ihres Betriebssystems!</span>";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
-In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Im Bereich „zugeordnete Einträge“  können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
 Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.
@@ -106,7 +106,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX"]["de"] = "Hier können Si
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG  anlegen und diesen dann andere, relevante Beiträge zuordnen. Um Ihre Mitarbeit/Ihr Interesse an %_TOPIC_ART_UNDEF_DATS_LOW %_TOPIC_SUB_DATS_BIG zu bekunden, klicken Sie auf dessen Detailseite auf „beitreten“, um dies wieder rückgängig zu machen, auf „austreten“.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_CLOSE_FORM"]["de"] = "Hinweis zum Datenschutz: Wenn Sie auf „alles löschen“ klicken, werden sämtliche Ihrer Beiträge in diesem Raum gelöscht und ggf. durch einen Platzhalter ersetzt, falls sich andere Beiträge darauf beziehen.";
-$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_EDIT_FORM"]["de"] = "Im Bereich „zugeordnete Gruppen“  können Sie Ihre Person verschiedenen Gruppen zuordnen.
 Tipps zu <i>%1</i> Ihrer Beschreibung.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX"]["de"] = "Für jedes Mitglied wird automatisch eine persönliche Seite angelegt, die nach eigenen Wünschen gestaltet werden kann. Außerdem werden hier alle Beiträge einer Person aufgelistet.";
 $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_PREFERENCES_FORM"]["de"] = "Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich ein neues Mitglied für diesen Raum anmeldet.
@@ -149,21 +149,21 @@ $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_INDEX"]["de"] = "Die Terminrubrik
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_INDEX"]["de"] = "Hier wird eine Übersicht über Aktivitäten in den Räumen, in denen Sie Mitglied sind, präsentiert. In der Rubrik „Meine Räume“ können Sie Räume von der Einstiegsseite entfernen bzw. hinzufügen.";
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_LABELS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Materialarten beliebig zu ändern, zu löschen oder auch ähnliche Materialarten zu einer zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Materialarten aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen der neuen Materialart ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einer der ursprünglichen Materialarten zugeordnet waren, erhalten automatisch die neue Materialart zugewiesen.";
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
-In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
 Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.
 Sie können in Ihrem persönlichen Raum beliebige Sammlungen von Materialien anlegen und diese bei Bedarf in andere Räume kopieren.";
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG anlegen und diesen dann andere, relevante Beiträge zuordnen.";
-$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_EDIT_FORM"]["de"] = "Im Bereich „zugeordnete Einträge“ können Sie Ihre Person anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihrer Beschreibung.";
-$message["USAGE_INFO_TEXT_PRIVATE_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PRIVATE_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PRIVATE_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ACCOUNT_INDEX"]["de"] = "<span style=&quot;font-style:italic&quot;>TeilnehmerInnen </span>mit gesperrten Kennungen können den Raum nicht mehr betreten, bei Bedarf jedoch wieder freigeschaltet werden.
 <span style=&quot;font-style:italic&quot;>ModeratorInnen </span>stehen sämtliche Konfigurationsmöglichkeiten offen, <span style=&quot;font-style:italic&quot;>AnsprechpartnerInnen </span>werden zusätzlich bei der Außendarstellung des Raumes aufgeführt.";
-$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_EDIT_FORM"]["de"] = "Legen Sie fest, wie lange Ihre Ankündigung auf der Einstiegsseite sichtbar sein soll. Abgelaufene Ankündigungen werden jedoch nicht gelöscht! Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_INDEX"]["de"] = "Mit einer Ankündigung können Sie wie an einem Schwarzen Brett aktuelle Informationen für einen selbst gewählten Zeitraum auf der Einstiegsseite veröffentlichen. 
 Nach älteren Ankündigungen können Sie mit einem Suchbegriff gezielt suchen.";
@@ -191,13 +191,13 @@ Ordnen Sie zudem %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG ggf. %_COMMUN
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_RUBRIC_FORM"]["de"] = "Wählen Sie hier die Rubriken aus, die Ihr Raum enthalten soll, sowie die Reihenfolge, in der sie auf der Einstiegsseite sowie in der Navigationsleiste erscheinen.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_SERVICE_FORM"]["de"] = "Bei Aktivierung dieser Funktion erscheint am unteren Ende jeder Seite ein Link, über den Sie bei Nutzungsproblemen jederzeit eine Anfrage an den CommSy-Service richten können.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_USAGEINFO_FORM"]["de"] = "Ersetzen Sie hier bei Bedarf die vorgegebenen Standardtexte durch eigene Nutzungshinweise oder blenden Sie Hinweise auf einzelnen Seiten ganz aus.";
-$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_EDIT_FORM"]["de"] = "Als „privat“ gekennzeichnete Termine (z.B. Urlaub) werden nicht auf der Einstiegsseite dargestellt. Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_INDEX"]["de"] = "Tragen Sie hier allgemeine Termine für die Gruppe oder Ihre privaten Termine (z.B. Abwesenheiten) ein (Letztere werden nicht auf der Einstiegsseite dargestellt).
 Sie können zwischen einer Listen- und einer Kalenderdarstellung wählen.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_DETAIL_FORM"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
 Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
-$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_EDIT_FORM"]["de"] = "Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_INDEX"]["de"] = "<i>Tipps</i>: Um auf einen Beitrag direkt Bezug zu nehmen, schreiben Sie die Nummer, die vor dem Titel steht, in eckige Klammern: Dadurch wird ein Link auf diesen Beitrag erzeugt.
 Diskussionen können mit einem zusammenfassenden Abschlussbeitrag beendet werden.";
@@ -206,7 +206,7 @@ $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_GROUP_INDEX"]["de"] = "Sie können beli
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_HOME_INDEX"]["de"] = "Auf der Einstiegsseite werden neue und geänderte Beiträge innerhalb der gewählten Zeitspanne dargestellt. Ältere Beiträge sind über die einzelnen Rubriken aufrufbar.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_LABELS_EDIT_FORM"]["de"] = "Sie haben die Möglichkeit, die definierten Materialarten beliebig zu ändern, zu löschen oder auch ähnliche Materialarten zu einer zusammenzufassen. Für Letzteres wählen Sie aus den Menüboxen die beiden Materialarten aus, die Sie zusammenfassen möchten, und klicken auf „zusammenlegen“. Anschließend können Sie den Namen der neuen Materialart ändern. (Diesen Vorgang können Sie beliebig oft wiederholen). Sämtliche Materialien, die einer der ursprünglichen Materialarten zugeordnet waren, erhalten automatisch die neue Materialart zugewiesen.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_EDIT_FORM"]["de"] = "Um die Suche nach Materialien zu erleichtern, können Sie Schlagworte und Materialarten zuordnen bzw. neu definieren. Sie können außerdem beliebig viele Dateien zuordnen. 
-In der Box „Netznavigation“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
+Im Bereich „zugeordnete Einträge“ können Sie Ihren Beitrag anderen Einträgen zuordnen.
 Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_INDEX"]["de"] = "Um Dateien hochzuladen, legen Sie ein neues Material an und fügen diesem die gewünschten Dateien hinzu.
 Sie können Materialien auch direkt zum Schreiben von Texten verwenden und diese in Abschnitten strukturieren.";
@@ -215,7 +215,7 @@ $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_INDEX"]["de"] = "Hier können Sie 
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_EDIT_FORM"]["de"] = "Tipps zu <i>%1</i> Ihres Textes.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_INDEX"]["de"] = "Sie können beliebige %_TOPIC_SUB_AKKPL_BIG  anlegen und diesen dann andere, relevante Beiträge zuordnen. Um Ihre Mitarbeit/Ihr Interesse an %_TOPIC_ART_UNDEF_DATS_LOW %_TOPIC_SUB_DATS_BIG zu bekunden, klicken Sie auf dessen Detailseite auf „beitreten“, um dies wieder rückgängig zu machen, auf „austreten“.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_CLOSE_FORM"]["de"] = "Hinweis zum Datenschutz: Wenn Sie auf „alles löschen“ klicken, werden sämtliche Ihrer Beiträge in diesem Raum gelöscht und ggf. durch einen Platzhalter ersetzt, falls sich andere Beiträge darauf beziehen.";
-$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_EDIT_FORM"]["de"] = "In der Box „Netznavigation“ können Sie Ihre Person anderen Einträgen zuordnen.
+$message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_EDIT_FORM"]["de"] = "Im Bereich „Gruppen zuordnen“ können Sie Ihre Person verschiedenen Gruppen zuordnen.
 Tipps zu <i>%1</i> Ihrer Beschreibung.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_INDEX"]["de"] = "Für jedes Mitglied wird automatisch eine persönliche Seite angelegt, die nach eigenen Wünschen gestaltet werden kann. Außerdem werden hier alle Beiträge einer Person aufgelistet.";
 $message["USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_PREFERENCES_FORM"]["de"] = "Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich ein neues Mitglied für diesen Raum anmeldet.

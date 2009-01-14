@@ -2678,6 +2678,11 @@ class cs_form_view extends cs_view {
       $html .= $this->_text_as_html_long($info_text).BRLF;
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
+      if (strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+          or strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+      ){
+         $html = '';
+      }
       return $html;
    }
 

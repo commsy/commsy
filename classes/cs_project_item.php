@@ -964,6 +964,8 @@ class cs_project_item extends cs_room_item {
                $tempMessage      = getMessage('USAGE_INFO_TEXT_MATERIAL_IMS_IMPORT');
                break;
             default:
+#              $tempMessage      = getMessage('USAGE_INFO_COMING_SOON');
+
                $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item _FORM(".__LINE__.") ";
                break;
          }
