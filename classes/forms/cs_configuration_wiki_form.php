@@ -396,7 +396,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
             $this->_values['enable_listcategories'] = 1;
          }
          if ($this->_item->WikiNewPageTemplate() != "-1"){
-            $this->_values['new_page_templates'] = $this->_item->getWikiNewPageTemplate();
+            $this->_values['new_page_templates'] = $this->_item->WikiNewPageTemplate();
          }
 
          if ($this->_item->WikiEnableSwf() == "1"){
