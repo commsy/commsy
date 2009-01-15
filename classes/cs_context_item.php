@@ -2421,6 +2421,23 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setWikiNewPageTemplate($template){
+      $this->_addExtra('WIKINEWPAGETEMPLATE',$template);
+   }
+
+   function unsetWikiNewPageTemplate(){
+      $this->_addExtra('WIKINEWPAGETEMPLATE','-1');
+   }
+
+   function WikiNewPageTemplate(){
+      if (($this->_issetExtra('WIKINEWPAGETEMPLATE')) &&  ($this->_getExtra('WIKINEWPAGETEMPLATE') != '-1')) {
+         $retour = $this->_getExtra('WIKINEWPAGETEMPLATE');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
 
    function setWikiEnableSwf(){
       $this->_addExtra('WIKIENABLESWF','1');

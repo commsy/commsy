@@ -328,6 +328,12 @@ else {
          } else {
             $item->unsetWikiEnableListCategories();
          }
+         
+         if ((isset($_POST['new_page_template'])) &&  ($_POST['new_page_template'] != '')) {
+            $item->setWikiNewPageTemplate($_POST['new_page_template']);
+         } else {
+            $item->unsetWikiNewPageTemplate();
+         }
 
          if ( isset($_POST['enable_swf']) ) {
             $item->setWikiEnableSwf();

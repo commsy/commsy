@@ -207,13 +207,15 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->combine();
       $this->_form->addCheckbox('enable_sitemap',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SITEMAP_VALUE'),'');
       // extension: section_edit
-
       if (file_exists($c_pmwiki_path_file.'/cookbook/sectionedit.php')) {
          $this->_form->combine();
          $this->_form->addCheckbox('wiki_section_edit',1,'',$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_EDIT'),$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_EDIT_VALUE'),'');
          $this->_form->combine();
          $this->_form->addCheckbox('wiki_section_edit_header',1,'','',$this->_translator->getMessage('WIKI_CONFIGURATION_SECTION_HEADER_VALUE'),'');
       }
+      $this->_form->combine();
+      $this->_form->addTextField('new_page_template','',$this->_translator->getMessage('WIKI_NEW_PAGE_TEMPLATE'),'',200,20,false,'','','','left',$this->_translator->getMessage('WIKI_NEW_PAGE_TEMPLATE').': ');
+      
       $this->_form->addEmptyline();
 
       $features_available = array();
@@ -392,6 +394,9 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          }
          if ($this->_item->WikiEnableListCategories() == "1"){
             $this->_values['enable_listcategories'] = 1;
+         }
+         if ($this->_item->WikiNewPageTemplate() != "-1"){
+            $this->_values['new_page_templates'] = $this->_item->getWikiNewPageTemplate();
          }
 
          if ($this->_item->WikiEnableSwf() == "1"){

@@ -516,6 +516,10 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$ENABLE_LISTCATEGORIES = "1";'.LF.LF;
       }
 
+      if ( $item->WikiNewPageTemplate() != "-1" ) {
+         $str .= '$EditTemplatesFmt = \'' . $item->WikiNewPageTemplate() . '\';'.LF.LF;
+      }
+
       // Li-Pedia Erweiterungen
 
 	  // Wiki Authetifizierung
