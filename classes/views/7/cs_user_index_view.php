@@ -288,6 +288,7 @@ class cs_user_index_view extends cs_room_index_view {
                            'detail',
                            $params,
                            $html);
+      $html ='';
       return $html;
    }
 
