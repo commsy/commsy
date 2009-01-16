@@ -64,6 +64,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
        }
     }
 
+
+    function getSearchText (){
+       return $this->_search_text;
+    }
+
     function setPresentationMode($mode){
        $this->_presentation_mode = $mode;
     }
@@ -752,7 +757,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                             CS_DATE_TYPE,
                            'edit',
                            $params,
-                           '<img alt="edit icon" src="images/color_line2.gif" border="0"/>',
+                           '<img title="'.$this->_translator->getMessage('COMMON_EDIT').'" alt="'.$this->_translator->getMessage('COMMON_EDIT').'" src="images/commsyicons/12x12/edit.png" border="0"/>',
                            '');
 
       }
@@ -1072,20 +1077,20 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                foreach ($dates_on_day as $date) {
                   if ( $entries < 4 ) {
                      $length = strlen($date->getTitle());
-                     if ( $length > 13 ) {
-                        $new_date = substr($date->getTitle(),0,13).'<br />&nbsp;&nbsp;';
-                        if ( $length > 26 ) {
-                           $new_date .= substr($date->getTitle(),13,13).'...';
+                     if ( $length > 20 ) {
+                        $new_date = substr($date->getTitle(),0,20).'<br />&nbsp;&nbsp;';
+                        if ( $length > 40 ) {
+                           $new_date .= substr($date->getTitle(),20,20).'...';
                         } else {
-                           $new_date .= substr($date->getTitle(),13,$length-13);
+                           $new_date .= substr($date->getTitle(),20,$length-20);
                         }
                      } else {
                         $new_date = $date->getTitle();
                      }
                   } else {
                      $length = strlen($date->getTitle());
-                     if ($length > 13) {
-                        $new_date = substr($date->getTitle(),0,13).'...';
+                     if ($length > 20) {
+                        $new_date = substr($date->getTitle(),0,20).'...';
                      } else {
                         $new_date = $date->getTitle();
                      }
@@ -1362,8 +1367,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   $starting_time = $date->getStartingTime();
                   if (empty($starting_time)){
                      $length = strlen($date->getTitle());
-                     if ( $length > 12 ) {
-                        $new_date = substr($date->getTitle(),0,12).'...';
+                     if ( $length > 20 ) {
+                        $new_date = substr($date->getTitle(),0,20).'...';
                      } else {
                         $new_date = $date->getTitle();
                      }
@@ -1384,15 +1389,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      }
                      if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
                         $length = strlen($date->getTitle());
-                        if ($length > 10) {
-                           $new_date = substr($date->getTitle(),0,9).'...';
+                        if ($length > 20) {
+                           $new_date = substr($date->getTitle(),0,19).'...';
                         } else {
                            $new_date = $date->getTitle();
                         }
                       } else {
                         $length = strlen($date->getTitle());
-                        if ( $length > 10 ) {
-                           $new_date = substr($date->getTitle(),0,9).'...';
+                        if ( $length > 20 ) {
+                           $new_date = substr($date->getTitle(),0,19).'...';
                         } else {
                            $new_date = $date->getTitle();
                         }
