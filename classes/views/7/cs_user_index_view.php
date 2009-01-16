@@ -98,7 +98,7 @@ class cs_user_index_view extends cs_room_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:40%;" colspan="3">';
+      $html .= '      <td class="head" style="width:40%;" colspan="4">';
       if ( $this->getSortKey() == 'name' ) {
          $params['sort'] = 'name_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -142,9 +142,9 @@ class cs_user_index_view extends cs_room_index_view {
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
-         $html .= '<td class="foot_left" colspan="4"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         $html .= '<td class="foot_left" colspan="5"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
       }else{
-         $html .= '<td class="foot_left" colspan="4" style="vertical-align:middle;">'.LF;
+         $html .= '<td class="foot_left" colspan="5" style="vertical-align:middle;">'.LF;
          $html .= '<span class="select_link">[</span>';
          $params = $this->_environment->getCurrentParameterArray();
          $params['select'] = 'all';
@@ -225,7 +225,7 @@ class cs_user_index_view extends cs_room_index_view {
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
 
-#         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
+         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
          $html .= '      <td colspan="2"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }else{
 #         $html .= '      <td colspan="2" '.$style.' style="text-align:center; font-size:10pt;">'.$this->_getItemPicture($item).'</td>'.LF;
@@ -250,7 +250,8 @@ class cs_user_index_view extends cs_room_index_view {
 
 
    function _getItemPicture($item){
-   	$picture = $item->getPicture();
+    	$html = '';
+      $picture = $item->getPicture();
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
@@ -261,17 +262,24 @@ class cs_user_index_view extends cs_room_index_view {
             }else{
                $height = $pict_height;
             }
+            $pict_width = $image_array[0];
+            if ($pict_width > 25){
+               $width = 25;
+            }else{
+               $width = $pict_height;
+            }
          }else{
              $height = 25;
+             $width = 25;
          }
          $params = array();
          $params['picture'] = $picture;
          $curl = curl($this->_environment->getCurrentContextID(),
                       'picture', 'getfile', $params,'');
          unset($params);
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; height: '.$height.'px;"/>'.LF;
+         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$width.'px;"/>'.LF;
       }else{
-         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown_small.gif" style="vertical-align:middle;  height: 20px;"/>'.LF;
+#         $html = '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown_small.gif" style="vertical-align:middle;  height: 20px;"/>'.LF;
       }
       $params = array();
       $params['iid'] = $item->getItemID();
