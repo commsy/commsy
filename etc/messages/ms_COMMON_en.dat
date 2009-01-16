@@ -123,6 +123,7 @@ $message["COMMON_COLOR_SCHEMA_14"]["en"] = "Starry sky";
 $message["COMMON_COLOR_SCHEMA_15"]["en"] = "Reading room";
 $message["COMMON_COLOR_SCHEMA_16"]["en"] = "Changing daytimes";
 $message["COMMON_COLOR_SCHEMA_17"]["en"] = "Classic blue";
+$message["COMMON_COLOR_SCHEMA_18"]["en"] = "Variations of dusky pink";
 $message["COMMON_COLOR_SCHEMA_2"]["en"] = "Deep as the ocean";
 $message["COMMON_COLOR_SCHEMA_3"]["en"] = "Living room from the 70ies";
 $message["COMMON_COLOR_SCHEMA_4"]["en"] = "Black and white";
