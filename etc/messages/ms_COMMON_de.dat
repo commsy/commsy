@@ -125,6 +125,7 @@ $message["COMMON_COLOR_SCHEMA_15"]["de"] = "Lesezimmer";
 $message["COMMON_COLOR_SCHEMA_16"]["de"] = "Wechselnde Tageszeiten";
 $message["COMMON_COLOR_SCHEMA_17"]["de"] = "Klassisch blau";
 $message["COMMON_COLOR_SCHEMA_18"]["de"] = "Variantion in Altrosa";
+$message["COMMON_COLOR_SCHEMA_19"]["de"] = "Aquarium";
 $message["COMMON_COLOR_SCHEMA_2"]["de"] = "Tief im Ozean";
 $message["COMMON_COLOR_SCHEMA_3"]["de"] = "70er Jahre Wohnzimmer";
 $message["COMMON_COLOR_SCHEMA_4"]["de"] = "Black and White";

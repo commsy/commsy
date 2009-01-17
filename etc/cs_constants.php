@@ -776,6 +776,41 @@ $cs_color['SCHEMA_18']['index_td_head_title']        = 'white';
 /*****************************************************************/
 
 
+//SCHEMA 19
+/*****************************************************************/
+$cs_color['SCHEMA_19']['schema']                     = 'SCHEMA_19';
+$cs_color['SCHEMA_19']['tabs_background']            = '#66CCFF';
+$cs_color['SCHEMA_19']['tabs_focus']                 = '#FF6633';
+$cs_color['SCHEMA_19']['tabs_title']                 = '#330099';
+$cs_color['SCHEMA_19']['content_background']         = '#1F2F5D';
+$cs_color['SCHEMA_19']['boxes_background']           = '#CCFFFF';
+$cs_color['SCHEMA_19']['hyperlink']                  = '#314D8E';
+$cs_color['SCHEMA_19']['list_entry_even']            = '#FFF4E0';
+
+$cs_color['SCHEMA_19']['table_background']           = $cs_color['SCHEMA_19']['content_background'];
+$cs_color['SCHEMA_19']['headline_text']              = $cs_color['SCHEMA_19']['tabs_title'];
+$cs_color['SCHEMA_19']['help_background']            = $cs_color['SCHEMA_19']['content_background'];
+$cs_color['SCHEMA_19']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_19']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_19']['date_title']                 = '#666699';
+$cs_color['SCHEMA_19']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_19']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_19']['warning']                    = 'red';
+
+$cs_color['SCHEMA_19']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_19']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_19']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_19']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_19']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_19']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_19']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_19']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_19']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_19']['index_td_head_title']        = 'white';
+/*****************************************************************/
+
+
 
 
 define('LF'  , "\n");       // line feed
