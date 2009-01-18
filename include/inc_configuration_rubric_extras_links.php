@@ -66,7 +66,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    ############################################
 
    $context_item = $environment->getCurrentContextItem();
-   if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
+   if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() and !$context_item->isGrouproom()) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
       $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
@@ -78,7 +78,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom() and !$environment->inPortal()) {
+   if ( !$environment->inServer() and !$environment->inPrivateRoom() and !$environment->inPortal() and !$context_item->isGrouproom()) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
       $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
