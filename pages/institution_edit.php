@@ -466,11 +466,7 @@ else {
                   $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
       }
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-               $institution_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-            }
-            // Save item
+           // Save item
             $institution_item->save();
 
             // Reset id array

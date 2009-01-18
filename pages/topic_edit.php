@@ -427,10 +427,6 @@ else {
                   $topic_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
                }
             }
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-               $topic_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-            }
             // Save item
             $topic_item->save();
 

@@ -527,10 +527,6 @@ else {
             }
 
             $group_item->setDiscussionNotificationArray($discussion_notification_array);
-            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
-               $group_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
-               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
-            }
 
             // Save item
             $group_item->save();

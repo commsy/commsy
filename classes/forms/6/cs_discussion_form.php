@@ -351,6 +351,7 @@ class cs_discussion_form extends cs_rubric_form {
          $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',210,false,'','',8);
       }
 
+      if ( $this->_is_new_discussion ) {
          $this->_form->addEmptyline();      // public radio-buttons
          // files
          $this->_form->addAnchor('fileupload');
@@ -408,8 +409,7 @@ class cs_discussion_form extends cs_rubric_form {
          $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
 
-      if ( $this->_is_new_discussion ) {
-          $current_context = $this->_environment->getCurrentContextItem();
+         $current_context = $this->_environment->getCurrentContextItem();
          $discussion_status = $current_context->getDiscussionStatus();
          if ($discussion_status == 3){
              $this->_form->addRadioGroup('discussion_type',getMessage('DISCUSSION_FORM_TYPE_1').BRLF.getMessage('DISCUSSION_FORM_TYPE_2'),'',$this->_discussion_array);
