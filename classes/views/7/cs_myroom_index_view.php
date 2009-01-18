@@ -205,47 +205,12 @@ class cs_myroom_index_view extends cs_context_index_view {
          $html .= $this->_getHiddenFieldsAsHTML();
          $html .='<div id="commsy_panels">'.LF;
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
-         $tempMessage = '';
-         switch ( strtoupper($this->_environment->getCurrentModule()) ) {
-            case 'ANNOUNCEMENT':
-               $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
-               break;
-            case 'DATE':
-               $tempMessage = getMessage('DATE_INDEX');
-               break;
-            case 'DISCUSSION':
-               $tempMessage = getMessage('DISCUSSION_INDEX');
-               break;
-            case 'INSTITUTION':
-               $tempMessage = getMessage('INSTITUTION_INDEX');
-               break;
-            case 'GROUP':
-               $tempMessage = getMessage('GROUP_INDEX');
-               break;
-            case 'MATERIAL':
-               $tempMessage = getMessage('MATERIAL_INDEX');
-               break;
-            case 'MYROOM':
-               $tempMessage = getMessage('MYROOM_INDEX');
-               break;
-            case 'PROJECT':
-               $tempMessage = getMessage('PROJECT_INDEX');
-               break;
-            case 'TODO':
-               $tempMessage = getMessage('TODO_INDEX');
-               break;
-            case 'TOPIC':
-               $tempMessage = getMessage('TOPIC_INDEX');
-               break;
-            case 'USER':
-               $tempMessage = getMessage('USER_INDEX');
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(1455) ');
-               break;
-         }
+         $tempMessage = $this->_translator->getMessage('MYROOM_INDEX');
          $html .= $this->_getListInfosAsHTML($tempMessage);
          $html .='</div>'.LF;
+#         $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
+#         $html .= $this->_getExpertSearchAsHTML();
+#         $html .='</div>'.LF;
          $html .= '</form>'.LF;
 
          $html .='</div>'.LF;
@@ -318,6 +283,71 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
+
+  function _getExpertSearchAsHTML(){
+     $html  = '';
+     $context_item = $this->_environment->getCurrentContextItem();
+     $module = $this->_environment->getCurrentModule();
+     $width = '235';
+     $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+     $html .= '<div class="right_box">'.LF;
+     $html .= '         <noscript>';
+     $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
+     $html .= '         </noscript>';
+     $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
+     $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+     $html .= '</div>'.LF;
+     $html .= '</div>'.LF;
+     $html .= '</div>'.LF;
+     return $html;
+  }
+
+
+   function _getAdditionalFormFieldsAsHTML ($field_length=14.5) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $width = '235';
+      $context_item = $this->_environment->getCurrentContextItem();
+      $selroomtype = $this->getSelectedRoomType();
+
+      $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
+      // STATUS SELECTION FIELD
+      $html .= '   <select name="selroomtype" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '      <option value="2"';
+      if ( empty($selroomtype) || $selroomtype == 2 ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
+
+      $html .= '      <option value="3"';
+      if ( !empty($selroomtype) and $selroomtype == 3 ) {
+         $html .= ' selected="selected"';
+      }
+      $text = $this->_translator->getMessage('USER_MODERATORS');
+      $html .= '>'.$text.'</option>'.LF;
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      if ($context_item->isCommunityRoom()) {
+         $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html .= '      <option value="11"';
+         if ( !empty($selroomtype) and $selroomtype == 11 ) {
+            $html .= ' selected="selected"';
+         }
+         $text = $this->_translator->getMessage('USER_PROJECT_USER');
+         $html .= '>'.$text.'</option>'.LF;
+         $html .= '      <option value="12"';
+         if ( !empty($selroomtype) and $selroomtype == 12 ) {
+            $html .= ' selected="selected"';
+         }
+         $text = $this->_translator->getMessage('USER_PROJECT_CONTACT_MODERATOR');
+         $html .= '>'.$text.'</option>'.LF;
+
+      }
+      $html .= '   </select>'.LF;
+      $html .='</div>';
+      return $html;
+   }
+
 
    /** get room window as html
     *
@@ -723,68 +753,6 @@ class cs_myroom_index_view extends cs_context_index_view {
       return $title;
    }
 
-
-
-
-   function _getAdditionalFormFieldsAsHTML () {
-     $current_context = $this->_environment->getCurrentContextItem();
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
-      if ($left_menue_status !='disapear') {
-        $width = '14.3';
-      } else {
-        $width = '18.3';
-      }
-     $html = '';
-
-     // institutions and topics
-      $html .= parent::_getAdditionalFormFieldsAsHTML();
-
-     // time (clock pulses)
-     $current_context = $this->_environment->getCurrentContextItem();
-     $portal_item = $current_context->getContextItem();
-     if ( $portal_item->showTime()
-          and ( ( $this->_environment->inCommunityRoom() and $current_context->showTime() )
-               or ( $this->_environment->inPrivateRoom() )
-               )
-        ) {
-         $seltime = $this->getSelectedTime();
-       $time_list = $portal_item->getTimeListRev();
-
-       $this->translatorChangeToPortal();
-         $html .= '<div style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TIME_NAME').BRLF;
-       $this->translatorChangeToCurrentContext();
-         $html .= '   <select style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-         $html .= '      <option value="-3"';
-         if ( !isset($seltime) or $seltime == 0 or $seltime == -3) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>*'.$this->_translator->getMessage('COMMON_NO_SELECTION').'</option>'.LF;
-         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-       if ($time_list->isNotEmpty()) {
-         $time_item = $time_list->getFirst();
-         while ($time_item) {
-               $html .= '      <option value="'.$time_item->getItemID().'"';
-               if ( !empty($seltime) and $seltime == $time_item->getItemID() ) {
-                  $html .= ' selected="selected"';
-               }
-               $html .= '>'.$this->_translator->getTimeMessage($time_item->getTitle()).'</option>'.LF;
-            $time_item = $time_list->getNext();
-         }
-       }
-
-         $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-         $html .= '      <option value="-1"';
-         if ( isset($seltime) and $seltime == -1) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
-         $html .= '   </select>'.LF;
-         $html .= '</div>'.LF;
-     }
-
-      return $html;
-   }
 
 
    function getSelectedCommunityRoom () {

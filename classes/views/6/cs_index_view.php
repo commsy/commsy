@@ -1543,7 +1543,10 @@ EOD;
          }
 
 
-
+         $info_text = $this->_getRubricInfoAsHTML($this->_environment->getCurrentModule());
+         if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+             and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+         ){
          if ( !strstr($list_box_conf,'usage_nodisplay') ){
             if ( $first_box ){
                $first_box = false;
@@ -1563,7 +1566,7 @@ EOD;
             $html .= $this->_getRubricInfoAsHTML($this->_environment->getCurrentModule());
             $html .='</div>'.LF;
          }
-
+         }
 
          $html .='</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;

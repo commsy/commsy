@@ -582,7 +582,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       // switch CommSy6 and CommSy7
       if ( $this->_environment->inProjectRoom()
            or $this->_environment->inCommunityRoom()
-           or $this->_environment->inGroupRoom()
            or $this->_environment->inPrivateRoom()
            or $this->_environment->inPortal()
            or $this->_environment->inServer()

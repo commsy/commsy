@@ -1734,29 +1734,33 @@ EOD;
          $user = $this->_environment->getCurrentUserItem();
          $room = $this->_environment->getCurrentContextItem();
          $act_rubric = $this->_environment->getCurrentModule();
-         $rubric_info_array = $room->getUsageInfoArray();
-         if (!is_array($rubric_info_array)) {
-            $rubric_info_array = array();
+         $info_text = $room->getUsageInfoTextForRubric($act_rubric);
+         if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+             and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+         ){
+             $rubric_info_array = $room->getUsageInfoArray();
+             if (!is_array($rubric_info_array)) {
+                $rubric_info_array = array();
+             }
+             if ( !strstr($list_box_conf,'usage_nodisplay') ){
+                if ( $first_box ){
+                   $first_box = false;
+                   $additional_text ='';
+                }else{
+                   $additional_text =',';
+                }
+                $html .= '<div style="margin-bottom:1px;">'.LF;
+                $html .= '<div style="position:relative; top:12px;">'.LF;
+                $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+                $html .= '</div>'.LF;
+                $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
+                $html .= '<div class="usage_info">'.LF;
+                $info_text = $room->getUsageInfoTextForRubric($act_rubric);
+                $html .= $this->_text_as_html_long($info_text).BRLF;
+                $html .= '</div>'.LF;
+                $html .='</div>'.LF;
+             }
          }
-         if ( !strstr($list_box_conf,'usage_nodisplay') ){
-            if ( $first_box ){
-               $first_box = false;
-               $additional_text ='';
-            }else{
-               $additional_text =',';
-            }
-            $html .= '<div style="margin-bottom:1px;">'.LF;
-            $html .= '<div style="position:relative; top:12px;">'.LF;
-            $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
-            $html .= '</div>'.LF;
-            $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
-            $html .= '<div class="usage_info">'.LF;
-            $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-            $html .= $this->_text_as_html_long($info_text).BRLF;
-            $html .= '</div>'.LF;
-            $html .='</div>'.LF;
-         }
-
          $html .= '</form>'.LF;
 
          $html .='</div>'.LF;
