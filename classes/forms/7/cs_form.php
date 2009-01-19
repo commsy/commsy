@@ -82,7 +82,7 @@ class cs_form {
                               $value,
                               $nameText,
                               $exampleText,
-                              $vsize = 70,
+                              $vsize = 65,
                               $hsize = 20,
                               $wrap = 'virtual',
                               $isMandatory = false,
@@ -93,7 +93,7 @@ class cs_form {
                               $help_text = true ) {
 
                 if (empty($vsize)) {
-                        $vsize = 71;
+                        $vsize = 66;
                 }
                 if (empty($hsize)) {
                         $hsize = 20;

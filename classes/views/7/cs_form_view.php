@@ -2674,11 +2674,10 @@ class cs_form_view extends cs_view {
       $html .= '</div>'.LF;
       $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
       $html .= '<div class="usage_info">'.LF;
-#      $info_text = $room->getUsageInfoTextForRubric($act_rubric);
       $html .= $this->_text_as_html_long($info_text).BRLF;
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
-      if (strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+      if (strstr($info_text, 'COMMON_MESSAGETAG_ERROR')
           or strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
       ){
          $html = '';
