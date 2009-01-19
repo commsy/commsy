@@ -769,7 +769,7 @@ class cs_manager {
     * @return array $this->_id_array id array of selected materials
     */
    function getIDArray () {
-      if (empty($this->_id_array)) {
+      if ( empty($this->_id_array) ) {
          $result = $this->_performQuery('id_array');
          if ( is_array($result) ) {
             foreach ( $result as $row ) {

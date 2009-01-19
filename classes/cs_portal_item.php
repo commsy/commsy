@@ -229,7 +229,6 @@ class cs_portal_item extends cs_guide_item {
       if ( !isset($this->_group_id_array) ) {
          $manager = $this->_environment->getGrouproomManager();
          $manager->setContextLimit($this->getItemID());
-         $manager->select();
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
@@ -246,7 +245,6 @@ class cs_portal_item extends cs_guide_item {
       $retour = array();
       $manager = $this->_environment->getPrivateroomManager();
       $manager->setContextLimit($this->getItemID());
-      $manager->select();
       $id_array = $manager->getIDArray();
       unset($manager);
       if ( is_array($id_array) ) {
