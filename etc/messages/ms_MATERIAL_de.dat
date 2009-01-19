@@ -84,6 +84,7 @@ $message["MATERIAL_MAKE_PUBLIC"]["de"] = "Weltweit veröffentlichen";
 $message["MATERIAL_MAX_FILE_SIZE"]["de"] = "<span class=&quot;key&quot;>Nur Dateien bis %1 MB  können hochgeladen werden.</span>";
 $message["MATERIAL_META_DATA"]["de"] = "Metadaten";
 $message["MATERIAL_NEW_BUZZWORD_BUTTON"]["de"] = "Neues Schlagwort";
+$message["MATERIAL_NEW_SECTION_INSERT"]["de"] = "<NEU>";
 $message["MATERIAL_NOT_PUBLISHED"]["de"] = "nicht weltweit öffentlich";
 $message["MATERIAL_NO_BUZZWORDS"]["de"] = "Kein weiteres Schlagwort";
 $message["MATERIAL_NO_TAGS"]["de"] = "Keine weitere Kategorie";

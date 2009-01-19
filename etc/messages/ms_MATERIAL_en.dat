@@ -83,6 +83,7 @@ $message["MATERIAL_MAKE_PUBLIC"]["en"] = "Publish world-wide";
 $message["MATERIAL_MAX_FILE_SIZE"]["en"] = "<span class=&quot;key&quot;>Upload file size limit: %1 MB</span>";
 $message["MATERIAL_META_DATA"]["en"] = "Metadata";
 $message["MATERIAL_NEW_BUZZWORD_BUTTON"]["en"] = "Create new tag";
+$message["MATERIAL_NEW_SECTION_INSERT"]["en"] = "<NEW>";
 $message["MATERIAL_NOT_PUBLISHED"]["en"] = "not public world-wide";
 $message["MATERIAL_NO_BUZZWORDS"]["en"] = "Select tag from list";
 $message["MATERIAL_NO_TAGS"]["en"] = "Select category from list";
