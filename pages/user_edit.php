@@ -97,9 +97,9 @@ if (!empty($_GET['iid'])) {
    $iid = $_POST['iid'];
 } else {
    if ($session->issetValue('linked_items_post_vars')){
-   	$session_values = $session->getValue('linked_items_post_vars');
+      $session_values = $session->getValue('linked_items_post_vars');
       if (isset($session_values['iid'])){
-      	$iid = $session_values['iid'];
+         $iid = $session_values['iid'];
       }
    }else{
       include_once('functions/error_functions.php');
@@ -441,14 +441,15 @@ if ($command != 'error') { // only if user is allowed to edit user
                }
             }
 
-            if ( ( isset($_POST['deletePicture'])
-                   or ( !empty($_FILES['upload']['name'])
-             and !empty($_FILES['upload']['tmp_name'])
-           )
-                 )
-           and $user_item->getPicture()
+            if (
+                  ( isset($_POST['deletePicture'])
+                    or ( !empty($_FILES['upload']['name'])
+                         and !empty($_FILES['upload']['tmp_name'])
+                       )
+                  )
+                  and $user_item->getPicture()
                ) {
-         $disc_manager = $environment->getDiscManager();
+               $disc_manager = $environment->getDiscManager();
                if ( $disc_manager->existsFile($user_item->getPicture()) ) {
                   $disc_manager->unlinkFile($user_item->getPicture());
                }
@@ -459,9 +460,9 @@ if ($command != 'error') { // only if user is allowed to edit user
             }
             if ( !empty($_FILES['upload']['name']) and !empty($_FILES['upload']['tmp_name']) ) {
                $filename = 'cid'.$environment->getCurrentContextID().'_'.$user_item->getUserID().'_'.$_FILES['upload']['name'];
-         $disc_manager = $environment->getDiscManager();
-         $disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
-         $user_item->setPicture($filename);
+               $disc_manager = $environment->getDiscManager();
+               $disc_manager->copyFile($_FILES['upload']['tmp_name'],$filename,true);
+               $user_item->setPicture($filename);
                if ( isset($portal_user_item) ) {
                   if ( $disc_manager->copyImageFromRoomToRoom($filename,$portal_user_item->getContextID()) ) {
                      $value_array = explode('_',$filename);
@@ -528,15 +529,15 @@ if ($command != 'error') { // only if user is allowed to edit user
                $portal_user_item->setModificationDate(getCurrentDateTimeInMySQL());
             }
 
-      // email visibility
-      if (isset($_POST['email_visibility']) and !empty($_POST['email_visibility'])) {
-         $user_item->setEmailNotVisible();
-      } else {
-         $user_item->setEmailVisible();
-      }
+            // email visibility
+            if (isset($_POST['email_visibility']) and !empty($_POST['email_visibility'])) {
+               $user_item->setEmailNotVisible();
+            } else {
+               $user_item->setEmailVisible();
+            }
 
             // save user
-      $user_item->save();
+            $user_item->save();
             if ( isset($portal_user_item) ) {
                $portal_user_item->save();
             }
