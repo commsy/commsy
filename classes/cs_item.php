@@ -78,14 +78,16 @@ class cs_item {
       $this->_type = 'item';
    }
 
-   function getContextItem() {
+   function getContextItem () {
       if ($this->_context_item == null) {
          $context_id = $this->getContextID();
          if ( !empty($context_id) ) {
             $item_manager = $this->_environment->getItemManager();
             $item = $item_manager->getItem($this->getContextID());
-            $manager = $this->_environment->getManager($item->getItemType());
-            $this->_context_item = $manager->getItem($this->getContextId());
+            if ( isset($item) ) {
+               $manager = $this->_environment->getManager($item->getItemType());
+               $this->_context_item = $manager->getItem($this->getContextId());
+            }
          }
       }
       return $this->_context_item;
