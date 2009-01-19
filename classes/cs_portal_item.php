@@ -193,7 +193,6 @@ class cs_portal_item extends cs_guide_item {
       if ( !isset($this->_community_id_array) ) {
          $manager = $this->_environment->getCommunityManager();
          $manager->setContextLimit($this->getItemID());
-         $manager->select();
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
@@ -211,7 +210,6 @@ class cs_portal_item extends cs_guide_item {
       if ( !isset($this->_project_id_array) ) {
          $manager = $this->_environment->getProjectManager();
          $manager->setContextLimit($this->getItemID());
-         $manager->select();
          $id_array = $manager->getIDArray();
          unset($manager);
          if ( is_array($id_array) ) {
