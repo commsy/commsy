@@ -58,7 +58,8 @@ else {
    }
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index',$params);
-   }elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url'){
+   }elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url' and isset($_GET['ims_path'])){
+
       include_once('include/inc_ims_upload.php');
       global $ims_content_connection_temp_folder;
       global $url_for_beluga_upload;
@@ -72,6 +73,21 @@ else {
       $file_url = $url_for_beluga_upload.$file_name;
       $destination_dir = $ims_content_connection_temp_folder.$file_name;
 
+/* Neuer Code ab Beluga 0.7
+      include_once('include/inc_ims_upload.php');
+      global $ims_content_connection_temp_folder;
+      global $url_for_beluga_system;
+      $session = $environment->getSessionItem();
+      if (isset($ims_content_connection_temp_folder)){
+         $target_directory = $ims_content_connection_temp_folder.'/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
+      }else{
+         $target_directory = 'var/temp/ims_import/'.$environment->getCurrentContextID().'/'.$session->getSessionID().'/';
+      }
+      $file_name = 'ims'.$session->getSessionID().'.zip';
+      $ims_path = urldecode($_GET['ims_path']);
+      $file_url = $url_for_beluga_system.$ims_path;
+      $destination_dir = $ims_content_connection_temp_folder.$file_name;
+*/
       // get file from external ims server
       if ( !empty($c_proxy_ip) ) {
          $out = fopen($destination_dir,'wb');
