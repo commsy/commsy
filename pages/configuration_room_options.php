@@ -285,8 +285,8 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $community_room_array[] = $_POST['communityrooms'];
             }
             $context_item->setCommunityListByID($community_room_array);
-            $context_item->setColorArray($color);
          }
+         $context_item->setColorArray($color);
 
          if ($context_item->isCommunityRoom()){
             // Room association
