@@ -58,8 +58,8 @@ else {
    }
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),CS_MATERIAL_TYPE, 'index',$params);
-   }elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url' and isset($_GET['ims_path'])){
-
+   }
+   elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url'){
       include_once('include/inc_ims_upload.php');
       global $ims_content_connection_temp_folder;
       global $url_for_beluga_upload;
@@ -74,6 +74,7 @@ else {
       $destination_dir = $ims_content_connection_temp_folder.$file_name;
 
 /* Neuer Code ab Beluga 0.7
+   elseif(isset($_GET['import_type']) and $_GET['import_type']== 'url' and isset($_GET['ims_path'])){
       include_once('include/inc_ims_upload.php');
       global $ims_content_connection_temp_folder;
       global $url_for_beluga_system;
