@@ -386,6 +386,7 @@ $message["COMMON_LANGUAGE"]["de"] = "Sprache";
 $message["COMMON_LANGUAGE_CHOOSE_BUTTON"]["de"] = "Sprache auswählen";
 $message["COMMON_LAST_CHANGE"]["de"] = "zuletzt verändert am";
 $message["COMMON_LAST_MODIFIED_BY"]["de"] = "zuletzt bearbeitet von";
+$message["COMMON_LECTURE2GO_IE_ERROR"]["de"] = "Die Betrachtung der Lecture2GO - Inhalte ist aktuell nicht mit dem Internet Explorer möglich. Bitte verwenden Sie z.B. den <a href=&quot;http://www.mozilla.com/&quot; target=&quot;_blank&quot;>Firefox</a>.";
 $message["COMMON_LINK_CREATOR"]["de"] = "zugeordnet von";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
 $message["COMMON_LIST_ACTION_COPY"]["de"] = "Einträge kopieren";

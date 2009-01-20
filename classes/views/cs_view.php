@@ -1169,6 +1169,7 @@ class cs_view {
          $image_text .= '&amp;server=vimeo.com&amp;fullscreen=1&amp;show_title=1'.LF;
          $image_text .= '&amp;show_byline=1&amp;show_portrait=1&amp;color=00ADEF">'.LF;
          $image_text .= '>'.LF;
+         $image_text .= "   <param name='wmode' value='transparent' />".LF;
          $image_text .= "   <param name='quality' value='best' />".LF;
          $image_text .= "   <param name='allowfullscreen' value='true' />".LF;
          $image_text .= "   <param name='scale' value='showAll' />".LF;
@@ -1353,6 +1354,7 @@ class cs_view {
          $image_text .= '   pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"'.LF;
          $image_text .= '   src="'.$source.'"'.LF;
          $image_text .= '   name="MediaPlayer18"'.LF;
+         $image_text .= '   wmode="transparent"'.LF;
          $image_text .= '   autostart='.$play.''.LF;
          $image_text .= '   showcontrols=1'.LF;
          $image_text .= '   showStatusBar=1'.LF;
@@ -1606,6 +1608,7 @@ class cs_view {
                $image_text .= '  width="'.$args['width'].'"'.LF;
                $image_text .= '  height="'.$args['height'].'"'.LF;
                $image_text .= '  allowfullscreen="true"'.LF;
+               $image_text .= '  wmode="transparent"'.LF;
                $image_text .= '  flashvars="file='.$source.'&autostart='.$play.'&type='.$ext;
                if ( !$extern ) {
                   $image_text .= '&showdigits=true';
@@ -1624,6 +1627,7 @@ class cs_view {
                $image_text .= '<script type="text/javascript">'.LF;
                $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
                $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
+               $image_text .= '  so.addParam(\'wmode\',\'transparent\');'.LF;
                $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
                $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
                $image_text .= '  so.addVariable(\'overstretch\',\'fit\');'.LF;
@@ -1714,6 +1718,7 @@ class cs_view {
          $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
          $image_text .= '<script type="text/javascript">'.LF;
          $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
+         $image_text .= '  so.addParam(\'wmode\',\'transparent\');'.LF;
          $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
          $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
          $image_text .= '  so.addVariable(\'showstop\',\'true\');'.LF;
@@ -1790,7 +1795,8 @@ class cs_view {
       if ( !empty($source) ) {
          $image_text = '';
          $div_number = $this->_getDivNumber();
-         $image_text .= '<script type="text/javascript" src="http://lecture2go.rrz.uni-hamburg.de/jw/swfobject.js"></script>
+         if ($this->_environment->getCurrentBrowser() != 'MSIE' ) {
+            $image_text .= '<script type="text/javascript" src="http://lecture2go.rrz.uni-hamburg.de/jw/swfobject.js"></script>
 <script src="http://lecture2go.rrz.uni-hamburg.de/dini/flash_detect/new_detection_kit/AC_OETags.js" language="javascript" type="text/javascript"></script>
 <script type="text/javascript">
 function showPlayer(serv,file,autostart){
@@ -1813,14 +1819,18 @@ function insertFile(serv,file,autostart){
     s1.addParam("allowfullscreen","true");
     s1.addParam("allowscriptaccess","always");
     s1.addParam("flashvars","fullscreen=true&bufferlength=2&streamer="+serv+"&file="+file+"&autostart="+autostart+"&image='.$image.'&screencolor=#343434");
+    s1.addParam("wmode","transparent");
     s1.addVariable("screencolor","#FFFFFF");
     s1.write("id'.$div_number.'");
 }
 </script>'.LF;
-
-         $text_without_flash = '<div>'.$this->_translator->getMessage('COMMON_GET_FLASH_LECTURE2GO').'</div>';
-         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
-         $image_text .= '<script type="text/javascript">showPlayer("'.$server.'","'.$source.'","'.$play.'")</script>'.LF;
+            $text_without_flash = '<div>'.$this->_translator->getMessage('COMMON_GET_FLASH_LECTURE2GO').'</div>';
+            $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
+            $image_text .= '<script type="text/javascript">showPlayer("'.$server.'","'.$source.'","'.$play.'")</script>'.LF;
+         } else {
+            $text_without_flash = '<div>'.$this->_translator->getMessage('COMMON_LECTURE2GO_IE_ERROR').'</div>';
+            $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px; width:'.$width.'px; height:'.$height.'px;">'.LF.$text_without_flash.LF.'</div>'.LF;
+         }
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
@@ -1907,6 +1917,10 @@ function insertFile(serv,file,autostart){
 //            $office_text .= '<param name="loop" value="true">'.LF;
 //            $office_text .= '<param name="scale" value="showall">'.LF;
 //            $office_text .= '<param name="wmode" value="opaque">'.LF;
+
+//            original: opaque, aber da div layer probleme, lieber transparent -> prüfen
+//            $office_text .= '<param name="wmode" value="transparent">'.LF;
+
 //            $office_text .= '<param name="devicefont" value="false">'.LF;
 //            $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
 //            $office_text .= '<param name="menu" value="true">'.LF;

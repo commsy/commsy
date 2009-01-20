@@ -386,6 +386,7 @@ $message["COMMON_LANGUAGE"]["en"] = "Language";
 $message["COMMON_LANGUAGE_CHOOSE_BUTTON"]["en"] = "Choose language";
 $message["COMMON_LAST_CHANGE"]["en"] = "last changed";
 $message["COMMON_LAST_MODIFIED_BY"]["en"] = "Last edit by";
+$message["COMMON_LECTURE2GO_IE_ERROR"]["en"] = "";
 $message["COMMON_LINK_CREATOR"]["en"] = "assigned by";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_LIST_ACTION_COPY"]["en"] = "Copy selected to online clipboard";
