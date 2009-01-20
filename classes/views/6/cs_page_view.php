@@ -553,7 +553,9 @@ class cs_page_view extends cs_view {
          $retour .= '   var message = \''.$this->_translator->getMessage('COMMON_PICTURE_DOWNLOADFILE').'\';'.LF;
          $retour .= '      -->'.LF;
          $retour .= '   </script>'.LF;
-         $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         if ( !$this->_environment->getCurrentModule() == 'configuration' ) {
+            $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         }
       }elseif ( $this->_environment->getCurrentFunction() == 'edit'
                or $this->_environment->getCurrentModule() == 'mail'
                or $this->_environment->getCurrentFunction() == 'mail'
