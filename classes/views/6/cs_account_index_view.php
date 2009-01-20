@@ -25,6 +25,7 @@
 
 $this->includeClass(INDEX_VIEW);
 include_once('classes/cs_link.php');
+//include_once('functions/text_functions.php');
 
 /**
  *  class for CommSy list view: contact
@@ -32,14 +33,16 @@ include_once('classes/cs_link.php');
 class cs_account_index_view extends cs_index_view {
 
    var $_selected_status = NULL;
-   private $_selected_auth_source = NULL;
+
    private $_auth_source_array = array();
    private $_auth_source_count = 1;
 
    /** constructor
     * the only available constructor, initial values for internal variables
     *
-    * @param array params parameters in an array of this class
+    * @param object  environment            environment of the page
+    * @param boolean with_modifying_actions true: display with modifying functions
+    *                                       false: display without modifying functions
     */
    function cs_account_index_view ($params) {
       $this->cs_index_view($params);
@@ -253,11 +256,16 @@ class cs_account_index_view extends cs_index_view {
          $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session->getSessionID()).'"/>'.LF;
       }
       $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_SEARCH').'</div>';
+      $html .= '<div class="right_box_title">'.getMessage('COMMON_SEARCHFIELD').'</div>';
       $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
-      $html .= '<input style="width:180px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+      if ($left_menue_status !='disapear'){
+         $width = '124';
+      } else {
+        $width = '157';
+      }
+      $html .= '<input style="width:'.$width.'px; font-size:10pt; margin-bottom:5px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
       $html .= '<input style="margin-bottom:5px; font-size:10pt; width:55px;" name="option" value="'.getMessage('COMMON_SEARCH_BUTTON').'" type="submit"/>'.LF;
       $html .= $this->_getAdditionalFormFieldsAsHTML();
       $html .= '</div>'.LF;
@@ -267,16 +275,15 @@ class cs_account_index_view extends cs_index_view {
       return $html;
    }
 
-    function getSearchText (){
-       return $this->_search_text;
-    }
 
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
       if ( isset($params['selstatus']) and !empty($params['selstatus']) and $params['selstatus'] != 7){
          $this->_additional_selects = true;
+         $html_text ='<div class="restriction">';
          $module = $this->_environment->getCurrentModule();
+         $html_text .= '<span class="infocolor">'.getMessage('COMMON_STATUS').':</span> ';
          if ($params['selstatus'] == 3){
             $status_text = $this->_translator->getMessage('USER_STATUS_MODERATOR');
          }elseif ($params['selstatus'] == 7){
@@ -303,53 +310,16 @@ class cs_account_index_view extends cs_index_view {
             $status_text = $this->_translator->getMessage('USER_STATUS_MODERATOR_ROOM');
          }elseif ($params['selstatus'] == 26){
             $status_text = $this->_translator->getMessage('USER_STATUS_CONTACT_ROOM');
-         } elseif ($params['selstatus'] == 31) {
-            $status_text = $this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP');
          }else{
             $status_text = $this->_translator->getMessage('COMMON_USERS');
          }
-         $html_text ='<tr>'.LF;
-         $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_STATUS').': </span>';
-         $html_text .='</td>'.LF;
-         $html_text .='<td style="text-align:right;">'.LF;
          $html_text .= '<span><a title="'.$status_text.'">'.chunkText($status_text,15).'</a></span>';
          $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
          unset($new_params['selstatus']);
          $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
-         $html_text .='</td>'.LF;
-         $html_text .='</tr>'.LF;
+         $html_text .='</div>';
          $html .= $html_text;
-      }
-      if ( isset($params['sel_auth_source']) and !empty($params['sel_auth_source']) and $params['sel_auth_source'] != -1){
-         $current_context = $this->_environment->getCurrentPortalItem();
-         $auth_source_item = $current_context->getAuthSource($params['sel_auth_source']);
-         if ( isset($auth_source_item) ) {
-            $this->_additional_selects = true;
-            $html_text ='<tr>'.LF;
-            $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').': </span>';
-            $html_text .='</td>'.LF;
-            $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>';
-            $title_short = chunkText($auth_source_item->getTitle(),15);
-            if ( $title_short != $auth_source_item->getTitle() ) {
-               $html_text .= '<a title="'.$auth_source_item->getTitle().'">';
-            }
-            $html_text .= $title_short;
-            if ( $title_short != $auth_source_item->getTitle() ) {
-               $html_text .= '</a>';
-            }
-            $html_text .= '</span>';
-            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
-            $new_params = $params;
-            unset($new_params['sel_auth_source']);
-            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
-            $html_text .='</td>'.LF;
-            $html_text .='</tr>'.LF;
-            $html .= $html_text;
-         }
       }
       return $html;
    }
@@ -368,10 +338,14 @@ class cs_account_index_view extends cs_index_view {
       $html .='<tr>'.LF;
       $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
       $html .='<div>'.LF;
-      $html .= '<h2 class="pagetitle">'.LF;
       $tempMessage = getMessage('ACCOUNT_INDEX');
-      $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-      $html .= $tempMessage;
+      if ($this->_clipboard_mode){
+          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
+         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+      }else{
+          $html .= '<h2 class="pagetitle">'.$tempMessage;
+      }
 
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
@@ -417,14 +391,6 @@ class cs_account_index_view extends cs_index_view {
       $html .= $this->_getListSelectionsAsHTML();
       $html .= '</form>'.LF;
 
-      $html .='</div>'.LF;
-      $html .= '<script type="text/javascript">'.LF;
-      $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
-      $html .= '</script>'.LF;
-      $html .= $this->_getConfigurationOverviewAsHTML();
-      $user = $this->_environment->getCurrentUserItem();
-      $room = $this->_environment->getCurrentContextItem();
-      $rubric_info_array = $room->getUsageInfoArray();
       if ( $this->_environment->inCommunityRoom() or $this->_environment->inProjectRoom() ){
          $room = $this->_environment->getCurrentContextItem();
          $config_text .=',false';
@@ -435,6 +401,14 @@ class cs_account_index_view extends cs_index_view {
          $html .= $this->_getRubricInfoAsHTML($this->_environment->getCurrentModule());
          $html .='</div>'.LF;
       }
+      $html .='</div>'.LF;
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+      $html .= '</script>'.LF;
+      $html .= $this->_getConfigurationOptionsAsHTML();
+      $user = $this->_environment->getCurrentUserItem();
+      $room = $this->_environment->getCurrentContextItem();
+      $rubric_info_array = $room->getUsageInfoArray();
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .= '</table>'.BRLF;
@@ -442,26 +416,7 @@ class cs_account_index_view extends cs_index_view {
       return $html;
    }
 
-
   function _getRubricInfoAsHTML($act_rubric){
-      $room = $this->_environment->getCurrentContextItem();
-      $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-      $html='';
-      $html .= '<div style="margin-bottom:1px;">'.LF;
-      $html .= '<div style="position:relative; top:12px;">'.LF;
-      $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
-      $html .= '</div>'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
-      $html .= '<div class="usage_info">'.LF;
-#      $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-      $html .= $this->_text_as_html_long($info_text).BRLF;
-      $html .= '</div>'.LF;
-      $html .='</div>'.LF;
-      return $html;
-   }
-
-
-/*  function _getRubricInfoAsHTML($act_rubric){
       $html='';
       $room = $this->_environment->getCurrentContextItem();
       $info_text = $room->getUsageInfoTextForRubric($act_rubric);
@@ -473,7 +428,7 @@ class cs_account_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
-   }*/
+   }
 
    /** get the item of the list view as HTML
     * this method returns the single item in HTML-Code
@@ -666,6 +621,8 @@ class cs_account_index_view extends cs_index_view {
     * this method returns the possible actions in the right formatted style
     *
     * @return string item date
+    *
+    * @author CommSy Development Group
     */
    function _getItemActions ($item) {
       $actions = '';
@@ -789,22 +746,21 @@ class cs_account_index_view extends cs_index_view {
       return $this->_selected_status;
    }
 
-   function setSelectedAuthSource ($value) {
-      $this->_selected_auth_source = (int)$value;
-   }
-
-   function getSelectedAuthSource () {
-      return $this->_selected_auth_source;
-   }
-
-
    function _getAdditionalFormFieldsAsHTML () {
-      $width = '235';
+           $current_context = $this->_environment->getCurrentContextItem();
+      $session = $this->_environment->getSession();
+      $left_menue_status = $session->getValue('left_menue_status');
+      if ($left_menue_status !='disapear'){
+             $width = '190';
+      }else{
+             $width = '225';
+      }
       $html='';
       $selstatus = $this->getSelectedStatus();
       $html .= '<div style="text-align:left; font-size: 10pt;">';
+      $html .= $this->_translator->getMessage('COMMON_STATUS').BRLF;
       $html .= '   <select name="selstatus" size="1" style="width: '. $width;
-      $html .= 'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
 
       $html .= '      <option value="7"';
       if ( !isset($selstatus) || $selstatus == 7 ) {
@@ -891,60 +847,10 @@ class cs_account_index_view extends cs_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('USER_STATUS_CONTACT_ROOM').'</option>'.LF;
-
-         $html .= '      <option value="8" disabled="disabled"';
-         $html .= '>------------------</option>'.LF;
-
-         $html .= '      <option value="31"';
-         if ( isset($selstatus) and $selstatus == 31 ) {
-            $html .= ' selected="selected"';
-         }
-         $html .= '>'.$this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP').'</option>'.LF;
       }
 
       $html .= '   </select>'.LF;
       $html .='</div>';
-
-      if ( $this->_environment->inPortal()
-           or $this->_environment->inCommunityRoom()
-         ) {
-         $current_context = $this->_environment->getCurrentPortalItem();
-         $auth_source_list = $current_context->getAuthSourceList();
-         if ( $auth_source_list->isNotEmpty()
-              and $auth_source_list->getCount() > 1
-            ) {
-            $sel_auth_source = $this->getSelectedAuthSource();
-            $html .= '<div style="text-align:left; font-size: 10pt;">';
-            $html .= $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').BRLF;
-            $html .= '   <select name="sel_auth_source" size="1" style="width: '. $width;
-            $html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
-
-            $html .= '      <option value="-1"';
-            if ( !isset($sel_auth_source) || $sel_auth_source == -1 ) {
-               $html .= ' selected="selected"';
-            }
-            $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
-
-            $html .= '      <option value="" disabled="disabled"';
-            $html .= '>------------------</option>'.LF;
-
-            $auth_source_item = $auth_source_list->getFirst();
-            while ( $auth_source_item ) {
-               $html .= '      <option value="'.$auth_source_item->getItemID().'"';
-               if ( isset($sel_auth_source)
-                    and $sel_auth_source == $auth_source_item->getItemID()
-                  ) {
-                  $html .= ' selected="selected"';
-               }
-               $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
-               $auth_source_item = $auth_source_list->getNext();
-            }
-
-            $html .= '   </select>'.LF;
-            $html .='</div>';
-         }
-      }
-
       return $html;
    }
 
@@ -952,7 +858,7 @@ class cs_account_index_view extends cs_index_view {
          $html = '<div id="netnavigation1">'.LF;
          $html .= '<div class="netnavigation" >'.LF;
          $html .= '<div class="right_box_title">'.getMessage('COMMON_CONFIGURATION').'</div>';
-         $html .= $this->_getConfigurationOverviewAsHTML($this->_environment->getCurrentFunction());
+         $html .= $this->_getConfigurationBoxAsHTML($this->_environment->getCurrentFunction());
 
          $title_string ='"'.$this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'"';
          $title_string .=',"'.$this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"';
@@ -1004,177 +910,6 @@ class cs_account_index_view extends cs_index_view {
          $html .= '</script>'.LF;
          return $html;
      }
-
-
-     function _getConfigurationOverviewAsHTML(){
-        $html='';
-        $room = $this->_environment->getCurrentContextItem();
-        $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
-        $html .= '<div class="right_box">'.LF;
-        $array = $this->_environment->getCurrentParameterArray();
-        $html .= '<div class="right_box_title">'.getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
-        $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
-        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-        $html .= '         <tr>'.LF;
-        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
-        $html .= $this->_translator->getMessage('COMMON_COMMSY_CONFIGURE').': ';
-        $html .= '         </td>'.LF;
-        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_COMMSY_CONFIGURE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'index',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_COMMSY_CONFIGURE')).LF;
-        $html .= '         </td>'.LF;
-        $html .= '         </tr>'.LF;
-        $html .= '         </table>'.LF;
-        $html .='<div class="listinfoborder">'.LF;
-        $html .='</div>'.LF;
-
-        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-        $html .= '         <tr>'.LF;
-        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
-        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').': ';
-        $html .= '         </td>'.LF;
-        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        $image = '<img src="images/commsyicons/22x22/config/room_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'room_options',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/rubric_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'rubric_options',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/structure_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'structure_options',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'account_options',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE')).LF;
-        $html .= '         </td>'.LF;
-        $html .= '         </tr>'.LF;
-        $html .= '         </table>'.LF;
-
-        $html .='<div class="listinfoborder">'.LF;
-        $html .='</div>'.LF;
-
-        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-        $html .= '         <tr>'.LF;
-        $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
-        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').': ';
-        $html .= '         </td>'.LF;
-        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        $image = '<img src="images/commsyicons/22x22/config/account.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_PAGETITLE_ACCOUNT').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'account',
-                                       'index',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_PAGETITLE_ACCOUNT')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'informationbox',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_INFORMATION_BOX')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'usageinfo',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'mail',
-                                       '',
-                                       $image,
-                                       getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE')).LF;
-        $html .= '         </td>'.LF;
-        $html .= '         </tr>'.LF;
-        $html .= '         </table>'.LF;
-
-        $html .='<div class="listinfoborder">'.LF;
-        $html .='</div>'.LF;
-
-        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-        $html .= '         <tr>'.LF;
-        $html .= '         <td style="font-size:10pt; white-space:nowrap;" class="infocolor">'.LF;
-        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADDON_OPTIONS').': ';
-        $html .= '         </td>'.LF;
-        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        global $c_html_textarea;
-        if ( $c_html_textarea ) {
-           $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'htmltextarea',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
-        }
-        $context_item = $this->_environment->getCurrentContextItem();
-        if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
-           $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'wiki',
-                                       '',
-                                       $image,
-                                       getMessage('WIKI_CONFIGURATION_LINK')).LF;
-        }
-        if ( $context_item->withChatLink() and !$context_item->isPortal() ) {
-        $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'chat',
-                                       '',
-                                       $image,
-                                       getMessage('CHAT_CONFIGURATION_LINK')).LF;
-        }
-        $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'template_options',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
-        $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'rubric_extras',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
-        $html .= '         </td>'.LF;
-        $html .= '         </tr>'.LF;
-        $html .= '         </table>'.LF;
-
-
-        $html .= '</div>'.LF;
-        $html .='</div>'.LF;
-        $html .= '</div>'.LF;
-        return $html;
-     }
-
 
      function _getConfigurationBoxAsHTML($act_fct){
       $html = '';
@@ -1377,6 +1112,14 @@ class cs_account_index_view extends cs_index_view {
       // addon configuration options
       include_once('include/inc_configuration_links_addon.php');
       return $addon_link_list;
+   }
+   
+   function setSelectedAuthSource ($value) {
+      $this->_selected_auth_source = (int)$value;
+   }
+
+   function getSelectedAuthSource () {
+      return $this->_selected_auth_source;
    }
 }
 ?>
