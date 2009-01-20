@@ -273,7 +273,6 @@ else {
 /*** Neue Schlagwörter und Tags***/
       include_once('include/inc_right_boxes_handling.php');
 /*** Neue Schlagwörter und Tags***/
-
       // Add a new buzzword
       if ( isOption($command, getMessage('COMMON_ADD_BUZZWORD_BUTTON')) or isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ) {
          $focus_element_onload = 'buzzword';

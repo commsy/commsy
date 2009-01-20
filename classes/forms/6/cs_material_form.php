@@ -469,11 +469,11 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->addSelect('buzzword',$this->_buzzword_array,'',getMessage('MATERIAL_BUZZWORDS'),getMessage('MATERIAL_BUZZWORD_DESC'), 1, false,false,false,'','','','',16,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_ADD_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_BUZZWORD_BUTTON'),'','',210,false,'','',8);
          $this->_form->combine('vertical');
          $this->_form->addTextField('new_buzzword',"","","","", 29, false,'','','','left','','',false,'',8);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_NEW_BUZZWORD_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_NEW_BUZZWORD_BUTTON'),'','',210,false,'','',8);
       }
       if ( $current_context->withTags() ){
          // tags
@@ -487,7 +487,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->addSelect('tag',$this->_tag_array,'',getMessage('MATERIAL_TAGS'),getMessage('MATERIAL_TAG_DESC'), 1, false,false,false,'','','','',16,false,false,8);
          }
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('MATERIAL_ADD_TAG_BUTTON'),'','',210,false,'','',8);
+         $this->_form->addButton('option',getMessage('COMMON_ADD_TAG_BUTTON'),'','',210,false,'','',8);
       }
 
       // files
