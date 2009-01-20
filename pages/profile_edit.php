@@ -674,7 +674,6 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $success_1 = true;
                   }
                   $save = false;
-                  #pr($_POST);
                   if (!empty($_POST['language']) and $_POST['language'] != $portal_user->getLanguage()) {
                      $portal_user->setLanguage($_POST['language']);
                      $save = true;
@@ -709,8 +708,36 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $success_2 = true;
                   }
                   $success = $success_1 and $success_2;
+
+                  // change firstname and lastname in all other user_items of this user
+                  $change_name = false;
+                  if ( !empty($_POST['firstname'])
+                       and $portal_user->getFirstName() != $_GET['firstname']
+                     ) {
+                     $change_name = true;
+                  }
+                  if ( !empty($_POST['lastname'])
+                       and $portal_user->getLastName() != $_GET['lastname']
+                     ) {
+                     $change_name = true;
+                  }
+                  if ( $change_name ) {
+                     $user_manager = $environment->getUserManager();
+                     $dummy_user = $user_manager->getNewItem();
+                     $value = $_POST['firstname'];
+                     if ( empty($value) ) {
+                        $value = -1;
+                     }
+                     $dummy_user->setFirstName($value);
+                     $value = $_POST['lastname'];
+                     if ( empty($value) ) {
+                        $value = -1;
+                     }
+                     $dummy_user->setLastName($value);
+                     $portal_user->changeRelatedUser($dummy_user);
+                  }
                }
-               if(!$success or !empty($error_number)){
+               if ( !$success or !empty($error_number) ) {
                   unset($params['is_saved']);
                }
                redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
