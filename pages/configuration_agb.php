@@ -22,7 +22,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 //
-$this->includeClass(FORM);
+$class_factory->includeClass(FORM);
 include_once('functions/text_functions.php');
 
 $room_item = $environment->getCurrentContextItem();
