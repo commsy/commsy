@@ -109,6 +109,7 @@ class cs_mail extends Mail
     * @param string $reply_to_name
     */
    function set_reply_to_name($reply_to_name){
+      $reply_to_name = str_replace(',','',$reply_to_name);
       $this->reply_to_name = encode(AS_MAIL,$reply_to_name);
    }
 
@@ -202,12 +203,13 @@ class cs_mail extends Mail
 
          $success = true;
          $range = 2048;
-         $this->recipients = str_replace(', ',',',$this->recipients);
+         $this->recipients = $this->_cleanRecipients($this->recipients);
+
          if ( isset($this->cc_recipients) ) {
-            $this->cc_recipients = str_replace(', ',',',$this->cc_recipients);
+            $this->cc_recipients = $this->_cleanRecipients($this->cc_recipients);
          }
          if ( isset($this->bcc_recipients) ) {
-            $this->bcc_recipients = str_replace(', ',',',$this->bcc_recipients);
+            $this->bcc_recipients = $this->_cleanRecipients($this->bcc_recipients);
          }
 
          // send email seperately (one email for one receiver)
@@ -277,6 +279,29 @@ class cs_mail extends Mail
 
    function getErrorArray () {
       return $this->_error_array;
+   }
+
+   private function _cleanRecipients ( $value ) {
+      $retour = $value;
+      $retour = str_replace(', ',',',$retour);
+      if ( substr_count($retour,'@') != substr_count($retour,',')+1 ) {
+         $retour_array = explode(',',$retour);
+         $retour2_array = array();
+         $mail_address = '';
+         foreach ($retour_array as $value) {
+            if ( strstr($value,'@') ) {
+               $mail_address .= ' '.$value;
+               $retour2_array[] = $mail_address;
+               $mail_address = '';
+            } else {
+               $mail_address .= ' '.$value;
+            }
+         }
+         $retour = implode(',',$retour2_array);
+         unset($retour_array);
+         unset($retour2_array);
+      }
+      return $retour;
    }
 }
 ?>
