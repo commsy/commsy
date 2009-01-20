@@ -681,9 +681,9 @@ class cs_page_view extends cs_view {
       $retour .= '   <title>'.$this->_text_as_html_short($this->_name_room).$between.$this->_text_as_html_short($this->_name_page).'</title>'.LF;
       if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
-   if ( isset($this->_form_view) ) {
+         if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
-   }
+         }
          $view = reset($views);
          while ($view) {
             $retour .= $view->getInfoForHeaderAsHTML();
@@ -693,7 +693,10 @@ class cs_page_view extends cs_view {
          unset($view);
          $session = $this->_environment->getSession();
          $left_menue_status = $session->getValue('left_menue_status');
-         if ($left_menue_status !='disapear' and $this->_environment->getCurrentModule() != 'help'){
+         if ( $left_menue_status != 'disapear'
+              and $this->_environment->getCurrentModule() != 'help'
+              and !$this->_environment->inServer()
+            ) {
 
             //Set Focus to login field
             $retour .= '   <script type="text/javascript">'.LF;
@@ -707,9 +710,9 @@ class cs_page_view extends cs_view {
          }
       } else {
          $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
-   if ( isset($this->_form_view) ) {
+         if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
-   }
+         }
          $view = reset($views);
          while ($view) {
             $retour .= $view->getInfoForHeaderAsHTML();
