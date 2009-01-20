@@ -40,7 +40,6 @@ $user = $environment->getCurrentUserItem();
 $manager = $environment->getPrivateRoomManager();
 $current_context_item = $environment->getCurrentContextItem();
 $list2 = $current_context_item->getCustomizedRoomList();
-unset($current_context_item);
 if ( !isset($list2) ) {
    // old style (CommSy6)
    $list2 = $manager->getRelatedContextListForUserOnPrivateRoomHome($user);
@@ -63,7 +62,11 @@ if ( isset($_GET['from']) ) {
 }
 
 $i=1;
-$end = $from+5;
+if($current_context_item->isDesign7()){
+   $end = $from+5;
+} else {
+   $end = $from+10;
+}
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){
@@ -91,7 +94,11 @@ if ( isset($_GET['from']) ) {
 
 $i=1;
 $status = $current_context->getHomeStatus();
-$end = $from+5;
+if($current_context_item->isDesign7()){
+   $end = $from+5;
+} else {
+   $end = $from+10;
+}
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){
@@ -154,7 +161,11 @@ $short_view->setFrom($from);
 if ($status=='detailed'){
    $short_view->setInterval(5);
 }else{
-   $short_view->setInterval(10);
+   if($current_context_item->isDesign7()){
+      $short_view->setInterval(5);
+   } else {
+      $short_view->setInterval(10);
+   }
 }
 $short_view->setCountAll($countAll);
 $short_view->setCountAllShown($countShown);
