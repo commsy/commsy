@@ -236,7 +236,7 @@ class cs_profile_form extends cs_rubric_form {
          ##################################################
          # messenger - END
          ##################################################
-         $this->_form->addTextArea('description','',$this->_translator->getMessageInLang($this->_language,'USER_DESCRIPTION'),'','40','10',false);
+         $this->_form->addTextArea('description','',$this->_translator->getMessageInLang($this->_language,'USER_DESCRIPTION'),'','40','10','virtual',false,false,true,1,true,false);
          $this->_form->combine();
          $this->_form->addCheckbox('description_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
          $this->_form->addEmptyline();

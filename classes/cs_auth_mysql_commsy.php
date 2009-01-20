@@ -99,6 +99,7 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
            or $this->_item->getUserID() != $user_id
            or $this->_item->getPortalID() != $this->_commsy_id
          ) {
+         $this->_item = NULL;
          $query = 'SELECT * FROM auth';
          $query .= ' WHERE user_id="' . encode(AS_DB,$user_id) . '"';
          $query .= ' AND commsy_id="' . encode(AS_DB,$this->_commsy_id) . '"';

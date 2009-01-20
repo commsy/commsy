@@ -135,11 +135,10 @@ class cs_auth_mysql_typo3 extends cs_auth_manager {
     * @param integer user_id id of the user (not item id)
     *
     * @return object cs_item an authentication item
-    *
-    * @author CommSy Development Group
     */
   function _get ($user_id) {
      if (!isset($this->_item) or $this->_item->getUserID() != $user_id) {
+        $this->_item = NULL;
         $query  = 'SELECT * FROM '.$this->_dbtable;
         $query .= ' WHERE '.$this->_field_userid.'="'.encode(AS_DB,$user_id).'"';
         $db_link = $this->_getDBLink();

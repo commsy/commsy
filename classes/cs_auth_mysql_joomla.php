@@ -139,6 +139,7 @@ class cs_auth_mysql_joomla extends cs_auth_manager {
     */
   function _get ($user_id) {
      if (!isset($this->_item) or $this->_item->getUserID() != $user_id) {
+        $this->_item = NULL;
         $query  = 'SELECT * FROM '.$this->_auth_data_array['DBTABLE'];
         $query .= ' WHERE '.$this->_field_userid.'="'.encode(AS_DB,$user_id).'"';
         $db_link = $this->_getDBLink();

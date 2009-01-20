@@ -171,9 +171,9 @@ class cs_auth_mysql extends cs_auth_manager {
       $user_id_array = $this->_getMultipleUserIDArray($user_id);
       foreach ($user_id_array as $user_id_to_check) {
          $this->_get($user_id_to_check);
-         if(isset($this->_item)) {
+         if ( isset($this->_item) ) {
             $user_id_to_check = $this->_item->getUserID();
-            if (!empty ($user_id_to_check)) {
+            if ( !empty($user_id_to_check) ) {
                $retour = false;
                if ($user_id_to_check != $user_id) {
                   $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_EXIST', $user_id_to_check);
