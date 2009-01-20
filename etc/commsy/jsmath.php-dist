@@ -25,6 +25,8 @@
 // if you want to use jsMath for mathematical formulas, you must do the following:
 // 1. download the jsMath from http://www.math.union.edu/~dpvc/jsMath/
 //    - you must download two packages (source and one font package)
+// or download jsMath from the commsy homepage http://www.commsy.net/Software/Download
+//    - the two packages are included at this location in one package
 // 2. install the jsMath at your server
 // 3. set url to the installation of jsMath (main folder)
 //    e.g. http://www.xyz.de/jsMath
