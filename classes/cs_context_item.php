@@ -2421,7 +2421,7 @@ class cs_context_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setWikiNewPageTemplate($template){
       $this->_addExtra('WIKINEWPAGETEMPLATE',$template);
    }
@@ -4871,8 +4871,19 @@ class cs_context_item extends cs_item {
             $retour = $context->isDesign6();
             unset($context);
          }
-         if ( $this->isProjectRoom()
-              or $this->isCommunityRoom()
+         if ( $this->isProjectRoom() ) {
+            $community_room_list = $this->getCommunityList();
+            if ( isset($community_room_list) and $community_room_list->isNotEmpty() ) {
+               $context = $community_room_list->getFirst();
+               $retour = $context->isDesign6();
+               unset($context);
+            } else {
+               $context = $this->getContextItem();
+               $retour = $context->isDesign6();
+               unset($context);
+            }
+         }
+         if ( $this->isCommunityRoom()
               or $this->isPrivateRoom()
               or $this->isPortal()
             ) {
@@ -4895,8 +4906,19 @@ class cs_context_item extends cs_item {
             $retour = $context->isDesign7();
             unset($context);
          }
-         if ( $this->isProjectRoom()
-              or $this->isCommunityRoom()
+         if ( $this->isProjectRoom() ) {
+            $community_room_list = $this->getCommunityList();
+            if ( isset($community_room_list) and $community_room_list->isNotEmpty() ) {
+               $context = $community_room_list->getFirst();
+               $retour = $context->isDesign7();
+               unset($context);
+            } else {
+               $context = $this->getContextItem();
+               $retour = $context->isDesign7();
+               unset($context);
+            }
+         }
+         if ( $this->isCommunityRoom()
               or $this->isPrivateRoom()
               or $this->isPortal()
             ) {
