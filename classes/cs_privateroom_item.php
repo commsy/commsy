@@ -1049,6 +1049,7 @@ class cs_privateroom_item extends cs_room_item {
 
          // get room list
          $room_manager = $this->_environment->getRoomManager();
+         $room_manager->setRoomTypeLimit('');
          $room_manager->setIDArrayLimit($room_id_array);
          $room_manager->setOrder('id_array');
          $room_manager->setUserIDLimit($current_user_item->getUserID());
