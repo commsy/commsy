@@ -972,8 +972,8 @@ class cs_view {
       $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:lecture2go']  = '/\\(:lecture2go (.*?)(\\s.*?)?\\s*?:\\)/e';
-      if($this->_environment->isScribdAvailable()){
-        $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
+      if ( $this->_environment->isScribdAvailable() ) {
+         $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
 
       // jsMath for latex math fonts
@@ -1004,65 +1004,70 @@ class cs_view {
       if ($clean_text) {
          $matches = array();
          foreach ($reg_exp_father_array as $exp) {
-         $found = preg_match_all($exp,$text,$matches);
-         if ( $found > 0 ) {
-            $matches[0] = array_unique($matches[0]); // doppelte einsparen
-            foreach ($matches[0] as $value) {
-               $value_new = strip_tags($value);
-               foreach ($reg_exp_array as $key => $reg_exp) {
-                  if ( $key == '(:flash' and stristr($value_new,'(:flash') ) {
-                     $value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:wmplayer' and stristr($value_new,'(:wmplayer') ) {
-                     $value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:quicktime' and stristr($value_new,'(:quicktime') ) {
-                     $value_new = $this->_format_quicktime($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:image' and stristr($value_new,'(:image') ) {
-                     $value_new = $this->_format_image($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:item' and stristr($value_new,'(:item') ) {
-                     $value_new = $this->_format_item($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:link' and stristr($value_new,'(:link') ) {
-                     $value_new = $this->_format_link($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:file' and stristr($value_new,'(:file') ) {
-                     $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:zip' and stristr($value_new,'(:zip') ) {
-                     $value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:youtube' and stristr($value_new,'(:youtube') ) {
-                     $value_new = $this->_format_youtube($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:googlevideo' and stristr($value_new,'(:googlevideo') ) {
-                     $value_new = $this->_format_googlevideo($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:vimeo' and stristr($value_new,'(:vimeo') ) {
-                     $value_new = $this->_format_vimeo($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
-                     $value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:lecture2go' and stristr($value_new,'(:lecture2go') ) {
-                     $value_new = $this->_format_lecture2go($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
-                     $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
-                     $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
-                  } elseif ( $key == '{$$' and stristr($value_new,'{$$') ) {
-                     $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
-                     break;
+            $found = preg_match_all($exp,$text,$matches);
+            if ( $found > 0 ) {
+               $matches[0] = array_unique($matches[0]); // doppelte einsparen
+               foreach ($matches[0] as $value) {
+
+                  # delete HTML-tags and string conversion #########
+                  $value_new = strip_tags($value);
+                  $value_new = str_replace('&nbsp;',' ',$value_new);
+                  ##################################################
+
+                  foreach ($reg_exp_array as $key => $reg_exp) {
+                     if ( $key == '(:flash' and stristr($value_new,'(:flash') ) {
+                        $value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:wmplayer' and stristr($value_new,'(:wmplayer') ) {
+                        $value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:quicktime' and stristr($value_new,'(:quicktime') ) {
+                        $value_new = $this->_format_quicktime($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:image' and stristr($value_new,'(:image') ) {
+                        $value_new = $this->_format_image($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:item' and stristr($value_new,'(:item') ) {
+                        $value_new = $this->_format_item($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:link' and stristr($value_new,'(:link') ) {
+                        $value_new = $this->_format_link($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:file' and stristr($value_new,'(:file') ) {
+                        $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:zip' and stristr($value_new,'(:zip') ) {
+                        $value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:youtube' and stristr($value_new,'(:youtube') ) {
+                        $value_new = $this->_format_youtube($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:googlevideo' and stristr($value_new,'(:googlevideo') ) {
+                        $value_new = $this->_format_googlevideo($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:vimeo' and stristr($value_new,'(:vimeo') ) {
+                        $value_new = $this->_format_vimeo($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
+                        $value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:lecture2go' and stristr($value_new,'(:lecture2go') ) {
+                        $value_new = $this->_format_lecture2go($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
+                        $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
+                        $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '{$$' and stristr($value_new,'{$$') ) {
+                        $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     }
                   }
+                  $text = str_replace($value,$value_new,$text);
                }
-               $text = str_replace($value,$value_new,$text);
             }
-         }
          }
       }
       return $text;
