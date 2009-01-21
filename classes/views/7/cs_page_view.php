@@ -1622,7 +1622,7 @@ class cs_page_view extends cs_view {
                if ( strtolower($this->_environment->getCurrentBrowser()) == 'msie' ) {
                   $width_auth_selectbox = 6.7;
                }
-               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source">'.LF;
+               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
                $auth_source_item = $auth_source_list->getFirst();
                $auth_source_selected = false;
                while ( $auth_source_item ) {
@@ -1645,7 +1645,7 @@ class cs_page_view extends cs_view {
             }
             unset($auth_source_list);
             $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="3"/>'.LF;
+            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
             $html .= '</td></tr>'.LF;
             $html .= '</table>'.LF;
             // @segment-end 8638
