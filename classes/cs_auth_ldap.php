@@ -165,7 +165,7 @@ class cs_auth_ldap extends cs_auth_manager {
                     and !empty($this->_rootuser_password)
                   ) {
             $access_first = $access;
-            $suchfilter="($this->_field_userid=$uid)";
+            $suchfilter = "(".$this->_field_userid."=".$uid.")";
             if ( strstr($this->_rootuser,',')
                  and strstr($this->_rootuser,'=')
                ) {
