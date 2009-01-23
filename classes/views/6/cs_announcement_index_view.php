@@ -307,6 +307,7 @@ class cs_announcement_index_view extends cs_index_view {
          $fileicons = ' '.$fileicons;
       }
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
+
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
          $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
          $user = $this->_environment->getCurrentUser();
@@ -332,12 +333,12 @@ class cs_announcement_index_view extends cs_index_view {
                $params = array();
                $params['iid'] = $item->getItemID();
                $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                                  CS_MATERIAL_TYPE,
+                                  CS_ANNOUNCEMENT_TYPE,
                                   'detail',
                                   $params,
                                   $title,
                                   '','', '', '', '', '', '', '',
-                                  CS_MATERIAL_TYPE.$item->getItemID());
+                                  CS_ANNOUNCEMENT_TYPE.$item->getItemID());
                unset($params);
                if ($this->_environment->inProjectRoom()) {
                   $title .= $this->_getItemChangeStatus($item);
@@ -354,7 +355,7 @@ class cs_announcement_index_view extends cs_index_view {
             $html .= '      <td '.$style.'>'.$title.LF;
          }else{
              if($with_links) {
-                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
              } else {
                 $title = $this->_text_as_html_short($item->getTitle());
                 $html .= '      <td '.$style.'>'.$title.LF;

@@ -488,7 +488,7 @@ class cs_date_index_view extends cs_room_index_view {
             $html .= '      <td '.$style.'>'.$title.LF;
          }else{
              if($with_links) {
-                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
+                $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).$fileicons.LF;
              } else {
                 $title = $this->_text_as_html_short($item->getTitle());
                 $html .= '      <td '.$style.'>'.$title.LF;
