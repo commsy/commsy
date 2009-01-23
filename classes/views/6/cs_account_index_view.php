@@ -747,7 +747,7 @@ class cs_account_index_view extends cs_index_view {
    }
 
    function _getAdditionalFormFieldsAsHTML () {
-           $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       if ($left_menue_status !='disapear'){
@@ -847,10 +847,59 @@ class cs_account_index_view extends cs_index_view {
             $html .= ' selected="selected"';
          }
          $html .= '>'.$this->_translator->getMessage('USER_STATUS_CONTACT_ROOM').'</option>'.LF;
+
+         $html .= '      <option value="8" disabled="disabled"';
+         $html .= '>------------------</option>'.LF;
+
+         $html .= '      <option value="31"';
+         if ( isset($selstatus) and $selstatus == 31 ) {
+            $html .= ' selected="selected"';
+         }
+         $html .= '>'.$this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP').'</option>'.LF;
       }
 
       $html .= '   </select>'.LF;
       $html .='</div>';
+
+      if ( $this->_environment->inPortal()
+           or $this->_environment->inCommunityRoom()
+         ) {
+         $current_context = $this->_environment->getCurrentPortalItem();
+         $auth_source_list = $current_context->getAuthSourceList();
+         if ( $auth_source_list->isNotEmpty()
+              and $auth_source_list->getCount() > 1
+            ) {
+            $sel_auth_source = $this->getSelectedAuthSource();
+            $html .= '<div style="text-align:left; font-size: 10pt;">';
+            $html .= $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').BRLF;
+            $html .= '   <select name="sel_auth_source" size="1" style="width: '. $width;
+            $html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+
+            $html .= '      <option value="-1"';
+            if ( !isset($sel_auth_source) || $sel_auth_source == -1 ) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>*'.$this->_translator->getMessage('ALL').'</option>'.LF;
+
+            $html .= '      <option value="" disabled="disabled"';
+            $html .= '>------------------</option>'.LF;
+
+            $auth_source_item = $auth_source_list->getFirst();
+            while ( $auth_source_item ) {
+               $html .= '      <option value="'.$auth_source_item->getItemID().'"';
+               if ( isset($sel_auth_source)
+                    and $sel_auth_source == $auth_source_item->getItemID()
+                  ) {
+                  $html .= ' selected="selected"';
+               }
+               $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
+               $auth_source_item = $auth_source_list->getNext();
+            }
+
+            $html .= '   </select>'.LF;
+            $html .='</div>';
+         }
+      }
       return $html;
    }
 
@@ -1113,7 +1162,7 @@ class cs_account_index_view extends cs_index_view {
       include_once('include/inc_configuration_links_addon.php');
       return $addon_link_list;
    }
-   
+
    function setSelectedAuthSource ($value) {
       $this->_selected_auth_source = (int)$value;
    }
