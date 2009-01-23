@@ -1268,19 +1268,17 @@ class cs_page_view extends cs_view {
       return $html;
    }
 
-   // @segment-end 78866
-
-
-
-   // @segment-begin 52559  _getLogoAsHTML()
-   function _getLogoAsHTML(){
-      $html  = '';
-      $logo_filename = '';
-      $context_item = $this->_environment->getCurrentContextItem();
-      $html .='<table summary="layout">';
-      $html .= '<tr>';
-       $html .= '<td>';
-      $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
+   function _getLogoAsHTML () {
+      if ( $this->_environment->inPortal() ) {
+         $html = $this->_getPortalLogoAsHTML();
+      } else {
+         $html  = '';
+         $logo_filename = '';
+         $context_item = $this->_environment->getCurrentContextItem();
+         $html .= '<table summary="layout">';
+         $html .= '<tr>';
+         $html .= '<td>';
+         $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
          if ( $this->_environment->inCommunityRoom()
               or $this->_environment->inProjectRoom()
               or $this->_environment->inPrivateRoom()
@@ -1295,18 +1293,50 @@ class cs_page_view extends cs_view {
                $html .= '     <img style="height:4em; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             }
          }
-     $html .= '</div>'.LF;
-      $html .= '</td>';
-      $html .= '<td style="verticale-align:middle;">';
-      $html .= '<span style="font-size:24pt; font-weight:bold;">'.$context_item->getTitle().'</span>';
-      $html .= '</td>';
-      $html .= '</tr>';
-      $html .= '</table>';
+         $html .= '</div>'.LF;
+         $html .= '</td>';
+         $html .= '<td style="verticale-align:middle;">';
+         $html .= '<span style="font-size:24pt; font-weight:bold;">'.$context_item->getTitle().'</span>';
+         $html .= '</td>';
+         $html .= '</tr>';
+         $html .= '</table>';
+      }
 
       return $html;
    }
-   // @segment-end 52559
 
+   function _getPortalLogoAsHTML () {
+      $html  = '';
+      $html .= '<div class="logo" style="vertical-align:top; padding-top:5px;">'.LF;
+      if ( !$this->_environment->inServer() ) {
+         $current_portal = $this->_environment->getCurrentPortalItem();
+         // logo
+         $logo_filename = $current_portal->getLogoFilename();
+         $disc_manager = $this->_environment->getDiscManager();
+         $disc_manager->setContextID($current_portal->getItemID());
+         if ( !empty($logo_filename) and $disc_manager->existsFile($logo_filename)) {
+            $params = array();
+            $params['picture'] = $current_portal->getLogoFilename();
+            $curl = curl($current_portal->getItemID(), 'picture', 'getfile', $params,'');
+            unset($params);
+            $image = '<img style="width:12.8em; height:4em; padding-top:0px; padding-bottom:0px; padding-left:10px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= ahref_curl($current_portal->getItemID(),'home','index','',$image,'','','','','','','style="color:#000000"').LF;
+         } else {
+         // title
+            $html .= '<h1 style="padding-bottom:15px; font-size:24px; padding-top:0px; margin-top:0px;">'.LF;
+            $link_text = $current_portal->getTitle();
+            $html .= ahref_curl($current_portal->getItemID(),'home','index','',$link_text,'','','','','','','style="color:#000000; text-decoration:none;"').''.LF;
+            unset($link_text);
+            $html .= '</h1>'.LF;
+         }
+         unset($current_portal);
+         unset($disc_manager);
+      } else {
+         $html .= '<a href="http://www.commsy.net"><img style="width:12.8em; height:4em; padding-top:0px; padding-bottom:0px; padding-left:10px;" class="portal_logo" src="images/commsy-logo-171x53.gif" alt="commsy logo"/></a>'.LF;
+      }
+      $html .= '</div>'.LF;
+      return $html;
+   }
 
    function _getUserCopiesAsHTML(){
       $html = '';

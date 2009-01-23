@@ -1267,15 +1267,15 @@ class cs_page_view extends cs_view {
 
 
    // @segment-begin 52559  _getLogoAsHTML()
-   function _getLogoAsHTML(){
+   function _getLogoAsHTML () {
       $html  = '';
       $html .= '<div class="logo" style="vertical-align:top; padding-top:5px;">'.LF;
       if ( !$this->_environment->inServer() ) {
          $current_portal = $this->_environment->getCurrentPortalItem();
          // logo
          $logo_filename = $current_portal->getLogoFilename();
-   $disc_manager = $this->_environment->getDiscManager();
-   $disc_manager->setContextID($current_portal->getItemID());
+         $disc_manager = $this->_environment->getDiscManager();
+         $disc_manager->setContextID($current_portal->getItemID());
          if ( !empty($logo_filename) and $disc_manager->existsFile($logo_filename)) {
             $params = array();
             $params['picture'] = $current_portal->getLogoFilename();
@@ -1284,13 +1284,13 @@ class cs_page_view extends cs_view {
             $image = '<img style="width:12.8em; height:4em; padding-top:0px; padding-bottom:0px; padding-left:10px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= ahref_curl($current_portal->getItemID(),'home','index','',$image,'','','','','','','style="color:#000000"').LF;
          } else {
-      // title
+         // title
             $html .= '<h1 style="padding-bottom:15px; font-size:24px; padding-top:0px; margin-top:0px;">'.LF;
             $link_text = $current_portal->getTitle();
             $html .= ahref_curl($current_portal->getItemID(),'home','index','',$link_text,'','','','','','','style="color:#000000; text-decoration:none;"').''.LF;
-      unset($link_text);
+            unset($link_text);
             $html .= '</h1>'.LF;
-   }
+         }
          unset($current_portal);
          unset($disc_manager);
       } else {
