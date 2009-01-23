@@ -223,7 +223,8 @@ class cs_material_detail_view extends cs_detail_view {
       $current_material = $material_manager->getItem($item->getItemId());
       $version_of_current_material = $current_material->getVersionID();
       $html = '';
-      if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
+      if ( $version_of_current_material == $subitem->getVersionID() and // showing the current version
+           $item->mayEdit($user) and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $subitem->getItemID();
          $params['ref_vid'] = $item->getVersionID();
@@ -751,7 +752,6 @@ class cs_material_detail_view extends cs_detail_view {
          $section_description = $this->_text_as_html_long($section_description);
          $section_description = $this->_show_images($section_description, $item, $with_links);
          $html .= $this->getScrollableContent($section_description,$item,'',$with_links);
-#         $html .= $section_description;
       }
 
       // files
