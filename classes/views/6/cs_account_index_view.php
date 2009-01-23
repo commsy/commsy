@@ -310,6 +310,8 @@ class cs_account_index_view extends cs_index_view {
             $status_text = $this->_translator->getMessage('USER_STATUS_MODERATOR_ROOM');
          }elseif ($params['selstatus'] == 26){
             $status_text = $this->_translator->getMessage('USER_STATUS_CONTACT_ROOM');
+         } elseif ( $params['selstatus'] == 31 ) {
+            $status_text = $this->_translator->getMessage('USER_STATUS_NO_MEMBERSHIP');
          }else{
             $status_text = $this->_translator->getMessage('COMMON_USERS');
          }
