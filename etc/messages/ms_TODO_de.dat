@@ -23,6 +23,8 @@ $message["TODO_SAVE_BUTTON"]["de"] = "Aufgabe speichern";
 $message["TODO_SHORT_VIEW_DESCRIPTION"]["de"] = "%1 nicht erledigte Aufgaben von %2";
 $message["TODO_STATUS"]["de"] = "Status";
 $message["TODO_STATUS_DESC"]["de"] = "Geben Sie den Status der Bearbeitung an.";
+$message["TODO_TIME"]["de"] = "Geplante Zeit<br/>
+(in Minuten)";
 $message["TODO_TIME_DAY_END_DESC"]["de"] = "Geben Sie das Datum an, bis zu dem die Augabe erledigt sein sollte.";
 $message["TODO_VALIDITY_DATE"]["de"] = "fällig";
 ?>

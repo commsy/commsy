@@ -2,12 +2,15 @@
 $message["DATE_ALTERNATIVE_DISPLAY"]["en"] = "Change display";
 $message["DATE_ENDDAY"]["en"] = "Day (end)";
 $message["DATE_ENDTIME"]["en"] = "Time (end)";
+$message["DATE_ENTER"]["en"] = "Accept participation";
 $message["DATE_IMPORT_FORM1"]["en"] = "Import events from external source (step 1 of 2)";
 $message["DATE_IMPORT_FORM2"]["en"] = "Import events from external source (step 2 of 2)";
 $message["DATE_IMPORT_PUBLIC"]["en"] = "Type of event";
 $message["DATE_INDEX"]["en"] = "Events";
+$message["DATE_LEAVE"]["en"] = "Cancel participation";
 $message["DATE_LOCATION"]["en"] = "Location";
 $message["DATE_MONTH_PRESENTATION"]["en"] = "month view";
+$message["DATE_PARTICIPANTS"]["en"] = "Participants";
 $message["DATE_PRIVATE_ENTRY"]["en"] = "private item";
 $message["DATE_PUBLIC_NO"]["en"] = "Upload events as private items";
 $message["DATE_STARTDAY"]["en"] = "Day (start)";
