@@ -40,7 +40,6 @@ class cs_material_index_view extends cs_index_view {
    var $_selected_group = NULL;
    var $_available_groups = NULL;
 
-
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -62,7 +61,6 @@ class cs_material_index_view extends cs_index_view {
    function getClipboardIDArray() {
       return $this->_clipboard_id_array;
    }
-
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
       $current_context = $this->_environment->getCurrentContextItem();
@@ -125,7 +123,7 @@ class cs_material_index_view extends cs_index_view {
       if ($context_item->withActivatingContent()){
          return $html;
       }else{
-      	return '';
+         return '';
       }
 /*********************/
    }
@@ -271,7 +269,7 @@ class cs_material_index_view extends cs_index_view {
     * @return string index actions
     */
    function _getViewActionsAsHTML () {
-   	  $user = $this->_environment->getCurrentUserItem();
+      $user = $this->_environment->getCurrentUserItem();
       if ($this->_clipboard_mode){
          $html = parent::_getViewActionsAsHTML();
       }else{
@@ -527,17 +525,17 @@ class cs_material_index_view extends cs_index_view {
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-	            if ( stristr(strtolower($file->getFilename()),'png')
-	                 or stristr(strtolower($file->getFilename()),'jpg')
-	                 or stristr(strtolower($file->getFilename()),'jpeg')
-	                 or stristr(strtolower($file->getFilename()),'gif')
-	               ) {
-                      $this->_with_slimbox = true;
-	                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-	               }else{
-	                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
-	               }
-	           }
+               if ( stristr(strtolower($file->getFilename()),'png')
+                    or stristr(strtolower($file->getFilename()),'jpg')
+                    or stristr(strtolower($file->getFilename()),'jpeg')
+                    or stristr(strtolower($file->getFilename()),'gif')
+                  ) {
+                  $this->_with_slimbox = true;
+                  $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+               }else{
+                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+               }
+            }
          } else {
             $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
          }

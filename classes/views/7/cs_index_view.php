@@ -46,6 +46,8 @@ class cs_index_view extends cs_view {
    var $_available_buzzwords = NULL;
    var $_include_mootools = false;
    var $_show_netnavigation_box = true;
+   protected $_display_mode = NULL;
+   protected $_xml_for_flash = '';
 
    /**
     * int - begin of list
@@ -192,6 +194,14 @@ class cs_index_view extends cs_view {
       $this->_clipboard_mode = true;
    }
    // @segment-end 9157
+
+   function setDisplayMode ( $value ) {
+      $this->_display_mode = $value;
+   }
+
+   function setXmlForFlash ( $value ) {
+      $this->_xml_for_flash = $value;
+   }
 
    function setColspan($span){
       $this->_colspan = $span;
@@ -1792,28 +1802,36 @@ EOD;
          $html .='</div>'.LF;
          $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom;">'.LF;
       }
-      $params = $this->_environment->getCurrentParameterArray();
-      $html .= '<form style="padding:0px; margin:0px;" action="';
-      $html .= curl($this->_environment->getCurrentContextID(),
-                    $this->_environment->getCurrentModule(),
-                    $this->_environment->getCurrentFunction(),
-                    $params
-                   ).'" method="post">'.LF;
-      if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
+      if ( !empty($this->_display_mode)
+           and $this->_display_mode == 'flash'
+           and $this->_environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
+         ) {
+         // TBD: Flash einbetten
+         $html .= LF.LF.$this->_xml_for_flash.LF.LF; // test
+      } else {
+         $params = $this->_environment->getCurrentParameterArray();
+         $html .= '<form style="padding:0px; margin:0px;" action="';
+         $html .= curl($this->_environment->getCurrentContextID(),
+                       $this->_environment->getCurrentModule(),
+                       $this->_environment->getCurrentFunction(),
+                       $params
+                      ).'" method="post">'.LF;
+         if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
+            $html .= '   <input type="hidden" name="ref_iid" value="'.$this->_text_as_form($this->getRefIID()).'"/>'.LF;
+         }
+         $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
+         $html .= $this->_getTableheadAsHTML();
+         if (!$this->_clipboard_mode){
+            $html .= $this->_getContentAsHTML();
+         }else{
+            $html .= $this->_getClipboardContentAsHTML();
+         }
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .= $this->_getTablefootAsHTML();
+         }
+         $html .= '</table>'.LF;
+         $html .= '</form>'.LF;
       }
-      $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
-      $html .= $this->_getTableheadAsHTML();
-      if (!$this->_clipboard_mode){
-         $html .= $this->_getContentAsHTML();
-      }else{
-         $html .= $this->_getClipboardContentAsHTML();
-      }
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .= $this->_getTablefootAsHTML();
-      }
-      $html .= '</table>'.LF;
-      $html .= '</form>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;

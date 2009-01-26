@@ -1847,5 +1847,77 @@ class cs_item {
    function setMaterialList ($value) {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
    }
+
+   public function getDataAsXMLForFlash () {
+      $type = $this->getType();
+      if ( $type == CS_LABEL_TYPE ) {
+         $type = $item->getLabelType();
+      }
+
+      $retour  = '      <item>'.LF;
+      if ( !empty($type) ) {
+         $retour .= '         <type><![CDATA['.$type.']]></type>'.LF;
+      }
+      foreach ($this->_data as $key => $value) {
+         if ( $key == 'item_id'
+              or $key == 'title' or $key == 'name'
+            ) {
+            if ( $key == 'item_id' ) {
+               $key = 'id';
+            }
+            $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
+         }
+      }
+
+      # url
+      $retour .= '         <url><![CDATA['.$this->getItemUrl().']]></url>'.LF;
+
+      # image
+      $image = '';
+      $file_list = $this->getFileList();
+      if ( isset($file_list) and $file_list->isNotEmpty() ) {
+         $file_item = $file_list->getFirst();
+         while ( $file_item ) {
+            if ( $file_item->isImage() ) {
+               $image = $file_item->getItemUrl();
+            }
+            $file_item = $file_list->getNext();
+         }
+      }
+      if ( !empty($image) ) {
+         $retour .= '         <image><![CDATA['.$image.']]></image>'.LF;
+      }
+
+      $retour .= '      </item>'.LF;
+      return $retour;
+   }
+
+   public function getItemUrl () {
+      $type = $this->getType();
+      $fct = 'detail';
+      $params = array();
+      if ( $type == CS_FILE_TYPE ) {
+         $mod = type2Module(CS_MATERIAL_TYPE);
+         $fct = 'getfile';
+         $params['iid'] = $this->getFileID();
+      } elseif ( $type == CS_LABEL_TYPE ) {
+         $mod = type2Module($item->getLabelType());
+         $params['iid'] = $this->getItemID();
+      } else {
+         $mod = type2Module($type);
+         $params['iid'] = $this->getItemID();
+      }
+      $session_item = $this->_environment->getSessionItem();
+      if ( isset($session_item)
+           and $session_item->issetValue('cookie')
+           and $session_item->issetValue('cookie') != 1
+         ) {
+         $params['SID'] = $session_item->getSessionID();
+      }
+      global $c_commsy_domain;
+      global $c_commsy_url_path;
+      $retour = $c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$this->getContextID(),$mod, $fct, $params);
+      return $retour;
+   }
 }
 ?>

@@ -117,7 +117,7 @@ if ( isset($_GET['seldisplay_mode']) ) {
 $month = '';
 $year = '';
 
-if ($seldisplay_mode == 'calendar'){
+if ( $seldisplay_mode == 'calendar' ) {
 
    // Initialisierung der benötigten Werte
    $day = date("d");

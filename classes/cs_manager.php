@@ -1270,5 +1270,32 @@ class cs_manager {
       }
       return $retour;
    }
+
+   public function getAsXMLForFlash () {
+      $retour = '';
+      $list = $this->get();
+      if ( $list->isNotEmpty() ) {
+         $item = $list->getFirst();
+         $type = $item->getType();
+         if ( $type == CS_LABEL_TYPE ) {
+            $type = $item->getLabelType();
+         }
+         while ($item) {
+            $retour .= $item->getDataAsXMLForFlash();
+            $item = $list->getNext();
+         }
+         $retour2 = $retour;
+         $retour  = '<?xml version="1.0"?>'.LF;
+         $retour .= '<commsy>'.LF;
+         $retour .= '   <list>'.LF;
+         if ( !empty($type) ) {
+            $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
+         }
+         $retour .= $retour2;
+         $retour .= '   </list>'.LF;
+         $retour .= '</commsy>'.LF;
+      }
+      return $retour;
+   }
 }
 ?>

@@ -92,6 +92,22 @@ if ( isset($_POST['delete_option']) ) {
    $delete_command = '';
 }
 
+// Get the current context
+$context_item = $environment->getCurrentContextItem();
+
+// select display mode
+#$seldisplay_mode = $context_item->getMaterialPresentationStatus();
+if ( isset($_GET['seldisplay_mode']) ) {
+   $seldisplay_mode = $_GET['seldisplay_mode'];
+   $session->setValue($environment->getCurrentContextID().'_material_seldisplay_mode',$seldisplay_mode);
+} elseif ( !empty($_POST['seldisplay_mode']) ) {
+   $seldisplay_mode = $_POST['seldisplay_mode'];
+   $session->setValue($environment->getCurrentContextID().'_material_seldisplay_mode',$seldisplay_mode);
+} elseif ( $session->issetValue($environment->getCurrentContextID().'_material_seldisplay_mode') ) {
+   $seldisplay_mode = $session->getValue($environment->getCurrentContextID().'_material_seldisplay_mode');
+} else {
+   $seldisplay_mode = '';
+}
 
 // Find clipboard id array
 if ( $session->issetValue('material_clipboard') ) {
@@ -108,11 +124,10 @@ if ( $mode == 'formattach' or $mode == 'detailattach' ) {
 
 /*** Start of list display ***/
 
-// Get the current context
-$context_item = $environment->getCurrentContextItem();
-
 // Find current browsing starting point
-if ( isset($_GET['from']) ) {
+if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
+   $from = 1;
+} elseif ( isset($_GET['from']) ) {
    $from = $_GET['from'];
 } else {
    $from = 1;
@@ -120,13 +135,16 @@ if ( isset($_GET['from']) ) {
 
 // Find current browsing interval
 // The browsing interval is applied to all rubrics
-if ( isset($_GET['interval']) ) {
+if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
+   $interval = 0;
+} elseif ( isset($_GET['interval']) ) {
    $interval = $_GET['interval'];
 } elseif ( $session->issetValue('interval') ) {
    $interval = $session->getValue('interval');
 } else{
    $interval = $context_item->getListLength();
 }
+
 // Find current sort key
 if ( isset($_GET['sort']) ) {
    $sort = $_GET['sort'];
@@ -541,8 +559,6 @@ if ( $context_item->isProjectRoom() ) {
 
 $view->setSelectedTagArray($seltag_array);
 
-
-
 // Set data for view
 $view->setList($list);
 $view->setCountAllShown($count_all_shown);
@@ -554,13 +570,16 @@ $view->setInterval($interval);
 $view->setActivationLimit($sel_activating_status);
 /********************/
 
-
 $view->setSortKey($sort);
 $view->setSearchText($search);
 $view->setAttributeLimit($attribute_limit);
 $view->setAvailableBuzzwords($buzzword_list);
 $view->setSelectedBuzzword($selbuzzword);
 $view->setClipboardIDArray($clipboard_id_array);
+if ( !empty($seldisplay_mode) and $display_mode == 'flash' ) {
+   $view->setDisplayMode($seldisplay_mode);
+   $view->setXMLForFlash($material_manager->getAsXMLForFlash());
+}
 
 if ( !empty($ref_iid) and $mode =='attached'){
    $item_manager = $environment->getItemManager();
@@ -614,5 +633,4 @@ $index_search_parameter_array['seltag_array'] = $seltag_array;
 $index_search_parameter_array['sel_activating_status'] = $sel_activating_status;
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array',$index_search_parameter_array);
 $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids',$ids);
-
 ?>
