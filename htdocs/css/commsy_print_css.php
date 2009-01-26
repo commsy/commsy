@@ -84,6 +84,10 @@ img {
    visibility:hidden;
 }
 
+form, #action_box, h2.pagetitle {
+   visibility: hidden;
+}
+
 
 /* Hyperlinks*/
 a {
