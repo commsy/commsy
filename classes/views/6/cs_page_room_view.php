@@ -109,7 +109,7 @@ class cs_page_room_view extends cs_page_view {
    function cs_page_room_view ($params) {
       $this->cs_page_view($params);
       if (file_exists('htdocs/'.$this->_environment->getCurrentPortalID().'/commsy.css') ){
-         $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images/';
+         $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images';
       }
    }
 
