@@ -578,7 +578,6 @@ $view->setSelectedBuzzword($selbuzzword);
 $view->setClipboardIDArray($clipboard_id_array);
 if ( !empty($seldisplay_mode) and $display_mode == 'flash' ) {
    $view->setDisplayMode($seldisplay_mode);
-   $view->setXMLForFlash($material_manager->getAsXMLForFlash());
 }
 
 if ( !empty($ref_iid) and $mode =='attached'){

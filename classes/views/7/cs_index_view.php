@@ -47,7 +47,6 @@ class cs_index_view extends cs_view {
    var $_include_mootools = false;
    var $_show_netnavigation_box = true;
    protected $_display_mode = NULL;
-   protected $_xml_for_flash = '';
 
    /**
     * int - begin of list
@@ -197,10 +196,6 @@ class cs_index_view extends cs_view {
 
    function setDisplayMode ( $value ) {
       $this->_display_mode = $value;
-   }
-
-   function setXmlForFlash ( $value ) {
-      $this->_xml_for_flash = $value;
    }
 
    function setColspan($span){
@@ -1807,7 +1802,6 @@ EOD;
            and $this->_environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
          ) {
          // TBD: Flash einbetten
-         $html .= LF.LF.$this->_xml_for_flash.LF.LF; // test
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';
