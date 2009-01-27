@@ -790,7 +790,13 @@ if ( $show_agb_again ) {
              )
           ){
          include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
-#          include('pages/'.$current_module.'_'.$current_function.'.php');
+      }elseif ($current_function =='index' and $current_context->isDesign7()
+          and (
+                $current_module == CS_DATE_TYPE
+                or $current_module == CS_TODO_TYPE
+             )
+          ){
+         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
       }else{
          include('pages/'.$current_module.'_'.$current_function.'.php');
       }

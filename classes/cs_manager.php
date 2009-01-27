@@ -105,6 +105,7 @@ class cs_manager {
 
    var $_tag_limit = NULL;
    var $_buzzword_limit = NULL;
+   var $_user_limit = NULL;
 
    /**
    * Array containing negative search limits (words that mustn't occure)
@@ -317,6 +318,10 @@ class cs_manager {
       return $search_limit_query;
    }
 
+   function setUserLimit ($limit) {
+      $this->_user_limit = (int)$limit;
+   }
+
    /** set context limit
     * this method sets a context limit
     *
@@ -335,6 +340,7 @@ class cs_manager {
          case CS_TOPIC_TYPE: $this->setTopicLimit($limit);break;
          case CS_INSTITUTION_TYPE: $this->setInstitutionLimit($limit);break;
          case CS_GROUP_TYPE: $this->setGroupLimit($limit);break;
+         case CS_USER_TYPE: $this->setUserLimit($limit);break;
       }
    }
 

@@ -37,33 +37,12 @@ include_once('functions/text_functions.php');
 
 class cs_todos_manager extends cs_manager {
 
-   /**
-    * integer - containing the age of todo as a limit
-    */
    var $_age_limit = NULL;
-
    var $_future_limit = NULL;
-
-   /**
-    * integer - containing a start point for the select todo
-    */
    var $_from_limit = NULL;
-
-   /**
-    * integer - containing how many todo the select statement should get
-    */
    var $_interval_limit = NULL;
-
-   /**
-    * string - containing a string as a search limit
-    */
    var $_search_limit = NULL;
-
-   /**
-    *  array - containing an id-array as search limit
-    */
    var $_id_array_limit = array();
-
    var $_group_limit = NULL;
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
@@ -93,6 +72,7 @@ class cs_todos_manager extends cs_manager {
       $this->_search_limit = NULL;
       $this->_group_limit = NULL;
       $this->_topic_limit = NULL;
+      $this->_user_limit = NULL;
       $this->_sort_order = NULL;
    }
 
@@ -162,6 +142,11 @@ class cs_todos_manager extends cs_manager {
      if ( isset($this->_group_limit) ) {
         $query .= ' LEFT JOIN link_items AS l31 ON ( l31.deletion_date IS NULL AND ((l31.first_item_id=todos.item_id AND l31.second_item_type="'.CS_GROUP_TYPE.'"))) ';
         $query .= ' LEFT JOIN link_items AS l32 ON ( l32.deletion_date IS NULL AND ((l32.second_item_id=todos.item_id AND l32.first_item_type="'.CS_GROUP_TYPE.'"))) ';
+     }
+
+     if ( isset($this->_user_limit) ) {
+        $query .= ' LEFT JOIN link_items AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id=todos.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN link_items AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id=todos.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
      }
 
      if ( isset($this->_tag_limit) ) {
@@ -240,6 +225,15 @@ class cs_todos_manager extends cs_manager {
          }else{
             $query .= ' AND ((l31.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l31.second_item_id = "'.encode(AS_DB,$this->_group_limit).'")';
             $query .= ' OR (l32.first_item_id = "'.encode(AS_DB,$this->_group_limit).'" OR l32.second_item_id = "'.encode(AS_DB,$this->_group_limit).'"))';
+         }
+      }
+      if ( isset($this->_user_limit) ){
+         if($this->_user_limit == -1){
+            $query .= ' AND (user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL)';
+            $query .= ' AND (user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL)';
+         }else{
+            $query .= ' AND ((user_limit1.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit1.second_item_id = "'.encode(AS_DB,$this->_user_limit).'")';
+            $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB,$this->_user_limit).'"))';
          }
       }
       if ( isset($this->_tag_limit) ) {
@@ -402,6 +396,7 @@ class cs_todos_manager extends cs_manager {
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
                'date="'.encode(AS_DB,$item->getDate()).'",'.
                'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
+               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
@@ -470,6 +465,7 @@ class cs_todos_manager extends cs_manager {
          $query .= 'date="'.encode(AS_DB,$item->getDate()).'",';
       }
       $query .= 'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
+               'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'"';
       $result = $this->_db_connector->performQuery($query);

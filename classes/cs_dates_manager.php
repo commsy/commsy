@@ -207,6 +207,10 @@ class cs_dates_manager extends cs_manager {
          $query .= ' LEFT JOIN link_items AS l121 ON ( l121.deletion_date IS NULL AND ((l121.first_item_id=dates.item_id AND l121.second_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
          $query .= ' LEFT JOIN link_items AS l122 ON ( l122.deletion_date IS NULL AND ((l122.second_item_id=dates.item_id AND l122.first_item_type="'.CS_INSTITUTION_TYPE.'"))) ';
       }
+     if ( isset($this->_user_limit) ) {
+        $query .= ' LEFT JOIN link_items AS user_limit1 ON ( user_limit1.deletion_date IS NULL AND ((user_limit1.first_item_id=dates.item_id AND user_limit1.second_item_type="'.CS_USER_TYPE.'"))) ';
+        $query .= ' LEFT JOIN link_items AS user_limit2 ON ( user_limit2.deletion_date IS NULL AND ((user_limit2.second_item_id=dates.item_id AND user_limit2.first_item_type="'.CS_USER_TYPE.'"))) ';
+     }
      if ( isset($this->_tag_limit) ) {
         $tag_id_array = $this->_getTagIDArrayByTagID($this->_tag_limit);
         $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=dates.item_id AND l41.second_item_type="'.CS_TAG_TYPE.'"))) ';
@@ -292,6 +296,15 @@ class cs_dates_manager extends cs_manager {
          }else{
             $query .= ' AND ((l121.first_item_id = "'.encode(AS_DB,$this->_institution_limit).'" OR l121.second_item_id = "'.encode(AS_DB,$this->_institution_limit).'")';
             $query .= ' OR (l122.second_item_id = "'.encode(AS_DB,$this->_institution_limit).'" OR l122.first_item_id = "'.encode(AS_DB,$this->_institution_limit).'"))';
+         }
+      }
+      if ( isset($this->_user_limit) ){
+         if($this->_user_limit == -1){
+            $query .= ' AND (user_limit1.first_item_id IS NULL AND user_limit1.second_item_id IS NULL)';
+            $query .= ' AND (user_limit2.first_item_id IS NULL AND user_limit2.second_item_id IS NULL)';
+         }else{
+            $query .= ' AND ((user_limit1.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit1.second_item_id = "'.encode(AS_DB,$this->_user_limit).'")';
+            $query .= ' OR (user_limit2.first_item_id = "'.encode(AS_DB,$this->_user_limit).'" OR user_limit2.second_item_id = "'.encode(AS_DB,$this->_user_limit).'"))';
          }
       }
 

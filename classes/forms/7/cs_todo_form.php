@@ -265,6 +265,10 @@ class cs_todo_form extends cs_rubric_form {
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
                               getMessage('TODO_TIME_DAY_END_DESC'),true,false);
+
+      $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
+
+
       $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
 
@@ -410,6 +414,7 @@ class cs_todo_form extends cs_rubric_form {
          $this->_values['description'] = $this->_item->getDescription();
          $this->_values['public'] = $this->_item->isPublic();
          $this->_values['status'] = $this->_item->getInternalStatus();
+         $this->_values['minutes'] = $this->_item->getPlannedTime();
          if (!$this->_item->getDate() == '') {
             $this->_values['end_date_time'][] = getDateInLang($this->_item->getDate());
          } else {

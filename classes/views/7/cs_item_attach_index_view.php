@@ -555,7 +555,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $first = '';
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
+         if ( $link_name[1] != 'none'
+              and ($link_name[0] != CS_USER_TYPE
+                 or ($this->_environment->getCurrentModule() != CS_MATERIAL_TYPE
+                     and $this->_environment->getCurrentModule() != CS_DISCUSSION_TYPE
+                     and $this->_environment->getCurrentModule() != CS_ANNOUNCEMENT_TYPE
+                     and $this->_environment->getCurrentModule() != CS_TOPIC_TYPE
+                    )
+                 )
+            ) {
             $html .= '      <option value="'.$link_name[0].'"';
             if ( isset($selrubric) and $selrubric == $link_name[0] ) {
                $html .= ' selected="selected"';

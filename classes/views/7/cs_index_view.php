@@ -41,6 +41,8 @@ class cs_index_view extends cs_view {
    var $_available_topics = NULL;
    var $_selected_group = NULL;
    var $_available_groups = NULL;
+   var $_selected_user = NULL;
+   var $_available_user = NULL;
    var $_selected_tag_array = array();
    var $_selected_buzzword = NULL;
    var $_available_buzzwords = NULL;
@@ -409,6 +411,23 @@ class cs_index_view extends cs_view {
 
    function getAvailableGroups () {
       return $this->_available_groups;
+   }
+
+   function setSelectedUser ($value) {
+       $this->_selected_user =$value;;
+   }
+
+   function getSelectedUser () {
+      return $this->_selected_user;
+   }
+   // @segment-end 81876
+
+   function setAvailableUser ($user_list) {
+      $this->_available_user = $user_list;
+   }
+
+   function getAvailableUser () {
+      return $this->_available_user;
    }
 
    function setSelectedInstitution ($institution_id) {
@@ -1115,6 +1134,7 @@ EOD;
       if ( isset($params['seltag'])
        or isset($params['selbuzzword'])
        or isset($params['selgroup'])
+       or isset($params['seluser'])
        or isset($params['selinstitution'])
        or isset($params['seltopic'])
        or isset($params['search'])
@@ -1283,6 +1303,33 @@ EOD;
             $html_text .='</tr>'.LF;
             $html .= $html_text;
          }
+         if ( isset($params['seluser']) and !empty($params['seluser']) ){
+            $html_text ='<tr>'.LF;
+            $html_text .='<td>'.LF;
+            $html_text .= '<span class="infocolor">'.getMessage('COMMON_USER').': </span>';
+            $html_text .='</td>'.LF;
+            $html_text .='<td style="text-align:right;">'.LF;
+            if ($params['selgroup'] == '-1'){
+               $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
+            }else{
+               $user_manager = $this->_environment->getUserManager();
+               $user_item = $user_manager->getItem($params['seluser']);
+               $link_params = array();
+               $link_params['iid'] = $user_item->getItemID();
+               $html_text .=  ahref_curl($this->_environment->getCurrentContextID(),
+                                CS_USER_TYPE,
+                                'detail',
+                                $link_params,
+                                chunkText($user_item->getFullName(),17),$user_item->getFullName()).LF;
+            }
+            $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+            $new_params = $params;
+            unset($new_params['seluser']);
+            $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+            $html_text .='</td>'.LF;
+            $html_text .='</tr>'.LF;
+            $html .= $html_text;
+         }
          if ( isset($params['selinstitution']) and !empty($params['selinstitution']) ){
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
@@ -1413,7 +1460,7 @@ EOD;
             break;
          case 'DATE':
             $tempMessage = getMessage('DATE_INDEX');
-            $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>'.$tempMessage;
+            $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'DISCUSSION':
             $tempMessage = getMessage('DISCUSSION_INDEX');
@@ -1445,15 +1492,15 @@ EOD;
             break;
          case 'TODO':
             $tempMessage = getMessage('TODO_INDEX');
-            $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>'.$tempMessage;
+            $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'TOPIC':
             $tempMessage = getMessage('TOPIC_INDEX');
-            $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>'.$tempMessage;
+            $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          case 'USER':
             $tempMessage = getMessage('USER_INDEX');
-            $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>'.$tempMessage;
+            $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
             break;
          default:
             $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(685) ');
@@ -2757,6 +2804,7 @@ EOD;
          case CS_TOPIC_TYPE: $this->setAvailableTopics($rubric_list);break;
          case CS_INSTITUTION_TYPE: $this->setAvailableInstitutions($rubric_list);break;
          case CS_GROUP_TYPE: $this->setAvailableGroups($rubric_list);break;
+         case CS_USER_TYPE: $this->setAvailableUser($rubric_list);break;
       }
    }
    // @segment-end 86697
@@ -2767,6 +2815,7 @@ EOD;
          case CS_TOPIC_TYPE: $this->setSelectedTopic($value);break;
          case CS_INSTITUTION_TYPE: $this->setSelectedInstitution($value);break;
          case CS_GROUP_TYPE: $this->setSelectedGroup($value);break;
+         case CS_USER_TYPE: $this->setSelectedUSer($value);break;
       }
    }
    // @segment-end 28490
@@ -2776,6 +2825,7 @@ EOD;
          case CS_TOPIC_TYPE: return $this->getAvailableTopics();break;
          case CS_INSTITUTION_TYPE: return $this->getAvailableInstitutions();break;
          case CS_GROUP_TYPE: return $this->getAvailableGroups();break;
+         case CS_USER_TYPE: return $this->getAvailableUser();break;
       }
    }
 
@@ -2784,6 +2834,7 @@ EOD;
          case CS_TOPIC_TYPE: return $this->getSelectedTopic();break;
          case CS_INSTITUTION_TYPE: return $this->getSelectedInstitution();break;
          case CS_GROUP_TYPE: return $this->getSelectedGroup();break;
+         case CS_USER_TYPE: return $this->getSelectedUser();break;
       }
    }
 
@@ -2807,7 +2858,14 @@ EOD;
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' ) {
-            if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+            if ($context_item->withRubric($link_name[0])
+                and (
+                   $context_item->_is_perspective($link_name[0]) or
+                   ($link_name[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE) or
+                   ($link_name[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE)
+                )
+            ) {
+
                $list = $this->getAvailableRubric($link_name[0]);
                $selrubric = $this->getSelectedRubric($link_name[0]);
                $temp_link = strtoupper($link_name[0]);
@@ -2822,8 +2880,11 @@ EOD;
                   case 'TOPIC':
                      $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TOPIC').'<br />'.LF;
                      break;
+                  case 'USER':
+                     $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_USER').'<br />'.LF;
+                     break;
                   default:
-                     $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1503) ';
+                     $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(2846) ';
                      break;
                }
 
@@ -2841,7 +2902,11 @@ EOD;
                      if ( isset($selrubric) and $selrubric == $sel_item->getItemID() ) {
                         $html .= ' selected="selected"';
                      }
-                     $text = $this->_Name2SelectOption($sel_item->getTitle());
+                     if ($link_name[0] == CS_USER_TYPE){
+                        $text = $this->_Name2SelectOption($sel_item->getFullName());
+                     }else{
+                        $text = $this->_Name2SelectOption($sel_item->getTitle());
+                     }
                      $html .= '>'.$text.'</option>'.LF;
                      $sel_item = $list->getNext();
                  }

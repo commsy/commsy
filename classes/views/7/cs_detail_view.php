@@ -1797,7 +1797,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
                      break;
                   case 'USER':
-                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
+                     $text .= $this->_translator->getMessage('COMMON_USER');
                      break;
                   default:
                      $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
@@ -1835,11 +1835,16 @@ class cs_detail_view extends cs_view {
                    }else{
                       $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                    }
+                   if ($module == CS_USER_TYPE){
+                       $link_title = chunkText($linked_item->getFullName(),35);
+                   }else{
+                       $link_title = chunkText($linked_item->getTitle(),35);
+                   }
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($linked_item->getTitle(),35),
+                                       $link_title,
                                        $link_creator_text,
                                        '_self',
                                        $fragment,
@@ -1852,11 +1857,16 @@ class cs_detail_view extends cs_view {
                                        true);
                   unset($params);
                }else{
+                   if ($module == CS_USER_TYPE){
+                       $link_title = chunkText($linked_item->getFullName(),35);
+                   }else{
+                       $link_title = chunkText($linked_item->getTitle(),35);
+                   }
                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,
-                                       chunkText($linked_item->getTitle(),35),
+                                       $link_title,
                                        $link_creator_text,
                                        '_self',
                                        $fragment);

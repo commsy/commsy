@@ -2618,7 +2618,11 @@ class cs_form_view extends cs_view {
             $text = getRubricMessageTageName($type);
             $text .= ' - '.$item->getTitle();
             $html .= '   <li  style="padding:0px 3px;">';
-            $html .= '<a title="'.$text.'">'.chunkText($item->getTitle(),35).'</a>';
+            if ($type == CS_USER_TYPE){
+               $html .= '<a title="'.$text.'">'.chunkText($item->getFullName(),35).'</a>';
+            }else{
+               $html .= '<a title="'.$text.'">'.chunkText($item->getTitle(),35).'</a>';
+            }
             $html .= '</li>'.LF;
             $linked_item = $linked_items->getNext();
          }

@@ -1364,7 +1364,10 @@ class cs_item {
       $type_array = array();
       foreach ( $rubrics as $rubric ) {
          $rubric_array = explode('_', $rubric);
-         if ( $rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) {
+         if ( ($rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE)
+         ) {
             $type_array[] = $rubric_array[0];
          }
       }
@@ -1489,13 +1492,17 @@ class cs_item {
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' ) {
-            if ( !($this->_environment->inPrivateRoom() and $link_name =='user') ){
+            if ( !($this->_environment->inPrivateRoom() and $link_name =='user')){
                $rubric_array[] = $link_name[0];
             }
          }
       }
       foreach($rubric_array as $rubric){
-         if ($rubric !=CS_USER_TYPE){
+         if ($rubric !=CS_USER_TYPE  or
+               ($this->_environment->getCurrentModule() == CS_DATE_TYPE or
+                 $this->_environment->getCurrentModule() == CS_TODO_TYPE
+               )
+            ){
             if (isset($rubric_sorted_array[$rubric])){
                $this->_setValue($rubric, $rubric_sorted_array[$rubric], FALSE);
             }else{

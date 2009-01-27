@@ -189,6 +189,18 @@ class cs_todo_item extends cs_item {
       }
    }
 
+   function setPlannedTime($time){
+      $this->_setValue('minutes', $time);
+   }
+
+   function getPlannedTime(){
+      $time = $this->_getValue('minutes');
+      if (!isset($time) or empty($time)){
+         $time = 0;
+      }
+      return $time;
+   }
+
 
   /** save todo item
    * this methode save the todo item into the database

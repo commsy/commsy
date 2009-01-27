@@ -53,6 +53,91 @@ var $_clipboard_id_array=array();
       return $this->_clipboard_id_array;
    }
 
+
+   /** get all the actions for this detail view as HTML
+    * this method returns the actions in HTML-Code. It checks the access rights!
+    *
+    * @return string navigation as HMTL
+    *
+    * @author CommSy Development Group
+    */
+   function _getDetailItemActionsAsHTML ($item) {
+       $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $mod = $this->_with_modifying_actions;
+      $html  = '';
+
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                          $this->_environment->getCurrentModule(),
+                                          'edit',
+                                          $params,
+                                          $image,
+                                          getMessage('COMMON_EDIT_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      // Enter or leave the topic
+      if ( $item->isParticipant($current_user) ) {
+         if ($mod) {
+            $params['iid'] = $item->getItemID();
+            $params['date_option'] = '2';
+            $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('DATE_LEAVE').'"/>';
+            $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       $this->_environment->getCurrentModule(),
+                                       'detail',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('DATE_LEAVE')).LF;
+         } else {
+            $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         }
+      } else {
+         if ($current_user->isUser() and $mod ) {
+            $params['iid'] = $item->getItemID();
+            $params['date_option'] = '1';
+            $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('DATE_ENTER').'"/>';
+            $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                       $this->_environment->getCurrentModule(),
+                                       'detail',
+                                       $params,
+                                       $image,
+                                       $this->_translator->getMessage('DATE_ENTER')).LF;
+         } else {
+            $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         }
+      }
+      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['action'] = 'delete';
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                     $this->_environment->getCurrentModule(),
+                                     'detail',
+                                     $params,
+                                     $image,
+                                     getMessage('COMMON_DELETE_ITEM')).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+
+
+      return $html.'&nbsp;&nbsp;&nbsp;';
+   }
+
+
    /** get the single entry of the list view as HTML
     * this method returns the single entry in HTML-Code
     *
@@ -198,6 +283,48 @@ var $_clipboard_id_array=array();
          $formal_data[] = $temp_array;
       }
 
+      if ( !empty($formal_data) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data);
+         $html .= BRLF;
+      }
+
+      // Members
+      $user = $this->_environment->getCurrentUser();
+      $member_html = '';
+      $members = $item->getParticipantsItemList();
+      if ( $members->isEmpty() ) {
+         $member_html .= '   '.$this->_translator->getMessage('TODO_NO_PROCESSOR').LF;
+      } else {
+         $member = $members->getFirst();
+         $count = $members->getCount();
+         $counter = 0;
+         while ($member) {
+            $counter++;
+            if ( $member->isUser() ){
+               $linktext = $member->getFullname();
+               if ( $member->maySee($user) ) {
+                  $params = array();
+                  $params['iid'] = $member->getItemID();
+                  $member_html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                'user',
+                                'detail',
+                                $params,
+                                $linktext);
+                  unset($params);
+               } else {
+                  $member_html .= '<span class="disabled">'.$linktext.'</span>'.LF;
+               }
+               if ( $counter != $count) {
+                  $member_html .= ', ';
+               }
+            }
+            $member = $members->getNext();
+         }
+      }
+      $temp_array[0] = $this->_translator->getMessage('DATE_PARTICIPANTS');
+      $temp_array[1] = $member_html;
+      $formal_data = array();
+      $formal_data[] = $temp_array;
       if ( !empty($formal_data) ) {
          $html .= $this->_getFormalDataAsHTML($formal_data);
          $html .= BRLF;

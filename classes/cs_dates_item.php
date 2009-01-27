@@ -305,6 +305,54 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('date_mode')==1;
    }
 
+   function getParticipantsItemList(){
+      $members = new cs_list();
+      $member_ids = $this->getLinkedItemIDArray(CS_USER_TYPE);
+      if ( !empty($member_ids) ){
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setIDArrayLimit($member_ids);
+         $user_manager->select();
+         $members = $user_manager->get();
+      }        // returns a cs_list of user_items
+      return $members;
+   }
+
+   function isParticipant($user) {
+      $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
+      $link_member_item = $link_member_list->getFirst();
+      $is_member = false;
+      while ( $link_member_item ) {
+         $linked_user_id = $link_member_item->getLinkedItemID($this);
+         if ( $user->getItemID() == $linked_user_id ) {
+            $is_member = true;
+            break;
+         }
+         $link_member_item = $link_member_list->getNext();
+      }
+      return $is_member;
+   }
+
+   function addParticipant ($user) {
+      if ( !$this->isParticipant($user) ) {
+         $link_manager = $this->_environment->getLinkItemManager();
+         $link_item = $link_manager->getNewItem();
+         $link_item->setFirstLinkedItem($this);
+         $link_item->setSecondLinkedItem($user);
+         $link_item->save();
+      }
+   }
+
+   function removeParticipant ($user) {
+      $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
+      $link_member_item = $link_member_list->getFirst();
+      while ( $link_member_item ) {
+         $linked_user_id = $link_member_item->getLinkedItemID($this);
+         if ( $user->getItemID() == $linked_user_id ) {
+            $link_member_item->delete();
+         }
+         $link_member_item = $link_member_list->getNext();
+      }
+   }
 
 
    /** Checks the data of the item.
