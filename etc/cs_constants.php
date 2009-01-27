@@ -45,6 +45,7 @@ define('CS_ANNOUNCEMENT_TYPE','announcement');
 define('CS_ANNOTATION_TYPE','annotation');
 define('CS_USER_TYPE','user');
 define('CS_TODO_TYPE','todo');
+define('CS_STEP_TYPE','step');
 define('CS_DATE_TYPE','date');
 define('CS_DISCUSSION_TYPE','discussion');
 define('CS_GROUP_TYPE','group');

@@ -569,6 +569,10 @@ class cs_environment {
       return $this->_getInstance('cs_section_manager');
    }
 
+   function getStepManager() {
+      return $this->_getInstance('cs_step_manager');
+   }
+
   /** get instance of cs_discussion_manager
    *
    * @return cs_discussion_manager

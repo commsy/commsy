@@ -1335,12 +1335,17 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getDiscussionFormAsHTML();
             $html .= '</div>'.LF;
          }
+          if ($rubric == CS_TODO_TYPE and $this->_with_modifying_actions ) {
+            $html .= $this->_getTodoFormAsHTML();
+            $html .= '</div>'.LF;
+         }
       }
       if ($rubric != CS_GROUP_TYPE
       and $rubric != CS_TOPIC_TYPE
       and $rubric != CS_INSTITUTION_TYPE
       and $rubric != CS_USER_TYPE
       and $rubric != CS_DISCUSSION_TYPE
+      and $rubric != CS_TODO_TYPE
       and $this->_environment->getCurrentModule() !='account'){
          if (!$current_context->isPrivateRoom()){
             $html .= $this->_getAnnotationsAsHTML();

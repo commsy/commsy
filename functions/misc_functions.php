@@ -604,6 +604,7 @@ function isURLValid () {
         $module != 'datescalendar' and
         $module != 'discussion' and
         $module != 'discarticle' and
+        $module != 'step' and
         $module != 'chat' and
         $module != 'material' and
         $module != 'buzzword' and
