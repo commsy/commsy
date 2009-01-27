@@ -100,11 +100,11 @@ table.detail td.value p {
 }
 
 .detail_discussion_entries{
-	padding-top:20px;
+   padding-top:20px;
 }
 
 .subitemtitle{
-	font-size: 12pt;
+   font-size: 12pt;
 }
 
 img.portrait {
@@ -181,7 +181,7 @@ div.sub_item_main{
 }
 
 #detail_content, .detail_content{
-	margin:0px;
+   margin:0px;
    padding:5px 5px;
    background-color: #FFFFFF;
    border: 1px solid <?php echo($color['tabs_background'])?>;
@@ -195,7 +195,7 @@ div.sub_item_main{
 }
 
 #detail_headline{
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
    ?>background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
@@ -203,7 +203,7 @@ div.sub_item_main{
 }
 
 #detail_annotation_headline{
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
    ?>background-color:<?php echo($color['tabs_background'])?>;
    color:<?php echo($color['headline_text'])?>;
@@ -237,7 +237,7 @@ table.creator_info td.key {
 }
 
 .ims_key{
-	color: <?php echo($color['myarea_section_title'])?>;
+   color: <?php echo($color['myarea_section_title'])?>;
 }
 
 .gauge-wrapper {
