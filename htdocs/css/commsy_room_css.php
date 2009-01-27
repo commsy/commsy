@@ -1,5 +1,26 @@
 <?php
-// $Id:
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
 
 header("Content-type: text/css");
 // load required classes
@@ -24,10 +45,10 @@ if (!empty($_GET['cid'])) {
 ?>
 
 #ie{
-	width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+   width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
 #ie_footer{
-	width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+   width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
 /*General Settings */
 body {
@@ -50,37 +71,37 @@ body {
 }
 
 img {
-	border: 0px;
+   border: 0px;
 }
 
 
 /*Hyperlinks*/
 a {
-	color: <?php echo($color['hyperlink'])?>;
-	text-decoration: none;
+   color: <?php echo($color['hyperlink'])?>;
+   text-decoration: none;
 }
 
 a:hover, a:active {
-	text-decoration: underline;
+   text-decoration: underline;
 }
 
 
 /* Font-Styles */
 .infocolor{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 .link_text{
-	color: <?php echo($color['hyperlink'])?>;
+   color: <?php echo($color['hyperlink'])?>;
 }
 
 .disabled, .key .infocolor{
-	color: <?php echo($color['disabled'])?>;
+   color: <?php echo($color['disabled'])?>;
 }
 
 .changed {
-	color: <?php echo($color['warning'])?>;
-	font-size: 8pt;
+   color: <?php echo($color['warning'])?>;
+   font-size: 8pt;
 }
 
 .infoborder{
@@ -98,12 +119,12 @@ a:hover, a:active {
 }
 
 .required {
-	color: <?php echo($color['warning'])?>;
-	font-weight: bold;
+   color: <?php echo($color['warning'])?>;
+   font-weight: bold;
 }
 
 .normal{
-	font-size: 10pt;
+   font-size: 10pt;
 }
 
 .handle_width{
@@ -118,19 +139,19 @@ a:hover, a:active {
 }
 
 .desc {
-	font-size: 8pt;
+   font-size: 8pt;
 }
 
 .bold{
-	font-size: 10pt;
-	font-weight: bold;
+   font-size: 10pt;
+   font-weight: bold;
 }
 
 
 /* Room Design */
 #main{
-	padding: 10px 0px 0px 0px;
-	width:100%;
+   padding: 10px 0px 0px 0px;
+   width:100%;
 }
 
 div.page_header_border{
@@ -155,16 +176,16 @@ div.page_header_border{
 }
 
 #page_header_logo table{
-	height:70px;
+   height:70px;
 }
 
 #page_header_logo td{
-	vertical-align:bottom;
+   vertical-align:bottom;
 }
 
 #page_header_logo h1{
-	font-size:24pt;
-	font-weight:bold;
+   font-size:24pt;
+   font-weight:bold;
 }
 
 div.page_header_personal_area{
@@ -177,7 +198,7 @@ div.page_header_personal_area{
 div.content_fader{
     margin:0px;
     padding:5px 10px 0px 10px;
-    <?
+    <?php
     if ($color['schema']=='SCHEMA_OWN'){
        if ($room->getBGImageFilename()){
            if ($room->issetBGImageRepeat()){
@@ -217,7 +238,7 @@ div.content{
     margin:0px;
     heigth:100%;
     background-color: <?php echo($color['content_background'])?>;
-	 border-right: 1px solid #C3C3C3;
+    border-right: 1px solid #C3C3C3;
 }
 
 div.content_display_width{
@@ -229,15 +250,15 @@ div.index_content_display_width{
 }
 
 div.frame_bottom {
-	position:relative;
-	font-size: 1px;
-	border-left: 2px solid #C3C3C3;
-	border-right: 2px solid #C3C3C3;
-	border-bottom: 2px solid #C3C3C3;
+   position:relative;
+   font-size: 1px;
+   border-left: 2px solid #C3C3C3;
+   border-right: 2px solid #C3C3C3;
+   border-bottom: 2px solid #C3C3C3;
 }
 
 div.content_bottom {
-	position:relative; width: 100%;
+   position:relative; width: 100%;
 }
 
 /*Panel Style*/
@@ -260,7 +281,7 @@ div.content_bottom {
 }
 
 #commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_background'])?>;
@@ -329,7 +350,7 @@ ul.item_list {
 /* Tab Style */
 #tabs_frame {
    position:relative;
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
@@ -339,9 +360,9 @@ ul.item_list {
 }
 
 #tablist{
-	margin:0px;
-	padding:0px 10px;
-	white-space:nowrap;
+   margin:0px;
+   padding:0px 10px;
+   white-space:nowrap;
 }
 
 #tabs {
@@ -384,7 +405,7 @@ a.navlist_current{
    padding:4px 6px 3px 6px;
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
@@ -394,7 +415,7 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
    text-decoration:none;
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
@@ -414,13 +435,13 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 
 /*Headlines*/
 h1{
-	margin:0px;
-	padding-left:0px 0px 0px 10px;
-	font-size:30px;
+   margin:0px;
+   padding-left:0px 0px 0px 10px;
+   font-size:30px;
 }
 
 .pagetitle{
-	margin:0px;
+   margin:0px;
    padding-top:0px;
    font-size: 16pt;
    font-weight:bold;
@@ -430,13 +451,13 @@ h1{
 
 /*Special Designs*/
 .top_of_page {
-	padding:5px 0px;
-	font-size: 8pt;
-	color: <?php echo($color['info_color'])?>;
+   padding:5px 0px;
+   font-size: 8pt;
+   color: <?php echo($color['info_color'])?>;
 }
 
 .top_of_page a{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 #form_formatting_box{
@@ -492,9 +513,9 @@ h1{
 }
 
 #action_box{
-	float:right;
-	margin-top:3px;
-	padding:2px;
+   float:right;
+   margin-top:3px;
+   padding:2px;
    background:url(images/action_fader.png) repeat-x;
 }
 
@@ -507,7 +528,7 @@ h1{
 }
 
 .config_headline{
-   <?
+   <?php
    echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_background'])?>;
@@ -525,5 +546,3 @@ table.configuration_table{
    border: 1px solid <?php echo($color['tabs_background'])?>;
    margin-bottom:20px;
 }
-
-

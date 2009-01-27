@@ -124,7 +124,7 @@ div.portal_tabs_frame {
    position:relative;
    margin:2px 5px 5px 6px;
    padding:0px;
-   <?
+   <?php
    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
@@ -280,7 +280,7 @@ div.search_link a{
     line-height:18px;
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
-    <?
+    <?php
     echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
     ?>
     background-color: <?php echo($color['tabs_background'])?>;
@@ -296,7 +296,7 @@ div.search_link a{
     line-height:18px;
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
-    <?
+    <?php
     echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
     ?>
     background-color: <?php echo($color['tabs_background'])?>;
@@ -418,7 +418,7 @@ span.template_description{
 /* Tab Style */
 div.tabs_frame {
    position:relative;
-   <?
+   <?php
    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
@@ -456,7 +456,7 @@ a.navlist_current{
    padding:4px 6px 3px 6px;
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
-   <?
+   <?php
    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
@@ -466,7 +466,7 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    color:<?php echo($color['headline_text'])?>;
    padding:4px 6px 3px 6px;
    text-decoration:none;
-   <?
+   <?php
    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;

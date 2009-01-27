@@ -1,5 +1,26 @@
 <?php
-// $Id:
+// $Id$
+//
+// Release $Name$
+//
+// Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+//
+//    This file is part of CommSy.
+//
+//    CommSy is free software; you can redistribute it and/or modify
+//    it under the terms of the GNU General Public License as published by
+//    the Free Software Foundation; either version 2 of the License, or
+//    (at your option) any later version.
+//
+//    CommSy is distributed in the hope that it will be useful,
+//    but WITHOUT ANY WARRANTY; without even the implied warranty of
+//    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//    GNU General Public License for more details.
+//
+//    You have received a copy of the GNU General Public License
+//    along with CommSy.
 
 header("Content-type: text/css");
 // load required classes
@@ -24,46 +45,46 @@ if (!empty($_GET['cid'])) {
 
 /*General Settings */
 body {
-	margin: 0px;
-	padding: 0px;
-	font-family: Arial, "Nimbus Sans L", sans-serif;
-	font-size: 10pt;
-	background-color: white;
+   margin: 0px;
+   padding: 0px;
+   font-family: Arial, "Nimbus Sans L", sans-serif;
+   font-size: 10pt;
+   background-color: white;
 }
 
 img {
-	border: 0px;
+   border: 0px;
 }
 
 
 /*Hyperlinks*/
 a {
-	color: <?php echo($color['hyperlink'])?>;
-	text-decoration: none;
+   color: <?php echo($color['hyperlink'])?>;
+   text-decoration: none;
 }
 
 a:hover, a:active {
-	text-decoration: underline;
+   text-decoration: underline;
 }
 
 
 /* Font-Styles */
 .infocolor{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 .disabled, .key .infocolor{
-	color: <?php echo($color['disabled'])?>;
+   color: <?php echo($color['disabled'])?>;
 }
 
 .changed {
-	color: <?php echo($color['warning'])?>;
-	font-size: 8pt;
+   color: <?php echo($color['warning'])?>;
+   font-size: 8pt;
 }
 
 .infoborder{
-	border-top: 1px solid <?php echo($color['info_color'])?>;
-	padding-top:10px;
+   border-top: 1px solid <?php echo($color['info_color'])?>;
+   padding-top:10px;
 }
 
 .infoborder_display_content{
@@ -73,55 +94,55 @@ a:hover, a:active {
 }
 
 .required {
-	color: <?php echo($color['warning'])?>;
-	font-weight: bold;
+   color: <?php echo($color['warning'])?>;
+   font-weight: bold;
 }
 
 .normal{
-	font-size: 10pt;
+   font-size: 10pt;
 }
 
 .desc {
-	font-size: 8pt;
+   font-size: 8pt;
 }
 
 .bold{
-	font-size: 10pt;
-	font-weight: bold;
+   font-size: 10pt;
+   font-weight: bold;
 }
 
 
 /* Room Design */
 div.main{
-	padding: 20px 5px 0px 5px;
+   padding: 20px 5px 0px 5px;
 }
 
 div.content_fader{
-	margin:0px;
-	padding: 0px 3px;
-	background: url(images/layout/bg-fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   margin:0px;
+   padding: 0px 3px;
+   background: url(images/layout/bg-fader_<?php echo($color['schema'])?>.gif) repeat-x;
 }
 
 div.content{
-	padding:0px;
-	margin:0px;
-	background-color: <?php echo($color['content_background'])?>;
+   padding:0px;
+   margin:0px;
+   background-color: <?php echo($color['content_background'])?>;
 }
 
 div.content_display_width{
-	width:100%;
+   width:100%;
 }
 
 div.frame_bottom {
-	position:relative;
-	font-size: 1px;
-	border-left: 2px solid #C3C3C3;
-	border-right: 2px solid #C3C3C3;
-	border-bottom: 2px solid #C3C3C3;
+   position:relative;
+   font-size: 1px;
+   border-left: 2px solid #C3C3C3;
+   border-right: 2px solid #C3C3C3;
+   border-bottom: 2px solid #C3C3C3;
 }
 
 div.content_bottom {
-	position:relative; width: 100%;
+   position:relative; width: 100%;
 }
 
 /*Panel Style*/
@@ -246,27 +267,27 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 
 /*Headlines*/
 h1{
-	margin:0px;
-	padding-left:0px 0px 0px 10px;
-	font-size:30px;
+   margin:0px;
+   padding-left:0px 0px 0px 10px;
+   font-size:30px;
 }
 
 .pagetitle{
-	margin:0px;
+   margin:0px;
    font-size: 16pt;
-	font-family: verdana, arial, sans-serif;
+   font-family: verdana, arial, sans-serif;
 }
 
 
 /*Special Designs*/
 .top_of_page {
-	padding:5px 0px 3px 10px;
-	font-size: 8pt;
-	color: <?php echo($color['info_color'])?>;
+   padding:5px 0px 3px 10px;
+   font-size: 8pt;
+   color: <?php echo($color['info_color'])?>;
 }
 
 .top_of_page a{
-	color: <?php echo($color['info_color'])?>;
+   color: <?php echo($color['info_color'])?>;
 }
 
 #form_formatting_box{

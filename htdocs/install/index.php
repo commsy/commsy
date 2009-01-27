@@ -209,7 +209,7 @@ if (file_exists($filename)) {
 
 <div id="layer">
 <div id="flags" style="display:inline; float:right;">
-<?
+<?php
 if(isset($action))
 {
    $page = $action;
