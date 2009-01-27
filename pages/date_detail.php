@@ -95,6 +95,14 @@ if ($type != CS_DATE_TYPE) {
       }
 
 
+      if (!empty($_GET['date_option'])) {
+         $current_user = $environment->getCurrentUser();
+         if ($_GET['date_option']=='1') {
+            $dates_item->addParticipant($current_user);
+         } else if ($_GET['date_option']=='2') {
+            $dates_item->removeParticipant($current_user);
+         }
+      }
       //is current room open?
       $context_item = $environment->getCurrentContextItem();
       $room_open = $context_item->isOpen();

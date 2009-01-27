@@ -21,12 +21,13 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-
 if ( empty($iid) ) {
    if ( !empty($_GET['iid']) ) {
       $iid = $_GET['iid'];
    } elseif ( !empty($_POST['iid']) ) {
       $iid = $_POST['iid'];
+   }else{
+      $iid = 'NEW';
    }
 }
 
@@ -276,7 +277,15 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' ) {
-            if ( !($environment->inPrivateRoom() and $link_name =='user') ){
+            if ( !($environment->inPrivateRoom() and $link_name[0] =='user') and
+              !($link_name[0] == CS_USER_TYPE
+                and ($environment->getCurrentModule() == CS_MATERIAL_TYPE
+                or $environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                or $environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                or $environment->getCurrentModule() == CS_TOPIC_TYPE
+                )
+              )
+            ){
                $rubric_array[] = $link_name[0];
             }
          }
@@ -296,6 +305,16 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
          $interval = 100;
       }
       foreach ($rubric_array as $rubric) {
+
+
+         if($rubric != CS_USER_TYPE
+            or ($environment->getCurrentModule() != CS_MATERIAL_TYPE
+                and $environment->getCurrentModule() != CS_DISCUSSION_TYPE
+                and $environment->getCurrentModule() != CS_ANNOUNCEMENT_TYPE
+                and $environment->getCurrentModule() != CS_TOPIC_TYPE
+                )
+         ){
+
          $rubric_ids = array();
          $rubric_list = new cs_list();
          $rubric_manager = $environment->getManager($rubric);
@@ -345,6 +364,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
          }
          $session->setValue('cid'.$environment->getCurrentContextID().'_item_attach_index_ids', $rubric_ids);
          $item_ids = array_merge($item_ids, $rubric_ids);
+         }
       }
       $sublist = $item_list->getSubList($from-1,$interval);
       $item_attach_index_view->setList($sublist);

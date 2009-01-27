@@ -301,6 +301,10 @@ else {
                $todo_item->setStatus($_POST['status']);
             }
 
+            if ( isset($_POST['minutes']) ) {
+               $todo_item->setPlannedTime($_POST['minutes']);
+            }
+
             if (isset($_POST['dayEnd'])) {
                $date2 = convertDateFromInput($_POST['dayEnd'],$environment->getSelectedLanguage());
                if (!empty($_POST['timeEnd'])) {
