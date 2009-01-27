@@ -1801,7 +1801,7 @@ EOD;
            and $this->_display_mode == 'flash'
            and $this->_environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
          ) {
-         // TBD: Flash einbetten
+         #$html .= '';
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';
