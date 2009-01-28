@@ -27,8 +27,7 @@ $message["TODO_SHORT_VIEW_DESCRIPTION"]["en"] = "%1 tasks not complete out of %2
 $message["TODO_STATUS"]["en"] = "Status";
 $message["TODO_STATUS_DESC"]["en"] = "Please process status of this task.";
 $message["TODO_STEPS"]["en"] = "Steps";
-$message["TODO_TIME"]["en"] = "Planned time<br/>
-(in minutes)";
+$message["TODO_TIME"]["en"] = "Planned time";
 $message["TODO_TIME_DAYS"]["en"] = "days (1 day = 8 h.)";
 $message["TODO_TIME_DAY_END_DESC"]["en"] = "Please provide a due date for this task.";
 $message["TODO_TIME_HOURS"]["en"] = "hours";
