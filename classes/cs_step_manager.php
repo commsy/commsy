@@ -339,6 +339,7 @@ class cs_step_manager extends cs_manager {
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'",'.
               'minutes="'.encode(AS_DB,$item->getMinutes()).'",'.
+              'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
               'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'",'.
               'modifier_id="'.encode(AS_DB,$modificator_item->getItemID()).'"'.
               ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
@@ -390,6 +391,7 @@ class cs_step_manager extends cs_manager {
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'",'.
               'minutes="'.encode(AS_DB,$item->getMinutes()).'",'.
+              'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
               'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {

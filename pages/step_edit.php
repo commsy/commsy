@@ -254,8 +254,16 @@ else {
             if (isset($_POST['description'])) {
                $step_item->setDescription($_POST['description']);
             }
-            if (isset($_POST['minutes'])) {
-               $step_item->setMinutes($_POST['minutes']);
+            if ( isset($_POST['minutes']) ) {
+               $minutes = $_POST['minutes'];
+               if (isset($_POST['time_type'])){
+                  $step_item->setTimeType($_POST['time_type']);
+                  switch ($_POST['time_type']){
+                     case 2: $minutes = $minutes*60;break;
+                     case 3: $minutes = $minutes*60*8;break;
+                  }
+               }
+               $step_item->setMinutes($minutes);
             }
 
             // Set links to connected rubrics

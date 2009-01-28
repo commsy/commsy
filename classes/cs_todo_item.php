@@ -138,6 +138,19 @@ class cs_todo_item extends cs_item {
       $this->_setValue('status', $status);
    }
 
+   function setTimeType($type) {
+      $this->_setValue('time_type', $type);
+   }
+
+   function getTimeType() {
+      $retour = 1;
+      $r = $this->_getValue('time_type');
+      if (isset($r) and !empty($r)){
+         $retour = $r;
+      }
+      return $retour;
+   }
+
 
    function getFileListWithFilesFromSteps () {
       $file_list = new cs_list;

@@ -96,6 +96,20 @@ class cs_step_item extends cs_item {
 
    }
 
+   function setTimeType($type) {
+      $this->_setValue('time_type', $type);
+   }
+
+   function getTimeType() {
+      $retour = 1;
+      $r = $this->_getValue('time_type');
+      if (isset($r) and !empty($r)){
+         $retour = $r;
+      }
+      return $retour;
+   }
+
+
    /** get description of a step
    * this method returns the description of the step
    *

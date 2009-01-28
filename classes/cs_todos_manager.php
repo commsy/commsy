@@ -397,6 +397,7 @@ class cs_todos_manager extends cs_manager {
                'date="'.encode(AS_DB,$item->getDate()).'",'.
                'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
                'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
+               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
@@ -466,6 +467,7 @@ class cs_todos_manager extends cs_manager {
       }
       $query .= 'status="'.encode(AS_DB,$item->getInternalStatus()).'",'.
                'minutes="'.encode(AS_DB,$item->getPlannedTime()).'",'.
+               'time_type="'.encode(AS_DB,$item->getTimeType()).'",'.
                'public="'.encode(AS_DB,$public).'",'.
                'description="'.encode(AS_DB,$item->getDescription()).'"';
       $result = $this->_db_connector->performQuery($query);

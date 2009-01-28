@@ -116,6 +116,15 @@ class cs_step_form extends cs_rubric_form {
       $this->_form->addHidden('ref_position','');
       $this->_form->addTitleField('subject','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,45,true);
       $this->_form->addTextField('minutes','',getMessage('STEP_MINUTES'),getMessage('STEP_MINUTES_DESC'),200,4,false);
+      $time_type = array();
+      $time_type[] = array('text'  => getMessage('TODO_TIME_MINUTES'),
+                           'value' => '1');
+      $time_type[] = array('text'  => getMessage('TODO_TIME_HOURS'),
+                           'value' => '2');
+      $time_type[] = array('text'  => getMessage('TODO_TIME_DAYS'),
+                           'value' => '3');
+      $this->_form->combine('horizontal');
+      $this->_form->addSelect('time_type',$time_type,'',getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
       $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
@@ -212,7 +221,13 @@ class cs_step_form extends cs_rubric_form {
          $this->_values['ref_position'] = $this->_ref_position;
          $this->_values['subject'] = $this->_item->getTitle();
          $this->_values['description'] = $this->_item->getDescription();
-         $this->_values['minutes'] = $this->_item->getMinutes();
+         $minutes = $this->_item->getMinutes();
+         switch ($this->_item->getTimeType()){
+            case 2: $minutes = $minutes/60;break;
+            case 3: $minutes = ($minutes/60)/8;break;
+         }
+         $this->_values['minutes'] = $minutes;
+         $this->_values['time_type'] = $this->_item->getTimeType();
          $this->_setValuesForRubricConnections();
 
          // file

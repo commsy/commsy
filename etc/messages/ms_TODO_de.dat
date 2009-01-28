@@ -29,6 +29,9 @@ $message["TODO_STATUS_DESC"]["de"] = "Geben Sie den Status der Bearbeitung an.";
 $message["TODO_STEPS"]["de"] = "Arbeitsschritte";
 $message["TODO_TIME"]["de"] = "Geplante Zeit<br/>
 (in Minuten)";
+$message["TODO_TIME_DAYS"]["de"] = "Tage (1 Tag = 8 Std.)";
 $message["TODO_TIME_DAY_END_DESC"]["de"] = "Geben Sie das Datum an, bis zu dem die Augabe erledigt sein sollte.";
+$message["TODO_TIME_HOURS"]["de"] = "Stunden";
+$message["TODO_TIME_MINUTES"]["de"] = "Minuten";
 $message["TODO_VALIDITY_DATE"]["de"] = "fällig";
 ?>

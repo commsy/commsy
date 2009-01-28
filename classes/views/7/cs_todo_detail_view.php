@@ -157,13 +157,45 @@ class cs_todo_detail_view extends cs_detail_view {
             $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
          }
 
+         $time_type = $item->getTimeType();
+         $tmp_message = $this->_translator->getMessage('COMMON_MINUTES');
+         $step_minutes_text = $step_minutes;
+         switch ($time_type){
+            case 2:
+               $step_minutes_text = '';
+               $exact_minutes = $step_minutes/60;
+               $step_minutes = round($exact_minutes);
+               if ($step_minutes != $exact_minutes){
+                  $step_minutes_text .= 'ca. ';
+               }
+               $step_minutes_text .= $step_minutes;
+               $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
+               if ($step_minutes == 1){
+                  $tmp_message = $this->_translator->getMessage('COMMON_HOUR');
+               }
+               break;
+            case 3:
+               $exact_minutes = ($step_minutes/60)/8;
+               $step_minutes = round($exact_minutes);
+               $step_minutes_text = '';
+               if ($step_minutes != $exact_minutes){
+                  $step_minutes_text .= 'ca. ';
+               }
+               $step_minutes_text .= $step_minutes;
+               $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
+               if ($step_minutes == 1){
+                  $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+               }
+               break;
+         }
+
          if($done_percentage <= 100){
             $style = ' height: 16px; background-color: #75ab05; ';
             $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 16px; width: 300px;">'.LF;
             if ( $done_percentage >= 30 ) {
-               $done_time .= '         <div style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>'.LF;
+               $done_time .= '         <div style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">'.$step_minutes_text.' '.$tmp_message.'</div>'.LF;
             } else {
-               $done_time .= '<div style="float:right; font-size: 10pt;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>';
+               $done_time .= '<div style="float:right; font-size: 10pt;">'.$step_minutes_text.' '.$tmp_message.'</div>';
                $done_time .= '         <div style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
             }
             $done_time .= '      </div>'.LF;
@@ -172,7 +204,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $style = ' height: 16px; border: 1px solid #444; background-color: #f2f030; ';
             $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; padding-top:0px; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
-            $done_time .= '&nbsp;'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+            $done_time .= '&nbsp;'.$step_minutes_text.' '.$tmp_message;
             $done_time .= '      </div>'.LF;
             $done_time .= '</div>'.LF;
          }else{
@@ -180,15 +212,35 @@ class cs_todo_detail_view extends cs_detail_view {
             $style = ' height: 16px; border: 1px solid #444; background-color: #f23030; ';
             $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
-            $done_time .= '&nbsp;'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+            $done_time .= '&nbsp;'.$step_minutes_text.' '.$tmp_message;
             $done_time .= '      </div>'.LF;
             $done_time .= '</div>'.LF;
          }
 
          if ($item->getPlannedTime() >0 ){
-         $temp_array[0] = $this->_translator->getMessage('TODO_MINUTES');
-         $temp_array[1] = $item->getPlannedTime().' '.$this->_translator->getMessage('COMMON_MINUTES');
-         $formal_data[] = $temp_array;
+            $minutes = $item->getPlannedTime();
+            $time_type = $item->getTimeType();
+            $tmp_message = $this->_translator->getMessage('COMMON_MINUTES');
+            switch ($time_type){
+               case 2:
+                  $minutes = $minutes/60;
+                  $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
+                  if ($minutes == 1){
+                     $tmp_message = $this->_translator->getMessage('COMMON_HOUR');
+                  }
+                  break;
+               case 3:
+                  $minutes = ($minutes/60)/8;
+                  $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
+                  if ($minutes == 1){
+                     $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+                  }
+                  break;
+            }
+
+            $temp_array[0] = $this->_translator->getMessage('TODO_MINUTES');
+            $temp_array[1] = $minutes.' '.$tmp_message;
+            $formal_data[] = $temp_array;
          }
          if ($step_minutes >0 ){
             $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
@@ -463,10 +515,28 @@ class cs_todo_detail_view extends cs_detail_view {
    function _getSubItemAsHTML ($item, $anchor_number) {
       $retour  = '';
       $minutes = $item->getMinutes();
+      $time_type = $item->getTimeType();
+      $tmp_message = $this->_translator->getMessage('COMMON_MINUTES');
+      switch ($time_type){
+         case 2:
+            $minutes = $minutes/60;
+            $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
+            if ($minutes == 1){
+               $tmp_message = $this->_translator->getMessage('COMMON_HOUR');
+            }
+            break;
+         case 3:
+            $minutes = ($minutes/60)/8;
+            $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
+            if ($minutes == 1){
+               $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+            }
+            break;
+      }
       if ( $minutes > 0 ) {
          $temp_array = array();
          $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
-         $temp_array[1] = $minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+         $temp_array[1] = $minutes.' '.$tmp_message;
          $formal_data[] = $temp_array;
          $retour .= $this->_getFormalDataAsHTML($formal_data);
          $formal_data = array();
@@ -531,7 +601,12 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= $this->_translator->getMessage('STEP_MINUTES').': ';
             $html .= '</td>'.LF;
             $html .= '<td>'.LF;
-            $html .= '<input tabindex="31" type="text" name="minutes" size="4" style=""/>&nbsp;('.$this->_translator->getMessage('STEP_IN_MINUTES').')';
+            $html .= '<input tabindex="31" type="text" name="minutes" size="4" style=""/>&nbsp;';
+            $html .= '<select name="time_type" size="1" tabindex="32" style="width: 12em; font-size: 10pt;">';
+            $html .= '<option value="1" selected="selected">'.$this->_translator->getMessage('TODO_TIME_MINUTES').'</option>';
+            $html .= '<option value="2">'.$this->_translator->getMessage('TODO_TIME_HOURS').'</option>';
+            $html .= '<option value="3">'.$this->_translator->getMessage('TODO_TIME_DAYS').'</option>';
+            $html .= '</select>';
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
             $html .= '<tr>'.LF;
@@ -540,7 +615,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '</td>'.LF;
             $html .= '<td>'.LF;
 
-            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="32"></textarea>';
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="33"></textarea>';
             $text = '';
             global $c_html_textarea;
             $current_context = $this->_environment->getCurrentContextItem();
@@ -607,7 +682,7 @@ class cs_todo_detail_view extends cs_detail_view {
             }
             $meg_val = round($val/1048576);
             $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            $html .= '   <input type="file" name="upload" size="12" tabindex="33"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="34" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
+            $html .= '   <input type="file" name="upload" size="12" tabindex="34"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="35" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
             $html .= BRLF;
             #$px = '245';
             $px = '331';
@@ -634,7 +709,7 @@ class cs_todo_detail_view extends cs_detail_view {
                }
             }
             $em = $px/13;
-            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="7" type="submit" style="width: '.$em.'em;"/>'.LF;
+            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="36" type="submit" style="width: '.$em.'em;"/>'.LF;
             $html .= BRLF;
             $html .= '<span class="multiupload_discussion_detail">'.getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val).'</span>'.LF;
             $html .= '</td>'.LF;
@@ -645,7 +720,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '&nbsp;';
             $html .= '</td>'.LF;
             $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="35" type="submit"/>';
+            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="37" type="submit"/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;

@@ -302,7 +302,15 @@ else {
             }
 
             if ( isset($_POST['minutes']) ) {
-               $todo_item->setPlannedTime($_POST['minutes']);
+               $minutes = $_POST['minutes'];
+               if (isset($_POST['time_type'])){
+                  $todo_item->setTimeType($_POST['time_type']);
+                  switch ($_POST['time_type']){
+                     case 2: $minutes = $minutes*60;break;
+                     case 3: $minutes = $minutes*60*8;break;
+                  }
+               }
+               $todo_item->setPlannedTime($minutes);
             }
 
             if (isset($_POST['dayEnd'])) {

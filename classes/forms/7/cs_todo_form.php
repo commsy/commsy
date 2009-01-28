@@ -269,6 +269,18 @@ class cs_todo_form extends cs_rubric_form {
       $current_context = $this->_environment->getCurrentContextItem();
       if($current_context->withTodoManagment()){
          $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
+
+         $time_type = array();
+         $time_type[] = array('text'  => getMessage('TODO_TIME_MINUTES'),
+                              'value' => '1');
+         $time_type[] = array('text'  => getMessage('TODO_TIME_HOURS'),
+                              'value' => '2');
+         $time_type[] = array('text'  => getMessage('TODO_TIME_DAYS'),
+                              'value' => '3');
+         $this->_form->combine('horizontal');
+         $this->_form->addSelect('time_type',$time_type,'',getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
+
+
       }
 
       $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
@@ -415,7 +427,16 @@ class cs_todo_form extends cs_rubric_form {
          $this->_values['description'] = $this->_item->getDescription();
          $this->_values['public'] = $this->_item->isPublic();
          $this->_values['status'] = $this->_item->getInternalStatus();
-         $this->_values['minutes'] = $this->_item->getPlannedTime();
+         $this->_values['time_type'] = $this->_item->getTimeType();
+         $time = $this->_item->getPlannedTime();
+         $minutes = $this->_item->getPlannedTime();
+         switch ($this->_item->getTimeType()){
+            case 2: $minutes = $minutes/60;break;
+            case 3: $minutes = ($minutes/60)/8;break;
+         }
+
+         $this->_values['minutes'] = $minutes;
+
          if (!$this->_item->getDate() == '') {
             $this->_values['end_date_time'][] = getDateInLang($this->_item->getDate());
          } else {
