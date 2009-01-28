@@ -266,8 +266,10 @@ class cs_todo_form extends cs_rubric_form {
                               getMessage('DATES_END_TIME'),
                               getMessage('TODO_TIME_DAY_END_DESC'),true,false);
 
-      $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
-
+      $current_context = $this->_environment->getCurrentContextItem();
+      if($current_context->withTodoManagment()){
+         $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
+      }
 
       $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
@@ -278,7 +280,6 @@ class cs_todo_form extends cs_rubric_form {
 
       $this->_form->addEmptyline();
 
-      $current_context = $this->_environment->getCurrentContextItem();
 
       // files
       $this->_form->addAnchor('fileupload');

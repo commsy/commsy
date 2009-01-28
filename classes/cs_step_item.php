@@ -170,19 +170,11 @@ class cs_step_item extends cs_item {
       return $this->_getValue('minutes');
    }
 
-
-
-
-   /** set groups of a step
-    * this method sets a list of groups which are linked to the step
-    *
-    * @param string value title of the step
-    *
-    * @author CommSy Development Group
-    */
-   function setMinutes ($value) {
-     $this->_setValue('minutes', $value);
+   function setMinutes($min) {
+      return $this->_setValue('minutes',(int)$min);
    }
+
+
 
    /**
    save

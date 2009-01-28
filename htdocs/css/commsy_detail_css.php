@@ -106,6 +106,10 @@ table.detail td.value p {
 .subitemtitle{
    font-size: 12pt;
 }
+.steptitle{
+   color: <?php echo($color['myarea_section_title'])?>;
+   font-size: 12pt;
+}
 
 img.portrait {
    border: 1px solid black;
@@ -399,3 +403,22 @@ table.list {
 .even{
    background-color: <?php echo($color['list_entry_even'])?>;
 }
+
+div.gauge {
+   background-color: <?php echo($color['boxes_background'])?>;
+   height:12px;
+   margin-left: 10px;
+   margin-right: 0px;
+   margin-top: 0px;
+   margin-bottom: 0px;
+   border: 1px solid #666;
+   font-size:10px;
+}
+div.gauge-bar {
+   background-color: <?php echo($color['tabs_background'])?>;
+   height:12px;
+   text-align: right;
+   color:<?php echo($color['headline_text'])?>;
+   font-size:10px;
+}
+

@@ -1328,15 +1328,19 @@ class cs_detail_view extends cs_view {
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= $this->_getCreatorInformationAsHTML($item, 3,$mode).LF;
       }
-      if ($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom() ){
+      if (($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom()) and
+         !($rubric == CS_TODO_TYPE and !$current_context->withTodoManagment())
+      ){
 ############SQL-Statements reduzieren
-         $html .= $this->_getSubItemsAsHTML($item);
+          $html .= $this->_getSubItemsAsHTML($item);
           if ($rubric == CS_DISCUSSION_TYPE and !$item->isClosed() and $this->_with_modifying_actions ) {
             $html .= $this->_getDiscussionFormAsHTML();
             $html .= '</div>'.LF;
          }
           if ($rubric == CS_TODO_TYPE and $this->_with_modifying_actions ) {
-            $html .= $this->_getTodoFormAsHTML();
+            if ( $current_context->withTodoManagment() ){
+               $html .= $this->_getTodoFormAsHTML();
+            }
             $html .= '</div>'.LF;
          }
       }
@@ -1345,7 +1349,6 @@ class cs_detail_view extends cs_view {
       and $rubric != CS_INSTITUTION_TYPE
       and $rubric != CS_USER_TYPE
       and $rubric != CS_DISCUSSION_TYPE
-      and $rubric != CS_TODO_TYPE
       and $this->_environment->getCurrentModule() !='account'){
          if (!$current_context->isPrivateRoom()){
             $html .= $this->_getAnnotationsAsHTML();

@@ -105,6 +105,11 @@ if ($command != 'error') {
                $context_item->setDiscussionStatus($_POST['discussion_status']);
             }
 
+            // Todooptionen
+            if ( isset($_POST['todo_management']) ) {
+               $context_item->setTodoManagmentStatus($_POST['todo_management']);
+            }
+
             if ($environment->inProjectRoom()){
                //Gruppenoptionen
                $current_user = $environment->getCurrentUserItem();

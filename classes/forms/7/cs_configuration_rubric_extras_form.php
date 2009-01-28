@@ -87,7 +87,19 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      $this->_form->combine();
      $this->_form->addExplanation('discussions',getMessage('CONFIGURATION_DISCUSSION_WARNING'));
 
+
      if ($this->_environment->inProjectRoom()){
+        $this->_form->addEmptyline();
+        //Todooption
+        $radio_values = array();
+        $radio_values[0]['text'] = '<img src="images/configuration_todo_no_management.gif" alt="picture_todo_no_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[0]['value'] = '1';
+        $radio_values[1]['text'] = '<img src="images/configuration_todo_management.gif" alt="picture_todo_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[1]['value'] = '2';
+        $this->_form->addRadioGroup('todo_management',getMessage('TODO_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
+        $this->_form->combine();
+        $this->_form->addExplanation('todos',getMessage('CONFIGURATION_TDOD_MANAGEMENT_DESC'));
+
         $this->_form->addEmptyline();
         //Gruppenoptionen
         $picture = '<img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
@@ -110,6 +122,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
       if (isset($this->_item)) {
          $this->_values['dates_status'] = $this->_item->getDatesPresentationStatus();
          $this->_values['discussion_status'] = $this->_item->getDiscussionStatus();
+         $this->_values['todo_management'] = $this->_item->getTodoManagmentStatus();
          $this->_values['grouproom'] = $this->_item->isGrouproomActive();
   	   } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
@@ -119,9 +132,13 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
          if ( !isset($this->_values['discussion_status']) ) {
             $this->_values['discussion_status'] = '1';
          }
+         if ( !isset($this->_values['todo_management']) ) {
+            $this->_values['todo_management'] = '1';
+         }
       } else {
          $this->_values['dates_status'] ='normal';
          $this->_values['discussion_status'] ='1';
+         $this->_values['todo_management'] ='1';
       }
    }
 

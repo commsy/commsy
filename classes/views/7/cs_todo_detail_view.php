@@ -109,14 +109,72 @@ class cs_todo_detail_view extends cs_detail_view {
          }
       }
 
+
       $temp_array[0] = $this->_translator->getMessage('TODO_VALIDITY_DATE');
       $temp_array[1] = $date;
       $formal_data[] = $temp_array;
-      $temp_array[0] = $this->_translator->getMessage('TODO_PROCESSORS');
-      $temp_array[1] = $member_html;
-      $formal_data[] = $temp_array;
       $temp_array[0] = $this->_translator->getMessage('TODO_STATUS');
       $temp_array[1] = $item->getStatus();
+      $formal_data[] = $temp_array;
+      if ($context->withTodoManagment()){
+         $step_html = '';
+         $step_minutes = 0;
+         $step_item_list = $item->getStepItemList();
+         if ( $step_item_list->isEmpty() ) {
+            $step_html .= '   '.$this->_translator->getMessage('TODO_NO_STEPS').LF;
+         } else {
+            $step = $step_item_list->getFirst();
+            $count = $step_item_list->getCount();
+            $counter = 0;
+
+            while ($step) {
+               $counter++;
+               $step_minutes = $step_minutes + $step->getMinutes();
+               $step_html .= $counter.'. '.$step->getTitle().'<br/>';
+               $step = $step_item_list->getNext();
+            }
+         }
+         $done_time = '';
+
+         $done_percentage = 100;
+         if ($item->getPlannedTime() > 0){
+            $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
+         }
+
+         if($done_percentage <= 100){
+            $style = ' height: 18px; background-color: #75ab05; ';
+         }elseif($done_percentage <= 120){
+            $style = ' height: 16px; border: 1px solid #AAAAAA; background-color: #f2f030; ';
+         }else{
+            $style = ' height: 16px; border: 1px solid #AAAAAA; background-color: #f23030; ';
+         }
+
+         if ($done_percentage > 200){
+            $done_percentage = 200;
+         }
+
+         $done_time .= '      <div class="gauge" style="margin-left: 0px; height: 18px; width: 250px;">'.LF;
+         if ( $done_percentage >= 30 ) {
+            $done_time .= '         <div class="gauge-bar" style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>'.LF;
+         } else {
+            $done_time .= '<div style="float:right; font-size: 10pt;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>';
+            $done_time .= '         <div class="gauge-bar" style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+         }
+         $done_time .= '      </div>'.LF;
+
+         if ($item->getPlannedTime() >0 ){
+         $temp_array[0] = $this->_translator->getMessage('TODO_MINUTES');
+         $temp_array[1] = $item->getPlannedTime().' '.$this->_translator->getMessage('COMMON_MINUTES');
+         $formal_data[] = $temp_array;
+         }
+         if ($step_minutes >0 ){
+            $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
+            $temp_array[1] = $done_time;
+            $formal_data[] = $temp_array;
+         }
+      }
+      $temp_array[0] = $this->_translator->getMessage('TODO_PROCESSORS');
+      $temp_array[1] = $member_html;
       $formal_data[] = $temp_array;
 
       // Files
@@ -130,7 +188,18 @@ class cs_todo_detail_view extends cs_detail_view {
 
       if ( !empty($formal_data) ) {
          $html .= $this->_getFormalDataAsHTML($formal_data);
-         $html .= BRLF;
+      }
+
+      if ($context->withTodoManagment()){
+         $temp_array = array();
+         $formal_data = array();
+         $temp_array[0] = $this->_translator->getMessage('TODO_STEPS');
+         $temp_array[1] = $step_html;
+         $formal_data[] = $temp_array;
+         if ( !empty($formal_data) ) {
+            $html .= $this->_getFormalDataAsHTML($formal_data);
+            $html .= BRLF;
+         }
       }
 
       // Description
@@ -228,13 +297,60 @@ class cs_todo_detail_view extends cs_detail_view {
       return $html.'&nbsp;&nbsp;&nbsp;';
    }
 
+
+   function _getSubItemDetailActionsAsHTML ($subitem) {
+      $user = $this->_environment->getCurrentUserItem();
+      $item = $this->getItem();
+      $html = '';
+
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
+         $params = array();
+         $params['iid'] = $subitem->getItemID();
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                    'step',
+                                    'edit',
+                                    $params,
+                                    $image).LF;
+         unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      if ( $subitem->mayEdit($user) and $this->_with_modifying_actions  ) {
+        $params = $this->_environment->getCurrentParameterArray();
+        $params['action'] = 'delete';
+        $params['step_iid'] = $subitem->getItemID();
+        $params['iid'] = $item->getItemID();
+        $params['step_action'] = 'delete';
+        $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+        $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $this->_environment->getCurrentModule(),
+                                       'detail',
+                                       $params,
+                                       $image,
+                                       '',
+                                       '',
+                                       'anchor'.$subitem->getItemID()).LF;
+        unset($params);
+      } else {
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      return $html;
+   }
+
+
    function _getSubItemsAsHTML($item){
       $html  = '';
       $html .= '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
       $html .= '<div style="width:100%; margin-top:40px;">'.LF;
       $html .= '<table style="border-collapse:collapse; width:100%; margin:0px; padding:0px;">'.LF;
       $count = 0;
-      $subitems = $this->getSubItemList();
+      $subitems = $item->getStepItemList();
       if ( isset($subitems) and !empty($subitems) ){
          $count=$subitems->getCount();
       }
@@ -242,13 +358,12 @@ class cs_todo_detail_view extends cs_detail_view {
          $current_item = $subitems->getFirst();
          $pos_number = 1;
          while ( $current_item ) {
-            $discussion_type = $item->getDiscussionType();
             $html .='<tr class="detail_discussion_entries">'.LF;
 
                $image = $this->_getItemPicture($current_item->getModificatorItem());
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
                $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
-               if ( $current_item->isA(CS_DISCARTICLE_TYPE) ) {
+               if ( $current_item->isA(CS_STEP_TYPE) ) {
                   $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
                }
                $html .='<div style="padding-top:10px;">'.LF;
@@ -319,6 +434,9 @@ class cs_todo_detail_view extends cs_detail_view {
       return $html;
    }
 
+   function _getSubItemTitleAsHTML ($item, $pos_number) {
+      return $pos_number.'. '.$this->_text_as_html_short($item->getTitle());
+   }
 
    function _getSubItemAsHTML ($item, $anchor_number) {
       $retour  = '';
@@ -354,30 +472,44 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .='</div>'.LF;
             $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:70px; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
             $html .='<div style="width:100%;" >'.LF;
-            $html .= '<a name="form"></a>'.LF;
-            $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'step', 'edit','').'" method="post" enctype="multipart/form-data" name="f">'.LF;
+            $html .= '<a name="step_form"></a>'.LF;
+            $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'step', 'edit','').'" method="post" enctype="multipart/form-data" name="step">'.LF;
             $html .= '   <input type="hidden" name="iid" value=""/>'.LF;
             $html .= '   <input type="hidden" name="todo_id" value="'.$item->getItemID().'"/>'.LF;
-            $html .= '<table style="width:100%; border-collapse:collapse; margin-bottom:0px; padding-bottom:0px;" summary="Layout">'.LF;
-            $html .= '<tr>'.LF;
-            $html .= '<td style="width:1%; padding-top:5px; vertical-align:middle;">'.LF;
             $count = 1;
-            $subitems = $this->getSubItemList();
+            $subitems = $item->getStepItemList();
             if ( isset($subitems) and !empty($subitems) ){
                $count = $subitems->getCount();
                $count++;
             }
-            $html .= '<h3 class="subitemtitle">'.$count.'.&nbsp;</h3>';
+            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
+            $html .= '<table style="width:100%;">'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="width:15%; padding-top:5px; vertical-align:middle;">'.LF;
+            $html .= '<h3 class="steptitle">'.$this->_translator->getMessage('COMMON_STEP').' '.$count.':&nbsp;</h3>';
             $html .= '</td>'.LF;
-            $html .= '<td style="width:99%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
+            $html .= '<td style="width:85%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
             $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
             $html .= '</td>'.LF;
             $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
-            $html .= '</table>'.LF;
-            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
-            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="10" tabindex="8"></textarea>';
+
+            $html .= '<tr>'.LF;
+            $html .= '<td class="key">'.LF;
+            $html .= $this->_translator->getMessage('STEP_MINUTES').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td>'.LF;
+            $html .= '<input tabindex="9" type="text" name="minutes" size="4" style=""/>&nbsp;('.$this->_translator->getMessage('STEP_IN_MINUTES').')';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td class="key" style="padding-top:5px; vertical-align:top;">'.LF;
+            $html .= $this->_translator->getMessage('COMMON_DESCRIPTION').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td>'.LF;
+
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="10"></textarea>';
             $text = '';
             global $c_html_textarea;
             $current_context = $this->_environment->getCurrentContextItem();
@@ -390,22 +522,6 @@ class cs_todo_detail_view extends cs_detail_view {
                  or !$with_htmltextarea
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-               $html .= $title;
-               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-               $html .= '<div style="padding:2px;">'.LF;
-               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-               $html .= $text;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
             } elseif ( ($current_browser != 'msie'
                     and $current_browser != 'firefox'
                     and $current_browser != 'netscape'
@@ -415,23 +531,7 @@ class cs_todo_detail_view extends cs_detail_view {
                     and $current_browser != 'safari')
                ) {
                $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-               $html .= $title;
-               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-               $html .= '<div style="padding:2px;">'.LF;
-               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-               $html .= $text;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-            } else {
+             } else {
                $session = $this->_environment->getSessionItem();
                 if ($session->issetValue('javascript')) {
                   $javascript = $session->getValue('javascript');
@@ -440,73 +540,27 @@ class cs_todo_detail_view extends cs_detail_view {
                      $html_area = new cs_html_textarea();
                      $html .= $html_area->getAsHTML( 'description',
                                               '',
-                                              20,
+                                              10,
                                               $html_status,
                                               '',
                                               '',
                                               false
                                             );
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
-                     $html .= '<div style="padding-top:0px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                     $html .= $title;
-                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                     $html .= '<div style="padding:2px;">'.LF;
-                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                     $html .= $text;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.BRLF;
                   } else {
                      $html .= $normal;
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                     $html .= '<div style="padding-top:5px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                     $html .= $title;
-                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                     $html .= '<div style="padding:2px;">'.LF;
-                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                     $html .= $text;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
                   }
                } else {
                   $html .= $normal;
-                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                  $html .= '<div style="padding-top:5px;">';
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                  $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                  $html .= $title;
-                  $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                  $html .= '<div style="padding:2px;">'.LF;
-                  $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                  $html .= $text;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
                }
             }
-            $html .= '</div>';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
             // files
-            $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
             $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="width:10%; padding-top:5px; vertical-align:top; ">'.LF;
+            $html .= '<td class="key" style="padding-top:5px; vertical-align:top; ">'.LF;
             $html .= getMessage('MATERIAL_FILES').':';
             $html .= '</td>'.LF;
-            $html .= '<td style="width:90%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
+            $html .= '<td style="padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
             $val = ini_get('upload_max_filesize');
             $val = trim($val);
             $last = $val[strlen($val)-1];
@@ -579,6 +633,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
             $html .= '</table>'.BRLF;
+            $html .= '</div>'.LF;
             $html .= '</form>';
 
             $html .='<script type="text/javascript">initTextFormatingInformation("'.$current_context->getItemID().'",false)</script>';

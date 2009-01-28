@@ -257,6 +257,9 @@ else {
             if (isset($_POST['description'])) {
                $step_item->setDescription($_POST['description']);
             }
+            if (isset($_POST['minutes'])) {
+               $step_item->setMinutes($_POST['minutes']);
+            }
 
             // Set links to connected rubrics
             if ( isset($_POST[CS_MATERIAL_TYPE]) ) {

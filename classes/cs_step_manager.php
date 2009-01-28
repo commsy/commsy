@@ -67,7 +67,7 @@ class cs_step_manager extends cs_manager {
    /**
    *  int - containing an item_id as search limit
    */
-   var $_material_item_id_limit = 0;
+   var $_todo_item_id_limit = 0;
 
    /**
    *  int - containing an version_id as search limit
@@ -80,7 +80,7 @@ class cs_step_manager extends cs_manager {
    var $_save_step_without_date = false;
 
    var $_all_step_list = NULL;
-   var $_cached_material_item_ids = array();
+   var $_cached_todo_item_ids = array();
 
    /** constructor: cs_step_manager
     * the only available constructor, initial values for internal variables<br />
@@ -105,7 +105,7 @@ class cs_step_manager extends cs_manager {
       $this->_interval_limit = NULL;
       $this->reset_search_limit();
       $this->_order = NULL;
-      $this->_material_item_id_limit = 0;
+      $this->_todo_item_id_limit = 0;
       $this->_version_id_limit = 0;
    }
 
@@ -136,22 +136,13 @@ class cs_step_manager extends cs_manager {
       $this->_save_step_without_date = true;
    }
 
-   /** set material_item_id limit
+   /** set todo_item_id limit
     * this method sets an refid limit for the select statement
     *
     * @param string limit order limit
     */
-  function setMaterialItemIDLimit ($limit) {
-     $this->_material_item_id_limit = (int)$limit;
-  }
-
-   /** set material_version_id limit
-    * this method sets an refid limit for the select statement
-    *
-    * @param string limit order limit
-    */
-  function setVersionIDLimit ($limit) {
-     $this->_version_id_limit = (int)$limit;
+  function setTodoItemIDLimit ($limit) {
+     $this->_todo_item_id_limit = (int)$limit;
   }
 
    /** set search limit
@@ -178,20 +169,11 @@ class cs_step_manager extends cs_manager {
      }
      $query .= ' FROM step';
 
-     if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
-        // join to user database table
-#        $query .= ' LEFT JOIN user AS people ON (people.item_id=step.creator_id )'; // modificator_id (TBD)
-        // join groups
-#        $query .= ' LEFT JOIN links AS l2 ON l2.from_item_id=step.item_id AND l2.link_type="relevant_for"';
-#        $query .= ' LEFT JOIN labels AS groups ON l2.to_item_id=groups.item_id AND groups.type="group"';
-     }
-
      $query .= ' WHERE 1=1';
 
      // fifth, insert limits into the select statement
-     if ( isset($this->_material_item_id_limit) and !empty($this->_material_item_id_limit) ) {
-        $query .= ' AND step.material_item_id='.encode(AS_DB,$this->_material_item_id_limit);
-        $query .= ' AND step.version_id='.encode(AS_DB,$this->_version_id_limit);
+     if ( isset($this->_todo_item_id_limit) and !empty($this->_todo_item_id_limit) ) {
+        $query .= ' AND step.todo_item_id='.encode(AS_DB,$this->_todo_item_id_limit);
      }
      if (isset($this->_room_limit)) {
         $query .= ' AND step.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
@@ -214,7 +196,7 @@ class cs_step_manager extends cs_manager {
      if (isset($this->_search_limit) AND !empty($this->_search_limit)) {
         $query .= ' AND (';
 
-        // material item
+        // todo item
         $query .= ' UPPER(step.title) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         $query .= ' OR UPPER(step.description) LIKE BINARY "%'.encode(AS_DB,$this->_search_limit).'%"';
         if ( $this->_search_limit != ':' and $this->_search_limit != '-' ) {
@@ -246,7 +228,6 @@ class cs_step_manager extends cs_manager {
             $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
          }
       }
-
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
@@ -256,25 +237,18 @@ class cs_step_manager extends cs_manager {
      }
    }
 
-   /** build a new material item
-    * this method returns a new EMTPY material item
+   /** build a new todo item
+    * this method returns a new EMTPY todo item
     *
-    * @return object cs_item a new EMPTY material
+    * @return object cs_item a new EMPTY todo
     */
    function getNewItem () {
       return new cs_step_item($this->_environment);
    }
 
-  /** get a step in newest version
-    *
-    * @param integer item_id id of the item
-    *
-    * @return object cs_item a label
-    */
-     function getItem ($item_id) {
+    function getItem ($item_id) {
         $step = NULL;
         $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
-        $query .= " ORDER BY step.version_id DESC";
         $result = $this->_db_connector->performQuery($query);
         if (!isset($result) or empty($result[0])) {
            include_once('functions/error_functions.php');trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
@@ -286,23 +260,6 @@ class cs_step_manager extends cs_manager {
 
 
 
-   function getItemByVersion ($item_id,$version_id) {
-      $step = NULL;
-
-      $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
-      $query .=" AND step.version_id = '".$version_id."'";
-      $result = $this->_db_connector->performQuery($query);
-      if (!isset($result) or empty($result[0])) {
-          include_once('functions/error_functions.php');trigger_error('Problems selecting one materials item from query: "'.$query.'"',E_USER_WARNING);
-      } else {
-          $step = $this->_buildItem($result[0]);
-      }
-      return $step;
-   }
-
-   function getItemListForCurrentVersion(){
-   }
-
   /** get a list of step in newest version
     *
     * @param array id_array ids of the items
@@ -310,15 +267,12 @@ class cs_step_manager extends cs_manager {
     *
     * @return object cs_list of cs_step_items
     */
-   function getItemList ($id_array, $version_id = NULL) {
+   function getItemList ($id_array) {
       if (empty($id_array)) {
          return new cs_step_list();
       } else {
          $step = NULL;
          $query = "SELECT * FROM step WHERE step.item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
-         if (!is_null($version_id)) {
-            $query .= " AND step.version_id='".encode(AS_DB,$version_id)."'";
-         }
          $query .= " ORDER BY step.item_id";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
@@ -345,7 +299,7 @@ class cs_step_manager extends cs_manager {
          return new cs_step_list();
       } else {
          $step = NULL;
-         $query = "SELECT * FROM step WHERE material_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
+         $query = "SELECT * FROM step WHERE todo_item_id IN ('".implode("', '",encode(AS_DB,$id_array))."')";
          $query .= " AND step.deleter_id IS NULL";
          $query .= " AND step.deletion_date IS NULL";
          $result = $this->_db_connector->performQuery($query);
@@ -359,38 +313,12 @@ class cs_step_manager extends cs_manager {
          }
          if ( $this->_cache_on ) {
             $this->_all_step_list = $step_list;
-            $this->_cached_material_item_ids = $id_array;
+            $this->_cached_todo_item_ids = $id_array;
          }
          return $step_list;
       }
    }
 
-   function  getStepForCurrentVersion($material_item){
-      $item_id = $material_item->getItemID();
-      $version_id = $material_item->getVersionID();
-      if (in_array($item_id,$this->_cached_material_item_ids)){
-         $list = new cs_list();
-         $step_list = $this->_all_step_list;
-         $step_item = $step_list->getFirst();
-         while($step_item){
-            if($item_id == $step_item->getTodoID()
-              and $version_id == $step_item->getVersionID() ){
-               $list->add($step_item);
-            }
-            $step_item = $step_list->getNext();
-         }
-         unset($step_list);
-         unset($step_item);
-         return $list;
-      }else{
-         $this->reset();
-         $this->setContextLimit($material_item->getContextID());
-         $this->setMaterialItemIDLimit($material_item->getItemID());
-         $this->setVersionIDLimit($material_item->getVersionID());
-         $this->select();
-         return $this->get();
-      }
-   }
 
   /** update a step - internal, do not use -> use method save
    * this method updates the database record for a given step item
@@ -410,10 +338,10 @@ class cs_step_manager extends cs_manager {
               $date_string.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'",'.
+              'minutes="'.encode(AS_DB,$item->getMinutes()).'",'.
               'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'",'.
               'modifier_id="'.encode(AS_DB,$modificator_item->getItemID()).'"'.
-              ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"'.
-              ' AND version_id="'.encode(AS_DB,$item->getVersionID()).'"';
+              ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
      // extras (TBD)
 
      $result = $this->_db_connector->performQuery($query);
@@ -461,6 +389,7 @@ class cs_step_manager extends cs_manager {
               'modification_date="'.$current_datetime.'",'.
               'title="'.encode(AS_DB,$item->getTitle()).'",'.
               'description="'.encode(AS_DB,$item->getDescription()).'",'.
+              'minutes="'.encode(AS_DB,$item->getMinutes()).'",'.
               'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
@@ -475,7 +404,7 @@ class cs_step_manager extends cs_manager {
    *
    * @access public
    */
-   function delete ($item_id, $version_id = NULL) {
+   function delete ($item_id) {
       $current_datetime = getCurrentDateTimeInMySQL();
       $current_user = $this->_environment->getCurrentUserItem();
       $user_id = $current_user->getItemID();
@@ -483,18 +412,13 @@ class cs_step_manager extends cs_manager {
                'deletion_date="'.$current_datetime.'",'.
                'deleter_id="'.encode(AS_DB,$user_id).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item_id).'"';
-      if (!is_null($version_id)) {
-         $query .= ' AND version_id="'.encode(AS_DB,$version_id).'"';
-      }
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
          include_once('functions/error_functions.php');
          trigger_error('Problems deleting step from query: "'.$query.'"',E_USER_WARNING);
       } else {
-         if ( is_null($version_id) ) {
-            parent::delete($item_id);
-         }
+         parent::delete($item_id);
       }
    }
 

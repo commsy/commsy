@@ -152,6 +152,14 @@ class cs_todo_item extends cs_item {
       return $members;
    }
 
+   function getStepItemList(){
+      $step_manager = $this->_environment->getStepManager();
+      $step_manager->setTodoItemIDLimit($this->getItemID());
+      $step_manager->select();
+      $step_item_list = $step_manager->get();
+      return $step_item_list;
+   }
+
    function isProcessor($user) {
       $link_member_list = $this->getLinkItemList(CS_USER_TYPE);
       $link_member_item = $link_member_list->getFirst();

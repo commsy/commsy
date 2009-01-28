@@ -111,54 +111,19 @@ class cs_step_list {
    }
 
    function append($step) {
-      $count = count($this->_data);
-#      include_once('functions/error_functions.php');trigger_error("count ergibt ".$count, E_USER_WARNING);
-      $pos = $count+1;
-      $this->_data[$pos] = $step;
+      $step_id = $step->getItemID();
+      $this->_data[$step_id] = $step;
       ksort($this->_data);
    }
 
    function set($step) {
-      $counter = 1;
-      $tmp_array = array();
-      // if the step already exists in the array, resort array without step
       $step_id = $step->getItemID();
-      if(!empty($step_id)) {
-         foreach($this->_data as $step_item) {
-            if($step_item->getItemID() != $step->getItemID()) {
-               $step_item->setNumber($counter);
-               $tmp_array[$step_item->getNumber()] = $step_item;
-               $counter++;
-            }
-         }
-      } else {
-         $tmp_array = $this->_data;
-      }
-      // resort the steps ...
-      foreach($tmp_array as $step_item) {
-         if($step_item->getNumber() >= $step->getNumber()) {
-            $step_item->setNumber($step_item->getNumber()+1);
-         }
-         $new_array[$step_item->getNumber()] = $step_item;
-      }
-      //...and put the new one in place
-      $new_array[$step->getNumber()] = $step;
-      $this->_data = $new_array;
+      $this->_data[$step_id] = $step;
       ksort($this->_data);
    }
 
    function remove($pos) {
-      $counter = 1;
-      $tmp_array = array();
-      // resort array without step where number==$pos
-      foreach($this->_data as $step_item) {
-         if($step_item->getNumber() != $pos) {
-            $step_item->setNumber($counter);
-            $tmp_array[$step_item->getNumber()] = $step_item;
-            $counter++;
-         }
-      }
-      $this->_data = $tmp_array;
+      uset($this->_data[$pos]);
    }
 
    function get($pos) {

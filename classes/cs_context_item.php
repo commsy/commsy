@@ -472,6 +472,40 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   function setWithTodoManagment(){
+      $this->_addExtra('TODOMANAGEMENT',2);
+   }
+
+   function setWithoutTodoManagment(){
+      $this->_addExtra('TODOMANAGEMENT',1);
+   }
+
+   function setTodoManagmentStatus($value){
+      $this->_addExtra('TODOMANAGEMENT',$value);
+   }
+
+   function getTodoManagmentStatus(){
+      $retour = 1;
+      if ($this->_issetExtra('TODOMANAGEMENT') ){
+         $retour = $this->_getExtra('TODOMANAGEMENT');
+      }
+      return $retour;
+   }
+
+
+   function withTodoManagment(){
+      $retour = false;
+      if ($this->_issetExtra('TODOMANAGEMENT') ){
+         $re = $this->_getExtra('TODOMANAGEMENT');
+         if ($re == 2){
+            $retour = true;
+         }
+      }
+      return $retour;
+   }
+
+
+
    function setWithBuzzwords(){
       $this->_addExtra('WITHBUZZWORDS',2);
    }
