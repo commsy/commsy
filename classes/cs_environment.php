@@ -93,6 +93,7 @@ class cs_environment {
    private $session_item = NULL;
    private $_db_mysql_connector = NULL;
    private $_cache_on = true;
+   private $_output_mode = 'html';
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -1566,6 +1567,29 @@ class cs_environment {
    public function getClassFactory () {
       global $class_factory;
       return $class_factory;
+   }
+
+   public function setOutputMode ( $value ) {
+      $this->_output_mode = $value;
+   }
+
+   public function getOutputMode ( ) {
+      return $this->_output_mode;
+   }
+
+   public function isOutputMode ( $value ) {
+      $retour = false;
+      $mode = $this->getOutputMode();
+      if ( !empty($mode)
+           and strtolower($mode) == strtolower($value)
+         ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+   public function isOutputModeNot ( $value ) {
+      return !$this->isOutputMode($value);
    }
 }
 ?>

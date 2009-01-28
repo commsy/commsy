@@ -227,16 +227,25 @@ class cs_link_manager extends cs_manager {
 
       $query .= ' WHERE 1';
 
+      if ( isset($this->_linked_item) or isset($this->_link_type_limit) ) {
+         $query .= ' AND ((';
+      }
       if ( isset($this->_linked_item) ) {
-         $query .= ' AND ( (first_item_id ="'.encode(AS_DB,$this->_linked_item->getItemID()).'"';
+         $query .= ' first_item_id ="'.encode(AS_DB,$this->_linked_item->getItemID()).'"';
       }
       if (isset($this->_second_linked_item) ) {
          $query .= ' AND second_item_id ="'.encode(AS_DB,$this->_second_linked_item->getItemID()).'"';
       }
       if (!empty($this->_link_type_limit) ) {
-         $query .= ' AND second_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"';
+         if ( !empty($this->_linked_item) or !empty($this->_second_linked_item) ) {
+            $query .= ' AND';
+         }
+         $query .= ' second_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"';
       } elseif (!empty($this->_link_type_array_limit) ) {
-         $query .= ' AND (';
+         if ( !empty($this->_linked_item) or !empty($this->_second_linked_item) ) {
+            $query .= ' AND';
+         }
+         $query .= ' (';
          $first = true;
          foreach ($this->_link_type_array_limit as $limit){
             if ($first){
@@ -248,17 +257,26 @@ class cs_link_manager extends cs_manager {
          }
          $query .= ')';
       }
-      if ( isset($this->_linked_item) ) {
+      if ( isset($this->_linked_item) or isset($this->_link_type_limit) ) {
          $query .= ')';
-         $query .= ' OR (second_item_id ="'.encode(AS_DB,$this->_linked_item->getItemID()).'"';
+         $query .= ' OR (';
+      }
+      if ( isset($this->_linked_item) ) {
+         $query .= ' second_item_id ="'.encode(AS_DB,$this->_linked_item->getItemID()).'"';
       }
       if (isset($this->_second_linked_item) ) {
          $query .= ' AND first_item_id ="'.encode(AS_DB,$this->_second_linked_item->getItemID()).'"';
       }
       if (!empty($this->_link_type_limit) ) {
-         $query .= ' AND first_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"';
+         if ( !empty($this->_linked_item) or !empty($this->_second_linked_item) ) {
+            $query .= ' AND';
+         }
+         $query .= ' first_item_type ="'.encode(AS_DB,$this->_link_type_limit).'"';
       } if (!empty($this->_link_type_array_limit) ) {
-         $query .= ' AND (';
+         if ( !empty($this->_linked_item) or !empty($this->_second_linked_item) ) {
+            $query .= ' AND';
+         }
+         $query .= ' (';
          $first = true;
          foreach ($this->_link_type_array_limit as $limit){
             if ($first){
@@ -270,7 +288,7 @@ class cs_link_manager extends cs_manager {
          }
          $query .= ' )';
       }
-      if ( isset($this->_linked_item) ) {
+      if ( isset($this->_linked_item) or isset($this->_link_type_limit) ) {
          $query .= '))';
       }
       $query .= ' AND link_items.deleter_id IS NULL AND link_items.deletion_date IS NULL';

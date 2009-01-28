@@ -573,6 +573,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'cs_page_xml_view';
+define('PAGE_XML_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = false;
+
 $class_name = 'cs_page_help_view';
 define('PAGE_HELP_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;

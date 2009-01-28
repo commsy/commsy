@@ -74,6 +74,7 @@ class cs_links_manager extends cs_manager {
   var $_item_id_array = array();
 
   private $_limit_item_type = NULL;
+  private $_limit_link_type = NULL;
 
   /** constructor: cs_links_manager
     * the only available constructor, initial values for internal variables
@@ -94,6 +95,7 @@ class cs_links_manager extends cs_manager {
      $this->_order = NULL;
      $this->_with_deleted_links = false;
      $this->_limit_item_type = NULL;
+     $this->_limit_link_type = NULL;
   }
 
   /** set context limit
@@ -104,6 +106,10 @@ class cs_links_manager extends cs_manager {
   function setContextLimit ($limit) {
      $this->_room_limit = (int)$limit;
      $this->_data = array();
+  }
+
+  public function setLinkTypeLimit ($value) {
+     $this->_limit_link_type = $value;
   }
 
   public function setItemTypeLimit ($value) {
@@ -203,6 +209,10 @@ class cs_links_manager extends cs_manager {
         $query .= ' WHERE links.link_type LIKE "'.encode(AS_DB,$type).'"';
      } else {
         $query .= ' WHERE 1';
+     }
+
+     if ( !empty($this->_limit_link_type) and empty($type) ) {
+        $query .= ' AND links.link_type="'.$this->_limit_link_type.'"';
      }
 
      if ( !empty($this->_limit_item_type) ) {
@@ -985,6 +995,36 @@ class cs_links_manager extends cs_manager {
       } else {
          $retour = 0;
       }
+      return $retour;
+   }
+
+   public function getAsXMLForFlash () {
+      $retour = '';
+      $array = $this->_performQuery();
+      if ( !empty($array) ) {
+         $type = $array[0]['link_type'];
+         foreach ( $array as $row ) {
+            $retour .= $this->_getDataAsXMLForFlash($row);
+         }
+         $retour2 = $retour;
+         $retour  = '';
+         $retour .= '   <list>'.LF;
+         if ( !empty($type) ) {
+            $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
+         }
+         $retour .= $retour2;
+         $retour .= '   </list>'.LF;
+      }
+      return $retour;
+   }
+
+   private function _getDataAsXMLForFlash ( $array ) {
+      $retour  = '';
+      $retour .= '      <item>'.LF;
+      $retour .= '         <from_id><![CDATA['.$array['from_item_id'].']]></from_id>'.LF;
+      $retour .= '         <to_id><![CDATA['.$array['to_item_id'].']]></to_id>'.LF;
+      $retour .= '         <type><![CDATA['.$array['link_type'].']]></type>'.LF;
+      $retour .= '      </item>'.LF;
       return $retour;
    }
 }

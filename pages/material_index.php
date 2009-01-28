@@ -125,9 +125,7 @@ if ( $mode == 'formattach' or $mode == 'detailattach' ) {
 /*** Start of list display ***/
 
 // Find current browsing starting point
-if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
-   $from = 1;
-} elseif ( isset($_GET['from']) ) {
+if ( isset($_GET['from']) ) {
    $from = $_GET['from'];
 } else {
    $from = 1;
@@ -135,9 +133,7 @@ if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
 
 // Find current browsing interval
 // The browsing interval is applied to all rubrics
-if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
-   $interval = 0;
-} elseif ( isset($_GET['interval']) ) {
+if ( isset($_GET['interval']) ) {
    $interval = $_GET['interval'];
 } elseif ( $session->issetValue('interval') ) {
    $interval = $session->getValue('interval');
@@ -280,43 +276,43 @@ if ($mode == '') {
                                                '_selected_ids');
    }
 }
-      // Update attached items from cookie (requires JavaScript in browser)
-      if ( isset($_COOKIE['attach']) ) {
-         foreach ( $_COOKIE['attach'] as $key => $val ) {
-            setcookie ('attach['.$key.']', '', time()-3600);
-            if ( $val == '1' ) {
-               if ( !in_array($key, $selected_ids) ) {
-                  $selected_ids[] = $key;
-               }
-            } else {
-               $idx = array_search($key, $selected_ids);
-               if ( $idx !== false ) {
-                  unset($selected_ids[$idx]);
-               }
-            }
+
+// Update attached items from cookie (requires JavaScript in browser)
+if ( isset($_COOKIE['attach']) ) {
+   foreach ( $_COOKIE['attach'] as $key => $val ) {
+      setcookie ('attach['.$key.']', '', time()-3600);
+      if ( $val == '1' ) {
+         if ( !in_array($key, $selected_ids) ) {
+            $selected_ids[] = $key;
+         }
+      } else {
+         $idx = array_search($key, $selected_ids);
+         if ( $idx !== false ) {
+            unset($selected_ids[$idx]);
          }
       }
+   }
+}
 
-      // Update attached items from form post (works always)
-      if ( isset($_POST['attach']) ) {
-         foreach ( $_POST['shown'] as $shown_key => $shown_val ) {
-            if ( array_key_exists($shown_key, $_POST['attach']) ) {
-               if ( !in_array($shown_key, $selected_ids) ) {
-                  $selected_ids[] = $shown_key;
-               }
-            } else {
-               $idx = array_search($shown_key, $selected_ids);
-               if ( $idx !== false ) {
-                  unset($selected_ids[$idx]);
-               }
-            }
+// Update attached items from form post (works always)
+if ( isset($_POST['attach']) ) {
+   foreach ( $_POST['shown'] as $shown_key => $shown_val ) {
+      if ( array_key_exists($shown_key, $_POST['attach']) ) {
+         if ( !in_array($shown_key, $selected_ids) ) {
+            $selected_ids[] = $shown_key;
+         }
+      } else {
+         $idx = array_search($shown_key, $selected_ids);
+         if ( $idx !== false ) {
+            unset($selected_ids[$idx]);
          }
       }
+   }
+}
 
-
-   ///////////////////////////////////////
-   // perform list actions              //
-   ///////////////////////////////////////
+///////////////////////////////////////
+// perform list actions              //
+///////////////////////////////////////
 
 // Cancel editing
 if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
@@ -348,65 +344,65 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 }
 
 if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
-        and !isset($_GET['show_copies'])
-        and $_POST['index_view_action'] != '-1'
-        and !empty($selected_ids)
-      ) {
-     $user = $environment->getCurrentUserItem();
-      // prepare action process
-      switch ($_POST['index_view_action']) {
-         case 1:
-            $action = 'ENTRY_MARK_AS_READ';
-            $error = false;
-            $material_manager = $environment->getMaterialManager();
-            $noticed_manager = $environment->getNoticedManager();
-            foreach ($selected_ids as $id) {
-               $material_item = $material_manager->getItem($id);
-               $version_id = $material_item->getVersionID();
-               $noticed_manager->markNoticed($id, $version_id );
-               $annotation_list =$material_item->getAnnotationList();
-               if ( !empty($annotation_list) ){
-                  $annotation_item = $annotation_list->getFirst();
-                  while($annotation_item){
-                     $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
-                     $annotation_item = $annotation_list->getNext();
-                  }
+     and !isset($_GET['show_copies'])
+     and $_POST['index_view_action'] != '-1'
+     and !empty($selected_ids)
+   ) {
+   $user = $environment->getCurrentUserItem();
+   // prepare action process
+   switch ($_POST['index_view_action']) {
+      case 1:
+         $action = 'ENTRY_MARK_AS_READ';
+         $error = false;
+         $material_manager = $environment->getMaterialManager();
+         $noticed_manager = $environment->getNoticedManager();
+         foreach ($selected_ids as $id) {
+            $material_item = $material_manager->getItem($id);
+            $version_id = $material_item->getVersionID();
+            $noticed_manager->markNoticed($id, $version_id );
+            $annotation_list =$material_item->getAnnotationList();
+            if ( !empty($annotation_list) ){
+               $annotation_item = $annotation_list->getFirst();
+               while($annotation_item){
+                  $noticed_manager->markNoticed($annotation_item->getItemID(),'0');
+                  $annotation_item = $annotation_list->getNext();
                }
             }
-            break;
-         case 2:
-            $action = 'ENTRY_COPY';
-            // Copy to clipboard
-            foreach ($selected_ids as $id) {
-               if ( !in_array($id, $clipboard_id_array) ) {
-                  $clipboard_id_array[] = $id;
-               }
+         }
+         break;
+      case 2:
+         $action = 'ENTRY_COPY';
+         // Copy to clipboard
+         foreach ($selected_ids as $id) {
+            if ( !in_array($id, $clipboard_id_array) ) {
+               $clipboard_id_array[] = $id;
             }
-            break;
-         case 3:
-            $error = false;
-            if( $user->isModerator() ){
-               $session->setValue('cid'.$environment->getCurrentContextID().
-                                               '_'.$environment->getCurrentModule().
-                                               '_deleted_ids', $selected_ids);
-               $params = $environment->getCurrentParameterArray();
-               $params['mode'] = 'list_actions';
-               $page->addDeleteBox(curl($environment->getCurrentContextID(),CS_MATERIAL_TYPE,'index',$params),'index',$selected_ids);
-               unset($params);
-            }
-            break;
-         default:
+         }
+         break;
+      case 3:
+         $error = false;
+         if( $user->isModerator() ){
+            $session->setValue('cid'.$environment->getCurrentContextID().
+                               '_'.$environment->getCurrentModule().
+                               '_deleted_ids', $selected_ids);
             $params = $environment->getCurrentParameterArray();
-            unset($params['mode']);
-            redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
-      }
-      if ($_POST['index_view_action'] != '3'){
-         $selected_ids = array();
-         $session->unsetValue('cid'.$environment->getCurrentContextID().
-                              '_'.$environment->getCurrentModule().
-                              '_selected_ids');
-      }
-   } // end if (perform list actions)
+            $params['mode'] = 'list_actions';
+            $page->addDeleteBox(curl($environment->getCurrentContextID(),CS_MATERIAL_TYPE,'index',$params),'index',$selected_ids);
+            unset($params);
+         }
+         break;
+      default:
+         $params = $environment->getCurrentParameterArray();
+         unset($params['mode']);
+         redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
+   }
+   if ($_POST['index_view_action'] != '3'){
+      $selected_ids = array();
+      $session->unsetValue('cid'.$environment->getCurrentContextID().
+                           '_'.$environment->getCurrentModule().
+                           '_selected_ids');
+   }
+} // end if (perform list actions)
 
 
 // Get data from database
@@ -431,7 +427,6 @@ if ( $sel_activating_status == 2 ) {
    $material_manager->showNoNotActivatedEntries();
 }
 /*********************/
-
 
 if ( !empty($search) ) {
    $material_manager->setSearchLimit($search);
@@ -464,157 +459,187 @@ if ( !empty($last_selected_tag) ){
    $material_manager->setTagLimit($last_selected_tag);
 }
 
-$params = array();
-$params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
-$view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
-unset($params);
 foreach($sel_array as $rubric => $value){
    if (!empty($value)){
       $material_manager->setRubricLimit($rubric,$value);
    }
-   $label_manager = $environment->getManager($rubric);
-   $label_manager->setContextLimit($environment->getCurrentContextID());
-   $label_manager->select();
-   $rubric_list = $label_manager->get();
-   $temp_rubric_list = clone $rubric_list;
-   $view->setAvailableRubric($rubric,$temp_rubric_list);
-   $view->setSelectedRubric($rubric,$value);
-   unset($rubric_list);
 }
-
 
 $ids = $material_manager->getIDs();       // returns an array of item ids
 $material_manager->select();
-$list = $material_manager->get();        // returns a cs_list of material_items
-$count_all_shown = count($ids);
-$material_manager->delete_tmp_table();
 
+if ( $environment->isOutputMode('XML') ) {
+   // item
+   $page->add($material_manager->getAsXMLForFlash());
+   $current_context_item = $environment->getCurrentContextItem();
 
-$id_array = array();
-$vid_array = array();
-$item = $list->getFirst();
-while ($item){
-   $id_array[] = $item->getItemID();
-   $vid_array[$item->getItemID()] = $item->getVersionID();
-   $item = $list->getNext();
-}
+   // buzzwords
+   if ( $current_context_item->withBuzzwords() ) {
+      $buzzword_manager = $environment->getLabelManager();
+      $buzzword_manager->resetLimits();
+      $buzzword_manager->setContextLimit($environment->getCurrentContextID());
+      $buzzword_manager->setTypeLimit('buzzword');
+      $buzzword_manager->select();
+      $page->add($buzzword_manager->getAsXMLForFlash());
 
-$section_manager = $environment->getSectionManager();
-$section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
-$noticed_manager = $environment->getNoticedManager();
-$noticed_manager->getLatestNoticedByIDArray($id_array);
-$noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+      $link_manager = $environment->getLinkManager();
+      $link_manager->resetLimits();
+      $link_manager->setContextLimit($environment->getCurrentContextID());
+      $link_manager->setLinkTypeLimit('buzzword_for');
+      $page->add($link_manager->getAsXMLForFlash());
+   }
 
+   // tags
+   if ( $current_context_item->withTags() ) {
+      $tag_manager = $environment->getTagManager();
+      $tag_manager->resetLimits();
+      $tag_manager->setContextLimit($environment->getCurrentContextID());
+      $tag_manager->select();
+      $page->add($tag_manager->getAsXMLForFlash());
 
-$item = $section_list->getFirst();
-while ($item){
-   $id_array[] = $item->getItemID();
-   $vid_array[$item->getItemID()] = $item->getVersionID();
-   $item = $section_list->getNext();
-}
-$link_manager = $environment->getLinkManager();
-$file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $vid_array);
-$file_manager = $environment->getFileManager();
-$file_manager->setIDArrayLimit($file_id_array);
-$file_manager->select();
+      $tag_manager = $environment->getTag2TagManager();
+      $tag_manager->resetLimits();
+      $tag_manager->setContextLimit($environment->getCurrentContextID());
+      $tag_manager->select();
+      $page->add($tag_manager->getAsXMLForFlash());
 
+      $link_manager = $environment->getLinkItemManager();
+      $link_manager->resetLimits();
+      $link_manager->setContextLimit($environment->getCurrentContextID());
+      $link_manager->setTypeLimit(CS_TAG_TYPE);
+      $link_manager->select();
+      $page->add($link_manager->getAsXMLForFlash());
+   }
+   unset($current_context_item);
+} else {
+   $list = $material_manager->get();        // returns a cs_list of material_items
+   $count_all_shown = count($ids);
+   $material_manager->delete_tmp_table();
 
-
-if (isset($_GET['select']) and $_GET['select']=='all'){
+   $id_array = array();
+   $vid_array = array();
    $item = $list->getFirst();
-   while($item){
-      if ( !in_array($item->getItemID(), $selected_ids) ) {
-         $selected_ids[] = $item->getItemID();
-      }
+   while ($item) {
+      $id_array[] = $item->getItemID();
+      $vid_array[$item->getItemID()] = $item->getVersionID();
       $item = $list->getNext();
    }
-}
-if (isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO')) and $_POST['index_view_action'] != '3'){
-     $selected_ids = array();
-}
 
+   $section_manager = $environment->getSectionManager();
+   $section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
+   $noticed_manager = $environment->getNoticedManager();
+   $noticed_manager->getLatestNoticedByIDArray($id_array);
+   $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
 
-
-// Get available buzzwords
-$buzzword_manager = $environment->getLabelManager();
-$buzzword_manager->resetLimits();
-$buzzword_manager->setContextLimit($environment->getCurrentContextID());
-$buzzword_manager->setTypeLimit('buzzword');
-$buzzword_manager->setGetCountLinks();
-$buzzword_manager->select();
-$buzzword_list = $buzzword_manager->get();
-
-// Prepare view object
-$with_modifying_actions = false;
-if ( $context_item->isProjectRoom() ) {
-   if ($context_item->isOpen() AND $mode != 'detailattach' AND $mode != 'formattach')  {
-      $with_modifying_actions = true;
+   $item = $section_list->getFirst();
+   while ($item) {
+      $id_array[] = $item->getItemID();
+      $vid_array[$item->getItemID()] = $item->getVersionID();
+      $item = $section_list->getNext();
    }
-} else {
-   if ($context_item->isOpen() AND $mode != 'detailattach' AND $mode != 'formattach')  {
-      $with_modifying_actions = true;     // Community room
+   $link_manager = $environment->getLinkManager();
+   $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $vid_array);
+   $file_manager = $environment->getFileManager();
+   $file_manager->setIDArrayLimit($file_id_array);
+   $file_manager->select();
+
+   if (isset($_GET['select']) and $_GET['select']=='all'){
+      $item = $list->getFirst();
+      while($item){
+         if ( !in_array($item->getItemID(), $selected_ids) ) {
+            $selected_ids[] = $item->getItemID();
+         }
+         $item = $list->getNext();
+      }
    }
-}
-
-$view->setSelectedTagArray($seltag_array);
-
-// Set data for view
-$view->setList($list);
-$view->setCountAllShown($count_all_shown);
-$view->setCountAll($count_all);
-$view->setFrom($from);
-$view->setInterval($interval);
-
-/***Activating Code***/
-$view->setActivationLimit($sel_activating_status);
-/********************/
-
-$view->setSortKey($sort);
-$view->setSearchText($search);
-$view->setAttributeLimit($attribute_limit);
-$view->setAvailableBuzzwords($buzzword_list);
-$view->setSelectedBuzzword($selbuzzword);
-$view->setClipboardIDArray($clipboard_id_array);
-if ( !empty($seldisplay_mode) and $display_mode == 'flash' ) {
-   $view->setDisplayMode($seldisplay_mode);
-}
-
-if ( !empty($ref_iid) and $mode =='attached'){
-   $item_manager = $environment->getItemManager();
-   $ref_item_type = $item_manager->getItemType($ref_iid);
-   $ref_item_manager = $environment->getManager($ref_item_type);
-   $ref_item = $ref_item_manager->getItem($ref_iid);
-   $view->setRefItem($ref_item);
-   $view->setRefIid($ref_iid);
-   $view->setIsAttachedList();
-} elseif ( !empty($ref_user) and $mode =='attached') {
-   $item_manager = $environment->getItemManager();
-   $ref_item_type = $item_manager->getItemType($ref_user);
-   $ref_item_manager = $environment->getManager(CS_USER_TYPE);
-   $ref_item = $ref_item_manager->getItem($ref_user);
-   $view->setRefItem($ref_item);
-   $view->setRefUser($ref_user);
-   $view->setIsAttachedList();
-}
-
-if ( $mode == 'formattach' or $mode == 'detailattach' ) {
-   $view->setRefIID($ref_iid);
-   if (isset($ref_user)) {
-     $view->setRefUser($ref_user);
+   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+        and $_POST['index_view_action'] != '3'
+      ) {
+      $selected_ids = array();
    }
-   $view->setHasCheckboxes($mode);
-   $view->setCheckedIDs($new_attach_ids);
-   $view->setDontEditIDs($dontedit_attach_ids);
-}elseif ($mode == 'attach'){
-   $view->setHasCheckboxes('list_actions');
-}else{
-   $view->setCheckedIDs($selected_ids);
-   $view->setHasCheckboxes('list_actions');
+
+   // Get available buzzwords
+   $buzzword_manager = $environment->getLabelManager();
+   $buzzword_manager->resetLimits();
+   $buzzword_manager->setContextLimit($environment->getCurrentContextID());
+   $buzzword_manager->setTypeLimit('buzzword');
+   $buzzword_manager->setGetCountLinks();
+   $buzzword_manager->select();
+   $buzzword_list = $buzzword_manager->get();
+
+   // Set data for view
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = $with_modifying_actions;
+   $view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
+   unset($params);
+
+   $view->setSelectedTagArray($seltag_array);
+   foreach($sel_array as $rubric => $value){
+      $label_manager = $environment->getManager($rubric);
+      $label_manager->setContextLimit($environment->getCurrentContextID());
+      $label_manager->select();
+      $rubric_list = $label_manager->get();
+      $temp_rubric_list = clone $rubric_list;
+      $view->setAvailableRubric($rubric,$temp_rubric_list);
+      $view->setSelectedRubric($rubric,$value);
+      unset($rubric_list);
+   }
+
+   $view->setList($list);
+   $view->setCountAllShown($count_all_shown);
+   $view->setCountAll($count_all);
+   $view->setFrom($from);
+   $view->setInterval($interval);
+
+   /***Activating Code***/
+   $view->setActivationLimit($sel_activating_status);
+   /********************/
+
+   $view->setSortKey($sort);
+   $view->setSearchText($search);
+   $view->setAttributeLimit($attribute_limit);
+   $view->setAvailableBuzzwords($buzzword_list);
+   $view->setSelectedBuzzword($selbuzzword);
+   $view->setClipboardIDArray($clipboard_id_array);
+   if ( !empty($seldisplay_mode) and $display_mode == 'flash' ) {
+      $view->setDisplayMode($seldisplay_mode);
+   }
+
+   if ( !empty($ref_iid) and $mode =='attached'){
+      $item_manager = $environment->getItemManager();
+      $ref_item_type = $item_manager->getItemType($ref_iid);
+      $ref_item_manager = $environment->getManager($ref_item_type);
+      $ref_item = $ref_item_manager->getItem($ref_iid);
+      $view->setRefItem($ref_item);
+      $view->setRefIid($ref_iid);
+      $view->setIsAttachedList();
+   } elseif ( !empty($ref_user) and $mode =='attached') {
+      $item_manager = $environment->getItemManager();
+      $ref_item_type = $item_manager->getItemType($ref_user);
+      $ref_item_manager = $environment->getManager(CS_USER_TYPE);
+      $ref_item = $ref_item_manager->getItem($ref_user);
+      $view->setRefItem($ref_item);
+      $view->setRefUser($ref_user);
+      $view->setIsAttachedList();
+   }
+
+   if ( $mode == 'formattach' or $mode == 'detailattach' ) {
+      $view->setRefIID($ref_iid);
+      if (isset($ref_user)) {
+         $view->setRefUser($ref_user);
+      }
+      $view->setHasCheckboxes($mode);
+      $view->setCheckedIDs($new_attach_ids);
+      $view->setDontEditIDs($dontedit_attach_ids);
+   } elseif ( $mode == 'attach' ) {
+      $view->setHasCheckboxes('list_actions');
+   } else {
+      $view->setCheckedIDs($selected_ids);
+      $view->setHasCheckboxes('list_actions');
+   }
+   $page->add($view);
 }
-
-
-$page->add($view);
 
 // Safe information in session for later use
 $session->setValue('material_clipboard', $clipboard_id_array);

@@ -1858,7 +1858,7 @@ class cs_item {
    public function getDataAsXMLForFlash () {
       $type = $this->getType();
       if ( $type == CS_LABEL_TYPE ) {
-         $type = $item->getLabelType();
+         $type = $this->getLabelType();
       }
 
       $retour  = '      <item>'.LF;
@@ -1868,16 +1868,32 @@ class cs_item {
       foreach ($this->_data as $key => $value) {
          if ( $key == 'item_id'
               or $key == 'title' or $key == 'name'
+              or $key == 'first_item_id' or $key == 'second_item_id'
+              or $key == 'first_item_type' or $key == 'second_item_type'
             ) {
             if ( $key == 'item_id' ) {
                $key = 'id';
+            }
+            if ( $key == 'first_item_t' ) {
+               $key = 'first_id';
+            }
+            if ( $key == 'second_item_id' ) {
+               $key = 'second_id';
+            }
+            if ( $key == 'first_item_type' ) {
+               $key = 'first_type';
+            }
+            if ( $key == 'second_item_type' ) {
+               $key = 'second_type';
             }
             $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
          }
       }
 
       # url
-      $retour .= '         <url><![CDATA['.$this->getItemUrl().']]></url>'.LF;
+      if ( $type != CS_LINKITEM_TYPE ) {
+         $retour .= '         <url><![CDATA['.$this->getItemUrl().']]></url>'.LF;
+      }
 
       # image
       $image = '';
@@ -1908,7 +1924,7 @@ class cs_item {
          $fct = 'getfile';
          $params['iid'] = $this->getFileID();
       } elseif ( $type == CS_LABEL_TYPE ) {
-         $mod = type2Module($item->getLabelType());
+         $mod = type2Module($this->getLabelType());
          $params['iid'] = $this->getItemID();
       } else {
          $mod = type2Module($type);

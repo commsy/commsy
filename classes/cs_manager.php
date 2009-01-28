@@ -661,7 +661,9 @@ class cs_manager {
    */
    function _buildItem ($db_array) {
       $item = $this->getNewItem();
-      $item->_setItemData(encode(FROM_DB,$db_array));
+      if ( isset($item) ) {
+         $item->_setItemData(encode(FROM_DB,$db_array));
+      }
       return $item;
    }
 
@@ -1280,7 +1282,7 @@ class cs_manager {
    public function getAsXMLForFlash () {
       $retour = '';
       $list = $this->get();
-      if ( $list->isNotEmpty() ) {
+      if ( !empty($list) and $list->isNotEmpty() ) {
          $item = $list->getFirst();
          $type = $item->getType();
          if ( $type == CS_LABEL_TYPE ) {
@@ -1291,15 +1293,13 @@ class cs_manager {
             $item = $list->getNext();
          }
          $retour2 = $retour;
-         $retour  = '<?xml version="1.0"?>'.LF;
-         $retour .= '<commsy>'.LF;
+         $retour  = '';
          $retour .= '   <list>'.LF;
          if ( !empty($type) ) {
             $retour .= '      <type><![CDATA['.$type.']]></type>'.LF;
          }
          $retour .= $retour2;
          $retour .= '   </list>'.LF;
-         $retour .= '</commsy>'.LF;
       }
       return $retour;
    }

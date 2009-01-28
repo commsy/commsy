@@ -590,5 +590,14 @@ class cs_file_item extends cs_item {
       }
       return $retour;
    }
+
+   public function isImage () {
+      $retour = false;
+      $mime = $this->getMime();
+      if ( stristr($mime,'image') ) {
+         $retour = true;
+      }
+      return $retour;
+   }
 }
 ?>
