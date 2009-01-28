@@ -165,7 +165,18 @@ if ( isset($_GET['cid']) ) {
 
                  }else{
 		   $categories = array('CommSy .'.getMessage('COMMON_DATES'));
-		   $attendees = array();
+           $attendees = $item->getParticipantsItemList();
+           $attendee = $attendees->getFirst();
+           $temp_array = array();
+           $attendee_array = array();
+           while($attendee)
+           {
+             $temp_array['name'] = $attendee->getFullName();
+             $temp_array['email'] = $attendee->getEmail();
+             $temp_array['role'] = '0';
+             $attendee_array[] = $temp_array;
+             $attendee = $attendees->getNext();
+           }
 		   $alarm = array();
 //			$alarm = (array) array(
 //								  0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
@@ -219,7 +230,7 @@ if ( isset($_GET['cid']) ) {
 								html_entity_decode(strip_tags($item->getDescription())), // Description
 								$title, // Title
 								1, // Class (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
-								$attendees, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
+								$attendee_array, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
 								5, // Priority = 0-9
 								0, // frequency: 0 = once, secoundly - yearly = 1-7
 								0, // recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
