@@ -1879,7 +1879,7 @@ class cs_form_view extends cs_view {
                   break;
                case 'SECTION_EDIT':
                   $tempMessage = getMessage('COMMON_SECTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/section.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
                case 'ACCOUNT_PASSWORD':      // Password ändern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
@@ -2018,6 +2018,10 @@ class cs_form_view extends cs_view {
                case 'ANNOTATION_EDIT':      //
                   $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');
                   break;
+               case 'STEP_EDIT':      //
+                  $tempMessage = getMessage('COMMON_STEP_EDIT');
+                  $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
                   break;
@@ -2091,6 +2095,9 @@ class cs_form_view extends cs_view {
             if ($this->_environment->getCurrentModule() != 'account' and
                 $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
                 $this->_environment->getCurrentModule() != CS_COMMUNITY_TYPE and
+                $this->_environment->getCurrentModule() != CS_DISCARTICLE_TYPE and
+                $this->_environment->getCurrentModule() != CS_STEP_TYPE and
+                $this->_environment->getCurrentModule() != CS_SECTION_TYPE and
                 $room->withNetnavigation() and
                 $this->_environment->getCurrentFunction() == 'edit'
 
@@ -2102,8 +2109,13 @@ class cs_form_view extends cs_view {
          if (!is_array($rubric_info_array)) {
             $rubric_info_array = array();
          }
-         if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) ){
-            $room = $this->_environment->getCurrentContextItem();
+         $room = $this->_environment->getCurrentContextItem();
+         $info_text = $room->getUsageInfoTextForRubricForm($this->_environment->getCurrentModule());
+         if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) and
+             !strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')) and
+             !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+
+         ){
             if (!$this->_environment->inPortal()){
                $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
                $html .= $this->_getRubricFormInfoAsHTML($this->_environment->getCurrentModule());

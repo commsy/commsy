@@ -2285,6 +2285,7 @@ class cs_detail_view extends cs_view {
       if ( $context->isProjectRoom()
            and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                  CS_DISCARTICLE_TYPE,
+                                                 CS_STEP_TYPE,
                                                  CS_ANNOTATION_TYPE)) ) {
          $reader_manager = $environment->getReaderManager();
          $user_manager = $environment->getUserManager();
@@ -2379,6 +2380,7 @@ class cs_detail_view extends cs_view {
       if ( $context->isProjectRoom()
               and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                     CS_DISCARTICLE_TYPE,
+                                                    CS_STEP_TYPE,
                                                     CS_ANNOTATION_TYPE))
          ) {
          $html .= '   <tr>'.LF;
@@ -2541,6 +2543,7 @@ class cs_detail_view extends cs_view {
       if ( $context->isProjectRoom()
            and !in_array($item->getType(), array(CS_SECTION_TYPE,
                                                  CS_DISCARTICLE_TYPE,
+                                                 CS_STEP_TYPE,
                                                  CS_ANNOTATION_TYPE))
          ) {
          $html .= '<table class="gauge-wrapper" summary="Layout"><tr>'.LF;

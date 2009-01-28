@@ -60,6 +60,11 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       unset($params['action']);
       unset($params['discarticle_action']);
       unset($params['discarticle_iid']);
+   }elseif ( isset($_GET['step_action']) and $_GET['step_action'] == 'delete' ) {
+      $anchor = 'anchor'.$params['step_iid'];
+      unset($params['action']);
+      unset($params['step_action']);
+      unset($params['step_iid']);
    }elseif ( isset($_GET['del_version']) ) {
       unset($params['action']);
 //      $params['version_id'] = $_GET['del_version'];
@@ -79,6 +84,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       $params = array();
       $params['iid'] = $current_item_iid;
       $section_item->deleteVersion();
+      $material_item = $section_item->getLinkedItem();
+      $material_item->setModificationDate(getCurrentDateTimeInMySQL());
+      $material_item->save();
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'detail', $params);
     }elseif ( isset($_GET['annotation_action']) and $_GET['annotation_action'] == 'delete' ) {
       $params = $environment->getCurrentParameterArray();
@@ -106,6 +114,8 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       $params['iid'] = $current_item_iid;
       $discarticle_item->delete();
       unset($discarticle_item);
+      $discussion_item->setModificationDate(getCurrentDateTimeInMySQL());
+      $discussion_item->save();
       $funct = 'detail';
       if ($delete_discussion) {
          $discussion_item->delete();
@@ -113,6 +123,20 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
          $funct = 'index';
          $params = array();
       }
+      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $funct, $params);
+    }elseif ( isset($_GET['step_action']) and $_GET['step_action'] == 'delete' ) {
+      $params = $environment->getCurrentParameterArray();
+      $step_manager = $environment->getStepManager();
+      $step_item = $step_manager->getItem($params['step_iid']);
+      unset($step_manager);
+      $params = array();
+      $params['iid'] = $current_item_iid;
+      $step_item->delete();
+      unset($step_item);
+      $funct = 'detail';
+      $todo_item = $step_item->getLinkedItem();
+      $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+      $todo_item->save();
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $funct, $params);
     }else{
       if ( $environment->getCurrentModule() == CS_MATERIAL_TYPE){

@@ -58,13 +58,12 @@ $with_anchor = false;
 if ( $current_iid == 'NEW' ) {
    $step_item = NULL;
 } else {
-   $step_manager = $environment->getTodoArticlesManager();
+   $step_manager = $environment->getStepManager();
    $step_item = $step_manager->getItem($current_iid);
 }
-// Find the todo this article belongs to
+// Find the todo this steps belongs to
 if ( $current_iid != 'NEW' ) {
    $todo_id = $step_item->getTodoID();
-   $ref_position = $step_item->getPosition();
 } else {
    if ( !empty($_GET['did']) ) {
       $todo_id = $_GET['did'];
@@ -78,17 +77,17 @@ if ( $current_iid != 'NEW' ) {
          if ( isset($session_postvars['todo_id']) ) {
             $todo_id = $session_postvars['todo_id'];
          } else {
-            include_once('functions/error_functions.php');trigger_error('A todo id must be given for new todo articles.', E_USER_ERROR);
+            include_once('functions/error_functions.php');trigger_error('A todo id must be given for new todo steps.', E_USER_ERROR);
          }
       } elseif ( $session->issetValue($environment->getCurrentModule().'_multi_upload_post_vars') ) {
          $session_postvars = $session->getValue($environment->getCurrentModule().'_multi_upload_post_vars');
          if ( isset($session_postvars['todo_id']) ) {
             $todo_id = $session_postvars['todo_id'];
          } else {
-            include_once('functions/error_functions.php');trigger_error('Lost todo id for todo articles.', E_USER_ERROR);
+            include_once('functions/error_functions.php');trigger_error('Lost todo id for todo steps.', E_USER_ERROR);
          }
       } else {
-         include_once('functions/error_functions.php');trigger_error('A todo id must be given for new todo articles.', E_USER_ERROR);
+         include_once('functions/error_functions.php');trigger_error('A todo id must be given for new todo steps.', E_USER_ERROR);
       }
    }
    $todo_manager = $environment->getTodoManager();
@@ -240,11 +239,9 @@ else {
                $step_item->setCreatorItem($user);
                $step_item->setCreationDate(getCurrentDateTimeInMySQL());
                $step_item->setTodoID($todo_id);
-
-
-               $todo_manager = $environment->getTodoManager();
-               $todo_item = $todo_manager->getItem($todo_id);
             }
+            $todo_manager = $environment->getTodoManager();
+            $todo_item = $todo_manager->getItem($todo_id);
             // Set modificator and modification date
             $user = $environment->getCurrentUserItem();
             $step_item->setModificatorItem($user);
@@ -273,6 +270,13 @@ else {
 
             // Save item
             $step_item->save();
+            $status = $todo_item->getStatus();
+            if ( $status == getMessage('TODO_NOT_STARTED')){
+               $todo_item->setStatus(2);
+               $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
+               $todo_item->save();
+            }
+
 
             // Redirect
             cleanup_session($current_iid);

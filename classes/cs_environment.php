@@ -1084,6 +1084,8 @@ class cs_environment {
             return $this->getLogArchiveManager();
          } elseif ($type == CS_PROJECT_TYPE) {
             return $this->getProjectManager();
+         }elseif ($type == CS_STEP_TYPE) {
+            return $this->getStepManager();
          } elseif ($type == CS_ROOM_TYPE) {
             return $this->getRoomManager();
          } elseif ($type == CS_COMMUNITY_TYPE) {

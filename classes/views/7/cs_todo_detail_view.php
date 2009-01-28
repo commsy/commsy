@@ -130,7 +130,23 @@ class cs_todo_detail_view extends cs_detail_view {
             while ($step) {
                $counter++;
                $step_minutes = $step_minutes + $step->getMinutes();
-               $step_html .= $counter.'. '.$step->getTitle().'<br/>';
+               $fileicons = $this->_getItemFiles($step,true);
+               if ( !empty($fileicons) ) {
+                  $fileicons = '&nbsp;'.$fileicons;
+               }
+               $params = array();
+               $params['iid'] = $item->getItemID();
+               $hover = str_replace('"','\'',$step->getTitle());
+               $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                        CS_TODO_TYPE,
+                        'detail',
+                        $params,
+                        $step->getTitle(),
+                        $hover,
+                        '',
+                        'anchor'.$step->getItemID());
+               $step_html .= $counter.'. '.$title.$fileicons;
+               $step_html .= $this->_getItemChangeStatus($step).' '.'<br/>';
                $step = $step_item_list->getNext();
             }
          }
@@ -190,6 +206,14 @@ class cs_todo_detail_view extends cs_detail_view {
          $html .= $this->_getFormalDataAsHTML($formal_data);
       }
 
+      // Description
+      $desc = $item->getDescription();
+      if ( !empty($desc) ) {
+         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_show_images($desc,$item,true);
+         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
+      }
+
       if ($context->withTodoManagment()){
          $temp_array = array();
          $formal_data = array();
@@ -202,13 +226,6 @@ class cs_todo_detail_view extends cs_detail_view {
          }
       }
 
-      // Description
-      $desc = $item->getDescription();
-      if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
-         $desc = $this->_show_images($desc,$item,true);
-         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
-      }
 
       $html  .= '<!-- END OF TODO ITEM DETAIL -->'.LF.LF;
       return $html;
@@ -440,6 +457,15 @@ class cs_todo_detail_view extends cs_detail_view {
 
    function _getSubItemAsHTML ($item, $anchor_number) {
       $retour  = '';
+      $minutes = $item->getMinutes();
+      if ( $minutes > 0 ) {
+         $temp_array = array();
+         $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
+         $temp_array[1] = $minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+         $formal_data[] = $temp_array;
+         $retour .= $this->_getFormalDataAsHTML($formal_data);
+         $formal_data = array();
+      }
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);
@@ -486,10 +512,10 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '<table style="width:100%;">'.LF;
             $html .= '<tr>'.LF;
             $html .= '<td style="width:15%; padding-top:5px; vertical-align:middle;">'.LF;
-            $html .= '<h3 class="steptitle">'.$this->_translator->getMessage('COMMON_STEP').' '.$count.':&nbsp;</h3>';
+            $html .= '<h3 class="subitemtitle">'.$this->_translator->getMessage('COMMON_STEP').' '.$count.':&nbsp;</h3>';
             $html .= '</td>'.LF;
             $html .= '<td style="width:85%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
+            $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="30" type="text"/>';
             $html .= '</td>'.LF;
             $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
             $html .= '</td>'.LF;
@@ -500,7 +526,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= $this->_translator->getMessage('STEP_MINUTES').': ';
             $html .= '</td>'.LF;
             $html .= '<td>'.LF;
-            $html .= '<input tabindex="9" type="text" name="minutes" size="4" style=""/>&nbsp;('.$this->_translator->getMessage('STEP_IN_MINUTES').')';
+            $html .= '<input tabindex="31" type="text" name="minutes" size="4" style=""/>&nbsp;('.$this->_translator->getMessage('STEP_IN_MINUTES').')';
             $html .= '</td>'.LF;
             $html .= '</tr>'.LF;
             $html .= '<tr>'.LF;
@@ -509,7 +535,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '</td>'.LF;
             $html .= '<td>'.LF;
 
-            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="10"></textarea>';
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="32"></textarea>';
             $text = '';
             global $c_html_textarea;
             $current_context = $this->_environment->getCurrentContextItem();
@@ -576,7 +602,7 @@ class cs_todo_detail_view extends cs_detail_view {
             }
             $meg_val = round($val/1048576);
             $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            $html .= '   <input type="file" name="upload" size="12" tabindex="5"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="6" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
+            $html .= '   <input type="file" name="upload" size="12" tabindex="33"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="34" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
             $html .= BRLF;
             #$px = '245';
             $px = '331';
@@ -614,7 +640,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '&nbsp;';
             $html .= '</td>'.LF;
             $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="8" type="submit"/>';
+            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="35" type="submit"/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;
@@ -651,6 +677,43 @@ class cs_todo_detail_view extends cs_detail_view {
         }
    }
 
+  /** get the file list of the item
+    * this method returns the item file list in the right formatted style
+    *
+    * @return string file list
+    */
+   function _getItemFiles($item, $with_links=true){
+      $file_list='';
+      $files = $item->getFileList();
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
+            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+               if ( stristr(strtolower($file->getFilename()),'png')
+                 or stristr(strtolower($file->getFilename()),'jpg')
+                 or stristr(strtolower($file->getFilename()),'jpeg')
+                 or stristr(strtolower($file->getFilename()),'gif')
+                  ) {
+                   $this->_with_slimbox = true;
+                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+               }else{
+                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+               }
+            }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      return $file_list;
+   }
 
 
 }

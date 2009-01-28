@@ -1671,6 +1671,7 @@ EOD;
                 or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
                 or (isset($parameter_array['selrubric']) and !empty($parameter_array['selrubric']))
                 or (isset($parameter_array['selrestriction']) and !empty($parameter_array['selrestriction']))
+                or (isset($parameter_array['seluser']) and !empty($parameter_array['seluser']))
                 or ($this->_environment->getCurrentModule() == 'campus_search')
                ){
                 if ($this->_environment->getCurrentModule() != CS_USER_TYPE or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']=='3')){

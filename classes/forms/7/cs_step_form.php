@@ -114,7 +114,8 @@ class cs_step_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('todo_id','');
       $this->_form->addHidden('ref_position','');
-      $this->_form->addTitleField('subject','',getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,45,true);
+      $this->_form->addTitleField('subject','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,45,true);
+      $this->_form->addTextField('minutes','',getMessage('STEP_MINUTES'),getMessage('STEP_MINUTES_DESC'),200,4,false);
       $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
@@ -209,8 +210,9 @@ class cs_step_form extends cs_rubric_form {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['todo_id'] = $this->_item->getTodoID();
          $this->_values['ref_position'] = $this->_ref_position;
-         $this->_values['subject'] = $this->_item->getSubject();
+         $this->_values['subject'] = $this->_item->getTitle();
          $this->_values['description'] = $this->_item->getDescription();
+         $this->_values['minutes'] = $this->_item->getMinutes();
          $this->_setValuesForRubricConnections();
 
          // file
@@ -234,11 +236,18 @@ class cs_step_form extends cs_rubric_form {
          if (isset($this->_ref_did)){
             $step_manager = $this->_environment->getTodoArticlesManager();
             $step_item = $step_manager->getItem($this->_ref_did);
-#            $this->_values['subject'] = 'Re:'.$step_item->getSubject();
          }
          $this->_values['ref_position'] = $this->_ref_position;
       }
    }
+
+   function _checkValues () {
+      if ( isset($this->_form_post['minutes']) and !is_numeric($this->_form_post['minutes']) ){
+         $this->_form->setFailure('minutes','mandatory');
+         $this->_error_array[] = getMessage('COMMON_ERROR_MINUTES_INT',getMessage('COMMON_ERROR_MINUTES_INT'));
+      }
+   }
+
 
    function setTodoID($did) {
       $this->_did = $did;
