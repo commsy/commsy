@@ -206,6 +206,7 @@ $message["CONFIGURATION_TAG_EDIT_BY_MODERATOR"]["en"] = "Access to categories ma
 $message["CONFIGURATION_TAG_MANDATORY"]["en"] = "Make category assignment mandatory";
 $message["CONFIGURATION_TAG_NOT_MANDATORY"]["en"] = "Make category assignment voluntary.";
 $message["CONFIGURATION_TAG_STATUS"]["en"] = "Assignment";
+$message["CONFIGURATION_TDOD_MANAGEMENT_DESC"]["en"] = "Choose between simple tasks (option 1) or tasks with time management (option 2).";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS"]["en"] = "All commsy users";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS"]["en"] = "All members of the assigned %_COMMUNITY_SUB_GENS_LOW";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS"]["en"] = "Workspace moderators only";

@@ -1517,7 +1517,7 @@ EOD;
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="width:100%; clear:both;">'.LF;
+      $html .='<div style="font-size:0pt; width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;

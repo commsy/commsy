@@ -158,25 +158,32 @@ class cs_todo_detail_view extends cs_detail_view {
          }
 
          if($done_percentage <= 100){
-            $style = ' height: 18px; background-color: #75ab05; ';
+            $style = ' height: 16px; background-color: #75ab05; ';
+            $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 16px; width: 300px;">'.LF;
+            if ( $done_percentage >= 30 ) {
+               $done_time .= '         <div style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>'.LF;
+            } else {
+               $done_time .= '<div style="float:right; font-size: 10pt;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>';
+               $done_time .= '         <div style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+            }
+            $done_time .= '      </div>'.LF;
          }elseif($done_percentage <= 120){
-            $style = ' height: 16px; border: 1px solid #AAAAAA; background-color: #f2f030; ';
+         	$done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 16px; border: 1px solid #444; background-color: #f2f030; ';
+            $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; padding-top:0px; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '&nbsp;'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
          }else{
-            $style = ' height: 16px; border: 1px solid #AAAAAA; background-color: #f23030; ';
+         	$done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 16px; border: 1px solid #444; background-color: #f23030; ';
+            $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '&nbsp;'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES');
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
          }
-
-         if ($done_percentage > 200){
-            $done_percentage = 200;
-         }
-
-         $done_time .= '      <div class="gauge" style="margin-left: 0px; height: 18px; width: 250px;">'.LF;
-         if ( $done_percentage >= 30 ) {
-            $done_time .= '         <div class="gauge-bar" style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>'.LF;
-         } else {
-            $done_time .= '<div style="float:right; font-size: 10pt;">'.$step_minutes.' '.$this->_translator->getMessage('COMMON_MINUTES').'</div>';
-            $done_time .= '         <div class="gauge-bar" style="font-size: 10pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
-         }
-         $done_time .= '      </div>'.LF;
 
          if ($item->getPlannedTime() >0 ){
          $temp_array[0] = $this->_translator->getMessage('TODO_MINUTES');
@@ -451,9 +458,6 @@ class cs_todo_detail_view extends cs_detail_view {
       return $html;
    }
 
-   function _getSubItemTitleAsHTML ($item, $pos_number) {
-      return $pos_number.'. '.$this->_text_as_html_short($item->getTitle());
-   }
 
    function _getSubItemAsHTML ($item, $anchor_number) {
       $retour  = '';

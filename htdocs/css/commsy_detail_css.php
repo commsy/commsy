@@ -178,11 +178,11 @@ div.sub_item_main{
 }
 .detail_annotation_table{
    width:100%;
+   padding:5px 5px;
    border-collapse:collapse;
-   padding:0px 5px;
-   margin-right:5px;
    margin-bottom:20px;
 }
+
 
 #detail_content, .detail_content{
    margin:0px;

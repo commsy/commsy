@@ -1195,7 +1195,7 @@ class cs_detail_view extends cs_view {
 
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="width:100%; clear:both;">'.LF;
+      $html .='<div style="font-size:0pt; width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -1221,7 +1221,7 @@ class cs_detail_view extends cs_view {
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
-         $html .='<div style="float:right; width:27%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
+         $html .='<div style="float:right; font-size:10pt; width:27%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div>'.LF;
          $html .='<div style="width:250px;">'.LF;
          $html .='<div id="commsy_panels">'.LF;
@@ -1291,7 +1291,7 @@ class cs_detail_view extends cs_view {
       $html .= '</h2>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .='<div id="detail_content" style="'.$width.'">'.LF;
+      $html .='<div id="detail_content" style="font-size:10pt; '.$width.'">'.LF;
 
 
       $formal_data1 = array();
@@ -1546,20 +1546,29 @@ class cs_detail_view extends cs_view {
          $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
       }
       $html .= '<a name="annotations"></a>'.LF;
-      $html .='<div style="padding:5px 5px; background-color:#FFFFFF;">'.LF;
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
+         $html .='<div style="width:100%; padding:5px 10px 5px 5px; background-color:#FFFFFF;">'.LF;
+      }else{
+         $html .='<div style="background-color:#FFFFFF; padding:5px;">'.LF;
+      }
       if ( !empty($this->_annotation_list) ){
          $annotation_item = $this->_annotation_list->getFirst();
       }
-      if ( empty($annotation_item) ){
-      }else{
+      if ( !empty($annotation_item) ){
          $pos_number = 1;
-         $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+         if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
+            $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+         }else{
+            $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+         }
          $current_item = $this->_annotation_list->getFirst();
          while( $current_item ){
                $image = $this->_getItemPicture($current_item->getModificatorItem());
                $html .='<tr>'.LF;
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
+               $html .='<td style="width:72%; padding-top:5px; vertical-align:bottom;">'.LF;
                $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
                $html .='<div style="padding-top:10px;">'.LF;
                $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;

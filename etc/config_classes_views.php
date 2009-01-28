@@ -203,6 +203,13 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
 
+$class_name = 'cs_todo_short_view';
+define('TODO_SHORT_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
 
 
 
@@ -652,13 +659,6 @@ $class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_text_view';
 define('TEXT_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_todo_short_view';
-define('TODO_SHORT_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;

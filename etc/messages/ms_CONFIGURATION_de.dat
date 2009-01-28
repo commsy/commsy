@@ -207,6 +207,7 @@ $message["CONFIGURATION_TAG_EDIT_BY_MODERATOR"]["de"] = "Nur durch ModeratorInne
 $message["CONFIGURATION_TAG_MANDATORY"]["de"] = "Zwingende Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_STATUS"]["de"] = "Zuordnung";
+$message["CONFIGURATION_TDOD_MANAGEMENT_DESC"]["de"] = "Wählen Sie zwischen einfachen Aufgaben (Option 1) und Aufgaben mit Zeitmanagement (Option 2). Option 2 ist komplexer ermöglicht aber eine Protokollierung von Aufgaben über Arbeitsschritte.";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS"]["de"] = "Alle CommSy-NutzerInnen";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS"]["de"] = "Alle Mitglieder %_COMMUNITY_ART_DEF_GENS_LOW zugeordneten %_COMMUNITY_SUB_GENS_BIG";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS"]["de"] = "Nur Raummoderatoren";

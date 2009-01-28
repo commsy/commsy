@@ -374,8 +374,63 @@ class cs_todo_index_view extends cs_room_index_view {
     * @author CommSy Development Group
     */
    function _getStatus($item){
-      $status = $item->getStatus();
-      $status = $this->_compareWithSearchText($status);
+      $user = $this->_environment->getCurrentUser();
+      $context = $this->_environment->getCurrentContextItem();
+      if ($context->withTodoManagment()){
+         $step_html = '';
+         $step_minutes = 0;
+         $step_item_list = $item->getStepItemList();
+         if ( $step_item_list->isEmpty() ) {
+            $status = $this->_compareWithSearchText($item->getStatus());
+         } else {
+            $step = $step_item_list->getFirst();
+            $count = $step_item_list->getCount();
+            $counter = 0;
+            while ($step) {
+               $counter++;
+               $step_minutes = $step_minutes + $step->getMinutes();
+               $step = $step_item_list->getNext();
+            }
+         }
+         $done_time = '';
+
+         $done_percentage = 100;
+         if ($item->getPlannedTime() > 0){
+            $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
+         }
+
+         if($done_percentage <= 100){
+            $style = ' height: 8px; background-color: #75ab05; ';
+            $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 8px; width: 70px;">'.LF;
+            if ( $done_percentage >= 30 ) {
+               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+            } else {
+               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+            }
+            $done_time .= '      </div>'.LF;
+         }elseif($done_percentage <= 120){
+         	$done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
+            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
+         }else{
+         	$done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
+            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
+         }
+         if ($step_minutes >0 ){
+            $status = $done_time;
+         }else{
+            $status = $this->_compareWithSearchText($item->getStatus());
+         }
+      }else{
+         $status = $this->_compareWithSearchText($item->getStatus());
+      }
       return $status;
    }
 
@@ -638,6 +693,40 @@ class cs_todo_index_view extends cs_room_index_view {
       return $html;
 	}
 
+   function _getItemFiles($item, $with_links=true){
+      $retour = '';
+      $file_list='';
+      $files = $item->getFileListWithFilesFromSteps();
+      $files->sortby('filename');
+      $file = $files->getFirst();
+      $user = $this->_environment->getCurrentUser();
+      while ($file) {
+         $url = $file->getUrl();
+         $displayname = $file->getDisplayName();
+         $filesize = $file->getFileSize();
+         $fileicon = $file->getFileIcon();
+         if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
+            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+               $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+            } else {
+	           if ( stristr(strtolower($file->getFilename()),'png')
+	                 or stristr(strtolower($file->getFilename()),'jpg')
+	                 or stristr(strtolower($file->getFilename()),'jpeg')
+	                 or stristr(strtolower($file->getFilename()),'gif')
+	               ) {
+                      $this->_with_slimbox = true;
+	                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+	               }else{
+	                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+	               }
+	           }
+         } else {
+            $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
+         }
+         $file = $files->getNext();
+      }
+      return $retour.$file_list;
+   }
 
 
 }
