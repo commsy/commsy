@@ -1812,7 +1812,7 @@ class cs_view {
       if ( !empty($source) ) {
          $image_text = '';
          $div_number = $this->_getDivNumber();
-         if ($this->_environment->getCurrentBrowser() != 'MSIE' ) {
+         if ( $this->_environment->getCurrentBrowser() != 'MSIE' ) {
          if ( $player == 'flow' ) {
             $image_text .= '<script type="text/javascript" src="http://lecture2go.rrz.uni-hamburg.de/flowplayer/js/flashembed.min.js"></script>'.LF;
             $image_text .= '<script src="http://lecture2go.rrz.uni-hamburg.de/dini/flash_detect/new_detection_kit/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
