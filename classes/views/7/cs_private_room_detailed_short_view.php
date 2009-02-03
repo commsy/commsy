@@ -147,6 +147,14 @@ class cs_private_room_detailed_short_view extends cs_view{
       $html .= $this->_translator->getMessage('COMMON_PAGETITLE_CONFIGURATION').': ';
       $html .= '         </td>'.LF;
       $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+      if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
+         global $c_pmwiki_path_url;
+         $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+         $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
+         $session_item = $this->_environment->getSessionItem();
+         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/?commsy_session_id='.$session_item->getSessionID().'" target="_blank">'.$image.'</a>'.LF;
+         unset($session_item);
+      }
       $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
