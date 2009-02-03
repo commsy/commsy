@@ -193,7 +193,16 @@ $rubric_array = array();
 foreach ( $room_modules as $module ) {
    $link_name = explode('_', $module);
    if ( $link_name[1] != 'none' ) {
-      if ( !($environment->inPrivateRoom() and $link_name =='user') ){
+      if ( !($environment->inPrivateRoom() and $link_name[0] =='user') and
+              !($link_name[0] == CS_USER_TYPE
+                and ($environment->getCurrentModule() == CS_MATERIAL_TYPE
+                or $environment->getCurrentModule() == CS_DISCUSSION_TYPE
+                or $environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                or $environment->getCurrentModule() == CS_TOPIC_TYPE
+                )
+              )
+
+      ){
          $rubric_array[] = $link_name[0];
       }
    }
