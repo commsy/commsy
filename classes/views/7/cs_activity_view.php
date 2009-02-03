@@ -383,13 +383,17 @@ class cs_activity_view extends cs_view {
          if ($show_user_config){
             $params = array();
             $params['selstatus']='1';
-            $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+            if ($count_new_accounts < 16){
+               $image = '<img src="images/commsyicons/22x22/config/account_'.$count_new_accounts.'.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+            }else{
+               $image = '<img src="images/commsyicons/22x22/config/account_16.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+            }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
                                        '',
                                        $image,
-                                       getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK')).LF;
+                                       getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
          }else{
             $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
