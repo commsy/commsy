@@ -977,7 +977,7 @@ function exportMaterialToWiki($current_item_id){
    $description = $this->encodeUrl($description);
    $html_wiki_file = 'CommSy.Material' . $current_item_id . '.html';
    $old_dir = getcwd();
-   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
    file_put_contents($html_wiki_file, $description);
    $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
    $returnwiki = '';
@@ -989,7 +989,7 @@ function exportMaterialToWiki($current_item_id){
    } else {
       // Ohne Perl
       $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
-      $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $html_wiki_file .':)';
+      $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
    }
    chdir($old_dir);
 
@@ -1040,7 +1040,7 @@ function exportMaterialToWiki($current_item_id){
          $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
          $html_wiki_file = $this->encodeUrl($html_wiki_file);
          $old_dir = getcwd();
-         chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
+         chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
          file_put_contents($html_wiki_file, $description);
          $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
          $htmlwiki = exec($command, $returnwiki, $returnstatus);
@@ -1050,7 +1050,7 @@ function exportMaterialToWiki($current_item_id){
          } else {
             // Ohne Perl
             $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
-            $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $html_wiki_file .':)';
+            $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
          }
          chdir($old_dir);
          $description_section_link = str_replace(' ', '', $section->getTitle());
@@ -1148,7 +1148,7 @@ function exportMaterialToWiki($current_item_id){
          $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
          $mail->set_subject($subject);
 
-         $body .= $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY', $room_title, $material_item->getTitle(), $material_item->getExportToWikiLink());
+         $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY', $room_title, $material_item->getTitle(), $material_item->getExportToWikiLink());
          $mail->set_message($body);
          $mail->setSendAsHTML();
 
