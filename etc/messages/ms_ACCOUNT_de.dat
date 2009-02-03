@@ -31,7 +31,6 @@ $message["ACCOUNT_PROCESS_CONFIRMATION"]["de"] = "Bestätigung";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["de"] = "Teilnahme-Code";
 $message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["de"] = "Sie haben einen falschen Code eingegeben.";
 $message["ACCOUNT_PROCESS_ROOM_REASON"]["de"] = "Teilnahmegrund";
-$message["ACCOUNT_REQUESTED"]["de"] = "wurde beantragt";
 $message["ACCOUNT_SEND_BUTTON"]["de"] = "Zusenden";
 $message["ACCOUNT_SHOW_AGB_ERROR"]["de"] = "Bitte schauen Sie sich die <span style=&quot;font-weight:bold&quot;>Nutzungsvereinbarungen</span> an.";
 $message["ACCOUNT_STATUS_CHANGE"]["de"] = "Status ändern";

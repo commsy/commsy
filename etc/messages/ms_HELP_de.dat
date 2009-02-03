@@ -818,7 +818,6 @@ $message["HELP_HOME_INDEX_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_PASS
 $message["HELP_HOME_INDEX_TITLE"]["de"] = "%_PROJECT_SUB_NOMS_BIG - Einstiegsseite";
 $message["HELP_INSTITUTION_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
 $message["HELP_INSTITUTION_INDEX_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
-$message["HELP_LINK"]["de"] = "Hilfe";
 $message["HELP_MAIL_TO_MODERATOR_TITLE"]["de"] = "E-Mail an die Moderatoren dieses CommSy-Raums schicken";
 $message["HELP_MATERIAL_DETAIL"]["de"] = "Materialien dienen sowohl dem Hochladen von Dateien als auch dem Erstellen neuer Texte. Jedes Material kann dabei in mehrere Abschnitte unterteilt werden, die eine Strukturierung des Materials ermöglichen. Klicken Sie dazu auf &quot;Abschnitt hinzufügen&quot;. <br />
 <br />
@@ -912,7 +911,6 @@ $message["HELP_MODULE_TODO"]["de"] = "Aufgaben";
 $message["HELP_MODULE_TOPIC"]["de"] = "%_TOPIC_SUB_NOMPL_BIG";
 $message["HELP_MODULE_USER"]["de"] = "Personen";
 $message["HELP_NOT_AVAILABLE"]["de"] = "Leider keine Hilfe verfügbar";
-$message["HELP_TINY_HEADER"]["de"] = "Hilfe";
 $message["HELP_TOPIC_DETAIL"]["de"] = "Jedes CommSy-Mitglied kann neue <span style=&quot;font-weight:bold;&quot;>%_TOPICS_SUB_NOMPL_LOW</span> (z.B. die eigenen Arbeits- und Forschungsgebiete o. ä.) mit Titel und einer Beschreibung eintragen. Klicken Sie dazu auf &quot;Neuen Eintrag erstellen&quot;.<br />
 <br />
 In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfügbaren Angaben zu diesem Eintrag angezeigt.  Änderungen an dem Eintrag sind über den Link &quot;bearbeiten&quot; möglich.<br />

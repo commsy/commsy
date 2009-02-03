@@ -1,6 +1,5 @@
 <?php
 $message["ALL"]["en"] = "All";
-$message["ANNOUNCEMENT"]["en"] = "Announcement";
 $message["ANNOUNCEMENTS"]["en"] = "Announcements";
 $message["BROWSER"]["en"] = "Browser settings";
 $message["COMMUNITYS"]["en"] = "%_COMMUNITY_SUB_NOMS_BIGs";

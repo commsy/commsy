@@ -12,5 +12,4 @@ $message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT"]["en"] = "%1: Publi
 $message["ADMIN_USER_FORM_TITLE"]["en"] = "Edit account";
 $message["ADMIN_USER_FREE"]["en"] = "activate";
 $message["ADMIN_USER_LOCK"]["en"] = "lock";
-$message["ADMIN_USER_REJECT"]["en"] = "decline";
 ?>

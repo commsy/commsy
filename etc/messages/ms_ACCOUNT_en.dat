@@ -29,7 +29,6 @@ $message["ACCOUNT_PROCESS_CONFIRMATION"]["en"] = "Confirmation";
 $message["ACCOUNT_PROCESS_ROOM_CODE"]["en"] = "membership code";
 $message["ACCOUNT_PROCESS_ROOM_CODE_ERROR"]["en"] = "Sorry, you entered a wrong membership code.";
 $message["ACCOUNT_PROCESS_ROOM_REASON"]["en"] = "Your message";
-$message["ACCOUNT_REQUESTED"]["en"] = "requested";
 $message["ACCOUNT_SEND_BUTTON"]["en"] = "Send";
 $message["ACCOUNT_SHOW_AGB_ERROR"]["en"] = "Please read the applying <span style=&quot;font-weight:bold&quot;>Terms and Conditions</span> thoroughly.";
 $message["ACCOUNT_STATUS_CHANGE"]["en"] = "Change status";

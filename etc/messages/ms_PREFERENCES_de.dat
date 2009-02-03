@@ -55,7 +55,6 @@ $message["PREFERENCES_TAGS_CONFIGURATIONS"]["de"] = "Schlagwörter und Kategorien
 $message["PREFERENCES_TAGS_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die Verwendung der Schlagwörter und Kategorien konfigurieren.";
 $message["PREFERENCES_TIME"]["de"] = "Zeittakte";
 $message["PREFERENCES_TIME_DESC"]["de"] = "Hier können Sie Zeittakte (Semester, Halbjahre, Quartale, usw.) definieren.";
-$message["PREFERENCES_TITLE"]["de"] = "Konfiguration";
 $message["PREFERENCES_USAGE_INFOS"]["de"] = "Nutzungshinweise";
 $message["PREFERENCES_USAGE_INFOS_DESC"]["de"] = "Wählen Sie die Rubriken, in denen Sie Hinweise platzieren möchten.";
 ?>

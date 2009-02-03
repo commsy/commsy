@@ -55,7 +55,6 @@ $message["PREFERENCES_TAGS_CONFIGURATIONS"]["en"] = "Configure categories and ta
 $message["PREFERENCES_TAGS_CONFIGURATIONS_DESC"]["en"] = "Activate and configure usage of tags and categories in this menu.";
 $message["PREFERENCES_TIME"]["en"] = "Clock pulses";
 $message["PREFERENCES_TIME_DESC"]["en"] = "You can define time pulses like terms here.";
-$message["PREFERENCES_TITLE"]["en"] = "Configuration";
 $message["PREFERENCES_USAGE_INFOS"]["en"] = "User notices";
 $message["PREFERENCES_USAGE_INFOS_DESC"]["en"] = "Define user notices for each workspace rubric.";
 ?>

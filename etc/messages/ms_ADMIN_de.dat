@@ -12,5 +12,4 @@ $message["ADMIN_MAIL_MATERIAL_SHOULD_BE_WORLDPUBLIC_SUBJECT"]["de"] = "%1: Mater
 $message["ADMIN_USER_FORM_TITLE"]["de"] = "Kennung verwalten";
 $message["ADMIN_USER_FREE"]["de"] = "freischalten";
 $message["ADMIN_USER_LOCK"]["de"] = "sperren";
-$message["ADMIN_USER_REJECT"]["de"] = "ablehnen";
 ?>

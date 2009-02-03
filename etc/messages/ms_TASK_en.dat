@@ -1,5 +1,0 @@
-<?php
-$message["TASK_MATERIAL_CANCELED"]["en"] = "canceled worldwide publishing";
-$message["TASK_MATERIAL_NEW_VERSION_REQUESTED"]["en"] = "in a new version was requested for worldwide public";
-$message["TASK_MATERIAL_REQUESTED"]["en"] = "requested for worldwide public";
-?>

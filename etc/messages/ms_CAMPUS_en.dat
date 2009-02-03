@@ -1,9 +1,3 @@
 <?php
-$message["CAMPUS_COMMSY_DESCRIPTION_HELP"]["en"] = "Short description of CommSy";
-$message["CAMPUS_HANDBOOK_DESCRIPTION_HELP"]["en"] = "Handbook of CommSy";
-$message["CAMPUS_INITIALIZE_FORM_TITLE"]["en"] = "Init CommSy";
-$message["CAMPUS_MODERATION_DESCRIPTION_HELP"]["en"] = "CommSy moderator's handbook";
-$message["CAMPUS_QUESTIONS_DESCRIPTION_HELP"]["en"] = "Questions and Answers";
 $message["CAMPUS_SEARCH_INDEX"]["en"] = "Search workspace";
-$message["CAMPUS_TITLE"]["en"] = "Name";
 ?>

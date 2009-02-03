@@ -6,7 +6,6 @@ $message["HOME_ACTIVITY_PAGE_IMPRESSIONS"]["de"] = "Seitenaufrufe";
 $message["HOME_ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"]["de"] = "Seitenaufruf";
 $message["HOME_ACTIVITY_SHORT_DESCRIPTION"]["de"] = "%1 Tage";
 $message["HOME_ACTIVITY_SHORT_HEADER"]["de"] = "Aktivität";
-$message["HOME_ACTIVITY_SHORT_HEADER_DESC"]["de"] = "Aktivität der letzten %1 Tage";
 $message["HOME_ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ankündigung erstellen";
 $message["HOME_CAMPUS_INDEX"]["de"] = "Überblick";
 $message["HOME_DATES_SHORT_VIEW_DESCRIPTION"]["de"] = "%1 heute und in der Zukunft von %2";

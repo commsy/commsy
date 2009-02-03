@@ -1,4 +1,0 @@
-<?php
-$message["TASKS_TITLE"]["de"] = "System-Meldungen";
-$message["TASKS_TITLE_SHORT_DESC"]["de"] = "noch zu erledigende Aufgaben";
-?>

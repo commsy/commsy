@@ -1,8 +1,0 @@
-<?php
-$message["LABELS_CHANGE_BUTTON"]["en"] = "change";
-$message["LABELS_COMBINE_BUTTON"]["en"] = "Combine";
-$message["LABELS_EDIT_HEADER"]["en"] = "Edit material types";
-$message["LABELS_HEADER"]["en"] = "Material types";
-$message["LABELS_NEW_BUTTON"]["en"] = "Create new material type";
-$message["LABELS_SAVE_BUTTON"]["en"] = "Save material types";
-?>

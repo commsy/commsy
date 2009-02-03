@@ -79,7 +79,6 @@ $message["ROOM_JOIN_ERROR_HAS_REQUESTED"]["en"] = "You already have applied for 
 $message["ROOM_JOIN_ERROR_IS_DENIED"]["en"] = "You already have applied for membership in workspace <span style=&quot;font-weight:bold;&quot;>%1</span>. Your application has been declined. Please contact the moderator/s of <span style=&quot;font-weight:bold;&quot;>%2</span>, if you have any questions concerning your declinement.";
 $message["ROOM_MEMBER_ADMIN"]["en"] = "Accounts management";
 $message["ROOM_MEMBER_ADMIN_DESC"]["en"] = "Approve memberships or change member's status in your workspace.";
-$message["ROOM_MOVE_REQUESTED"]["en"] = "wants to move";
 $message["ROOM_NOT_LINKED"]["en"] = "not associated";
 $message["ROOM_SCHOOL_CONTEXT_DESCRIPTION"]["en"] = "This is a workspace preset with the following workspace rubrics setup:
 <ul>

@@ -1,4 +1,3 @@
 <?php
 $message["COMMSY_LINK_TITLE"]["de"] = "Homepage von CommSy";
-$message["COMMSY_WEBSITE"]["de"] = "CommSy-Website";
 ?>

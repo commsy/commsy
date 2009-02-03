@@ -1,19 +1,7 @@
 <?php
-$message["SEARCH_ANNOUNCEMENTS"]["en"] = "Announcements";
-$message["SEARCH_EDIT_TITLE"]["en"] = "Expert search in the %_COMMUNITY_SUB_NOMS_BIG";
 $message["SEARCH_FIELD_RESTRICTION"]["en"] = "limited to";
-$message["SEARCH_GO_BUTTON"]["en"] = "Search";
-$message["SEARCH_ITEM_ATTRIBUTE"]["en"] = "Search criteria";
-$message["SEARCH_ITEM_ATTRIBUTE_DESC"]["en"] = "Restrict your search to certain criteria.";
 $message["SEARCH_LINKED_ENTRIES_ONLY"]["en"] = "only linked items";
-$message["SEARCH_MATERIALS"]["en"] = "Materials";
 $message["SEARCH_ONLY_FILES_TEXT"]["en"] = "Items with files only";
 $message["SEARCH_ONLY_IN_FILES_TEXT"]["en"] = "Entries with attachments only";
-$message["SEARCH_RUBRIC_CHOICE"]["en"] = "Search in";
-$message["SEARCH_RUBRIC_CHOICE_DESC"]["en"] = "Choose workspace rubric/s to be searched in.";
 $message["SEARCH_RUBRIC_RESTRICTION"]["en"] = "Rubric selection";
-$message["SEARCH_TEXT"]["en"] = "Search text";
-$message["SEARCH_TEXT_DESC"]["en"] = "Please enter the text, you would like to search for.";
-$message["SEARCH_TOPICS"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
-$message["SEARCH_USERS"]["en"] = "Members";
 ?>

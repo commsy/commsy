@@ -79,7 +79,6 @@ $message["ROOM_JOIN_ERROR_HAS_REQUESTED"]["de"] = "Sie haben sich bereits beim R
 $message["ROOM_JOIN_ERROR_IS_DENIED"]["de"] = "Sie haben sich bereits beim Raum <span style=&quot;font-weight:bold;&quot;>%1</span> angemeldet. Ihre Teilnahmewunsch wurde abgelehnt. Bei Nachfragen wenden sie sich bitte an die Verantwortlichen des Raums <span style=&quot;font-weight:bold;&quot;>%2</span>.";
 $message["ROOM_MEMBER_ADMIN"]["de"] = "Kennungen";
 $message["ROOM_MEMBER_ADMIN_DESC"]["de"] = "Hier können Sie Kennungen freischalten oder den Status von TeilnehmerInnen ändern.";
-$message["ROOM_MOVE_REQUESTED"]["de"] = "möchte umziehen";
 $message["ROOM_NOT_LINKED"]["de"] = "nicht zugeordnet";
 $message["ROOM_SCHOOL_CONTEXT_DESCRIPTION"]["de"] = "Die Rubriken lauten:
 <ul>

@@ -1,6 +1,5 @@
 <?php
 $message["STEP_CHANGE_BUTTON"]["de"] = "Arbeitsschritt speichern";
-$message["STEP_IN_MINUTES"]["de"] = "in Minuten";
 $message["STEP_MINUTES"]["de"] = "Benötigte Zeit";
 $message["STEP_SAVE_BUTTON"]["de"] = "Arbeitsschritt speichern";
 ?>
