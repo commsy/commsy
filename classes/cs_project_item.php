@@ -658,10 +658,12 @@ class cs_project_item extends cs_room_item {
       }
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
-      } else {
+      }else{
+         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
+                            'help', 'context',
                             array('module'=>$this->_environment->getCurrentModule(),
                                   'function'=>$this->_environment->getCurrentFunction(),
                                   'context'=>'HELP_COMMON_FORMAT'),
@@ -671,68 +673,73 @@ class cs_project_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = strtoupper($rubric) . '_' . strtoupper($funct);
-         $tempMessage      = "";
-         switch( $temp )
+         $temp_rub_func = strtoupper($rubric) . '_' . strtoupper($funct);
+         $tempMessage = "";
+         switch( $temp_rub_func )
          {
-            case 'ACCOUNT_INDEX':              // getestet, Einstellungen -> Kennungen
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ACCOUNT_INDEX',$link);
+            case 'ACCOUNT_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX',$link);
                break;
-            case 'ANNOUNCEMENT_INDEX':         // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_INDEX',$link);
+            case 'ACCOUNT_STATUS':      //
+               $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
-            case 'ANNOUNCEMENT_CLIPBOARD_INDEX':         // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
+            case 'ANNOUNCEMENT_CLIPBOARD_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
                break;
-            case 'DATE_INDEX':                 // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_INDEX',$link);
+            case 'ANNOUNCEMENT_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX',$link);
                break;
-            case 'DATE_CLIPBOARD_INDEX':         // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
+            case 'DATE_CLIPBOARD_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
                break;
-            case 'DISCUSSION_INDEX':           // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_INDEX',$link);
+            case 'DATE_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX',$link);
                break;
-            case 'DISCUSSION_CLIPBOARD_INDEX':         // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
+            case 'DISCUSSION_CLIPBOARD_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
                break;
-            case 'HOME_INDEX':                 // getestet, Home
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_HOME_INDEX',$link);
+            case 'DISCUSSION_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX',$link);
                break;
-            case 'HOME_USAGEINFO':             // getestet Projektraum: Nutzungshinweise bearbeiten
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_HOME_USAGEINFO',$link);
+            case 'HOME_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX',$link);
                break;
-            case 'GROUP_INDEX':                // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_GROUP_INDEX',$link);
+            case 'HOME_USAGEINFO':        // getestet - Nutzungshinweise bearbeiten als Raum-Moderator
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_USAGEINFO',$link);
                break;
-            case 'MATERIAL_INDEX':             // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_INDEX',$link);
+            case 'INSTITUTION_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX',$link);
                break;
-            case 'MATERIAL_CLIPBOARD_INDEX':             // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
+            case 'MATERIAL_CLIPBOARD_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
                break;
-            case 'TODO_INDEX':                 // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_INDEX',$link);
+            case 'MATERIAL_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX',$link);
                break;
-            case 'TODO_CLIPBOARD_INDEX':         // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
+            case 'PROJECT_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_INDEX',$link);
                break;
-            case 'TOPIC_INDEX':                // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_TOPIC_INDEX',$link);
+            case 'TODO_CLIPBOARD_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
                break;
-            case 'USER_INDEX':                 // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_USER_INDEX',$link);
+            case 'TODO_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX',$link);
                break;
-            case 'CAMPUS_SEARCH_INDEX':                 // getestet
-               $tempMessage      = getMessage('USAGE_INFO_COMING_SOON');
+            case 'TOPIC_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX',$link);
+               break;
+            case 'USER_INDEX':
+               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX',$link);
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_project_item(".__LINE__.") ";
+               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item(679) ',$link);
                break;
          }
          $retour = $tempMessage;
-         if ($retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp or $retour == 'tbd') {
+
+         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct) or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
+         }
          }
       }
       return $retour;
@@ -748,8 +755,13 @@ class cs_project_item extends cs_room_item {
        }
       } else {
          $value_array = array();
+      }if(!empty($string)){
+         $value_array[strtoupper($rubric)]=$string;
+      }else{
+         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
+            unset($value_array[strtoupper($rubric)]);
+         }
       }
-      $value_array[strtoupper($rubric)]=$string;
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
    }
 
@@ -764,7 +776,13 @@ class cs_project_item extends cs_room_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      if(!empty($string)){
+         $value_array[strtoupper($rubric)]=$string;
+      }else{
+         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
+            unset($value_array[strtoupper($rubric)]);
+         }
+      }
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
    }
 
@@ -784,6 +802,9 @@ class cs_project_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour =  $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -976,6 +997,7 @@ class cs_project_item extends cs_room_item {
             ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
+         }
       }
       return $retour;
    }
@@ -995,6 +1017,9 @@ class cs_project_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7()){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -1048,6 +1073,7 @@ class cs_project_item extends cs_room_item {
          if ($retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_INDEX' or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
+         }
       }
       return $retour;
    }
@@ -1067,6 +1093,9 @@ class cs_project_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7()){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -1119,6 +1148,7 @@ class cs_project_item extends cs_room_item {
          $retour = $tempMessage;
          if ( $retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour =='tbd' ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
+         }
          }
       }
       return $retour;

@@ -1790,6 +1790,7 @@ EOD;
          $info_text = $room->getUsageInfoTextForRubric($act_rubric);
          if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
              and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+             and !empty($info_text)
          ){
              $rubric_info_array = $room->getUsageInfoArray();
              if (!is_array($rubric_info_array)) {

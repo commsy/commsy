@@ -598,7 +598,10 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
-    $link = ahref_curl($this->_environment->getCurrentContextID(),
+         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
+            $retour = '';
+         }else{
+       $link = ahref_curl($this->_environment->getCurrentContextID(),
                        'help',
                        'context',
                        array('module'  =>$this->_environment->getCurrentModule(),
@@ -647,6 +650,7 @@ class cs_privateroom_item extends cs_room_item {
          if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
+         }
       }
       return $retour;
    }
@@ -666,6 +670,9 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7()){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -709,6 +716,7 @@ class cs_privateroom_item extends cs_room_item {
          if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp.'_INDEX' or $retour == 'tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
+         }
       }
       return $retour;
    }
@@ -724,7 +732,13 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      if(!empty($string)){
+         $value_array[strtoupper($rubric)]=$string;
+      }else{
+         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
+            unset($value_array[strtoupper($rubric)]);
+         }
+      }
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
    }
 
@@ -739,7 +753,13 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      if(!empty($string)){
+         $value_array[strtoupper($rubric)]=$string;
+      }else{
+         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
+            unset($value_array[strtoupper($rubric)]);
+         }
+      }
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
    }
 
@@ -759,6 +779,9 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -861,6 +884,7 @@ class cs_privateroom_item extends cs_room_item {
             ){
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
+         }
       }
       return $retour;
    }
@@ -880,6 +904,9 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
          $retour = $retour[strtoupper($rubric)];
       } else {
+         if ($this->isDesign7()){
+            $retour = '';
+         }else{
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
                             'context',
@@ -919,6 +946,7 @@ class cs_privateroom_item extends cs_room_item {
          // if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour == 'tbd'){
          if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp.'_EDIT_FORM' or $retour == 'tbd'){
             $retour = getMessage('USAGE_INFO_FORM_COMMING_SOON');
+         }
          }
       }
       return $retour;

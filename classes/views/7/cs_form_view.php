@@ -2114,7 +2114,8 @@ class cs_form_view extends cs_view {
          $info_text = $room->getUsageInfoTextForRubricForm($this->_environment->getCurrentModule());
          if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) and
              !strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')) and
-             !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+             !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON')) and
+             !empty($info_text)
 
          ){
             if (!$this->_environment->inPortal()){

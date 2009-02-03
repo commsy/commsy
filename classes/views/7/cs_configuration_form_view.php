@@ -356,9 +356,22 @@ class cs_configuration_form_view extends cs_form_view {
       $room = $this->_environment->getCurrentContextItem();
       $html .= $this->_getConfigurationOverviewAsHTML();
 
+         $rubric_info_array = $room->getUsageInfoFormArray();
+         if (!is_array($rubric_info_array)) {
+            $rubric_info_array = array();
+         }
+         $room = $this->_environment->getCurrentContextItem();
+         $info_text = $room->getUsageInfoTextForRubricForm($this->_environment->getCurrentModule());
+         if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) and
+             !strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR')) and
+             !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON')) and
+             !empty($info_text)
+
+         ){
       $html .= '<div style="margin-bottom:1px;">'.LF;
       $html .= $this->_getRubricFormInfoAsHTML($this->_environment->getCurrentModule());
       $html .='</div>'.LF;
+         }
 #      if ($this->_environment->getCurrentModule() != 'mail' and $this->_environment->getCurrentFunction() != 'process'){
 #         $html .= $this->_getConfigurationOptionsAsHTML();
 #      }

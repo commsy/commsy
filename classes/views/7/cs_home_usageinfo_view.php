@@ -52,9 +52,16 @@ var $_config_boxes = false;
      $current_user = $this->_environment->getCurrentUserItem();
      $room = $this->_environment->getCurrentContextItem();
      $rubric_info_array = $room->getUsageInfoArray();
-#     if (!(in_array($this->_environment->getCurrentModule().'_no', $rubric_info_array)) and $current_user->isUser() ){
+     $user = $this->_environment->getCurrentUserItem();
+     $room = $this->_environment->getCurrentContextItem();
+     $act_rubric = $this->_environment->getCurrentModule();
+     $info_text = $room->getUsageInfoTextForRubric($act_rubric);
+     if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
+         and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
+         and !empty($info_text)
+      ){
          $html .= $this->_getRubricInfoAsHTML($this->_environment->getCurrentModule());
-#     }
+     }
      return $html;
    }
 
