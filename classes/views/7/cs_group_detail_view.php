@@ -823,8 +823,7 @@ class cs_group_detail_view extends cs_detail_view {
                              $params,
                              $linktext);
             unset($params);
-            $html_temp .= $status.'</li>'.LF;  
-            
+            $html_temp .= $status.'</li>'.LF;
             $user_item = $user_list->getNext();
          }
          
