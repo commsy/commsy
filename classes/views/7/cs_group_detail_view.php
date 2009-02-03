@@ -289,12 +289,10 @@ class cs_group_detail_view extends cs_detail_view {
          }
       }
       unset($desc);
-
       if ( !isset($show_group_room_window) or !$show_group_room_window ) {
       #########################################
       # FLAG: group room
       #########################################
-
       // Members
 #      $html .= $this->_getNewestLinkedItemsAsHTML($item);
       $html .= '<h3 class="subitemtitle" style="margin-top:10px;">'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;
@@ -815,9 +813,21 @@ class cs_group_detail_view extends cs_detail_view {
             if ( $user_item->isModerator() ) {
                $status = ' ('.$this->_translator->getMessage('CONTEXT_MODERATOR').')';
             }
-            $html_temp .= '<li>'.$this->_text_as_html_short($user_item->getFullName()).$status.'</li>';
+            $linktext = $user_item->getFullname();
+            $html_temp .= '   <li>';
+            $params = array();
+            $params['iid'] = $user_item->getItemID();
+            $html_temp .= ahref_curl($this->_environment->getCurrentContextID(),
+                             'user',
+                             'detail',
+                             $params,
+                             $linktext);
+            unset($params);
+            $html_temp .= $status.'</li>'.LF;  
+            
             $user_item = $user_list->getNext();
          }
+         
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('GROUP_MEMBERS').':</span>'.LF;
          $html .= '<ul style="margin-left:0px;margin-top:0.5em; spacing-left:0px; padding-top:0px;padding-left:1.5em;">'.LF;
          if ( !empty($html_temp) ) {

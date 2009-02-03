@@ -550,7 +550,17 @@ class cs_group_detail_view extends cs_detail_view {
             if ( $user_item->isModerator() ) {
                $status = ' ('.$this->_translator->getMessage('CONTEXT_MODERATOR').')';
             }
-            $html_temp .= '<li>'.$this->_text_as_html_short($user_item->getFullName()).$status.'</li>';
+            $linktext = $user_item->getFullname();
+            $html_temp .= '   <li>';
+            $params = array();
+            $params['iid'] = $user_item->getItemID();
+            $html_temp .= ahref_curl($this->_environment->getCurrentContextID(),
+                             'user',
+                             'detail',
+                             $params,
+                             $linktext);
+            unset($params);
+            $html_temp .= $status.'</li>'.LF;
             $user_item = $user_list->getNext();
          }
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('GROUP_MEMBERS').':</span>'.LF;
