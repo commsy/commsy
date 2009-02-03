@@ -994,6 +994,7 @@ var $_sel_rubric = '';
       if ( !empty($selfile) ) {
          $html .= ' checked="checked"';
       }
+      $html .= '>';
       $html .= '</div>'.LF;
 
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
