@@ -668,6 +668,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<span style=&quot;font-wei
     <li>(:flash FILEINAME play=true width=ZAHL:) for swf, flv</li>
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) for youtube videos</li>
     <li>(:googlevideo FILM-ID:) for google videos</li>
+   <li>(:lecture2go DATEINAME:) to show Lecture2Go movies [<a href=&quot;http://www.commsy.net/pmwiki.php?n=Software/Features&id=81&quot; target=&quot;_blank&quot;>Details</a>]</li>
     <li>Arguments:
     <ul>
         <li>lfloat / rfloat: text float left/right</li>
@@ -691,8 +692,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<span style=&quot;font-wei
     </ul>
     </li>
     <li>e.g. (:mp3 mymusic.mp3 width=150 play=true:)</li>
-</ul><br/>
-";
+</ul><br/>";
 $message["COMMON_TIME"]["en"] = "Time";
 $message["COMMON_TIME_NAME"]["en"] = "%_TIME_SUB_NOMPL_BIG";
 $message["COMMON_TINY_VIEW_DESCRIPTION"]["en"] = "%1 altogether";
