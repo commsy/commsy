@@ -87,16 +87,31 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       $current_context_item = $this->_environment->getCurrentContextItem();
 
       /**************Raumteilnahme******/
+      
+      $use_javascript = false;
+      $session_item = $this->_environment->getSessionItem();
+      if($session_item->issetValue('javascript')){
+         if($session_item->getValue('javascript') == "1"){
+            $use_javascript = true;
+         }
+      }
+      
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_NEVER');
       $radio_values[0]['value'] = 'never';
-      $radio_values[0]['extention'] = 'onclick="disable_code()"';
+      if($use_javascript){
+         $radio_values[0]['extention'] = 'onclick="disable_code()"';
+      }
       $radio_values[2]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS');
       $radio_values[2]['value'] = 'always';
-      $radio_values[2]['extention'] = 'onclick="disable_code()"';
+      if($use_javascript){
+         $radio_values[2]['extention'] = 'onclick="disable_code()"';
+      }
       $radio_values[3]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE');
       $radio_values[3]['value'] = 'withcode';
-      $radio_values[3]['extention'] = 'onclick="enable_code()"';
+      if($use_javascript){
+         $radio_values[3]['extention'] = 'onclick="enable_code()"';
+      }
       $this->_form->addRadioGroup('member_check',
                                   $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS'),
                                   $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_DESC'),
@@ -107,7 +122,10 @@ class cs_configuration_account_options_form extends cs_rubric_form {
                                  );
       unset($radio_values);
       $this->_form->combine();
-      $code_disabled = $this->_disable_code;
+      $code_disabled = false;
+      if($use_javascript){
+          $code_disabled = $this->_disable_code;
+      }
       $this->_form->addTextfield('code',$this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE'),'','','',30,'','','','','','','',$code_disabled);
 
       /********Gastzugang********/
@@ -278,28 +296,28 @@ class cs_configuration_account_options_form extends cs_rubric_form {
    function getInfoForHeaderAsHTML () {
       $retour  = '';
       $retour .= '         function disable_code() {'.LF;
-      $retour .= '            document.f.code.disabled = true;'.LF;
+      $retour .= '            document.edit.code.disabled = true;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function enable_code() {'.LF;
-      $retour .= '            document.f.code.disabled = false;'.LF;
+      $retour .= '            document.edit.code.disabled = false;'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_toggle() {'.LF;
-      $retour .= '            if (document.f.agb_status[0].checked == true) {'.LF;
+      $retour .= '            if (document.edit.agb_status[0].checked == true) {'.LF;
       $retour .= '               cs_enable();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable();'.LF;
       $retour .= '            }'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_disable() {'.LF;
-      $retour .= '            document.f.description_text.disabled = true;'.LF;
+      $retour .= '            document.edit.description_text.disabled = true;'.LF;
       foreach ($this->_languages as $language) {
-         $retour .= '            document.f.agb_text_'.cs_strtoupper($language).'.disabled = true;'.LF;
+         $retour .= '            document.edit.agb_text_'.cs_strtoupper($language).'.disabled = true;'.LF;
       }
       $retour .= '         }'.LF;
       $retour .= '         function cs_enable() {'.LF;
-      $retour .= '            document.f.description_text.disabled = false;'.LF;
+      $retour .= '            document.edit.description_text.disabled = false;'.LF;
       foreach ($this->_languages as $language) {
-         $retour .= '            document.f.agb_text_'.cs_strtoupper($language).'.disabled = false;'.LF;
+         $retour .= '            document.edit.agb_text_'.cs_strtoupper($language).'.disabled = false;'.LF;
       }
       $retour .= '         }'.LF;
       return $retour;

@@ -761,10 +761,21 @@ class cs_configuration_preferences_form extends cs_rubric_form {
            ) {
             $this->_form->addHidden('member_check','');
         } else {
+            
+            $use_javascript = false;
+            $session_item = $this->_environment->getSessionItem();
+            if($session_item->issetValue('javascript')){
+                if($session_item->getValue('javascript') == "1"){
+                    $use_javascript = true;
+                }
+            }
+            
             $radio_values = array();
             $radio_values[0]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_NEVER');
             $radio_values[0]['value'] = 'never';
-            $radio_values[0]['extention'] = 'onclick="disable_code()"';
+            if($use_javascript){
+               $radio_values[0]['extention'] = 'onclick="disable_code()"';
+            }
             #if ($this->_type != CS_PORTAL_TYPE) {
             #   $radio_values[1]['text'] = getMessage('PREFERENCES_CHECK_NEW_MEMBERS_SOMETIMES_ROOM');
             #} else {
@@ -774,10 +785,14 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             #$radio_values[1]['extention'] = 'onclick="disable_code()"';
             $radio_values[2]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_ALWAYS');
             $radio_values[2]['value'] = 'always';
-            $radio_values[2]['extention'] = 'onclick="disable_code()"';
+            if($use_javascript){
+               $radio_values[2]['extention'] = 'onclick="disable_code()"';
+            }
             $radio_values[3]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE');
             $radio_values[3]['value'] = 'withcode';
-            $radio_values[3]['extention'] = 'onclick="enable_code()"';
+            if($use_javascript){
+               $radio_values[3]['extention'] = 'onclick="enable_code()"';
+            }
             $this->_form->addRadioGroup('member_check',
                                         $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS'),
                                         $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_DESC'),
@@ -788,7 +803,11 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                        );
             unset($radio_values);
             $this->_form->combine();
-            $code_disabled = $this->_disable_code;
+ 
+            $code_disabled = false;
+            if($use_javascript){
+               $code_disabled = $this->_disable_code;
+            }
             $this->_form->addTextfield('code',$this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_WITH_CODE_VALUE'),'','','',57,'','','','','','','',$code_disabled);
         }
 
