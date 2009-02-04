@@ -32,18 +32,14 @@ $time_start = getmicrotime();
 // add column "has_html" to table "files"
 echo ('todos add minutes.'."\n");
 $success = true;
-$query = "ALTER TABLE `todos` ADD `minutes` INT NULL AFTER `status` ;";
+$query = "ALTER TABLE `todos` ADD `minutes` INT NULL AFTER `status`; ";
+$result = select($query);
+$query = "ALTER TABLE `todos` ADD `time_type` SMALLINT NOT NULL DEFAULT '1' AFTER `minutes`; ";
 $result = select($query);
 
-
-echo ('todos add time_type.'."\n");
-$success = true;
-$query = "ALTER TABLE `todos` ADD `time_type` INT NULL AFTER `minutes` ;";
-$result = select($query);
-
+;
 // end of execution time
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
 echo "<br/>Execution time: ".sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))."\n";
-
 ?>
