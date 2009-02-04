@@ -720,8 +720,13 @@ class cs_private_room_detailed_short_view extends cs_view{
                   }else{
                      $title .= $rubric_item->getTitle();
                   }
+                  if ($rubric_item->getType() == 'label'){
+                  	 $rubric_type = $rubric_item->getItemType();
+                  }else{
+                  	 $rubric_type = $rubric_item->getType();
+                  }
                   $temp_html .= ahref_curl( $item->getItemID(),
-                        $rubric_item->getType(),
+                        $rubric_type,
                         'detail',
                         $params,
                         $this->_text_as_html_short($title),
