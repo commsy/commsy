@@ -318,25 +318,25 @@ class cs_configuration_common_form extends cs_rubric_form {
                                              );
                $this->_form->combine();
             }
-
-            $this->_form->addSelect('communityrooms',
-                                    $this->_community_room_array,
-                                    '',
-                                    getMessage('PREFERENCES_COMMUNITY_ROOMS'),
-                                    '',
-                                    1,
-                                    false,
-                                    false,
-                                    false,
-                                    '',
-                                    '',
-                                    '',
-                                    '',
-                                    13
-                                   );
-            $this->_form->combine('horizontal');
-            $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
-
+            if(count($this->_community_room_array) > 2){
+               $this->_form->addSelect('communityrooms',
+                                       $this->_community_room_array,
+                                       '',
+                                       getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                       '',
+                                       1,
+                                       false,
+                                       false,
+                                       false,
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       13
+                                      );
+               $this->_form->combine('horizontal');
+               $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
+            }
          }else{
 
             if ( !empty ($this->_shown_community_room_array) ) {
@@ -350,29 +350,30 @@ class cs_configuration_common_form extends cs_rubric_form {
                                              );
                $this->_form->combine();
             }
-
-            $this->_form->addSelect('communityrooms',
-                                    $this->_community_room_array,
-                                    '',
-                                    getMessage('PREFERENCES_COMMUNITY_ROOMS'),
-                                    '',
-                                    1,
-                                    false,
-                                    true,
-                                    false,
-                                    '',
-                                    '',
-                                    '',
-                                    '',
-                                    13
-                                   );
-            $this->_form->combine('horizontal');
-            $this->_form->addButton('option',
-                                    getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),
-                                    '',
-                                    '',
-                                    180
-                                   );
+            if(count($this->_community_room_array) > 2){
+               $this->_form->addSelect('communityrooms',
+                                       $this->_community_room_array,
+                                       '',
+                                       getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                       '',
+                                       1,
+                                       false,
+                                       true,
+                                       false,
+                                       '',
+                                       '',
+                                       '',
+                                       '',
+                                       13
+                                      );
+               $this->_form->combine('horizontal');
+               $this->_form->addButton('option',
+                                       getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),
+                                       '',
+                                       '',
+                                       180
+                                      );
+            }
          }
       }
 
