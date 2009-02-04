@@ -712,12 +712,12 @@ if ($command != 'error') { // only if user is allowed to edit user
                   // change firstname and lastname in all other user_items of this user
                   $change_name = false;
                   if ( !empty($_POST['firstname'])
-                       and $portal_user->getFirstName() != $_GET['firstname']
+                       and $portal_user->getFirstName() != $_POST['firstname']
                      ) {
                      $change_name = true;
                   }
                   if ( !empty($_POST['lastname'])
-                       and $portal_user->getLastName() != $_GET['lastname']
+                       and $portal_user->getLastName() != $_POST['lastname']
                      ) {
                      $change_name = true;
                   }
