@@ -81,10 +81,10 @@ class cs_todo_short_view extends cs_home_view {
          $fileicons = ' '.$fileicons;
       }
       $html  = '   <tr class="list">'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt; width: 53%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width: 12%;">'.$this->_getDateInLang($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width: 35%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width: 15%;">'.$this->_getStatus($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width: 20%;">'.$this->_getProcessors($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 20%;">'.$this->_getDateInLang($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 30%;">'.$this->_getProcessors($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;
