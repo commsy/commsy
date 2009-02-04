@@ -58,6 +58,7 @@ if ( in_array('step',$db_tables) ) {
 `title` varchar( 255 ) NOT NULL default '',
 `description` text,
 `minutes` smallint( 6 ) NOT NULL default '0',
+`time_type` smallint( 6 ) NOT NULL default '0',
 `todo_item_id` int( 11 ) NOT NULL,
 PRIMARY KEY ( `item_id` ) ,
 KEY `room_id` ( `context_id` ) ,
