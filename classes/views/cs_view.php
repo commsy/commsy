@@ -975,6 +975,7 @@ class cs_view {
       if ( $this->_environment->isScribdAvailable() ) {
          $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
+      $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -1056,6 +1057,9 @@ class cs_view {
                         break;
                      } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
                         $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:slideshare' and stristr($value_new,'(:slideshare') ) {
+                        $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
                         $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -1996,6 +2000,26 @@ class cs_view {
       }
 
       $retour = $office_text;
+      return $retour;
+   }
+   
+   function _format_slideshare ($text, $array){
+      $retour = '';
+      if ( !empty($array[1]) ) {
+         $source = $array[1];
+         preg_match('/(?<=id=)(.*)(?=&doc)/', $source, $slideshare_id);
+         preg_match('/(?<=&doc=)(.*)(?=])/', $source, $slideshare_doc);
+
+         $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id[0] . '">';
+         $retour .= '<object style="margin:0px" width="425" height="355">';
+         $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0&stripped_title=building-a-better-debt-lead" />';
+         $retour .= '<param name="allowFullScreen" value="true"/>';
+         $retour .= '<param name="allowScriptAccess" value="always"/>';
+         $retour .= '<embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355">';
+         $retour .= '</embed>';
+         $retour .= '</object>';
+         $retour .= '</div>';
+      }
       return $retour;
    }
 
