@@ -975,7 +975,7 @@ class cs_view {
       if ( $this->_environment->isScribdAvailable() ) {
          $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
-      $reg_exp_array['(:office2']      = '/\\(:office2 (.*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
 
       // jsMath for latex math fonts
@@ -1059,8 +1059,8 @@ class cs_view {
                      } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
                         $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:office2' and stristr($value_new,'(:office2') ) {
-                        $value_new = $this->_format_office2($value_new,$this->_getArgs($value_new,$reg_exp));
+                     } elseif ( $key == '(:pdf' and stristr($value_new,'(:pdf') ) {
+                        $value_new = $this->_format_pdf($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '(:slideshare' and stristr($value_new,'(:slideshare') ) {
                         $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -2007,7 +2007,7 @@ class cs_view {
       return $retour;
    }
 
-   function _format_office2 ($text, $array){
+   function _format_pdf ($text, $array){
       $retour = '';
 
       if ( !empty($array[1]) ) {
