@@ -2007,25 +2007,23 @@ class cs_view {
       $retour = '';
       if ( !empty($array[1]) ) {
          $source = $array[1];
-//         preg_match('/(?<=id=)(.*)(?=&doc)/', $source, $slideshare_id);
-//         preg_match('/(?<=&doc=)(.*)(?=])/', $source, $slideshare_doc);
-
-         $array1 = explode(' ', $source);
-         $array2 = explode('id=', $array1[1]);
-         $array3 = explode('&doc=', $array2[1]);
-         $slideshare_id = $array3[0];
-         $array4 = explode(']', $array3[1]);
-         $slideshare_doc = $array4[0];
-
-//         pr($slideshare_id);
-//         pr($slideshare_doc);
          
-         $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id . '">';
+         // Different PHP-versions/installations can handle either '&' od '&amp;'
+         preg_match('/(?<=id=)(.*)(?=&amp;doc)/', $source, $slideshare_id);
+         if(empty($slideshare_id)){
+            preg_match('/(?<=id=)(.*)(?=&doc)/', $source, $slideshare_id);
+         }
+         preg_match('/(?<=&amp;doc=)(.*)(?=])/', $source, $slideshare_doc);
+         if(empty($slideshare_doc)){
+            preg_match('/(?<=&doc=)(.*)(?=])/', $source, $slideshare_doc);
+         }
+         
+         $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id[0] . '">';
          $retour .= '<object style="margin:0px" width="425" height="355">';
-         $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc . '&rel=0&stripped_title=building-a-better-debt-lead" />';
+         $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0&stripped_title=building-a-better-debt-lead" />';
          $retour .= '<param name="allowFullScreen" value="true"/>';
          $retour .= '<param name="allowScriptAccess" value="always"/>';
-         $retour .= '<embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc . '&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355">';
+         $retour .= '<embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355">';
          $retour .= '</embed>';
          $retour .= '</object>';
          $retour .= '</div>';
