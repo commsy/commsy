@@ -975,6 +975,7 @@ class cs_view {
       if ( $this->_environment->isScribdAvailable() ) {
          $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
+      $reg_exp_array['(:office2']      = '/\\(:office2 (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
 
       // jsMath for latex math fonts
@@ -1057,6 +1058,9 @@ class cs_view {
                         break;
                      } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
                         $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:office2' and stristr($value_new,'(:office2') ) {
+                        $value_new = $this->_format_office2($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '(:slideshare' and stristr($value_new,'(:slideshare') ) {
                         $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -2000,6 +2004,47 @@ class cs_view {
       }
 
       $retour = $office_text;
+      return $retour;
+   }
+
+   function _format_office2 ($text, $array){
+      $retour = '';
+
+      if ( !empty($array[1]) ) {
+         $source = $array[1];
+      }
+      if ( !empty($array[2]) ) {
+         $args = $this->_parseArgs($array[2]);
+      } else {
+         $args = array();
+      }
+
+      if ( !empty($source) ) {
+         global $c_commsy_path_file, $c_commsy_domain, $c_commsy_url_path;
+         $file_name_array = $this->_getItemFileListForView();
+         $file = $file_name_array[$source];
+        
+         if ( isset($file) ) {
+
+            if(($file->getFdViewerFile() == '')){
+                $oldDir = getcwd();
+                chdir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+                $ausgabe = exec('pdf2swf ' . $file->getDiskFileNameWithoutFolder());
+                $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
+                chdir($oldDir);
+                
+                $file->setFdViewerFile(substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
+                $file->saveExtras();
+            }
+            
+            $embed = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=fdviewer&fct=getfile&file=' . $file->getFdViewerFile();
+            $retour .= '<object width="600" height="500">';
+            $retour .= '<param name="movie" value="' . $embed . '">';
+            $retour .= '<embed src="' . $embed . '" width="600" height="500">';
+            $retour .= '</embed>';
+            $retour .= '</object>';
+         }
+      }
       return $retour;
    }
    
