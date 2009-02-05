@@ -55,13 +55,19 @@ class cs_home_extension_view extends cs_view {
      $current_context = $this->_environment->getCurrentContextItem();
      if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
         global $c_pmwiki_path_url;
-        $title = '<span > <a href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'" target="_blank">'.$current_context->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
+         $url_session_id = '';
+         if ( $current_context->withWikiUseCommSyLogin() ) {
+            $session_item = $this->_environment->getSessionItem();
+            $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+            unset($session_item);
+         }
+        $title = '<span> <a href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$current_context->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
         $link_item = new cs_link();
         $link_item->setIconPath('images/cs_config/WIKI_CONFIGURATION_IMAGE.gif');
         $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
         $html .= '<tr>'.LF;
         $html .= '<td style="width:10%;">'.LF;
-        $html .= '<a href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'" target="_blank">'.$link_item->getIcon(30).'</a>'.LF;
+        $html .= '<a href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$link_item->getIcon(30).'</a>'.LF;
         $html .= '</td>'.LF;
         $html .= '<td style="width:90%;">'.LF;
         $html .= $title.LF;

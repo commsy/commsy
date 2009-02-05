@@ -81,6 +81,7 @@ $time_start = getmicrotime();
 // transform POST_VARS and GET_VARS --- move into page object, if exist
 include_once('functions/text_functions.php');
 $_POST = encode(FROM_FORM,$_POST);
+$_GET  = encode(FROM_GET,$_GET);
 $_GET  = encode(FROM_FORM,$_GET);
 
 // setup/check required PHP configuration

@@ -382,7 +382,7 @@ class cs_environment {
       if (!isset($this->_current_parameter_array)) {
          $this->_current_parameter_array = array();
          if (isset($_SERVER['QUERY_STRING'])) {
-            $retour = explode('&',$_SERVER['QUERY_STRING']);
+            $retour = explode('&',encode(FROM_GET,$_SERVER['QUERY_STRING']));
 
             // delete cid, mod and fct
             $go_on = true;

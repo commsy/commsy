@@ -151,8 +151,13 @@ class cs_private_room_detailed_short_view extends cs_view{
          global $c_pmwiki_path_url;
          $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
          $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
-         $session_item = $this->_environment->getSessionItem();
-         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/?commsy_session_id='.$session_item->getSessionID().'" target="_blank">'.$image.'</a>'.LF;
+         $url_session_id = '';
+         if ( $current_context->withWikiUseCommSyLogin() ) {
+            $session_item = $this->_environment->getSessionItem();
+            $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+            unset($session_item);
+         }
+         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
          unset($session_item);
       }
       $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';

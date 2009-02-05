@@ -522,52 +522,53 @@ class cs_wiki_manager extends cs_manager {
 
       // Li-Pedia Erweiterungen
 
-	  // Wiki Authetifizierung
+     // Wiki Authetifizierung
 
-	    global $c_commsy_domain;
-	    global $c_commsy_url_path;
+       global $c_commsy_domain;
+       global $c_commsy_url_path;
 
-	    $url = $c_commsy_domain . $c_commsy_url_path . '/soap.php';
-	    $portalid = $this->_environment->getCurrentPortalID();
-	    $cid = $this->_environment->getCurrentContextID();
+       $url = $c_commsy_domain . $c_commsy_url_path . '/soap.php';
+       $portalid = $this->_environment->getCurrentPortalID();
+       $cid = $this->_environment->getCurrentContextID();
 
-	    if($item->WikiUseCommSyLogin() == '1'){
-	        $str .= '$AuthUser[\'admin\'] = crypt(\'' . $item->getWikiAdminPW() . '\');'.LF;
-	        $str .= '$AuthUser[\'edit\'] = crypt(\'' . $item->getWikiEditPW() . '\');'.LF;
-	        $str .= '$AuthUser[\'read\'] = crypt(\'' . $item->getWikiReadPW() . '\');'.LF;
-	        $str .= '$AuthUser[\'@admins\'] = array(\'admin\');'.LF;
-	        $str .= '$AuthUser[\'@editors\'] = array(\'edit\');'.LF;
-	        $str .= '$AuthUser[\'@readers\'] = array(\'read\');'.LF;
-	        $str .= '$AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
-	        $str .= 'include_once("$FarmD/scripts/authuser.php");'.LF;
-	        $str .= '$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
-	        $str .= '$DefaultPasswords[\'attr\'] = \'@admins\';'.LF;
-	        $str .= '$EnableUpload = 1;'.LF;
-	        $str .= '$DefaultPasswords[\'upload\'] = \'@editors\';'.LF;
-	        $str .= '$UploadMaxSize = 1000000000;'.LF;
-	        $str .= '$DefaultPasswords[\'edit\'] = \'@editors\';'.LF;
-	        if($item->getWikiReadPW() != ''){
-	        	$str .= '$DefaultPasswords[\'read\'] = \'@readers @editors\';'.LF;
-	        }
-	    } else {
-	    	$str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
-			$str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
-			$str .= '   $DefaultPasswords[\'attr\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
-			$str .= '}'.LF;
-			$str .= 'if ( !empty($COMMSY_UPLOAD_PASSWD) ) {'.LF;
-			$str .= '   $EnableUpload = 1;'.LF;
-			$str .= '   $DefaultPasswords[\'upload\'] = crypt($COMMSY_UPLOAD_PASSWD);'.LF;
-			$str .= '   $UploadMaxSize = 1000000000;'.LF;
-			$str .= '}'.LF;
-			$str .= 'if ( !empty($COMMSY_EDIT_PASSWD) ) {'.LF;
-			$str .= '   $DefaultPasswords[\'edit\'] = crypt($COMMSY_EDIT_PASSWD);'.LF;
-			$str .= '}'.LF;
-			$str .= 'if ( !empty($COMMSY_READ_PASSWD) ) {'.LF;
-			$str .= '   $DefaultPasswords[\'read\'] = crypt($COMMSY_READ_PASSWD) . \' \' . crypt($COMMSY_EDIT_PASSWD);'.LF;
-			$str .= '}'.LF;
-	    }
+       if($item->WikiUseCommSyLogin() == '1'){
+           $str .= '$AuthUser[\'admin\'] = crypt(\'' . $item->getWikiAdminPW() . '\');'.LF;
+           $str .= '$AuthUser[\'edit\'] = crypt(\'' . $item->getWikiEditPW() . '\');'.LF;
+           $str .= '$AuthUser[\'read\'] = crypt(\'' . $item->getWikiReadPW() . '\');'.LF;
+           $str .= '$AuthUser[\'@admins\'] = array(\'admin\');'.LF;
+           $str .= '$AuthUser[\'@editors\'] = array(\'edit\');'.LF;
+           $str .= '$AuthUser[\'@readers\'] = array(\'read\');'.LF;
+           $str .= '$AuthUser[\'commsy\'] = array(\'url\' => \'' . $url . '\', \'portal_id\' => \'' . $portalid . '\', \'cid\' => \'' . $cid . '\');'.LF;
+           $str .= 'include_once("$FarmD/cookbook/authusercommsy.php");'.LF;
+           $str .= 'include_once("$FarmD/scripts/authuser.php");'.LF;
+           $str .= '$DefaultPasswords[\'admin\'] = \'@admins\';'.LF;
+           $str .= '$DefaultPasswords[\'attr\'] = \'@admins\';'.LF;
+           $str .= '$EnableUpload = 1;'.LF;
+           $str .= '$DefaultPasswords[\'upload\'] = \'@editors\';'.LF;
+           $str .= '$UploadMaxSize = 1000000000;'.LF;
+           $str .= '$DefaultPasswords[\'edit\'] = \'@editors\';'.LF;
+           if($item->getWikiReadPW() != ''){
+              $str .= '$DefaultPasswords[\'read\'] = \'@readers @editors\';'.LF;
+           }
+       } else {
+          $str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
+         $str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
+         $str .= '   $DefaultPasswords[\'attr\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
+         $str .= '}'.LF;
+         $str .= 'if ( !empty($COMMSY_UPLOAD_PASSWD) ) {'.LF;
+         $str .= '   $EnableUpload = 1;'.LF;
+         $str .= '   $DefaultPasswords[\'upload\'] = crypt($COMMSY_UPLOAD_PASSWD);'.LF;
+         $str .= '   $UploadMaxSize = 1000000000;'.LF;
+         $str .= '}'.LF;
+         $str .= 'if ( !empty($COMMSY_EDIT_PASSWD) ) {'.LF;
+         $str .= '   $DefaultPasswords[\'edit\'] = crypt($COMMSY_EDIT_PASSWD);'.LF;
+         $str .= '}'.LF;
+         $str .= 'if ( !empty($COMMSY_READ_PASSWD) ) {'.LF;
+         $str .= '   $DefaultPasswords[\'read\'] = crypt($COMMSY_READ_PASSWD) . \' \' . crypt($COMMSY_EDIT_PASSWD);'.LF;
+         $str .= '}'.LF;
+       }
 
-	  // Wiki Authetifizierung
+     // Wiki Authetifizierung
 
       $str .= '?>';
 
@@ -965,12 +966,12 @@ function exportMaterialToWiki($current_item_id){
    if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
       $description = _text_php2html_long($description);
    }
-   
+
    global $class_factory;
    $params = array();
    $params['environment'] = $this->_environment;
    $wiki_view = $class_factory->getClass(WIKI_VIEW,$params);
-   
+
    $wiki_view->setItem($material_item);
    $description = $wiki_view->formatForWiki($description);
    $description = $this->encodeUmlaute($description);
@@ -1108,10 +1109,10 @@ function exportMaterialToWiki($current_item_id){
 
    $material_item->setExportToWiki('1');
    $material_item->save();
-   
+
    $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
    $modifiers = $link_modifier_item_manager->getModifiersOfItem($material_item->getItemID());
-   
+
    $user_manager = $this->_environment->getUserManager();
    $user_manager->reset();
    $user_manager->setContextLimit($this->_environment->getCurrentContextID());
@@ -1128,7 +1129,7 @@ function exportMaterialToWiki($current_item_id){
       while($user_item){
          $mail = new cs_mail();
          $mail->set_to($user_item->getEmail());
-            
+
          $room = $this->_environment->getCurrentContextItem();
          $room_title = '';
          if (isset($room)){
@@ -1136,7 +1137,7 @@ function exportMaterialToWiki($current_item_id){
          }
          $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
          $mail->set_from_name($from);
-        
+
          $server_item = $this->_environment->getServerItem();
          $default_sender_address = $server_item->getDefaultSenderAddress();
          if (!empty($default_sender_address)) {
@@ -1144,7 +1145,7 @@ function exportMaterialToWiki($current_item_id){
          } else {
              $mail->set_from_email('@');
          }
-         
+
          $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
          $mail->set_subject($subject);
 
@@ -1152,7 +1153,7 @@ function exportMaterialToWiki($current_item_id){
          $mail->set_message($body);
          $mail->setSendAsHTML();
 
-         $mail->send();         
+         $mail->send();
 
          $user_item = $user_list->getNext();
       }
@@ -1208,55 +1209,55 @@ function getExportToWikiLink($current_item_id){
 //------------------------------------------
 
 function getGroupsForWiki($complete){
-	global $c_pmwiki_path_file;
+   global $c_pmwiki_path_file;
 //	$old_dir = getcwd();
 //	chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
 //    chdir($old_dir);
-    
+
     $result = array('groups' => array(), 'public' => array());
     $directory = $c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d';
-	$directory_handle = @opendir($directory);
-	if($directory_handle){
-		if($dir=opendir($directory)){
-	       while($file=readdir($dir)) {
-	           if (!is_dir($file) && $file != "." && $file != ".."){
-	              	$group = explode('.', $file);
-	              	if((!in_array($group[0], $result['groups']))
-	              	  && ($group[0] != '')
-	              	  && (!stristr($group[0], 'Site'))
-	              	  && (!stristr($group[0], 'SiteAdmin'))
-	              	  && (!stristr($group[0], 'Main'))
-	              	  && (!stristr($group[0], 'Discussion_Backup_'))
-	              	  && (!stristr($group[0], 'FoxNotifyLists'))
-	              	  && (!stristr($group[0], 'Profiles'))){
-	       	   			$result['groups'][] = $group[0];
-	       	   			$found = false;
-	       	   			$dir2=opendir($directory);
-	       	   			while($fileGroupAttributes=readdir($dir2)) {
-	           				if (!is_dir($fileGroupAttributes) && $fileGroupAttributes != "." && $fileGroupAttributes != ".."){
-		           				if(stristr($fileGroupAttributes, $group[0] . '.GroupAttributes')){
-		           					$file_contents = file_get_contents($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $group[0] . '.GroupAttributes');
-							        $file_contents_array = explode("\n", $file_contents);
-							        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
-							            if(stripos($file_contents_array[$index], 'passwdread=$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
-							                $result['public'][] = 'selected';
-		       	   							$found = true;
-							            }
-							        }
-		       	   				}
-	           				}
-	       	   			}
-	       	   			if(!$found){
-	       	   				$result['public'][] = '';
-	       	   			}
-	              	}
-	           }
-	       }
-	    }
-	}
-   
+   $directory_handle = @opendir($directory);
+   if($directory_handle){
+      if($dir=opendir($directory)){
+          while($file=readdir($dir)) {
+              if (!is_dir($file) && $file != "." && $file != ".."){
+                    $group = explode('.', $file);
+                    if((!in_array($group[0], $result['groups']))
+                      && ($group[0] != '')
+                      && (!stristr($group[0], 'Site'))
+                      && (!stristr($group[0], 'SiteAdmin'))
+                      && (!stristr($group[0], 'Main'))
+                      && (!stristr($group[0], 'Discussion_Backup_'))
+                      && (!stristr($group[0], 'FoxNotifyLists'))
+                      && (!stristr($group[0], 'Profiles'))){
+                         $result['groups'][] = $group[0];
+                         $found = false;
+                         $dir2=opendir($directory);
+                         while($fileGroupAttributes=readdir($dir2)) {
+                          if (!is_dir($fileGroupAttributes) && $fileGroupAttributes != "." && $fileGroupAttributes != ".."){
+                             if(stristr($fileGroupAttributes, $group[0] . '.GroupAttributes')){
+                                $file_contents = file_get_contents($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $group[0] . '.GroupAttributes');
+                             $file_contents_array = explode("\n", $file_contents);
+                             for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+                                 if(stripos($file_contents_array[$index], 'passwdread=$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
+                                     $result['public'][] = 'selected';
+                                        $found = true;
+                                 }
+                             }
+                               }
+                          }
+                         }
+                         if(!$found){
+                            $result['public'][] = '';
+                         }
+                    }
+              }
+          }
+       }
+   }
+
    // zusätzlich noch in der wiki-config nach den bisher freigegebenen Dateien suchen.
-   
+
    return $result;
 }
 
@@ -1287,29 +1288,29 @@ function setWikiGroupAsPublic($group){
 }
 
 function setWikiGroupsAsPublic($groups){
-	global $c_pmwiki_path_file;
-	
-	$directory = $c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d';
-	$directory_handle = @opendir($directory);
-	if($directory_handle){
-		if($dir=opendir($directory)){
-	       while($file=readdir($dir)) {
-	           if (!is_dir($file) && $file != "." && $file != ".."){
-	           		if(stristr($file, '.GroupAttributes')){
-	           			unlink($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $file);
-	           		}
-	           }
-	       }
-		}
-	}
+   global $c_pmwiki_path_file;
 
-	if(isset($groups) && !(count($groups) == 0)){
-		$groups[] = 'Main';
-	}
+   $directory = $c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d';
+   $directory_handle = @opendir($directory);
+   if($directory_handle){
+      if($dir=opendir($directory)){
+          while($file=readdir($dir)) {
+              if (!is_dir($file) && $file != "." && $file != ".."){
+                    if(stristr($file, '.GroupAttributes')){
+                       unlink($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $file);
+                    }
+              }
+          }
+      }
+   }
 
-	foreach($groups as $group){
-		$this->setWikiGroupAsPublic($group);
-	}
+   if(isset($groups) && !(count($groups) == 0)){
+      $groups[] = 'Main';
+   }
+
+   foreach($groups as $group){
+      $this->setWikiGroupAsPublic($group);
+   }
 }
 
 }

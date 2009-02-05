@@ -2733,6 +2733,14 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   public function withWikiUseCommSyLogin () {
+      $retour = false;
+      if ( $this->WikiUseCommSyLogin() == 1 ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
    function setWikiCommunityReadAccess(){
       $this->_addExtra('WIKICOMMUNITYREADACCESS','1');
    }

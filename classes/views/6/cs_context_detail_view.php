@@ -493,7 +493,13 @@ var $_room_type = 'context';
             ) {
             $html .= '<li style="font-weight:normal;">'.LF;
             global $c_pmwiki_path_url;
-            $html .= '<span style="white-space:nowrap;"> <a href="'.$c_pmwiki_path_url.'/wikis/'.$item->getContextID().'/'.$item->getItemID().'" target="_blank">'.$item->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
+            $url_session_id = '';
+            if ( $item->withWikiUseCommSyLogin() ) {
+               $session_item = $this->_environment->getSessionItem();
+               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+               unset($session_item);
+            }
+            $html .= '<span style="white-space:nowrap;"> <a href="'.$c_pmwiki_path_url.'/wikis/'.$item->getContextID().'/'.$item->getItemID().'/'.$url_session_id.'" target="_blank">'.$item->getWikiTitle().'</a> ('.$this->_translator->getMessage('COMMON_WIKI_LINK').')</span>';
             $html .= '</li>'.LF;
          }
 
