@@ -336,7 +336,8 @@ class cs_material_detail_view extends cs_detail_view {
       $biblio ='';
       // Author, Year
       $temp_array = array();
-      if ($bib_kind =='none'){
+/*      $author = $item->getAuthor();
+      if ($bib_kind =='none' and !empty($author)){
          $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
          $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
          $formal_data1[] = $temp_array;
@@ -352,10 +353,11 @@ class cs_material_detail_view extends cs_detail_view {
             $formal_data1[] = $temp_array;
             $temp_array = array();
          }
-      }elseif($bib_kind =='common'){
-         $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
-         $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
-         $formal_data1[] = $temp_array;
+      }else
+      */if($bib_kind =='common'){
+#         $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
+#         $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
+#         $formal_data1[] = $temp_array;
          $temp_array = array();
          $biblio = $item->getBibliographicValues();
       }elseif($bib_kind =='website'){

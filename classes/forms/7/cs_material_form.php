@@ -201,11 +201,12 @@ class cs_material_form extends cs_rubric_form {
       $this->_form->addHidden('vid','');
       $this->_form->addHidden('modification_date','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,58,true);
-      if ( $this->_bib_kind=='none' ) {
-         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
-      } elseif ( $this->_bib_kind=='common' ) {
-         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
-      }
+#      if ( $this->_bib_kind=='common' ) {
+#         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
+#      }
+#      elseif ( $this->_bib_kind=='none' ) {
+#         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
+#      }
       $context_item = $this->_environment->getCurrentContextItem();
       if (isset($this->_item)) {
          $iid = $this->_item->getItemID();
@@ -511,7 +512,6 @@ class cs_material_form extends cs_rubric_form {
          $this->_values['modification_date'] = $this->_item->getModificationDate();
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['vid'] = $this->_item->getVersionID();
-         $this->_values['author'] = $this->_item->getAuthor(); // no encode here - encode in form-views
          $this->_values['publishing_date'] = $this->_item->getPublishingDate();
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['description'] = $this->_item->getDescription();
@@ -544,6 +544,7 @@ class cs_material_form extends cs_rubric_form {
          // rubric connections
          $this->_setValuesForRubricConnections();
 
+         $this->_values['author'] = $this->_item->getAuthor(); // no encode here - encode in form-views
          $this->_values['bib_kind'] = $this->_item->getBibKind();
          $this->_values['publisher'] = $this->_item->getPublisher();
          $this->_values['address'] = $this->_item->getAddress();

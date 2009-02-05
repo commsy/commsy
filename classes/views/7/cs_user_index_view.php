@@ -98,7 +98,7 @@ class cs_user_index_view extends cs_room_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:40%;" colspan="4">';
+      $html .= '      <td class="head" style="width:45%;" colspan="4">';
       if ( $this->getSortKey() == 'name' ) {
          $params['sort'] = 'name_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -114,7 +114,12 @@ class cs_user_index_view extends cs_room_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:35%; font-size:8pt;" class="head">';
+
+      $html .= '      <td style="width:25%; font-size:8pt;"  class="head">';
+      $text = $this->_translator->getMessage('USER_TELEPHONE');
+      $html .= $text;
+      $html .= '</td>'.LF;
+      $html .= '      <td style="width:30%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'email' ) {
          $params['sort'] = 'email_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -128,11 +133,6 @@ class cs_user_index_view extends cs_room_index_view {
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                              $params, $this->_translator->getMessage('USER_EMAIL'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
-      $html .= '</td>'.LF;
-
-      $html .= '      <td style="width:25%; font-size:8pt;"  class="head">';
-      $text = $this->_translator->getMessage('USER_TELEPHONE');
-      $html .= $text;
       $html .= '</td>'.LF;
       $html .= '   </tr>'.LF;
 
@@ -225,13 +225,10 @@ class cs_user_index_view extends cs_room_index_view {
          $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
 
-#         $html .= '      <td '.$style.' style="text-align:left; width:2%;">'.$this->_getItemPicture($item).'</td>'.LF;
          $html .= '      <td colspan="3"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }else{
-#         $html .= '      <td colspan="2" '.$style.' style="text-align:center; font-size:10pt;">'.$this->_getItemPicture($item).'</td>'.LF;
          $html .= '      <td colspan="3"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">';
       if ( !empty($phone) ){
          $html .= $this->_text_as_html_short($phone).LF;
@@ -243,6 +240,7 @@ class cs_user_index_view extends cs_room_index_view {
          $html .= $this->_text_as_html_short($handy).LF;
       }
       $html .= '</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;

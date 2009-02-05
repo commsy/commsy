@@ -318,37 +318,6 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
       $retour .= '               element.disabled = false;'.LF;
       $retour .= '            }'.LF;
       $retour .= '         }'.LF;
-/*      $retour .= '         function cs_toggleTags() {'.LF;
-      $retour .= '            if (document.f.tags.checked) {'.LF;
-      $retour .= '               cs_enable_tags();'.LF;
-      $retour .= '            } else {'.LF;
-      $retour .= '               cs_disable_tags();'.LF;
-      $retour .= '            }'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_disable_buzzword() {'.LF;
-      $retour .= '            document.f.buzzword_mandatory.disabled = true;'.LF;
-      $retour .= '            document.f.buzzword_show.disabled = true;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_enable_buzzword() {'.LF;
-      $retour .= '            document.f.buzzword_mandatory.disabled = false;'.LF;
-      $retour .= '            document.f.buzzword_show.disabled = false;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_enable_tags() {'.LF;
-      $retour .= '            document.f.tags_mandatory.disabled = false;'.LF;
-      $retour .= '            document.f.tags_show.disabled = false;'.LF;
-      $retour .= '            document.f.tags_edit.disabled = false;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_disable_tags() {'.LF;
-      $retour .= '            document.f.tags_mandatory.disabled = true;'.LF;
-      $retour .= '            document.f.tags_show.disabled = true;'.LF;
-      $retour .= '            document.f.tags_edit.disabled = true;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_enable_netnavigation() {'.LF;
-      $retour .= '            document.f.netnavigation_show.disabled = false;'.LF;
-      $retour .= '         }'.LF;
-      $retour .= '         function cs_disable_netnavigation() {'.LF;
-      $retour .= '            document.f.netnavigation_show.disabled = true;'.LF;
-      $retour .= '         }'.LF;*/
       return $retour;
    }
 

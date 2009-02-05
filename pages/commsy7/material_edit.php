@@ -326,6 +326,8 @@ else {
             }
             if (isset($_POST['author']) and $material_item->getAuthor() != $_POST['author']) {
                $material_item->setAuthor($_POST['author']);
+            }else{
+               $material_item->setAuthor('');
             }
             if (isset($_POST['publishing_date']) and $material_item->getPublishingDate() != $_POST['publishing_date']) {
                $material_item->setPublishingDate($_POST['publishing_date']);

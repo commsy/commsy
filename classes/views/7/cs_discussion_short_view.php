@@ -89,9 +89,9 @@ class cs_discussion_short_view extends cs_home_view {
          $fileicons = ' '.$fileicons;
       }
       $html  = '   <tr class="list">'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt; width:50%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
-      $html .= '      <td  '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemLastArticleDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:42%;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:8%;">'.$this->_getFastItemArticleCount($item).'</td>'.LF;
+      $html .= '      <td  '.$style.' style="font-size:8pt; width:20%;">'.$this->_getItemLastArticleDate($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 

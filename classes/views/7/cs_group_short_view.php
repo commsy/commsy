@@ -71,7 +71,7 @@ class cs_group_short_view extends cs_home_view {
          // Put items into an array representing the
          // future table layout
          $count = $list->getCount();
-         $num_cols = 3;
+         $num_cols = 2;
          $num_rows = ceil($count/$num_cols);
          $layout_array = array();
          $item = $list->getFirst();
@@ -98,9 +98,9 @@ class cs_group_short_view extends cs_home_view {
             $html .= '<tr class="list">'.LF;
             foreach ( $row as $group ) {
                if ( $r < $num_rows ) {
-                  $html .= '   <td '.$style.' width="33%">';
+                  $html .= '   <td '.$style.' width="50%">';
                } else {
-                  $html .= '   <td '.$style.' width="33%">';
+                  $html .= '   <td '.$style.' width="50%">';
                }
                $html .= $group.'</td>'.LF;
             }

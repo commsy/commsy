@@ -554,6 +554,9 @@ class cs_material_manager extends cs_manager {
          $query .= ' LEFT JOIN item_link_file ON materials.item_id = item_link_file.item_iid'.
                    ' LEFT JOIN files ON item_link_file.file_id = files.files_id';
          //look in filenames of linked files for the search_limit
+      }elseif((isset($this->_order) and
+           ($this->_order == 'modificator' || $this->_order == 'modificator_rev'))){
+         $query .= ' INNER JOIN user AS people ON materials.modifier_id=people.item_id';
       }
 
       // only files limit -> entries with files (material)
@@ -743,6 +746,10 @@ class cs_material_manager extends cs_manager {
             $query .= ' ORDER BY materials.author ASC, materials.title ASC';
          } elseif ($this->_order == 'author_rev') {
             $query .= ' ORDER BY materials.author DESC, materials.title DESC';
+         }elseif ( $this->_order == 'modificator' ) {
+            $query .= ' ORDER BY people.lastname';
+         } elseif ( $this->_order == 'modificator_rev' ) {
+            $query .= ' ORDER BY people.lastname DESC';
          } elseif ($this->_order == 'title') {
             $query .= ' ORDER BY materials.title ASC, materials.modification_date DESC';
          } elseif ($this->_order == 'title_rev') {

@@ -333,8 +333,8 @@ var $_sel_rubric = '';
    function _getAnnouncementItemAsLongHTML($item,$style) {
       $html  = '   <tr>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:15%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       return $html;
    }
 
@@ -590,7 +590,7 @@ var $_sel_rubric = '';
    function _getMaterialItemAsLongHTML($item,$style) {
       $html  = '   <tr>'.LF;
       $html .= '      <td colspan="2" '.$style.' style="font-size:10pt; width:62%;">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$this->_getItemAuthor($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:13%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
@@ -682,13 +682,13 @@ var $_sel_rubric = '';
       $handy = $this->_compareWithSearchText($item->getCellularphone());
       $html  = '   <tr>'.LF;
       $html .= '      <td colspan="2" '.$style.' style="font-size:10pt; width:40%;">'.$this->_getItemFullname($item).'</td>'.LF;
-      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '      <td  '.$style.' style="font-size:8pt; width:25%;">'.$this->_text_as_html_short($phone).LF;
       if (!empty($handy)){
          $html .= BRLF.$this->_text_as_html_short($handy).'</td>'.LF;
       }else{
          $html .='</td>'.LF;
       }
+      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -1079,12 +1079,12 @@ var $_sel_rubric = '';
       $html .= '>*'.$this->_translator->getMessage('MATERIAL_FULL_FIELD_SEARCH').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
       $html .= '      <option value="1"';
-      if ( isset($selected_value) and $selected_value == '1' ) {
+      if ( isset($selected_value) and $selected_value == 'title' ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_TITLE').'</option>'.LF;
       $html .= '      <option value="2"';
-      if ( isset($selected_value) and $selected_value == '2' ) {
+      if ( isset($selected_value) and $selected_value == 'author' ) {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;

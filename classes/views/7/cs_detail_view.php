@@ -1321,12 +1321,12 @@ class cs_detail_view extends cs_view {
       }
 
       $html .= $this->_getContentAsHTML();
-      $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
-      $mode = 'short';
-      if (in_array($item->getItemID(),$this->_openCreatorInfo)) {
-         $mode = 'long';
-      }
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+         $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
+         $mode = 'short';
+         if (in_array($item->getItemID(),$this->_openCreatorInfo)) {
+            $mode = 'long';
+         }
          $html .= $this->_getCreatorInformationAsHTML($item, 3,$mode).LF;
       }
       if (($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom()) and

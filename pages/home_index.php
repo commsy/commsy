@@ -237,6 +237,9 @@ if ( $context_item->isLocked() ) {
                         } else {
                            $manager->setVisibleToAll();
                         }
+                        if ($context_item->isDesign7()){
+                           $manager->setAgeLimit($context_item->getTimeSpread());
+                        }
                         $manager->select();
                         $list = $manager->get();
                         $short_list_view->setList($list);

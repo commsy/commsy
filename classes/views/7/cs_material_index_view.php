@@ -158,7 +158,7 @@ class cs_material_index_view extends cs_index_view {
       $picture ='';
       $html ='';
       $html .= '   <tr class="head">'.LF;
-      $html .= '      <td style="width:62%;" class="head" colspan="2">';
+      $html .= '      <td style="width:65%;" class="head" colspan="2">';
 
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
@@ -182,28 +182,7 @@ class cs_material_index_view extends cs_index_view {
 
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:25%; font-size:8pt;" class="head">';
-      if ( $this->getSortKey() == 'author' ) {
-         $params['sort'] = 'author_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
-      } elseif ( $this->getSortKey() == 'author_rev' ) {
-         $params['sort'] = 'author';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
-      } else {
-         $params['sort'] = 'author';
-         $picture ='&nbsp;';
-      }
-      if($with_links) {
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('MATERIAL_AUTHORS'), '', '', $this->getFragment(),'','','','class="head"');
-         $html .= $picture;
-      } else {
-         $html .= '<span class="index_link">'.$this->_translator->getMessage('MATERIAL_AUTHORS').'</span>';
-         $html .= $picture;
-      }
-      $html .= '</td>'.LF;
-
-      $html .= '      <td style="width:13%; font-size:8pt;" class="head">';
+      $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'date' ) {
          $params['sort'] = 'date_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -223,6 +202,28 @@ class cs_material_index_view extends cs_index_view {
          $html .= $picture;
       }
       $html .= '</td>'.LF;
+
+      $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
+      if ( $this->getSortKey() == 'modificator' ) {
+         $params['sort'] = 'modificator_rev';
+         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+      } elseif ( $this->getSortKey() == 'modificator_rev' ) {
+         $params['sort'] = 'modificator';
+         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+      } else {
+         $params['sort'] = 'modificator';
+         $picture ='&nbsp;';
+      }
+      if($with_links) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+         $html .= $picture;
+      } else {
+         $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_MODIFIED_BY').'</span>';
+         $html .= $picture;
+      }
+      $html .= '</td>'.LF;
+
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -366,7 +367,7 @@ class cs_material_index_view extends cs_index_view {
          $html .= '      </td>'.LF;
 /***Activating Code***/
          if ($item->isNotActivated()){
-            $title = $item->getTitle();
+            $title = $this->_getItemTitle($item);
             $title = $this->_compareWithSearchText($title);
             $user = $this->_environment->getCurrentUser();
             if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
@@ -397,7 +398,7 @@ class cs_material_index_view extends cs_index_view {
              if($with_links) {
                 $html .= '      <td '.$style.'>'.$this->_getItemTitle($item).LF;
              } else {
-                $title = $this->_text_as_html_short($item->getTitle());
+                $title = $this->_text_as_html_short($this->_getItemTitle($item));
                 $html .= '      <td '.$style.'>'.$title.LF;
              }
          }
@@ -406,13 +407,13 @@ class cs_material_index_view extends cs_index_view {
             if($with_links) {
                $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).LF;
             } else {
-               $title = $this->_text_as_html_short($item->getTitle());
+               $title = $this->_text_as_html_short($this->_getItemTitle($item));
                $html .= '      <td colspan="2" '.$style.'>'.$title.LF;
             }
       }
       $html .= '          '.$this->_getItemFiles($item, $with_links).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemAuthor($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -427,8 +428,20 @@ class cs_material_index_view extends cs_index_view {
       $title_text = $item->getTitle();
       $title_text = $this->_compareWithSearchText($title_text);
       $user = $this->_environment->getCurrentUser();
+      $author_text = $this->_getItemAuthor($item);
+      $year_text = $this->_getItemPublishingDate($item);
+      $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
       if (!$this->_environment->inProjectRoom() and !$item->isPublished() and !$user->isUser() ){
-         $title = '<span class="disabled">'.$title_text.'</span>'.LF;
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+                $year_text = ', '.$year_text;
+            }else{
+                $year_text = '';
+            }
+            $title = '<span class="disabled">'.$title_text.'</span>'.'<span class="disabled" style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+         }else{
+            $title = '<span class="disabled">'.$title_text.'</span>'.LF;
+         }
       } else {
          $params = array();
          $params['iid'] = $item->getItemID();
@@ -440,10 +453,21 @@ class cs_material_index_view extends cs_index_view {
                               '','', '', '', '', '', '', '',
                               CS_MATERIAL_TYPE.$item->getItemID());
          unset($params);
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+                $year_text = ', '.$year_text;
+            }else{
+                $year_text = '';
+            }
+            $title = $title.' <span style="font-size:8pt;">('.$this->_getItemAuthor($item).$year_text.')</span>';
+         }else{
+            $title = $title.LF;
+         }
          if ( $this->_environment->inProjectRoom() ) {
             $title .= $this->_getItemChangeStatus($item);
             $title .= $this->_getItemAnnotationChangeStatus($item);
          }
+
       }
       return $title;
    }
@@ -485,7 +509,6 @@ class cs_material_index_view extends cs_index_view {
     */
    function _getItemPublishingDate($item){
       $publishing_date = $this->_compareWithSearchText($item->getPublishingDate());
-//      $publishing_date = '('.$publishing_date.')';
       return $this->_text_as_html_short($publishing_date);
    }
 

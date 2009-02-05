@@ -254,7 +254,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
             }
          }
-
          // logo: save and/or delete current logo
          if ( isset($_POST['delete_logo']) ) {
             $disc_manager = $environment->getDiscManager();

@@ -123,6 +123,22 @@ class cs_announcement_index_view extends cs_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
+      $html .= '      <td style="width:13%; font-size:8pt;" class="head" >';
+      if ( $this->getSortKey() == 'modified' ) {
+         $params['sort'] = 'modified_rev';
+         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+      } elseif ( $this->getSortKey() == 'modified_rev' ) {
+         $params['sort'] = 'modified';
+         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+      } else {
+         $params['sort'] = 'modified';
+         $picture ='&nbsp;';
+      }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
+      $html .= $picture;
+      $html .= '</td>'.LF;
+
       $html .= '      <td style="width:24%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'modificator' ) {
          $params['sort'] = 'modificator_rev';
@@ -139,21 +155,6 @@ class cs_announcement_index_view extends cs_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:13%; font-size:8pt;" class="head" colspan="2">';
-      if ( $this->getSortKey() == 'modified' ) {
-         $params['sort'] = 'modified_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
-      } elseif ( $this->getSortKey() == 'modified_rev' ) {
-         $params['sort'] = 'modified';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
-      } else {
-         $params['sort'] = 'modified';
-         $picture ='&nbsp;';
-      }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
-      $html .= $picture;
-      $html .= '</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -178,7 +179,7 @@ class cs_announcement_index_view extends cs_index_view {
          $html .= $this->_getViewActionsAsHTML();
       }
       $html .= '</td>'.LF;
-      $html .= '<td class="foot_right" colspan="3" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+      $html .= '<td class="foot_right" colspan="2" style="vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
       if ( $this->hasCheckboxes() ) {
          if (count($this->getCheckedIDs())=='1'){
             $html .= ''.$this->_translator->getMessage('COMMON_SELECTED_ONE',count($this->getCheckedIDs()));
@@ -316,8 +317,8 @@ class cs_announcement_index_view extends cs_index_view {
      // @segment-end 75550
 
      // @segment-begin 66261 creator/creation-date-of-announcement-entry,see#82455,#55311
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;" colspan="2">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;

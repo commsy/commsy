@@ -96,10 +96,20 @@ class cs_material_short_view extends cs_home_view {
       $html .= '      <td '.$style.' style="width:50%;">'.$this->_getItemTitle($item).LF;
       $html .= '          '.$this->_getItemFiles($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$this->_getItemAuthor($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       unset($item);
       return $html;
+   }
+
+   function _getItemModificator($item){
+      $modificator = $item->getModificatorItem();
+      if (isset($modificator) and !$modificator->isDeleted()){
+         $fullname = $modificator->getFullName();
+      }else{
+         $fullname = getMessage('COMMON_DELETED_USER');
+      }
+      return $fullname;
    }
 
    /** get the title of the item
@@ -112,25 +122,48 @@ class cs_material_short_view extends cs_home_view {
    function _getItemTitle($item){
       $title_text = $item->getTitle();
       $title_text = $title_text;
+      $author_text = $this->_getItemAuthor($item);
+      $year_text = $this->_getItemPublishingDate($item);
+      $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
       $user = $this->_environment->getCurrentUser();
       if (!$this->_environment->inProjectRoom() and !$item->isPublished() and !$user->isUser() ){
-         $title = '<span class="disabled">'.$title_text.'</span>'."\n";
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+                $year_text = ', '.$year_text;
+            }else{
+                $year_text = '';
+            }
+            $title = '<span class="disabled">'.$title_text.'</span>'.'<span class="disabled" style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+         }else{
+            $title = '<span class="disabled">'.$title_text.'</span>'.LF;
+         }
       } else {
          $params = array();
          $params['iid'] = $item->getItemID();
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                              'material',
+                              CS_MATERIAL_TYPE,
                               'detail',
                               $params,
-                              $this->_text_as_html_short($title_text));
+                              $this->_text_as_html_short($title_text),
+                              '','', '', '', '', '', '', '',
+                              CS_MATERIAL_TYPE.$item->getItemID());
          unset($params);
-         if ($this->_environment->inProjectRoom()) {
+         if (!empty($author_text) and $bib_kind !='none'){
+            if (!empty($year_text)){
+                $year_text = ', '.$year_text;
+            }else{
+                $year_text = '';
+            }
+            $title = $title.' <span style="font-size:8pt;">('.$this->_getItemAuthor($item).$year_text.')</span>';
+         }else{
+            $title = $title.LF;
+         }
+         if ( $this->_environment->inProjectRoom() ) {
             $title .= $this->_getItemChangeStatus($item);
             $title .= $this->_getItemAnnotationChangeStatus($item);
          }
+
       }
-      unset($item);
-      unset($user);
       return $title;
    }
 

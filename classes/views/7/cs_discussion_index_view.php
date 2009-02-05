@@ -126,22 +126,6 @@ class cs_discussion_index_view extends cs_room_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
-      if ( $this->getSortKey() == 'creator' ) {
-         $params['sort'] = 'creator_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
-      } elseif ( $this->getSortKey() == 'creator_rev' ) {
-         $params['sort'] = 'creator';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
-      } else {
-         $params['sort'] = 'creator';
-         $picture ='&nbsp;';
-      }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_EDIT_BY'), '', '', $this->getFragment(),'','','','class="head"');
-      $html .= $picture;
-      $html .= '</td>'.LF;
-
       $html .= '      <td style="width:13%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'latest' ) {
          $params['sort'] = 'latest_rev';
@@ -157,6 +141,22 @@ class cs_discussion_index_view extends cs_room_index_view {
 	                          $params, $this->_translator->getMessage('COMMON_EDIT_AT'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
+      $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
+      if ( $this->getSortKey() == 'creator' ) {
+         $params['sort'] = 'creator_rev';
+         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+      } elseif ( $this->getSortKey() == 'creator_rev' ) {
+         $params['sort'] = 'creator';
+         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+      } else {
+         $params['sort'] = 'creator';
+         $picture ='&nbsp;';
+      }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                              $params, $this->_translator->getMessage('COMMON_EDIT_BY'), '', '', $this->getFragment(),'','','','class="head"');
+      $html .= $picture;
+      $html .= '</td>'.LF;
+
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -305,8 +305,8 @@ class cs_discussion_index_view extends cs_room_index_view {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getFastItemArticleCount($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemLastArticleDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
       return $html;

@@ -1245,7 +1245,7 @@ class cs_form_view extends cs_view {
             $retour .= '<img alt="Picture" src="'.$curl.'" style="height:4em;"/>'.LF;
             $check_box_element = array();
             $check_box_element['type'] = 'checkbox';
-            $check_box_element['name'] = 'delete_logo';
+            $check_box_element['name'] = 'delete_'.$form_element['name'];
             $check_box_element['value'] = '';
             $check_box_element['ischecked'] = false;
             $check_box_element['text'] = getMessage('LOGO_DELETE_OPTION');

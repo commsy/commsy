@@ -132,6 +132,8 @@ else {
                   $text =  $_POST['text'];
                }
                $room_item->setUsageInfoTextForRubric( $_POST['info_text'],  $text);
+            }else{
+               $room_item->setUsageInfoTextForRubric( $_POST['info_text'],  '');
             }
          }
          $info_form_array = array();
@@ -166,6 +168,8 @@ else {
                   $text =  $_POST['text_form'];
                }
                $room_item->setUsageInfoTextForRubricForm( $_POST['info_text'],  $text);
+            }else{
+               $room_item->setUsageInfoTextForRubricForm( $_POST['info_text'],  '');
             }
           if(!empty($_POST['show_global'])) {
              $room_item->setUsageInfoGlobal('true');

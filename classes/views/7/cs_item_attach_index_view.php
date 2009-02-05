@@ -227,7 +227,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt; width:62%;">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemAuthor($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
@@ -251,13 +251,13 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt; width:40%;">'.$this->_getItemFullname($item).'</td>'.LF;
-      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '      <td  '.$style.' style="font-size:8pt; width:24%;">'.$this->_text_as_html_short($phone).LF;
       if (!empty($handy)){
          $html .= BRLF.$this->_text_as_html_short($handy).'</td>'.LF;
       }else{
          $html .='</td>'.LF;
       }
+      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }
@@ -300,8 +300,8 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:24%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:15%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:24%;">'.$this->_getItemModificator($item).'</td>'.LF;
       return $html;
    }
 

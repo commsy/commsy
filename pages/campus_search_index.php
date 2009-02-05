@@ -76,6 +76,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    $seltag_array = array();
 } else {
 
+
    // Find current search text
    if ( isset($_POST['search']) ) {
       $search = $_POST['search'];
@@ -132,10 +133,22 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
 
    // Find current restriction selection
    if ( isset($_POST['selrestriction']) ) {
-      $selrestriction = $_POST['selrestriction'];
+      if ($_POST['selrestriction'] == 1){
+      	$selrestriction = 'title';
+      }elseif($_POST['selrestriction'] == 2){
+        $selrestriction = 'author';
+      }else{
+        $selrestriction = 'all';
+      }
       $from = 1;
    } elseif ( isset($_GET['selrestriction']) ) {
-      $selrestriction = $_GET['selrestriction'];
+      if ($_GET['selrestriction'] == 1){
+        $selrestriction = 'title';
+      }elseif($_GET['selrestriction'] == 2){
+        $selrestriction = 'author';
+      }else{
+        $selrestriction = 'all';
+      }
    }  else {
       $selrestriction = 'all';
    }
@@ -304,7 +317,6 @@ foreach ($rubric_array as $rubric) {
    }
    $rubric_manager->setSearchLimit($search);
    $rubric_manager->setAttributeLimit($selrestriction);
-
    if ( !empty($selbuzzword) ) {
       $rubric_manager->setBuzzwordLimit($selbuzzword);
    }

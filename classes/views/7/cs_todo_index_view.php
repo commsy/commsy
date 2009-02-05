@@ -111,7 +111,7 @@ class cs_todo_index_view extends cs_room_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:45%;" colspan="2">';
+      $html .= '      <td class="head" style="width:40%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -127,7 +127,23 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:13%; font-size:8pt;" class="head">';
+      $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
+      if ( $this->getSortKey() == 'status' ) {
+         $params['sort'] = 'status_rev';
+         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+      } elseif ( $this->getSortKey() == 'status_rev' ) {
+         $params['sort'] = 'status';
+         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+      } else {
+         $params['sort'] = 'status';
+         $picture ='&nbsp;';
+      }
+      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                              $params, $this->_translator->getMessage('TODO_STATUS'), '', '', $this->getFragment(),'','','','class="head"');
+      $html .= $picture;
+      $html .= '</td>'.LF;
+
+      $html .= '      <td style="width:10%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'date' ) {
          $params['sort'] = 'date_rev';
          $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
@@ -143,23 +159,8 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:17%; font-size:8pt;" class="head">';
-      if ( $this->getSortKey() == 'status' ) {
-         $params['sort'] = 'status_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
-      } elseif ( $this->getSortKey() == 'status_rev' ) {
-         $params['sort'] = 'status';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
-      } else {
-         $params['sort'] = 'status';
-         $picture ='&nbsp;';
-      }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('TODO_STATUS'), '', '', $this->getFragment(),'','','','class="head"');
-      $html .= $picture;
-      $html .= '</td>'.LF;
 
-      $html .= '      <td style="width:25%; font-size:8pt;" class="head">';
+      $html .= '      <td style="width:35%; font-size:8pt;" class="head">';
       $text = $this->_translator->getMessage('TODO_RESPONSIBILITY');
       $html .= $text;
       $html .= '</td>'.LF;
@@ -312,8 +313,8 @@ class cs_todo_index_view extends cs_room_index_view {
       } else {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getDateInLang($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getStatus($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getDateInLang($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getProcessors($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 

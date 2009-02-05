@@ -1748,38 +1748,6 @@ EOD;
             $html .= '</div>'.LF;
          }
 
-         /*******************Netnavigation************/
-/*         if ( $this->showNetnavigation() ) {
-            if ( $first_box ){
-               $first_box = false;
-               $additional_text ='';
-            }else{
-               $additional_text =',';
-            }
-            // @segment-end 75369
-            // @segment-begin 22698 asHTML:no_clipboard_mode+mode=""_or_mode><print:select-box-right-side
-            $title_string .= $additional_text.'"';
-            $title_string .= getMessage('COMMON_NETNAVIGATION').' ';
-
-            $title_string .= '"';
-            $desc_string .= $additional_text.'""';
-            $size_string .= $additional_text.'"10"';
-            $parameter_array = $this->_environment->getCurrentParameterArray();
-            $parameter_array = $this->_environment->getCurrentParameterArray();
-            if (
-                 (isset($parameter_array['selgroup']) and $parameter_array['selgroup']!='0') or
-                 (isset($parameter_array['selinstitution']) and $parameter_array['selinstitution']!='0') or
-                 (isset($parameter_array['seltopic']) and $parameter_array['seltopic']!='0') or
-                 $current_context->isNetnavigationShowExpanded()
-               ){
-               $config_text .= $additional_text.'true';
-            }else{
-                $config_text .= $additional_text.'false';
-            }
-            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
-            $html .= $this->getNetnavigationAsHTML();
-            $html .='</div>'.LF;
-         }*/
          $html .='</div>'.LF;
 
 
@@ -1829,6 +1797,8 @@ EOD;
          $html .= $this->_getRubricClipboardInfoAsHTML($this->_environment->getCurrentModule());
          $html .='</div>'.LF;
          $html .='</div>'.LF;
+      }else{
+ #       $html .= $this->_getIndexPageHeaderAsHTML();
       }
 
       $current_browser = strtolower($this->_environment->getCurrentBrowser());
