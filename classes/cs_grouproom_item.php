@@ -179,7 +179,7 @@ class cs_grouproom_item extends cs_room_item {
    private function _getDesign() {
       $retour = 6;
       $project_item = $this->getLinkedProjectItem();
-      if ( $project_item->isDesign7()) {
+      if ( isset($project_item) and $project_item->isDesign7()) {
          $retour = 7;
       }
       return $retour;

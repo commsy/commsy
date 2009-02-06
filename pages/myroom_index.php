@@ -76,7 +76,6 @@ if ( isset($_GET['ref_user']) ) {
 
 // Find current browsing interval
 // The browsing interval is applied to all rubrics
-$context_item = $environment->getCurrentContextItem();
 if ( isset($_GET['interval']) ) {
    $interval = $_GET['interval'];
 } elseif ( $session->issetValue('interval') ) {
