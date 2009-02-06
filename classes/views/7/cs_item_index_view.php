@@ -589,7 +589,7 @@ var $_sel_rubric = '';
     */
    function _getMaterialItemAsLongHTML($item,$style) {
       $html  = '   <tr>'.LF;
-      $html .= '      <td colspan="2" '.$style.' style="font-size:10pt; width:62%;">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td colspan="2" '.$style.' style="font-size:10pt; width:62%;">'.$this->_getMaterialItemTitle($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:13%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -888,6 +888,42 @@ var $_sel_rubric = '';
       $title .= ' '.$this->_getItemFiles($item);
       return $title;
    }
+
+   function _getMaterialItemTitle ($item) {
+      $title = $item->getTitle();
+      $title = $this->_compareWithSearchText($title);
+      $module = $item->getItemType();
+      $author_text = $this->_text_as_html_short($this->_compareWithSearchText($this->_getItemAuthor($item)));
+      $year_text = $this->_text_as_html_short($this->_compareWithSearchText($this->_getItemPublishingDate($item)));
+      $bib_kind = $item->getBibKind() ? $item->getBibKind() : 'none';
+      $title_text = '';
+      if (!empty($author_text) and $bib_kind !='none'){
+         if (!empty($year_text)){
+             $year_text = ', '.$year_text;
+         }else{
+             $year_text = '';
+         }
+         $title_text = '<span style="font-size:8pt;"> ('.$this->_getItemAuthor($item).$year_text.')'.'</span>';
+      }else{
+         $title_text = ''.LF;
+      }
+      $params = array();
+      $params['iid'] = $item->getItemID();
+      $params['search_path'] = 'true';
+      $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           $module,
+                           'detail',
+                           $params,
+                           $this->_text_as_html_short($title));
+      unset($params);
+      $title .= $title_text;
+      $title .= $this->_getItemChangeStatus($item);
+      $title .= $this->_getItemAnnotationChangeStatus($item);
+      $title .= ' '.$this->_getItemFiles($item);
+      return $title;
+   }
+
+
 
 /*   function _getAdditionalFormFieldsAsHTML () {
       $selfile = $this->getSelectedFile();
