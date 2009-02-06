@@ -456,15 +456,15 @@ class cs_page_print_view extends cs_page_view {
          $html .= '<tr>'.LF;
          $html .= '<td style="margin-bottom:0px; padding:0px; vertical-align:top;">'.LF;
          $html .= '</td>'.LF;
-         $width = 'width:637px;';
+         $width = 'width:600px;';
          $html .= '<td colspan="2" style="'.$width.' padding-left:5px; padding-top:0px; margin:0px; vertical-align: top; ">'.LF;
          // Content
          $session = $this->_environment->getSession();
          $left_menue_status = $session->getValue('left_menue_status');
          if ($left_menue_status =='disapear'){
-            $width = 'width:940px;';
+            $width = 'width:800px;';
          }else{
-            $width = 'width:754px;';
+            $width = 'width:650px;';
          }
          $html .= '<div style="'.$width.' padding:0px 3px; margin:0px;">'.LF;
          $html .= '<div class="content">'.LF;

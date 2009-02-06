@@ -227,7 +227,7 @@ class cs_user_index_view extends cs_room_index_view {
 
          $html .= '      <td colspan="3"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }else{
-         $html .= '      <td colspan="3"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
+         $html .= '      <td colspan="4"'.$style.' style="font-size:10pt;">'.$this->_getItemFullname($item).'</td>'.LF;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">';
       if ( !empty($phone) ){
