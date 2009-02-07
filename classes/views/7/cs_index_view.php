@@ -1820,7 +1820,100 @@ EOD;
            and $this->_display_mode == 'flash'
            and $this->_environment->getCurrentModule() == type2Module(CS_MATERIAL_TYPE)
          ) {
-         #$html .= '';
+
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         $color_array = $current_context_item->getColorArray();
+         unset($current_context_item);
+
+         $params = array();
+         $params['output'] = 'XML';
+         // vielleicht noch einschränkungen übergeben
+         $data_url = utf8_encode(rawurlencode(_curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params)));
+         unset($params);
+
+         $height = '450px'; // 100%
+         $bgcolor = $color_array['content_background']; // #ffffff
+         unset($color_array);
+
+         $html .= '<script src="javascript/AC_OETags.js" language="javascript"></script>'.LF;
+         $html .= '<script src="javascript/history/history.js" language="javascript"></script>'.LF;
+         $html .= '<script src="javascript/studylog_flash.js" language="javascript"></script>'.LF;
+         $html .= '<script language="JavaScript" type="text/javascript">'.LF;
+$html .= '<!--'.LF;
+$html .= '// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)'.LF;
+$html .= 'var hasProductInstall = DetectFlashVer(6, 0, 65);'.LF;
+
+$html .= '// Version check based upon the values defined in globals'.LF;
+$html .= 'var hasRequestedVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);'.LF;
+
+$html .= 'if ( hasProductInstall && !hasRequestedVersion ) {'.LF;
+$html .= '    // DO NOT MODIFY THE FOLLOWING FOUR LINES'.LF;
+$html .= '    // Location visited after installation is complete if installation is required'.LF;
+$html .= '    var MMPlayerType = (isIE == true) ? "ActiveX" : "PlugIn";'.LF;
+$html .= '    var MMredirectURL = window.location;'.LF;
+$html .= '    document.title = document.title.slice(0, 47) + " - Flash Player Installation";'.LF;
+$html .= '    var MMdoctitle = document.title;'.LF;
+
+$html .= '    AC_FL_RunContent('.LF;
+$html .= '        "src", "flash/playerProductInstall",'.LF;
+$html .= '        "FlashVars", "MMredirectURL="+MMredirectURL+\'&MMplayerType=\'+MMPlayerType+\'&MMdoctitle=\'+MMdoctitle+\'&commsyXml=\'+\''.$data_url.'\'+\'&applicationType=commsy\'+"",'.LF;
+$html .= '        "width", "100%",'.LF;
+$html .= '        "height", "'.$height.'",'.LF;
+$html .= '        "align", "middle",'.LF;
+$html .= '        "id", "study_log",'.LF;
+$html .= '        "quality", "high",'.LF;
+$html .= '        "bgcolor", "'.$bgcolor.'",'.LF;
+$html .= '        "name", "study_log",'.LF;
+$html .= '        "allowScriptAccess","sameDomain",'.LF;
+$html .= '        "type", "application/x-shockwave-flash",'.LF;
+$html .= '        "pluginspage", "http://www.adobe.com/go/getflashplayer"'.LF;
+$html .= '    );'.LF;
+$html .= '} else if (hasRequestedVersion) {'.LF;
+$html .= '    // if we\'ve detected an acceptable version'.LF;
+$html .= '    // embed the Flash Content SWF when all tests are passed'.LF;
+$html .= '    AC_FL_RunContent('.LF;
+$html .= '            "src", "flash/study_log",'.LF;
+$html .= '            "FlashVars", "applicationType=commsy&commsyXml='.$data_url.'",'.LF;
+$html .= '            "width", "100%",'.LF;
+$html .= '            "height", "'.$height.'",'.LF;
+$html .= '            "align", "middle",'.LF;
+$html .= '            "id", "study_log",'.LF;
+$html .= '            "quality", "high",'.LF;
+$html .= '            "bgcolor", "'.$bgcolor.'",'.LF;
+$html .= '            "name", "study_log",'.LF;
+$html .= '            "allowScriptAccess","sameDomain",'.LF;
+$html .= '            "type", "application/x-shockwave-flash",'.LF;
+$html .= '            "pluginspage", "http://www.adobe.com/go/getflashplayer"'.LF;
+$html .= '    );'.LF;
+$html .= '  } else {  // flash is too old or we can\'t detect the plugin'.LF;
+$html .= '    var alternateContent = \'Alternate HTML content should be placed here\''.LF;
+$html .= '    + \'This content requires the Adobe Flash Player\''.LF;
+$html .= '    + \'<a href=http://www.adobe.com/go/getflash/>Get Flash</a>\''.LF;
+$html .= '    document.write(alternateContent);  // insert non-flash content'.LF;
+$html .= '  }'.LF;
+$html .= '// -->'.LF;
+$html .= '</script>'.LF;
+
+// URL?? Flashvars??
+$html .= '<noscript>'.LF;
+$html .= '    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'.LF;
+$html .= '            id="study_log" width="100%" height="'.$height.'"'.LF;
+$html .= '            codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">'.LF;
+$html .= '            <param name="movie" value="flash/study_log.swf" />'.LF;
+$html .= '            <param name="quality" value="high" />'.LF;
+$html .= '            <param name="bgcolor" value="'.$bgcolor.'" />'.LF;
+$html .= '            <param name="allowScriptAccess" value="sameDomain" />'.LF;
+$html .= '            <embed src="study_log.swf" quality="high" bgcolor="'.$bgcolor.'"'.LF;
+$html .= '                width="100%" height="'.$height.'" name="study_log" align="middle"'.LF;
+$html .= '                play="true"'.LF;
+$html .= '                loop="false"'.LF;
+$html .= '                quality="high"'.LF;
+$html .= '                allowScriptAccess="sameDomain"'.LF;
+$html .= '                type="application/x-shockwave-flash"'.LF;
+$html .= '                pluginspage="http://www.adobe.com/go/getflashplayer">'.LF;
+$html .= '            </embed>'.LF;
+$html .= '    </object>'.LF;
+$html .= '</noscript>'.LF;
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';

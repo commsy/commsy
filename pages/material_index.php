@@ -404,8 +404,9 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
    }
 } // end if (perform list actions)
 
-
-// Get data from database
+###############################################################
+# get data from database
+###############################################################
 $material_manager = $environment->getMaterialManager();
 $material_manager->create_tmp_table($environment->getCurrentContextID());
 $material_manager->setContextLimit($environment->getCurrentContextID());
@@ -468,6 +469,9 @@ foreach($sel_array as $rubric => $value){
 $ids = $material_manager->getIDs();       // returns an array of item ids
 $material_manager->select();
 
+###################################################
+# view
+###################################################
 if ( $environment->isOutputMode('XML') ) {
    // item
    $page->add($material_manager->getAsXMLForFlash());
@@ -602,7 +606,7 @@ if ( $environment->isOutputMode('XML') ) {
    $view->setAvailableBuzzwords($buzzword_list);
    $view->setSelectedBuzzword($selbuzzword);
    $view->setClipboardIDArray($clipboard_id_array);
-   if ( !empty($seldisplay_mode) and $display_mode == 'flash' ) {
+   if ( !empty($seldisplay_mode) and $seldisplay_mode == 'flash' ) {
       $view->setDisplayMode($seldisplay_mode);
    }
 
