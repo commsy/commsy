@@ -58,7 +58,7 @@ function performRoomIDArray ($id_array,$portal_name) {
          $type = 'Private';
          $user = $room->getOwnerUserItem();
          if (isset($user) and $user->isUser()){
-            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName();
+            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName().' ('.$room->getItemID().')';
             $portal_user_item = $user->getRelatedCommSyUserItem();
             if ( isset($portal_user_item) and $portal_user_item->isUser() ) {
                $active = $portal_user_item->isActiveDuringLast99Days();
@@ -129,7 +129,7 @@ chdir('..');
 // start of execution time
 include_once('functions/misc_functions.php');
 $time_start = getmicrotime();
-$start_time = date('d.m.Y H:s:i');
+$start_time = date('d.m.Y H:i:s');
 
 // setup commsy-environment
 include_once('etc/cs_constants.php');
@@ -203,7 +203,7 @@ foreach ( $portal_id_array as $portal_id ) {
 }
 
 $time_end = getmicrotime();
-$end_time = date('d.m.Y H:s:i');
+$end_time = date('d.m.Y H:i:s');
 $time = round($time_end - $time_start,0);
 echo('<hr/>'.LF);
 echo('<h1>CRON END</h1>'.LF);

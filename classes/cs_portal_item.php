@@ -47,6 +47,7 @@ class cs_portal_item extends cs_guide_item {
    private $_community_id_array = NULL;
    private $_project_id_array = NULL;
    private $_group_id_array = NULL;
+   private $_private_id_array = NULL;
 
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
@@ -192,6 +193,8 @@ class cs_portal_item extends cs_guide_item {
       $retour = array();
       if ( !isset($this->_community_id_array) ) {
          $manager = $this->_environment->getCommunityManager();
+         $manager->resetData();
+         $manager->resetLimits();
          $manager->setContextLimit($this->getItemID());
          $id_array = $manager->getIDArray();
          unset($manager);
@@ -209,6 +212,8 @@ class cs_portal_item extends cs_guide_item {
       $retour = array();
       if ( !isset($this->_project_id_array) ) {
          $manager = $this->_environment->getProjectManager();
+         $manager->resetData();
+         $manager->resetLimits();
          $manager->setContextLimit($this->getItemID());
          $id_array = $manager->getIDArray();
          unset($manager);
@@ -226,6 +231,8 @@ class cs_portal_item extends cs_guide_item {
       $retour = array();
       if ( !isset($this->_group_id_array) ) {
          $manager = $this->_environment->getGrouproomManager();
+         $manager->resetData();
+         $manager->resetLimits();
          $manager->setContextLimit($this->getItemID());
          $id_array = $manager->getIDArray();
          unset($manager);
@@ -241,12 +248,19 @@ class cs_portal_item extends cs_guide_item {
 
    public function getPrivateIDArray () {
       $retour = array();
-      $manager = $this->_environment->getPrivateroomManager();
-      $manager->setContextLimit($this->getItemID());
-      $id_array = $manager->getIDArray();
-      unset($manager);
-      if ( is_array($id_array) ) {
-         $retour = $id_array;
+      if ( !isset($this->_private_id_array) ) {
+         $manager = $this->_environment->getPrivateroomManager();
+         $manager->resetData();
+         $manager->resetLimits();
+         $manager->setContextLimit($this->getItemID());
+         $id_array = $manager->getIDArray();
+         unset($manager);
+         if ( is_array($id_array) ) {
+            $this->_private_id_array = $id_array;
+         }
+      }
+      if ( !empty($this->_private_id_array) ) {
+         $retour = $this->_private_id_array;
       }
       return $retour;
    }
