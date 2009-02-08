@@ -324,7 +324,7 @@ else {
             if (isset($_POST['title']) and $material_item->getTitle() != $_POST['title']) {
                $material_item->setTitle($_POST['title']);
             }
-            if (isset($_POST['author']) and $material_item->getAuthor() != $_POST['author']) {
+            if (isset($_POST['author']) and isset($_POST['bib_kind']) and $_POST['bib_kind'] != 'none') {
                $material_item->setAuthor($_POST['author']);
             }else{
                $material_item->setAuthor('');
