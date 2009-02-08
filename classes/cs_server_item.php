@@ -300,7 +300,7 @@ class cs_server_item extends cs_guide_item {
       $room_ids = $room_manager->getIDs();
       unset($room_manager);
 
-      if ( empty($room_ids) and $log_DB->deleteByContextArray($room_ids) ) {
+      if ( $log_DB->deleteByContextArray($room_ids) ) {
          $cron_array['success'] = true;
          $cron_array['success_text'] = 'success';
       }

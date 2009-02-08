@@ -128,25 +128,26 @@ class cs_log_archive_manager extends cs_manager {
 
    function deleteByContextArray ($array) {
       $retour = false;
+      $query = 'DELETE FROM log_archive WHERE 1';
       if ( !empty($array)
            and count($array) > 0
          ) {
          $id_string = implode(',',$array);
-         $query = 'DELETE FROM log_archive WHERE cid NOT IN ('.encode(AS_DB,$id_string).')';
+         $query = ' AND cid NOT IN ('.encode(AS_DB,$id_string).')';
+      }
 
-         include_once('functions/date_functions.php');
-         $days = 50;
-         $datetime = getCurrentDateTimeMinusDaysInMySQL($days);
-         $query .= ' AND timestamp < "'.$datetime.'"';
+      include_once('functions/date_functions.php');
+      $days = 50;
+      $datetime = getCurrentDateTimeMinusDaysInMySQL($days);
+      $query .= ' AND timestamp < "'.$datetime.'"';
 
-         // perform query
-         $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) or !$result ) {
-            include_once('functions/error_functions.php');
-            trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
-         } else {
-            $retour = $result;
-         }
+      // perform query
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems at logs from query:<br />"'.$query.'"',E_USER_WARNING);
+      } else {
+         $retour = $result;
       }
       return $retour;
    }
