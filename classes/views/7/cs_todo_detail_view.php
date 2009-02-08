@@ -165,7 +165,7 @@ class cs_todo_detail_view extends cs_detail_view {
                $step_minutes_text = '';
                $exact_minutes = $step_minutes/60;
 #               $step_minutes = round($exact_minutes);
-               $step_minutes = $exact_minutes;
+               $step_minutes = round($exact_minutes,1);
                if ($step_minutes != $exact_minutes){
                   $step_minutes_text .= 'ca. ';
                }
@@ -181,7 +181,7 @@ class cs_todo_detail_view extends cs_detail_view {
             case 3:
                $exact_minutes = ($step_minutes/60)/8;
 #               $step_minutes = round($exact_minutes);
-               $step_minutes = $exact_minutes;
+               $step_minutes = round($exact_minutes,1);
                $step_minutes_text = '';
                if ($step_minutes != $exact_minutes){
                   $step_minutes_text .= 'ca. ';
@@ -196,6 +196,7 @@ class cs_todo_detail_view extends cs_detail_view {
                }
                break;
              default:
+               $step_minutes = round($step_minutes,1);
                if ($this->_translator->getSelectedLanguage() == 'de'){
                   $step_minutes = str_replace('.',',',$step_minutes);
                }

@@ -434,6 +434,9 @@ class cs_todo_form extends cs_rubric_form {
             case 2: $minutes = $minutes/60;break;
             case 3: $minutes = ($minutes/60)/8;break;
          }
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $minutes = str_replace('.',',',$minutes);
+         }
 
          $this->_values['minutes'] = $minutes;
 
