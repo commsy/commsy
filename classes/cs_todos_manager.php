@@ -389,7 +389,6 @@ class cs_todos_manager extends cs_manager {
       if ($item->isNotActivated()){
          $modification_date = $item->getModificationDate();
       }
-
       $query = 'UPDATE todos SET '.
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$modification_date.'",'.

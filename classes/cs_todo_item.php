@@ -237,7 +237,9 @@ class cs_todo_item extends cs_item {
    }
 
    function setPlannedTime($time){
+      $time = str_replace(',','.',$time);
       $this->_setValue('minutes', $time);
+
    }
 
    function getPlannedTime(){

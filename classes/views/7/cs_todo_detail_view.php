@@ -164,9 +164,13 @@ class cs_todo_detail_view extends cs_detail_view {
             case 2:
                $step_minutes_text = '';
                $exact_minutes = $step_minutes/60;
-               $step_minutes = round($exact_minutes);
+#               $step_minutes = round($exact_minutes);
+               $step_minutes = $exact_minutes;
                if ($step_minutes != $exact_minutes){
                   $step_minutes_text .= 'ca. ';
+               }
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
                }
                $step_minutes_text .= $step_minutes;
                $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
@@ -176,15 +180,24 @@ class cs_todo_detail_view extends cs_detail_view {
                break;
             case 3:
                $exact_minutes = ($step_minutes/60)/8;
-               $step_minutes = round($exact_minutes);
+#               $step_minutes = round($exact_minutes);
+               $step_minutes = $exact_minutes;
                $step_minutes_text = '';
                if ($step_minutes != $exact_minutes){
                   $step_minutes_text .= 'ca. ';
+               }
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
                }
                $step_minutes_text .= $step_minutes;
                $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
                if ($step_minutes == 1){
                   $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+               }
+               break;
+             default:
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
                }
                break;
          }
@@ -236,6 +249,9 @@ class cs_todo_detail_view extends cs_detail_view {
                      $tmp_message = $this->_translator->getMessage('COMMON_DAY');
                   }
                   break;
+            }
+            if ($this->_translator->getSelectedLanguage() == 'de'){
+               $minutes = str_replace('.',',',$minutes);
             }
 
             $temp_array[0] = $this->_translator->getMessage('TODO_MINUTES');
@@ -534,6 +550,9 @@ class cs_todo_detail_view extends cs_detail_view {
             break;
       }
       if ( $minutes > 0 ) {
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $minutes = str_replace('.',',',$minutes);
+         }
          $temp_array = array();
          $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
          $temp_array[1] = $minutes.' '.$tmp_message;

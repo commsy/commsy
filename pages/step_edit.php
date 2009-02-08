@@ -256,6 +256,7 @@ else {
             }
             if ( isset($_POST['minutes']) ) {
                $minutes = $_POST['minutes'];
+               $minutes = str_replace(',','.',$minutes);
                if (isset($_POST['time_type'])){
                   $step_item->setTimeType($_POST['time_type']);
                   switch ($_POST['time_type']){

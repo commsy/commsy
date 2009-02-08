@@ -32,7 +32,7 @@ $time_start = getmicrotime();
 // add column "has_html" to table "files"
 echo ('todos add minutes.'."\n");
 $success = true;
-$query = "ALTER TABLE `todos` ADD `minutes` INT NULL AFTER `status`; ";
+$query = "ALTER TABLE `todos` ADD `minutes` float (11) NULL AFTER `status`; ";
 $result = select($query);
 $query = "ALTER TABLE `todos` ADD `time_type` SMALLINT NOT NULL DEFAULT '1' AFTER `minutes`; ";
 $result = select($query);

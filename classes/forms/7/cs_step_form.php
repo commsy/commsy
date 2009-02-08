@@ -257,9 +257,12 @@ class cs_step_form extends cs_rubric_form {
    }
 
    function _checkValues () {
-      if ( isset($this->_form_post['minutes']) and !is_numeric($this->_form_post['minutes']) ){
-         $this->_form->setFailure('minutes','mandatory');
-         $this->_error_array[] = getMessage('COMMON_ERROR_MINUTES_INT',getMessage('COMMON_ERROR_MINUTES_INT'));
+      if ( isset($this->_form_post['minutes']) ){
+         $minutes = str_replace(',','.',$this->_form_post['minutes']);
+         if(!is_numeric($minutes)){
+            $this->_form->setFailure('minutes','mandatory');
+            $this->_error_array[] = getMessage('COMMON_ERROR_MINUTES_INT',getMessage('COMMON_ERROR_MINUTES_INT'));
+         }
       }
    }
 

@@ -34,6 +34,6 @@ $message["HOME_SEARCH_SHORT_TO"]["de"] = "Suchtext";
 $message["HOME_TODO_ENTER_NEW"]["de"] = "Aufgabe stellen";
 $message["HOME_TOPIC_ENTER_NEW"]["de"] = "%_TOPICS_SUB_NOMS_LOW eingeben";
 $message["HOME_TOPIC_SHORT_VIEW_DESCRIPTION"]["de"] = "Alle %1 %_TOPICS_SUB_NOMPL_BIG";
-$message["HOME_USER_SHORT_VIEW_DESCRIPTION"]["de"] = "Alle %1 Mitglieder";
+$message["HOME_USER_SHORT_VIEW_DESCRIPTION"]["de"] = "%1 von %2 Mitgliedern";
 $message["HOME_USER_SHORT_VIEW_DESCRIPTION2"]["de"] = "%1 aktiv in den letzen %4 Tagen, %2 aktiv in den letzten %4 Minuten (gefettet), %3 insgesamt";
 ?>
