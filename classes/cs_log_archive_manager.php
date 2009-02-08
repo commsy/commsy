@@ -133,7 +133,7 @@ class cs_log_archive_manager extends cs_manager {
            and count($array) > 0
          ) {
          $id_string = implode(',',$array);
-         $query = ' AND cid NOT IN ('.encode(AS_DB,$id_string).')';
+         $query .= ' AND cid NOT IN ('.encode(AS_DB,$id_string).')';
       }
 
       include_once('functions/date_functions.php');
