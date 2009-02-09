@@ -61,6 +61,7 @@ $time_start = getmicrotime();
 echo ('wiki: change commsy_config: add authusercommsy.php'."\n");
 $success = true;
 
+@include_once('../../etc/commsy/pmwiki.php');
 if ( !empty($c_pmwiki_absolute_path_file) ) {
    if ( is_dir($c_pmwiki_absolute_path_file) ) {
       $num = countWikis($c_pmwiki_absolute_path_file.'/wikis');
