@@ -1,4 +1,4 @@
-CommSy Version 6.2.2
+CommSy Version 6.2.3
 
 Features (Nummern von SourceForge):
 -----
