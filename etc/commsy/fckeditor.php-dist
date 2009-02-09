@@ -38,4 +38,5 @@ $c_html_textarea = true;
 // you can use the following versions of the FCKEditor with CommSy
 //    - 2.6.0 tested: okay
 //    - 2.6.2 tested: okay
+//    - 2.6.3 tested: okay
 ?>
