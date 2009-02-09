@@ -975,7 +975,8 @@ class cs_view {
       if ( $this->_environment->isScribdAvailable() ) {
          $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
       }
-      $reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
+      // Test auf erforderliche Software; Windows-Server?
+      //$reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
 
       // jsMath for latex math fonts
