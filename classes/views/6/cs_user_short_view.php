@@ -83,7 +83,7 @@ class cs_user_short_view extends cs_home_view {
      } else {
          $list = $this->getList();
          $shown = $list->getCount();
-         return ' ('.$this->_translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $shown).')';
+         return ' ('.$this->_translator->getMessage('HOME_USER_SHORT_VIEW_DESCRIPTION', $shown, $this->_count_all).')';
      }
      }else{
       $all = $this->getCountAll();
