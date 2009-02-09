@@ -191,7 +191,6 @@ class cs_user_manager extends cs_manager {
       $this->_id_array_limit = array();
       $this->_context_array_limit = NULL;
       $this->_contact_moderator_limit = NULL;
-      $this->room_limit = NULL;
       $this->_auth_source_limit = NULL;
       $this->_limit_community = NULL;
       $this->_limit_project = NULL;

@@ -377,43 +377,53 @@ class cs_privateroom_item extends cs_room_item {
                      $user_manager = $this->_environment->getUserManager();
                      $user_manager->resetLimits();
                      $user_manager->setUserIDLimit($user->getUserID());
-                     $user_manager->_room_limit = $item->getItemID();
+                     $user_manager->setAuthSourceLimit($user->getAuthSource());
+                     $user_manager->setContextLimit($item->getItemID());
+                     #$user_manager->_room_limit = $item->getItemID();
                      $user_manager->select();
                      $user_list = $user_manager->get();
-                     $ref_user = $user_list->getFirst();
-                     $temp_body ='';
-                     $count_entries = 0;
-                     while($rubric_item){
-                        $noticed_manager = $this->_environment->getNoticedManager();
-                        $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),$ref_user->getItemID());
-                        if ( empty($noticed) ) {
-                           $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
-                        } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
-                           $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
-                        } else {
-                           $info_text = '';
-                        }
-                        if (!empty($info_text)){
-                           $count_entries++;
-                           $params = array();
-                           $params['iid'] = $rubric_item->getItemID();
-                           $title ='';
-                           if ($rubric_item->isA(CS_USER_TYPE)){
-                              $title .= $rubric_item->getFullname();
-                           } else {
-                              $title .= $rubric_item->getTitle();
-                           }
-                           if ( $rubric_item->isA(CS_LABEL_TYPE) ) {
-                              $mod = $rubric_item->getLabelType();
-                           } else {
-                              $mod = $rubric_item->getType();
-                           }
-                           $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
+                     if ( isset($user_list)
+                          and $user_list->isNotEmpty()
+                          and $user_list->getCount() == 1
+                        ) {
+                        $ref_user = $user_list->getFirst();
+                        if ( isset($ref_user)
+                             and $ref_user->getItemID() > 0
+                           ) {
+                           $temp_body = '';
+                           $count_entries = 0;
+                           while ( $rubric_item ) {
+                              $noticed_manager = $this->_environment->getNoticedManager();
+                              $noticed = $noticed_manager->getLatestNoticedForUserByID($rubric_item->getItemID(),$ref_user->getItemID());
+                              if ( empty($noticed) ) {
+                                 $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_NEW').']</span>';
+                              } elseif ( $noticed['read_date'] < $rubric_item->getModificationDate() ) {
+                                 $info_text = ' <span class="changed">['.$translator->getMessage('COMMON_CHANGED').']</span>';
+                              } else {
+                                 $info_text = '';
+                              }
+                              if (!empty($info_text)){
+                                 $count_entries++;
+                                 $params = array();
+                                 $params['iid'] = $rubric_item->getItemID();
+                                 $title ='';
+                                 if ($rubric_item->isA(CS_USER_TYPE)){
+                                    $title .= $rubric_item->getFullname();
+                                 } else {
+                                    $title .= $rubric_item->getTitle();
+                                 }
+                                 if ( $rubric_item->isA(CS_LABEL_TYPE) ) {
+                                    $mod = $rubric_item->getLabelType();
+                                 } else {
+                                    $mod = $rubric_item->getType();
+                                 }
+                                 $ahref_curl = '<a href="'.$curl_text.$item->getItemID().'&amp;mod='.$mod.'&amp;fct=detail&amp;iid='.$params['iid'].'">'.$title.'</a>';
 
-                           $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
+                                 $temp_body .= BR.'&nbsp;&nbsp;- '.$ahref_curl;
+                              }
+                              $rubric_item = $rubric_list->getNext();
+                           }
                         }
-                        $rubric_item = $rubric_list->getNext();
-
                      }
                      $tempMessage = '';
                      switch ( strtoupper($rubric_array[0]) ){
@@ -986,7 +996,6 @@ class cs_privateroom_item extends cs_room_item {
 
       return $cron_array;
    }
-
 
    function _cronDaily () {
       // you can link daily cron jobs here like this
