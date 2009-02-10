@@ -13,7 +13,6 @@ if ( !empty($COMMSY_LANGUAGE) ) {
    XLPage($COMMSY_LANGUAGE,'PmWikiDe.XLPage');
 }
 
-//if( !empty($COMMSY_DISCUSSION) ) {
 	#***********************************
 	#******FOXFORUM Einstellungen*******
 	#***********************************
@@ -72,7 +71,6 @@ if ( !empty($COMMSY_LANGUAGE) ) {
 	#***********************************
 	#**Ende FOXFORUM Einstellungen******
 	#***********************************
-//}
 
 include_once("$FarmD/cookbook/slimbox.php");
 
