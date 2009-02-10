@@ -347,7 +347,7 @@ class cs_group_detail_view extends cs_detail_view {
                                 $linktext);
                   unset($params);
                   $html3 .= '</li>'.LF;
-               	$i = 0;
+                  $i = 0;
                }
                $i++;
             }
@@ -683,11 +683,11 @@ class cs_group_detail_view extends cs_detail_view {
       $html .= '<td  colspan="2" style="';
       $style = ' color: '.$color_array['page_title'].';';
          if ($color_array['schema']=='SCHEMA_OWN'){
-            if ($this->_item->getBGImageFilename()){
-               if ($this->_item->issetBGImageRepeat()){
-                  $style .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') repeat; ';
+            if ($item->getBGImageFilename()){
+               if ($item->issetBGImageRepeat()){
+                  $style .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
                }else{
-                  $style .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
+                  $style .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
                }
             }
          }else{
@@ -826,7 +826,7 @@ class cs_group_detail_view extends cs_detail_view {
             $html_temp .= $status.'</li>'.LF;
             $user_item = $user_list->getNext();
          }
-         
+
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('GROUP_MEMBERS').':</span>'.LF;
          $html .= '<ul style="margin-left:0px;margin-top:0.5em; spacing-left:0px; padding-top:0px;padding-left:1.5em;">'.LF;
          if ( !empty($html_temp) ) {
