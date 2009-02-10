@@ -47,7 +47,7 @@ function changeWikis ($directory,$count) {
          changeWikis($directory.'/'.$entry,$count);
       } elseif (is_file($directory.'/'.$entry) and $entry == 'config.php') {
          $str = file_get_contents($directory.'/'.$entry);
-         if ( stristr($str,"include_once('commsy_config.php');") ) {
+         if ( stristr($str,"include_once('commsy_config.php');") and !empty($str2) ) {
             file_put_contents($directory.'/'.$entry,$str2);
          }
          update_progress_bar($count);
