@@ -22,12 +22,12 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-function countWikis ($directory) {
+function countWikis2 ($directory) {
    $directory_handle  = opendir($directory);
    $sum = 0;
    while ( false !== ($entry = readdir($directory_handle)) ) {
       if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry)) {
-         $sum += countWikis($directory.'/'.$entry);
+         $sum += countWikis2($directory.'/'.$entry);
       } elseif (is_file($directory.'/'.$entry) and $entry == 'index.php') {
          $sum++;
       }
@@ -35,20 +35,26 @@ function countWikis ($directory) {
    return $sum;
 }
 
-function changeWikis ($directory,$count) {
-   global $c_commsy_path_file;
-   if ( empty($c_commsy_path_file) ) {
-      @include_once('../../etc/cs_config.php');
-   }
-   $str2 = file_get_contents($c_commsy_path_file.'/etc/pmwiki/wiki_config.php');
+function changeWikis2 ($directory,$count) {
    $directory_handle  = opendir($directory);
    while ( false !== ($entry = readdir($directory_handle)) ) {
       if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry)) {
-         changeWikis($directory.'/'.$entry,$count);
-      } elseif (is_file($directory.'/'.$entry) and $entry == 'config.php') {
+         changeWikis2($directory.'/'.$entry,$count);
+      } elseif (is_file($directory.'/'.$entry) and $entry == 'commsy_config.php') {
          $str = file_get_contents($directory.'/'.$entry);
-         if ( stristr($str,"include_once('commsy_config.php');") and !empty($str2) ) {
-            file_put_contents($directory.'/'.$entry,trim($str2));
+         if ( stristr($str,'$COMMSY_ROOM_ID') and !stristr($str,'session_name') ) {
+            $str = str_replace(array("\r\n", "\r"), "\n", $str);
+            $str_array = explode("\n",$str);
+            $str_out = '';
+            foreach ( $str_array as $value ) {
+               $str_out .= $value.LF;
+               if ( stristr($value, '$COMMSY_ROOM_ID = "') ) {
+                  $str_out .= 'session_name(\'SESSID-\'.$COMMSY_ROOM_ID);'.LF;
+               }
+            }
+            if ( !empty($str_out) ) {
+               file_put_contents($directory.'/'.$entry,trim($str_out));
+            }
          }
          update_progress_bar($count);
       }
@@ -62,15 +68,15 @@ include_once('../update_functions.php');
 // time management for this script
 $time_start = getmicrotime();
 
-echo ('wiki: exchange config.php'."\n");
+echo ('wiki: change commsy_config: add authusercommsy.php'."\n");
 $success = true;
 
 @include_once('../../etc/commsy/pmwiki.php');
 if ( !empty($c_pmwiki_absolute_path_file) ) {
    if ( is_dir($c_pmwiki_absolute_path_file) ) {
-      $num = countWikis($c_pmwiki_absolute_path_file.'/wikis');
+      $num = countWikis2($c_pmwiki_absolute_path_file.'/wikis');
       init_progress_bar($num);
-      changeWikis($c_pmwiki_absolute_path_file.'/wikis',$num);
+      changeWikis2($c_pmwiki_absolute_path_file.'/wikis',$num);
    }
 }
 
