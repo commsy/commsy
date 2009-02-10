@@ -160,6 +160,7 @@ class cs_wiki_manager extends cs_manager {
 
       $str  = '<?php'.LF;
       $str .= '$COMMSY_ROOM_ID = "'.$item->getItemID().'";'.LF;
+      $str .= 'session_name(\'SESSID-\'.$COMMSY_ROOM_ID);'.LF;
       if ( $item->isPortal() ) {
          $str .= '$COMMSY_PORTAL_ID = "'.$item->getItemID().'";'.LF;
       } else {
