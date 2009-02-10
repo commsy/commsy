@@ -61,6 +61,7 @@ class cs_dates_manager extends cs_manager {
    var $_month_limit = NULL;
    var $_month_limit2 = NULL;
    var $_day_limit = NULL;
+   var $_day_limit2 = NULL;
    var $_year_limit = NULL;
    var $_date_mode_limit = 1;
 
@@ -90,6 +91,7 @@ class cs_dates_manager extends cs_manager {
       $this->_month_limit = NULL;
       $this->_month_limit2 = NULL;
       $this->_day_limit = NULL;
+      $this->_day_limit2 = NULL;
       $this->_year_limit = NULL;
       $this->_date_mode_limit = 1;
    }
@@ -147,6 +149,10 @@ class cs_dates_manager extends cs_manager {
 
    function setDayLimit ($day) {
       $this->_day_limit = $day;
+   }
+
+   function setDayLimit2 ($day) {
+      $this->_day_limit2 = $day;
    }
 
    function setYearLimit ($year) {
@@ -347,10 +353,9 @@ class cs_dates_manager extends cs_manager {
       }
 
       elseif (isset($this->_month_limit2) AND isset($this->_year_limit)) {
-         $query .= ' AND (';
-         $string_start_day = $this->_year_limit.'-'.sprintf("%02d",$this->_month_limit2).'-'.'01';
-         $string_end_day = $this->_year_limit.'-'.sprintf("%02d",$this->_month_limit2).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
-         $query .= ' ( '.
+        $query .= ' AND ( '.
+        $string_start_day = $this->_year_limit.'-'.sprintf("%02d",$this->_month_limit2).'-'.'01';
+        $string_end_day = $this->_year_limit.'-'.sprintf("%02d",$this->_month_limit2).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
                 ' (dates.start_day <="'.encode(AS_DB,$string_start_day).'" AND "'.encode(AS_DB,$string_end_day).'" <= dates.end_day AND (dates.end_day IS NOT NULL OR dates.end_day !=""))'.
                           ' OR ("'.encode(AS_DB,$string_start_day).'"<= dates.start_day AND dates.start_day <="'.encode(AS_DB,$string_end_day).'")'.
                           ' OR ("'.encode(AS_DB,$string_start_day).'"<= dates.end_day AND dates.end_day <="'.encode(AS_DB,$string_end_day).'")'.
@@ -390,7 +395,7 @@ class cs_dates_manager extends cs_manager {
          }else{
             $month = $this->_month_limit2-1;
             $string_start_day = $this->_year_limit.'-'.sprintf("%02d",$month).'-'.'01';
-            $string_end_day = $this->_year_limit.'-'.sprintf("%02d",$month).'-'.daysInMonth($month, $this->_year_limit);
+            $string_end_day = $this->_year_limit.'-'.sprintf("%02d",$month).'-'.daysInMonth($this->_month_limit2, $this->_year_limit);
             $query .= ' OR ( '.
                 ' (dates.start_day <="'.encode(AS_DB,$string_start_day).'" AND "'.encode(AS_DB,$string_end_day).'" <= dates.end_day AND (dates.end_day IS NOT NULL OR dates.end_day !=""))'.
                           ' OR ("'.encode(AS_DB,$string_start_day).'"<= dates.start_day AND dates.start_day <="'.encode(AS_DB,$string_end_day).'")'.
