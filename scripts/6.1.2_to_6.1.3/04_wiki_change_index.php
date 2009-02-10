@@ -61,9 +61,9 @@ $time_start = getmicrotime();
 echo ('wiki: change path in index.php'."\n");
 $success = true;
 
+@include_once('../../etc/commsy/pmwiki.php');
 if ( !empty($c_pmwiki_absolute_path_file) ) {
    if ( is_dir($c_pmwiki_absolute_path_file) ) {
-      #searchDir($c_pmwiki_absolute_path_file.'/wikis');
       $num = countWikis($c_pmwiki_absolute_path_file.'/wikis');
       init_progress_bar($num);
       changeWikis($c_pmwiki_absolute_path_file.'/wikis',$num);
