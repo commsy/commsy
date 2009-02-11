@@ -661,7 +661,7 @@ class cs_file_manager extends cs_manager {
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
-         trigger_error("Filemanager: Problem creating file entry: ".$query, E_USER_ERROR);
+         trigger_error("Filemanager: Problem updating file entry: ".$query, E_USER_ERROR);
       } else {
          $saved = true;
       }
