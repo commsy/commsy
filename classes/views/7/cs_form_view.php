@@ -1827,13 +1827,15 @@ class cs_form_view extends cs_view {
 
          $html .='<div style="width:100%;">'.LF;
          $html .='<div style="height:30px;">'.LF;
-         $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
-         $html .= $this->_getSearchAsHTML();
-         $html .= '</div>'.LF;
-         $html .='<div class="content_display_width" style="width:71%">'.LF;
+
          if ( $this->_environment->getCurrentFunction() == 'mail' ) {
+            $html .='<div class="content_display_width" style="width:100%">'.LF;
             $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
          } else {
+            $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+            $html .= $this->_getSearchAsHTML();
+            $html .= '</div>'.LF;
+            $html .='<div class="content_display_width" style="width:70%">'.LF;
             $temp_mod_func = strtoupper($this->_environment->getCurrentModule()) . '_' . strtoupper($this->_environment->getCurrentFunction());
             $tempMessage = "";
             switch( $temp_mod_func  )
@@ -2054,7 +2056,7 @@ class cs_form_view extends cs_view {
       $temp_array = array();
       $html .='<div style="width: 100%;">'.LF;
       $funct = $this->_environment->getCurrentFunction();
-      $html .='<div style="float:right; width:27%; margin-top:0px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
+      $html .='<div style="float:right; width:28%; margin-top:0px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
       $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();
       if ($user->isUser() and $funct !='info_text_form_edit' and $funct !='info_text_edit'){
@@ -2133,7 +2135,7 @@ class cs_form_view extends cs_view {
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:100%; ';
       }else{
-         $width = 'width:71%; ';
+         $width = 'width:70%; ';
       }
       $html .='<div style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
       $html .= '<!-- BEGIN OF FORM-VIEW -->'.LF;

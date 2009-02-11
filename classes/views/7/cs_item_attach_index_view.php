@@ -750,10 +750,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div style="width:71%;">'.LF;
+      $html .='<div style="width:70%;">'.LF;
       $html .='<div>'.LF;
       $tempMessage = getMessage('CAMPUS_SEARCH_INDEX');
       if ($this->_clipboard_mode){
@@ -1138,7 +1138,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
 
       $html .='<div style="padding:5px;">'.LF;
       if (($this->_environment->getCurrentModule() != CS_USER_TYPE) ){
-         $html .='<div id="right_boxes_area" style="float:right; width:27%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
+         $html .='<div id="right_boxes_area" style="float:right; width:28%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div style="width:180px;">'.LF;
          $current_context = $this->_environment->getCurrentContextItem();
          $list_box_conf = $current_context->getListBoxConf();

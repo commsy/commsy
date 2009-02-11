@@ -62,10 +62,10 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div style="width:71%;">'.LF;
+      $html .='<div style="width:70%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
       $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
       $html .= '<h2 class="pagetitle">'.$image.$this->_translator->getMessage('MYROOM_INDEX');

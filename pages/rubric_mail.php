@@ -128,10 +128,45 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             }
             $topic_item = $topic_list->getNext();
          }
+         if ( isset($_POST['attendees']) and !empty($_POST['attendees']) and $_POST['attendees'] =='2'){
+            $date_manager = $environment->getDateManager();
+            $date_item = $date_manager->getItem($rubric_item->getItemID());
+            $attendees_list = $date_item->getParticipantsItemList();
+            $attendee_item = $attendees_list->getFirst();
+            while ($attendee_item){
+               if ($attendee_item->isEmailVisible()) {
+                  $recipients[] = $attendee_item->getFullName()." <".$attendee_item->getEmail().">";
+                  $recipients_display[] = $attendee_item->getFullName()." &lt;".$attendee_item->getEmail()."&gt;";
+               } else {
+                  $recipients_bcc[] = $attendee_item->getFullName()." <".$attendee_item->getEmail().">";
+                  $recipients_display_bcc[] = $attendee_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
+               }
+               $attendee_item = $attendees_list->getNext();
+            }
+         }
+         if ( isset($_POST['processors']) and !empty($_POST['processors']) and $_POST['processors'] =='2'){
+            $todo_manager = $environment->getToDoManager();
+            $todo_item = $todo_manager->getItem($rubric_item->getItemID());
+            $attendees_list = $todo_item->getProcessorItemList();
+            $attendee_item = $attendees_list->getFirst();
+            while ($attendee_item){
+               if ($attendee_item->isEmailVisible()) {
+                  $recipients[] = $attendee_item->getFullName()." <".$attendee_item->getEmail().">";
+                  $recipients_display[] = $attendee_item->getFullName()." &lt;".$attendee_item->getEmail()."&gt;";
+               } else {
+                  $recipients_bcc[] = $attendee_item->getFullName()." <".$attendee_item->getEmail().">";
+                  $recipients_display_bcc[] = $attendee_item->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
+               }
+               $attendee_item = $attendees_list->getNext();
+            }
+         }
          $user_manager->resetLimits();
          $user_manager->setUserLimit();
          $label_manager = $environment->getLabelManager();
          $group_list = new cs_list();
+         if ( isset($_POST['groups']) and !empty($_POST['groups']) ){
+            $group_list = $label_manager->getItemList($_POST['groups']);
+         }
          if ( isset($_POST['groups']) and !empty($_POST['groups']) ){
             $group_list = $label_manager->getItemList($_POST['groups']);
          }

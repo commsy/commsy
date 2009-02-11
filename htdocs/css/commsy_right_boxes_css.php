@@ -41,10 +41,86 @@ if (!empty($_GET['cid'])) {
 }
 ?>
 
+/*Panel Style*/
+#commsy_panels .commsy_panel, #commsy_panel_form .commsy_panel{
+   margin:0px;
+}
+
+#commsy_panels .panelContent, #commsy_panel_form .panelContent{
+   padding:0px;
+   overflow:hidden;
+   position:relative;
+}
+
+.panelContent{
+   <?php
+   $current_browser = strtolower($environment->getCurrentBrowser());
+   $current_browser_version = $environment->getCurrentBrowserVersion();
+   if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.')) or (strstr($current_browser_version,'7.'))) ){
+      echo('margin:-2px 0px 2px 0px;');
+   }
+   ?>
+   font-size:8pt;
+}
+
+#commsy_panels .small, #commsy_panel_form .small{
+   font-size:8pt;
+}
+
+#commsy_panels .panelContent div, #commsy_panel_form .panelContent div{
+   position:relative;
+   margin:0px;
+   font-size:8pt;
+}
+
+#commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
+   <?php
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['tabs_title'])?>;
+   padding: 0px 0px;
+   margin:0px;
+   height:20px;
+   overflow:hidden;
+}
+
+#commsy_panels .commsy_panel .topBar span, #commsy_panel_form .commsy_panel .topBar span{
+   vertical-align:baseline;
+   color:<?php echo($color['tabs_title'])?>;
+   font-weight:bold;
+   float:left;
+   padding-left:5px;
+}
+.topBar{
+   font-size:10pt;
+}
+
+#commsy_panels .commsy_panel .topBar img, #commsy_panel_form .commsy_panel .topBar img{
+   float:right;
+   cursor:pointer;
+}
+
+#otherContent{  /* Normal text content */
+   float:left;  /* Firefox - to avoid blank white space above panel */
+   padding-left:10px;   /* A little space at the left */
+}
+
+
+#right_boxes_area{
+   width:28%;
+   float:right;
+   padding-top:5px;
+   padding-left:10px;
+   vertical-align:top;
+   text-align:left;
+}
+
 
 /* Right Boxes Style */
 .right_box{
    background-color: <?php echo($color['boxes_background'])?>;
+   margin:0px;
    padding-bottom:0px;
    font-size:10pt;
 }
@@ -61,6 +137,7 @@ a.right_box_title {
    color:<?php echo($color['headline_text'])?>;
    font-weight:bold;
    font-size: 8pt;
+   margin:0px;
 }
 
 div.right_box_title{
@@ -84,16 +161,22 @@ div.index_forward_links{
 
 div.right_box_main{
    border: 1px solid <?php echo($color['tabs_background'])?>;
+   <?php
+   $current_browser = strtolower($environment->getCurrentBrowser());
+   $current_browser_version = $environment->getCurrentBrowserVersion();
+   if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.')) or (strstr($current_browser_version,'7.'))) ){
+      echo('margin:-2px 0px 0px 0px;');
+   }else{
+      echo('margin:0px;');
+   }
+   ?>
    padding:3px 3px 3px 5px;
 }
 
 div.gauge {
    background-color: <?php echo($color['boxes_background'])?>;
    height:14px;
-   margin-left: 10px;
-   margin-right: 10px;
-   margin-top: 0px;
-   margin-bottom: 0px;
+   margin: 0px;
    border: 1px solid #666;
    font-size:10px;
 }

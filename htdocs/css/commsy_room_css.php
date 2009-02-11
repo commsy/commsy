@@ -45,16 +45,16 @@ if (!empty($_GET['cid'])) {
 ?>
 
 #ie{
-   width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+   width:expression(document.body.clientWidth < 990 ? "990px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
 #ie_footer{
-   width:expression(document.body.clientWidth < 950 ? "950px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
+   width:expression(document.body.clientWidth < 990 ? "990px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
 /*General Settings */
 body {
    margin: 0px;
    padding: 0px;
-   min-width:910px;
+   min-width:930px;
    max-width:1200px;
    font-family: 'Trebuchet MS','lucida grande',tahoma,'ms sans serif',verdana,arial,sans-serif;
    font-size:80%;
@@ -115,7 +115,7 @@ a:hover, a:active {
 }
 
 .infoborder_display_content{
-    width: 71%;
+    width: 70%;
 }
 
 .required {
@@ -246,7 +246,7 @@ div.content_display_width{
 }
 
 div.index_content_display_width{
-    width:71%;
+    width:70%;
 }
 
 div.frame_bottom {
@@ -259,55 +259,6 @@ div.frame_bottom {
 
 div.content_bottom {
    position:relative; width: 100%;
-}
-
-/*Panel Style*/
-#commsy_panels .commsy_panel, #commsy_panel_form .commsy_panel{
-   margin:0px;
-}
-
-#commsy_panels .panelContent, #commsy_panel_form .panelContent{
-   padding:0px;
-   overflow:hidden;
-   position:relative;
-}
-
-#commsy_panels .small, #commsy_panel_form .small{
-   font-size:8pt;
-}
-
-#commsy_panels .panelContent div, #commsy_panel_form .panelContent div{
-   position:relative;
-}
-
-#commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
-   <?php
-   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
-   ?>
-   background-color:<?php echo($color['tabs_background'])?>;
-   color:<?php echo($color['tabs_title'])?>;
-   padding: 0px 0px;
-   height:20px;
-   overflow:hidden;
-}
-
-#commsy_panels .commsy_panel .topBar span, #commsy_panel_form .commsy_panel .topBar span{
-   line-height:20px;
-   vertical-align:baseline;
-   color:<?php echo($color['tabs_title'])?>;
-   font-weight:bold;
-   float:left;
-   padding-left:5px;
-}
-
-#commsy_panels .commsy_panel .topBar img, #commsy_panel_form .commsy_panel .topBar img{
-   float:right;
-   cursor:pointer;
-}
-
-#otherContent{  /* Normal text content */
-   float:left;  /* Firefox - to avoid blank white space above panel */
-   padding-left:10px;   /* A little space at the left */
 }
 
 ul.item_list {
@@ -500,6 +451,21 @@ h1{
    padding:0px
    background-color: #FFFFFF;
    border: 2px solid <?php echo($color['tabs_background'])?>;
+}
+
+#mail_content{
+   margin-bottom:00px 0px 20px 0px;
+   padding:10px;
+   background-color: #FFFFFF;
+   border: 2px solid <?php echo($color['tabs_background'])?>;
+}
+#mail_headline{
+   <?php
+   echo('background: url(../commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   height:30px;
 }
 
 #copy_title, .copy_title{

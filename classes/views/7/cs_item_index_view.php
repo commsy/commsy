@@ -1337,10 +1337,10 @@ var $_sel_rubric = '';
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= '<div style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div style="width:71%;">'.LF;
+      $html .='<div style="width:70%;">'.LF;
       $html .='<div>'.LF;
       $tempMessage = getMessage('CAMPUS_SEARCH_INDEX');
       if ($this->_clipboard_mode){

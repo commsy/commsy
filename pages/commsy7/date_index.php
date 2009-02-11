@@ -563,15 +563,24 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
          $real_month = substr($real_month,1,2);
       }
       $dates_manager->setMonthLimit($real_month);
-   }else{
+      $count_all = $dates_manager->getCountAll();
+  }else{
       $real_month = substr($month,4,2);
       $first_char = substr($real_month,0,1);
       if ($first_char == '0'){
          $real_month = substr($real_month,1,2);
       }
+      $real_day = substr($month,6,2);
+      $d_time = mktime(3,0,0,$real_month,$real_day,$year);
+      $wday = date("w",$d_time);
+      $week_start_day = $real_day - $wday;
+      if ($week_start_day < 1){
+      	$week_start_day = 1;
+      }
       $dates_manager->setMonthLimit2($real_month);
+      $dates_manager->setDayLimit2($week_start_day);
+      $count_all = $dates_manager->getCountAll();
    }
-   $count_all = $dates_manager->getCountAll();
    $dates_manager->resetLimits();
    $dates_manager->setSortOrder('time');
 } else {

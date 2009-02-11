@@ -630,7 +630,7 @@ class cs_index_view extends cs_view {
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
       $buzzword = $this->_available_buzzwords->getFirst();
       if (!$buzzword){
-         $html .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
+         $html .= '<span class="disabled" style="font-size:8pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $params = $this->_environment->getCurrentParameterArray();
       $selected_id = '';
@@ -1437,7 +1437,7 @@ EOD;
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
       $current_browser = strtolower($this->_environment->getCurrentBrowser());
@@ -1445,7 +1445,7 @@ EOD;
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $html .='<div style="width: 99%;">'.LF;
       }else{
-         $html .='<div style="width: 71%;">'.LF;
+         $html .='<div style="width: 70%; " >'.LF;
 
       }
       $html .='<div id="action_box">';
@@ -1589,7 +1589,7 @@ EOD;
       /*******BEGIN RIGHT BOXES*****/
       /*****************************/
       if(!$this->_clipboard_mode and !(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div id="right_boxes_area" style="float:right; width:27%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
+         $html .='<div id="right_boxes_area">'.LF;
          $html .='<div style="width:250px;">'.LF;
          $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
          $current_context = $this->_environment->getCurrentContextItem();
@@ -2243,7 +2243,13 @@ $html .= '</noscript>'.LF;
           or $module == 'campus_search'
       ){
          $width = '235';
-         $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.')) or (strstr($current_browser_version,'7.'))) ){
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+         }else{
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+         }
          $html .= '<div class="right_box">'.LF;
          $html .= '         <noscript>';
          $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';

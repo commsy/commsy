@@ -366,7 +366,7 @@ class cs_account_index_view extends cs_index_view {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .='<table style="width:100%;" summary="Layout">'.LF;
       $html .='<tr>'.LF;
-      $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
+      $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
       $html .='<div>'.LF;
       $html .= '<h2 class="pagetitle">'.LF;
       $tempMessage = getMessage('ACCOUNT_INDEX');
@@ -376,13 +376,13 @@ class cs_account_index_view extends cs_index_view {
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</td>'.LF;
-      $html .='<td style="width:27%; padding-top:5px; padding-left:0px; vertical-align:bottom; text-align:right;">'.LF;
+      $html .='<td style="width:28%; padding-top:5px; padding-left:0px; vertical-align:bottom; text-align:right;">'.LF;
 #           $html .= '<span class="index_forward_links">'.$this->_getForwardLinkAsHTML().'</span>'.LF;
            // actions
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .='<tr>'.LF;
-      $html .='<td style="width:71%; padding-top:5px; vertical-align:top; ">'.LF;
+      $html .='<td style="width:70%; padding-top:5px; vertical-align:top; ">'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),
                                                                       $this->_environment->getCurrentModule(),
@@ -404,7 +404,7 @@ class cs_account_index_view extends cs_index_view {
       $html .= '</form>'.LF;
       $html .='</td>'.LF;
 
-      $html .='<td style="width:27%; vertical-align:top; padding-top:5px;">'.LF;
+      $html .='<td style="width:28%; vertical-align:top; padding-top:5px;">'.LF;
       $html .='<div id="commsy_panels" style="margin-bottom:1px;">'.LF;
       $html .= $this->_getListInfosAsHTML(getMessage('ACCOUNT_INDEX'));
       $html .='</div>'.LF;

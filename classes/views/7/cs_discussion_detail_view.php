@@ -697,7 +697,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='<table>'.LF;
                $html .='<tr>'.LF;
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
+               $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
                $html .='<div style="padding-top:10px;">'.LF;
                $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
                $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
@@ -723,11 +723,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='</div>'.LF;
                $html .='</td>'.LF;
                if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
                   $html .='</td>'.LF;
                }else{
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= '&nbsp';
                   $html .='</td>'.LF;
                }
@@ -766,7 +766,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             }else{
                $image = $this->_getItemPicture($current_item->getModificatorItem());
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:71%; padding-top:5px; vertical-align:bottom;">'.LF;
+               $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
                if ( $current_item->isA(CS_DISCARTICLE_TYPE) ) {
                   $html .= '<a id="anchor'.$pos_number.'" name="anchor'.$pos_number.'"></a>'.LF;
                }
@@ -777,11 +777,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='</div>'.LF;
                $html .='</td>'.LF;
                if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= $this->_getSubItemDetailActionsAsHTML($current_item);
                   $html .='</td>'.LF;
                }else{
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= '&nbsp';
                   $html .='</td>'.LF;
                }

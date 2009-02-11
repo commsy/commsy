@@ -286,15 +286,15 @@ table.creator_info td.key {
    font-size:8pt;
 }
 
-.netnavigation .panelContent{
-   font-size:0.7em;
+.netnavigation {
+    font-size:0.7em;
     padding:0px;
     overflow:hidden;
     position:relative;
     clear:both;
 }
 
-.netnavigation .panelContent div{
+.netnavigation div{
    position:relative;
    border-top:1px solid #B0B0B0;
 }

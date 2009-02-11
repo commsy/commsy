@@ -45,6 +45,7 @@ if (!empty($_GET['cid'])) {
 div.indexdate{
    color:<?php echo($color['date_title'])?>;
    font-weight: bold;
+   font-size:10pt;
 }
 div.restriction {
    padding: 1px 1px;

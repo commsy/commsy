@@ -1119,7 +1119,7 @@ class cs_detail_view extends cs_view {
       $html = '';
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="height:30px;">'.LF;
-      $html .= '<div id="search_box" style="float:right; width:27%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
       $current_browser = strtolower($this->_environment->getCurrentBrowser());
@@ -1127,7 +1127,7 @@ class cs_detail_view extends cs_view {
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $html .='<div style="width: 99%;">'.LF;
       }else{
-         $html .='<div style="width: 71%;">'.LF;
+         $html .='<div style="width: 70%;">'.LF;
 
       }
       $html .='<div id="action_box">';
@@ -1222,7 +1222,7 @@ class cs_detail_view extends cs_view {
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $this->_right_box_config['size_string'] = '';
          $current_context = $this->_environment->getCurrentContextItem();
-         $html .='<div style="float:right; font-size:10pt; width:27%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
+         $html .='<div style="float:right; font-size:10pt; width:28%; margin-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div>'.LF;
          $html .='<div style="width:250px;">'.LF;
          $html .='<div id="commsy_panels">'.LF;
@@ -1571,7 +1571,7 @@ class cs_detail_view extends cs_view {
                $image = $this->_getItemPicture($current_item->getModificatorItem());
                $html .='<tr>'.LF;
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:72%; padding-top:5px; vertical-align:bottom;">'.LF;
+               $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
                $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
                $html .='<div style="padding-top:10px;">'.LF;
                $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
@@ -1580,11 +1580,11 @@ class cs_detail_view extends cs_view {
                $html .='</div>'.LF;
                $html .='</td>'.LF;
                if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= $this->getAnnotationActionsAsHTML($current_item);
                   $html .='</td>'.LF;
                }else{
-                  $html .='<td style="width:27%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
                   $html .= '&nbsp';
                   $html .='</td>'.LF;
                }

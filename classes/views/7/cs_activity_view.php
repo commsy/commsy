@@ -243,19 +243,25 @@ class cs_activity_view extends cs_view {
          $time_spread = $context->getTimeSpread();
       }
       $html .= LF.'<!-- BEGIN OF ACTIVITY VIEW -->'.LF;
-      $html .= '         <div style="padding-top:3px;">'.LF;
       $active = $context->getActiveMembers($time_spread);
       $all_users = $context->getAllUsers();
       $percentage = round($active / $all_users * 100);
-      $html .= '         <div class="gauge" style="float:right; width: 25%;">'.LF;
+      $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+      $html .= '         <tr>'.LF;
+      $html .= '         <td style="width:175px;">'.LF;
+      $html .= '      <div class="infocolor">'.$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread).':</div>'.LF;
+      $html .= '         </td>'.LF;
+      $html .= '         <td style="width:60px;">'.LF;
+      $html .= '         <div class="gauge" style="margin:0px; float:right; width:65px;">'.LF;
       if ( $percentage >= 5 ) {
          $html .= '            <div class="gauge-bar" style="width:'.$percentage.'%;">'.$active.'</div>'.LF;
       } else {
          $html .= '<div class="gauge-bar" style="float:left; width:'.$percentage.'%;">&nbsp;</div><div style="padding-left:5px;">'.$active.'</div>'.LF;
       }
       $html .= '         </div>'.LF;
-      $html .= '      <div class="infocolor">'.$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread).':</div>'.LF;
-      $html .= '         </div>'.LF;
+      $html .= '         </td>'.LF;
+      $html .= '         </tr>'.LF;
+      $html .= '         </table>'.LF;
 
       $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
       $html .= '         <tr>'.LF;
@@ -395,7 +401,7 @@ class cs_activity_view extends cs_view {
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',
-                                       '',
+                                       $params,
                                        $image,
                                        getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
          }else{

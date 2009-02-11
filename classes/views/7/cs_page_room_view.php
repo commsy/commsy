@@ -933,7 +933,7 @@ class cs_page_room_view extends cs_page_view {
                $html .='<div style="clear:both;">'.LF;
                $html .='</div>'.LF;
                $html .= '<div id="commsy_panels" style="width:100%;">'.LF;
-               $html .='<div style="float:right; width:27%; padding-top:5px; padding-left:5px; vertical-align:top; text-align:left;">'.LF;
+               $html .='<div style="float:right; width:28%; padding-top:5px; padding-left:0px; vertical-align:top; text-align:left;">'.LF;
                $html .='<div style="width:250px;">'.LF;
                if ( $this->_environment->inPrivateRoom() ){
                   $html .= $this->_views_left[0]->_getListInfosAsHTML().LF;

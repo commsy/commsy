@@ -65,9 +65,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     }
 
 
-    function getSearchText (){
-       return $this->_search_text;
-    }
 
     function setPresentationMode($mode){
        $this->_presentation_mode = $mode;
@@ -156,6 +153,121 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $this->_display_mode = $status;
    }
 
+   function _getListInfosAsHTML ($title) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $html .= '<div class="right_box">'.LF;
+      $html .= '<div class="right_box_title">'.LF;
+      $date = date("Y-m-d");
+      $date_array = explode('-',$date);
+      $month = substr($this->_month,4,2);
+      $first_char = substr($month,0,1);
+      if ($first_char == '0'){
+         $month = substr($month,1,2);
+      }
+      $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+      $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+      $this->_translator->getMessage('DATES_MARCH_LONG'),
+      $this->_translator->getMessage('DATES_APRIL_LONG'),
+      $this->_translator->getMessage('DATES_MAY_LONG'),
+      $this->_translator->getMessage('DATES_JUNE_LONG'),
+      $this->_translator->getMessage('DATES_JULY_LONG'),
+      $this->_translator->getMessage('DATES_AUGUST_LONG'),
+      $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+      $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+      $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+      $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+      $tempMessage = $month_array[$month-1].' '.$this->_year;
+      $html .= '<div style="white-space:nowrap;">'.$tempMessage.'</div>'.LF;
+      $html .='</div>'.LF;
+
+      $width = '';
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:170px;';
+      }
+      $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
+      $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
+
+      $html .= '<div class="listinfoborder"></div>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      unset($params['week']);
+      unset($params['year']);
+      unset($params['month']);
+      unset($params['presentation_mode']);
+      $params['seldisplay_mode'] = 'normal';
+      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .='<tr>'.LF;
+      $html .='<td>'.LF;
+      $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>';
+      $html .='</td>'.LF;
+      $html .='<td style="text-align:right;">'.LF;
+      $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
+      $html .='</td>'.LF;
+      $html .='</tr>'.LF;
+      $html .='</table>'.LF;
+
+
+
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+
+     return $html;
+   }
+
+
+
+  function _getSearchAsHTML () {
+     $html  = '';
+     $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="get" name="searchform">'.LF;
+     $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
+     $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
+     $html .= '   <input type="hidden" name="SID" value="'.$this->_environment->getSessionItem()->getSessionID().'"/>'.LF;
+     $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
+     $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
+     $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:130px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     $html .= '</form>';
+     return $html;
+  }
+
+   function _getAdditionalActionsAsHTML(){
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+      $hash_manager = $this->_environment->getHashManager();
+      $params = $this->_environment->getCurrentParameterArray();
+      $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+      $ical_url = '<a title="'.getMessage('DATES_ABBO').'"  href="webcal://';
+      $ical_url .= $_SERVER['HTTP_HOST'];
+      $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+      $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+      $html .= $ical_url;
+      $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+      $html .= '<a title="'.getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
+     unset($params);
+     if ( $this->_environment->inPrivateRoom() ) {
+       if ( $this->_with_modifying_actions ) {
+           $params['import'] = 'yes';
+           $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+           $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                            CS_DATE_TYPE,
+                            'ims_import',
+                            $params,
+                            $image,
+                            $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
+           unset($params);
+       } else {
+         $html .= '> <span class="disabled">'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'</span>'.BRLF;
+       }
+     }
+     return $html;
+   }
+
+
+
    /** get list view as HTML
     * this method returns the list view in HTML-Code
     *
@@ -166,21 +278,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    function asHTML () {
       $html  = LF.'<!-- BEGIN OF LIST VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
-      // @segment-end 16772
-      // @segment-begin 61726 complete:asHTML():style_cell_1:1
-      $html .= '<div class="indexdate" style="width: 27%; float:right; padding-top:8px; padding-right:3px; text-align:right;">'.LF;
-      $params = $this->_environment->getCurrentParameterArray();
-      unset($params['week']);
-      unset($params['year']);
-      unset($params['month']);
-      unset($params['presentation_mode']);
-      $params['seldisplay_mode'] = 'normal';
-      $html .= getMessage('DATE_ALTERNATIVE_DISPLAY').': '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
+
+      $html .='<div>'.LF;
+      $html .= '<div id="search_box" style="float:right; width:17%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
+      $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $html .='<div style="width:71%; padding-left:3px;">'.LF;
-     $html .='<div>'.LF;
-      // @segment-end 17331
-      // @segment-begin 64852 asHTML():display_rubrik_title/rubrik_clipboard_title
+
+      $html .='<div style="width:80%; padding-left:3px;">'.LF;
+      $html .='<div id="action_box" style="margin-right:5px;">';
+      $html .= $this->_getListActionsAsHTML();
+      $html .='</div>';
+      $html .='<div>';
       $date = date("Y-m-d");
       $date_array = explode('-',$date);
       $month = substr($this->_month,4,2);
@@ -210,15 +318,48 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
+      $html .='</div>';
+      $html .='<div style="font-size:0pt; width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
 
+      $html .='<div>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),
                                                                       $this->_environment->getCurrentModule(),
                                                                       $this->_environment->getCurrentFunction(),
                                                                       $params).'" method="get" name="indexform">'.LF;
+      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' ){
+         $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
+      }else{
+         $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
+      }
+      $html .='<div style="width:160px;">'.LF;
+
+      $html .='<div id="commsy_panels">'.LF;
+      $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
+      $html .= $this->_getListInfosAsHTML($this->_translator->getMessage('DATE_INDEX'));
+      $html .='</div>'.LF;
+      $html .='</div>'.LF;
+
+
+      $html .='</div>'.LF;
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width= ' width:100%; padding-right:10px;';
+      }else{
+         $width= ' width:80%;';
+      }
+
+      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+         $html .='</div>'.LF;
+         $html .='<div class="index_content_display_width" style="'.$width.'padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
+      }else{
+         $html .='</div>'.LF;
+         $html .='<div style="width:100%; padding-top:5px; vertical-align:bottom; font-size:10pt;">'.LF;
+      }
+
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
       $html .= $this->_getTableheadAsHTML();
       $html .='<tr>'.LF;
@@ -233,11 +374,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</table>'.LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
-      $html .= $this->_getTableFootAsHTML();
       $html .= '</table>'.BRLF;
+      $html .='</div>'.LF;
       $html .= '</form>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
+      $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
@@ -289,22 +431,24 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    function _getAdditionalFormFieldsAsHTML () {
       $current_context = $this->_environment->getCurrentContextItem();
       $width = '12';
-      $html  ='<table style="border-collapse:collapse;" summary="Layout">';
-      $html .='<tr>';
-      $html .= '<td class="key">'.getMessage('COMMON_SEARCHFIELD').BRLF;
       // Search / select form
       $session_item = $this->_environment->getSessionItem();
       $session_id = $session_item->getSessionID();
       unset($session_item);
-      $html .= '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session_id).'"/>'.LF;
+      $html  = '   <input type="hidden" name="SID" value="'.$this->_text_as_form($session_id).'"/>'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="'.$this->_text_as_form($this->_module).'"/>'.LF;
       $html .= '   <input type="hidden" name="fct" value="'.$this->_text_as_form($this->_function).'"/>'.LF;
       $html .= '   <input type="hidden" name="sort" value="'.$this->_text_as_form($this->getSortKey()).'"/>'.LF;
-      $html .= '<input style="width:90%; font-size:10pt;" name="search" type="text" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      if (isset($params['presentation_mode'])){
+         $html .= '   <input type="hidden" name="presentation_mode" value="'.$params['presentation_mode'].'"/>'.LF;
+      }else{
+         $html .= '   <input type="hidden" name="presentation_mode" value="2"/>'.LF;
+      }
       $selstatus = $this->getSelectedStatus();
-      $html .= '<td class="key">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
-      $html .= '   <select name="selstatus" size="1" style="width:12em;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
+      $html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
          $html .= ' selected="selected"';
@@ -327,7 +471,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '>'.$text.'</option>'.LF;
 
       $html .= '   </select>'.LF;
-      $html .='</td>';
+      $html .='</div>';
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
@@ -338,20 +482,25 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' ) {
-            if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+            if (($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0]))
+                or ( $link_name[0] == CS_USER_TYPE and $context_item->withRubric($link_name[0]))
+            ) {
                $list = $this->getAvailableRubric($link_name[0]);
                $selrubric = $this->getSelectedRubric($link_name[0]);
                $temp_link = strtoupper($link_name[0]);
                switch ( $temp_link )
                {
                   case 'GROUP':
-                     $html .= '<td class="key">'.$this->_translator->getMessage('COMMON_GROUP');
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_GROUP');
                      break;
                   case 'INSTITUTION':
-                     $html .= '<td class="key">'.$this->_translator->getMessage('COMMON_INSTITUTION');
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_INSTITUTION');
                      break;
                   case 'TOPIC':
-                     $html .= '<td class="key">'.$this->_translator->getMessage('COMMON_TOPIC');
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_TOPIC');
+                     break;
+                  case 'USER':
+                     $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_USER');
                      break;
                   default:
                      $html .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_datescalendar_index_view(341) ';
@@ -360,7 +509,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= BRLF;
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: '.$width.'em; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  $html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';
@@ -373,7 +522,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      if ( isset($selrubric) and $selrubric == $sel_item->getItemID() ) {
                         $html .= ' selected="selected"';
                      }
-                     $text = $this->_Name2SelectOption($sel_item->getTitle());
+                     if ($link_name[0] == CS_USER_TYPE){
+                        $text = $this->_Name2SelectOption($sel_item->getFullName());
+                     }else{
+                        $text = $this->_Name2SelectOption($sel_item->getTitle());
+                     }
                      $html .= '>'.$text.'</option>'.LF;
                      $sel_item = $list->getNext();
                  }
@@ -387,49 +540,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
              } else {
            $html.='';
              }
-             $html .='</td>';
+             $html .='</div>';
             }
          }
       }
-       $html .= '<td class="key">'.BRLF;
-      $html .= '<input style="margin-top:5px; font-size:8p;" name="option" value="'.getMessage('COMMON_SHOW_BUTTON').'" type="submit"/>'.BRLF;
-       $html .= '</td>'.LF;
-
-      $html .='</tr>';
-      $html .='</table>';
-      return $html;
+     return $html;
    }
 
-
-   function _getTableFootAsHTML() {
-      $html ='';
-      $html .= '   <tr>'.LF;
-      $html .= '      <td colspan="3">'.LF;
-      $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
-      $html .= '      </td>'.LF;
-      $html .= '   </tr>'.LF;
-      $html .= '   <tr>'.LF;
-      $html .= '      <td colspan="3" class="key">'.LF;
-      // short names for easy reading
-      $from      = $this->_from;
-      $interval  = $this->_interval;
-      $count_all = $this->_count_all;
-      $count_all_shown = $this->_count_all_shown;
-      if ($count_all_shown == $count_all){
-         $description = $this->_translator->getMessage('COMMON_X_ENTRIES', $count_all_shown);
-      }else{
-         $description = $this->_translator->getMessage('COMMON_X_ENTRIES_FROM_ALL',
-                                                       $count_all_shown,
-                                                       $count_all
-                                                      );
-      }
-      if ( !empty($description) and $this->_presentation_mode == '2') {
-         $html .= $description;
-      }
-      $html .= '      </td>'.LF;
-      $html .= '   </tr>'.LF;
-      return $html;
-   }
 
    function _getTableheadAsHTML() {
       $params = $this->_getGetParamsAsArray();
@@ -1562,17 +1679,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $time = $time+1;
          $html .= '   </tr>'.LF;
       }
-      $current_context_item = $this->_environment->getCurrentContextItem();
-      $current_user_item = $this->_environment->getCurrentUserItem();
-      $hash_manager = $this->_environment->getHashManager();
-      $ical_url = '<a href="webcal://';
-      $ical_url .= $_SERVER['HTTP_HOST'];
-      $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
-      $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user_item->getItemID()).'" style="color:#fff;">'.getMessage('DATES_ABBO').'</a>'.LF;
       $html .= '   <tr class="calendar_head" style="height: 20px;">'.LF;
-      $html .= '      <td  colspan="5" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</td>'.LF;
-      $html .= '      <td  colspan="3" class="calendar_head_all" style="text-align:right; font-size:8pt; white-space:nowrap;">'.$ical_url.' | <a href="ical.php?cid='.$current_context_item->getItemID().'&amp;hid='.$hash_manager->getICalHashForUser($current_user_item->getItemID()).'" style="color:#fff;">'.$this->_translator->getMessage('DATES_EXPORT').'</a></td>'.LF;
-
+      $html .= '      <td  colspan="8" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
    }

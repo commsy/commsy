@@ -132,7 +132,7 @@ class cs_home_title_view extends cs_view {
          $home_title  = $this->_translator->getMessage('HOME_CAMPUS_INDEX');
          $home_title .= ' ('.$this->_translator->getMessage('COMMON_COMMUNITY').')';
       }
-      $html .= '<div style="float:right; text-align:left; padding-top: 5px; width:27%; white-space:nowrap;">'.LF;
+      $html .= '<div style="float:right; text-align:left; padding-top: 5px; width:28%; white-space:nowrap;">'.LF;
       $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), 'campus_search', 'index','').'" method="post" name="form">'.LF;
       $html .= '   <input type="hidden" name="cid" value="'.$this->_text_as_form($this->_environment->getCurrentContextID()).'"/>'.LF;
       $html .= '   <input type="hidden" name="mod" value="campus_search"/>'.LF;
