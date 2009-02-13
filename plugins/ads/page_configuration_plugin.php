@@ -66,10 +66,11 @@ else {
    }
 
       // Initialize the form
-      $class_params= array();
-      $class_params['environment'] = $environment;
-      $form = $class_factory->getClass(CONFIGURATION_PLUGIN_FORM,$class_params);
-      unset($class_params);
+      // class of plugin, so do not use the class_factory
+      // should be renamed (TBD)
+      include_once('plugins/ads/class_configuration_plugin_form.php');
+      $form = new class_configuration_plugin_form($environment);
+
       // display form
       $params = array();
       $params['environment'] = $environment;

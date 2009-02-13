@@ -15,8 +15,6 @@ class class_ads {
    function class_ads ($environment) {
       $this->_environment = $environment;
       $this->_translator = $environment->getTranslationObject();
-      include_once('plugins/ads/class_banner_rotation.php');
-      $this->_banner_rotation = new class_banner_rotation();
    }
 
    function getLinkItemForConfigurationIndex () {
@@ -147,8 +145,6 @@ class class_ads {
             $pad_left = 20;
          }
          $html .= LF.'<!-- BEGIN ADS -->'.LF;
-         #$html .= '<div style="float:right;padding-right:3px;">'.$this->_banner_rotation->getBanner234x60AsHTML().'</div>';
-         #$html .= '<div style="padding-left:'.$pad_left.'px;">'.$this->_banner_rotation->getBanner468x60AsHTML().'</div>';
          $html .= '<script type="text/javascript">'.LF;
          $html .= '   <!--'.LF;
          $html .= '   google_ad_client = "pub-5682496729852184";'.LF;
