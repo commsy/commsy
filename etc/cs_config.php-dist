@@ -67,7 +67,6 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 @include_once('etc/commsy/pmwiki.php');
 @include_once('etc/commsy/swish-e.php');
 @include_once('etc/commsy/ims.php');
-@include_once('etc/commsy/soap.php');
 @include_once('etc/commsy/fckeditor.php');
 @include_once('etc/commsy/clamscan.php');
 @include_once('etc/commsy/development.php');
