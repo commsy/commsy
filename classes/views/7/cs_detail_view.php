@@ -420,7 +420,7 @@ class cs_detail_view extends cs_view {
 
 
    function getListEntriesAsHTML(){
-   	$html = '';
+      $html = '';
       $ids = $this->getBrowseIDs();
 
       if(!empty($this->_right_box_config['title_string'])){
@@ -448,21 +448,21 @@ class cs_detail_view extends cs_view {
       $pos = 0;
       foreach($ids as $id){
          if ($id == $this->_item->getItemID()){
-         	$pos = $count;
+            $pos = $count;
          }else{
-         	$count++;
+            $count++;
          }
       }
       $start = $pos-2;
       $end = $pos+2;
-      if($start < 0){
-      	 $end = $end - $start;
+      if ( $start < 0 ) {
+         $end = $end - $start;
       }
       if($end > count($ids)){
         $end = count($ids);
         $start = $end-5;
         if ($start <0){
-        	$start = 0;
+           $start = 0;
         }
       }
       $listed_ids = array();
@@ -470,17 +470,17 @@ class cs_detail_view extends cs_view {
       $params = $this->_environment->getCurrentParameterArray();
       $count_items = 0;
       if ($start > 0){
-      	 $forward_start = $start-5;
-      	 if ($forward_start<0){
-      	 	$forward_start = 0;
-      	 }
-      	 $start_id = $start-3;
-      	 if($start_id <0){
-      	 	$start_id = 0;
-      	 }
-      	 $item = $manager->getItem($ids[$start_id]);
+          $forward_start = $start-5;
+          if ($forward_start<0){
+             $forward_start = 0;
+          }
+          $start_id = $start-3;
+          if($start_id <0){
+             $start_id = 0;
+          }
+          $item = $manager->getItem($ids[$start_id]);
          $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:2px; margin-top:0px; padding-bottom:2px;">  '.LF;
-      	 $html .='<li style="padding:0px 5px;">';
+          $html .='<li style="padding:0px 5px;">';
          $params['iid'] =	$item->getItemID();
          unset($item);
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
@@ -489,8 +489,8 @@ class cs_detail_view extends cs_view {
                                  $params,
                                  'Einträge '.($forward_start+1).' bis '.($start)
                                  );
-      	 $html .='</li>';
-      	 $html .='</ul>';
+          $html .='</li>';
+          $html .='</ul>';
       }
       $html .='<ul style="list-style-type: decimal; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-top:0px; margin-bottom:2px; padding-bottom:0px;">  '.LF;
       foreach($ids as $id){
@@ -525,17 +525,17 @@ class cs_detail_view extends cs_view {
       $html .='</ul>';
       unset($params);
       if ($end < (count($ids)-1)){
-      	 $start_id = $end + 3;
-      	 if($start_id > (count($ids)-1)){
-      	 	$start_id = (count($ids)-1);
-      	 }
-      	 $forward_end = $end + 5;
-      	 if (($forward_end) > (count($ids)-1)){
-      	 	$forward_end = (count($ids)-1);
-      	 }
-      	 $item = $manager->getItem($ids[$start_id]);
+          $start_id = $end + 3;
+          if($start_id > (count($ids)-1)){
+             $start_id = (count($ids)-1);
+          }
+          $forward_end = $end + 5;
+          if (($forward_end) > (count($ids)-1)){
+             $forward_end = (count($ids)-1);
+          }
+          $item = $manager->getItem($ids[$start_id]);
          $html .='<ul style="list-style-type: circle; list-style-position:inside; font-size:8pt; padding-left:0px; margin-left:0px; margin-bottom:0px; margin-top:0px; padding-bottom:2px;">  '.LF;
-      	 $html .='<li style="padding:0px 5px;">';
+          $html .='<li style="padding:0px 5px;">';
          $params['iid'] =	$item->getItemID();
          unset($item);
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
@@ -544,17 +544,17 @@ class cs_detail_view extends cs_view {
                                  $params,
                                  'Einträge '.($end+2).' bis '.($forward_end+1)
                                  );
-      	 $html .='</li>';
-      	 $html .='</ul>';
+          $html .='</li>';
+          $html .='</ul>';
       }
       $html .='</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-   	  return $html;
+        return $html;
    }
 
    function _getForwardBoxAsHTML () {
-   	$html = '';
+      $html = '';
 
       $html .= '<div style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
@@ -589,7 +589,7 @@ class cs_detail_view extends cs_view {
          $html .= $this->_getForwardLinkAsHTML($ids);
       }
       if (empty($ids)){
-      	$ids = array();
+         $ids = array();
          $ids[] = $this->_item->getItemID();
       }
       $html .='</div>'.LF;
@@ -599,21 +599,21 @@ class cs_detail_view extends cs_view {
       $pos = 0;
       foreach($ids as $id){
          if ($id == $this->_item->getItemID()){
-         	$pos = $count;
+            $pos = $count;
          }else{
-         	$count++;
+            $count++;
          }
       }
       $start = $pos-4;
       $end = $pos+4;
       if($start < 0){
-      	 $end = $end - $start;
+          $end = $end - $start;
       }
       if($end > count($ids)){
         $end = count($ids);
         $start = $end-9;
         if ($start <0){
-        	$start = 0;
+           $start = 0;
         }
       }
       $listed_ids = array();
@@ -679,10 +679,10 @@ class cs_detail_view extends cs_view {
                 $link_title = $item->getTitle();
             }
             if ($this->_environment->getCurrentModule() == 'account'){
-            	$type = 'account';
+               $type = 'account';
             }
             if ($count_items < 9){
-            	$style='padding:0px 5px 0px 10px;';
+               $style='padding:0px 5px 0px 10px;';
             }else{
                 $style='padding:0px 5px 0px 5px;';
             }
@@ -1242,7 +1242,7 @@ class cs_detail_view extends cs_view {
          }
 
          if ( $this->_environment->getCurrentModule() == 'account'){
-         	$html .=  $this->_getConfigurationOverviewAsHTML();
+            $html .=  $this->_getConfigurationOverviewAsHTML();
          }
 
 
@@ -1644,7 +1644,7 @@ class cs_detail_view extends cs_view {
 
 
    function _getAllPathsAsHTML(){
-   	$html = '';
+      $html = '';
       $current_context = $this->_environment->getCurrentContextItem();
       if(!empty($this->_right_box_config['title_string'])){
          $separator = ',';
@@ -1730,14 +1730,14 @@ class cs_detail_view extends cs_view {
          }
       }
       if (!empty($tmp_html)){
-      	$html .= $tmp_html;
+         $html .= $tmp_html;
       }else{
          $html .= '   <div style="padding:0px 7px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'&nbsp;</div>'.LF;
       }
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
-   	return $html;
+      return $html;
    }
 
    function _getAllLinkedItemsAsHTML ($spaces=0) {
@@ -2028,9 +2028,9 @@ class cs_detail_view extends cs_view {
    function _getPluginInfosForNetNavigationAsHTML () {
       $html = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getUnderNetNavigationAsHTML')) {
                $retour = $plugin_class->getUnderNetNavigationAsHTML();
                if (isset($retour)) {
@@ -2122,7 +2122,7 @@ class cs_detail_view extends cs_view {
             $item = $item_manager->getItem($browse_start);
             $module = $item->getItemType();
          }else{
-         	$module = $this->_module;
+            $module = $this->_module;
          }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),$module, $this->_function,
                                    $params,

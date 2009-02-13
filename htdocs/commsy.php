@@ -132,8 +132,18 @@ if ( isset($_GET['cid']) ) {
 }
 
 if ( !isURLValid() ) {
-   $current_module = 'home';
-   $current_function = 'index';
+   if ( !empty($_GET['mod'])
+        and !empty($_GET['fct'])
+        and isPlugin($_GET['mod'])
+      ) {
+      $current_module = 'plugin';
+      $current_function = 'index';
+      $plugin_module = $_GET['mod'];
+      $plugin_function = $_GET['fct'];
+   } else {
+      $current_module = 'home';
+      $current_function = 'index';
+   }
 } else {
    if ( !isset($_GET['mod']) or !isset($_GET['fct']) ) {
       $current_module = 'home';

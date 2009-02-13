@@ -91,11 +91,11 @@ class cs_configuration_extra_form extends cs_rubric_form {
       }
 
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
          $this->_array_extra[50]['text']  = '----------------------';
          $this->_array_extra[50]['value'] = 'disabled';
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getArrayForExtraConfiguration')) {
                $temp_array = $plugin_class->getArrayForExtraConfiguration();
                if (isset($temp_array)) {

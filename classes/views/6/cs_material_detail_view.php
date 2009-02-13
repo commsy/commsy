@@ -282,9 +282,9 @@ class cs_material_detail_view extends cs_detail_view {
    function _getPluginInfosForMaterialDetailAsHTML () {
       $html = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getMaterialDetailAsHTML')) {
          $retour = $plugin_class->getMaterialDetailAsHTML();
          if (isset($retour)) {

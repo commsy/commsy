@@ -547,6 +547,18 @@ function pr_xml ($value) {
    echo('</pre>'.LF.LF);
 }
 
+function isPlugin ( $mod ) {
+   $retour = false;
+   global $c_plugin_array;
+   if ( !empty($c_plugin_array['rubric'])
+        and !empty($mod)
+        and in_array($mod,$c_plugin_array['rubric'])
+      ) {
+      $retour = true;
+   }
+   return $retour;
+}
+
 /** checks if url is valid
  *
  * @return   boolean  is URL valid [= commsy conform]
@@ -657,7 +669,10 @@ function isURLValid () {
         $module != 'log' and
 
         // upload file for external tools
-        $module != 'file'
+        $module != 'file' and
+
+        // plugin
+        $module != 'plugin'
       ) {
       return false;
     }

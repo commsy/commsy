@@ -726,30 +726,37 @@ class cs_page_view extends cs_view {
       return $retour;
    }
 
-   // @segment-begin 20236  _getFooterAsHTML_()
    function _getFooterAsHTML () {
       $retour  = '';
       $retour .= LF.'<!-- BEGIN COMMSY FOOTER -->'.LF;
 
       global $c_plugin_array;
       if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
-         $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
-         if (method_exists($plugin_class,'getFooterAsHTML')) {
-
-            if ( $this->_environment->inServer() ) {
-               $retour .= '<div style="padding-left: 200px;">'.LF;
-            }else{
-               $retour .= '<div style="padding: 0px 20px;">'.LF;
+         $plugin_text = '';
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if (method_exists($plugin_class,'getFooterAsHTML')) {
+               $plugin_text .= $plugin_class->getFooterAsHTML();
             }
-            $retour .= $plugin_class->getFooterAsHTML();
-            $retour .= '</div>'.LF;
+            unset($plugin_class);
+         }
+         if ( !empty($plugin_text) ) {
+            if ( $this->_environment->inPortal() ) {
+               $retour .= '<div style="padding-left: 20px;">'.LF;
+            } elseif ( $this->_environment->inServer() ) {
+               $retour .= '<div style="padding-left: 200px;">'.LF;
+            }
+            $retour .= $plugin_text;
+            if ( $this->_environment->inPortal()
+                 or $this->_environment->inServer()
+               ) {
+               $retour .= '</div>'.LF;
+            }
          }
       }
-      unset($plugin_class);
       $retour .= LF.'<!-- END COMMSY FOOTER -->'.LF;
       return $retour;
    }
-   // @segment-end 20236
 
    function asHTMLFirstPart () {
       $html = '';
@@ -2268,9 +2275,9 @@ class cs_page_view extends cs_view {
    function _getPluginInfosAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getLeftMenuAsHTML')) {
                $html = $plugin_class->getLeftMenuAsHTML();
                if (isset($html)) {
@@ -2285,9 +2292,9 @@ class cs_page_view extends cs_view {
    function _getPluginInfosForBeforeContentAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getBeforeContentAsHTML')) {
                $html = $plugin_class->getBeforeContentAsHTML();
                if (isset($html)) {
@@ -2302,9 +2309,9 @@ class cs_page_view extends cs_view {
    function _getPluginInfosForAfterContentAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($c_plugin_array['HTML']);
+      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+         foreach ($c_plugin_array['HTML'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getAfterContentAsHTML')) {
                $html = $plugin_class->getAfterContentAsHTML();
                if (isset($html)) {
