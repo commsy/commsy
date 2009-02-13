@@ -995,6 +995,13 @@ class cs_environment {
       $this->_session_id = $value;
    }
 
+   public function getSessionID () {
+      $retour = '';
+      $session_item = $this->getSessionItem();
+      $retour = $session_item->getSessionID();
+      return $retour;
+   }
+
   /** get instance of a class, INTERNAL
    * returns a single instance of a class. a reference to the returned object must
    * be assigned, otherwise a copy is created.<br />
