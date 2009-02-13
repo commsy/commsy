@@ -156,6 +156,18 @@ class cs_topic_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $html  = LF.'<!-- BEGIN OF TOPIC ITEM DETAIL -->'.LF;
 
+      // Files
+      $files = $this->_getFilesForFormalData($item);
+      if ( !empty($files) ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('MATERIAL_FILES');
+         $temp_array[] = implode(BRLF, $files);
+         $formal_data[] = $temp_array;
+      }
+      if ( !empty($formal_data) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data);
+         $html .= BRLF;
+      }
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
          $desc = $this->_text_as_html_long($desc);

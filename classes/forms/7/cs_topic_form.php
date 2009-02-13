@@ -180,6 +180,28 @@ class cs_topic_form extends cs_rubric_form {
       }
       $this->setHeadline($this->_headline);
 
+      // files
+      $file_array = array();
+      if (!empty($this->_session_file_array)) {
+         foreach ( $this->_session_file_array as $file ) {
+            $temp_array['text'] = $file['name'];
+            $temp_array['value'] = $file['file_id'];
+            $file_array[] = $temp_array;
+         }
+      } elseif (isset($this->_item)) {
+         $file_list = $this->_item->getFileList();
+         if ($file_list->getCount() > 0) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $temp_array['text'] = $file_item->getDisplayname();
+               $temp_array['value'] = $file_item->getFileID();
+               $file_array[] = $temp_array;
+               $file_item = $file_list->getNext();
+            }
+         }
+      }
+      $this->_file_array = $file_array;
+
       // PATH
       if ( isset($this->_item) or isset($item) ) {
 
@@ -289,6 +311,63 @@ class cs_topic_form extends cs_rubric_form {
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),60);
 
+      // files
+      $this->_form->addAnchor('fileupload');
+      $val = ini_get('upload_max_filesize');
+      $val = trim($val);
+      $last = $val[strlen($val)-1];
+      switch($last) {
+         case 'k':
+         case 'K':
+            $val = $val * 1024;
+            break;
+         case 'm':
+         case 'M':
+            $val = $val * 1048576;
+            break;
+      }
+      $meg_val = round($val/1048576);
+      if ( !empty($this->_file_array) ) {
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->combine('vertical');
+      }
+      $this->_form->addHidden('MAX_FILE_SIZE', $val);
+      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->combine('vertical');
+      if ($this->_with_multi_upload) {
+         // do nothing
+      } else {
+         #$px = '245';
+         $px = '331';
+         $browser = $this->_environment->getCurrentBrowser();
+         if ($browser == 'MSIE') {
+            $px = '351';
+         } elseif ($browser == 'OPERA') {
+            $px = '321';
+         } elseif ($browser == 'KONQUEROR') {
+            $px = '361';
+         } elseif ($browser == 'SAFARI') {
+            $px = '380';
+         } elseif ($browser == 'FIREFOX') {
+            $operation_system = $this->_environment->getCurrentOperatingSystem();
+            if (strtoupper($operation_system) == 'LINUX') {
+               $px = '360';
+            } elseif (strtoupper($operation_system) == 'MAC OS') {
+               $px = '352';
+            }
+         } elseif ($browser == 'MOZILLA') {
+            $operation_system = $this->_environment->getCurrentOperatingSystem();
+            if (strtoupper($operation_system) == 'MAC OS') {
+               $px = '336'; // camino
+            }
+         }
+         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+      }
+      $this->_form->combine('vertical');
+      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+
+
+
       $current_context = $this->_environment->getCurrentContextItem();
       if ($current_context->withPath()){
          // PATH - BEGIN
@@ -359,6 +438,21 @@ class cs_topic_form extends cs_rubric_form {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
       } elseif (isset($this->_item)) {
+         // file
+         $file_array = array();
+         $file_list = $this->_item->getFileList();
+         if ($file_list->getCount() > 0) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $file_array[] = $file_item->getFileID();
+               $file_item = $file_list->getNext();
+            }
+         }
+         if (isset($this->_form_post['filelist'])) {
+            $this->_values['filelist'] = $this->_form_post['filelist'];
+         } else {
+            $this->_values['filelist'] = $file_array;
+         }
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['name'] = $this->_item->getName();
          $this->_values['description'] = $this->_item->getDescription();

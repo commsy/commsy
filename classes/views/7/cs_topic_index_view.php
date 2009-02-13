@@ -284,6 +284,10 @@ class cs_topic_index_view extends cs_index_view {
       $title = $this->_compareWithSearchText($title);
       $params = array();
       $params['iid'] = $item->getItemID();
+      $fileicons = $this->_getItemFiles($item);
+      if ( !empty($fileicons) ) {
+         $fileicons = ' '.$fileicons;
+      }
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_TOPIC_TYPE,
                            'detail',
@@ -297,7 +301,7 @@ class cs_topic_index_view extends cs_index_view {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
       }
-      return $title;
+      return $title.$fileicons;
    }
 
    function _getAdditionalCommunityFormFieldsAsHTML () {

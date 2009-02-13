@@ -130,6 +130,10 @@ class cs_topic_short_view extends cs_home_view {
       $title = $this->_text_as_html_short($item->getName());
       $params = array();
       $params['iid'] = $item->getItemID();
+      $fileicons = $this->_getItemFiles($item);
+      if ( !empty($fileicons) ) {
+         $fileicons = ' '.$fileicons;
+      }
       $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_TOPIC_TYPE,
                            'detail',
@@ -140,7 +144,7 @@ class cs_topic_short_view extends cs_home_view {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
       }
-      return $title;
+      return $title.$fileicons;
    }
 }
 ?>

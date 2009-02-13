@@ -83,5 +83,14 @@ class cs_topic_item extends cs_label_item {
       }
       return $retour;
    }
+
+   function save() {
+      $topic_manager = $this->_environment->getTopicManager();
+      $this->_save($topic_manager);
+      $this->_saveFiles();     // this must be done before saveFileLinks
+      $this->_saveFileLinks(); // this must be done after saving item so we can be sure to have an item id
+   }
+
+
 }
 ?>

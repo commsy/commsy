@@ -129,6 +129,26 @@ else {
       $form = $class_factory->getClass(TOPIC_FORM,$class_params);
       unset($class_params);
 
+      // files
+      include_once('include/inc_fileupload_edit_page_handling.php');
+      include_once('include/inc_right_boxes_handling.php');
+      // Back from multi upload
+      if ( !empty($_POST) ) {
+         if (empty($session_post_vars)){
+            $session_post_vars = $_POST;
+         }
+         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+            $session_post_vars['filelist'] = $post_file_ids;
+         }
+         $form->setFormPost($session_post_vars);
+      }
+      elseif ( $from_multiupload ) {
+         if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
+            $session_post_vars['filelist'] = $post_file_ids;
+         }
+         $form->setFormPost($session_post_vars);
+      }
+
       // PATH
       if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
          $form->activatePath();
@@ -156,6 +176,22 @@ else {
       // Load form data from database
       elseif ( isset($topic_item) ) {
          $form->setItem($topic_item);
+         // Files
+         $file_list = $topic_item->getFileList();
+         if ( !$file_list->isEmpty() ) {
+            $file_array = array();
+            $file_item = $file_list->getFirst();
+            while ( $file_item ) {
+               $temp_array = array();
+               $temp_array['name'] = $file_item->getDisplayName();
+               $temp_array['file_id'] = (int)$file_item->getFileID();
+               $file_array[] = $temp_array;
+               $file_item = $file_list->getNext();
+            }
+            if ( !empty($file_array)) {
+               $session->setValue($environment->getCurrentModule().'_add_files', $file_array);
+            }
+         }
       }
 
       // Create data for a new item
@@ -165,6 +201,9 @@ else {
 
       else {
          include_once('functions/error_functions.php');trigger_error('topic_edit was called in an unknown manner', E_USER_ERROR);
+      }
+      if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
+         $form->setSessionFileArray($session->getValue($environment->getCurrentModule().'_add_files'));
       }
 
       $form->prepareForm();
@@ -194,6 +233,10 @@ else {
             $user = $environment->getCurrentUserItem();
             $topic_item->setModificatorItem($user);
             $topic_item->setModificationDate(getCurrentDateTimeInMySQL());
+
+            // files
+            $item_files_upload_to = $topic_item;
+            include_once('include/inc_fileupload_edit_page_save_item.php');
 
             // Set attributes
             if (isset($_POST['name'])) {
