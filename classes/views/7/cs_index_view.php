@@ -1896,6 +1896,7 @@ $html .= '</script>'.LF;
 
 // URL?? Flashvars??
 $html .= '<noscript>'.LF;
+
 $html .= '    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'.LF;
 $html .= '            id="study_log" width="100%" height="'.$height.'"'.LF;
 $html .= '            codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">'.LF;
@@ -1903,17 +1904,19 @@ $html .= '            <param name="movie" value="flash/study_log.swf" />'.LF;
 $html .= '            <param name="quality" value="high" />'.LF;
 $html .= '            <param name="bgcolor" value="'.$bgcolor.'" />'.LF;
 $html .= '            <param name="allowScriptAccess" value="sameDomain" />'.LF;
+$html .= '            <param name="FlashVars" value="applicationType=commsy&commsyXml='.$data_url.'" />'.LF;
 $html .= '            <embed src="study_log.swf" quality="high" bgcolor="'.$bgcolor.'"'.LF;
 $html .= '                width="100%" height="'.$height.'" name="study_log" align="middle"'.LF;
 $html .= '                play="true"'.LF;
 $html .= '                loop="false"'.LF;
 $html .= '                quality="high"'.LF;
 $html .= '                allowScriptAccess="sameDomain"'.LF;
+$html .= '                FlashVars="applicationType=commsy&commsyXml='.$data_url.'"'.LF;
 $html .= '                type="application/x-shockwave-flash"'.LF;
 $html .= '                pluginspage="http://www.adobe.com/go/getflashplayer">'.LF;
 $html .= '            </embed>'.LF;
 $html .= '    </object>'.LF;
-$html .= '</noscript>'.LF;
+#$html .= '</noscript>'.LF;
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';
