@@ -123,11 +123,19 @@ function _text_file2php ($text) {
 /// 2db functions ///////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 function _text_php2db ($text) {
+   /*
    #$text = _format_html_entity_decode($text);
    if ( get_magic_quotes_gpc() ) {
       $text = stripslashes($text);
    }
    $text = mysql_real_escape_string($text);
+   */
+   global $environment;
+   if ( !isset($environment) ) {
+      $environment =  $this->_environment;
+   }
+   $db_connection = $environment->getDBConnector();
+   $text = $db_connection->text_php2db($text);
    return $text;
 }
 

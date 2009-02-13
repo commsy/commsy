@@ -43,7 +43,7 @@ class cs_external_id_manager extends cs_manager {
    */
    var $_source_limit = NULL;
 
-	/**
+   /**
    * integer - containing an external id
    */
    var $_external_id_limit = NULL;
@@ -69,18 +69,25 @@ class cs_external_id_manager extends cs_manager {
    function resetLimits () {
       parent::resetLimits();
       $_source_limit = NULL;
-		$_external_id_limit = NULL;
-		$_commsy_id_limit = NULL ;
+      $_external_id_limit = NULL;
+      $_commsy_id_limit = NULL ;
    }
 
-   /** set age limit
+   /** set source limit
     * this method sets a source limit
     *
     * @param string limit source
-    *
-    * @author CommSy Development Group
     */
-   function setSourceLimit ($limit) {
+   public function setSourceLimit ($limit) {
+      $this->_source_limit = (string)$limit;
+   }
+
+   /** set system limit
+    * this method sets a system limit
+    *
+    * @param string limit system
+    */
+   public function setSystemLimit ($limit) {
       $this->_source_limit = (string)$limit;
    }
 
@@ -99,7 +106,7 @@ class cs_external_id_manager extends cs_manager {
          $query = 'SELECT '.$this->_db_table.'.commsy_id';
       } elseif ($mode == 'distinct') {
             $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
-		} else {
+      } else {
          $query = 'SELECT '.$this->_db_table.'.*';
       }
 
@@ -109,7 +116,7 @@ class cs_external_id_manager extends cs_manager {
 
       // fifth, insert limits into the select statement
       if ( isset($this->_commsy_id_limit)) {
-         $query .= ' AND ('.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$this->_commsy_id_limit).'"';
+         $query .= ' AND '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$this->_commsy_id_limit).'"';
       }
       if (isset($this->_source_limit)) {
          $query .= ' AND '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$this->_source_limit).'"';
@@ -121,47 +128,64 @@ class cs_external_id_manager extends cs_manager {
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-          include_once('functions/error_functions.php');trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
+          include_once('functions/error_functions.php');
+          trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
       } else {
           return $result;
       }
    }
 
-	public function addIDsToDB($source,$external_id,$commsy_id) {
-		$query = 'INSERT INTO '.$this->_db_table.' VALUES ("'.encode(AS_DB,$external_id).'","'.encode(AS_DB,$source).'","'.encode(AS_DB,$commsy_id).'")';
+   public function addIDsToDB($source,$external_id,$commsy_id) {
+      $query = 'INSERT INTO '.$this->_db_table.' VALUES ("'.encode(AS_DB,$external_id).'","'.encode(AS_DB,$source).'","'.encode(AS_DB,$commsy_id).'")';
       $result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
       }
-	}
+   }
 
-	public function getCommSyId ($source,$external_id) {
-	   $query = 'SELECT '.$this->_db_table.'.commsy_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'"';
-	   $this->_last_query = $query;
+   public function getCommSyId ($source,$external_id) {
+      $query = 'SELECT '.$this->_db_table.'.commsy_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'"';
+      $this->_last_query = $query;
       $result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
       } elseif ( !empty($result[0]['commsy_id']) ) {
-			return $result[0]['commsy_id'];
+         return $result[0]['commsy_id'];
       } else {
          return null;
       }
-	}
+   }
 
-	function deleteByExternalId($external_id,$source_system) {
-		$query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'" AND '.$this->_db_table.'.source_system = "'.encode(AS_DB,$source_system).'"';
+   public function getExternalId ($source,$commsy_id) {
+      $query = 'SELECT '.$this->_db_table.'.external_id FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.source_system LIKE "'.encode(AS_DB,$source).'" AND '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$commsy_id).'"';
+      $this->_last_query = $query;
       $result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) or !$result) {
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting from '.$this->_db_table.'.',E_USER_WARNING);
+      } elseif ( !empty($result[0]['external_id']) ) {
+         return $result[0]['external_id'];
+      } else {
+         return null;
+      }
+   }
+
+   function deleteByExternalId($external_id,$source_system) {
+      $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.external_id = "'.encode(AS_DB,$external_id).'" AND '.$this->_db_table.'.source_system = "'.encode(AS_DB,$source_system).'"';
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result) {
          include_once('functions/error_functions.php');trigger_error('Problems deleting from '.$this->_db_table.'.',E_USER_WARNING);
       }
-	}
+   }
 
-	function deleteByCommSyId($iid) {
-		$query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$iid).'"';
+   function deleteByCommSyId($iid) {
+      $query = 'DELETE FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.commsy_id = "'.encode(AS_DB,$iid).'"';
       $result = $this->_db_connector->performQuery($query);
-		if ( !isset($result) or !$result) {
+      if ( !isset($result) or !$result) {
          include_once('functions/error_functions.php');trigger_error('Problems deleting from '.$this->_db_table.'.',E_USER_WARNING);
       }
-	}
+   }
 }
 ?>

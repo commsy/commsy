@@ -115,5 +115,13 @@ class db_mysql_connector {
    public function setDisplayOn () {
       $this->_display = true;
    }
+
+   public function text_php2db ( $text ) {
+      if ( get_magic_quotes_gpc() ) {
+         $text = stripslashes($text);
+      }
+      $text = mysql_real_escape_string($text,$this->_db_link);
+      return $text;
+   }
 }
 ?>
