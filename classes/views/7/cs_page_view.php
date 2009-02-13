@@ -580,6 +580,7 @@ class cs_page_view extends cs_view {
             $retour .= '      -->'.LF;
             $retour .= '   </script>'.LF;
             $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+            $retour .= '   <script type="text/javascript" src="javascript/colorpicker/script.js"></script>'.LF;
          }
          //autosave: BEGIN
          $current_user = $this->_environment->getCurrentUser();

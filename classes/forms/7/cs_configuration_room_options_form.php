@@ -502,6 +502,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addCheckbox('bg_image_repeat',1,'',$this->_translator->getMessage('CONFIGURATION_BGIMAGE_REPEAT'),$this->_translator->getMessage('CONFIGURATION_BGIMAGE_REPEAT'));
             $this->_form->addHidden('bgimage_hidden','');
             $this->_form->addHidden('with_bgimage',$this->_with_logo);
+            $this->_form->addText('colorpicker','','<br/><br/><INPUT class=color value=#45D7DD>');
             $this->_form->addEmptyLine();
          }
       } else{
@@ -591,6 +592,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_form->addCheckbox('bg_image_repeat',1,'',$this->_translator->getMessage('CONFIGURATION_BGIMAGE_REPEAT'),$this->_translator->getMessage('CONFIGURATION_BGIMAGE_REPEAT'));
             $this->_form->addHidden('bgimage_hidden','');
             $this->_form->addHidden('with_bgimage',$this->_with_logo);
+            $this->_form->addText('colorpicker','','<br/><br/><INPUT class=color value=#45D7DD>');
+            $this->_form->addEmptyLine();
          }
       }
 
