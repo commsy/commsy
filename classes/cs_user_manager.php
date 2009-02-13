@@ -800,6 +800,15 @@ class cs_user_manager extends cs_manager {
    }
 
    function getAllUsersByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id) {
+      $retour = array();
+      $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id,$room_id_array,$auth_source_id);
+      if ( !empty($user_array) ) {
+         foreach ($user_array as $key => $value) {
+            $retour[$key] = $this->_buildItem($value);
+         }
+      }
+      return $retour;
+      /*
       $user_array = array();
       if ( isset($room_id_array) and !empty($room_id_array) ) {
          $query = 'SELECT * FROM user WHERE user.context_id IN ('.implode(",", $room_id_array).') AND user.user_id = "'.encode(AS_DB,$user_id).'" AND user.status >= "2"';
@@ -821,8 +830,50 @@ class cs_user_manager extends cs_manager {
          }
       }
       return $user_array;
+      */
    }
 
+   public function getMembershipContextIDArrayByUserAndRoomIDLimit ($user_id, $room_id_array, $auth_source_id) {
+      $retour = array();
+      $user_array = $this->getUserArrayByUserAndRoomIDLimit($user_id,$room_id_array,$auth_source_id);
+      if ( !empty($user_array) ) {
+         $room_id_array2 = array();
+         foreach ($user_array as $value) {
+            if ( !empty($value['context_id']) and $value['context_id'] > 0 ) {
+               $room_id_array2[] = $value['context_id'];
+            }
+         }
+         foreach ( $room_id_array as $value ) {
+            if ( in_array($value,$room_id_array2) ) {
+               $retour[] = $value;
+            }
+         }
+      }
+      return $retour;
+   }
+
+   function getUserArrayByUserAndRoomIDLimit($user_id, $room_id_array, $auth_source_id) {
+      $user_array = array();
+      if ( isset($room_id_array) and !empty($room_id_array) ) {
+         $query = 'SELECT * FROM user WHERE user.context_id IN ('.implode(",", $room_id_array).') AND user.user_id = "'.encode(AS_DB,$user_id).'" AND user.status >= "2"';
+         $query .= ' AND user.deleter_id IS NULL';
+         $query .= ' AND user.deletion_date IS NULL';
+         $query .= ' AND user.auth_source = "'.$auth_source_id.'"';
+         $query .= ' GROUP BY user.item_id';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$this->_type.' items.',E_USER_WARNING);
+         } else {
+            foreach ($result as $rs ) {
+               $user_array[$rs['context_id']] = $rs;
+            }
+            unset($result);
+            unset($query);
+         }
+      }
+      return $user_array;
+   }
 
    function getAllRoomUsersFromCache ($context_id) {
       $user_list = new cs_list();

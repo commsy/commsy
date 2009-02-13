@@ -33,6 +33,7 @@ include_once('classes/cs_room_item.php');
 class cs_privateroom_item extends cs_room_item {
 
    var $_user_item = NULL;
+   var $_check_customized_room_id_array = false;
 
    /**
     * Constructor
@@ -1037,12 +1038,45 @@ class cs_privateroom_item extends cs_room_item {
    ###############################################
 
    public function getCustomizedRoomIDArray(){
-     $array = array();
+      $array = array();
       if ( $this->_issetExtra('PRIVATEROOMSELECTEDROOMLIST') ) {
          $string = $this->_getExtra('PRIVATEROOMSELECTEDROOMLIST');
          $array = explode('$SRID$', $string);
       }
+      $array = $this->_cleanCustomizedRoomIDArray($array);
       return $array;
+   }
+
+   private function _cleanCustomizedRoomIDArray ($array) {
+      $retour = array();
+      if ( $this->_check_customized_room_id_array ) {
+         $retour = $array;
+      } else {
+         $room_id_array = array();
+         foreach ( $array as $value ) {
+            if ( !empty($value) and $value > 0 ) {
+               $room_id_array[] = $value;
+            }
+         }
+         $owner = $this->getOwnerUserItem();
+         if ( isset($owner) ) {
+            $user_manager = $this->_environment->getUserManager();
+            $room_id_array2 = $user_manager->getMembershipContextIDArrayByUserAndRoomIDLimit($owner->getUserID(),$room_id_array,$owner->getAuthSource());
+            foreach ( $array as $value ) {
+               if ( $value < 0 or in_array($value,$room_id_array2) ) {
+                  $retour[] = $value;
+               }
+            }
+            $this->_check_customized_room_id_array = true;
+            if ( array_diff($array,$retour) ) {
+               $this->setCustomizedRoomIDArray($retour);
+               $this->save();
+            }
+         } else {
+            $retour = $array;
+         }
+      }
+      return $retour;
    }
 
    public function setCustomizedRoomIDArray ($array) {
