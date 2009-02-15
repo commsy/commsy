@@ -272,7 +272,26 @@ class cs_page_room_view extends cs_page_view {
                   break;
                default:
                   $link_title = '';
-                  $link_title .= $link['title'];
+                  $text = '';
+                  if ( $this->_environment->isPlugin($link['module']) ) {
+                     $plugin_class = $this->_environment->getPluginClass($link['module']);
+                     if ( !empty($plugin_class)
+                          and method_exists($plugin_class,'getRubricNavIcon')
+                        ) {
+                        $text .= '<img src="'.$plugin_class->getRubricNavIcon().'" style="vertical-align:bottom;"/>';
+                     }
+                     if ( !empty($plugin_class)
+                          and method_exists($plugin_class,'getDisplayName')
+                        ) {
+                        $text .= $plugin_class->getDisplayName();
+                     }
+                  }
+                  if ( !empty($text) ) {
+                     $link_title .= $text;
+                  } else {
+                     $link_title .= $link['title'];
+                  }
+                  break;
             }
          } else {
             $link_title = '';
@@ -500,8 +519,8 @@ class cs_page_room_view extends cs_page_view {
       }elseif($length < 50){
         $size = 'style="font-size:12pt"';
       }else{
-        $size = 'style="font-size:12pt"';
-      	$title = chunkText($title,50);
+         $size = 'style="font-size:12pt"';
+         $title = chunkText($title,50);
       }
       if ($this->_environment->inPrivateRoom()){
          $html .= '<h1 '.$size.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</h1>'.LF;

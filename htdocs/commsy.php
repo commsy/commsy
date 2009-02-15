@@ -869,7 +869,7 @@ if ( $environment->isOutputModeNot('XML') ) {
       $page->addAction($translator->getMessage('COMMON_HOME_INDEX'),'','home','index');
       foreach ($room_modules as $item) {
          $link_name = explode('_',$item);
-         if ($link_name[1] != 'none') {
+         if ( $link_name[1] != 'none' ) {
             $tempMessage = "";
             switch ( strtoupper($link_name[0]) )
             {
@@ -907,7 +907,20 @@ if ( $environment->isOutputModeNot('XML') ) {
                   $tempMessage = $translator->getMessage('COMMON_USER_INDEX');
                   break;
                default:
-                  $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' commsy.php(443) ');
+                  $text = '';
+                  if ( $environment->isPlugin($link_name[0]) ) {
+                     $plugin_class = $environment->getPluginClass($link_name[0]);
+                     if ( !empty($plugin_class)
+                          and method_exists($plugin_class,'getDisplayName')
+                        ) {
+                        $text = $plugin_class->getDisplayName();
+                     }
+                  }
+                  if ( !empty($text) ) {
+                     $tempMessage = $text;
+                  } else {
+                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' commsy.php('.__LINE__.') ');
+                  }
                   break;
             }
             $page->addAction($tempMessage,'',$link_name[0],'index');

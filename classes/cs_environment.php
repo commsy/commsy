@@ -1479,6 +1479,10 @@ class cs_environment {
       return $retour;
    }
 
+   ################################################################
+   # plugin: begin
+   ################################################################
+
    function getPluginClass ($plugin) {
       $retour = NULL;
       if (empty($this->_plugin_class_array[$plugin])) {
@@ -1489,6 +1493,47 @@ class cs_environment {
       $retour = $this->_plugin_class_array[$plugin];
       return $retour;
    }
+
+   function getRubrikPluginClassList () {
+      $retour = $this->_rubric_plugin_class_list;
+      if ( empty($retour) ) {
+         global $c_plugin_array;
+         include_once('classes/cs_list.php');
+         $this->_rubric_plugin_class_list = new cs_list();
+         if ( isset($c_plugin_array['rubric'])
+              and !empty($c_plugin_array['rubric'])
+            ) {
+            foreach ($c_plugin_array['rubric'] as $plugin ) {
+               $plugin_class = $this->getPluginClass($plugin);
+               if ( !empty($plugin_class) ) {
+                  $this->_rubric_plugin_class_list->add($plugin_class);
+               }
+            }
+         }
+         $retour = $this->_rubric_plugin_class_list;
+      }
+      return $retour;
+   }
+
+   function isPlugin ( $value ) {
+      $retour = false;
+      global $c_plugin_array;
+      if ( !empty($c_plugin_array) ) {
+         foreach ( $c_plugin_array as $plugin_context ) {
+            foreach ( $plugin_context as $plugin ) {
+               if ( strtolower($plugin) == strtolower($value) ) {
+                  $retour = true;
+                  break;
+               }
+            }
+         }
+      }
+      return $retour;
+   }
+
+   ################################################################
+   # plugin: end
+   ################################################################
 
    function getDBConnector () {
       return $this->_getMySQLConnector();

@@ -30,26 +30,31 @@ $this->includeClass(VIEW);
 class cs_plugin_view extends cs_view {
 
    /**
-    * string - containing the title of the text view
+    * string - containing the description of the plugin view
     */
-   var $_name = NULL;
+   private $_content = array();
 
    /**
-    * string - containing the description of the text view
+    * string - containing the data (text) of the plugin view
     */
-   var $_content = array();
+   private $_head = array();
 
    /**
-    * string - containing the data (text) of the text view
+    * string - containing the title of the plugin view
     */
-   var $_head = array();
+   private $_title = NULL;
+
+   /**
+    * string - containing the icon of the plugin view
+    */
+   private $_icon = NULL;
 
    /** constructor: cs_text_view
     * the only available constructor, initial values for internal variables
     *
     * @param array params parameters in an array of this class
     */
-   function cs_plugin_view ($params) {
+   public function __CONSTRUCT ($params) {
       $this->cs_view($params);
    }
 
@@ -58,7 +63,7 @@ class cs_plugin_view extends cs_view {
     *
     * @param string value name of the plugin
     */
-   function setName ($value) {
+   public function setName ($value) {
       $this->_name = (string)$value;
    }
 
@@ -67,7 +72,7 @@ class cs_plugin_view extends cs_view {
     *
     * @param string value content of the plugin
     */
-   function addContent ($value) {
+   public function addContent ($value) {
       $this->_content[] = (string)$value;
    }
 
@@ -76,8 +81,26 @@ class cs_plugin_view extends cs_view {
     *
     * @param string value text of the text view
     */
-   function addForHead ($value) {
+   public function addForHead ($value) {
       $this->_head[] = (string)$value;
+   }
+
+   /** set title of plugin view
+    * this method sets the title of the plugin view
+    *
+    * @param string value title of the plugin view
+    */
+   function setTitle ($value) {
+      $this->_title = (string)$value;
+   }
+
+   /** set title icon of plugin view
+    * this method sets the title icon of the plugin view
+    *
+    * @param string value title icon of the plugin view
+    */
+   function setIcon ($value) {
+      $this->_icon = (string)$value;
    }
 
    /** get content of plugin as HTML
@@ -85,9 +108,10 @@ class cs_plugin_view extends cs_view {
     *
     * @return string content as HMTL
     */
-   function asHTML () {
+   public function asHTML () {
       $html  = LF;
       $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' -->'.LF;
+      $html .= $this->_getTitleAsHTML();
       if ( !empty($this->_content) ) {
          foreach ( $this->_content as $value ) {
             $html .= $value.LF;
@@ -102,17 +126,33 @@ class cs_plugin_view extends cs_view {
     *
     * @return string things for HTML-header
     */
-   function getInfoForHeaderAsHTML () {
+   public function getInfoForHeaderAsHTML () {
       $html  = LF;
       $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' -->'.LF;
       if ( !empty($this->_head) ) {
          foreach ( $this->_head as $value ) {
-            $html .= $value.LF;
+            $html .= '   '.$value.LF;
          }
       }
       $html .= '<!-- END OF PLUGIN '.$this->_name.' -->'.LF.LF;
       return $html;
    }
 
+   private function _getTitleAsHTML () {
+      $retour = '';
+      if ( !empty($this->_title) ) {
+         $retour .= '<div style="vertical-align:bottom;">'.LF;
+         $retour .= '   <h2 class="pagetitle">'.LF;
+         if ( !empty($this->_icon) ) {
+            $retour .= '      <img src="'.$this->_icon.'" style="vertical-align:bottom;"/>'.LF;
+         }
+         if ( !empty($this->_title) ) {
+            $retour .= '      '.$this->_title.LF;
+         }
+         $retour .= '   </h2>'.LF;
+         $retour .= '</div>'.LF;
+      }
+      return $retour;
+   }
 }
 ?>
