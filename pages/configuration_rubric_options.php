@@ -85,55 +85,57 @@ else {
          $home_conf_array = explode(',',$home_conf);
          $current_room_modules = array();
          foreach ($home_conf_array as $rubric_conf) {
-         $rubric_conf_array[] = explode('_',$rubric_conf);
-      }
-
-      if ($room_item->isPrivateRoom()){
-         $time = '7';
-         if (!empty($_POST['time_spread'])){
-            $time = $_POST['time_spread'];
-            if ($time =='1'){
-               $value = '1';
-            }elseif ($time =='3'){
-               $value = '30';
-            }else {
-               $value = '7';
-            }
-            $room_item->setTimeSpread($value);
+            $rubric_conf_array[] = explode('_',$rubric_conf);
          }
-      }elseif (!empty($_POST['time_spread'])) {
-         $room_item->setTimeSpread($_POST['time_spread']);
-      }
-      $temp_array = array();
-      $j = 0;
-      $count = 8;
-      if ( $room_item->isCommunityRoom()
-           or $room_item->isGroupRoom()
-         ) {
-         $count = 7;
-      } elseif ($room_item->isPrivateRoom()) {
-         $count = 4;
-      }
-      if (!$room_item->isPrivateRoom()) {
+
+         if ($room_item->isPrivateRoom()){
+            $time = '7';
+            if (!empty($_POST['time_spread'])){
+               $time = $_POST['time_spread'];
+               if ($time =='1'){
+                  $value = '1';
+               }elseif ($time =='3'){
+                  $value = '30';
+               }else {
+                  $value = '7';
+               }
+               $room_item->setTimeSpread($value);
+            }
+         }elseif (!empty($_POST['time_spread'])) {
+            $room_item->setTimeSpread($_POST['time_spread']);
+         }
+         $temp_array = array();
+         $j = 0;
+         $default_rubrics = $room_item->getAvailableDefaultRubricArray();
+         if ( count($default_rubrics) > 8 ) {
+            $count = 8;
+         } else {
+            $count = count($default_rubrics);
+         }
          for ($i=0; $i<$count; $i++){
             $rubric = '';
             if (!empty($_POST['rubric_'.$i])){
-            if ($_POST['rubric_'.$i] != 'none') {
-               $temp_array[$i] = $_POST['rubric_'.$i].'_'.$_POST['show_'.$i];
-               $j++;
-            }
+               if ($_POST['rubric_'.$i] != 'none') {
+                  $temp_array[$i] = $_POST['rubric_'.$i].'_';
+                  if ( !empty($_POST['show_'.$i]) ) {
+                     $temp_array[$i] .= $_POST['show_'.$i];
+                  } else {
+                     $temp_array[$i] .= 'nodisplay';
+                  }
+                  $j++;
+               }
             }
          }
          $room_item->setHomeConf(implode($temp_array,','));
-      }
-      // save room_item
-      $room_item->save();
-      $form_view->setItemIsSaved();
-      $is_saved = true;
-      if (!isset($_GET['option'])){
-         $params['conf'] = implode($temp_array,',');
-         redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
-      }
+
+         // save room_item
+         $room_item->save();
+         $form_view->setItemIsSaved();
+         $is_saved = true;
+         if (!isset($_GET['option'])){
+            $params['conf'] = implode($temp_array,',');
+            redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
+         }
       }
    }
 
