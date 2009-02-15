@@ -563,6 +563,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
                      and $this->_environment->getCurrentModule() != CS_TOPIC_TYPE
                     )
                  )
+              and !$this->_environment->isPlugin($link_name[0])
+              and !( $this->_environment->inPrivateRoom()
+                     and $link_name[0] == CS_MYROOM_TYPE
+                   )
             ) {
             $html .= '      <option value="'.$link_name[0].'"';
             if ( isset($selrubric) and $selrubric == $link_name[0] ) {
@@ -601,7 +605,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
                   $text = $this->_translator->getMessage('USER_INDEX');
                   break;
                default:
-                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(1057) ' );
+                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.') ' );
                   break;
             }
             $html .= '>'.$this->_text_as_form($text).'</option>'.LF;

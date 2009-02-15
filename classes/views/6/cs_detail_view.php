@@ -138,6 +138,7 @@ class cs_detail_view extends cs_view {
               and $context_item->withRubric($link_name[0])
               and $link_name[0] != CS_USER_TYPE
               and $link_name[0] != CS_MYROOM_TYPE
+              and !$this->_environment->isPlugin($link_name[0])
             ) {
             $rubric_connections[] = $link_name[0];
          }
@@ -1023,7 +1024,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('COMMON_ONE_USER');
                      break;
                   default:
-                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
                      break;
                }
                $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.

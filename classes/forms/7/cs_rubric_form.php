@@ -349,8 +349,10 @@ class cs_rubric_form {
          case 'group':
             return $this->_setCheckboxesForConnectedRubric($type);
          default:
-            include_once('functions/error_functions.php');
-            trigger_error('Unknown item type: "'.$type.'"',E_USER_ERROR);
+            if ( !$this->_environment->isPlugin($type) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Unknown item type: "'.$type.'"',E_USER_ERROR);
+            }
             break;
       }
    }

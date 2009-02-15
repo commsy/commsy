@@ -1053,7 +1053,9 @@ var $_sel_rubric = '';
       $first = '';
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
-         if ( $link_name[1] != 'none' ) {
+         if ( $link_name[1] != 'none'
+              and !$this->_environment->isPlugin($link_name[0])
+            ) {
             $html .= '      <option value="'.$link_name[0].'"';
             if ( isset($selrubric) and $selrubric == $link_name[0] ) {
                $html .= ' selected="selected"';
@@ -1091,7 +1093,7 @@ var $_sel_rubric = '';
                   $text = $this->_translator->getMessage('USER_INDEX');
                   break;
                default:
-                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(1057) ' );
+                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view('.__LINE__.') ' );
                   break;
             }
             $html .= '>'.$text.'</option>'.LF;

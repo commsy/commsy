@@ -1012,7 +1012,7 @@ var $_selected_restriction = NULL;
                   $text = $this->_translator->getMessage('USER_INDEX');
                   break;
                default:
-                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view(895) ' );
+                  $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_index_view('.__LINE__.') ' );
                   break;
             }
             $html .= '>'.$text.'</option>'.LF;
