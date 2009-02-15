@@ -1764,6 +1764,10 @@ class cs_view {
       }
 
       $factor = 0.625; // orig = 1;
+      $current_context_item = $this->_environment->getCurrentContextItem();
+      if ( $current_context_item->isDesign6() ) {
+         $factor = 0.525;
+      }
       if ( !empty($args['width']) ) {
          $width = $args['width'];
       } else {
@@ -2024,7 +2028,7 @@ class cs_view {
          global $c_commsy_path_file, $c_commsy_domain, $c_commsy_url_path;
          $file_name_array = $this->_getItemFileListForView();
          $file = $file_name_array[$source];
-        
+
          if ( isset($file) ) {
 
             if(($file->getFdViewerFile() == '')){
@@ -2033,11 +2037,11 @@ class cs_view {
                 $ausgabe = exec('pdf2swf ' . $file->getDiskFileNameWithoutFolder());
                 $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
                 chdir($oldDir);
-                
+
                 $file->setFdViewerFile(substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
                 $file->saveExtras();
             }
-            
+
             $embed = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=fdviewer&fct=getfile&file=' . $file->getFdViewerFile();
             $retour .= '<object width="600" height="500">';
             $retour .= '<param name="movie" value="' . $embed . '">';
@@ -2048,12 +2052,12 @@ class cs_view {
       }
       return $retour;
    }
-   
+
    function _format_slideshare ($text, $array){
       $retour = '';
       if ( !empty($array[1]) ) {
          $source = $array[1];
-         
+
          // Different PHP-versions/installations can handle either '&' od '&amp;'
          preg_match('/(?<=id=)(.*)(?=&amp;doc)/', $source, $slideshare_id);
          if(empty($slideshare_id)){
@@ -2063,7 +2067,7 @@ class cs_view {
          if(empty($slideshare_doc)){
             preg_match('/(?<=&doc=)(.*)(?=])/', $source, $slideshare_doc);
          }
-         
+
          $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id[0] . '">';
          $retour .= '<object style="margin:0px" width="425" height="355">';
          $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0&stripped_title=building-a-better-debt-lead" />';
