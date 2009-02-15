@@ -5,7 +5,6 @@ class class_ads {
 
    var $_environment = NULL;
    var $_translator = NULL;
-   var $_banner_rotation = NULL;
 
    /** constructor
     * the only available constructor
