@@ -600,7 +600,27 @@ class cs_index_view extends cs_view {
       }
       return $params;
    }
-   // @segment-end 35732
+
+   function getSortingBoxAsHTML () {
+      $html  = '';
+      $html .= '<div class="right_box">'.LF;
+      $html .= '         <noscript>';
+      $html .= '<div class="right_box_title">'.getMessage('COMMON_SORTING_BOX').'</div>';
+      $html .= '         </noscript>';
+      $html .= '<div class="right_box_main" style="font-size:10pt;">'.LF;
+      $params = $this->_environment->getCurrentParameterArray();
+      $params['sort'] = 'title';
+      $html .= '<a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_TITLE').'</a>'.LF;
+      if ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE ) {
+         $params['sort'] = 'author';
+         $html .= ' - <a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_AUTHOR').'</a>'.LF;
+         $params['sort'] = 'year';
+         $html .= ' - <a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_CALENDAR_DATE').'</a>'.LF;
+      }
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      return $html;
+   }
 
    function setSelectedBuzzword ($buzzword_id) {
       $this->_selected_buzzword = (int)$buzzword_id;
@@ -692,7 +712,6 @@ class cs_index_view extends cs_view {
       unset($session);
       return $html;
    }
-
 
    function getBuzzwordSizeLogarithmic( $count, $mincount=0, $maxcount=30, $minsize=8, $maxsize=16, $tresholds=0 ) {
       if( empty($tresholds) ) {
@@ -1642,7 +1661,9 @@ EOD;
                break;
          }
          $html .= $this->_getListInfosAsHTML($tempMessage);
+
          $context_item = $this->_environment->getCurrentContextItem();
+
          /*********Expert Search*******/
          if ( !strstr($list_box_conf,'search_nodisplay')
             and ($context_item->withActivatingContent()
@@ -1662,7 +1683,8 @@ EOD;
                $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTIONS').'"';
             }else{
                $title_string .= $additional_text.'"'.getMessage('COMMON_RESTRICTION_SEARCH').'"';
-            }$desc_string .= $additional_text.'""';
+            }
+            $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
             $parameter_array = $this->_environment->getCurrentParameterArray();
             if (
@@ -1684,7 +1706,6 @@ EOD;
             }
             $html .= $this->_getExpertSearchAsHTML();
          }
-
 
          /**************Buzzwords***************/
          if ( $this->showBuzzwords() ) {
@@ -1713,7 +1734,6 @@ EOD;
             $html .= $this->getBuzzwordBoxAsHTML();
             $html .= '</div>'.LF;
          }
-
 
          /*********************Tags******************/
          if ( $this->showTags() ) {
@@ -1745,6 +1765,34 @@ EOD;
             }
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->getTagBoxAsHTML();
+            $html .= '</div>'.LF;
+         }
+
+         /**************sorting for flash***************/
+         if ( !empty($this->_display_mode) and $this->_display_mode == 'flash' ) {
+            if ( $first_box ) {
+               $first_box = false;
+               $additional_text = '';
+            } else {
+               $additional_text = ',';
+            }
+            $title_string .= $additional_text.'"'.getMessage('COMMON_SORTING_BOX').'"';
+            $desc_string .= $additional_text.'""';
+            $size_string .= $additional_text.'"10"';
+            /*
+            $parameter_array = $this->_environment->getCurrentParameterArray();
+            if ( (isset($parameter_array['selbuzzword']) and !empty($parameter_array['selbuzzword']))
+                 or $current_context->isBuzzwordShowExpanded()
+            ) {
+            */
+               $config_text .= $additional_text.'true';
+            /*
+            } else {
+               $config_text .= $additional_text.'false';
+            }
+            */
+            $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
+            $html .= $this->getSortingBoxAsHTML();
             $html .= '</div>'.LF;
          }
 
@@ -1780,12 +1828,12 @@ EOD;
                 $info_text = $room->getUsageInfoTextForRubric($act_rubric);
                 $html .= $this->_text_as_html_long($info_text).BRLF;
                 $html .= '</div>'.LF;
-                $html .='</div>'.LF;
+                $html .= '</div>'.LF;
              }
          }
          $html .= '</form>'.LF;
 
-         $html .='</div>'.LF;
+         $html .= '</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;
          $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
          $html .= '</script>'.LF;
@@ -1832,13 +1880,15 @@ EOD;
          $data_url = utf8_encode(rawurlencode(_curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params)));
          unset($params);
 
-         $height = '450px'; // 100%
+         $height = '100%';
          $bgcolor = $color_array['content_background']; // #ffffff
          unset($color_array);
 
-         $html .= '<script src="javascript/AC_OETags.js" language="javascript"></script>'.LF;
-         $html .= '<script src="javascript/history/history.js" language="javascript"></script>'.LF;
-         $html .= '<script src="javascript/studylog_flash.js" language="javascript"></script>'.LF;
+         $html .= '<div style="height: 450px;">'.LF;
+
+         $html .= '<script src="javascript/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
+         $html .= '<script src="javascript/history/history.js" language="javascript" type="text/javascript"></script>'.LF;
+         $html .= '<script src="javascript/studylog_flash.js" language="javascript" type="text/javascript"></script>'.LF;
          $html .= '<script language="JavaScript" type="text/javascript">'.LF;
 $html .= '<!--'.LF;
 $html .= '// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)'.LF;
@@ -1887,9 +1937,7 @@ $html .= '            "type", "application/x-shockwave-flash",'.LF;
 $html .= '            "pluginspage", "http://www.adobe.com/go/getflashplayer"'.LF;
 $html .= '    );'.LF;
 $html .= '  } else {  // flash is too old or we can\'t detect the plugin'.LF;
-$html .= '    var alternateContent = \'Alternate HTML content should be placed here\''.LF;
-$html .= '    + \'This content requires the Adobe Flash Player\''.LF;
-$html .= '    + \'<a href=http://www.adobe.com/go/getflash/>Get Flash</a>\''.LF;
+$html .= '    var alternateContent = \'This content requires the Adobe Flash Player. <a href="http://www.adobe.com/go/getflash/">Get Flash</a>;\''.LF;
 $html .= '    document.write(alternateContent);  // insert non-flash content'.LF;
 $html .= '  }'.LF;
 $html .= '// -->'.LF;
@@ -1901,13 +1949,13 @@ $html .= '            id="study_log" width="100%" height="'.$height.'"'.LF;
 $html .= '            codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">'.LF;
 $html .= '            <param name="movie" value="flash/study_log.swf" />'.LF;
 $html .= '            <param name="quality" value="high" />'.LF;
-$html .= '            <param name="FlashVars" value="applicationType=commsy&commsyXml='.$data_url.'" />'.LF;
+$html .= '            <param name="FlashVars" value="applicationType=commsy&amp;commsyXml='.$data_url.'" />'.LF;
 $html .= '            <param name="bgcolor" value="'.$bgcolor.'" />'.LF;
 $html .= '            <param name="allowScriptAccess" value="sameDomain" />'.LF;
 $html .= '            <embed src="study_log.swf" quality="high" bgcolor="'.$bgcolor.'"'.LF;
 $html .= '                width="100%" height="'.$height.'" name="study_log" align="middle"'.LF;
 $html .= '                play="true"'.LF;
-$html .= '                FlashVars="applicationType=commsy&commsyXml='.$data_url.'"'.LF;
+$html .= '                FlashVars="applicationType=commsy&amp;commsyXml='.$data_url.'"'.LF;
 $html .= '                loop="false"'.LF;
 $html .= '                quality="high"'.LF;
 $html .= '                allowScriptAccess="sameDomain"'.LF;
@@ -1916,6 +1964,7 @@ $html .= '                pluginspage="http://www.adobe.com/go/getflashplayer">'
 $html .= '            </embed>'.LF;
 $html .= '    </object>'.LF;
 $html .= '</noscript>'.LF;
+         $html .= '</div>'.LF;
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';
@@ -2141,11 +2190,29 @@ $html .= '</noscript>'.LF;
          $html .='</tr>'.LF;
       }
       $html .='</table>'.LF;
+
+      // flash view
+      if ( $this->_environment->inPrivateRoom()
+           and ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+               )
+          ) {
+         $html .= '<div class="listinfoborder"></div>'.LF;
+         $params = $this->_environment->getCurrentParameterArray();
+         if ( empty($this->_display_mode) or $this->_display_mode != 'flash' ) {
+            $params['seldisplay_mode'] = 'flash';
+            $html .= '<div style="float:right;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('COMMON_CHANGE_INDEX_VIEW_FLASH')).'</div>'.LF;
+         } else {
+            $params['seldisplay_mode'] = 'html';
+            $html .= '<div style="float:right;">'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('COMMON_CHANGE_INDEX_VIEW_LIST')).'</div>'.LF;
+         }
+         $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
+      }
+
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
 
-     return $html;
+      return $html;
    }
 
    function _getClipboardActionsAsHTML () {

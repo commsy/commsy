@@ -1922,6 +1922,22 @@ class cs_item {
          $retour .= '         </list>'.LF;
       }
 
+      if ( $this->isA(CS_MATERIAL_TYPE) ) {
+         $author = $this->getAuthor();
+         if ( !empty($author) ) {
+            $retour .= '         <list>'.LF;
+            $retour .= '            <type>author</type>'.LF;
+            $author_array = explode(';',$this->getAuthor());
+            foreach ($author_array as $value) {
+               $retour .= '            <item>';
+               $retour .= '               <type>author</type>'.LF;
+               $retour .= '               <fullname><![CDATA['.trim($value).']]></fullname>'.LF;
+               $retour .= '            </item>'.LF;
+            }
+            $retour .= '         </list>'.LF;
+         }
+      }
+
       $retour .= '      </item>'.LF;
       return $retour;
    }
