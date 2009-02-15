@@ -136,7 +136,7 @@ if ( !isURLValid() ) {
         and !empty($_GET['fct'])
         and isPlugin($_GET['mod'])
       ) {
-      $current_module = 'plugin';
+      $current_module = CS_PLUGIN_TYPE;
       $current_function = 'index';
       $plugin_module = $_GET['mod'];
       $plugin_function = $_GET['fct'];

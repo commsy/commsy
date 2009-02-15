@@ -25,88 +25,104 @@
    switch( $tempModule )
    {
       case 'ACCOUNT':
-         $tempMessage = getMessage('COMMON_PAGETITLE_ACCOUNT');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_ACCOUNT');
          break;
       case 'AGB':
-         $tempMessage = getMessage('COMMON_PAGETITLE_AGB');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_AGB');
          break;
       case 'ANNOTATION':
-         $tempMessage = getMessage('COMMON_PAGETITLE_ANNOTATION');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_ANNOTATION');
          break;
       case 'ANNOUNCEMENT':
-         $tempMessage = getMessage('COMMON_PAGETITLE_ANNOUNCEMENT');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_ANNOUNCEMENT');
          break;
       case 'BUZZWORDS':
-         $tempMessage = getMessage('COMMON_PAGETITLE_BUZZWORDS');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_BUZZWORDS');
          break;
       case 'CAMPUS_SEARCH':
-         $tempMessage = getMessage('COMMON_PAGETITLE_CAMPUS_SEARCH');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_CAMPUS_SEARCH');
          break;
       case 'CHAT':
-         $tempMessage = getMessage('COMMON_PAGETITLE_CHAT');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_CHAT');
          break;
       case 'CONFIGURATION':
-         $tempMessage = getMessage('COMMON_PAGETITLE_CONFIGURATION');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_CONFIGURATION');
          break;
       case 'DATE':
-         $tempMessage = getMessage('COMMON_PAGETITLE_DATE');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_DATE');
          break;
       case 'DISCARTICLE':
-         $tempMessage = getMessage('COMMON_PAGETITLE_DISCARTICLE');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_DISCARTICLE');
          break;
       case 'DISCUSSION':
-         $tempMessage = getMessage('COMMON_PAGETITLE_DISCUSSION');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_DISCUSSION');
          break;
       case 'GROUP':
-         $tempMessage = getMessage('COMMON_PAGETITLE_GROUP');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_GROUP');
          break;
       case 'HELP':
-         $tempMessage = getMessage('COMMON_PAGETITLE_HELP');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_HELP');
          break;
       case 'HOME':
-         $tempMessage = getMessage('COMMON_PAGETITLE_HOME');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_HOME');
          break;
       case 'INSTITUTION':
-         $tempMessage = getMessage('COMMON_PAGETITLE_INSTITUTION');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_INSTITUTION');
          break;
       case 'LABELS':
-         $tempMessage = getMessage('COMMON_PAGETITLE_LABELS');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_LABELS');
          break;
       case 'LANGUAGE':
-         $tempMessage = getMessage('COMMON_PAGETITLE_LANGUAGE');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_LANGUAGE');
          break;
       case 'MAIL':
-         $tempMessage = getMessage('COMMON_PAGETITLE_MAIL');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_MAIL');
          break;
       case 'MATERIAL':
-         $tempMessage = getMessage('COMMON_PAGETITLE_MATERIAL');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_MATERIAL');
          break;
       case 'MATERIALTYPE':
-         $tempMessage = getMessage('COMMON_PAGETITLE_MATERIALTYPE');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_MATERIALTYPE');
          break;
       case 'MATERIAL_ADMIN':
-         $tempMessage = getMessage('COMMON_PAGETITLE_MATERIAL_ADMIN');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_MATERIAL_ADMIN');
          break;
       case 'MYROOM':
-         $tempMessage = getMessage('COMMON_PAGETITLE_MYROOM');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_MYROOM');
          break;
       case 'PROJECT':
-         $tempMessage = getMessage('COMMON_PAGETITLE_PROJECT');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_PROJECT');
          break;
       case 'SECTION':
-         $tempMessage = getMessage('COMMON_PAGETITLE_SECTION');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_SECTION');
          break;
       case 'TODO':
-         $tempMessage = getMessage('COMMON_PAGETITLE_TODO');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_TODO');
          break;
       case 'TOPIC':
-         $tempMessage = getMessage('COMMON_PAGETITLE_TOPIC');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_TOPIC');
          break;
       case 'USER':
-         $tempMessage = getMessage('COMMON_PAGETITLE_USER');
+         $tempMessage = $translator->getMessage('COMMON_PAGETITLE_USER');
          break;
       default:
-         $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR');
+         $text = '';
+         if ( $tempModule == strtoupper(CS_PLUGIN_TYPE)
+              and !empty($plugin_module)
+              and $environment->isPlugin($plugin_module)
+            ) {
+            $plugin_class = $environment->getPluginClass($plugin_module);
+            if ( !empty($plugin_class)
+                 and method_exists($plugin_class,'getDisplayName')
+               ) {
+               $text = $plugin_class->getDisplayName();
+            }
+         }
+         if ( !empty($text) ) {
+            $tempMessage .= $text;
+         } else {
+            $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR');
+         }
          break;
    }
 ?>
