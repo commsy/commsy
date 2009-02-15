@@ -57,98 +57,109 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
     */
    function _createForm () {
      $view_mod_array = array();
-     $view_mod_array[0]['text'] = getMessage('RUBRIC_CONFIG_SHORT');
+     $view_mod_array[0]['text'] = $this->_translator->getMessage('RUBRIC_CONFIG_SHORT');
      $view_mod_array[0]['value'] = 'short';
-     $view_mod_array[1]['text'] = getMessage('RUBRIC_CONFIG_TINY');
+     $view_mod_array[1]['text'] = $this->_translator->getMessage('RUBRIC_CONFIG_TINY');
      $view_mod_array[1]['value'] = 'tiny';
-     $view_mod_array[2]['text'] = getMessage('RUBRIC_CONFIG_NO');
+     $view_mod_array[2]['text'] = $this->_translator->getMessage('RUBRIC_CONFIG_NO');
      $view_mod_array[2]['value'] = 'nodisplay';
 
      $first = true;
      $second = false;
      $third = false;
      $text = '<table style="border: 0px solid black;"><tr style="border: 0px solid black;"><td style="border: 0px solid black; vertical-align:top;" summary="Layout">'.
-     getMessage('CONFIGURATION_RUBRIC_DESC').'</td><td style="border: 0px solid black;">'.
+     $this->_translator->getMessage('CONFIGURATION_RUBRIC_DESC').'</td><td style="border: 0px solid black;">'.
      '<img src="images/configuration_rubric.jpg" width="400px;" style=" border:1px solid black; vertical-align: middle;"/>'.
      '</td></tr></table>';
 
-        $count =8;
-     if ( $this->_environment->inCommunityRoom()
-          or $this->_environment->inGroupRoom()
-        ) {
-         $count =7;
-     }elseif($this->_environment->inPrivateRoom()){
-         $count =4;
+     $room = $this->_environment->getCurrentContextItem();
+     $default_rubrics = $room->getAvailableDefaultRubricArray();
+     if ( count($default_rubrics) > 8 ) {
+        $count = 8;
+     } else {
+        $count = count($default_rubrics);
      }
+
      for ( $i = 0; $i < $count; $i++ ) {
         $nameArray[0] = 'module['.$i.']';
         $nameArray[1] = 'view['.$i.']';
         $desc = '';
         if ($first) {
            $first = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',getMessage('MODULE_CONFIG_SHORT'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',getMessage('MODULE_CONFIG_SHORT'));
            $second = true;
         } elseif ($second) {
            $second = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_TINY',getMessage('MODULE_CONFIG_TINY'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',getMessage('MODULE_CONFIG_TINY'));
            $third = true;
         } elseif ($third) {
            $third = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_NONE',getMessage('MODULE_CONFIG_NONE'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',getMessage('MODULE_CONFIG_NONE'));
         }
      }
 
-     $room = $this->_environment->getCurrentContextItem();
-     $default_rubrics = $room->getAvailableDefaultRubricArray();
      $rubric_array = array();
      $i = 1;
      $select_array[0]['text'] = '----------';
      $select_array[0]['value'] = 'none';
      foreach ($default_rubrics as $rubric){
-              if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
-                 $select_array[$i]['text'] = getMessage('COMMON_MY_USER_DESCRIPTION');
-              } else {
-                 switch ( strtoupper($rubric) ){
-                    case 'ANNOUNCEMENT':
-                       $select_array[$i]['text'] = getMessage('ANNOUNCEMENT_INDEX');
-                       break;
-                    case 'DATE':
-                       $select_array[$i]['text'] = getMessage('DATE_INDEX');
-                       break;
-                    case 'DISCUSSION':
-                       $select_array[$i]['text'] = getMessage('DISCUSSION_INDEX');
-                       break;
-                    case 'GROUP':
-                       $select_array[$i]['text'] = getMessage('GROUP_INDEX');
-                       break;
-                    case 'INSTITUTION':
-                       $select_array[$i]['text'] = getMessage('INSTITUTION_INDEX');
-                       break;
-                    case 'MATERIAL':
-                       $select_array[$i]['text'] = getMessage('MATERIAL_INDEX');
-                       break;
-                    case 'MYROOM':
-                       $select_array[$i]['text'] = getMessage('MYROOM_INDEX');
-                       break;
-                    case 'PROJECT':
-                       $select_array[$i]['text'] = getMessage('PROJECT_INDEX');
-                       break;
-                    case 'TODO':
-                       $select_array[$i]['text'] = getMessage('TODO_INDEX');
-                       break;
-                    case 'TOPIC':
-                       $select_array[$i]['text'] = getMessage('TOPIC_INDEX');
-                       break;
-                    case 'USER':
-                       $select_array[$i]['text'] = getMessage('USER_INDEX');
-                       break;
-                    default:
-                       $select_array[$i]['text'] = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_rubric_form(144) ');
-                       break;
+        if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
+           $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
+        } else {
+           switch ( strtoupper($rubric) ){
+              case 'ANNOUNCEMENT':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
+                 break;
+              case 'DATE':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('DATE_INDEX');
+                 break;
+              case 'DISCUSSION':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('DISCUSSION_INDEX');
+                 break;
+              case 'GROUP':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('GROUP_INDEX');
+                 break;
+              case 'INSTITUTION':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('INSTITUTION_INDEX');
+                 break;
+              case 'MATERIAL':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('MATERIAL_INDEX');
+                 break;
+              case 'MYROOM':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('MYROOM_INDEX');
+                 break;
+              case 'PROJECT':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('PROJECT_INDEX');
+                 break;
+              case 'TODO':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('TODO_INDEX');
+                 break;
+              case 'TOPIC':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('TOPIC_INDEX');
+                 break;
+              case 'USER':
+                 $select_array[$i]['text'] = $this->_translator->getMessage('USER_INDEX');
+                 break;
+              default:
+                 $text = '';
+                 if ( $this->_environment->isPlugin($rubric) ) {
+                    $plugin_class = $this->_environment->getPluginClass($rubric);
+                    if ( !empty($plugin_class)
+                         and method_exists($plugin_class,'getDisplayName')
+                       ) {
+                       $text = $plugin_class->getDisplayName();
+                    }
                  }
-              }
+                 if ( !empty($text) ) {
+                    $select_array[$i]['text'] = $text;
+                 } else {
+                    $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.')');
+                 }
+                 break;
+           }
+        }
         $select_array[$i]['value'] = $rubric;
-       $i++;
+        $i++;
      }
 
      // sorting
@@ -158,16 +169,12 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
      $home_conf = $this->_environment->getCurrentContextItem()->getHomeConf();
      $home_conf_array = explode(',',$home_conf);
      $i=0;
-     $count =8;
-     if($this->_environment->inPrivateRoom()){
-        $count = 4;
-     }
      $value_array = array();
      foreach ($home_conf_array as $rubric_conf) {
         $rubric_conf_array = explode('_',$rubric_conf);
         if ($rubric_conf_array[1] != 'none') {
            $value_array[] = true;
-        }else{
+        } else {
            $value_array[] = false;
         }
      }
@@ -181,7 +188,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
        }
        $this->_form->addSelect('rubric_'.$i,$select_array,
                                 '',
-                                getMessage('COMMON_CHOOSE_RUBRIC'),
+                                $this->_translator->getMessage('COMMON_CHOOSE_RUBRIC'),
                                 '',
                                 '',
                                 '',
@@ -226,28 +233,29 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
       if ($this->_environment->inProjectRoom() or $this->_environment->inGroupRoom()){
          $this->_form->addTextField('time_spread',
                                     '',
-                                    getMessage('INTERNAL_TIME_SPREAD'),
-                                    getMessage('INTERNAL_TIME_SPREAD_DESC'),
+                                    $this->_translator->getMessage('INTERNAL_TIME_SPREAD'),
+                                    $this->_translator->getMessage('INTERNAL_TIME_SPREAD_DESC'),
                                     '2',
                                     '3',
                                     true
                                    );
       }
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
-      $count =8;
-      if ($this->_environment->inCommunityRoom()){
-         $count =7;
+      $room = $this->_environment->getCurrentContextItem();
+      $default_rubrics = $room->getAvailableDefaultRubricArray();
+      if ( count($default_rubrics) > 8 ) {
+         $count = 8;
+      } else {
+         $count = count($default_rubrics);
       }
-      if ($this->_environment->inPrivateRoom()){
-         $count =4;
-      }
+
       $this->_values = array();
       $home_conf = $this->_environment->getCurrentContextItem()->getHomeConf();
       $home_conf_array = explode(',',$home_conf);
@@ -264,9 +272,9 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
          $this->_values['rubric_'.$j] = 'none';
          $this->_values['show_'.$j] = 'none';
       }
-      if (isset ($_POST['time_spread'])){
+      if ( isset($_POST['time_spread']) ) {
         $this->_values['time_spread'] = $_POST['time_spread'];
-      }else{
+      } elseif (!$this->_environment->inPrivateRoom()) {
          $this->_values['time_spread'] = $this->_item->getTimeSpread();
       }
    }
@@ -275,33 +283,32 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function check () {
-      $count =8;
-      if ( $this->_environment->inCommunityRoom()
-           or $this->_environment->inGroupRoom()
-         ) {
-         $count =7;
-      } elseif ($this->_environment->inPrivateRoom()){
-         $count =4;
+      $room = $this->_environment->getCurrentContextItem();
+      $default_rubrics = $room->getAvailableDefaultRubricArray();
+      if ( count($default_rubrics) > 8 ) {
+         $count = 8;
+      } else {
+         $count = count($default_rubrics);
       }
-    if (isset ($_POST['rubric_0'])){
+      if ( isset($_POST['rubric_0']) ) {
          $post_array=array();
-        for ($j=0; $j<$count; $j++) {
+         for ($j=0; $j<$count; $j++) {
             $post_array[] = $_POST['rubric_'.$j];
-       }
-       $value = true;
-        for ($k=0; $k<$count; $k++) {
-           for ($l=0; $l<$count; $l++) {
-            if ($k!=$l){
-               if ($post_array[$l]==$post_array[$k] and $post_array[$l]!='none'){
-                  $value= false;
+         }
+         $value = true;
+         for ($k=0; $k<$count; $k++) {
+            for ($l=0; $l<$count; $l++) {
+               if ($k!=$l){
+                  if ($post_array[$l]==$post_array[$k] and $post_array[$l]!='none'){
+                     $value= false;
+                  }
                }
             }
-           }
-        }
-        return $value;
-     }else{
-        return true;
-     }
+         }
+         return $value;
+      } else {
+         return true;
+      }
    }
 
    function getInfoForHeaderAsHTML () {
@@ -320,8 +327,5 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
       $retour .= '         }'.LF;
       return $retour;
    }
-
-
 }
-
 ?>
