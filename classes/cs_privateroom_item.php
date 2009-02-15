@@ -51,20 +51,38 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
+
+      // rubric plugins
+      $i = 4;
+      $plugin_list = $this->_environment->getRubrikPluginClassList();
+      if ( $plugin_list->isNotEmpty() ) {
+         $plugin = $plugin_list->getFirst();
+         while ( $plugin ) {
+            if ( $plugin->inPrivateRoom() ) {
+               $i++;
+               $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
+               $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
+            }
+            $plugin = $plugin_list->getNext();
+         }
+      }
    }
 
    function getHomeConf () {
-      $retour = array();
-      $rubrics = $this->_default_rubrics_array;
-      foreach ($rubrics as $rubric){
-         if (!$this->isDesign7() or $rubric != CS_USER_TYPE){
-            $retour[] = $rubric.'_'.'short';
+      $rubrics = parent::getHomeConf();
+      if ( $this->isDesign7() ) {
+         $retour = array();
+         foreach (explode(',',$rubrics) as $rubric){
+            if (!stristr($rubric,CS_USER_TYPE) ) {
+               $retour[] = $rubric;
+            }
          }
+         $retour = implode(',',$retour);
+      } else {
+         $retour = $rubrics;
       }
-      $retour = implode(',',$retour);
       return $retour;
    }
-
 
    function isPrivateRoom () {
       return true;
@@ -74,8 +92,6 @@ class cs_privateroom_item extends cs_room_item {
     * this method returns a list of projects which are linked to the project
     *
     * @return object cs_list a list of projects (cs_project_item)
-    *
-    * @author CommSy Development Group
     */
    function getProjectList () {
       return $this->getLinkedItemList(CS_MYROOM_TYPE);
@@ -85,8 +101,6 @@ class cs_privateroom_item extends cs_room_item {
     * this method returns the time spread for items on the home of the project project
     *
     * @return integer the time spread
-    *
-    * @author CommSy Development Group
     */
    function getTimeSpread () {
       $retour = '7';
@@ -380,7 +394,6 @@ class cs_privateroom_item extends cs_room_item {
                      $user_manager->setUserIDLimit($user->getUserID());
                      $user_manager->setAuthSourceLimit($user->getAuthSource());
                      $user_manager->setContextLimit($item->getItemID());
-                     #$user_manager->_room_limit = $item->getItemID();
                      $user_manager->select();
                      $user_list = $user_manager->get();
                      if ( isset($user_list)
