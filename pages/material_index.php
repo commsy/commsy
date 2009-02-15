@@ -516,50 +516,55 @@ if ( $environment->isOutputMode('XML') ) {
    }
    unset($current_context_item);
 } else {
-   $list = $material_manager->get();        // returns a cs_list of material_items
    $count_all_shown = count($ids);
+   if ( empty($seldisplay_mode) or $seldisplay_mode != 'flash' ) {
+      $list = $material_manager->get();        // returns a cs_list of material_items
+   }
    $material_manager->delete_tmp_table();
 
-   $id_array = array();
-   $vid_array = array();
-   $item = $list->getFirst();
-   while ($item) {
-      $id_array[] = $item->getItemID();
-      $vid_array[$item->getItemID()] = $item->getVersionID();
-      $item = $list->getNext();
-   }
-
-   $section_manager = $environment->getSectionManager();
-   $section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
-   $noticed_manager = $environment->getNoticedManager();
-   $noticed_manager->getLatestNoticedByIDArray($id_array);
-   $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
-
-   $item = $section_list->getFirst();
-   while ($item) {
-      $id_array[] = $item->getItemID();
-      $vid_array[$item->getItemID()] = $item->getVersionID();
-      $item = $section_list->getNext();
-   }
-   $link_manager = $environment->getLinkManager();
-   $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $vid_array);
-   $file_manager = $environment->getFileManager();
-   $file_manager->setIDArrayLimit($file_id_array);
-   $file_manager->select();
-
-   if (isset($_GET['select']) and $_GET['select']=='all'){
+   if ( empty($seldisplay_mode) or $seldisplay_mode != 'flash' ) {
+      $id_array = array();
+      $vid_array = array();
       $item = $list->getFirst();
-      while($item){
-         if ( !in_array($item->getItemID(), $selected_ids) ) {
-            $selected_ids[] = $item->getItemID();
-         }
+      while ($item) {
+         $id_array[] = $item->getItemID();
+         $vid_array[$item->getItemID()] = $item->getVersionID();
          $item = $list->getNext();
       }
-   }
-   if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
-        and $_POST['index_view_action'] != '3'
-      ) {
-      $selected_ids = array();
+
+      $section_manager = $environment->getSectionManager();
+      $section_list = $section_manager->getAllSectionItemListByIDArray($id_array);
+      $noticed_manager = $environment->getNoticedManager();
+      $noticed_manager->getLatestNoticedByIDArray($id_array);
+      $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+
+      $item = $section_list->getFirst();
+      while ($item) {
+         $id_array[] = $item->getItemID();
+         $vid_array[$item->getItemID()] = $item->getVersionID();
+         $item = $section_list->getNext();
+      }
+      $link_manager = $environment->getLinkManager();
+      $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array, $vid_array);
+      $file_manager = $environment->getFileManager();
+      $file_manager->setIDArrayLimit($file_id_array);
+      $file_manager->select();
+
+      if (isset($_GET['select']) and $_GET['select']=='all'){
+         $item = $list->getFirst();
+         while($item){
+            if ( !in_array($item->getItemID(), $selected_ids) ) {
+               $selected_ids[] = $item->getItemID();
+            }
+            $item = $list->getNext();
+         }
+      }
+      if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
+           and $_POST['index_view_action'] != '3'
+         ) {
+         $selected_ids = array();
+      }
+
    }
 
    // Get available buzzwords
@@ -590,11 +595,13 @@ if ( $environment->isOutputMode('XML') ) {
       unset($rubric_list);
    }
 
-   $view->setList($list);
+   if ( empty($seldisplay_mode) or $seldisplay_mode != 'flash' ) {
+      $view->setList($list);
+      $view->setFrom($from);
+      $view->setInterval($interval);
+   }
    $view->setCountAllShown($count_all_shown);
    $view->setCountAll($count_all);
-   $view->setFrom($from);
-   $view->setInterval($interval);
 
    /***Activating Code***/
    $view->setActivationLimit($sel_activating_status);

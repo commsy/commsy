@@ -1870,11 +1870,12 @@ class cs_item {
               or $key == 'title' or $key == 'name'
               or $key == 'first_item_id' or $key == 'second_item_id'
               or $key == 'first_item_type' or $key == 'second_item_type'
+              or $key == 'description'
             ) {
             if ( $key == 'item_id' ) {
                $key = 'id';
             }
-            if ( $key == 'first_item_t' ) {
+            if ( $key == 'first_item_id' ) {
                $key = 'first_id';
             }
             if ( $key == 'second_item_id' ) {
@@ -1886,6 +1887,12 @@ class cs_item {
             if ( $key == 'second_item_type' ) {
                $key = 'second_type';
             }
+            if ( $key == 'description' ) {
+               // AS XML ???
+               $value = preg_replace('/\\(:(.*?):\\)/e','dfg',$value); // entfernt medien einbindung
+               $value = strip_tags($value); // entfernt html tags
+               $value = html_entity_decode($value); // wandelt &quot; usw. in lesbare Zeichen um
+            }
             $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
          }
       }
@@ -1895,20 +1902,24 @@ class cs_item {
          $retour .= '         <url><![CDATA['.$this->getItemUrl().']]></url>'.LF;
       }
 
-      # image
+      # images
       $image = '';
       $file_list = $this->getFileList();
       if ( isset($file_list) and $file_list->isNotEmpty() ) {
+         $retour .= '         <list>'.LF;
+         $retour .= '            <type>file</type>'.LF;
          $file_item = $file_list->getFirst();
          while ( $file_item ) {
-            if ( $file_item->isImage() ) {
-               $image = $file_item->getItemUrl();
-            }
+            $retour .= '               <item>'.LF;
+            $retour .= '                  <type><![CDATA[file]]></type>'.LF;
+            $retour .= '                  <id><![CDATA['.$file_item->getFileID().']]></id>'.LF;
+            $retour .= '                  <mime><![CDATA['.$file_item->getMime().']]></mime>'.LF;
+            $retour .= '                  <url><![CDATA['.$file_item->getItemUrl().']]></url>'.LF;
+            $retour .= '                  <icon><![CDATA['.$file_item->getIconUrl().']]></icon>'.LF;
+            $retour .= '               </item>'.LF;
             $file_item = $file_list->getNext();
          }
-      }
-      if ( !empty($image) ) {
-         $retour .= '         <image><![CDATA['.$image.']]></image>'.LF;
+         $retour .= '         </list>'.LF;
       }
 
       $retour .= '      </item>'.LF;

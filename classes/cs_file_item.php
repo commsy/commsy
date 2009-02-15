@@ -346,13 +346,20 @@ class cs_file_item extends cs_item {
 
    function getIconFilename() {
       $ext = cs_strtolower(substr(strrchr($this->getFileName(),'.'),1));
-     if ( !empty($this->_icon[$ext]) ) {
+      if ( !empty($this->_icon[$ext]) ) {
          $img = $this->_icon[$ext];
       } else {
          $img = $this->_icon['unknown'];
       }
-     return $img;
-    }
+      return $img;
+   }
+
+   public function getIconUrl () {
+      global $c_commsy_domain;
+      global $c_commsy_url_path;
+      $retour = $c_commsy_domain.$c_commsy_url_path.'/images/'.$this->getIconFilename();
+      return $retour;
+   }
 
    function getDiskFileName () {
       $disc_manager = $this->_environment->getDiscManager();

@@ -629,7 +629,7 @@ class cs_index_view extends cs_view {
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
       $buzzword = $this->_available_buzzwords->getFirst();
-      if (!$buzzword){
+      if (!isset($buzzword)){
          $html .= '<span class="disabled" style="font-size:8pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $params = $this->_environment->getCurrentParameterArray();
@@ -1638,7 +1638,7 @@ EOD;
                $tempMessage = getMessage('USER_INDEX');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view(1455) ');
+               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_index_view('.__LINE__.') ');
                break;
          }
          $html .= $this->_getListInfosAsHTML($tempMessage);
@@ -1826,8 +1826,9 @@ EOD;
          unset($current_context_item);
 
          $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
          $params['output'] = 'XML';
-         // vielleicht noch einschränkungen übergeben
+         $params['SID'] = $this->_environment->getSessionID();
          $data_url = utf8_encode(rawurlencode(_curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params)));
          unset($params);
 
@@ -1894,29 +1895,27 @@ $html .= '  }'.LF;
 $html .= '// -->'.LF;
 $html .= '</script>'.LF;
 
-// URL?? Flashvars??
 $html .= '<noscript>'.LF;
-
 $html .= '    <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'.LF;
 $html .= '            id="study_log" width="100%" height="'.$height.'"'.LF;
 $html .= '            codebase="http://fpdownload.macromedia.com/get/flashplayer/current/swflash.cab">'.LF;
 $html .= '            <param name="movie" value="flash/study_log.swf" />'.LF;
 $html .= '            <param name="quality" value="high" />'.LF;
+$html .= '            <param name="FlashVars" value="applicationType=commsy&commsyXml='.$data_url.'" />'.LF;
 $html .= '            <param name="bgcolor" value="'.$bgcolor.'" />'.LF;
 $html .= '            <param name="allowScriptAccess" value="sameDomain" />'.LF;
-$html .= '            <param name="FlashVars" value="applicationType=commsy&commsyXml='.$data_url.'" />'.LF;
 $html .= '            <embed src="study_log.swf" quality="high" bgcolor="'.$bgcolor.'"'.LF;
 $html .= '                width="100%" height="'.$height.'" name="study_log" align="middle"'.LF;
 $html .= '                play="true"'.LF;
+$html .= '                FlashVars="applicationType=commsy&commsyXml='.$data_url.'"'.LF;
 $html .= '                loop="false"'.LF;
 $html .= '                quality="high"'.LF;
 $html .= '                allowScriptAccess="sameDomain"'.LF;
-$html .= '                FlashVars="applicationType=commsy&commsyXml='.$data_url.'"'.LF;
 $html .= '                type="application/x-shockwave-flash"'.LF;
 $html .= '                pluginspage="http://www.adobe.com/go/getflashplayer">'.LF;
 $html .= '            </embed>'.LF;
 $html .= '    </object>'.LF;
-#$html .= '</noscript>'.LF;
+$html .= '</noscript>'.LF;
       } else {
          $params = $this->_environment->getCurrentParameterArray();
          $html .= '<form style="padding:0px; margin:0px;" action="';
@@ -1990,8 +1989,6 @@ $html .= '    </object>'.LF;
       return $html;
    }
 
-
-
    function _getListInfosAsHTML ($title) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -1999,9 +1996,8 @@ $html .= '    </object>'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
       $html .= $this->_getBrowsingIconsAsHTML().LF;
-      $html .= '<div style="white-space:nowrap;">'.getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div style="white-space:nowrap;">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
       $html .='</div>'.LF;
-
 
       $width = '';
       $current_browser = strtolower($this->_environment->getCurrentBrowser());
@@ -2014,7 +2010,7 @@ $html .= '    </object>'.LF;
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
-      $html .= '<span class="infocolor">'.getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
+      $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
       $html .='</td>'.LF;
       $html .='<td style="text-align:right;">'.LF;
       $html .= '<span class="index_description">'.$this->_getDescriptionAsHTML().'</span>'.LF;
@@ -2084,21 +2080,24 @@ $html .= '    </object>'.LF;
       $html .= $this->_count_all.''.LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
-      $html .='<tr>'.LF;
-      $html .= '<td class="infocolor">';
-      $html .= $this->_translator->getMessage('COMMON_PAGE_ENTRIES').':';
-      $html .='</td>'.LF;
-      $html .='<td style="text-align:right;">'.LF;
-      $params = $this->_environment->getCurrentParameterArray();
-      if (!isset($params['mode']) or $params['mode'] == 'browse'){
-         $params['mode'] = 'list_actions';
-      }
-      unset($params['select']);
-      if ( $this->_interval == 20 ) {
-         $html .= '<span style="color:black">20</span>';
-      } else {
-         $params['interval'] = 20;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(),
+      if ( empty($this->_display_mode)
+           or $this->_display_mode != 'flash'
+         ) {
+         $html .= '<tr>'.LF;
+         $html .= '<td class="infocolor">';
+         $html .= $this->_translator->getMessage('COMMON_PAGE_ENTRIES').':';
+         $html .= '</td>'.LF;
+         $html .= '<td style="text-align:right;">'.LF;
+         $params = $this->_environment->getCurrentParameterArray();
+         if (!isset($params['mode']) or $params['mode'] == 'browse'){
+            $params['mode'] = 'list_actions';
+         }
+         unset($params['select']);
+         if ( $this->_interval == 20 ) {
+            $html .= '<span style="color:black">20</span>';
+         } else {
+            $params['interval'] = 20;
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                    $this->_module,
                                    $this->_function,
                                    $params,
@@ -2107,39 +2106,40 @@ $html .= '    </object>'.LF;
                                    '',
                                    ''
                                   );
-      }
+         }
 
-      if ( $this->_interval == 50 ) {
-         $html .= ' | <span style="color:black">50</span>';
-      } else {
-         $params['interval'] = 50;
-         $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
-                                   $this->_module,
-                                   $this->_function,
-                                   $params,
-                                   '50',
-                                   '',
-                                   '',
-                                   ''
-                                  );
-      }
+         if ( $this->_interval == 50 ) {
+            $html .= ' | <span style="color:black">50</span>';
+         } else {
+            $params['interval'] = 50;
+            $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
+                                      $this->_module,
+                                      $this->_function,
+                                      $params,
+                                      '50',
+                                      '',
+                                      '',
+                                      ''
+                                     );
+         }
 
-      if ( $this->_interval == 0 ) {
-         $html .= ' | <span style="color:black">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL').'</span>';
-      } else {
-         $params['interval'] = 0;
-         $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
-                                   $this->_module,
-                                   $this->_function,
-                                   $params,
-                                   $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL'),
-                                   '',
-                                   '',
-                                   ''
-                                  );
+         if ( $this->_interval == 0 ) {
+            $html .= ' | <span style="color:black">'.$this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL').'</span>';
+         } else {
+            $params['interval'] = 0;
+            $html .= ' | '.ahref_curl($this->_environment->getCurrentContextID(),
+                                      $this->_module,
+                                      $this->_function,
+                                      $params,
+                                      $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL'),
+                                      '',
+                                      '',
+                                      ''
+                                     );
+         }
+         $html .='</td>'.LF;
+         $html .='</tr>'.LF;
       }
-      $html .='</td>'.LF;
-      $html .='</tr>'.LF;
       $html .='</table>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -2358,7 +2358,6 @@ $html .= '    </object>'.LF;
       $interval  = $this->_interval;
       $count_all = $this->_count_all;
       $count_all_shown = $this->_count_all_shown;
-      // @segment-begin 39076 _getDescriptionAsHTML():count_all>count_all_shown:5_possible_messages_like"shown...(count_all)"
          if ( $count_all_shown == 0 ) {
             $description = $this->_translator->getMessage('COMMON_NO_ENTRIES');
          } elseif ( $count_all_shown == 1 ) {
@@ -2379,28 +2378,17 @@ $html .= '    </object>'.LF;
                                                           $count_all_shown
                                                          );
          }
-      // @segment-end 96579
-
-      // @segment-begin 24649 _getDescriptionAsHTML():add_description=(numbers_of_displayed_entries+amount_all_entries)_to_return
       $html = $description;
-      // @segment-end 24649
-      // @segment-begin 88089 _getDescriptionAsHTML():call_getAttachedItemInfoAsHTML():display_attached_info_under_numbers_of_displayed_entries+amount_all_entries
-
-
       return /*$this->_text_as_html_short(*/ $html /*)*/;
    }
-   // @segment-end 88089
 
    function _getTableheadAsHTML () {
    }
 
-
    function _getTablefootAsHTML () {
    }
 
-
-
-  function _getBrowsingIconsAsHTML(){
+   function _getBrowsingIconsAsHTML(){
       // short names for easy reading
       $from      = $this->_from;
       $interval  = $this->_interval;
@@ -2443,7 +2431,11 @@ $html .= '    </object>'.LF;
 
       // create HTML for browsing icons
       $html = '<div style="float:right;">';
-      if ( $browse_start > 0 ) {
+      if ( $browse_start > 0
+           and ( empty($this->_display_mode)
+                 or $this->_display_mode != 'flash'
+               )
+         ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -2462,7 +2454,11 @@ $html .= '    </object>'.LF;
          $html .= '         <span style="font-weight:normal;">&lt;&lt;</span>'.LF;
       }
       $html .= '|';
-      if ( $browse_left > 0 ) {
+      if ( $browse_left > 0
+           and ( empty($this->_display_mode)
+                 or $this->_display_mode != 'flash'
+               )
+         ) {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -2480,7 +2476,11 @@ $html .= '    </object>'.LF;
          $html .= '         <span style="font-weight:normal;">&lt;</span>'.LF;
       }
       $html .= '|';
-      if ( $browse_right > 0 ) {
+      if ( $browse_right > 0
+           and ( empty($this->_display_mode)
+                 or $this->_display_mode != 'flash'
+               )
+         ) {
          $params['from'] = $browse_right;
          $image = '<span class="bold">&gt;</span>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -2500,7 +2500,11 @@ $html .= '    </object>'.LF;
          $html .= '         <span style="font-weight:normal;">&gt;</span>'.LF;
       }
       $html .= '|';
-      if ( $browse_end > 0 ) {
+      if ( $browse_end > 0
+           and ( empty($this->_display_mode)
+                 or $this->_display_mode != 'flash'
+               )
+         ) {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
@@ -2521,7 +2525,6 @@ $html .= '    </object>'.LF;
       $html .= '</div>';
       return $html;
   }
-
 
    function _getForwardLinkAsHTML () {
       // short names for easy reading
@@ -2566,12 +2569,6 @@ $html .= '    </object>'.LF;
       $html = $act_page.' / '.$num_pages.LF;
       return $html;
    }
-
-
-   // @segment-end 80830
-
-
-
 
    function _getIntervalLinksAsHTML() {
       $params = $this->_environment->getCurrentParameterArray();
