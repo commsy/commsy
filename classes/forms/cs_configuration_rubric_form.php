@@ -61,7 +61,7 @@ class cs_configuration_rubric_form extends cs_rubric_form {
      $second = false;
      $third = false;
      $text = '<table style="border: 0px solid black;"><tr style="border: 0px solid black;"><td style="border: 0px solid black; vertical-align:top;" summary="Layout">'.
-     getMessage('CONFIGURATION_RUBRIC_DESC').'</td><td style="border: 0px solid black;">'.
+     $this->_translator->getMessage('CONFIGURATION_RUBRIC_DESC').'</td><td style="border: 0px solid black;">'.
      '<img src="images/configuration_rubric.jpg" width="400px;" style=" border:1px solid black; vertical-align: middle;"/>'.
      '</td></tr></table>';
 
@@ -79,15 +79,15 @@ class cs_configuration_rubric_form extends cs_rubric_form {
         $desc = '';
         if ($first) {
            $first = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',getMessage('MODULE_CONFIG_SHORT'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',getMessage('MODULE_CONFIG_SHORT'));
            $second = true;
         } elseif ($second) {
            $second = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_TINY',getMessage('MODULE_CONFIG_TINY'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',getMessage('MODULE_CONFIG_TINY'));
            $third = true;
         } elseif ($third) {
            $third = false;
-           $desc = getMessage('INTERNAL_MODULE_CONF_DESC_NONE',getMessage('MODULE_CONFIG_NONE'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',getMessage('MODULE_CONFIG_NONE'));
         }
      }
 
@@ -99,44 +99,57 @@ class cs_configuration_rubric_form extends cs_rubric_form {
      $select_array[0]['value'] = 'none';
      foreach ($default_rubrics as $rubric){
               if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
-                 $select_array[$i]['text'] = getMessage('COMMON_MY_USER_DESCRIPTION');
+                 $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
               } else {
                  switch ( strtoupper($rubric) ){
                     case 'ANNOUNCEMENT':
-                       $select_array[$i]['text'] = getMessage('ANNOUNCEMENT_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                        break;
                     case 'DATE':
-                       $select_array[$i]['text'] = getMessage('DATE_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('DATE_INDEX');
                        break;
                     case 'DISCUSSION':
-                       $select_array[$i]['text'] = getMessage('DISCUSSION_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('DISCUSSION_INDEX');
                        break;
                     case 'GROUP':
-                       $select_array[$i]['text'] = getMessage('GROUP_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('GROUP_INDEX');
                        break;
                     case 'INSTITUTION':
-                       $select_array[$i]['text'] = getMessage('INSTITUTION_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('INSTITUTION_INDEX');
                        break;
                     case 'MATERIAL':
-                       $select_array[$i]['text'] = getMessage('MATERIAL_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('MATERIAL_INDEX');
                        break;
                     case 'MYROOM':
-                       $select_array[$i]['text'] = getMessage('MYROOM_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('MYROOM_INDEX');
                        break;
                     case 'PROJECT':
-                       $select_array[$i]['text'] = getMessage('PROJECT_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('PROJECT_INDEX');
                        break;
                     case 'TODO':
-                       $select_array[$i]['text'] = getMessage('TODO_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('TODO_INDEX');
                        break;
                     case 'TOPIC':
-                       $select_array[$i]['text'] = getMessage('TOPIC_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('TOPIC_INDEX');
                        break;
                     case 'USER':
-                       $select_array[$i]['text'] = getMessage('USER_INDEX');
+                       $select_array[$i]['text'] = $this->_translator->getMessage('USER_INDEX');
                        break;
                     default:
-                       $select_array[$i]['text'] = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_rubric_form(144) ');
+                       $text = '';
+                       if ( $this->_environment->isPlugin($rubric) ) {
+                          $plugin_class = $this->_environment->getPluginClass($rubric);
+                          if ( !empty($plugin_class)
+                               and method_exists($plugin_class,'getDisplayName')
+                             ) {
+                             $text = $plugin_class->getDisplayName();
+                          }
+                       }
+                       if ( !empty($text) ) {
+                          $select_array[$i]['text'] = $text;
+                       } else {
+                          $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_rubric_form('.__LINE__.') ');
+                       }
                        break;
                  }
               }
@@ -155,7 +168,7 @@ class cs_configuration_rubric_form extends cs_rubric_form {
        $this->_form->addSelect('rubric_'.$i,$select_array,'','','','',false,false);
      }
       // buttons
-      $this->_form->addButtonBar('option',getMessage('COMMON_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
