@@ -99,8 +99,6 @@ class cs_page_room_view extends cs_page_view {
 
    var $_style_image_path = 'images/layout/';
 
-
-
    /** constructor
     * the only available constructor, initial values for internal variables
     *
