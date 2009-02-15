@@ -53,7 +53,7 @@ class cs_homepage_room_list_page extends cs_page {
 
      // get data
      $manager = $this->_environment->getHomepageManager();
-    $manager->setIndexLimit();
+     $manager->setIndexLimit();
      $count_all = $manager->getCountAll();
 
      if (!empty($this->_values['search'])) {

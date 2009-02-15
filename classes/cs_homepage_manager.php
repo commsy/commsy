@@ -114,7 +114,7 @@ class cs_homepage_manager extends cs_manager {
       $query .= ' WHERE 1';
 
       if ( isset($this->_index_limit) and $this->_index_limit ) {
-         $query .= ' AND room.extras LIKE "%<HOMEPAGELINK>1</HOMEPAGELINK>%"';
+         $query .= ' AND room.extras LIKE "%HOMEPAGELINK\";s:1%"';
       }
 
       if (isset($this->_room_limit) and !isset($this->_index_limit)) {
