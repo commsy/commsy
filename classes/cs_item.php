@@ -1893,7 +1893,9 @@ class cs_item {
                $value = strip_tags($value); // entfernt html tags
                $value = html_entity_decode($value); // wandelt &quot; usw. in lesbare Zeichen um
             }
-            $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
+            if ( !empty($value) ) {
+               $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;
+            }
          }
       }
 
@@ -1929,7 +1931,7 @@ class cs_item {
             $retour .= '            <type>author</type>'.LF;
             $author_array = explode(';',$this->getAuthor());
             foreach ($author_array as $value) {
-               $retour .= '            <item>';
+               $retour .= '            <item>'.LF;
                $retour .= '               <type>author</type>'.LF;
                $retour .= '               <fullname><![CDATA['.trim($value).']]></fullname>'.LF;
                $retour .= '            </item>'.LF;

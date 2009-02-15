@@ -76,7 +76,7 @@ class cs_page_xml_view extends cs_page_view {
       $retour  = '';
       $retour .= '<?xml version="1.0" encoding="utf-8"?>'.LF;
       $retour .= '<commsy>'.LF;
-      $retour .= '  <session_id><![CDATA['.$this->_environment->getSessionID().']]></session_id>';
+      $retour .= '   <session_id><![CDATA['.$this->_environment->getSessionID().']]></session_id>'.LF;
 
       foreach ( $this->_xml_array as $value ) {
          $retour .= $value;
