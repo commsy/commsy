@@ -203,6 +203,7 @@ class cs_todo_detail_view extends cs_detail_view {
                break;
          }
 
+
          if($done_percentage <= 100){
             $style = ' height: 16px; background-color: #75ab05; ';
             $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 16px; width: 300px;">'.LF;
@@ -259,7 +260,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $temp_array[1] = $minutes.' '.$tmp_message;
             $formal_data[] = $temp_array;
          }
-         if ($step_minutes >0 ){
+         if ($done_percentage >0 ){
             $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
             $temp_array[1] = $done_time;
             $formal_data[] = $temp_array;
