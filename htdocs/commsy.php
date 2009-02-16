@@ -140,6 +140,14 @@ if ( !isURLValid() ) {
       $current_function = 'index';
       $plugin_module = $_GET['mod'];
       $plugin_function = $_GET['fct'];
+   } elseif ( !empty($_POST['mod'])
+              and !empty($_POST['fct'])
+              and isPlugin($_POST['mod'])
+      ) {
+      $current_module = CS_PLUGIN_TYPE;
+      $current_function = 'index';
+      $plugin_module = $_POST['mod'];
+      $plugin_function = $_POST['fct'];
    } else {
       $current_module = 'home';
       $current_function = 'index';
