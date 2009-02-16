@@ -132,11 +132,11 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       $params = array();
       $params['iid'] = $current_item_iid;
       $step_item->delete();
-      unset($step_item);
       $funct = 'detail';
       $todo_item = $step_item->getLinkedItem();
       $todo_item->setModificationDate(getCurrentDateTimeInMySQL());
       $todo_item->save();
+      unset($step_item);
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $funct, $params);
     }else{
       if ( $environment->getCurrentModule() == CS_MATERIAL_TYPE){
