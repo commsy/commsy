@@ -134,7 +134,9 @@ class cs_announcement_form extends cs_rubric_form {
       if ( isset($this->_item) ) {
          $creator_item = $this->_item->getCreatorItem();
          $fullname = $creator_item->getFullname();
-      } elseif (!empty($this->_form_post['iid'])) {
+      } elseif ( !empty($this->_form_post['iid'])
+                 and strtolower($this->_form_post['iid']) != 'new'
+               ) {
          $manager = $this->_environment->getManager(CS_ANNOUNCEMENT_TYPE);
          $item = $manager->getItem($this->_form_post['iid']);
          $creator_item = $item->getCreatorItem();
