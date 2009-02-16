@@ -88,6 +88,7 @@ class cs_environment {
    var $_browser_version = NULL;
 
    var $_plugin_class_array = NULL;
+   var $_rubric_plugin_class_list = NULL;
 
    private $session_id = NULL;
    private $session_item = NULL;
