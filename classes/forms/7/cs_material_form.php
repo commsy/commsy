@@ -176,8 +176,13 @@ class cs_material_form extends cs_rubric_form {
       } elseif (!empty($this->_form_post['iid'])) {
          $manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
          $item = $manager->getItem($this->_form_post['iid']);
-         $creator_item = $item->getCreatorItem();
-         $fullname = $creator_item->getFullname();
+         if ( isset($item) ) {
+            $creator_item = $item->getCreatorItem();
+            $fullname = $creator_item->getFullname();
+         } else {
+            $current_user = $this->_environment->getCurrentUser();
+            $fullname = $current_user->getFullname();
+         }
       } else {
          $current_user = $this->_environment->getCurrentUser();
          $fullname = $current_user->getFullname();
