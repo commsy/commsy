@@ -608,14 +608,11 @@ class cs_index_view extends cs_view {
       $html .= '<div class="right_box_title">'.getMessage('COMMON_SORTING_BOX').'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:10pt;">'.LF;
-      $params = $this->_environment->getCurrentParameterArray();
-      $params['sort'] = 'title';
-      $html .= '<a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_TITLE').'</a>'.LF;
+      $html .= '<a href="javascript:callStudyLogSortAlphabetical()">'.$this->_translator->getMessage('COMMON_TITLE').'</a>'.LF;
       if ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE ) {
-         $params['sort'] = 'author';
-         $html .= ' - <a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_AUTHOR').'</a>'.LF;
-         $params['sort'] = 'year';
-         $html .= ' - <a href="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params).'">'.$this->_translator->getMessage('COMMON_CALENDAR_DATE').'</a>'.LF;
+         #$html .= ' - <a href="javascript:callStudyLogSortAuthor()">'.$this->_translator->getMessage('COMMON_AUTHOR').'</a>'.LF;
+         $html .= ' - <a href="javascript:callStudyLogSortChronological()">'.$this->_translator->getMessage('COMMON_CALENDAR_DATE').'</a>'.LF;
+         $html .= ' - <a href="javascript:callStudyLogSortDefault()">'.$this->_translator->getMessage('COMMON_NO_SORTING').'</a>'.LF;
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -1779,18 +1776,7 @@ EOD;
             $title_string .= $additional_text.'"'.getMessage('COMMON_SORTING_BOX').'"';
             $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
-            /*
-            $parameter_array = $this->_environment->getCurrentParameterArray();
-            if ( (isset($parameter_array['selbuzzword']) and !empty($parameter_array['selbuzzword']))
-                 or $current_context->isBuzzwordShowExpanded()
-            ) {
-            */
-               $config_text .= $additional_text.'true';
-            /*
-            } else {
-               $config_text .= $additional_text.'false';
-            }
-            */
+            $config_text .= $additional_text.'true';
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
             $html .= $this->getSortingBoxAsHTML();
             $html .= '</div>'.LF;
@@ -1880,11 +1866,12 @@ EOD;
          $data_url = utf8_encode(rawurlencode(_curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params)));
          unset($params);
 
-         $height = '100%';
+         #$height = '100%';
+         $height = '450px';
          $bgcolor = $color_array['content_background']; // #ffffff
          unset($color_array);
 
-         $html .= '<div style="height: 450px;">'.LF;
+         $html .= '<div style="height: '.$height.';">'.LF;
 
          $html .= '<script src="javascript/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
          $html .= '<script src="javascript/history/history.js" language="javascript" type="text/javascript"></script>'.LF;
@@ -1996,12 +1983,6 @@ $html .= '</noscript>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;
    }
-
-
-
-
-
-
 
    function _getListActionsAsHTML () {
       $current_context = $this->_environment->getCurrentContextItem();

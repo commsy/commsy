@@ -8,3 +8,18 @@ var requiredMinorVersion = 0;
 // Minor version of Flash required
 var requiredRevision = 124;
 // -----------------------------------------------------------------------------
+
+function getFlashMovie(movieName) {
+   var isIE = navigator.appName.indexOf("Microsoft") != -1;
+   return (isIE) ? window[movieName] : document[movieName];
+}
+
+function callStudyLogSortChronological() {
+   getFlashMovie("study_log").callStudyLogSortChronological();
+}
+function callStudyLogSortAlphabetical() {
+   getFlashMovie("study_log").callStudyLogSortAlphabetical();
+}
+function callStudyLogSortDefault() {
+   getFlashMovie("study_log").callStudyLogSortDefault();
+}
