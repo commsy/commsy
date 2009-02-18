@@ -67,6 +67,7 @@ function insert($insert) {
 
    $db_link = mysql_select_db($DB_Name,$link2)
               or die ("Database nicht gefunden (beim schreiben)");
+   #mysql_set_charset('',$db_link);
    $result = mysql_query($insert);
    $error = mysql_error();
    $errno = mysql_errno();

@@ -29,11 +29,14 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
    return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
 }
 
-function init_progress_bar($count) {
-   echo "<br />Total entries to be processed: ".$count."\n";
-   echo "<br />|....................................................................................................|100%"."\n";
-   echo '<script type="text/javascript">window.scrollTo(1,10000000);</script>'."\n";
-   echo "<br />|";
+function init_progress_bar($count,$title = 'Total entries to be processed',$value = '100%') {
+   global $bash;
+   echo LINEBREAK.$title.": ".$count."\n";
+   echo LINEBREAK."|....................................................................................................|".$value."\n";
+   if ( empty($bash) or !$bash ) {
+      echo '<script type="text/javascript">window.scrollTo(1,10000000);</script>'."\n";
+   }
+   echo LINEBREAK."|";
    flush();
 }
 
@@ -66,7 +69,7 @@ function update_progress_bar($total) {
 function getProcessedTimeInHTML ($time_start) {
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
-$retour = "<br />Execution time: ".sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))."\n";
+$retour = LINEBREAK."Execution time: ".sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))."\n";
 return $retour;
 }
 
