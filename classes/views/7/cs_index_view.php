@@ -2173,6 +2173,7 @@ $html .= '</noscript>'.LF;
       $html .='</table>'.LF;
 
       // flash view
+      /*
       if ( $this->_environment->inPrivateRoom()
            and ( $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                )
@@ -2188,6 +2189,7 @@ $html .= '</noscript>'.LF;
          }
          $html .= '<span class="infocolor">'.getMessage('DATE_ALTERNATIVE_DISPLAY').': </span>'.LF;
       }
+      */
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;

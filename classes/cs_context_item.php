@@ -1345,6 +1345,20 @@ class cs_context_item extends cs_item {
            }
         }
       }
+
+      // if a plugin is deleted, remove it from HomeConf
+      $retour = array();
+      $rubric_array = explode(',',$rubricsString);
+      foreach ( $rubric_array as $rubric ) {
+         $rubric2_array = explode('_',$rubric);
+         if ( in_array($rubric2_array[0],$this->_default_rubrics_array) ) {
+            $retour[] = implode('_',$rubric2_array);
+         }
+      }
+      if ( !empty($retour) ) {
+         $rubricsString = implode(',',$retour);
+      }
+
       return $rubricsString;
    }
 
