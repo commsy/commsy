@@ -957,6 +957,7 @@ class cs_view {
 
       $reg_exp_father_array = array();
       $reg_exp_father_array[]       = '/\\(:(.*?):\\)/e';
+      $reg_exp_father_array[]       = '/\[(.*?)\]/e';
 
       $reg_exp_array = array();
       $reg_exp_array['(:flash']       = '/\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
@@ -978,6 +979,7 @@ class cs_view {
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
+      $reg_exp_array['[slideshare']      = '/\[slideshare (.*?)\]/e';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -1064,6 +1066,9 @@ class cs_view {
                         $value_new = $this->_format_pdf($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '(:slideshare' and stristr($value_new,'(:slideshare') ) {
+                        $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '[slideshare' and stristr($value_new,'[slideshare') ) {
                         $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
@@ -2056,18 +2061,23 @@ class cs_view {
    function _format_slideshare ($text, $array){
       $retour = '';
       if ( !empty($array[1]) ) {
-         $source = $array[1];
-
-         // Different PHP-versions/installations can handle either '&' od '&amp;'
-         preg_match('/(?<=id=)(.*)(?=&amp;doc)/', $source, $slideshare_id);
-         if(empty($slideshare_id)){
-            preg_match('/(?<=id=)(.*)(?=&doc)/', $source, $slideshare_id);
+         $slideshare_doc = array();
+         $slideshare_id = array();
+         if(substr($array[0],0,1) == '('){
+            $slideshare_doc[] = $array[1];
+            $slideshare_id[] = $array[1];
          }
-         preg_match('/(?<=&amp;doc=)(.*)(?=])/', $source, $slideshare_doc);
-         if(empty($slideshare_doc)){
-            preg_match('/(?<=&doc=)(.*)(?=])/', $source, $slideshare_doc);
+         if(substr($array[0],0,1) == '['){
+            // Different PHP-versions/installations can handle either '&' or '&amp;'
+            preg_match('/(?<=id=)(.*)(?=&amp;doc)/', $array[1], $slideshare_id);
+            if(empty($slideshare_id)){
+               preg_match('/(?<=id=)(.*)(?=&doc)/', $array[1], $slideshare_id);
+            }
+            preg_match('/(?<=&amp;doc=)(.*)/', $array[1], $slideshare_doc);
+            if(empty($slideshare_doc)){
+               preg_match('/(?<=&doc=)(.*)/', $array[1], $slideshare_doc);
+            }
          }
-
          $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id[0] . '">';
          $retour .= '<object style="margin:0px" width="425" height="355">';
          $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0&stripped_title=building-a-better-debt-lead" />';
