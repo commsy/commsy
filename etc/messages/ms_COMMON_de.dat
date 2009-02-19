@@ -683,6 +683,16 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<span style=&quot;font-wei
     </ul>
     </li>
     <li>Bsp: (:mp3 mymusic.mp3 width=150 play=true:)</li>
+</ul><br/><span style=&quot;font-weight:bold&quot;>Dokumente:</span>
+<ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:slideshare DOC-ID:) für Slideshare-Pr&auml;sentationen</li>
+    <li>Argumente:
+    <ul>
+        <li>DOC-ID: slideshare.net \"doc=\"-Angabe f&uuml;r die Pr&auml;sentation (siehe WordPress-Quelltext unten)</li>
+    </ul>
+    </li>
+    <li>Bsp: (:slideshare quicktour-1209540124077378-8:)<br/>oder:<br/></li>
+    <li>[slideshare id=380816&doc=quicktour-1209540124077378-8] WordPress-Quelltext von slideshare.net</li>
 </ul><br/>";
 $message["COMMON_TIME"]["de"] = "Zeit";
 $message["COMMON_TIME_NAME"]["de"] = "%_TIME_SUB_NOMPL_BIG";
