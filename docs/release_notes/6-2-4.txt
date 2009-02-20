@@ -2,6 +2,7 @@ CommSy Version 6.2.4
 
 Features (Nummern von SourceForge):
 -----
+2342959  	Medieneinbindung: Slideshare  
 1917242  	Sensible Buttonfläche vergrößern - Tennisellbogen vermeiden
 1950684 	Portal: Raumsuche
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/
