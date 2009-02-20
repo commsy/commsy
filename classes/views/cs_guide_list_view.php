@@ -307,7 +307,7 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '         '.$this->_getLogo($item).LF;
          $html .= '      </td>'.LF;
       } else {
-         $html .= '      <td '.$style.'>'.LF;
+         $html .= '      <td style="width:1%;" '.$style.'>'.LF;
          $current_user = $this->_environment->getCurrentUserItem();
          $may_enter = $item->mayEnter($current_user);
          if ($may_enter) {
@@ -1006,7 +1006,7 @@ class cs_guide_list_view extends cs_list_view_plain {
 
       $html .='<table style="width:100%;" summary="Layout">'.LF;
       $html .='<tr>'.LF;
-      $html .='<td colspan="2" style="width:85%; padding-top:5px; vertical-align:bottom; white-space:nowrap;">'.LF;
+      $html .='<td class="room_list_head" colspan="2" style="width:85%; padding-top:5px; vertical-align:bottom; white-space:nowrap;">'.LF;
       $html .='<div>'.LF;
       $html .='<div>'.LF;
       if ($this->_environment->inServer()) {
@@ -1021,7 +1021,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</td>'.LF;
-      $html .='<td style="width:15%; padding-top:5px; vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
+      $html .='<td class="room_list_head" style="width:15%; padding-top:5px; vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
       if (!$this->_environment->inServer()) {
          $html .='<div style="float:right;text-align:right;">'.LF;
          $html .= '<span class="portal_description">'.$this->_getIntervalLinksFirstLineAsHTML().'</span>'.BRLF;
