@@ -1470,9 +1470,13 @@ class cs_page_room_view extends cs_page_view {
                unset($params['is_saved']);
                unset($params['show_copies']);
                unset($params['profile_page']);
-               $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
-               $html .= $this->_getCopyLinkAsHTML();
+               global $c_annonymous_account_array;
+               if ( empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])) {
+                  $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
+                  $html .= $this->_getCopyLinkAsHTML();
+               }
                $html .= '&nbsp;'.$this->_getFlagsAsHTML();
+
          }
       }
       if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
