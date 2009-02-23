@@ -26,7 +26,7 @@ $error = false;
 $current_context = $environment->getCurrentContextItem();
 
 // Verify parameters for this page
-if (!$current_context->showHomepageLink()) {
+if ( !$current_context->showHomepageLink() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
