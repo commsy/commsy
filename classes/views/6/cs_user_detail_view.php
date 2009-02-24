@@ -361,7 +361,11 @@ class cs_user_detail_view extends cs_detail_view {
       unset($params['download']);
 
       $params['mode'] = 'take_over';
-      if ( $current_user->isRoot() ) {
+      if ( $this->_environment->inPortal()
+           and ( $current_user->isRoot()
+                 or $current_user->isModerator()
+               )
+         ) {
          $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).BRLF;
       }
 
@@ -885,7 +889,7 @@ class cs_user_detail_view extends cs_detail_view {
                   $text .= $this->_translator->getMessage('USERS');
                   break;
                default:
-                  $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                  $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
                   break;
             }
             if (empty($title_string)){
@@ -939,7 +943,7 @@ class cs_user_detail_view extends cs_detail_view {
             $text = $this->_translator->getMessage('USERS');
             break;
          default:
-            $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
+            $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
             break;
          }
          if (empty($title_string)){
@@ -1000,7 +1004,7 @@ class cs_user_detail_view extends cs_detail_view {
                $text = $this->_translator->getMessage('USERS');
                break;
             default:
-               $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view(818) ';
+               $text = getMessage('COMMON_MESSAGETAG_ERROR').' cs_user_detail_view('.__LINE__.') ';
                break;
          }
          $html .= '         <noscript>';

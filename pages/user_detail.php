@@ -55,7 +55,8 @@ if ($type != CS_USER_TYPE) {
    $current_module = $environment->getCurrentModule();
 
    if ( !isset($user_item) ) {
-      include_once('functions/error_functions.php');trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Item '.$current_item_id.' does not exist!', E_USER_ERROR);
    } elseif ( $user_item->isDeleted() ) {
       $params = array();
       $params['environment'] = $environment;
@@ -72,8 +73,10 @@ if ($type != CS_USER_TYPE) {
       unset($params);
       $errorbox->setText(getMessage('LOGIN_NOT_ALLOWED'));
       $page->add($errorbox);
-   } elseif ( $current_user->isRoot()
-              and !$environment->inServer()
+   } elseif ( ( $current_user->isRoot()
+                or $current_user->isModerator()
+              )
+              and $environment->inPortal()
               and isset($_GET['mode'])
               and $_GET['mode'] == 'take_over'
             ) {

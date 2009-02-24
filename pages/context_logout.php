@@ -62,12 +62,19 @@ if ( stristr($_SERVER['PHP_SELF'],'homepage.php') ) {
 // redirect
 $current_context = $environment->getCurrentContextItem();
 if ( isset($root_session_id) and !empty($root_session_id) ) {
+   // change cookie
+   if ( $cookie == '1' ) {
+      $session_manager = $environment->getSessionManager();
+      $session = $session_manager->get($root_session_id);
+      $session->setValue('cookie',2);
+      unset($session_manager);
+   }
    $params = $history[0]['parameter'];
    $params['SID'] = $root_session_id;
    redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$params,'','',$back_tool);
 } elseif ( !$current_context->isOpenForGuests()
      and ( empty($back_tool)
-	  or (!empty($back_tool) and $back_tool == 'commsy')
+     or (!empty($back_tool) and $back_tool == 'commsy')
          )
    ) {
    if (!$current_context->isServer()) {

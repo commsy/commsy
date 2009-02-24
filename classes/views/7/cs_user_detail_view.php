@@ -396,7 +396,11 @@ class cs_user_detail_view extends cs_detail_view {
       unset($params['mode']);
 
       $params['mode'] = 'take_over';
-      if ( $current_user->isRoot() ) {
+      if ( $this->_environment->inPortal()
+           and ( $current_user->isRoot()
+                 or $current_user->isModerator()
+               )
+         ) {
          $image = '<img src="images/commsyicons/22x22/take_over.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname()).'"/>';
          $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$image,$this->_translator->getMessage('ACCOUNT_TAKE_OVER',$item->getFullname())).LF;
       }
