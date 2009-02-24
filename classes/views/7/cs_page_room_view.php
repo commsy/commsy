@@ -703,13 +703,6 @@ class cs_page_room_view extends cs_page_view {
       if ( !$this->_send_first_html_part ) {
          $html .= $this->asHTMLFirstPart();
       }
-      $session = $this->_environment->getSession();
-      if (!empty($session)) {
-         $session_id = $session->getSessionID();
-      } else {
-         $session_id = '';
-      }
-      unset($session);
       return $html;
    }
 

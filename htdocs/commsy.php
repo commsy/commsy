@@ -25,6 +25,7 @@
 
 // pretend, we work from the CommSy basedir to allow
 // giving include files without "../" prefix all the time.
+
 chdir('..');
 
 function cleanupSession($session, $environment){
@@ -982,17 +983,23 @@ if ( $environment->isOutputMode('XML') ) {
       $html = $page->asHTMLFirstPart();
       if ( !empty($html) ) {
          echo(addTokenToPost($html));
-         flush();
+//         if(!$fast_settings){
+//            flush();
+//         }
       }
    }
    $html = $page->asHTMLSecondPart();
    if ( !empty($html) ) {
       echo(addTokenToPost($html));
-      flush();
+//      if(!$fast_settings){
+//         flush();
+//      }
    }
    echo(addTokenToPost($page->asHTML()));
 }
-flush();
+//if(!$fast_settings){
+//   flush();
+//}
 unset($page);
 
 /*********** SAVE DATETIME OF LAST ACTIVITY ***********/
