@@ -61,15 +61,15 @@ function _text_form2php ($text) {
    return $text;
 }
 
-function _text_db2php ($text) {
-   // dies ist nötig auf grund von mysql_real_escape_string in _text_php2db
-   $text = str_replace('\n','COMMSYLN',$text);
-   $text = str_replace('\*','COMMSYSTERN',$text);
-   $text = str_replace('\_','COMMSYSTRICH',$text);
-   $text = str_replace('\!','COMMSYAUSRUFEZEICHEN',$text);
-   $text = str_replace('\-','COMMSYMINUS',$text);
-   $text = str_replace('\#','COMMSYSCHWEINEGATTER',$text);
-   $text = str_replace('\(:','COMMSYWIKIBEGIN',$text);
+function _text_db2php ($text) { 
+//   // dies ist nötig auf grund von mysql_real_escape_string in _text_php2db
+//   $text = str_replace('\n','COMMSYLN',$text);
+//   $text = str_replace('\*','COMMSYSTERN',$text);
+//   $text = str_replace('\_','COMMSYSTRICH',$text);
+//   $text = str_replace('\!','COMMSYAUSRUFEZEICHEN',$text);
+//   $text = str_replace('\-','COMMSYMINUS',$text);
+//   $text = str_replace('\#','COMMSYSCHWEINEGATTER',$text);
+//   $text = str_replace('\(:','COMMSYWIKIBEGIN',$text);
 
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
@@ -90,7 +90,8 @@ function _text_db2php ($text) {
       }
    }
 
-   $text = stripslashes($text);
+//   $text = stripslashes($text);
+   $text = preg_replace('/\\\(?!\*|_|!|-|#|\(:|n)/', '', $text);
 
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
@@ -102,14 +103,14 @@ function _text_db2php ($text) {
          $text = str_replace($value_new,$value,$text);
       }
    }
-
-   $text = str_replace('COMMSYLN',LF,$text);
-   $text = str_replace('COMMSYSTERN','\*',$text);
-   $text = str_replace('COMMSYSTRICH','\_',$text);
-   $text = str_replace('COMMSYAUSRUFEZEICHEN','\!',$text);
-   $text = str_replace('COMMSYMINUS','\-',$text);
-   $text = str_replace('COMMSYSCHWEINEGATTER','\#',$text);
-   $text = str_replace('COMMSYWIKIBEGIN','\(:',$text);
+   
+//   $text = str_replace('COMMSYLN',LF,$text);
+//   $text = str_replace('COMMSYSTERN','\*',$text);
+//   $text = str_replace('COMMSYSTRICH','\_',$text);
+//   $text = str_replace('COMMSYAUSRUFEZEICHEN','\!',$text);
+//   $text = str_replace('COMMSYMINUS','\-',$text);
+//   $text = str_replace('COMMSYSCHWEINEGATTER','\#',$text);
+//   $text = str_replace('COMMSYWIKIBEGIN','\(:',$text);
    return $text;
 }
 
@@ -228,7 +229,7 @@ define ("FROM_GET", 14);
 
 function encode ($mode, $value) {
    if (!empty($value)) {
-      if (is_array($value)) {
+      if (is_array($value) and count($value) > 0) {
          return _array_encode($value,$mode);
       } else {
          return _text_encode($value,$mode);
@@ -310,7 +311,6 @@ function getRubricMessageTageName($rubric,$plural = false){
          }
    }
 }
-
 function _text_encode ($text, $mode) {
    switch ($mode) {
       case NONE :
@@ -345,21 +345,31 @@ function _text_encode ($text, $mode) {
 }
 
 function _array_encode ($array, $mode) {
+//      $retour_array = array();
+//      if (is_array($array) and count($array) > 0) {
+//         foreach ($array as $key => $value) {
+//            if (is_array($value)) {
+//               $retour_array[$key] = _array_encode($value, $mode);
+//            }
+//            else {
+//               //sometimes we submit some Values in this arrays- eg. for checked boxes. In this case: don't change...
+//               if (preg_match('|<VALUE>.*</VALUE>|', $value)) {
+//                  $retour_array[$key] = $value;
+//               }
+//               else {
+//                  $retour_array[$key] = _text_encode($value, $mode);
+//               }
+//            }
+//         }
+//      }
+//      return $retour_array;
+
    $retour_array = array();
-   if (is_array($array) and count($array) > 0) {
-      foreach ($array as $key => $value) {
-         if (is_array($value)) {
-            $retour_array[$key] = _array_encode($value, $mode);
-         }
-         else {
-            //sometimes we submit some Values in this arrays- eg. for checked boxes. In this case: don't change...
-            if (preg_match('|<VALUE>.*</VALUE>|', $value)) {
-               $retour_array[$key] = $value;
-            }
-            else {
-               $retour_array[$key] = _text_encode($value, $mode);
-            }
-         }
+   foreach ($array as $key => $value) {
+      if (is_array($value) and count($value) > 0) {
+         $retour_array[$key] = _array_encode($value, $mode);
+      } else {
+         $retour_array[$key] = _text_encode($value, $mode);
       }
    }
    return $retour_array;
