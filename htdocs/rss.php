@@ -71,12 +71,22 @@ if ( isset($_GET['cid']) ) {
    if (!$validated) {
       $title = $context_item->getTitle();
       if ( $context_item->isPrivateRoom()) {
+         $title = '';
+         $current_portal_item = $environment->getCurrentPortalItem();
+         if ( isset($current_portal_item) ) {
+            $title .= $current_portal_item->getTitle();
+         }
          $owner_user_item = $context_item->getOwnerUserItem();
          $owner_fullname = $owner_user_item->getFullName();
          if ( !empty($owner_fullname) ) {
-            $title = $translator->getMessage('PRIVATE_ROOM_TITLE');
-            $title .= ' '.$owner_fullname;
+            #$title = $translator->getMessage('PRIVATE_ROOM_TITLE');
+            if ( !empty($title) ) {
+               $title .= ': ';
+            }
+            $title .= $owner_fullname;
          }
+         unset($owner_user_item);
+         unset($current_portal_item);
       }
       header('WWW-Authenticate: Basic realm="'.$translator->getMessage('RSS_TITLE',$title).'"');
       header('HTTP/1.0 401 Unauthorized');
@@ -100,8 +110,23 @@ if ( isset($_GET['cid']) ) {
    $mod_date = $item_manager->_performQuery();
    $date = date('r',strtotime($mod_date['0']['modification_date']));
    if ( $context_item->isPrivateRoom() ) {
-      $maintitle = $translator->getMessage('PRIVATE_ROOM_TITLE');
-      $maintitle .= ' '.$user_item->getFullName();
+      $maintitle = '';
+      $current_portal_item = $environment->getCurrentPortalItem();
+      if ( isset($current_portal_item) ) {
+         $maintitle .= $current_portal_item->getTitle();
+      }
+      $owner_user_item = $context_item->getOwnerUserItem();
+      $owner_fullname = $owner_user_item->getFullName();
+      if ( !empty($owner_fullname) ) {
+         if ( !empty($maintitle) ) {
+            $maintitle .= ': ';
+         }
+         $maintitle .= $owner_fullname;
+      }
+      unset($owner_user_item);
+      unset($current_portal_item);
+      #$maintitle = $translator->getMessage('PRIVATE_ROOM_TITLE');
+      #$maintitle .= ' '.$user_item->getFullName();
    } else {
       $maintitle = $context_item->getTitle();
    }
@@ -115,7 +140,7 @@ if ( isset($_GET['cid']) ) {
 
      <channel>
       <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
-      <link>'.$path.'commsy.php</link>
+      <link>'.$path.'commsy.php?cid='.$context_item->getItemID().'</link>
       <ttl>60</ttl>
       <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
       <language>'.$language.'</language>
@@ -482,11 +507,13 @@ if ( isset($_GET['cid']) ) {
      </channel>
      </rss>';
 
+   #pr($rss);
+   #exit();
    // Wir werden eine XML Datei ausgeben
    header('Content-type: application/rss+xml; charset=UTF-8');
 
    echo $rss;
-   exit;
+   exit();
 } else {
    chdir('..');
    include_once('etc/cs_constants.php');
