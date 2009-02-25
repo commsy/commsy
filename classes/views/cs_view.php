@@ -1771,7 +1771,7 @@ class cs_view {
       $factor = 0.625; // orig = 1;
       $current_context_item = $this->_environment->getCurrentContextItem();
       if ( $current_context_item->isDesign6() ) {
-         $factor = 0.525;
+         $factor = 0.524;
       }
       if ( !empty($args['width']) ) {
          $width = $args['width'];
