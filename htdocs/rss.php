@@ -157,6 +157,15 @@ if ( isset($_GET['cid']) ) {
          $room_array[] = $item->getItemID();
          $item = $community->getNext();
       }
+      unset($item);
+      $grouprooms = $user_item->getRelatedGroupList();
+      $item = $grouprooms->getFirst();
+      while ($item) {
+         $room_array[] = $item->getItemID();
+         $item = $grouprooms->getNext();
+      }
+      unset($item);
+      $room_array[] = $context_item->getItemID();
       $item_manager->resetLimits();
       $item_manager->setContextArrayLimit($room_array);
       $item_manager->setTypeArrayLimit($type_limit_array);
@@ -194,6 +203,7 @@ if ( isset($_GET['cid']) ) {
                $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$item->getFullName());
                $description = $translator->getMessage('RSS_CHANGE_PERSON_DESCRIPTION',$item->getFullName());
             }
+            $date = date('r',strtotime($item->getModificationDate()));
             $author = $item->getEmail().' ('.$item->getFullName().')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             unset($manager);
@@ -214,6 +224,7 @@ if ( isset($_GET['cid']) ) {
                $user_item = $item->getModificatorItem();
                $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+               $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
             unset($item);
@@ -233,17 +244,20 @@ if ( isset($_GET['cid']) ) {
                $description = '';
                $link = '';
                $author = '';
+               $date = '';
             } elseif ( $item->getModificationDate() != $item->getCreationDate() ) {
                $title = '';
                $description = '';
                $link = '';
                $author = '';
+               $date = '';
             } else {
                $title = $translator->getMessage('RSS_NEW_DISCUSSION_TITLE',$item->getTitle());
                $description = $translator->getMessage('RSS_NEW_DISCUSSION_DESCRIPTION',$item->getTitle());
                $user_item = $item->getModificatorItem();
                $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
+               $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
             unset($item);
@@ -263,6 +277,7 @@ if ( isset($_GET['cid']) ) {
                $user_item = $item->getModificatorItem();
                $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+               $date = date('r',strtotime($item->getModificationDate()));
                unset($manager);
                $last_discarticle_item = $item;
                unset($item);
@@ -285,6 +300,7 @@ if ( isset($_GET['cid']) ) {
                $description = '';
                $link = '';
                $author = '';
+               $date = '';
             } else {
                $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
                $description = $item->getDescriptionWithoutHTML();
@@ -294,6 +310,7 @@ if ( isset($_GET['cid']) ) {
                $user_item = $item->getModificatorItem();
                $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
+               $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
             unset($item);
@@ -312,6 +329,7 @@ if ( isset($_GET['cid']) ) {
             $user_item = $item->getModificatorItem();
             $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
+            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
             unset($user_item);
@@ -329,6 +347,7 @@ if ( isset($_GET['cid']) ) {
             $user_item = $item->getModificatorItem();
             $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
+            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             $last_section_item = $item;
             unset($item);
@@ -348,6 +367,7 @@ if ( isset($_GET['cid']) ) {
             $user_item = $item->getModificatorItem();
             $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
+            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
             unset($user_item);
@@ -391,6 +411,7 @@ if ( isset($_GET['cid']) ) {
                   $link = $path.'commsy.php?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
             }
+            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
             unset($user_item);
@@ -408,6 +429,7 @@ if ( isset($_GET['cid']) ) {
             $user_item = $item->getModificatorItem();
             $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
+            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
             unset($user_item);
@@ -417,10 +439,15 @@ if ( isset($_GET['cid']) ) {
             $description = '';
             $link = '';
             $author = '';
+            $date = '';
       }
-      if ($context_item->isPrivateRoom()) {
-         $pre_title = $curr_context->getTitle().': '.$title;
-         $title = $pre_title;
+      if ( $context_item->isPrivateRoom() ) {
+         if ( $curr_context->isPrivateRoom() ) {
+            $pre_title = $translator->getMessage($curr_context->getTitle()).': ';
+         } else {
+            $pre_title = $curr_context->getTitle().': ';
+         }
+         $title = $pre_title.$title;
          unset($pre_title);
       }
       unset($curr_context);
@@ -441,6 +468,7 @@ if ( isset($_GET['cid']) ) {
            <title>'.encode(AS_RSS,$title).'</title>
            <description>'.encode(AS_RSS,$description).'</description>
            <link>'.$link.'</link>
+           <pubDate>'.encode(AS_RSS,$date).'</pubDate>
            <author>'.encode(AS_RSS,$author).'</author>';
          $rss .= '  <guid isPermaLink="false">'.$row['item_id'].'</guid>';
          $rss .= '</item>';
