@@ -507,8 +507,10 @@ if ( isset($_GET['cid']) ) {
      </channel>
      </rss>';
 
+   // debugging
    #pr($rss);
    #exit();
+
    // Wir werden eine XML Datei ausgeben
    header('Content-type: application/rss+xml; charset=UTF-8');
 
