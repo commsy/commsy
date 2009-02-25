@@ -516,11 +516,13 @@ if ( !empty($_POST)
           )
    ) {
    $csrf_error = false;
-   if ( empty($_POST['security_token']) ) {
+   if ( empty($_POST['security_token']) and empty($_GET['security_token']) ) {
       $csrf_error = true;
    } else {
       include_once('functions/security_functions.php');
-      if ( getToken() != $_POST['security_token'] ) {
+      if ( !empty($_POST['security_token']) and getToken() != $_POST['security_token'] ) {
+         $csrf_error = true;
+      } elseif ( !empty($_GET['security_token']) and getToken() != $_GET['security_token'] ) {
          $csrf_error = true;
       }
    }
