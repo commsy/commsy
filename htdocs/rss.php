@@ -105,6 +105,7 @@ if ( isset($_GET['cid']) ) {
    } else {
       $maintitle = $context_item->getTitle();
    }
+   $language = $environment->getSelectedLanguage();
    $maintitle = str_replace('&','&amp;',$maintitle);
 
    //RSS File Header
@@ -117,7 +118,7 @@ if ( isset($_GET['cid']) ) {
       <link>'.$path.'commsy.php</link>
       <ttl>60</ttl>
       <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
-      <language>'.$context_item->getLanguage().'</language>
+      <language>'.$language.'</language>
       <copyright>-</copyright>
       <pubDate>'.$date.'</pubDate>
       <image>
@@ -125,6 +126,7 @@ if ( isset($_GET['cid']) ) {
         <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
         <link>'.$path.'commsy.php</link>
       </image>';
+
    $type_limit_array = array();
    $type_limit_array[] = 'user';
    $type_limit_array[] = 'annotation';
