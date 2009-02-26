@@ -287,9 +287,13 @@ else {
             // Set attributes
             if ( isset($_POST['title']) ) {
                $annotation_item->setTitle($_POST['title']);
+            }elseif ( isset($_POST['annotation_title']) ) {
+               $annotation_item->setTitle($_POST['annotation_title']);
             }
             if ( isset($_POST['description']) ) {
                $annotation_item->setDescription($_POST['description']);
+            }elseif ( isset($_POST['annotation_description']) ) {
+               $annotation_item->setDescription($_POST['annotation_description']);
             }
             if ( !empty($_POST['ref_iid']) ) {
                   $annotation_item->setLinkedItemID($_POST['ref_iid']);

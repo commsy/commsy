@@ -1353,7 +1353,7 @@ class cs_detail_view extends cs_view {
       and $this->_environment->getCurrentModule() !='account'){
          if (!$current_context->isPrivateRoom()){
             $html .= $this->_getAnnotationsAsHTML();
-            $html .= $this->_getDiscussionFormAsHTML();
+            $html .= $this->_getAnnotationFormAsHTML();
          }
       }
       if($rubric == CS_TOPIC_TYPE){
@@ -2924,6 +2924,215 @@ class cs_detail_view extends cs_view {
         }
    }
 
+   function _getAnnotationFormAsHTML(){
+        if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
+         $html = '<!-- BEGIN OF ANNOTATION FORM VIEW -->'.LF.LF;
+         $item = $this->getItem();
+            $count = 1;
+            $subitems = $item->getAnnotationList();
+            if ( isset($subitems) and !empty($subitems) ){
+               $count = $subitems->getCount();
+               $count++;
+            }
+            $html .='</div>'.LF;
+            $html .='</div>'.LF;
+            if ($count != 1){
+               $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin:20px 5px 0px 5px; padding-top:20px; background-color:white;">'.LF;
+            }else{
+               $html .='<div class="sub_item_main" style="margin-top:0px; padding:5px; background-color:white;">'.LF;
+            }
+            $html .='<div style="width:100%;" >'.LF;
+            $html .= '<a name="form"></a>'.LF;
+            $params['ref_iid'] = $item->getItemID();
+            $params['mode'] = 'annotate';
+            $params['iid'] = 'NEW';
+
+            $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'annotation', 'edit',$params).'" method="post" enctype="multipart/form-data" name="f">'.LF;
+            $html .= '   <input type="hidden" name="version" value="'.$item->getVersionID().'"/>'.LF;
+            $html .= '   <input type="hidden" name="ref_iid" value="'.$item->getItemID().'"/>'.LF;
+            $html .= '<table style="width:100%; border-collapse:collapse; margin-bottom:0px; padding-bottom:0px;" summary="Layout">'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="width:70px; vertical-align:middle;">'.LF;
+            $html .= '<h3 class="subitemtitle">'.$this->_translator->getMessage('COMMON_SUBJECT').': </h3>';
+            $html .= '</td>'.LF;
+            $html .= '<td style="width:1%; vertical-align:middle;">'.LF;
+            $html .= '<h3 class="subitemtitle">'.$count.'.&nbsp;</h3>';
+            $html .= '</td>'.LF;
+            $html .= '<td style="padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
+            $html .= '<input name="annotation_title" style="width:98%; font-size:12pt; font-weight:bold; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="width:70px; padding-top:5px; vertical-align:top;">'.LF;
+            $html .= $this->_translator->getMessage('COMMON_TEXT').': ';
+            $html .= '</td>'.LF;
+            $html .= '<td colspan="2">'.LF;
+            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
+            $normal = '<textarea style="font-size:10pt; width:98%;" name="annotation_description" rows="10" tabindex="8"></textarea>';
+            $text = '';
+            global $c_html_textarea;
+            $current_context = $this->_environment->getCurrentContextItem();
+            $with_htmltextarea = $current_context->withHtmlTextArea();
+            $html_status = $current_context->getHtmlTextAreaStatus();
+            $current_browser = strtolower($this->_environment->getCurrentBrowser());
+            $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+            if ( !isset($c_html_textarea)
+                 or !$c_html_textarea
+                 or !$with_htmltextarea
+               ) {
+               $html .= $normal;
+               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $html .= '<div style="padding-top:5px;">';
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
+               $html .= $title;
+               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
+               $html .= '<div style="padding:2px;">'.LF;
+               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
+               $html .= $text;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+            } elseif ( ($current_browser != 'msie'
+                    and $current_browser != 'firefox'
+                    and $current_browser != 'netscape'
+                    and $current_browser != 'mozilla'
+                    and $current_browser != 'camino'
+                    and $current_browser != 'opera'
+                    and $current_browser != 'safari')
+               ) {
+               $html .= $normal;
+               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+               $html .= '<div style="padding-top:5px;">';
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
+               $html .= $title;
+               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
+               $html .= '<div style="padding:2px;">'.LF;
+               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
+               $html .= $text;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+               $html .= '</div>'.LF;
+            } else {
+               $session = $this->_environment->getSessionItem();
+                if ($session->issetValue('javascript')) {
+                  $javascript = $session->getValue('javascript');
+                  if ($javascript == 1) {
+                     include_once('classes/cs_html_textarea.php');
+                     $html_area = new cs_html_textarea();
+                     $html .= $html_area->getAsHTML( 'annotation_description',
+                                              '',
+                                              20,
+                                              $html_status,
+                                              '',
+                                              '',
+                                              false
+                                            );
+                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
+                     $html .= '<div style="padding-top:0px;">';
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
+                     $html .= $title;
+                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
+                     $html .= '<div style="padding:2px;">'.LF;
+                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
+                     $html .= $text;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.BRLF;
+                  } else {
+                     $html .= $normal;
+                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                     $html .= '<div style="padding-top:5px;">';
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
+                     $html .= $title;
+                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
+                     $html .= '<div style="padding:2px;">'.LF;
+                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
+                     $html .= $text;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                  }
+               } else {
+                  $html .= $normal;
+                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
+                  $html .= '<div style="padding-top:5px;">';
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
+                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
+                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
+                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
+                  $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
+                  $html .= $title;
+                  $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
+                  $html .= '<div style="padding:2px;">'.LF;
+                  $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
+                  $html .= $text;
+                  $html .= '</div>'.LF;
+                  $html .= '</div>'.LF;
+                  $html .= '</div>'.LF;
+                  $html .= '</div>'.LF;
+               }
+            }
+            $html .= '</div>';
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td>&nbsp;'.LF;
+            $html .= '</td>'.LF;
+            $html .= '<td colspan="2" style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
+            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
+            $current_user = $this->_environment->getCurrentUser();
+            if ( $current_user->isAutoSaveOn() ) {
+               $html .= '<span class="formcounter">'.LF;
+               global $c_autosave_mode;
+               if ( $c_autosave_mode == 1 ) {
+                  $currTime = time();
+                  global $c_autosave_limit;
+                  $sessEnds = $currTime + ($c_autosave_limit * 60);
+                  $sessEnds = date("H:i", $sessEnds);
+                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' '.$sessEnds.LF;
+               } elseif ( $c_autosave_mode == 2 ) {
+                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' <input type="text" size="5" name="timerField" value="..." class="formcounterfield" />'.LF;
+               }
+               $html .= '</span>'.LF;
+            }
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '</table>'.BRLF;
+            $html .= '</form>';
+
+            $html .='<script type="text/javascript">initTextFormatingInformation("'.$current_context->getItemID().'",false)</script>';
+            if ( $current_user->isAutoSaveOn() ) {
+               $html .= '   <script type="text/javascript">'.LF;
+               $html .= '      <!--'.LF;
+               $html .= '         var breakCrit = "'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'"'.';'.LF;
+               $html .= '         startclock();'.LF;
+               $html .= '      -->'.LF;
+               $html .= '   </script>'.LF;
+            }
+         $html .='</div>'.LF;
+
+         $html .= '<!-- END OF ANNOTATION FORM VIEW -->'.LF.LF;
+         return $html;
+        }
+   }
 
 
 }
