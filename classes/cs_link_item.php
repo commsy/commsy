@@ -99,11 +99,27 @@ class cs_link_item extends cs_item {
    /** sets the type of the second linked item of the link_item.
     *
     * @param string
-    *
-    * @author CommSy Development Group
     */
    function setSecondLinkedItemType ($type) {
       return $this->_setValue('second_item_type',$type);
+   }
+
+   /** set the x-position of the link
+    * this method set the x-position of the link for study.log
+    *
+    * @param int
+    */
+   function setPosX ($value) {
+      $this->_addExtra('x',(int)$value);
+   }
+
+   /** set the y-position of the link
+    * this method set the y-position of the link for study.log
+    *
+    * @param int
+    */
+   function setPosY ($value) {
+      $this->_addExtra('y',(int)$value);
    }
 
    /************** get methods ***********************/
@@ -251,10 +267,30 @@ class cs_link_item extends cs_item {
       return $this->_getValue('sorting_place');
    }
 
+   /** get the x-position of the link
+    * this method get the x-position of the link for study.log
+    *
+    * @param int
+    */
+   function getPosX () {
+      $retour = $this->_getExtra('x');
+      return $retour;
+   }
+
+   /** get the y-position of the link
+    * this method get the y-position of the link for study.log
+    *
+    * @param int
+    */
+   function getPosY () {
+      $retour = $this->_getExtra('y');
+      return $retour;
+   }
+
+/** other methods **/
+
   /** save link item
    * this methode save the link item into the database
-   *
-   * @author CommSy Development Group
    */
    function save() {
       $first_item = $this->getFirstLinkedItem();

@@ -1902,6 +1902,9 @@ class cs_item {
       # url
       if ( $type != CS_LINKITEM_TYPE ) {
          $retour .= '         <url><![CDATA['.$this->getItemUrl().']]></url>'.LF;
+      } else {
+         $retour .= '         <x><![CDATA['.$this->getPosX().']]></x>'.LF;
+         $retour .= '         <y><![CDATA['.$this->getPosY().']]></y>'.LF;
       }
 
       # images

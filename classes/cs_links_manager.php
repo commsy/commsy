@@ -1021,9 +1021,11 @@ class cs_links_manager extends cs_manager {
    private function _getDataAsXMLForFlash ( $array ) {
       $retour  = '';
       $retour .= '      <item>'.LF;
+      $retour .= '         <type><![CDATA['.$array['link_type'].']]></type>'.LF;
       $retour .= '         <from_id><![CDATA['.$array['from_item_id'].']]></from_id>'.LF;
       $retour .= '         <to_id><![CDATA['.$array['to_item_id'].']]></to_id>'.LF;
-      $retour .= '         <type><![CDATA['.$array['link_type'].']]></type>'.LF;
+      $retour .= '         <x><![CDATA['.$array['x'].']]></x>'.LF;
+      $retour .= '         <y><![CDATA['.$array['y'].']]></y>'.LF;
       $retour .= '      </item>'.LF;
       return $retour;
    }
