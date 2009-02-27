@@ -24,13 +24,20 @@
 
 // DBI
 
-function select($select, $quiet = false) {
+function select($select, $quiet = false, $charset = 'latin1') {
    global $DB_Name,$DB_Hostname,$DB_Username, $DB_Password, $error, $errno, $success;
    $link = mysql_pconnect ($DB_Hostname, $DB_Username, $DB_Password)
            or die ("keine Verbindung möglich");
 
    $db_link = mysql_select_db($DB_Name,$link)
               or die ("Database nicht gefunden (beim lesen)");
+   if ( $charset == 'utf8' ) {
+      mysql_query("SET NAMES 'utf8'");
+      mysql_query("SET CHARACTER SET 'utf8'");
+   } else {
+      mysql_query("SET NAMES 'latin1'");
+      mysql_query("SET CHARACTER SET 'latin1'");
+   }
    $result = mysql_query($select);
    $error = mysql_error();
    $errno = mysql_errno();
@@ -60,14 +67,20 @@ function select_auth($select) {
    return $result;
 }
 
-function insert($insert) {
+function insert($insert, $charset = 'latin1') {
    global $DB_Name,$DB_Hostname,$DB_Username,$DB_Password,$success;
    $link2 = mysql_pconnect ($DB_Hostname, $DB_Username, $DB_Password)
             or die ("keine Verbindung möglich");
 
    $db_link = mysql_select_db($DB_Name,$link2)
               or die ("Database nicht gefunden (beim schreiben)");
-   #mysql_set_charset('',$db_link);
+   if ( $charset == 'utf8' ) {
+      mysql_query("SET NAMES 'utf8'");
+      mysql_query("SET CHARACTER SET 'utf8'");
+   } else {
+      mysql_query("SET NAMES 'latin1'");
+      mysql_query("SET CHARACTER SET 'latin1'");
+   }
    $result = mysql_query($insert);
    $error = mysql_error();
    $errno = mysql_errno();
@@ -79,5 +92,4 @@ function insert($insert) {
    mysql_close($link2);
    return $lastSQLID;
 }
-
 ?>

@@ -112,11 +112,56 @@ function getCreateTableSQL ( $name, $array, $charset = 'latin1' ) {
    return $retour;
 }
 
+function utf8_encode_extras ( $value ) {
+   $retour = '';
+   if ( !empty($value) ) {
+      $array = unserialize($value);
+      $retour = serialize(utf8_encode_array($array));
+   }
+   return $retour;
+}
+
+function utf8_encode_array ( $array ) {
+   $retour = array();
+   if ( !empty($array) ) {
+      foreach ( $array as $key => $value ) {
+         if ( is_array($value) ) {
+            $retour[$key] = utf8_encode_array($value);
+         } else {
+           $retour[$key] = utf8_encode($value);
+         }
+      }
+   }
+   return $retour;
+}
+
+function utf8_decode_extras ( $value ) {
+   $retour = '';
+   if ( !empty($value) ) {
+      $array = unserialize($value);
+      $retour = serialize(utf8_decode_array($array));
+   }
+   return $retour;
+}
+
+function utf8_decode_array ( $array ) {
+   $retour = array();
+   if ( !empty($array) ) {
+      foreach ( $array as $key => $value ) {
+         if ( is_array($value) ) {
+            $retour[$key] = utf8_decode_array($value);
+         } else {
+            $retour[$key] = utf8_decode($value);
+         }
+      }
+   }
+   return $retour;
+}
+
 // time management for this script
 $time_start = getmicrotime();
 
 // warning
-/*
 echo('DATABASE: migrate content from latin1 to utf8');
 echo(LINEBREAK);
 echo('---------------------------------------------');
@@ -135,9 +180,10 @@ for ( $i = 0; $i < 10; $i++ ) {
    sleep(1);
    update_progress_bar($count);
 }
-*/
+echo(LINEBREAK);
 
 // begin migration
+echo(LINEBREAK);
 echo('1.STEP: set character set and collation to latin1');
 echo(LINEBREAK);
 flush();
@@ -220,9 +266,9 @@ foreach ( $table_array as $table ) {
 
    update_progress_bar(count($table_array));
 }
+echo(LINEBREAK);
 
 // copy content
-echo(LINEBREAK);
 echo(LINEBREAK);
 echo('STEP2: rename tables with content');
 echo(LINEBREAK);
@@ -230,10 +276,9 @@ init_progress_bar(count($table_array));
 $table_no_copy_array = array();
 $table_no_copy_array[] = 'file_multi_upload';
 $table_no_copy_array[] = 'session';
+
 foreach ( $table_array as $table ) {
-   if ( !in_array($table,$table_no_copy_array)
-         and !in_array('old_'.$table,$table_full_array)
-      ) {
+   if ( !in_array($table,$table_no_copy_array) ) {
       $sql = 'SHOW FULL COLUMNS FROM '.$table.';';
       $result = select($sql);
       $column_array = array();
@@ -249,9 +294,6 @@ foreach ( $table_array as $table ) {
 
       $sql = 'INSERT INTO old_'.$table.' SELECT * FROM '.$table.';';
       $success_array[] = select($sql);
-
-      $sql = 'DROP TABLE '.$table.';';
-      #$success_array[] = select($sql);
    }
    update_progress_bar(count($table_array));
 }
@@ -265,9 +307,7 @@ flush();
 
 init_progress_bar(count($table_array));
 foreach ( $table_array as $table ) {
-   if ( !in_array($table,$table_no_copy_array)
-         and !in_array('utf8_'.$table,$table_full_array)
-      ) {
+   if ( !in_array($table,$table_no_copy_array) ) {
       $sql = 'SHOW FULL COLUMNS FROM '.$table.';';
       $result = select($sql);
       $column_array = array();
@@ -285,6 +325,161 @@ foreach ( $table_array as $table ) {
 }
 echo(LINEBREAK);
 
+// copy content from old to utf8
+echo(LINEBREAK);
+echo('STEP4: copy content');
+echo(LINEBREAK);
+flush();
+
+$sql = 'SHOW TABLES;';
+$result = select($sql);
+$table_array = array();
+while ($row = mysql_fetch_assoc($result) ) {
+   $table_full_array[] = $row['Tables_in_'.$DB_Name];
+   if ( stristr($row['Tables_in_'.$DB_Name],'old_') ) {
+      $table_array[] = $row['Tables_in_'.$DB_Name];
+   }
+}
+
+foreach ( $table_array as $table ) {
+   echo(LINEBREAK);
+   echo(str_replace('old_','',$table));
+   $sql = 'SELECT count(*) as count FROM '.$table.';';
+   $result = select($sql);
+   $row = mysql_fetch_assoc($result);
+   $count = $row['count'];
+   if ( $count > 0 ) {
+      init_progress_bar($count);
+      for ( $i=0; $i<$count; $i++ ) {
+         $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
+         $result = select($sql);
+         $row = mysql_fetch_assoc($result);
+         if ( !empty($row) ) {
+            $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
+            $first = true;
+            foreach ( $row as $key => $value ) {
+               if ( isset($value) ) {
+                  if ( $first ) {
+                     $first = false;
+                  } else {
+                     $sql .= ',';
+                  }
+                  $sql .= ' '.$key;
+                  if ( $value == 'NULL' ) {
+                     $sql .= ' = NULL';
+                  } elseif ( $key == 'extras' ) {
+                     $sql .= '="'.addslashes(utf8_encode_extras($value)).'"';
+                  } else {
+                     $sql .= '="'.addslashes(utf8_encode($value)).'"';
+                     // mysql_real_escape_string ???
+                  }
+               }
+            }
+            $sql .= ';';
+            $success_array[] = insert($sql,'utf8');
+         }
+         update_progress_bar($count);
+      }
+   } else {
+      echo(LINEBREAK);
+      echo('nothing to do');
+      echo(LINEBREAK);
+   }
+   echo(LINEBREAK);
+}
+
+// copy content from old to utf8
+echo(LINEBREAK);
+echo('STEP5: verifying');
+echo(LINEBREAK);
+flush();
+
+$sql = 'SHOW TABLES;';
+$result = select($sql);
+$table_array = array();
+while ($row = mysql_fetch_assoc($result) ) {
+   $table_full_array[] = $row['Tables_in_'.$DB_Name];
+   if ( stristr($row['Tables_in_'.$DB_Name],'old_') ) {
+      $table_array[] = $row['Tables_in_'.$DB_Name];
+   }
+}
+
+$error_log_array = array();
+
+foreach ( $table_array as $table ) {
+   echo(LINEBREAK);
+   echo(str_replace('old_','',$table));
+   $sql = 'SELECT count(*) as count FROM '.$table.';';
+   $result = select($sql);
+   $row = mysql_fetch_assoc($result);
+   $count = $row['count'];
+   if ( $count > 0 ) {
+      init_progress_bar($count);
+      for ( $i=0; $i<$count; $i++ ) {
+         $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
+         $result = select($sql);
+         $row = mysql_fetch_assoc($result);
+
+         $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table).' LIMIT '.$i.',1;';
+         $result2 = select($sql2,false,'utf8');
+         $row2 = mysql_fetch_assoc($result2);
+
+         if ( !empty($row) and !empty($row2) ) {
+            foreach ( $row2 as $key2 => $value2 ) {
+               if ( $key2 == 'extras' ) {
+                  $row2[$key2] = utf8_decode_array(unserialize($value2));
+                  if ( empty($row2[$key2]) ) {
+                     $row2[$key2] = '';
+                  }
+                  $row[$key2] = unserialize($value2);
+                  if ( empty($row[$key2]) ) {
+                     $row[$key2] = '';
+                  }
+               } else {
+                  $row2[$key2] = utf8_decode($value2);
+               }
+            }
+            $diff = array();
+            $diff = array_diff($row,$row2);
+            if ( !empty($diff) ) {
+               foreach ( $diff as $key => $value ) {
+                  if ( $value != 'NULL' ) {
+                     if ( stristr($table,'log_') or $table == 'log' ) {
+                        $error_log_array[$table] = str_replace('old_','',$table);
+                     } else {
+                        $success_array[] = false;
+                        echo('<hr/>');
+                        pr($row[$key]);
+                        pr($row2[$key]);
+                        echo('<hr/>');
+                     }
+                  }
+               }
+            }
+         }
+         update_progress_bar($count);
+      }
+   } else {
+      echo(LINEBREAK);
+      echo('nothing to do');
+      echo(LINEBREAK);
+   }
+   echo(LINEBREAK);
+}
+
+if ( isset($error_log_array) and !empty($error_log_array) ) {
+   echo(LINEBREAK);
+   echo('errors occur in the following log-tabels');
+   foreach ( $error_log_array as $table ) {
+      echo(LINEBREAK);
+      echo('- '.$table);
+   }
+   echo(LINEBREAK);
+   echo('don\'t worry about that');
+   echo(LINEBREAK);
+}
+flush();
+
 // rest tables to utf8
 echo(LINEBREAK);
 echo('STEP6: set tabel session and file_multi_upload to utf8');
@@ -298,7 +493,7 @@ foreach ( $table_no_copy_array as $table ) {
    $row = mysql_fetch_assoc($result);
    if ( empty($row['Collation']) or $row['Collation'] != 'utf8_general_ci' ) {
       $sql = 'ALTER TABLE '.$table.' CHARACTER SET utf8 COLLATE utf8_general_ci;';
-      #$success[] = select($sql);
+      $success[] = select($sql);
    }
 
    $sql = 'SHOW FULL COLUMNS FROM '.$table.';';
@@ -326,7 +521,7 @@ foreach ( $table_no_copy_array as $table ) {
             $sql .= ' NOT NULL';
          }
          $sql .= ';';
-         #$success[] = select($sql);
+         $success[] = select($sql);
       }
    }
 
@@ -336,9 +531,49 @@ foreach ( $table_no_copy_array as $table ) {
 echo(LINEBREAK);
 flush();
 
+// copy content
+echo(LINEBREAK);
+echo('STEP7: rename utf8-tables with content');
+echo(LINEBREAK);
+
+$sql = 'SHOW TABLES;';
+$result = select($sql,false,'utf8');
+$utf8_table_array = array();
+while ($row = mysql_fetch_assoc($result) ) {
+   if ( stristr($row['Tables_in_'.$DB_Name],'utf8_') ) {
+      $utf8_table_array[] = $row['Tables_in_'.$DB_Name];
+   }
+}
+
+init_progress_bar(count($utf8_table_array));
+foreach ( $utf8_table_array as $table ) {
+   $sql = 'SHOW FULL COLUMNS FROM '.$table.';';
+   $result = select($sql,false,'utf8');
+   $column_array = array();
+   while ($row = mysql_fetch_assoc($result) ) {
+       $column_array[] = $row;
+   }
+
+   $sql  = 'DROP TABLE IF EXISTS '.str_replace('utf8_','',$table).';';
+   $success_array[] = select($sql,false,'utf8');
+
+   $sql = getCreateTableSQL(str_replace('utf8_','',$table),$column_array,'utf8');
+   $success_array[] = select($sql,false,'utf8');
+
+   $sql = 'INSERT INTO '.str_replace('utf8_','',$table).' SELECT * FROM '.$table.';';
+   $success_array[] = select($sql,false,'utf8');
+
+   $sql = 'DROP TABLE '.$table.';';
+   $success_array[] = select($sql,false,'utf8');
+
+   update_progress_bar(count($utf8_table_array));
+}
+echo(LINEBREAK);
+flush();
+
 // delete old_tables
 echo(LINEBREAK);
-echo('STEP7: delete old tables');
+echo('STEP8: delete old tables');
 echo(LINEBREAK);
 flush();
 $sql = 'SHOW TABLES;';
@@ -353,15 +588,15 @@ while ($row = mysql_fetch_assoc($result) ) {
 }
 foreach ($table_array as $table) {
    $sql = 'DROP TABLE '.$table.';';
-   #$success_array[] = select($sql);
+   $success_array[] = select($sql);
 }
 echo('done');
 echo(LINEBREAK);
 flush();
 
 // database to utf8
-/*
-echo('STEP8: set '.$DB_Name.' to utf8');
+echo(LINEBREAK);
+echo('STEP9: set '.$DB_Name.' to utf8');
 echo(LINEBREAK);
 flush();
 $sql = 'SHOW VARIABLES LIKE "collation_database";';
@@ -381,7 +616,6 @@ if ( empty($row['Value']) or $row['Value'] != 'utf8_general_ci' ) {
 }
 echo(LINEBREAK);
 flush();
-*/
 
 // last step
 $success = true;
