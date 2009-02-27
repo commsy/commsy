@@ -49,6 +49,9 @@ function getCreateFieldForTable ( $array, $charset ) {
          $retour .= ' default \''.$array['Default'].'\'';
       }
    }
+   if ( !empty($array['Extra']) ) {
+      $retour .= ' '.$array['Extra'];
+   }
    return $retour;
 }
 
@@ -128,7 +131,11 @@ function utf8_encode_array ( $array ) {
          if ( is_array($value) ) {
             $retour[$key] = utf8_encode_array($value);
          } else {
-           $retour[$key] = utf8_encode($value);
+           if ( is_utf8($value) ) {
+              $retour[$key] = $value;
+           } else {
+              $retour[$key] = utf8_encode($value);
+           }
          }
       }
    }
@@ -157,6 +164,21 @@ function utf8_decode_array ( $array ) {
    }
    return $retour;
 }
+
+function is_utf8($string) {
+   // From http://w3.org/International/questions/qa-forms-utf-8.html
+   return preg_match('%^(?:
+         [\x09\x0A\x0D\x20-\x7E]            # ASCII
+       | [\xC2-\xDF][\x80-\xBF]            # non-overlong 2-byte
+       |  \xE0[\xA0-\xBF][\x80-\xBF]        # excluding overlongs
+       | [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2}  # straight 3-byte
+       |  \xED[\x80-\x9F][\x80-\xBF]        # excluding surrogates
+       |  \xF0[\x90-\xBF][\x80-\xBF]{2}    # planes 1-3
+       | [\xF1-\xF3][\x80-\xBF]{3}          # planes 4-15
+       |  \xF4[\x80-\x8F][\x80-\xBF]{2}    # plane 16
+   )*$%xs', $string);
+}
+
 
 // time management for this script
 $time_start = getmicrotime();
@@ -302,8 +324,19 @@ echo(LINEBREAK);
 // create utf8 tables
 echo(LINEBREAK);
 echo('STEP3: create utf8-tables');
+echo(' and copy content for tables without extras');
 echo(LINEBREAK);
 flush();
+
+$tabel_extra_array = array();
+$tabel_extra_array[] = 'auth_source';
+$tabel_extra_array[] = 'files';
+$tabel_extra_array[] = 'labels';
+$tabel_extra_array[] = 'materials';
+$tabel_extra_array[] = 'portal';
+$tabel_extra_array[] = 'room';
+$tabel_extra_array[] = 'server';
+$tabel_extra_array[] = 'user';
 
 init_progress_bar(count($table_array));
 foreach ( $table_array as $table ) {
@@ -318,8 +351,19 @@ foreach ( $table_array as $table ) {
       $sql  = 'DROP TABLE IF EXISTS utf8_'.$table.';';
       $success_array[] = select($sql);
 
-      $sql = getCreateTableSQL('utf8_'.$table,$column_array,'utf8');
-      $success_array[] = select($sql);
+      if ( in_array($table,$tabel_extra_array) ) {
+         $sql = getCreateTableSQL('utf8_'.$table,$column_array,'utf8');
+         $success_array[] = select($sql);
+      } else {
+         $sql = getCreateTableSQL('utf8_'.$table,$column_array);
+         $success_array[] = select($sql);
+
+         $sql = 'INSERT INTO utf8_'.$table.' SELECT * FROM '.$table.';';
+         $success_array[] = select($sql);
+
+         $sql = 'ALTER TABLE utf8_'.$table.' CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;';
+         $success_array[] = select($sql);
+      }
    }
    update_progress_bar(count($table_array));
 }
@@ -328,6 +372,7 @@ echo(LINEBREAK);
 // copy content from old to utf8
 echo(LINEBREAK);
 echo('STEP4: copy content');
+echo(' for tables with extras');
 echo(LINEBREAK);
 flush();
 
@@ -342,51 +387,58 @@ while ($row = mysql_fetch_assoc($result) ) {
 }
 
 foreach ( $table_array as $table ) {
-   echo(LINEBREAK);
-   echo(str_replace('old_','',$table));
-   $sql = 'SELECT count(*) as count FROM '.$table.';';
-   $result = select($sql);
-   $row = mysql_fetch_assoc($result);
-   $count = $row['count'];
-   if ( $count > 0 ) {
-      init_progress_bar($count);
-      for ( $i=0; $i<$count; $i++ ) {
-         $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
-         $result = select($sql);
-         $row = mysql_fetch_assoc($result);
-         if ( !empty($row) ) {
-            $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
-            $first = true;
-            foreach ( $row as $key => $value ) {
-               if ( isset($value) ) {
-                  if ( $first ) {
-                     $first = false;
-                  } else {
-                     $sql .= ',';
-                  }
-                  $sql .= ' '.$key;
-                  if ( $value == 'NULL' ) {
-                     $sql .= ' = NULL';
-                  } elseif ( $key == 'extras' ) {
-                     $sql .= '="'.addslashes(utf8_encode_extras($value)).'"';
-                  } else {
-                     $sql .= '="'.addslashes(utf8_encode($value)).'"';
-                     // mysql_real_escape_string ???
+   if ( in_array(str_replace('old_','',$table),$tabel_extra_array) ) {
+      echo(LINEBREAK);
+      echo(str_replace('old_','',$table));
+      $sql = 'SELECT count(*) as count FROM '.$table.';';
+      $result = select($sql);
+      $row = mysql_fetch_assoc($result);
+      $count = $row['count'];
+      if ( $count > 0 ) {
+         init_progress_bar($count);
+         for ( $i=0; $i<$count; $i++ ) {
+            $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
+            $result = select($sql);
+            $row = mysql_fetch_assoc($result);
+            if ( !empty($row) ) {
+               $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
+               $first = true;
+               foreach ( $row as $key => $value ) {
+                  if ( isset($value) ) {
+                     if ( $first ) {
+                        $first = false;
+                     } else {
+                        $sql .= ',';
+                     }
+                     $sql .= ' '.$key;
+                     if ( $value == 'NULL' ) {
+                        $sql .= ' = NULL';
+                     } elseif ( $key == 'extras' ) {
+                        $sql .= '="'.addslashes(utf8_encode_extras($value)).'"';
+                     } else {
+                        if ( !is_utf8($value) ) {
+                           $sql .= '="'.addslashes(utf8_encode($value)).'"';
+                        } else {
+                           $sql .= '="'.addslashes($value).'"';
+                        }
+                        // mysql_real_escape_string ???
+                     }
                   }
                }
+               $sql .= ';';
+               $success_array[] = insert($sql,'utf8');
             }
-            $sql .= ';';
-            $success_array[] = insert($sql,'utf8');
+            update_progress_bar($count);
          }
-         update_progress_bar($count);
+      } else {
+         echo(LINEBREAK);
+         echo('nothing to do');
+         echo(LINEBREAK);
       }
-   } else {
-      echo(LINEBREAK);
-      echo('nothing to do');
       echo(LINEBREAK);
    }
-   echo(LINEBREAK);
 }
+flush();
 
 // copy content from old to utf8
 echo(LINEBREAK);
@@ -405,6 +457,11 @@ while ($row = mysql_fetch_assoc($result) ) {
 }
 
 $error_log_array = array();
+$char_trans_array = array();
+$char_trans_array[131] = 'f';
+$char_trans_array[132] = '"';
+$char_trans_array[147] = '"';
+$char_trans_array[150] = '-';
 
 foreach ( $table_array as $table ) {
    echo(LINEBREAK);
@@ -419,10 +476,12 @@ foreach ( $table_array as $table ) {
          $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
          $result = select($sql);
          $row = mysql_fetch_assoc($result);
+         $row_orig = $row;
 
          $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table).' LIMIT '.$i.',1;';
          $result2 = select($sql2,false,'utf8');
          $row2 = mysql_fetch_assoc($result2);
+         $row2_orig = $row2;
 
          if ( !empty($row) and !empty($row2) ) {
             foreach ( $row2 as $key2 => $value2 ) {
@@ -431,7 +490,7 @@ foreach ( $table_array as $table ) {
                   if ( empty($row2[$key2]) ) {
                      $row2[$key2] = '';
                   }
-                  $row[$key2] = unserialize($value2);
+                  $row[$key2] = unserialize($row[$key2]);
                   if ( empty($row[$key2]) ) {
                      $row[$key2] = '';
                   }
@@ -447,11 +506,69 @@ foreach ( $table_array as $table ) {
                      if ( stristr($table,'log_') or $table == 'log' ) {
                         $error_log_array[$table] = str_replace('old_','',$table);
                      } else {
-                        $success_array[] = false;
-                        echo('<hr/>');
-                        pr($row[$key]);
-                        pr($row2[$key]);
-                        echo('<hr/>');
+                        $array_orig = str_split($row[$key]);
+                        $array_utf8 = str_split($row2[$key]);
+                        $diff_array = array();
+                        foreach ($array_orig as $place => $char) {
+                           if ( $char != $array_utf8[$place] ) {
+                              $diff_array[$place] = $char;
+                           }
+                        }
+
+                        foreach ($diff_array as $place => $char ) {
+                           #$row2[$key][$place] = chr(ord($char));
+                           if ( !empty($char_trans_array[ord($char)]) ) {
+                              $row2[$key][$place] = $char_trans_array[ord($char)];
+                           } else {
+                              echo(LINEBREAK);
+                              echo('keine Übersetzung für '.$char.' ('.ord($char).')');
+                              echo(LINEBREAK);
+                           }
+                        }
+
+                        $sql  = 'UPDATE '.str_replace('old_','utf8_',$table);
+                        $sql .= ' SET '.$key.'="'.addslashes(utf8_encode($row2[$key])).'"';
+                        $sql .= ' WHERE ';
+
+                        $first = true;
+                        foreach ( $row2_orig as $key_update => $value_update ) {
+                           if ( is_numeric($value_update) ) {
+                              if ( $first ) {
+                                 $first = false;
+                              } else {
+                                 $sql .= ' and ';
+                              }
+                              $sql .= $key_update.'="'.addslashes($value_update).'"';
+                           }
+                        }
+                        $sql .= ';';
+                        $success_array[] = select($sql,false,'utf8');
+
+                        /*
+                        $sql  = 'SELECT '.$key.' FROM '.str_replace('old_','utf8_',$table);
+                        $sql .= ' WHERE ';
+
+                        $first = true;
+                        foreach ( $row2_orig as $key_update => $value_update ) {
+                           if ( is_numeric($value_update) ) {
+                              if ( $first ) {
+                                 $first = false;
+                              } else {
+                                 $sql .= ' and ';
+                              }
+                              $sql .= $key_update.'="'.addslashes($value_update).'"';
+                           }
+                        }
+                        $sql .= ';';
+                        $result_update = select($sql,false,'utf8');
+                        $row_update = mysql_fetch_assoc($result_update);
+                        if ( utf8_decode($row_update[$key]) != $row_orig[$key] ) {
+                           pr($row_orig[$key]);
+                           pr($row_update[$key]);
+                           pr(utf8_decode($row_update[$key]));
+                           #$success_array[] = false;
+                        }
+                        */
                      }
                   }
                }
@@ -493,7 +610,7 @@ foreach ( $table_no_copy_array as $table ) {
    $row = mysql_fetch_assoc($result);
    if ( empty($row['Collation']) or $row['Collation'] != 'utf8_general_ci' ) {
       $sql = 'ALTER TABLE '.$table.' CHARACTER SET utf8 COLLATE utf8_general_ci;';
-      $success[] = select($sql);
+      $success_array[] = select($sql);
    }
 
    $sql = 'SHOW FULL COLUMNS FROM '.$table.';';
@@ -521,7 +638,7 @@ foreach ( $table_no_copy_array as $table ) {
             $sql .= ' NOT NULL';
          }
          $sql .= ';';
-         $success[] = select($sql);
+         $success_array[] = select($sql);
       }
    }
 
@@ -605,10 +722,10 @@ $row = mysql_fetch_assoc($result);
 if ( empty($row['Value']) or $row['Value'] != 'utf8_general_ci' ) {
    $sql = 'ALTER DATABASE '.$DB_Name.' CHARACTER SET utf8 COLLATE utf8_general_ci;';
    if ( select($sql) ) {
-      $success[] = true;
+      $success_array[] = true;
       echo('done');
    } else {
-      $success[] = false;
+      $success_array[] = false;
       echo('error');
    }
 } else {

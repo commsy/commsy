@@ -87,9 +87,16 @@ function insert($insert, $charset = 'latin1') {
    if ( !empty($error) ) {
       echo ('<hr/>'.$error.". QUERY: ".$insert.'<hr/>');
       $success = false;
+   } else {
+      $success = true;
    }
-   $lastSQLID = mysql_insert_id();
+   $lastSQLID = mysql_insert_id($link2);
    mysql_close($link2);
-   return $lastSQLID;
+   if ( empty($lastSQLID) ) {
+      $retour = $success;
+   } else {
+      $retour = $lastSQLID;
+   }
+   return $retour;
 }
 ?>
