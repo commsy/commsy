@@ -235,6 +235,10 @@ class cs_page_room_view extends cs_page_view {
          $hash_manager = $this->_environment->getHashManager();
          $hash_string = '&amp;hid='.$hash_manager->getRSSHashForUser($current_user_item->getItemID());
       }
+
+
+
+
       if ( $show_rss_link ) {
          $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
       }
@@ -910,7 +914,7 @@ class cs_page_room_view extends cs_page_view {
 
          $html .= LF.'<div id="main">'.LF;
 
-         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
+          $html .= $this->_getPluginInfosForBeforeContentAsHTML();
 
          if ($show_agb_again) {
             $html .='&nbsp;';
@@ -1384,6 +1388,21 @@ class cs_page_room_view extends cs_page_view {
             }
             unset($img);
          }
+      }
+      global $web_feedback_url;
+      global $use_web_feedback_system;
+      if ($use_web_feedback_system){
+      $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;';
+         $html .='<!-- Code for WFS-Feedback -->
+<script src="'.$web_feedback_url.'lib/jquery-latest.js" type="text/javascript" ></script>
+<script src="'.$web_feedback_url.'lib/jquery.field.js" type="text/javascript"></script>
+<script src="'.$web_feedback_url.'lib/jquery.dimensions.js" type="text/javascript"></script>
+<script src="'.$web_feedback_url.'lib/jquery.tooltip.js" type="text/javascript"></script>
+<script src="'.$web_feedback_url.'lib/feedback.js" type="text/javascript"></script>
+
+ <a id="wfs_button" href="javascript:feedbackPage(\''.$web_feedback_url.'\');"><img style="vertical-align:bottom;" id="wfs_feedback_gif" src="images/wfs.png" title="Click here to open a window with a feedback system." ></img></a>&nbsp;
+
+<!-- End of Code for WFS-Feedback -->'.LF;
       }
       return $html;
    }
