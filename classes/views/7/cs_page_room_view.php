@@ -1389,9 +1389,11 @@ class cs_page_room_view extends cs_page_view {
             unset($img);
          }
       }
-      global $web_feedback_url;
+ /*     global $web_feedback_url;
       global $use_web_feedback_system;
-      if ($use_web_feedback_system){
+      global $web_feedback_room_id_array;
+      $current_context_id = $this->_environment->getCurrentContextItem()->getItemID();
+      if ($use_web_feedback_system and in_array($current_context_id,$web_feedback_room_id_array)){
       $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;';
          $html .='<!-- Code for WFS-Feedback -->
 <script src="'.$web_feedback_url.'lib/jquery-latest.js" type="text/javascript" ></script>
@@ -1403,7 +1405,7 @@ class cs_page_room_view extends cs_page_view {
  <a id="wfs_button" href="javascript:feedbackPage(\''.$web_feedback_url.'\');"><img style="vertical-align:bottom;" id="wfs_feedback_gif" src="images/wfs.png" title="Click here to open a window with a feedback system." ></img></a>&nbsp;
 
 <!-- End of Code for WFS-Feedback -->'.LF;
-      }
+      }*/
       return $html;
    }
 
