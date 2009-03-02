@@ -446,22 +446,54 @@ echo('STEP5: verifying');
 echo(LINEBREAK);
 flush();
 
+$table_array_dont_verify = array();
+$table_array_dont_verify[] = 'external2commsy_id';
+$table_array_dont_verify[] = 'hash';
+$table_array_dont_verify[] = 'homepage_link_page_page';
+$table_array_dont_verify[] = 'items';
+$table_array_dont_verify[] = 'item_link_file';
+$table_array_dont_verify[] = 'links';
+$table_array_dont_verify[] = 'link_items';
+$table_array_dont_verify[] = 'link_modifier_item';
+$table_array_dont_verify[] = 'log';
+$table_array_dont_verify[] = 'log_ads';
+$table_array_dont_verify[] = 'log_archive';
+$table_array_dont_verify[] = 'log_error';
+$table_array_dont_verify[] = 'log_message_tag';
+$table_array_dont_verify[] = 'noticed';
+$table_array_dont_verify[] = 'reader';
+$table_array_dont_verify[] = 'tag2tag';
+$table_array_dont_verify[] = 'tasks';
+
+
 $sql = 'SHOW TABLES;';
 $result = select($sql);
 $table_array = array();
 while ($row = mysql_fetch_assoc($result) ) {
    $table_full_array[] = $row['Tables_in_'.$DB_Name];
-   if ( stristr($row['Tables_in_'.$DB_Name],'old_') ) {
+   if ( stristr($row['Tables_in_'.$DB_Name],'old_')
+        and !in_array(str_replace('old_','',$row['Tables_in_'.$DB_Name]),$table_array_dont_verify)
+      ) {
       $table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
 
 $error_log_array = array();
 $char_trans_array = array();
-$char_trans_array[131] = 'f';
+$char_trans_array[128] = 'EUR'; // EURO Zeichen
+$char_trans_array[131] = ",";
+$char_trans_array[131] = 'f';   // mathematisches f für Formel
 $char_trans_array[132] = '"';
+$char_trans_array[133] = '...';
+$char_trans_array[133] = ':';   // Zwei Kreuze übereinander
+$char_trans_array[145] = "'";
+$char_trans_array[146] = "'";
 $char_trans_array[147] = '"';
+$char_trans_array[148] = '"';
+$char_trans_array[149] = '*';   // Aufzählungspunkt
 $char_trans_array[150] = '-';
+$char_trans_array[151] = '-';
+$char_trans_array[153] = 'TM';   // TM hochgestellt
 
 foreach ( $table_array as $table ) {
    echo(LINEBREAK);
@@ -506,6 +538,8 @@ foreach ( $table_array as $table ) {
                      if ( stristr($table,'log_') or $table == 'log' ) {
                         $error_log_array[$table] = str_replace('old_','',$table);
                      } else {
+                        // str_split() expects parameter 1 to be string, array given
+                        // extras ???
                         $array_orig = str_split($row[$key]);
                         $array_utf8 = str_split($row2[$key]);
                         $diff_array = array();
@@ -518,6 +552,7 @@ foreach ( $table_array as $table ) {
                         foreach ($diff_array as $place => $char ) {
                            #$row2[$key][$place] = chr(ord($char));
                            if ( !empty($char_trans_array[ord($char)]) ) {
+                              // extras anders behandeln !!!
                               $row2[$key][$place] = $char_trans_array[ord($char)];
                            } else {
                               echo(LINEBREAK);
