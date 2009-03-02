@@ -68,7 +68,6 @@ class cs_html_textarea {
         }else{
            $oFCKeditor->Width = '98%';
         }
-#        $oFCKeditor->Width = '98%';
 		$oFCKeditor->Height   = round($hsize*13.5,0);
 		$oFCKeditor->TabIndex = $tabindex;
 		if ( $html_status == '2' ) {
