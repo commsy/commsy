@@ -54,11 +54,12 @@ class cs_html_textarea {
 		$oFCKeditor->Value    = $value;
 		if ($no_discussion){
            if ( empty($vsize) ) {
-			   $oFCKeditor->Width    = '524px';
+			   $oFCKeditor->Width    = '504px';
 		   } else {
 			   $oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
 		   }
         }
+        global $environment;
         global $environment;
         $current_browser = strtolower($environment->getCurrentBrowser());
         $current_browser_version = $environment->getCurrentBrowserVersion();
@@ -68,6 +69,7 @@ class cs_html_textarea {
         }else{
            $oFCKeditor->Width = '100%';
         }
+#        $oFCKeditor->Width = '98%';
 		$oFCKeditor->Height   = round($hsize*13.5,0);
 		$oFCKeditor->TabIndex = $tabindex;
 		if ( $html_status == '2' ) {
