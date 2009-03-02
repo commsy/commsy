@@ -1186,7 +1186,7 @@ class cs_form_view extends cs_view {
                                               $form_element['hsize']+10,
                                               $html_status,
                                               $this->_count_form_elements,
-                                              $vsize
+                                              80
                                             );
            } else {
               $html .= $normal;
