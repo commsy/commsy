@@ -53,13 +53,21 @@ class cs_html_textarea {
 		$oFCKeditor->Config["CustomConfigurationsPath"] = $c_commsy_url_path.'/javascript/CommSyFCKEditorConfig.js';
 		$oFCKeditor->Value    = $value;
 		if ($no_discussion){
-         if ( empty($vsize) ) {
+           if ( empty($vsize) ) {
 			   $oFCKeditor->Width    = '504px';
 		   } else {
 			   $oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
 		   }
-      }
-      $oFCKeditor->Width = '98%';
+        }
+        global $environment;
+        $current_browser = strtolower($environment->getCurrentBrowser());
+        $current_browser_version = $environment->getCurrentBrowserVersion();
+        $context_item = $environment->getCurrentContextItem();
+        if ($context_item->isDesign6() and $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+           $oFCKeditor->Width = ' width:504px;';
+        }else{
+           $oFCKeditor->Width = '98%';
+        }
 		$oFCKeditor->Height   = round($hsize*13.5,0);
 		$oFCKeditor->TabIndex = $tabindex;
 		if ( $html_status == '2' ) {

@@ -1183,10 +1183,10 @@ class cs_form_view extends cs_view {
               $html_area = new cs_html_textarea();
               $html .= $html_area->getAsHTML( $form_element['name'],
                                               $this->_text_as_form_for_html_editor($form_element['value'],$specialTextArea),
-                                              200,
+                                              $form_element['hsize']+10,
                                               $html_status,
                                               $this->_count_form_elements,
-                                              $vsize
+                                              200
                                             );
            } else {
               $html .= $normal;
