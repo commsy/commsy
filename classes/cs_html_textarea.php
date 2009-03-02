@@ -63,7 +63,7 @@ class cs_html_textarea {
         $current_browser = strtolower($environment->getCurrentBrowser());
         $current_browser_version = $environment->getCurrentBrowserVersion();
         $context_item = $environment->getCurrentContextItem();
-        if ($context_item->isDesign6() and $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+        if ($current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
            $oFCKeditor->Width = ' width:604px;';
         }else{
            $oFCKeditor->Width = '98%';
