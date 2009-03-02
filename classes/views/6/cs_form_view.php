@@ -1176,7 +1176,6 @@ class cs_form_view extends cs_view {
          $html .= $normal;
      } else {
         $session = $this->_environment->getSessionItem();
-        pr($vsize);
         if ($session->issetValue('javascript')) {
            $javascript = $session->getValue('javascript');
            if ($javascript == 1) {
