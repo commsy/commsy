@@ -66,7 +66,7 @@ class cs_html_textarea {
         if ($current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
            $oFCKeditor->Width = ' width:100%;';
         }else{
-           $oFCKeditor->Width = '98%';
+           $oFCKeditor->Width = '100%';
         }
 		$oFCKeditor->Height   = round($hsize*13.5,0);
 		$oFCKeditor->TabIndex = $tabindex;
