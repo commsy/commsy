@@ -54,7 +54,7 @@ class cs_html_textarea {
 		$oFCKeditor->Value    = $value;
 		if ($no_discussion){
            if ( empty($vsize) ) {
-			   $oFCKeditor->Width    = '504px';
+			   $oFCKeditor->Width    = '524px';
 		   } else {
 			   $oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
 		   }
