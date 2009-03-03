@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -143,8 +143,8 @@ else {
    $delete_id = 0;
    $assign_id = 0;
    foreach ($_POST as $key => $post_var){
-      $iid = substr(strchr($key,'#'),1);
-      if ( !empty($iid) and stristr($key,'option') ) {
+      $iid = mb_substr(strchr($key,'#'),1);
+      if ( !empty($iid) and mb_stristr($key,'option') ) {
          if ( isOption($post_var, getMessage('COMMON_DELETE_BUTTON')) ) {
             $delete_id = $iid;
          } else {
@@ -162,8 +162,8 @@ else {
 
    // Redirect to attach material
    foreach ($_POST as $key => $post_var){
-      $iid = substr(strchr($key,'#'),1);
-      if (!empty($iid) and stristr($key,'option') ) {
+      $iid = mb_substr(strchr($key,'#'),1);
+      if (!empty($iid) and mb_stristr($key,'option') ) {
          if ( isOption($post_var, $translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES')) ){
             $assign_id = $iid;
             attach_redirect($linked_rubric, $iid);
@@ -199,7 +199,7 @@ else {
       $form->prepareForm();
       $form->loadValues();
 
-      // umhängen von Kategorien
+      // umhÃ¤ngen von Kategorien
       if ( isOption($command, getMessage('TAG_SORT_BUTTON'))
            and $_POST['sort1'] != $_POST['sort2']
          ) {
@@ -235,9 +235,9 @@ else {
       elseif ( !empty($delete_id) or !empty($change_id) ) {
          if ( !empty($_POST) ) {
             foreach ($_POST as $key => $post_var) {
-               $iid = substr(strchr($key,'#'),1);
+               $iid = mb_substr(strchr($key,'#'),1);
                $tag_manager = $environment->getTagManager();
-               if ( !empty($iid) and stristr($key,'tag') and $iid == $change_id ) {
+               if ( !empty($iid) and mb_stristr($key,'tag') and $iid == $change_id ) {
                   $tag_item = $tag_manager->getItem($iid);
                   $tag_item->setTitle($post_var);
                   $tag_item->save();

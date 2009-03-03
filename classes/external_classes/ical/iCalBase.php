@@ -46,7 +46,7 @@ class iCalBase {
 	private $description;
 
 	/**
-	* iso code language (en, de,…)
+	* iso code language (en, de,Â…)
 	*/
 	private $lang;
 
@@ -61,7 +61,7 @@ class iCalBase {
 	private $summary;
 
 	/**
-	* String of days for the recurring module (example: “SU,MO”)
+	* String of days for the recurring module (example: Â“SU,MOÂ”)
 	*/
 	private $rec_days;
 
@@ -274,7 +274,7 @@ class iCalBase {
 	/**
 	* Sets the starting day for the week (0 = Sunday)
 	*
-	* @param int $weekstart  0–6
+	* @param int $weekstart  0Â–6
 	* @see getWeekStart()
 	* @uses iCalBase::$week_start
 	* @since 1.010 - 2002-10-26
@@ -338,7 +338,7 @@ class iCalBase {
 	/**
 	* Sets the frequency of a recurring event
 	*
-	* @param int $int Integer 0–7
+	* @param int $int Integer 0Â–7
 	* @see getFrequency()
 	* @uses iCalBase::$frequencies
 	* @since 1.010 - 2002-10-26
@@ -360,7 +360,7 @@ class iCalBase {
 	} // end function
 
 	/**
-	* Sets the interval for a recurring event (2 = every 2 [days|weeks|years|…])
+	* Sets the interval for a recurring event (2 = every 2 [days|weeks|years|Â…])
 	*
 	* @param int $interval
 	* @see getInterval()

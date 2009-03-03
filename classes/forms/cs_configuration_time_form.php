@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -111,7 +111,7 @@ class cs_configuration_time_form extends cs_rubric_form {
    } else {
       $this->_form->combine('vertical');
    }
-         $this->_form->addTextField('name['.strtoupper($language).']','',$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_NAME_TITLE'),'','','45',false,'','','','',$language);
+         $this->_form->addTextField('name['.mb_strtoupper($language, 'UTF-8').']','',$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_NAME_TITLE'),'','','45',false,'','','','',$language);
       }
 
       $this->_form->addSelect('future',$this->_future_choice,'',$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_FUTURE_TITLE'),'',1,false,true);
@@ -121,7 +121,7 @@ class cs_configuration_time_form extends cs_rubric_form {
          $this->_form->addButton('delete_'.$i,$this->_translator->getMessage('COMMON_DELETE_BUTTON'),$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_TEXT_TITLE',$i),$this->_translator->getMessage('CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC'));
          foreach ($avaiable_languages as $language) {
             $this->_form->combine('vertical');
-            $this->_form->addTextField('clock_pulse['.$i.']['.strtoupper($language).']','','','','','45',false,'','','','',$language);
+            $this->_form->addTextField('clock_pulse['.$i.']['.mb_strtoupper($language, 'UTF-8').']','','','','','45',false,'','','','',$language);
          }
          $this->_form->combine('vertical');
          $this->_form->addEmptyLine('empty');

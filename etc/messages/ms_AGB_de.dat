@@ -9,5 +9,5 @@ $message["AGB_CONFIRMATION"]["de"] = "Nutzungsvereinbarungen";
 $message["AGB_CONFIRMATION_GUIDE"]["de"] = "Nutzungsver-
 einbarungen";
 $message["AGB_CONFIRMATION_LINK_INPUT"]["de"] = "Nutzungsvereinbarungen";
-$message["AGB_MUST_BE_ACCEPTED_FAILURE_TEXT"]["de"] = "Bitte stimmen Sie den <span style=&quot;font-weight:bold;&quot;>Nutzungsvereinbarungen</span> zu, da wir Ihnen die Nutzung des Systems sonst nicht ermöglichen können";
+$message["AGB_MUST_BE_ACCEPTED_FAILURE_TEXT"]["de"] = "Bitte stimmen Sie den <span style=&quot;font-weight:bold;&quot;>Nutzungsvereinbarungen</span> zu, da wir Ihnen die Nutzung des Systems sonst nicht ermÃ¶glichen kÃ¶nnen";
 ?>

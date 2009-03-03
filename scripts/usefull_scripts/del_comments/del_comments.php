@@ -32,13 +32,13 @@ if ( empty($bash) ) {
 }
 
 function del_comments2 ($string) {
-   $string = preg_replace('§\/\*[\w\W]*\*\/?§','',$string); // nimmt zu viel weg
-   $string = preg_replace('§\/\/.*\n?§','',$string);
-   $string = preg_replace('§\n\n?§',"\n",$string);
-   $string = preg_replace('§\n\n?§',"\n",$string);
-   $string = preg_replace('§\n\n?§',"\n",$string);
-   // nur, wenn alle Lehrzeichen in der HTML-Ausgaben zu &nbsp; geändert wurden
-   #$string = preg_replace('§[ ]?§','',$string);
+   $string = preg_replace('~\/\*[\w\W]*\*\/?~u','',$string); // nimmt zu viel weg
+   $string = preg_replace('~\/\/.*\n?~u','',$string);
+   $string = preg_replace('~\n\n?~u',"\n",$string);
+   $string = preg_replace('~\n\n?~u',"\n",$string);
+   $string = preg_replace('~\n\n?~u',"\n",$string);
+   // nur, wenn alle Lehrzeichen in der HTML-Ausgaben zu &nbsp; geÃ¤ndert wurden
+   #$string = preg_replace('Â§[ ]?Â§','',$string);
    $string = trim($string);
    return $string;
 }
@@ -47,9 +47,9 @@ function del_comments ($file) {
    global $NL, $bash;
    $retour = true;
    $file_string_old = file_get_contents($file);
-   if (preg_match('§<?[PHP|php]+§',$file_string_old)) {
+   if (preg_match('~<?[PHP|php]+~u',$file_string_old)) {
       $file_string = del_comments2($file_string_old);
-      if ( strlen($file_string) != strlen($file_string_old) ) {
+      if ( mb_strlen($file_string) != mb_strlen($file_string_old) ) {
          if (file_put_contents($file,$file_string)) {
             echo($file.': success'.$NL);
          } elseif ( empty($bash) or !$bash ) {
@@ -71,9 +71,9 @@ function del_comments_php ($file) {
    global $NL, $bash;
    $retour = true;
    $file_string_old = file_get_contents($file);
-   if (preg_match('§<?[PHP|php]+§',$file_string_old)) {
+   if (preg_match('~<?[PHP|php]+~u',$file_string_old)) {
       $file_string = shell_exec('php '.escapeshellcmd('-w -f '.$file));
-      if ( strlen($file_string) != strlen($file_string_old) ) {
+      if ( mb_strlen($file_string) != mb_strlen($file_string_old) ) {
          if (file_put_contents($file,$file_string)) {
             echo($file.': success'.$NL);
          } elseif ( empty($bash) or !$bash ) {
@@ -97,15 +97,15 @@ function runFilesInDir ($directory) {
    while (false !== ($entry = readdir($directory_handle))) {
       if ( $entry != '.'
            and $entry != '..'
-           and !stristr($entry,'CVSROOT')
-           and !stristr($entry,'lib')
-           and !stristr($entry,'TestSource')
-           and !stristr($entry,'var')
-           and !stristr($entry,'CVS')
+           and !mb_stristr($entry,'CVSROOT')
+           and !mb_stristr($entry,'lib')
+           and !mb_stristr($entry,'TestSource')
+           and !mb_stristr($entry,'var')
+           and !mb_stristr($entry,'CVS')
            and is_dir($directory.'/'.$entry)
          ) {
          $do = $do and runFilesInDir($directory.'/'.$entry);
-      } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+      } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
          $do = $do and del_comments_php($directory.'/'.$entry);
       }
    }

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -719,7 +719,7 @@ class cs_page_guide_view extends cs_page_view {
       }
       $current_user = $this->_environment->getCurrentUserItem();
 
-      //Anzeige außerhalb des Anmeldeprozesses
+      //Anzeige auÃŸerhalb des Anmeldeprozesses
       if ($mode !='member' and $mode !='info' and $mode !='email'){
          $current_user = $this->_environment->getCurrentUserItem();
          $may_enter = $item->mayEnter($current_user);

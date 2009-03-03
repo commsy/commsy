@@ -4,10 +4,10 @@ error_reporting(E_ALL);
 include('includes/language.php');
 session_start();
 
-// Copyright (c)2002-2008 Dirk Blˆssl, Matthias Finck, Dirk Fust, Franz Gr¸nig,
+// Copyright (c)2002-2008 Dirk Bl√∂ssl, Matthias Finck, Dirk Fust, Franz Gr√ºnig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -36,7 +36,7 @@ if (file_exists($filename)) {
 
 } else {
 
-   // Wenn CommSy noch nicht installiert -> Installation ausf¸hren
+   // Wenn CommSy noch nicht installiert -> Installation ausf√ºhren
 
    ob_start();
 
@@ -76,7 +76,7 @@ if (file_exists($filename)) {
 
    if(isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) and !isset($_SESSION['lang']))
    {
-      $lang = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],0 ,2);
+      $lang = mb_substr($_SERVER['HTTP_ACCEPT_LANGUAGE'],0 ,2);
       if($lang != 'de')
       {
          $lang = 'en';
@@ -167,6 +167,11 @@ if (file_exists($filename)) {
  <!-- Meta der Seite -->
 
  <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+ <!-- ---- -->
+ <!-- UTF8 -->
+ <!-- <meta http-equiv="content-type" content="text/html; charset=utf-8" /> -->
+ <!-- UTF8 -->
+ <!-- ---- -->
  <meta http-equiv="imagetoolbar" content="no" />
 
  <!-- Copyright der Seite -->
@@ -677,11 +682,11 @@ if (!isset($action)) {
    echo '</tr>';
    echo '<tr>';
    echo '<td>'.$language[$lang]['urlpath'].':&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-   echo "<td><input type=\"text\" name=\"urlpath\" value=\"".substr($url, 0, -18)."\" class=\"formular\" /></td>";
+   echo "<td><input type=\"text\" name=\"urlpath\" value=\"".mb_substr($url, 0, -18)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '<tr>';
    echo '<td>'.$language[$lang]['abspath'].':&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-   echo "<td><input type=\"text\" name=\"abspath\" value=\"".substr($path, 0, -25)."\" class=\"formular\" /></td>";
+   echo "<td><input type=\"text\" name=\"abspath\" value=\"".mb_substr($path, 0, -25)."\" class=\"formular\" /></td>";
    echo '</tr>';
    echo '</table>';
 
@@ -724,7 +729,7 @@ if (!isset($action)) {
    $sec_key = md5(date("Y-m-d H:i:s"));
 
    $daten = "<?php
-// Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Blˆssl
+// Copyright (c)2008 Matthias Finck, Iver Jackewitz, Dirk Bl√∂ssl
 //
 //    This file is part of CommSy.
 //

@@ -1,7 +1,7 @@
 <?php
 $message["SEARCH_FIELD_RESTRICTION"]["de"] = "begrenzt auf";
-$message["SEARCH_LINKED_ENTRIES_ONLY"]["de"] = "nur verknüpfte Beiträge";
-$message["SEARCH_ONLY_FILES_TEXT"]["de"] = "nur Einträge mit Dateien";
-$message["SEARCH_ONLY_IN_FILES_TEXT"]["de"] = "Nur in Einträge mit Dateien suchen";
+$message["SEARCH_LINKED_ENTRIES_ONLY"]["de"] = "nur verknÃ¼pfte BeitrÃ¤ge";
+$message["SEARCH_ONLY_FILES_TEXT"]["de"] = "nur EintrÃ¤ge mit Dateien";
+$message["SEARCH_ONLY_IN_FILES_TEXT"]["de"] = "Nur in EintrÃ¤ge mit Dateien suchen";
 $message["SEARCH_RUBRIC_RESTRICTION"]["de"] = "Auswahl der Rubrik";
 ?>

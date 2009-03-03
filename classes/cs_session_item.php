@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -188,8 +188,8 @@ class cs_session_item {
       $current_time = getCurrentDateTimeInMySQL();
       $session_id = '';
       $randum_number = rand(0,999999);
-      for ($i=0; $i<strlen($current_time); $i++) {
-         $session_id .= substr($current_time,$i,1).substr($uid,$i,1).substr($randum_number,$i,1);
+      for ($i=0; $i<mb_strlen($current_time); $i++) {
+         $session_id .= mb_substr($current_time,$i,1).mb_substr($uid,$i,1).mb_substr($randum_number,$i,1);
       }
       $this->_session_id = md5($session_id);
       $this->setValue('user_id',$uid);

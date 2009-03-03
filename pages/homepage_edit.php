@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -378,7 +378,7 @@ else {
                         $biblio .= $bib2 ? $bib2 : '';
                         break;
                      case 'thesis':
-                        $temp_Thesis_Kind = strtoupper($item->getThesisKind());
+                        $temp_Thesis_Kind = mb_strtoupper($item->getThesisKind(), 'UTF-8');
                         switch ( $temp_Thesis_Kind )
                         {
                            case 'BACHELOR':

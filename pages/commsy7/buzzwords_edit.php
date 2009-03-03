@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -135,8 +135,8 @@ else {
    $delete_id = 0;
    $assign_id = 0;
    foreach ($_POST as $key => $post_var){
-      $iid = substr(strchr($key,'#'),1);
-      if (!empty($iid) and stristr($key,'option') ) {
+      $iid = mb_substr(strchr($key,'#'),1);
+      if (!empty($iid) and mb_stristr($key,'option') ) {
          if ( isOption($post_var, getMessage('COMMON_DELETE_BUTTON')) ){
             $delete_id = $iid;
          }else{
@@ -154,8 +154,8 @@ else {
 
    // Redirect to attach material
    foreach ($_POST as $key => $post_var){
-      $iid = substr(strchr($key,'#'),1);
-      if (!empty($iid) and stristr($key,'option') ) {
+      $iid = mb_substr(strchr($key,'#'),1);
+      if (!empty($iid) and mb_stristr($key,'option') ) {
          if ( isOption($post_var, getMessage('BUZZWORDS_ASSIGN_ENTRIES')) ){
             $assign_id = $iid;
             attach_redirect($linked_rubric, $iid);
@@ -195,8 +195,8 @@ else {
       if ( !empty($delete_id) or !empty($change_id) ){
         if (!empty ($_POST)){
              foreach ($_POST as $key => $post_var){
-               $iid = substr(strchr($key,'#'),1);
-               if (!empty($iid) and stristr($key,'buzzword') and $iid == $change_id) {
+               $iid = mb_substr(strchr($key,'#'),1);
+               if (!empty($iid) and mb_stristr($key,'buzzword') and $iid == $change_id) {
                   $buzzword_manager = $environment->getLabelManager();
                   $buzzword_item = $buzzword_manager->getItem($iid);
                   $buzzword_item->setName($post_var);

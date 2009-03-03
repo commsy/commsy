@@ -1188,13 +1188,13 @@ function _copySectionList ($copy_id) {
         $bibliographic = str_replace('<!-- KFC TEXT -->','',$bibliographic);
       }
       if (!empty($bibliographic)) {
-         $retour['DC.PUBLISHER'] = htmlentities($bibliographic);
+         $retour['DC.PUBLISHER'] = htmlentities($bibliographic, ENT_NOQUOTES, 'UTF-8');
       }
 
       // das Datum muss eigentlich so vorliegen jjjjmmtt
       $retour['DC.DATE.CREATION'] = $this->getPublishingDate();
 
-      // hierfür gibt es eigentlich eine definierte Liste im Standard
+      // hierfÃ¼r gibt es eigentlich eine definierte Liste im Standard
       $material_type = $this->getLabelItem();
       if (isset($material_type)) {
          $retour['DC.TYPE'] = $material_type->getName();
@@ -1222,7 +1222,7 @@ function _copySectionList ($copy_id) {
       $retour['DC.FORMAT'] = '(SCHEME=IMT) '.$format;
 
       #$retour['DC.Language'] = '';
-      #$retour['DC.Coverage.Spatial'] = ''; //Geografische Gültigkeit
+      #$retour['DC.Coverage.Spatial'] = ''; //Geografische GÃ¼ltigkeit
 
       $keyword_array = $this->getBuzzwordArray();
       if (!empty($keyword_array)) {
@@ -1254,7 +1254,7 @@ function _copySectionList ($copy_id) {
       #$retour['DC.Relation'] = ''; //Angabe einer URL zu einer Ressource, die mit dem Material assiziierbar ist.
 
       // Die folgenden Angaben beziehen sich immer auf die Quelle, in der das Material publiziert wurde.
-      // Dies könnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
+      // Dies kÃ¶nnte z.B. ein Buch sein, in dem das Material (Artikel) erschienen ist.
       #$retour['DC.Source.Creator'] = '';
       #$retour['DC.Source.Title'] = '';
       #$retour['DC.Source.Volume'] = '';
@@ -1312,17 +1312,17 @@ function _copySectionList ($copy_id) {
       $retour  = '<material_item>';
       $retour .= $this->_getDataAsXML();
 
-      $retour = preg_replace('$<copy_of><!\[CDATA\[[\d]*\]\]></copy_of>$','',$retour);
-      $retour = preg_replace('$<new_hack><!\[CDATA\[[\d]*\]\]></new_hack>$','',$retour);
+      $retour = preg_replace('~<copy_of><!\[CDATA\[[\d]*\]\]></copy_of>~u','',$retour);
+      $retour = preg_replace('~<new_hack><!\[CDATA\[[\d]*\]\]></new_hack>~u','',$retour);
 
       if ( strstr($retour,'<STUDY_LOG>') ) {
-         $first_pos = strpos($retour,'<STUDY_LOG>');
-         $second_pos = strrpos($retour,'</STUDY_LOG>');
+         $first_pos = mb_strpos($retour,'<STUDY_LOG>');
+         $second_pos = mb_strrpos($retour,'</STUDY_LOG>');
          $first_pos = $first_pos + 11;
-         $substring = substr($retour,$first_pos,$second_pos-$first_pos);
+         $substring = mb_substr($retour,$first_pos,$second_pos-$first_pos);
       }
 
-      $retour = preg_replace('$<extras>[\d\D]*</extras>$','',$retour);
+      $retour = preg_replace('~<extras>[\d\D]*</extras>~u','',$retour);
 
       if ( !strstr($retour,'<extras>') and isset($substring) ) {
          $retour .= '<extras><study_log><![CDATA['.$substring.']]></study_log></extras>'.LF;

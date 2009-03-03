@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -919,7 +919,7 @@ class cs_page_room_view extends cs_page_view {
                $html .='</div>'.LF;
                $html .= '<script type="text/javascript">'.LF;
                /*******************************/
-               /* TBD: Die Werte des dritten Arrays setzen, falls die Ver‰nderungen*/
+               /* TBD: Die Werte des dritten Arrays setzen, falls die Ver√§nderungen*/
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
@@ -970,7 +970,7 @@ class cs_page_room_view extends cs_page_view {
             $text = $date_array[2].' '.$month.' '.$date_array[0];
          }
          $text .=', ';
-         if (strlen($current_time[1])==1){
+         if (mb_strlen($current_time[1])==1){
             $current_time[1] = '0'.$current_time[1];
          }
          $text .= $current_time[2].':'.$current_time[1];
@@ -1135,7 +1135,7 @@ class cs_page_room_view extends cs_page_view {
             } else {
                $flag_lang = $lang;
             }
-            if ( strtolower($selected_language) == $lang ) {
+            if ( mb_strtolower($selected_language, 'UTF-8') == $lang ) {
                $img = '<img src="images/flags/'.$flag_lang.'.gif" style="float: left; margin-top: 3px; margin-left: 2px;" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>';
                $html .= $img;
             } elseif ( $language != 'user' ) {
@@ -1153,7 +1153,7 @@ class cs_page_room_view extends cs_page_view {
                }
                */
 
-               $img = '<img src="images/flags/'.$flag_lang.'_gray.gif" style="float: left; margin-top: 3px; margin-left: 2px;" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'" title="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'"/>';
+               $img = '<img src="images/flags/'.$flag_lang.'_gray.gif" style="float: left; margin-top: 3px; margin-left: 2px;" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,mb_strtoupper($language, 'UTF-8'))).'" title="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,mb_strtoupper($language, 'UTF-8'))).'"/>';
                $html .= $img;
             } else {
                $img = '<img src="images/flags/'.$flag_lang.'.gif" style="float: left; margin-top: 3px; margin-left: 2px;" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>';

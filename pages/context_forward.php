@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -37,8 +37,8 @@ if ( $external_tool == 'homepage' ) {
    $new_session = new cs_session_item();
    $current_user = $environment->getCurrentUserItem();
    $user_id = $current_user->getUserID();
-   if ( strtoupper($user_id) == 'GUEST'
-        or strtoupper($user_id) == 'ROOT'
+   if ( mb_strtoupper($user_id, 'UTF-8') == 'GUEST'
+        or mb_strtoupper($user_id, 'UTF-8') == 'ROOT'
       ) {
       $new_session->createSessionID($user_id);
    } elseif ( isset($session_item) ) {
@@ -80,11 +80,11 @@ if ( $external_tool == 'homepage' ) {
    // redirect
    $url = 'http://';
    $url .= $_SERVER['HTTP_HOST'];
-   $pos = strpos($_SERVER['PHP_SELF'],'?');
+   $pos = mb_strpos($_SERVER['PHP_SELF'],'?');
    if (!$pos) {
       $url .= str_replace('commsy.php','homepage.php',$_SERVER['PHP_SELF']);
    } else {
-      $url .= substr($_SERVER['PHP_SELF'],0,$pos-1);
+      $url .= mb_substr($_SERVER['PHP_SELF'],0,$pos-1);
    }
    $url .= '?cid='.$environment->getCurrentContextID().'&fct=detail';
    if ( !isset($cookie) or $cookie != '1') {
@@ -125,11 +125,11 @@ if ( $external_tool == 'homepage' ) {
    // redirect
    $url = 'http://';
    $url .= $_SERVER['HTTP_HOST'];
-   $pos = strpos($_SERVER['PHP_SELF'],'?');
+   $pos = mb_strpos($_SERVER['PHP_SELF'],'?');
    if (!$pos) {
       $url .= str_replace('homepage.php','commsy.php',$_SERVER['PHP_SELF']);
    } else {
-      $url .= substr($_SERVER['PHP_SELF'],0,$pos-1);
+      $url .= mb_substr($_SERVER['PHP_SELF'],0,$pos-1);
    }
    $url .= '?cid='.$environment->getCurrentContextID().'&mod=home&fct=index';
    $url .= '&SID='.$new_session->getSessionID();

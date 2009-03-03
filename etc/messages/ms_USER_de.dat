@@ -9,54 +9,54 @@ $message["USER_ACCOUNT_FORGET_TEXT"]["de"] = "Bitte geben Sie Ihre E-Mail-Adress
 $message["USER_ASK_MAIL_SUBJECT"]["de"] = "%2: Nachfrage [%1]";
 $message["USER_AUTH_SOURCE"]["de"] = "Authentifizierungsquelle";
 $message["USER_AUTH_SOURCE_ERROR"]["de"] = "Fehler: Keine Authentifizierungsquelle vorhanden.";
-$message["USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE"]["de"] = "%1: Diese Funktion steht über CommSy nicht zur Verfügung.";
+$message["USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE"]["de"] = "%1: Diese Funktion steht Ã¼ber CommSy nicht zur VerfÃ¼gung.";
 $message["USER_BECOME_MEMBER_BUTTON"]["de"] = "Beantragen";
 $message["USER_BIRTHDAY"]["de"] = "Geburtsdatum";
 $message["USER_BROWSER_LANGUAGE"]["de"] = "Browsereinstellung";
 $message["USER_CELLULARPHONE"]["de"] = "Handy";
 $message["USER_CHANGE_BUTTON"]["de"] = "Personendaten speichern";
-$message["USER_CHANGE_IN_ALL_ROOMS"]["de"] = "in allen Räumen ändern";
+$message["USER_CHANGE_IN_ALL_ROOMS"]["de"] = "in allen RÃ¤umen Ã¤ndern";
 $message["USER_CITY"]["de"] = "Stadt";
 $message["USER_CLOSE_FORM"]["de"] = "Teilnahme beenden";
-$message["USER_CLOSE_FORM_DESCRIPTION"]["de"] = "Sie haben zwei Möglichkeiten:
+$message["USER_CLOSE_FORM_DESCRIPTION"]["de"] = "Sie haben zwei MÃ¶glichkeiten:
 <ul><li>
-Wenn Sie die <b>Teilnahme beenden</b>, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+Wenn Sie die <b>Teilnahme beenden</b>, wird ihre Kennung fÃ¼r diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu diesem Raum. Ihre BeitrÃ¤ge bleiben erhalten. Falls Sie bestimmte EintrÃ¤ge lÃ¶schen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 Ihre Kennung kann bei Bedarf wieder freigeschaltet werden.
 </li>
 <li>
-Wenn Sie <b>alles löschen</b> möchten, werden sämtliche ihrer Beiträge und ihre Kennung in diesem Raum gelöscht. Sie können danach den Raum nicht mehr betreten.
+Wenn Sie <b>alles lÃ¶schen</b> mÃ¶chten, werden sÃ¤mtliche ihrer BeitrÃ¤ge und ihre Kennung in diesem Raum gelÃ¶scht. Sie kÃ¶nnen danach den Raum nicht mehr betreten.
 </li>
 </ul>";
-$message["USER_CLOSE_FORM_DESCRIPTION2"]["de"] = "Sie haben zwei Möglichkeiten:
+$message["USER_CLOSE_FORM_DESCRIPTION2"]["de"] = "Sie haben zwei MÃ¶glichkeiten:
 <ul><li>
-Wenn Sie die <b>Teilnahme beenden</b>, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann eventuell keinen Zutritt mehr zu diesem Raum. Ihre Beiträge bleiben erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+Wenn Sie die <b>Teilnahme beenden</b>, wird ihre Kennung fÃ¼r diesen Raum gesperrt. Sie haben dann eventuell keinen Zutritt mehr zu diesem Raum. Ihre BeitrÃ¤ge bleiben erhalten. Falls Sie bestimmte EintrÃ¤ge lÃ¶schen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 Ihre Kennung kann bei Bedarf wieder freigeschaltet werden.
 </li>
 <li>
-Wenn Sie <b>alles löschen</b> möchten, werden sämtliche ihrer Beiträge und ihre Kennung in diesem Raum gelöscht. Sie können danach den Raum eventuell nicht mehr betreten.
+Wenn Sie <b>alles lÃ¶schen</b> mÃ¶chten, werden sÃ¤mtliche ihrer BeitrÃ¤ge und ihre Kennung in diesem Raum gelÃ¶scht. Sie kÃ¶nnen danach den Raum eventuell nicht mehr betreten.
 </li>
 </ul>";
-$message["USER_DELETE_MAIL_BODY"]["de"] = "Die Kennung [%2] wurde gelöscht.
+$message["USER_DELETE_MAIL_BODY"]["de"] = "Die Kennung [%2] wurde gelÃ¶scht.
 
 Die Informationen im einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3
 Sprache: %4";
-$message["USER_DELETE_MAIL_SUBJECT"]["de"] = "Kennung gelöscht: [%1]";
-$message["USER_DEL_PIC"]["de"] = "Bild löschen";
-$message["USER_DEL_PIC_BUTTON"]["de"] = "Altes Bild löschen?";
+$message["USER_DELETE_MAIL_SUBJECT"]["de"] = "Kennung gelÃ¶scht: [%1]";
+$message["USER_DEL_PIC"]["de"] = "Bild lÃ¶schen";
+$message["USER_DEL_PIC_BUTTON"]["de"] = "Altes Bild lÃ¶schen?";
 $message["USER_DESCRIPTION"]["de"] = "Beschreibung";
 $message["USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG"]["de"] = "Die Kennung existiert nicht oder das Passwort ist falsch.";
 $message["USER_EDIT_FORM_TITLE"]["de"] = "Personendaten bearbeiten";
-$message["USER_EDIT_PREFERENCES"]["de"] = "Einstellungen ändern";
+$message["USER_EDIT_PREFERENCES"]["de"] = "Einstellungen Ã¤ndern";
 $message["USER_EMAIL"]["de"] = "E-Mail";
 $message["USER_EMAIL_CONFIRMATION"]["de"] = "E-Mail wiederholen";
-$message["USER_EMAIL_DESC"]["de"] = "Über diese E-Mail-Adresse werden Sie ggf. von der Moderation oder von anderen Benutzern kontaktiert.";
-$message["USER_EMAIL_ERROR"]["de"] = "Sie haben zwei verschiedene E-Mail Adressen eingegeben. Bitte überprüfen Sie Ihre E-Mail Adressen.";
+$message["USER_EMAIL_DESC"]["de"] = "Ãœber diese E-Mail-Adresse werden Sie ggf. von der Moderation oder von anderen Benutzern kontaktiert.";
+$message["USER_EMAIL_ERROR"]["de"] = "Sie haben zwei verschiedene E-Mail Adressen eingegeben. Bitte Ã¼berprÃ¼fen Sie Ihre E-Mail Adressen.";
 $message["USER_EMAIL_HIDDEN"]["de"] = "verborgen";
 $message["USER_EMAIL_HIDDEN2"]["de"] = "E-Mail-Adresse verborgen";
-$message["USER_EMAIL_VALID_ERROR"]["de"] = "Die Emailadresse hat ein ungültiges Format";
+$message["USER_EMAIL_VALID_ERROR"]["de"] = "Die Emailadresse hat ein ungÃ¼ltiges Format";
 $message["USER_EMAIL_VISIBILITY_VALUE"]["de"] = "E-Mail Adresse in diesem Raum verbergen";
 $message["USER_FIRSTNAME"]["de"] = "Vorname";
 $message["USER_FULLNAME"]["de"] = "Name";
@@ -75,13 +75,13 @@ $message["USER_HOMEPAGE"]["de"] = "Homepage";
 $message["USER_ICQ"]["de"] = "ICQ";
 $message["USER_INDEX"]["de"] = "Personen";
 $message["USER_JABBER"]["de"] = "Jabber";
-$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_COMMUNITY_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] fÃ¼r %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG %4 angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
 Kennung: %2
 E-Mail Adresse: %3";
-$message["USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG %4 angemeldet.
+$message["USER_JOIN_CONTEXT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] fÃ¼r %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG %4 angemeldet.
 
 Die Informationen im Einzelnen:
 Name: %1
@@ -89,13 +89,13 @@ Kennung: %2
 E-Mail Adresse: %3";
 $message["USER_JOIN_CONTEXT_MAIL_SUBJECT"]["de"] = "%2: Teilnahmeanfrage [%1]";
 $message["USER_LANGUAGE"]["de"] = "Sprache";
-$message["USER_LANGUAGE_DESC"]["de"] = "In dieser Sprache wird Ihnen dieses CommSy präsentiert. Außerdem sind alle E-Mails, die über dieses CommSy an Sie verschickt werden, in dieser Sprache.";
+$message["USER_LANGUAGE_DESC"]["de"] = "In dieser Sprache wird Ihnen dieses CommSy prÃ¤sentiert. AuÃŸerdem sind alle E-Mails, die Ã¼ber dieses CommSy an Sie verschickt werden, in dieser Sprache.";
 $message["USER_LASTLOGIN"]["de"] = "Zuletzt online";
 $message["USER_LASTLOGIN_ADMIN_DESC"]["de"] = "Zeitpunkt, zu dem die/der Benutzende das letzte Mal angemeldet war.";
 $message["USER_LASTNAME"]["de"] = "Nachname";
-$message["USER_LIST_ACTION_DELETE_ACCOUNT"]["de"] = "Kennung(en) löschen";
+$message["USER_LIST_ACTION_DELETE_ACCOUNT"]["de"] = "Kennung(en) lÃ¶schen";
 $message["USER_LIST_ACTION_EMAIL_ACCOUNT_PASSWORD"]["de"] = "E-Mail: Kennung & Passwort";
-$message["USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS"]["de"] = "E-Mail: Kennungen zusammenführen";
+$message["USER_LIST_ACTION_EMAIL_MERGE_ACCOUNTS"]["de"] = "E-Mail: Kennungen zusammenfÃ¼hren";
 $message["USER_LIST_ACTION_EMAIL_SEND"]["de"] = "E-Mail schicken";
 $message["USER_LIST_ACTION_FREE_ACCOUNT"]["de"] = "Kennung(en) freischalten";
 $message["USER_LIST_ACTION_LOCK_ACCOUNT"]["de"] = "Kennung(en) sperren";
@@ -103,15 +103,15 @@ $message["USER_LIST_ACTION_STATUS_CONTACT_MODERATOR"]["de"] = "Zur Ansprechpartn
 $message["USER_LIST_ACTION_STATUS_MODERATOR"]["de"] = "Status: Moderator";
 $message["USER_LIST_ACTION_STATUS_NO_CONTACT_MODERATOR"]["de"] = "Status AnsprechpartnerIn entfernen";
 $message["USER_LIST_ACTION_STATUS_USER"]["de"] = "Status: BenutzerIn";
-$message["USER_MAIL_ADMIN_DESC"]["de"] = "Die/Der Benutzende sollte über die Änderung ihrer/seiner Kennung informiert werden. Wollen Sie folgende E-Mail abschicken?";
+$message["USER_MAIL_ADMIN_DESC"]["de"] = "Die/Der Benutzende sollte Ã¼ber die Ã„nderung ihrer/seiner Kennung informiert werden. Wollen Sie folgende E-Mail abschicken?";
 $message["USER_MAIL_GET_ACCOUNT"]["de"] = "E-Mail bei Einschreibung";
 $message["USER_MAIL_GET_ACCOUNT_DESC"]["de"] = "Sie erhalten eine E-Mail, wenn sich jemand %1 &quot;%2&quot; einschreibt.";
-$message["USER_MAIL_OPEN_ROOM_PO"]["de"] = "E-Mail bei Raumeröffnung";
-$message["USER_MAIL_PUBLISH_MATERIAL"]["de"] = "E-Mail bei Material-Veröffentlichung";
-$message["USER_MAIL_PUBLISH_MATERIAL_DESC"]["de"] = "Sie erhalten eine E-Mail, wenn ein Material zur Veröffentlichung angemeldet wird.";
+$message["USER_MAIL_OPEN_ROOM_PO"]["de"] = "E-Mail bei RaumerÃ¶ffnung";
+$message["USER_MAIL_PUBLISH_MATERIAL"]["de"] = "E-Mail bei Material-VerÃ¶ffentlichung";
+$message["USER_MAIL_PUBLISH_MATERIAL_DESC"]["de"] = "Sie erhalten eine E-Mail, wenn ein Material zur VerÃ¶ffentlichung angemeldet wird.";
 $message["USER_MAIL_ROOM"]["de"] = "E-Mails bzgl. Raum-Administration";
 $message["USER_MESSENGER_NUMBERS"]["de"] = "Messenger";
-$message["USER_MESSENGER_NUMBERS_TEXT"]["de"] = "Die Statusanzeige muss beim jeweiligen Messenger freigeschaltet werden (meist Einstellungen/Optionen: Privatsphäre als &quot;Web Aware&quot;).";
+$message["USER_MESSENGER_NUMBERS_TEXT"]["de"] = "Die Statusanzeige muss beim jeweiligen Messenger freigeschaltet werden (meist Einstellungen/Optionen: PrivatsphÃ¤re als &quot;Web Aware&quot;).";
 $message["USER_MODERATORS"]["de"] = "Moderation";
 $message["USER_MSN"]["de"] = "MSN";
 $message["USER_NAME"]["de"] = "Name";
@@ -122,16 +122,16 @@ $message["USER_OLD_PASSWORD_ERROR2"]["de"] = "Bitte geben Sie Ihr aktuelles Pass
 $message["USER_OWN_INFORMATION"]["de"] = "Eigene Personendaten";
 $message["USER_PASSWORD"]["de"] = "Passwort";
 $message["USER_PASSWORD2"]["de"] = "Passwort wiederholen";
-$message["USER_PASSWORD2_DESC"]["de"] = "Zur Sicherheit müssen Sie das Passwort noch einmal wiederholen.";
-$message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort ändern";
+$message["USER_PASSWORD2_DESC"]["de"] = "Zur Sicherheit mÃ¼ssen Sie das Passwort noch einmal wiederholen.";
+$message["USER_PASSWORD_CHANGE_HEADLINE"]["de"] = "Passwort Ã¤ndern";
 $message["USER_PASSWORD_DESC"]["de"] = "Bitte suchen Sie sich ein Passwort aus.";
-$message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte überprüfen Sie Ihre Passworte.";
+$message["USER_PASSWORD_ERROR"]["de"] = "Sie haben zwei verschiedene Passworte eingegeben. Bitte Ã¼berprÃ¼fen Sie Ihre Passworte.";
 $message["USER_PASSWORD_FORGET_HEADLINE"]["de"] = "Passwort vergessen?";
 $message["USER_PASSWORD_FORGET_SUCCESS_TEXT"]["de"] = "Weitere Instruktionen wurden an die im System hinterlegte E-Mail-Adresse geschickt.
 <br/><br/>
 Sofern Sie keine E-Mail erhalten, wenden Sie sich bitte an die Portal-Moderation.";
-$message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Über diesen Link können Sie Ihr Passwort 15 Minuten lang von diesem PC aus ändern.";
-$message["USER_PASSWORD_MAIL_BODY"]["de"] = "für Ihre Kennung
+$message["USER_PASSWORD_FORGET_TEXT"]["de"] = "Bei Angabe Ihrer Kennung wird Ihnen ein spezieller Link in einer E-Mail zugeschickt. Ãœber diesen Link kÃ¶nnen Sie Ihr Passwort 15 Minuten lang von diesem PC aus Ã¤ndern.";
+$message["USER_PASSWORD_MAIL_BODY"]["de"] = "fÃ¼r Ihre Kennung
    %1
 
 auf dem CommSy-Portal
@@ -139,15 +139,15 @@ auf dem CommSy-Portal
 
 wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.
 
-Über den Link
+Ãœber den Link
 %3
 
-können Sie Ihr Passwort in den nächsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoßen wurde.
+kÃ¶nnen Sie Ihr Passwort in den nÃ¤chsten %4 Minuten neu setzen. Er ist nur von dem PC aus nutzbar, von dem der &quot;Passwort-vergessen&quot;-Mechanismus aus angestoÃŸen wurde.
 
 ---
 
-Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
-$message["USER_PASSWORD_MAIL_BODY_SORRY"]["de"] = "für Ihre Kennung
+Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, lÃ¶schen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verÃ¤ndert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
+$message["USER_PASSWORD_MAIL_BODY_SORRY"]["de"] = "fÃ¼r Ihre Kennung
    %1
 
 auf dem CommSy-Portal
@@ -155,23 +155,23 @@ auf dem CommSy-Portal
 
 wurde der Mechanismus &quot;Passwort vergessen&quot; aktiviert.";
 $message["USER_PASSWORD_MAIL_BODY_SORRY2"]["de"] = "Leider kann via CommSy Ihr %1-Passwort nicht neugesetzt werden.";
-$message["USER_PASSWORD_MAIL_BODY_SORRY2_LINK"]["de"] = "Zur Passwortänderung führt Sie dieser Link:
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_LINK"]["de"] = "Zur PasswortÃ¤nderung fÃ¼hrt Sie dieser Link:
    %1";
-$message["USER_PASSWORD_MAIL_BODY_SORRY2_MAIL"]["de"] = "Für weitere Fragen wenden Sie sich bitte an den %1-Support:
+$message["USER_PASSWORD_MAIL_BODY_SORRY2_MAIL"]["de"] = "FÃ¼r weitere Fragen wenden Sie sich bitte an den %1-Support:
    %2";
 $message["USER_PASSWORD_MAIL_BODY_SORRY3"]["de"] = "---
 
-Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, löschen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verändert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
-$message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: Passwortänderung";
+Sofern Sie nicht gerade auf &quot;Passwort vergessen?&quot; geklickt haben, lÃ¶schen Sie diese E-Mail einfach. Ihr Passwort hat sich nicht verÃ¤ndert und niemand hat Zugriff auf Ihren CommSy-Account erhalten.";
+$message["USER_PASSWORD_MAIL_SUBJECT"]["de"] = "%1: PasswortÃ¤nderung";
 $message["USER_PASSWORD_NEW"]["de"] = "neues Passwort";
 $message["USER_PASSWORD_NEW2"]["de"] = "neues Passwort wiederholen";
 $message["USER_PASSWORD_OLD"]["de"] = "aktuelles Passwort";
-$message["USER_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein persönliches Bild hinzufügen.";
+$message["USER_PICTURE_FILE_DESC"]["de"] = "Hier kÃ¶nnen Sie ein persÃ¶nliches Bild hinzufÃ¼gen.";
 $message["USER_PICTURE_UPLOADFILE"]["de"] = "Bild";
 $message["USER_PREFERENCES"]["de"] = "Einstellungen";
-$message["USER_PREFERENCES_NO_ENTRIES"]["de"] = "In diesem Raum sind für Sie keine persönlichen Einstellungsmöglichkeiten vorhanden.";
-$message["USER_PROJECT_CONTACT_MODERATOR"]["de"] = "AnsprechpartnerInnen von Räumen";
-$message["USER_PROJECT_USER"]["de"] = "NutzerInnen von Räumen";
+$message["USER_PREFERENCES_NO_ENTRIES"]["de"] = "In diesem Raum sind fÃ¼r Sie keine persÃ¶nlichen EinstellungsmÃ¶glichkeiten vorhanden.";
+$message["USER_PROJECT_CONTACT_MODERATOR"]["de"] = "AnsprechpartnerInnen von RÃ¤umen";
+$message["USER_PROJECT_USER"]["de"] = "NutzerInnen von RÃ¤umen";
 $message["USER_QUIT_CONTEXT_MAIL_SUBJECT"]["de"] = "%2: Teilnahme beendet [%1]";
 $message["USER_QUIT_PROJECT_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] aus %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG %4 abgemeldet.
 
@@ -184,18 +184,18 @@ $message["USER_ROOM"]["de"] = "Raum";
 $message["USER_ROOM_MEMBERSHIPS"]["de"] = "Raumteilnahmen";
 $message["USER_SKYPE"]["de"] = "Skype";
 $message["USER_STATUS"]["de"] = "Status";
-$message["USER_STATUS_ADMIN_DESC"]["de"] = "Wählen sie einen anderen Status aus.";
+$message["USER_STATUS_ADMIN_DESC"]["de"] = "WÃ¤hlen sie einen anderen Status aus.";
 $message["USER_STATUS_CLOSED"]["de"] = "geschlossen";
 $message["USER_STATUS_CONTACT"]["de"] = "AnsprechpartnerInnen";
 $message["USER_STATUS_CONTACT_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMPL_HIGH: AnsprechpartnerInnen";
 $message["USER_STATUS_CONTACT_PROJECT"]["de"] = "%_PROJECT_SUB_NOMPL_HIGH: AnsprechpartnerInnen";
-$message["USER_STATUS_CONTACT_ROOM"]["de"] = "AnsprechpartnerInnen von Räumen";
+$message["USER_STATUS_CONTACT_ROOM"]["de"] = "AnsprechpartnerInnen von RÃ¤umen";
 $message["USER_STATUS_CONTACT_SHORT"]["de"] = "A";
 $message["USER_STATUS_DESC"]["de"] = "Der aktuelle Status der/des Benutzenden";
 $message["USER_STATUS_MODERATOR"]["de"] = "ModeratorIn";
 $message["USER_STATUS_MODERATOR_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMPL_HIGH: Moderatoren";
 $message["USER_STATUS_MODERATOR_PROJECT"]["de"] = "%_PROJECT_SUB_NOMPL_HIGH: Moderatoren";
-$message["USER_STATUS_MODERATOR_ROOM"]["de"] = "Moderatoren von Räumen";
+$message["USER_STATUS_MODERATOR_ROOM"]["de"] = "Moderatoren von RÃ¤umen";
 $message["USER_STATUS_NEW"]["de"] = "Neuer Status";
 $message["USER_STATUS_NOW"]["de"] = "Aktueller Status";
 $message["USER_STATUS_NO_MEMBERSHIP"]["de"] = "keine Raumteilnahme";
@@ -203,14 +203,14 @@ $message["USER_STATUS_REJECT"]["de"] = "Abgelehnt";
 $message["USER_STATUS_REJECTED"]["de"] = "gesperrt";
 $message["USER_STATUS_REQUESTED"]["de"] = "in Beantragung";
 $message["USER_STATUS_USER"]["de"] = "BenutzerIn";
-$message["USER_STREET"]["de"] = "Straße";
+$message["USER_STREET"]["de"] = "StraÃŸe";
 $message["USER_TELEPHONE"]["de"] = "Telefon";
 $message["USER_TITLE"]["de"] = "Titel";
 $message["USER_USER"]["de"] = "Mitglieder";
 $message["USER_USER_ID"]["de"] = "Kennung";
-$message["USER_USER_ID_ERROR"]["de"] = "Die Kennung [%1] wird leider schon verwendet. Bitte wählen Sie eine andere.";
+$message["USER_USER_ID_ERROR"]["de"] = "Die Kennung [%1] wird leider schon verwendet. Bitte wÃ¤hlen Sie eine andere.";
 $message["USER_USER_ID_ERROR_UMLAUT"]["de"] = "Die Kennung darf nur aus Zahlen und Buchstaben bestehen.";
-$message["USER_USER_ID_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> existiert nicht. Bitte überprüfen Sie Ihre Eingabe.";
+$message["USER_USER_ID_NOT_EXIST"]["de"] = "Die Kennung <span style=&quot;font-weight:bold;&quot;>%1</span> existiert nicht. Bitte Ã¼berprÃ¼fen Sie Ihre Eingabe.";
 $message["USER_YAHOO"]["de"] = "Yahoo";
 $message["USER_ZIPCODE"]["de"] = "Postleitzahl";
 ?>

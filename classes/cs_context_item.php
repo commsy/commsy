@@ -379,7 +379,7 @@ class cs_context_item extends cs_item {
    function isLanguageFix () {
       $retour = false;
       $lang = $this->getLanguage();
-      if ( strtoupper($lang) == 'USER' ) {
+      if ( mb_strtoupper($lang, 'UTF-8') == 'USER' ) {
          $retour = true;
       }
       return $retour;
@@ -402,7 +402,7 @@ class cs_context_item extends cs_item {
     */
    function setDescriptionByLanguage ($value, $language) {
       $desc_array = $this->getDescriptionArray();
-      $desc_array[strtoupper($language)] = $value;
+      $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
       $this->setDescriptionArray($desc_array);
    }
 
@@ -759,7 +759,7 @@ class cs_context_item extends cs_item {
          $retour_temp = array();
          if ( is_array($retour) ) {
             foreach ($retour as $key => $entry){
-                $retour_temp[strtolower($key)]= $entry;
+                $retour_temp[mb_strtolower($key, 'UTF-8')]= $entry;
             }
          }
          $retour = $retour_temp;
@@ -1052,10 +1052,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Projektraums';
                $retour['DE']['AKKS']= 'Projektraum';
                $retour['DE']['DATS']= 'Projektraum';
-               $retour['DE']['NOMPL']= 'Projekträume';
-               $retour['DE']['GENPL']= 'Projekträume';
-               $retour['DE']['AKKPL']= 'Projekträume';
-               $retour['DE']['DATPL']= 'Projekträumen';
+               $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+               $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+               $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+               $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'project workspace';
                $retour['EN']['GENS']= 'project workspace';
@@ -1081,10 +1081,10 @@ class cs_context_item extends cs_item {
                $retour['DE']['GENS']= 'Gemeinschaftsraums';
                $retour['DE']['AKKS']= 'Gemeinschaftsraum';
                $retour['DE']['DATS']= 'Gemeinschaftsraum';
-               $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-               $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-               $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-               $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+               $retour['DE']['NOMPL']= 'GemeinschaftsrÃ¤ume';
+               $retour['DE']['GENPL']= 'GemeinschaftsrÃ¤ume';
+               $retour['DE']['AKKPL']= 'GemeinschaftsrÃ¤ume';
+               $retour['DE']['DATPL']= 'GemeinschaftsrÃ¤umen';
                $retour['EN']['GENUS']= 'M';
                $retour['EN']['NOMS']= 'community workspace';
                $retour['EN']['GENS']= 'community workspace';
@@ -1296,15 +1296,15 @@ class cs_context_item extends cs_item {
 
    function _changeContactInUser($rubricsString){
       $change_needed = false;
-      if (stristr($rubricsString, 'contact_tiny')) {
+      if (mb_stristr($rubricsString, 'contact_tiny')) {
          $rubricsString = str_replace('contact_tiny','user_tiny', $rubricsString);
          $change_needed = true;
       }
-      if (stristr($rubricsString, 'contact_short')) {
+      if (mb_stristr($rubricsString, 'contact_short')) {
          $rubricsString = str_replace('contact_short','user_short', $rubricsString);
          $change_needed = true;
       }
-      if (stristr($rubricsString, 'contact_none')) {
+      if (mb_stristr($rubricsString, 'contact_none')) {
          $rubricsString = str_replace('contact_none','user_none',  $rubricsString);
          $change_needed = true;
       }
@@ -1322,24 +1322,24 @@ class cs_context_item extends cs_item {
     */
    function clearUnallowedRubrics($rubricsString) {
       foreach ($this->_configurable_rubrics as $rubric) {
-         if (stristr($rubricsString, $rubric)) {
+         if (mb_stristr($rubricsString, $rubric)) {
            if (!$this->showExtraRubric($rubric)) {
-              if (stristr($rubricsString, $rubric.'_tiny')) {
+              if (mb_stristr($rubricsString, $rubric.'_tiny')) {
                 $rubricsString = str_replace($rubric.'_tiny', '', $rubricsString);
               }
-              if (stristr($rubricsString, $rubric.'_short')) {
+              if (mb_stristr($rubricsString, $rubric.'_short')) {
                 $rubricsString = str_replace($rubric.'_short', '', $rubricsString);
               }
-              if (stristr($rubricsString, $rubric.'_none')) {
+              if (mb_stristr($rubricsString, $rubric.'_none')) {
                 $rubricsString = str_replace($rubric.'_none', '', $rubricsString);
               }
 
             // clear string from ","
              if ($rubricsString[0] == ',') {
-                  $rubricsString = substr($rubricsString,1);
+                  $rubricsString = mb_substr($rubricsString,1);
               }
-              if ($rubricsString[strlen($rubricsString)-1] == ',') {
-                $rubricsString = substr($rubricsString,0,strlen($rubricsString)-1);
+              if ($rubricsString[mb_strlen($rubricsString)-1] == ',') {
+                $rubricsString = mb_substr($rubricsString,0,mb_strlen($rubricsString)-1);
               }
             $rubricsString = str_replace(',,',',',$rubricsString);
            }
@@ -1532,33 +1532,33 @@ class cs_context_item extends cs_item {
 
       function clearUnallowedBoxes($boxesString){
          if( !$this->withTags() ){
-            if (stristr($boxesString, 'tags_tiny')) {
+            if (mb_stristr($boxesString, 'tags_tiny')) {
                $boxesString = str_replace('tags_tiny', '', $boxesString);
             }
-            if (stristr($boxesString, 'tags_short')) {
+            if (mb_stristr($boxesString, 'tags_short')) {
                $boxesString = str_replace('tags_short', '', $boxesString);
             }
-            if (stristr($boxesString, 'tags_none')) {
+            if (mb_stristr($boxesString, 'tags_none')) {
                $boxesString = str_replace('tags_none', '', $boxesString);
             }
          }
          if( !$this->withBuzzwords() ){
-            if (stristr($boxesString, 'buzzwords_tiny')) {
+            if (mb_stristr($boxesString, 'buzzwords_tiny')) {
                $boxesString = str_replace('buzzwords_tiny', '', $boxesString);
             }
-            if (stristr($boxesString, 'buzzwords_short')) {
+            if (mb_stristr($boxesString, 'buzzwords_short')) {
                $boxesString = str_replace('buzzwords_short', '', $boxesString);
             }
-            if (stristr($boxesString, 'buzzwords_none')) {
+            if (mb_stristr($boxesString, 'buzzwords_none')) {
                $boxesString = str_replace('buzzwords_none', '', $boxesString);
             }
          }
          // clear string from ","
          if ($boxesString[0] == ',') {
-            $boxesString = substr($boxesString,1);
+            $boxesString = mb_substr($boxesString,1);
          }
-         if ($boxesString[strlen($boxesString)-1] == ',') {
-            $boxesString = substr($boxesString,0,strlen($boxesString)-1);
+         if ($boxesString[mb_strlen($boxesString)-1] == ',') {
+            $boxesString = mb_substr($boxesString,0,mb_strlen($boxesString)-1);
          }
          $boxesString = str_replace(',,',',',$boxesString);
          return $boxesString;
@@ -1566,33 +1566,33 @@ class cs_context_item extends cs_item {
 
       function clearUnallowedDetailBoxes($boxesString){
          if( !$this->withTags() ){
-            if (stristr($boxesString, 'detailtags_tiny')) {
+            if (mb_stristr($boxesString, 'detailtags_tiny')) {
                $boxesString = str_replace('detailtags_tiny', '', $boxesString);
             }
-            if (stristr($boxesString, 'detailtags_short')) {
+            if (mb_stristr($boxesString, 'detailtags_short')) {
                $boxesString = str_replace('detailtags_short', '', $boxesString);
             }
-            if (stristr($boxesString, 'detailtags_none')) {
+            if (mb_stristr($boxesString, 'detailtags_none')) {
                $boxesString = str_replace('detailtags_none', '', $boxesString);
             }
          }
          if( !$this->withBuzzwords() ){
-            if (stristr($boxesString, 'detailbuzzwords_tiny')) {
+            if (mb_stristr($boxesString, 'detailbuzzwords_tiny')) {
                $boxesString = str_replace('detailbuzzwords_tiny', '', $boxesString);
             }
-            if (stristr($boxesString, 'detailbuzzwords_short')) {
+            if (mb_stristr($boxesString, 'detailbuzzwords_short')) {
                $boxesString = str_replace('detailbuzzwords_short', '', $boxesString);
             }
-            if (stristr($boxesString, 'detailbuzzwords_none')) {
+            if (mb_stristr($boxesString, 'detailbuzzwords_none')) {
                $boxesString = str_replace('detailbuzzwords_none', '', $boxesString);
             }
          }
          // clear string from ","
          if ($boxesString[0] == ',') {
-            $boxesString = substr($boxesString,1);
+            $boxesString = mb_substr($boxesString,1);
          }
-         if ($boxesString[strlen($boxesString)-1] == ',') {
-            $boxesString = substr($boxesString,0,strlen($boxesString)-1);
+         if ($boxesString[mb_strlen($boxesString)-1] == ',') {
+            $boxesString = mb_substr($boxesString,0,mb_strlen($boxesString)-1);
          }
          $boxesString = str_replace(',,',',',$boxesString);
          return $boxesString;
@@ -1665,8 +1665,8 @@ class cs_context_item extends cs_item {
          $extra_config_array = $this->_getExtra('EXTRA_CONFIG');
          if ( $type == 'whole' ) {
             $retour = $extra_config_array;
-         } elseif ( isset($extra_config_array[strtoupper($type)]) ) {
-            $retour = $extra_config_array[strtoupper($type)];
+         } elseif ( isset($extra_config_array[mb_strtoupper($type, 'UTF-8')]) ) {
+            $retour = $extra_config_array[mb_strtoupper($type, 'UTF-8')];
          }
       }
       return $retour;
@@ -1683,7 +1683,7 @@ class cs_context_item extends cs_item {
          $this->_addExtra('EXTRA_CONFIG',$value);
       } else {
          $extra_config_array = $this->_getExtraConfig('whole');
-         $extra_config_array[strtoupper($type)] = $value;
+         $extra_config_array[mb_strtoupper($type, 'UTF-8')] = $value;
          $this->_setExtraConfig('whole',$extra_config_array);
       }
    }
@@ -2680,7 +2680,7 @@ class cs_context_item extends cs_item {
              if(!$this->_issetExtra('WIKIDISCUSSIONARRAY')){
                 $this->_addExtra('WIKIDISCUSSIONARRAY', $new_discussion);
              } else {
-              if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && !stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $new_discussion)) {
+              if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && !mb_stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $new_discussion)) {
                   $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
                   if(!empty($discussion_string)){
                      $discussion_array = explode('$CSDW$', $discussion_string);
@@ -2696,7 +2696,7 @@ class cs_context_item extends cs_item {
    }
 
    function WikiRemoveDiscussion($old_discussion){
-      if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $old_discussion)) {
+      if ( $this->_issetExtra('WIKIDISCUSSIONARRAY') && mb_stristr($this->_getExtra('WIKIDISCUSSIONARRAY'), $old_discussion)) {
           $discussion_string = $this->_getExtra('WIKIDISCUSSIONARRAY');
           if(!empty($discussion_string)){
              $discussion_array = explode('$CSDW$', $discussion_string);
@@ -3206,9 +3206,9 @@ class cs_context_item extends cs_item {
       if (!isset($this->_rubric_support[$rubric_type])) {
          $current_room_modules = $this->getHomeConf();
         //rubric is mentioned? if not -> false
-         if ( !empty ($rubric_type) and stristr($current_room_modules,$rubric_type) ) {
+         if ( !empty ($rubric_type) and mb_stristr($current_room_modules,$rubric_type) ) {
            //if rubric is mentioned as <rubric>_none ->false
-           if (stristr($current_room_modules,$rubric_type.'_none') ) {
+           if (mb_stristr($current_room_modules,$rubric_type.'_none') ) {
                $this->_rubric_support[$rubric_type] = false;
            } else {
                if ($this->isExtraRubric($rubric_type) and !$this->showExtraRubric($rubric_type)) {
@@ -5049,11 +5049,11 @@ class cs_context_item extends cs_item {
     function generateColourGradient($height, $rgb){
         $image = imagecreate(1, $height);
 
-        $rgb = str_ireplace('#', '', $rgb);
+        $rgb = str_replace('#', '', $rgb);
 
-        $r = hexdec(substr($rgb, 0, 2));
-        $g = hexdec(substr($rgb, 2, 2));
-        $b = hexdec(substr($rgb, 4, 2));
+        $r = hexdec(mb_substr($rgb, 0, 2));
+        $g = hexdec(mb_substr($rgb, 2, 2));
+        $b = hexdec(mb_substr($rgb, 4, 2));
 
         $border = ImageColorAllocate($image,$r,$g,$b);
 

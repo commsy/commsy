@@ -756,7 +756,7 @@ class cs_item {
        $this->_setUserItem($user,'creator');
    }
 
-   /**Wieder löschen!!*/
+   /**Wieder lÃ¶schen!!*/
    function setCreator($user) {
       $this->setCreatorItem($user);
    }
@@ -846,7 +846,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollstÃ¤ndigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
    /** get list of linked items
    * this method returns a list of items which are linked to the news item
@@ -988,7 +988,7 @@ class cs_item {
       foreach ($this->_changed as $changed_key => $is_changed) {
          if ($is_changed) {
             if ($changed_key != 'general' and $changed_key !='section_for' and $changed_key !='task_item' and $changed_key !='copy_of') {
-               // Abfrage nötig wegen langsamer Migration auf die neuen LinkTypen.
+               // Abfrage nÃ¶tig wegen langsamer Migration auf die neuen LinkTypen.
                if ( in_array($changed_key, array(  CS_TOPIC_TYPE,
                                                    CS_INSTITUTION_TYPE,
                                                    CS_GROUP_TYPE,
@@ -1009,7 +1009,7 @@ class cs_item {
                   } elseif (is_array($this->_data[$changed_key])) { // an array
                      $this->_setIDLinkItems($changed_key);
                   }
-               } else {   // sollte irgendwann überflüssig werden!!!!
+               } else {   // sollte irgendwann Ã¼berflÃ¼ssig werden!!!!
                   $link_manager = $this->_environment->getLinkManager();
                   $version_id = $this->getVersionID();
                   $link_manager->deleteLinks($this->getItemID(),$version_id,$changed_key);
@@ -1026,7 +1026,7 @@ class cs_item {
    }
 
    function _setObjectLinkItems($changed_key) {
-      // $changed_key_item_list enthält die link_items EINES TYPS, die das Item aktuell bei sich trägt
+      // $changed_key_item_list enthÃ¤lt die link_items EINES TYPS, die das Item aktuell bei sich trÃ¤gt
       // $old_link_item_list die Link items EINES TYPS, die das Link Item vor der Bearbeitung besa
       $link_manager = $this->_environment->getLinkItemManager();
       $link_manager->resetLimits();
@@ -1055,7 +1055,7 @@ class cs_item {
             #$changed_key_version_id = $changed_key_item->getVersionID();
             $old_linked_item_id = $old_linked_item->getItemID();
             #$old_linked_version_id = $old_linked_item->getVersionID();
-            // gibt es keine Übereinstimmung
+            // gibt es keine Ãœbereinstimmung
             #if ($changed_key_item_id == $old_linked_item_id AND $changed_key_version_id == $old_linked_version_id){
             if ($changed_key_item_id == $old_linked_item_id) {
                $create_key_item_list->removeElement($changed_key_item);
@@ -1159,7 +1159,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollstÃ¤ndigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
 
    function _setObjectLinks($changed_key) {
@@ -1196,7 +1196,7 @@ class cs_item {
 
 
 //********************************************************
-//TBD: Nach der vollständigen Migration der Links kann diese Methode entfernt werden
+//TBD: Nach der vollstÃ¤ndigen Migration der Links kann diese Methode entfernt werden
 //********************************************************
    function _setIDLinks($changed_key) {
       $link_manager = $this->_environment->getLinkManager();
@@ -1400,7 +1400,7 @@ class cs_item {
          ) {
          $link_item_manager->setRoomLimit($this->getContextID());
       } elseif ( $this->isA(CS_LABEL_TYPE) and $this->getLabelType() == CS_GROUP_TYPE ) {
-         // müsste dies nicht für alle Fälle gelten ???
+         // mÃ¼sste dies nicht fÃ¼r alle FÃ¤lle gelten ???
          $link_item_manager->setRoomLimit($this->getContextID());
       } elseif ( $this->isA(CS_USER_TYPE) ) {
          $link_item_manager->setRoomLimit($this->getContextID());
@@ -1629,7 +1629,7 @@ class cs_item {
       } elseif ( isset($this->_data['file_id_array'])
                  and empty($this->_data['file_id_array'])
                  and $this->_filelist_changed
-               ) { // alle dateien bewusst abhängen
+               ) { // alle dateien bewusst abhÃ¤ngen
          $file_id_array = $this->_data['file_id_array'];
       } elseif ( isset($this->_data['file_list']) and is_object($this->_data['file_list']) ) {
          $file = $this->_data['file_list']->getFirst();
@@ -1664,8 +1664,8 @@ class cs_item {
       $this->_filelist_changed = TRUE;
    }
 
-   function _saveFileLinks() {   // das ist so komplex, weil wir die filelinks nicht aus der db löschen können
-                                 // wenn jemandem was eleganteres einfällt: nur zu
+   function _saveFileLinks() {   // das ist so komplex, weil wir die filelinks nicht aus der db lÃ¶schen kÃ¶nnen
+                                 // wenn jemandem was eleganteres einfÃ¤llt: nur zu
       if ( $this->_filelist_changed ) {
          $this->setModificationDate(NULL);
          $link_manager = $this->_environment->getLinkManager();
@@ -1769,7 +1769,7 @@ class cs_item {
    public function getDescriptionWithoutHTML () {
       $retour = $this->getDescription();
       $retour = str_replace('<!-- KFC TEXT -->','',$retour);
-      $retour = preg_replace('§<[A-Za-z][^>.]+>§','',$retour);
+      $retour = preg_replace('~<[A-Za-z][^>.]+>~u','',$retour);
       return $retour;
    }
 
@@ -1889,9 +1889,9 @@ class cs_item {
             }
             if ( $key == 'description' ) {
                // AS XML ???
-               $value = preg_replace('/\\(:(.*?):\\)/e','dfg',$value); // entfernt medien einbindung
+               $value = preg_replace('~\\(:(.*?):\\)~eu','dfg',$value); // entfernt medien einbindung
                $value = strip_tags($value); // entfernt html tags
-               $value = html_entity_decode($value); // wandelt &quot; usw. in lesbare Zeichen um
+               $value = html_entity_decode($value, ENT_NOQUOTES, 'UTF-8'); // wandelt &quot; usw. in lesbare Zeichen um
             }
             if ( !empty($value) ) {
                $retour .= '         <'.$key.'><![CDATA['.$value.']]></'.$key.'>'.LF;

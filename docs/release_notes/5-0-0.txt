@@ -13,75 +13,75 @@ some funtionality was changed and the usabilty was further improved.
 
 Changes:
 --------
-# Bei den Portalankündigungen Bilder kleinskalieren
-# In der configuration_preferences: Logo übernehmen und speichern
+# Bei den PortalankÃ¼ndigungen Bilder kleinskalieren
+# In der configuration_preferences: Logo Ã¼bernehmen und speichern
 # Nutzungshinweise raumspezifisch gestalten
-# Termin anlegen -> Rücksprung nicht okay
+# Termin anlegen -> RÃ¼cksprung nicht okay
 # Zwischenablage: Nutzungshinweis 
-# Portal: Leerzeichen bei Moderatorenaufzählung bei Räume in Raumliste 
+# Portal: Leerzeichen bei ModeratorenaufzÃ¤hlung bei RÃ¤ume in Raumliste 
 # Test: Druckansicht (soweit ich es erkannt habe) 
-# Mein Bereich ausblenden im persönlichen Raum. Auf der Home: In den Raumfenstern stimmt was nicht. 
+# Mein Bereich ausblenden im persÃ¶nlichen Raum. Auf der Home: In den Raumfenstern stimmt was nicht. 
 # Konfiguratution: alle Formulare auf Integration von Reload testen (bis auf configuration_preferences; Raumtitel) 
-# Material ohne Abschnitte: Detail: Kurzbeschreibung weg und Inhalt über gesammte Breite 
+# Material ohne Abschnitte: Detail: Kurzbeschreibung weg und Inhalt Ã¼ber gesammte Breite 
 # Test: Hilfe (Darstellung scheint korrekt) 
 # Label-Detail mit Bild und ohne Text: sieht nicht gut aus 
 # <a name="5"> nicht HTML-standardkonform: Material mit Anschnitten und Diskussionen 
 # Textfunktions in Server und Portal Wellcometext integrieren 
 # Gemeinschaftsraum: Konfiguration: Materialienkonfiguration wurde angezeigt, obwohl die Rubrik gar nicht eingeschaltet war. 
 # Gemeinschaftsraum: Sprache Benutzereinstellungen -> Sprachauswahl beim Nutzenden: es fehlte Browsereinstellungen 
-# Portal-Bild: konnte nicht gelöscht werden 
+# Portal-Bild: konnte nicht gelÃ¶scht werden 
 # Nutzungshinweis: Formular: Gemeinschaftsraum: User - Einstellungen fehlt 
 # Im Portal px Breiten in em umwandeln 
 # AGBs: Nur noch in der Raumsprache 
-# AGBs: Darstellung ohne Linkes Menü 
+# AGBs: Darstellung ohne Linkes MenÃ¼ 
 # Test: Kennung zusammenlegen (insbesondere 2 Kennungen in einem Raum)--> Testprotokoll siehe Anmerkung
-# Das "Blättern in Abschnitten" auch bei Diskussionen--> Testweise eingeführt
+# Das "BlÃ¤ttern in Abschnitten" auch bei Diskussionen--> Testweise eingefÃ¼hrt
 # Der letzte Moderator kann seine Teilnahme am Raum nicht mehr beenden
-# Im persönlichen Raum heißt es "Eigene Personenbeschreibung" in allen anderen Räumen heißt es in der Liste von Personen "Eigene Personendaten". Vereinheitlichen? Wenn ja, in welche Richtung?Antwort: ich bin in Richtung "Eigene Personendaten" gegangen, da dieser Begriff bereits den NutzerInnen bekannt ist, und anscheinend bislang keine Probleme machte."
-# Kennung mergen und UserID ändern für root ausgeblendet
-# E-Mail verbergen im persönlichen Raum ausgeblendet
+# Im persÃ¶nlichen Raum heiÃŸt es "Eigene Personenbeschreibung" in allen anderen RÃ¤umen heiÃŸt es in der Liste von Personen "Eigene Personendaten". Vereinheitlichen? Wenn ja, in welche Richtung?Antwort: ich bin in Richtung "Eigene Personendaten" gegangen, da dieser Begriff bereits den NutzerInnen bekannt ist, und anscheinend bislang keine Probleme machte."
+# Kennung mergen und UserID Ã¤ndern fÃ¼r root ausgeblendet
+# E-Mail verbergen im persÃ¶nlichen Raum ausgeblendet
 # Suche in Kennungen und Personen: Darstellung berichtigt
 # Pfade (Erweiterung von Themen) -> Prototyp erstellt
-# Gemeinschaftsräume im Projektraum bearbeiten Formular ausgebelndet, wenn es keine Gemeinschaftsräume gibt
+# GemeinschaftsrÃ¤ume im Projektraum bearbeiten Formular ausgebelndet, wenn es keine GemeinschaftsrÃ¤ume gibt
 # Mail versenden: Fehlermeldung, wenn Adressatenliste leer ist.
-# Gruppe Alle bei allem außer Personen wieder abwählbar.
+# Gruppe Alle bei allem auÃŸer Personen wieder abwÃ¤hlbar.
 # Fehlerliste bei Iver -> erledigt, behoben oder unter "Noch zu tun" notiert
 # "Themen" in Message-Tags durch %_TOPICS_XYZ ersetzt. "Thema" noch nicht
-# MySQL5 - Kompatiblität: CommSy läuft seit einem Monat stabil unter MySQL 5 auf der CommSy1.
-# IIS - Kompatiblität: Okay, bis auf Chat. Der wird zwar richtig dargestellt, aber der Chat wird beim Verlassen nicht geleert. Hier scheinen die PHP-Funktionen ignore_user_abort(), connection_status(), register_shutdown_function() nicht zu funktionieren.
+# MySQL5 - KompatiblitÃ¤t: CommSy lÃ¤uft seit einem Monat stabil unter MySQL 5 auf der CommSy1.
+# IIS - KompatiblitÃ¤t: Okay, bis auf Chat. Der wird zwar richtig dargestellt, aber der Chat wird beim Verlassen nicht geleert. Hier scheinen die PHP-Funktionen ignore_user_abort(), connection_status(), register_shutdown_function() nicht zu funktionieren.
 # Lange Raumnamen auf dem Portal korrekt darstellen
-# Privater Raum: Meine Räume: Ich habe das Anlegen und Löschen aus dem persönlichen Raum entfernt, da diese Rubrik aus meiner Sicht nur eine Perspektive auf die anderen Räume darstellt.
-# Privater Raum: Hier muss aus allen Formularen in den Rubriken die Auswahl "für alle bearbeiten raus".
+# Privater Raum: Meine RÃ¤ume: Ich habe das Anlegen und LÃ¶schen aus dem persÃ¶nlichen Raum entfernt, da diese Rubrik aus meiner Sicht nur eine Perspektive auf die anderen RÃ¤ume darstellt.
+# Privater Raum: Hier muss aus allen Formularen in den Rubriken die Auswahl "fÃ¼r alle bearbeiten raus".
 # Zuordnen von Terminen: Hier darf auf keinen Fall in den Kalender gesprungen werden. Tut aber, wenn dies die Defaultansicht ist.
-# Material anlegen: Keine Schlagworte im System: In der Selektbox müsste "* kein Schlagwort" auftauchen. Tut aber nicht. Ist ein Schlagwort da, dann taucht es auf.
-# Portal: Beim Klick auf "Teilnahme beantragen" oben in dem Raumfenster werden die Einstellungen unten auf der Raumliste zurückgesetzt bzw. gehen verloren. Hier muss im Link "Teilnahme beantragen" alle Get-Parameter übergeben werden, damit unten noch alles richtig dargestellt wird. --> Problem war auch beim "Email an Moderatoren" vorhanden
-# Portal-Moderation: Allgemeine Einstellungen: Kontext in eigenes Formular, wie bei Räumen.
-# Diskussionen: Man kann keine Materialien mehr an Diskussionsbeiträge hängen. Geht jetzt wieder wie vorher ->siehe nächsten Eintrag
-# Diskussionen: Rücksprung Materialverknüpfen in ein eigenes Formular und nicht in die Diskussion. Soll das so sein? Langfristig nicht. Erst einmal wie früher
-# Portal - Moderation: Kennung ändern mit Änderung von Vor- und Nachname
+# Material anlegen: Keine Schlagworte im System: In der Selektbox mÃ¼sste "* kein Schlagwort" auftauchen. Tut aber nicht. Ist ein Schlagwort da, dann taucht es auf.
+# Portal: Beim Klick auf "Teilnahme beantragen" oben in dem Raumfenster werden die Einstellungen unten auf der Raumliste zurÃ¼ckgesetzt bzw. gehen verloren. Hier muss im Link "Teilnahme beantragen" alle Get-Parameter Ã¼bergeben werden, damit unten noch alles richtig dargestellt wird. --> Problem war auch beim "Email an Moderatoren" vorhanden
+# Portal-Moderation: Allgemeine Einstellungen: Kontext in eigenes Formular, wie bei RÃ¤umen.
+# Diskussionen: Man kann keine Materialien mehr an DiskussionsbeitrÃ¤ge hÃ¤ngen. Geht jetzt wieder wie vorher ->siehe nÃ¤chsten Eintrag
+# Diskussionen: RÃ¼cksprung MaterialverknÃ¼pfen in ein eigenes Formular und nicht in die Diskussion. Soll das so sein? Langfristig nicht. Erst einmal wie frÃ¼her
+# Portal - Moderation: Kennung Ã¤ndern mit Ã„nderung von Vor- und Nachname
 # Aufgaben: Status in Liste: "nicht erledigt" durch "---" abtrennen? Da dieser Status die Summe zweier anderer ist.
-# Anzeige der Ankündigungen auf der Home korrigiert
+# Anzeige der AnkÃ¼ndigungen auf der Home korrigiert
 # "Gumminband" entfernt
-# Titelumstellung für ein ausgewogeneres Design
-# Javascript obsolete Buttons als "noscript" option bei Javascript-Verfügung ausblenden
-# Folgende übersetzte Rubriken durch Scan der Language Dateien geprüft: Themen, Institutionen
+# Titelumstellung fÃ¼r ein ausgewogeneres Design
+# Javascript obsolete Buttons als "noscript" option bei Javascript-VerfÃ¼gung ausblenden
+# Folgende Ã¼bersetzte Rubriken durch Scan der Language Dateien geprÃ¼ft: Themen, Institutionen
 # Eckenbreite kontrollieren
 # E-Mail an Moderatoren Link: wohin? --> an die alte Stelle
 # Link zum CommSyService: wohin? --> an die alte Stelle
 # Den Task "Raumumzug" im Portal integrieren
-# Ein kleines Problem hat Hartmut noch mit dem Farbübergang der Ecken - der Grauton in der Rundung ist nicht der gleiche wie der im Rand (203/208/214 vs. 195/195/195). Deshalb war ich mir grad' nicht so sicher, ob ich nicht doch eine Brille brauche... 
-# Updatescript, dass den Chat aus der Home-Config entfernt und stattdessen das Serverflag für den Raum setzt
-# als gelesen markieren verfälscht Anzeige "Mitglieder, die diesen Beitrag aufgerufen haben" auf Detailseiten -> Flag in Reader-Tabelle?   Lösung: eigene Readerverwaltung für die Indexseiten
+# Ein kleines Problem hat Hartmut noch mit dem FarbÃ¼bergang der Ecken - der Grauton in der Rundung ist nicht der gleiche wie der im Rand (203/208/214 vs. 195/195/195). Deshalb war ich mir grad' nicht so sicher, ob ich nicht doch eine Brille brauche... 
+# Updatescript, dass den Chat aus der Home-Config entfernt und stattdessen das Serverflag fÃ¼r den Raum setzt
+# als gelesen markieren verfÃ¤lscht Anzeige "Mitglieder, die diesen Beitrag aufgerufen haben" auf Detailseiten -> Flag in Reader-Tabelle?   LÃ¶sung: eigene Readerverwaltung fÃ¼r die Indexseiten
 # Hochskalieren von Bildern mit gd_functions verhindern
-# E-Mails testen: Task Material veröffentlichen, Teilnahmeanfrage --> Links ergänzt, sollte so funktionieren
+# E-Mails testen: Task Material verÃ¶ffentlichen, Teilnahmeanfrage --> Links ergÃ¤nzt, sollte so funktionieren
 # Kennungen: alle Formulare ab Kennung-Detail
-# Bei Teilnahmen an Räume wird immer der current_user in den Raum kopiert. Dies ist entweder der Portal-User oder der Gemeinschaftsraum-User. Dies sollte aber immer der Privateroom-User sein. Achtung, auf das Picture aufpassen, dass wird nicht kopiert bei der cloneData-Methode.
-# Termin ändern -> [geändert] in Liste weg
+# Bei Teilnahmen an RÃ¤ume wird immer der current_user in den Raum kopiert. Dies ist entweder der Portal-User oder der Gemeinschaftsraum-User. Dies sollte aber immer der Privateroom-User sein. Achtung, auf das Picture aufpassen, dass wird nicht kopiert bei der cloneData-Methode.
+# Termin Ã¤ndern -> [geÃ¤ndert] in Liste weg
 # Druckansicht: "< Mein Bereich ausblenden" kann beim Ausdrucken weg.
 # Nutzungshinweise nachpflegen. Siehe Monique Beitrag in der Diskussion
-# Folgende übersetzten Rubriken prüfen: Projekträume, Gemeinschaftsräume
+# Folgende Ã¼bersetzten Rubriken prÃ¼fen: ProjektrÃ¤ume, GemeinschaftsrÃ¤ume
 # Benennungsproblem: offen - geschlossen: archiviert und "in Benutzung" vermeiden
-# "Anzahl der Seitenaufrufe" auf der Home kontrollieren. Scheint falsch gezählt zu werden ->lag wohl am fehlenden Cron-Job: Nochmals prüfen!
+# "Anzahl der Seitenaufrufe" auf der Home kontrollieren. Scheint falsch gezÃ¤hlt zu werden ->lag wohl am fehlenden Cron-Job: Nochmals prÃ¼fen!
 # Zusammenhang zwischen "archiviert" und Template in der configuration_preferences herstellen (Java-Script)
 # Konfiguratution: configuration_preferences auf Integration von Reload testen
 # Loginfehlermeldung in linke Leiste
@@ -89,10 +89,10 @@ Changes:
 # Plakate erneuern und z.B. in der Mensa austauschen
 # Das Anzeigen der discussion_index dauert zu lange!
 # html-text-editor: Safari Test
-# tabindex bei iframe kein gültiges Attribut (html-text-editor)
+# tabindex bei iframe kein gÃ¼ltiges Attribut (html-text-editor)
 # Auch bei eingeschaltetem Editor alte Textauzeichnungen interpretieren
-# Portal: Kennung löschen: User in Räumen müssen nicht nur gesperrt werden, sondern auch gelöscht werden ggf. auch mit dem Überschreiben der Daten
-# Räume sperren integrieren (unter Rraum umziehen) (insbesondere "Persönliche Räume"- Detailseite Kennungen Portal)
+# Portal: Kennung lÃ¶schen: User in RÃ¤umen mÃ¼ssen nicht nur gesperrt werden, sondern auch gelÃ¶scht werden ggf. auch mit dem Ãœberschreiben der Daten
+# RÃ¤ume sperren integrieren (unter Rraum umziehen) (insbesondere "PersÃ¶nliche RÃ¤ume"- Detailseite Kennungen Portal)
 # Nutzungsvereinbarungen eines Raumes immer sichtbar: wohin?
 # CAS - Authentifizierung
 # Multiple Authentifizierung
@@ -102,12 +102,12 @@ Changes:
 Bugs:
 -----
 1426218  	Broken layout in einem Projektraum
-1404718 	XHTML 1.1 - Konformität
+1404718 	XHTML 1.1 - KonformitÃ¤t
 1401271 	Editieren eines Eintrags als Moderator verliert Betreff
 1401185 	Kennung vs. Teilnahme
-1364719 	Kennung-Detail: Anpsrechpartnerstatusänderung not konsistent
+1364719 	Kennung-Detail: AnpsrechpartnerstatusÃ¤nderung not konsistent
 1331130 	Actionleiste derzeit unter Errorboxes
-1543790 	Namen werden überschrieben
+1543790 	Namen werden Ã¼berschrieben
 
 
 RFE:

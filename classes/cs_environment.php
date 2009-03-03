@@ -352,7 +352,7 @@ class cs_environment {
       if (!empty($array)) {
          $result_array = array();
          foreach ($array as $parameter) {
-            if ( !stristr($parameter,$value) ) {
+            if ( !mb_stristr($parameter,$value) ) {
                $result_array[] = $parameter;
             }
          }
@@ -366,7 +366,7 @@ class cs_environment {
       $array = $this->_getCurrentParameterArray();
       if (!empty($array)) {
          foreach ( $array as $current_parameter ) {
-            if (stristr($current_parameter,$parameter.'=')) {
+            if (mb_stristr($current_parameter,$parameter.'=')) {
                $temp_array = explode('=',$current_parameter);
                if ( $temp_array[0] == $parameter ) {
                   $value = $temp_array[1];
@@ -388,7 +388,7 @@ class cs_environment {
             // delete cid, mod and fct
             $go_on = true;
             while ($go_on and isset($retour[0])) {
-               if (stristr($retour[0],'cid=') or stristr($retour[0],'mod=') or stristr($retour[0],'fct=') ) {
+               if (mb_stristr($retour[0],'cid=') or mb_stristr($retour[0],'mod=') or mb_stristr($retour[0],'fct=') ) {
                   array_shift($retour);
                } else {
                   $go_on = false;
@@ -398,7 +398,7 @@ class cs_environment {
             if (count($retour) > 0) {
                $retour2 = array();
                foreach ($retour as $element) {
-                  if (!stristr($element,'SID') and !empty($element)) {
+                  if (!mb_stristr($element,'SID') and !empty($element)) {
                      $retour2[] = $element;
                   }
                }
@@ -957,7 +957,7 @@ class cs_environment {
    * @access public
    */
    function getSessionManager() {
-      global $c_auth; // unschön (TBD)
+      global $c_auth; // unschÃ¶n (TBD)
       if (!isset($this->instance['cs_session_manager'])) {
          require_once('classes/cs_session_manager.php');
          $this->instance['cs_session_manager'] = new cs_session_manager($this->getDBConnector(),$c_auth);
@@ -1363,9 +1363,9 @@ class cs_environment {
     $aySeen = array();
     if(getenv('HTTP_ACCEPT_LANGUAGE') != '') {
       foreach(explode(',',getenv('HTTP_ACCEPT_LANGUAGE')) as $llang) {
-        preg_match("#^(.*?)([-_].*?)?(\;q\=(.*))?$#i", $llang, $ayM);
+        preg_match("~^(.*?)([-_].*?)?(\;q\=(.*))?$~iu", $llang, $ayM);
         $q = isset($ayM[4]) ? $ayM[4] : '1.0';
-        $lang = strtolower(trim($ayM[1]));
+        $lang = mb_strtolower(trim($ayM[1]));
         if(!in_array($lang, $aySeen)) {
           $ayLang[$q] = $lang;
           $aySeen[] = $lang;
@@ -1416,10 +1416,10 @@ class cs_environment {
       $this->_browser_version = '';
 
       foreach ($browser as $parent) {
-         if ( ($s = strpos(strtoupper($_SERVER['HTTP_USER_AGENT']), $parent)) !== FALSE ) {
-            $f = $s + strlen($parent);
-            $version = substr($_SERVER['HTTP_USER_AGENT'], $f, 5);
-            $version = preg_replace('/[^0-9,.]/','',$version);
+         if ( ($s = mb_strpos(mb_strtoupper($_SERVER['HTTP_USER_AGENT'], 'UTF-8'), $parent)) !== FALSE ) {
+            $f = $s + mb_strlen($parent);
+            $version = mb_substr($_SERVER['HTTP_USER_AGENT'], $f, 5);
+            $version = preg_replace('~[^0-9,.]~u','',$version);
 
             $this->_browser = $parent;
             $this->_browser_version = $version;
@@ -1432,31 +1432,31 @@ class cs_environment {
       global $_SERVER;
       $HTTP_USER_AGENT = $_SERVER['HTTP_USER_AGENT'];
       $os = 'UNKNOWN';
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "Win95") || strpos($HTTP_USER_AGENT, "Windows 95")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Win95") || mb_strpos($HTTP_USER_AGENT, "Windows 95")) ) {
          $os = "Windows 95";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "Win98") || strpos($HTTP_USER_AGENT, "Windows 98")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Win98") || mb_strpos($HTTP_USER_AGENT, "Windows 98")) ) {
          $os = "Windows 98";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "WinNT") || strpos($HTTP_USER_AGENT, "Windows NT")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "WinNT") || mb_strpos($HTTP_USER_AGENT, "Windows NT")) ) {
          $os = "Windows NT";
       }
-      if ( $os == 'Windows NT' and (strpos($HTTP_USER_AGENT, "WinNT 5.0") || strpos($HTTP_USER_AGENT, "Windows NT 5.0")) ) {
+      if ( $os == 'Windows NT' and (mb_strpos($HTTP_USER_AGENT, "WinNT 5.0") || mb_strpos($HTTP_USER_AGENT, "Windows NT 5.0")) ) {
          $os = "Windows 2000";
       }
-      if ( $os == 'Windows NT' and (strpos($HTTP_USER_AGENT, "WinNT 5.1") || strpos($HTTP_USER_AGENT, "Windows NT 5.1")) ) {
+      if ( $os == 'Windows NT' and (mb_strpos($HTTP_USER_AGENT, "WinNT 5.1") || mb_strpos($HTTP_USER_AGENT, "Windows NT 5.1")) ) {
          $os = "Windows XP";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "Linux")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Linux")) ) {
          $os = "Linux";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "OS/2")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "OS/2")) ) {
          $os = "OS/2";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "Sun")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Sun")) ) {
          $os = "Sun OS";
       }
-      if ( $os == 'UNKNOWN' and (strpos($HTTP_USER_AGENT, "Macintosh") || strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
+      if ( $os == 'UNKNOWN' and (mb_strpos($HTTP_USER_AGENT, "Macintosh") || mb_strpos($HTTP_USER_AGENT, "Mac_PowerPC")) ) {
          $os = "Mac OS";
       }
       return $os;
@@ -1522,7 +1522,7 @@ class cs_environment {
       if ( !empty($c_plugin_array) ) {
          foreach ( $c_plugin_array as $plugin_context ) {
             foreach ( $plugin_context as $plugin ) {
-               if ( strtolower($plugin) == strtolower($value) ) {
+               if ( mb_strtolower($plugin, 'UTF-8') == mb_strtolower($value, 'UTF-8') ) {
                   $retour = true;
                   break;
                }
@@ -1591,7 +1591,7 @@ class cs_environment {
    public function getBelugaConnectionLink(){
       global $url_for_beluga_system;
       $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-      if (!stristr($commsy_link,'SID')) {
+      if (!mb_stristr($commsy_link,'SID')) {
          $session = $this->getSessionItem();
          $commsy_link .='&CSID='.$session->getSessionID();
       }else{
@@ -1636,7 +1636,7 @@ class cs_environment {
       $retour = false;
       $mode = $this->getOutputMode();
       if ( !empty($mode)
-           and strtolower($mode) == strtolower($value)
+           and mb_strtolower($mode, 'UTF-8') == mb_strtolower($value, 'UTF-8')
          ) {
          $retour = true;
       }

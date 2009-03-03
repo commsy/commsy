@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -80,15 +80,15 @@ class cs_wiki_view extends cs_view {
       if ( empty($array[1]) ) {
          // internal resource
          $file_name_array = $this->_getItemFileListForView();
-         $temp_file_name = htmlentities($array[2]);
+         $temp_file_name = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
          if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
             $file = $file_name_array[$temp_file_name];
          }
          if ( isset($file) ) {
-            if ( stristr(strtolower($file->getFilename()),'png')
-                 or stristr(strtolower($file->getFilename()),'jpg')
-                 or stristr(strtolower($file->getFilename()),'jpeg')
-                 or stristr(strtolower($file->getFilename()),'gif')
+            if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                ) {
                $source = $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder();
             }
@@ -216,7 +216,7 @@ class cs_wiki_view extends cs_view {
       $link_text = '';
       if ( !empty($array[1]) ) {
          $file_name_array = $this->_getItemFileListForView();
-         $temp_file_name = htmlentities($array[1]);
+         $temp_file_name = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
          $file = $file_name_array[$temp_file_name];
          if ( isset($file) ) {
 
@@ -284,7 +284,7 @@ class cs_wiki_view extends cs_view {
          }
       } else {
          $source = $array[1].$array[2];
-         $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
          $extern = true;
       }
       if ( !empty($array[3]) ) {
@@ -337,23 +337,23 @@ class cs_wiki_view extends cs_view {
 
    function formatForWiki($text){
       $reg_exp_father_array = array();
-      $reg_exp_father_array[]       = '/\\(:(.*?):\\)/e';
+      $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
 
       $reg_exp_array = array();
-      $reg_exp_array['(:flash']       = '/\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:quicktime']   = '/\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:wmplayer']    = '/\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:image']       = '/\\(:image (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:item']        = '/\\(:item ([0-9]*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:link']        = '/\\(:link (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:file']        = '/\\(:file (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:zip']         = '/\\(:zip (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:youtube']     = '/\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:googlevideo'] = '/\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:quicktime']   = '~\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:image']       = '~\\(:image (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:item']        = '~\\(:item ([0-9]*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:link']        = '~\\(:link (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:file']        = '~\\(:file (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:zip']         = '~\\(:zip (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:youtube']     = '~\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       if($this->_environment->isScribdAvailable()){
-        $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
+        $reg_exp_array['(:office']      = '~\\(:office (.*?)(\\s.*?)?\\s*?:\\)~eu';
       }
 
       // jsMath for latex math fonts
@@ -362,9 +362,9 @@ class cs_wiki_view extends cs_view {
       if ( isset($c_jsmath_enable)
            and $c_jsmath_enable
          ) {
-         $reg_exp_father_array[]   = '/\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}/e';
-         $reg_exp_array['{$$']     = '/\\{\\$\\$(.*?)\\$\$\\}/e'; // must be before next one
-         $reg_exp_array['{$']      = '/\\{\\$(.*?)\\$\\}/e';
+         $reg_exp_father_array[]   = '~\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}~eu';
+         $reg_exp_array['{$$']     = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
+         $reg_exp_array['{$']      = '~\\{\\$(.*?)\\$\\}~eu';
       }
 
       // is there wiki syntax ?
@@ -372,7 +372,7 @@ class cs_wiki_view extends cs_view {
          $reg_exp_keys = array_keys($reg_exp_array);
          $clean_text = false;
          foreach ($reg_exp_keys as $key) {
-            if ( stristr($text,$key) ) {
+            if ( mb_stristr($text,$key) ) {
                $clean_text = true;
                break;
             }
@@ -390,57 +390,57 @@ class cs_wiki_view extends cs_view {
             foreach ($matches[0] as $value) {
                $value_new = strip_tags($value);
                foreach ($reg_exp_array as $key => $reg_exp) {
-                  if ( $key == '(:flash' and stristr($value_new,'(:flash') ) {
+                  if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                      //$value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
                      $value_new = '[=(:flash:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
-                  } elseif ( $key == '(:wmplayer' and stristr($value_new,'(:wmplayer') ) {
+                  } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
                      //$value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
                      $value_new = '[=(:wmplayer:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
-                  } elseif ( $key == '(:quicktime' and stristr($value_new,'(:quicktime') ) {
+                  } elseif ( $key == '(:quicktime' and mb_stristr($value_new,'(:quicktime') ) {
                      //$value_new = $this->_format_quicktime($value_new,$this->_getArgs($value_new,$reg_exp));
                      $value_new = '[=(:quicktime:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
-                  } elseif ( $key == '(:image' and stristr($value_new,'(:image') ) {
+                  } elseif ( $key == '(:image' and mb_stristr($value_new,'(:image') ) {
                      $value_new = $this->_format_image($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:item' and stristr($value_new,'(:item') ) {
+                  } elseif ( $key == '(:item' and mb_stristr($value_new,'(:item') ) {
                      $value_new = $this->_format_item($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:link' and stristr($value_new,'(:link') ) {
+                  } elseif ( $key == '(:link' and mb_stristr($value_new,'(:link') ) {
                      $value_new = $this->_format_link($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:file' and stristr($value_new,'(:file') ) {
+                  } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
                      $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:zip' and stristr($value_new,'(:zip') ) {
+                  } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
                      //$value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
                      // Zip entpacken und als Webseite darstellen funktioniert nicht. Daher
                      // ersteinmal behandeln wie eine Datei.
                      $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:youtube' and stristr($value_new,'(:youtube') ) {
+                  } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
                      $value_new = $this->_format_youtube($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:googlevideo' and stristr($value_new,'(:googlevideo') ) {
+                  } elseif ( $key == '(:googlevideo' and mb_stristr($value_new,'(:googlevideo') ) {
                      $value_new = $this->_format_googlevideo($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:vimeo' and stristr($value_new,'(:vimeo') ) {
+                  } elseif ( $key == '(:vimeo' and mb_stristr($value_new,'(:vimeo') ) {
                      $value_new = $this->_format_vimeo($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
+                  } elseif ( $key == '(:mp3' and mb_stristr($value_new,'(:mp3') ) {
                      //$value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
                      $value_new = $value_new;
                      break;
-                  } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
+                  } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
                      //$value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
                      $value_new = '[=(:office:)=] - ' . getMessage('EXPORT_TO_WIKI_NOT_SUPPOTED_YET');
                      break;
-                  } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
+                  } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
                      $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
-                  } elseif ( $key == '{$$' and stristr($value_new,'{$$') ) {
+                  } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
                      $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
                   }

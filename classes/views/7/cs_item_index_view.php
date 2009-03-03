@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -80,11 +80,11 @@ var $_sel_rubric = '';
        $search_array = array();
 
        //find all occurances of quoted text and store them in an array
-       preg_match_all('/("(.+?)")/',$search_text,$literal_array);
+       preg_match_all('~("(.+?)")~u',$search_text,$literal_array);
        //delete this occurances from the original string
-       $search_text = preg_replace('/("(.+?)")/','',$search_text);
+       $search_text = preg_replace('~("(.+?)")~u','',$search_text);
 
-       $search_text = preg_replace('/-(\w+)/','',$search_text);
+       $search_text = preg_replace('~-(\w+)~u','',$search_text);
 
        //clean up the resulting array from quots
        $literal_array = str_replace('"','',$literal_array[2]);
@@ -649,10 +649,10 @@ var $_sel_rubric = '';
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-               if ( stristr(strtolower($file->getFilename()),'png')
-                 or stristr(strtolower($file->getFilename()),'jpg')
-                 or stristr(strtolower($file->getFilename()),'jpeg')
-                 or stristr(strtolower($file->getFilename()),'gif')
+               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                ) {
                    $this->_with_slimbox = true;
                    $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
@@ -1060,7 +1060,7 @@ var $_sel_rubric = '';
             if ( isset($selrubric) and $selrubric == $link_name[0] ) {
                $html .= ' selected="selected"';
             }
-            switch ( strtoupper($link_name[0]) )
+            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
             {
                case 'ANNOUNCEMENT':
                   $text = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
@@ -1176,7 +1176,7 @@ var $_sel_rubric = '';
             if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
                $list = $this->getAvailableRubric($link_name[0]);
                $selrubric = $this->getSelectedRubric($link_name[0]);
-               $temp_link = strtoupper($link_name[0]);
+               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
                switch ( $temp_link )
                {
                   case 'GROUP':
@@ -1400,7 +1400,7 @@ var $_sel_rubric = '';
          $html_text .= '<span class="infocolor">'.getMessage('COMMON_RUBRIC').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
-         switch ( strtoupper($params['selrubric']) ){
+         switch ( mb_strtoupper($params['selrubric'], 'UTF-8') ){
             case 'ANNOUNCEMENT':
                $text = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                break;
@@ -1452,7 +1452,7 @@ var $_sel_rubric = '';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
 
-         switch ( strtoupper($params['selrestriction']) ){
+         switch ( mb_strtoupper($params['selrestriction'], 'UTF-8') ){
             case '1':
                $text = $this->_translator->getMessage('COMMON_TITLE');
                break;

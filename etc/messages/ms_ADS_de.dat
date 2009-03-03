@@ -1,9 +1,9 @@
 <?php
-$message["ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON"]["de"] = "Weiteren Sponsor hinzufügen";
-$message["ADS_AD_NORMAL_SPONSOR_BUTTON"]["de"] = "Sponsor hinzufügen";
-$message["ADS_COMMON_SPONSOR_FORM_ELEMENT_HEADLINE"]["de"] = "Überschrift";
+$message["ADS_ADD_NEXT_NORMAL_SPONSOR_BUTTON"]["de"] = "Weiteren Sponsor hinzufÃ¼gen";
+$message["ADS_AD_NORMAL_SPONSOR_BUTTON"]["de"] = "Sponsor hinzufÃ¼gen";
+$message["ADS_COMMON_SPONSOR_FORM_ELEMENT_HEADLINE"]["de"] = "Ãœberschrift";
 $message["ADS_CONFIGURATION_FORM_NORMAL_SPONSORS_HEADLINE"]["de"] = "Sponsoren";
-$message["ADS_DELETE_BUTTON"]["de"] = "löschen";
+$message["ADS_DELETE_BUTTON"]["de"] = "lÃ¶schen";
 $message["ADS_DOWN_BUTTON"]["de"] = "nach unten";
 $message["ADS_FORM_ELEMENT_TITLE_SPONSOR_NO"]["de"] = "Sponsor %1";
 $message["ADS_IMAGE_FORM_ELEMENT_TITLE"]["de"] = "Bild";

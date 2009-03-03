@@ -3,6 +3,11 @@
 <HEAD>
   <TITLE>CommSy - Installationsanleitung</TITLE>
   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+  <!-- ---- -->
+  <!-- UTF8 -->
+  <!-- <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8"> -->
+  <!-- UTF8 -->
+  <!-- ---- -->
   <META name="AUTHOR" content="Dr. Iver Jackewitz">
   <META NAME="DATE" CONTENT="2008-03-11">
   <META NAME="DESCRIPTION" CONTENT="">
@@ -27,7 +32,7 @@
 <div style="background-color: #ffffff; margin: 0px 5px 5px 5px; padding: 5px 5px 5px 10px;">
    <h2>Installationsanleitung: CommSy 6.0.0 und h&ouml;her</h2>
    <p>
-      CommSy ist Open Source unter der GPL. Fühlen Sie sich eingeladen, CommSy zu benutzen, zu verbreiten und zu verändern. Und wenn Sie uns eine Freude machen wollen, so erzählen Sie uns davon: <a href="mailto:info@commsy.net">info@commsy.net</a>.
+      CommSy ist Open Source unter der GPL. FÃ¼hlen Sie sich eingeladen, CommSy zu benutzen, zu verbreiten und zu verÃ¤ndern. Und wenn Sie uns eine Freude machen wollen, so erzÃ¤hlen Sie uns davon: <a href="mailto:info@commsy.net">info@commsy.net</a>.
    </p>
 
    <h4><A NAME="project"></A>Projekt</h4>
@@ -78,7 +83,7 @@
       <li>OpenSSL Library - php_openssl
                [falls https benutzt werden soll]</li>
       <LI>cURL Library - php5-curl
-                [wird ben&ouml;tigt, wenn der CommSy-Server über einen Proxy auf das Internet zugreifen muss]</LI>
+                [wird ben&ouml;tigt, wenn der CommSy-Server Ã¼ber einen Proxy auf das Internet zugreifen muss]</LI>
       <LI>SOAP Library - soap
                 [wird bei der Anbindung einiger externer Tools ben&ouml;tigt]</LI>
       </ul>
@@ -99,7 +104,7 @@
               Zum Einstellen der Parameter bearbeiten Sie eine der Dateien mit einem Texteditor und Administratorrechten. Die Orte dieser Dateien sind unter Ubuntu Linux:
               <UL>
                  <LI><code>/etc/php5/apache2/php.ini</code></LI>
-                 <LI><code>/var/www/commsy/htdocs/.htaccess</code> (oder ähnlich)</LI>
+                 <LI><code>/var/www/commsy/htdocs/.htaccess</code> (oder Ã¤hnlich)</LI>
                  <li><code>/etc/apache2/sites-available/COMMSY-VHOST</code></li>
               </UL>
            </UL>
@@ -124,13 +129,13 @@
           Unter Linux geht dies so:
           <ol>
              <li>Wechseln Sie mit einer Kommandozeile in den Ordner, in dem sich die CommSy-Archivdatei (z.B. <code>commsy-6.0.0.tar.bz2</code> - Versionsnummern entsprechend der neusten Version anpassen) befindet.</li>
-             <li>Nun führen Sie folgendes Kommando aus: <code>sudo tar -jxvf commsy-6.0.0.tar.bz2 -C /var/www/</code> und der CommSy-Code wird in das Verzeichnis <code>/var/www/</code> entpackt.</LI>
-             <li>Nun sollten Sie dem User "www-data", welcher den Apache Server vertritt, noch Schreibrechte auf das CommSy-Verzeichnis gewähren:<br/>
+             <li>Nun fÃ¼hren Sie folgendes Kommando aus: <code>sudo tar -jxvf commsy-6.0.0.tar.bz2 -C /var/www/</code> und der CommSy-Code wird in das Verzeichnis <code>/var/www/</code> entpackt.</LI>
+             <li>Nun sollten Sie dem User "www-data", welcher den Apache Server vertritt, noch Schreibrechte auf das CommSy-Verzeichnis gewÃ¤hren:<br/>
                  <code>cd /var/www</code><br/>
                  <code>sudo chown -R www-data ./commsy-6.0.0</code>
              </li>
-             <li>Außerdem muss die Welt nicht unbedingt mitlesen: <code>sudo chmod -R o-rwx ./commsy-6.0.0</code></li>
-             <li>Tipp: Noch sicherer wird es, wenn Sie einen Apache vhost extra für die CommSy-Installation einrichten und als <code>DokumentRoot</code> das <code>htdocs</code>-Verzeichnis der CommSy-Installation wählen. So sind dann alle hochgeladenen Dateien und auch das Konfigurationsverzeichnis nicht direkt vom Webserver auslieferbar.</li>
+             <li>AuÃŸerdem muss die Welt nicht unbedingt mitlesen: <code>sudo chmod -R o-rwx ./commsy-6.0.0</code></li>
+             <li>Tipp: Noch sicherer wird es, wenn Sie einen Apache vhost extra fÃ¼r die CommSy-Installation einrichten und als <code>DokumentRoot</code> das <code>htdocs</code>-Verzeichnis der CommSy-Installation wÃ¤hlen. So sind dann alle hochgeladenen Dateien und auch das Konfigurationsverzeichnis nicht direkt vom Webserver auslieferbar.</li>
           </ol>
       </LI>
       <LI>Legen Sie in der MySQL-Datenbank den Datenbankbenutzer an, der fortan alle
@@ -214,7 +219,7 @@
       <code>http://localhost/commsy/htdocs/install</code></a>) und folgen Sie dem Installations- und Konfigurationsprozess.
    </p>
    <p>
-      Zur Konfiguration zusätzlicher Software und Möglichkeiten siehe <code><I>&lt;Webserver_Dateiverzeichnis&gt;</I>/commsy/etc/commsy/*</code>.
+      Zur Konfiguration zusÃ¤tzlicher Software und MÃ¶glichkeiten siehe <code><I>&lt;Webserver_Dateiverzeichnis&gt;</I>/commsy/etc/commsy/*</code>.
    </p>
 
    <h4>
@@ -262,8 +267,8 @@
       <li>... verschickt einen Newsletter, sofern dieser eingeschaltet ist.</li>
    </ul>
    <p><b>Achtung</b>: Sofern Sie mehrere Portal mit einer CommSy-Installation (CommSy-Server) mit unterschiedlichen
-      URLs nutzen wollen, ist es besser, den Cron-Mechanismus für Server und Portale einzeln aufzurufen.
-      So wird z.B. der E-Mail-Newsletter unter der richtigen URL verschickt. In diesem Fall müssen die
+      URLs nutzen wollen, ist es besser, den Cron-Mechanismus fÃ¼r Server und Portale einzeln aufzurufen.
+      So wird z.B. der E-Mail-Newsletter unter der richtigen URL verschickt. In diesem Fall mÃ¼ssen die
       Aufrufe des Cron-Mechanismus wie folgt aussehen:
    </p>
    <ul>
@@ -271,7 +276,7 @@
       <li>Portal 1 mit Item-ID 101: <code>http://www.COMMSY-PORTAL-1-URL.de/<I>&lt;Ihr_Webserver_Verzeichnis&gt;</I>/commsy/htdocs/cron.php?cid=101</code></li>
       <li>Portal n mit Item-ID XYZ: <code>http://www.COMMSY-PORTAL-n-URL.de/<I>&lt;Ihr_Webserver_Verzeichnis&gt;</I>/commsy/htdocs/cron.php?cid=XYZ</code></li>
    </ul>
-   <p>Sofern Sie derart verfahren, muss für jedes neue Portal dieser Cron-Mechanismus eingerichtet werden.</p>
+   <p>Sofern Sie derart verfahren, muss fÃ¼r jedes neue Portal dieser Cron-Mechanismus eingerichtet werden.</p>
 
    <h4><A NAME="additional_software"></A>Zus&auml;tzliche Software</h4>
    <p>
@@ -290,15 +295,15 @@
       <li>Wiki: <a href="http://www.commsy.net/Software/Download" target="_blank">CommSyWiki</a>
           - keine spezielle Version</li>
       <li>IMS-Import:
-           Um den IMS-Import zu nutzen müssen folgende php-Pakete installiert sein:
+           Um den IMS-Import zu nutzen mÃ¼ssen folgende php-Pakete installiert sein:
            <ul>
            <li>php5-xsl</li>
-           <li>libxslt in der Version 1.1.0 oder höher</li>
+           <li>libxslt in der Version 1.1.0 oder hÃ¶her</li>
            </ul>
       </li>
    </ul>
    <p>
-      Zur Konfiguration zusätzlicher Software und Möglichkeiten siehe <code><I>&lt;Webserver_Dateiverzeichnis&gt;</I>/commsy/etc/commsy/*</code>.
+      Zur Konfiguration zusÃ¤tzlicher Software und MÃ¶glichkeiten siehe <code><I>&lt;Webserver_Dateiverzeichnis&gt;</I>/commsy/etc/commsy/*</code>.
    </p>
 
 </div>

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -90,11 +90,11 @@ class cs_home_title_view extends cs_view {
        $search_array = array();
 
        //find all occurances of quoted text and store them in an array
-       preg_match_all('/("(.+?)")/',$search_text,$literal_array);
+       preg_match_all('~("(.+?)")~u',$search_text,$literal_array);
        //delete this occurances from the original string
-       $search_text = preg_replace('/("(.+?)")/','',$search_text);
+       $search_text = preg_replace('~("(.+?)")~u','',$search_text);
 
-       $search_text = preg_replace('/-(\w+)/','',$search_text);
+       $search_text = preg_replace('~-(\w+)~u','',$search_text);
 
        //clean up the resulting array from quots
        $literal_array = str_replace('"','',$literal_array[2]);

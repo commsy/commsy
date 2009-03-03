@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -734,7 +734,7 @@ class cs_detail_view extends cs_view {
       }
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
          $html .= '<script type="text/javascript">'.LF;
-         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
             $html .= 'preInitCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
@@ -991,7 +991,7 @@ class cs_detail_view extends cs_view {
                }
                $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
                $text = '';
-               switch ( strtoupper($type) )
+               switch ( mb_strtoupper($type, 'UTF-8') )
                {
                   case 'ANNOUNCEMENT':
                      $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
@@ -1104,7 +1104,7 @@ class cs_detail_view extends cs_view {
             $context = $this->_environment->getCurrentContextItem();
             if ($connection != CS_INSTITUTION_TYPE or $context->withRubric(CS_INSTITUTION_TYPE)) {
                $text = '';
-               switch ( strtoupper($connection) )
+               switch ( mb_strtoupper($connection, 'UTF-8') )
                {
                   case 'ANNOUNCEMENT':
                      $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
@@ -1172,9 +1172,9 @@ class cs_detail_view extends cs_view {
                   $in_list = $path_item_list->inList($item);
                   if ($in_list){
                      $title = $topic_item->getTitle();
-                     $length = strlen($title);
+                     $length = mb_strlen($title);
                      if ( $length > 22 ) {
-                        $title = substr($title,0,22).'...';
+                        $title = mb_substr($title,0,22).'...';
                      }
                      $params['iid'] = $topic_item->getItemID();
                      $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
@@ -2027,10 +2027,10 @@ class cs_detail_view extends cs_view {
                     )
                     and
                     (
-                       stristr(strtolower($file->getFilename()),'png')
-                       or stristr(strtolower($file->getFilename()),'jpg')
-                       or stristr(strtolower($file->getFilename()),'jpeg')
-                       or stristr(strtolower($file->getFilename()),'gif')
+                       mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                     )
                   ) {
                   $this->_with_slimbox = true;

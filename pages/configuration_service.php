@@ -38,8 +38,8 @@ if ( !empty($_GET['cid']) ) {
 }
 
 // hier muss auf den aktuellen Kontext referenziert werden,
-// da sonst später diese Einstellung wieder überschrieben wird
-// in der commsy.php beim Speichern der Aktivität
+// da sonst spÃ¤ter diese Einstellung wieder Ã¼berschrieben wird
+// in der commsy.php beim Speichern der AktivitÃ¤t
 $current_context_item = $environment->getCurrentContextItem();
 $current_cid = $current_context_item->getItemId();
 if ($current_cid == $current_context_item->getItemID()) {

@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -1178,7 +1178,7 @@ class cs_form_view extends cs_view {
          $with_htmltextarea = $current_context->withHtmlTextArea();
          $html_status = $current_context->getHtmlTextAreaStatus();
      }
-     $current_browser = strtolower($this->_environment->getCurrentBrowser());
+     $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
      if ( !isset($c_html_textarea)
           or !$c_html_textarea
@@ -1836,7 +1836,7 @@ class cs_form_view extends cs_view {
             $html .= $this->_getSearchAsHTML();
             $html .= '</div>'.LF;
             $html .='<div class="content_display_width" style="width:70%">'.LF;
-            $temp_mod_func = strtoupper($this->_environment->getCurrentModule()) . '_' . strtoupper($this->_environment->getCurrentFunction());
+            $temp_mod_func = mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') . '_' . mb_strtoupper($this->_environment->getCurrentFunction(), 'UTF-8');
             $tempMessage = "";
             switch( $temp_mod_func  )
             {
@@ -1884,15 +1884,15 @@ class cs_form_view extends cs_view {
                   $tempMessage = getMessage('COMMON_SECTION_EDIT');
                   $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
-               case 'ACCOUNT_PASSWORD':      // Password ändern
+               case 'ACCOUNT_PASSWORD':      // Password Ã¤ndern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
                   $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
-               case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
+               case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen Ã¤ndern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
                   $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
-               case 'ACCOUNT_STATUS':        // Status ändern (Portal)
+               case 'ACCOUNT_STATUS':        // Status Ã¤ndern (Portal)
                   $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
                   $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
@@ -1914,7 +1914,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_DATES':   // Termindarstellung
                   $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_DEFAULTS': // Voreinstellungen für Räume
+               case 'CONFIGURATION_DEFAULTS': // Voreinstellungen fÃ¼r RÃ¤ume
                   $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DISCUSSION': // Art der Diskussion
@@ -1926,7 +1926,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_EXTRA':   // Extras einstellen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenräume" eingeschaltet ist
+               case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "GruppenrÃ¤ume" eingeschaltet ist
                   $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOMEPAGE': // Raum-Webseite einstellen
@@ -1941,7 +1941,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_IMS':     // IMS-Account Einstellungen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_LANGUAGE': // Verfügbare Sprachen (Server)
+               case 'CONFIGURATION_LANGUAGE': // VerfÃ¼gbare Sprachen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MAIL':    // E-Mail-Texte
@@ -1950,13 +1950,13 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_MOVE':    // Raum auf anderes Portal umziehen (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_NEWS':    // Ankündigungen bearbeiten (Portal)
+               case 'CONFIGURATION_NEWS':    // AnkÃ¼ndigungen bearbeiten (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PLUGIN':  // Sponsoren und Werbung
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raumübersicht (Portal)
+               case 'CONFIGURATION_PORTALHOME': // Gestaltung der RaumÃ¼bersicht (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
@@ -1965,10 +1965,10 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // E-Mail-Newsletter (priv.)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_ROOM_OPENING': // Raumeröffnungen (Portal)
+               case 'CONFIGURATION_ROOM_OPENING': // RaumerÃ¶ffnungen (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
-               case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
+               case 'PROJECT_EDIT': // RaumerÃ¶ffnungen (Portal)
                   $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
                   $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
@@ -2130,7 +2130,7 @@ class cs_form_view extends cs_view {
       }
       $html .= '</div>'.LF;
 
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:100%; ';

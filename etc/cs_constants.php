@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -136,22 +136,24 @@ define('BR'  , "<br />");   // line feed
 define('BRLF', "<br />\n"); // line feed
 define('TAB' , "\t");       // tab
 
-define ("UC_CHARS", "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏĞÑÒÓÔÕÖŒØŠÙÚÛÜİŞ"); // If you need more, add
-define ("LC_CHARS", "àáâãäåæçèéêëìíîïğñòóôõöœøšùúûüış"); // If you need more, add
+define ("UC_CHARS", "Ã€ÃÃ‚ÃƒÃ„Ã…Ã†Ã‡ÃˆÃ‰ÃŠÃ‹ÃŒÃÃÃÃÃ‘Ã’Ã“Ã”Ã•Ã–ÂŒÃ˜ÂŠÃ™ÃšÃ›ÃœÃÂÃ"); // If you need more, add
+define ("LC_CHARS", "Ã Ã¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯Ã°Ã±Ã²Ã³Ã´ÃµÃ¶ÂœÃ¸ÂšÃ¹ÃºÃ»Ã¼Ã½ÂÃ¾"); // If you need more, add
 
 //All Special chars
-define ("SPECIAL_CHARS",UC_CHARS.LC_CHARS."ß");
+define ("SPECIAL_CHARS",UC_CHARS.LC_CHARS."ÃŸ");
 
 //Chars allowed  in URLs by RFC 1738. Use in character class definition: '['.RFC1738_CHARS.']'
-//IMPORTANT: for preg-functions: use "§" as delimiters for search-expression!
+//IMPORTANT: for preg-functions: use "Â§" as delimiters for search-expression!
 //
 // the ")" character belongs to the allowed cahracters too, but there are problems with things like "(www.test.de)." where both ")" and "." are punctuation marks,
 //but both could be also parts of the url. For the few occurances of ")" in urls, we decided to solve this problem by not allowing ")" in urls
-define ("RFC1738_CHARS","A-Za-z0-9?:@&=/;_.+!*'(,%$~#-");
+//define ("RFC1738_CHARS","A-Za-z0-9?:@&=/;_.+!*'(,%$~#-");
+define ("RFC1738_CHARS","A-Za-z0-9\?:@&=/;_\.\+!\*'(,%\$~#-");
 
 //Chars allowed  in Email-adressess by RFC 2822. Use in character class definition: '['.RFC2822_CHARS.']'
-//IMPORTANT: for preg-functions: use "§" as delimiters for search-expression!
-define("RFC2822_CHARS","A-Za-z0-9!#$%&'*+/=?^_`{|}~-");
+//IMPORTANT: for preg-functions: use "Â§" as delimiters for search-expression!
+//define("RFC2822_CHARS","A-Za-z0-9!#$%&'*+/=?^_`{|}~-");
+define("RFC2822_CHARS","A-Za-z0-9!#\$%&'\*\+/=\?\^_`{\|}~-");
 
 // IIS - microsoft compatibility
 /*

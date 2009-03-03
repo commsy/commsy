@@ -72,7 +72,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
       //set month/year/date depending on region
       if ($region == 'europe') {
          // TT.MM.YYYY
-         $pattern = '$([0-9]{1,2})([./])([0-9]{1,2})([./]([0-9]{1,4}))?$';
+         $pattern = '~([0-9]{1,2})([./])([0-9]{1,2})([./]([0-9]{1,4}))?~u';
          if (preg_match($pattern.'i',$date,$matches)) {
             if (!empty($matches[5])) {
                $year = $matches[5];
@@ -84,7 +84,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
          }
       } else if ($region = 'british') {
          // MM/TT/YYYY
-         $pattern = '$([0-9]{1,2})([./])([0-9]{1,2})([./]([0-9]{1,4}))?$';
+         $pattern = '~([0-9]{1,2})([./])([0-9]{1,2})([./]([0-9]{1,4}))?~u';
          if (preg_match($pattern.'i',$date,$matches)) {
             if (!empty($matches[5])) {
                $year = $matches[5];
@@ -97,7 +97,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
       }
       //try DB time format if not succesfull yet
       if (empty($matches)) {
-         $pattern = '$([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})$';
+         $pattern = '~([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})~u';
          if (preg_match($pattern.'i',$date,$matches)) {
             $year = $matches[1];
             $month = $matches[2];
@@ -106,7 +106,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
       }
       if (empty($matches)) {
       //try TT Mon YYYY format if not succesfull yet
-         $pattern = '$([0-9]{1,2})([A-Za-z]{1,4})([0-9]{1,4})?$';
+         $pattern = '~([0-9]{1,2})([A-Za-z]{1,4})([0-9]{1,4})?~u';
          if (preg_match($pattern.'i',$date,$matches)) {
             if (!empty($matches[3])) {
                $year = $matches[3];
@@ -164,7 +164,7 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
      $stct = '';
      $conforms = false;
 
-      if ( preg_match('/^([01]?[0-9]|2[0-3])([\.:]([0-5]?[0-9]))?([\.:]([0-5]?[0-9]))?(am|pm)?((s|c)\.?t\.?)?$/i',$time,$matches) ) {
+      if ( preg_match('~^([01]?[0-9]|2[0-3])([\.:]([0-5]?[0-9]))?([\.:]([0-5]?[0-9]))?(am|pm)?((s|c)\.?t\.?)?$~iu',$time,$matches) ) {
         $hours = $matches[1];
         if ( !empty($matches[3]) ) {
            $minutes = $matches[3];

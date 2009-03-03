@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -26,7 +26,7 @@ set_time_limit(0);
 
 // for parsing the PHP syntax check output
 define('OK_LINE_START','No syntax errors detected in');
-define('ON_LINE_PATTERN','/on line <b>([0-9]*)<\\/b>/');
+define('ON_LINE_PATTERN','~on line <b>([0-9]*)<\\/b>~u');
 define('PHP_CMD',"C:\\xampp\php\php-cgi.exe"); // path to command line version of PHP on this system
 #define('PHP_CMD',"/usr/bin/php"); // path to command line version of PHP on this system
 
@@ -49,7 +49,7 @@ function check_syntax ($file) {
 
    // finally parse output of syntax check
 
-   if ( substr($output[0],0,strlen(OK_LINE_START)) == OK_LINE_START ) {
+   if ( mb_substr($output[0],0,mb_strlen(OK_LINE_START)) == OK_LINE_START ) {
        $syntax_OK = true;
        flush();
     } else {
@@ -84,15 +84,15 @@ function runFilesInDir ($directory) {
    while (false !== ($entry = readdir($directory_handle))) {
       if ( $entry != '.'
            and $entry != '..'
-           and !stristr($entry,'CVSROOT')
-           and !stristr($entry,'lib')
-           and !stristr($entry,'TestSource')
-           and !stristr($entry,'var')
-           and !stristr($entry,'CVS')
+           and !mb_stristr($entry,'CVSROOT')
+           and !mb_stristr($entry,'lib')
+           and !mb_stristr($entry,'TestSource')
+           and !mb_stristr($entry,'var')
+           and !mb_stristr($entry,'CVS')
            and is_dir($directory.'/'.$entry)
          ) {
          $error = array_merge($error,runFilesInDir($directory.'/'.$entry));
-      } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+      } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
          $error = array_merge($error,check_syntax($directory.'/'.$entry));
       }
    }
@@ -114,7 +114,7 @@ function countFilesInDir ($directory) {
            and is_dir($directory.'/'.$entry)
          ) {
          $count = $count + countFilesInDir($directory.'/'.$entry);
-      } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+      } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~',$entry)) {
          $count++;
       }
    }

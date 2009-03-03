@@ -2,5 +2,5 @@ CommSy Verison 5.6.2
 
 Bugs:
 -----
-* DTML-Probleme bei sehr vielen Schlagwörtern
-* buzzword / tags: formulare für IE angepasst
+* DTML-Probleme bei sehr vielen SchlagwÃ¶rtern
+* buzzword / tags: formulare fÃ¼r IE angepasst

@@ -1253,7 +1253,7 @@ class cs_authentication {
       // link modifier item
       $manager = $this->_environment->getLinkModifierItemManager();
       foreach ($id_array as $value) {
-         if ( !stristr($value,CS_FILE_TYPE) ) {
+         if ( !mb_stristr($value,CS_FILE_TYPE) ) {
             $manager->markEdited($value,$creator_id);
          }
       }

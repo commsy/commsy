@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -53,12 +53,12 @@ function concatPath($path1,$path2) {
    $p2hasSlash = false;
 
    if ( strlen($path2) != 0 ) {
-      if ( strlen($path1) == (strrpos($path1,'/')+1) ) {
+      if ( strlen($path1) == (mb_strrpos($path1,'/')+1) ) {
          $p1hasSlash = true;
       }
-      if ( strpos($path2,'/') === false ) {
+      if ( mb_strpos($path2,'/') === false ) {
          $p2hasSlash=false;
-      } elseif ( strpos($path2,'/') ==0 ) {
+      } elseif ( mb_strpos($path2,'/') ==0 ) {
          $p2hasSlash=true;
       }
       if ( !$p1hasSlash ) {

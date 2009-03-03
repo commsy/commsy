@@ -160,10 +160,10 @@ class cs_ftsearch_manager extends cs_manager {
       // Remark: problems with trailing german umlaute in search word
       if ( strstr($ft_results[0],'err: Index file error') and $ft_results[1] == '.') {
          if ( strstr($ft_results[0],'has an unknown format') ) {
-            $pos1 = strpos($ft_results[0],'"');
-            $pos2 = strrpos($ft_results[0],'"');
+            $pos1 = mb_strpos($ft_results[0],'"');
+            $pos2 = mb_strrpos($ft_results[0],'"');
             if ( $pos1 != $pos2 ) {
-               $file_name = substr($ft_results[0],$pos1+1,$pos2-$pos1-1);
+               $file_name = mb_substr($ft_results[0],$pos1+1,$pos2-$pos1-1);
                if ( !empty($file_name)
                     and file_exists($file_name)
                   ) {
@@ -184,27 +184,47 @@ class cs_ftsearch_manager extends cs_manager {
       } else {
          for ($i = 0; $i < (count($ft_results) - 1); $i++) {
             $r_entry = trim($ft_results[$i]);
-            if (substr($r_entry, 0, 1) == "#") {
+            if (mb_substr($r_entry, 0, 1) == "#") {
                // e-swish result header - version info...
             } else {
+//               // *** split string
+//               // get file rank
+//               $f_rank = substr($r_entry, 0, strpos($r_entry, " "));
+//               $r_entry = substr($r_entry, strpos($r_entry, " ") + 1, strlen($r_entry));
+//               // get file size
+//               $f_size = number_format(intval(substr($r_entry, strrpos($r_entry, " ") + 1, strlen($r_entry))) / 1024, 0, ',', '.');
+//               $r_entry = substr($r_entry, 0, strrpos($r_entry, " "));
+//               // get file url
+//               $f_url = substr($r_entry, 0, strpos($r_entry, " \""));
+//               $r_entry = substr($r_entry, strpos($r_entry, " \"") + 1, strlen($r_entry));
+//               // get file name
+//               $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
+//
+//               $ft_cid = substr($f_name, 3, strpos($f_name, "_") - 3);
+//               $r_entry = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
+//
+//               $ft_fid = substr($r_entry, 0, strpos($r_entry, "_"));
+//
+//               // append iid
+//               $ft_fids[] = $ft_fid;
+               
                // *** split string
                // get file rank
-               $f_rank = substr($r_entry, 0, strpos($r_entry, " "));
-               $r_entry = substr($r_entry, strpos($r_entry, " ") + 1, strlen($r_entry));
+               $f_rank = mb_substr($r_entry, 0, mb_strpos($r_entry, " "));
+               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " ") + 1, mb_strlen($r_entry));
                // get file size
-               $f_size = number_format(intval(substr($r_entry, strrpos($r_entry, " ") + 1, strlen($r_entry))) / 1024, 0, ',', '.');
-               $r_entry = substr($r_entry, 0, strrpos($r_entry, " "));
+               $f_size = number_format(intval(mb_substr($r_entry, mb_strrpos($r_entry, " ") + 1, mb_strlen($r_entry))) / 1024, 0, ',', '.');
+               $r_entry = mb_substr($r_entry, 0, mb_strrpos($r_entry, " "));
                // get file url
-               $f_url = substr($r_entry, 0, strpos($r_entry, " \""));
-               $r_entry = substr($r_entry, strpos($r_entry, " \"") + 1, strlen($r_entry));
+               $f_url = mb_substr($r_entry, 0, mb_strpos($r_entry, " \""));
+               $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " \"") + 1, mb_strlen($r_entry));
                // get file name
-               $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
-
-               $ft_cid = substr($f_name, 3, strpos($f_name, "_") - 3);
-               $r_entry = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
-
-               $ft_fid = substr($r_entry, 0, strpos($r_entry, "_"));
-
+               $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
+//               $ft_cid = substr($f_name, 3, mb_strpos($f_name, "_") - 3);
+               $ft_cid = $this->_environment->getCurrentContextID();
+//               $r_entry = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
+//               $ft_fid = substr($r_entry, 0, strpos($r_entry, "_"));
+               $ft_fid = $f_name;
                // append iid
                $ft_fids[] = $ft_fid;
             }
@@ -284,7 +304,7 @@ class cs_ftsearch_manager extends cs_manager {
             // if so - rename ft.index-dummy --> ft.index ... etc. ...
             // $index_opt = ... has to be defined
             //
-            // -N ft.index so werden nur Dateien neuer als der ft.index geprüft
+            // -N ft.index so werden nur Dateien neuer als der ft.index geprÃ¼ft
             // das ist nicht ganz sauber, weil in der Zwischenzeit ja Dateien von anderen hochgeladen ...
             //
             // -u update - hier wird nachgeschaut, ob die Datei schon im index ist, oder nicht

@@ -1,9 +1,9 @@
 <?php
-$message["MESSAGE_BOX_TITLE"]["de"] = "Übersetzung";
+$message["MESSAGE_BOX_TITLE"]["de"] = "Ãœbersetzung";
 $message["MESSAGE_EDIT_LINK"]["de"] = "Bearbeiten";
-$message["MESSAGE_INDEX"]["de"] = "Gesamtübersicht";
-$message["MESSAGE_INDEX_DESC"]["de"] = "Übersicht aller Message-Tags";
-$message["MESSAGE_INDEX_LINK"]["de"] = "Übersicht";
+$message["MESSAGE_INDEX"]["de"] = "GesamtÃ¼bersicht";
+$message["MESSAGE_INDEX_DESC"]["de"] = "Ãœbersicht aller Message-Tags";
+$message["MESSAGE_INDEX_LINK"]["de"] = "Ãœbersicht";
 $message["MESSAGE_LANGUAGE_DEFAULT_LINK"]["de"] = "keine Auswahl";
 $message["MESSAGE_LANGUAGE_TITLE_LINK"]["de"] = "Sprachen";
 $message["MESSAGE_TITLE_LINK"]["de"] = "Message Tags";

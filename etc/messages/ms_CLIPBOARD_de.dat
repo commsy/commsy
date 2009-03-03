@@ -1,5 +1,5 @@
 <?php
-$message["CLIPBOARD_DELETE_BUTTON"]["de"] = "Auswahl löschen";
+$message["CLIPBOARD_DELETE_BUTTON"]["de"] = "Auswahl lÃ¶schen";
 $message["CLIPBOARD_HEADER"]["de"] = "Kopien";
-$message["CLIPBOARD_PASTE_BUTTON"]["de"] = "Auswahl einfügen";
+$message["CLIPBOARD_PASTE_BUTTON"]["de"] = "Auswahl einfÃ¼gen";
 ?>

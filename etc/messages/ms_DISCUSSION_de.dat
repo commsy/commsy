@@ -1,14 +1,14 @@
 <?php
 $message["DISCUSSION_ARTICLE"]["de"] = "Diskussionsbeitrag";
-$message["DISCUSSION_ARTICLES"]["de"] = "Beiträge";
-$message["DISCUSSION_CLOSE"]["de"] = "Abschließen";
-$message["DISCUSSION_CLOSE_ALL_ARTICLES"]["de"] = "alle Beiträge anzeigen";
-$message["DISCUSSION_CLOSE_BUTTON"]["de"] = "Diskussion schließen";
+$message["DISCUSSION_ARTICLES"]["de"] = "BeitrÃ¤ge";
+$message["DISCUSSION_CLOSE"]["de"] = "AbschlieÃŸen";
+$message["DISCUSSION_CLOSE_ALL_ARTICLES"]["de"] = "alle BeitrÃ¤ge anzeigen";
+$message["DISCUSSION_CLOSE_BUTTON"]["de"] = "Diskussion schlieÃŸen";
 $message["DISCUSSION_CLOSE_NO_ARTICLES"]["de"] = "Abschlussbeitrag anzeigen";
 $message["DISCUSSION_CLOSE_TITLE"]["de"] = "Abschlussbeitrag";
-$message["DISCUSSION_DISCARTICLE_COUNT"]["de"] = "Anzahl der Beiträge";
+$message["DISCUSSION_DISCARTICLE_COUNT"]["de"] = "Anzahl der BeitrÃ¤ge";
 $message["DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
-$message["DISCUSSION_ENTER_NEW"]["de"] = "Diskussion eröffnen";
+$message["DISCUSSION_ENTER_NEW"]["de"] = "Diskussion erÃ¶ffnen";
 $message["DISCUSSION_FORM_TYPE_1"]["de"] = "Art der";
 $message["DISCUSSION_FORM_TYPE_2"]["de"] = "Diskussion";
 $message["DISCUSSION_HEADER"]["de"] = "Diskussionen";

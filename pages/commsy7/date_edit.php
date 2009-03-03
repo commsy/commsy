@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -55,12 +55,12 @@ function getCalendarParameterArrayByItem($item){
    $converted_day_start = convertDateFromInput($item->getStartingDay(),$environment->getSelectedLanguage());
    $params = array();
    if ($converted_day_start['conforms'] == TRUE) {
-      $params['year'] = substr($converted_day_start['datetime'],0,4);
-      $params['day'] = substr($converted_day_start['datetime'],8,2);
-      $params['month'] = $params['year'].substr($converted_day_start['datetime'],5,2).$params['day'];
-      $d_time = mktime ( 3, 0, 0, substr($converted_day_start['datetime'],5,2), $params['day'], $params['year'] );
+      $params['year'] = mb_substr($converted_day_start['datetime'],0,4);
+      $params['day'] = mb_substr($converted_day_start['datetime'],8,2);
+      $params['month'] = $params['year'].mb_substr($converted_day_start['datetime'],5,2).$params['day'];
+      $d_time = mktime ( 3, 0, 0, mb_substr($converted_day_start['datetime'],5,2), $params['day'], $params['year'] );
       $wday = date ( "w", $d_time );
-      $params['week'] = mktime ( 3, 0, 0, substr($converted_day_start['datetime'],5,2), $params['day'] - ($wday - 1 ), $params['year']);
+      $params['week'] = mktime ( 3, 0, 0, mb_substr($converted_day_start['datetime'],5,2), $params['day'] - ($wday - 1 ), $params['year']);
       $parameter_presentation_mode = $session->getValue('date_presentation_mode');
       if ( isset ($parameter_presentation_mode) and !empty($parameter_presentation_mode) ){
          $params['presentation_mode'] = $parameter_presentation_mode;
@@ -98,7 +98,7 @@ function getCalendarParameterArray(){
    if ( isset ($parameter_week) and !empty($parameter_week) ){
       $params['week'] = $parameter_week;
    }else{
-      $month = substr($params['month'],4,2);
+      $month = mb_substr($params['month'],4,2);
       $d_time = mktime ( 3, 0, 0, $month , $params['day'], $params['year'] );
       $wday = date ( "w", $d_time );
       $parameter_week = mktime ( 3, 0, 0, $month, $params['day'] - ( $wday - 1 ), $params['year'] );
@@ -327,15 +327,15 @@ else {
       $date = $session->getValue('date_day');
       if ( !empty($date) ){
          if ($environment->getSelectedLanguage() == 'en'){
-            if (strlen($date)==1){
+            if (mb_strlen($date)==1){
                $date = '0'.$date;
             }
             $month = $session->getValue('date_month');
-            $month = substr($month,4,2);
+            $month = mb_substr($month,4,2);
             $date = $date.' '.$environment->getTranslationObject()->getShortMonthName($month).' '.$session->getValue('date_year');
          }else{
             $month = $session->getValue('date_month');
-            $month = substr($month,4,2);
+            $month = mb_substr($month,4,2);
             $date .= '.'.$month;
             $date .= '.'.$session->getValue('date_year');
          }
@@ -621,9 +621,9 @@ else {
                 if($params['presentation_mode'] == '1' and !empty($params['week'])){
                    $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
                    if ($converted_day_start['conforms'] == TRUE) {
-                      $year = substr($converted_day_start['datetime'],0,4);
-                      $month = substr($converted_day_start['datetime'],5,2);
-                      $day = substr($converted_day_start['datetime'],8,2);
+                      $year = mb_substr($converted_day_start['datetime'],0,4);
+                      $month = mb_substr($converted_day_start['datetime'],5,2);
+                      $day = mb_substr($converted_day_start['datetime'],8,2);
                       $d_time = mktime ( 3, 0, 0, $month, $day, $year );
                       $wday = date ( "w", $d_time );
                       $parameter_week = mktime ( 3, 0, 0, $month, $day - ( $wday - 1 ), $year );

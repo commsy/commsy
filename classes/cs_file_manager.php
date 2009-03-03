@@ -151,7 +151,7 @@ class cs_file_manager extends cs_manager {
    }
 
    function getMime($file) {
-      $extension = strtolower(substr(strrchr($file,"."),1));
+      $extension = mb_strtolower(mb_substr(strrchr($file,"."),1), 'UTF-8');
       return empty($this->_mime[$extension]) ? 'application/octetstream' : $this->_mime[$extension];
    }
 
@@ -475,9 +475,11 @@ class cs_file_manager extends cs_manager {
 
    //create Filename: origname.xxx -> origname_thumb.png
    function _create_thumb_name_from_image_name($name) {
-      $thumb_name = $name;
-      $point_position = strrpos($thumb_name,'.');
-      $thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , strlen($thumb_name));
+      //$thumb_name = $name;
+      //$point_position = mb_strrpos($thumb_name,'.');
+      //$thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , mb_strlen($thumb_name));
+      //$thumb_name = substr($thumb_name, 0, $point_position).'_thumb.png'.substr($thumb_name, $point_position+mb_strlen($thumb_name));
+      $thumb_name = $name . '_thumb';
       return $thumb_name;
    }
 

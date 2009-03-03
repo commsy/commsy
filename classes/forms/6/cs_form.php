@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -98,24 +98,24 @@ class cs_form {
                 if (empty($hsize)) {
                         $hsize = 15;
                 }
-                 if ( strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
+                 if ( mb_strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
                      $vsize = $vsize + 6;
                  }
-                 if ( stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') == true
-                      and stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
+                 if ( mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') == true
+                      and mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
                      $vsize = $vsize + 6;
                  }
-                 if ( stristr($_SERVER['HTTP_USER_AGENT'], 'Firefox') == true
-                      and stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
+                 if ( mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Firefox') == true
+                      and mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
                      $vsize = $vsize + 6;
                  }
 
                 $element['type'] = 'textarea';
                 $element['name'] = $name;
-                $element['value'] = eregi_replace('<br[[:space:]]*/?[[:space:]]*>', "\n", $value);
+                $element['value'] = mb_eregi_replace('<br[[:space:]]*/?[[:space:]]*>', "\n", $value);
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['vsize'] = $vsize;
                 $element['hsize'] = $hsize;
@@ -182,8 +182,8 @@ class cs_form {
       $element['name'] = $name;
       $element['value'] = $value;
       $element['label'] = $nameText;
-      $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-      $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+      $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+      $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
       $element['example'] = $exampleText;
       $element['maxlength'] = $maxlength;
       $element['size'] = $size;
@@ -252,16 +252,16 @@ class cs_form {
       }
       if ( empty($size) ) {
               $size = 50;
-         if ( strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
+         if ( mb_strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
             $size = $size - 6;
          }
       }
-      if ( stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') == true
-           and stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
+      if ( mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Mozilla') == true
+           and mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
             $size = $size - 7;
       }
-      if ( stristr($_SERVER['HTTP_USER_AGENT'], 'Firefox') == true
-           and stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
+      if ( mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Firefox') == true
+           and mb_stristr($_SERVER['HTTP_USER_AGENT'], 'Linux') == true ) {
            $size = $size - 4;
       }
 
@@ -272,11 +272,11 @@ class cs_form {
       $element['name'] = $name;
       $element['value'] = $value;
       $element['label'] = $nameText;
-      $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-      $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+      $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+      $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
       $element['example'] = $exampleText;
       $element['maxlength'] = $maxlength;
-      if ( strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
+      if ( mb_strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') == true ) {
           $size = $size - 6;
       }
       $element['size'] = $size;
@@ -329,8 +329,8 @@ class cs_form {
                 $element['name'] = $name;
                 $element['value'] = $value;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['maxlength'] = $maxlength;
                 $element['size'] = $size;
@@ -390,8 +390,8 @@ class cs_form {
                 $element['options'] = (array) $optionArray;
                 $element['selected'] = (array) $selected;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['size'] = $size;
                 $element['multiple'] = $isMultiple;
@@ -453,8 +453,8 @@ class cs_form {
                 $element['options'] = (array) $optionArrays;
                 $element['selected'] = (array) $selectedArrays;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['size'] = $size;
                 $element['exampleText'] = $exampleText;
@@ -484,8 +484,8 @@ class cs_form {
                 $element['options'] = (array) $optionArray;
                 $element['selected'] = (array) $selected;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['size'] = $size;
                 $element['multiple'] = $isMultiple;
@@ -545,8 +545,8 @@ class cs_form {
                 $element['ischecked'] = $isChecked;
                 $element['label'] = $nameText;
                 $element['text']  = $valueText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example']     = $exampleText;
                 $element['mandatory']   = $isMandatory;
                 $element['is_disabled'] = $isDisabled;
@@ -640,8 +640,8 @@ class cs_form {
                         $element['selected'] = array();
                 }
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['mandatory'] = $isMandatory;
                 $element['horizontal'] = $horizontal;
@@ -684,8 +684,8 @@ class cs_form {
                 $element['type'] = 'file';
                 $element['name'] = $name;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['size'] = $size;
                 $element['mandatory'] = $isMandatory;
@@ -726,8 +726,8 @@ class cs_form {
                 $element['type']  = 'radio';
                 $element['name']  = $name;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText      = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText      = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example']    = $exampleText;
                 $element['value']      = $values;
                 $element['checked']    = $checkedValue;
@@ -797,8 +797,8 @@ class cs_form {
                 $element['label'] = $nameText;
                 $element['firstLabel'] = $firstLabel;
                 $element['secondLabel'] = $secondLabel;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['isFirstMandatory'] = $isFirstMandatory;
                 $element['isSecondMandatory'] = $isSecondMandatory;
@@ -866,8 +866,8 @@ class cs_form {
                 $element['labelCancel'] = $labelCancel;
                 $element['labelDelete'] = $labelDelete;
                 $element['label'] = $nameText;
-                $temp_exampleText = eregi_replace('^/', '<i>',  $exampleText);
-                $exampleText      = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>',  $exampleText);
+                $exampleText      = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example']     = $exampleText;
                 $element['is_disabled'] = $isDisabled;
                 $element['mandatory']   = false;
@@ -903,8 +903,8 @@ class cs_form {
                 $element['name'] = $name;
                 $element['button_text'] = $button_text;
                 $element['label']   = $nameText;
-                $temp_exampleText   = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText        = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText   = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText        = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 if ( !empty($width) ) {
                      $element['width'] = $width;
@@ -1044,8 +1044,8 @@ class cs_form {
                 $element['name']  = $name;
                 $element['label'] = $label;
                 $element['value'] = $text;
-                $temp_exampleText = eregi_replace('^/', '<i>', $exampleText);
-                $exampleText      = eregi_replace('/$', '</i>', $temp_exampleText);
+                $temp_exampleText = mb_eregi_replace('^/', '<i>', $exampleText);
+                $exampleText      = mb_eregi_replace('/$', '</i>', $temp_exampleText);
                 $element['example'] = $exampleText;
                 $element['isbold']  = $isbold;
                 $element['extention']  = $extention;
@@ -1424,7 +1424,7 @@ class cs_form {
            while ($this -> _formElements -> isCurrentValid()) {
               $current = $this -> _formElements -> getCurrent();
               if (!empty($current['value']) and !is_array($current['value'])) {
-                 if (eregi('<.+>', $current['value'])) {
+                 if (mb_eregi('<.+>', $current['value'])) {
                      // remove html-tags
                      // $current['value'] = trim(eregi_replace('<.+>','',$current['value']));
                      $current['failure'] = true;
@@ -1434,7 +1434,7 @@ class cs_form {
                  }
               }
               elseif (!empty($current['value']) and $current['type'] == 'datetime') {
-                 if (eregi('<.+>', $current['value'][0]) or eregi('<.+>', $current['value'][1])) {
+                 if (mb_eregi('<.+>', $current['value'][0]) or mb_eregi('<.+>', $current['value'][1])) {
                     // remove html-tags
                     // $current['value'] = trim(eregi_replace('<.+>','',$current['value']));
                     $current['failure'] = true;
@@ -1492,8 +1492,8 @@ class cs_form {
            $element['name']  = $name;
            $element['type']  = 'filelist';
            $element['label'] = $nameText;
-           $temp_exampleText = eregi_replace('^/', '<i>',  $exampleText);
-           $exampleText      = eregi_replace('/$', '</i>', $temp_exampleText);
+           $temp_exampleText = mb_eregi_replace('^/', '<i>',  $exampleText);
+           $exampleText      = mb_eregi_replace('/$', '</i>', $temp_exampleText);
            $element['example'] = $exampleText;
            $element['field']   = '&nbsp;';
            $element['mandatory'] = $isMandatory;

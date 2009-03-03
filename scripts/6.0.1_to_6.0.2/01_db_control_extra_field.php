@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -73,22 +73,22 @@ foreach ( $table as $tbl ) {
                $laenge = array();
                $temp_text = array();
                while ( strstr($text,'<!-- KFC TEXT -->') ) {
-                  $pos1 = strpos($text,'<!-- KFC TEXT -->');
-                  $text_temp = substr($text,$pos1+17);
-                  $pos2 = strpos($text_temp,'<!-- KFC TEXT -->');
-                  $text_value = substr($text_temp,0,$pos2);
-                  $laenge[$counter] = strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
+                  $pos1 = mb_strpos($text,'<!-- KFC TEXT -->');
+                  $text_temp = mb_substr($text,$pos1+17);
+                  $pos2 = mb_strpos($text_temp,'<!-- KFC TEXT -->');
+                  $text_value = mb_substr($text_temp,0,$pos2);
+                  $laenge[$counter] = mb_strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
                   $temp_text['FCK_TEXT_'.$counter] = '<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->';
                   $text = str_replace('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->','FCK_TEXT_'.$counter,$text);
                   $counter++;
                }
-               preg_match_all('$s:([0-9]*):"FCK_TEXT_([0-9]*)$',$text,$values);
+               preg_match_all('~s:([0-9]*):"FCK_TEXT_([0-9]*)~u',$text,$values);
                foreach ( $values[0] as $key => $wert ) {
                   $wert2 = str_replace($values[1][$key],$laenge[$values[2][$key]],$wert);
                   $text = str_replace($wert,$wert2,$text);
                }
 
-               preg_match_all('$FCK_TEXT_[0-9]*$',$text,$values);
+               preg_match_all('~FCK_TEXT_[0-9]*~u',$text,$values);
                foreach ( $values[0] as $key => $wert ) {
                   $text = str_replace($wert,$temp_text[$wert],$text);
                }
@@ -96,11 +96,11 @@ foreach ( $table as $tbl ) {
                if ( !empty($extra_array) ) {
                   $temp_array['repair'] = 'yes1';
                } else {
-                  preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
+                  preg_match_all('~s:([0-9]*):"([^(";)]*)";~u',$text,$values);
                   if ( !empty($values[0]) ) {
                      foreach ( $values[0] as $key => $wert ) {
-                        if (strlen($values[2][$key]) != $values[1][$key] ) {
-                           $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
+                        if (mb_strlen($values[2][$key]) != $values[1][$key] ) {
+                           $wert2 = str_replace($values[1][$key],mb_strlen($values[2][$key]),$wert);
                            $text = str_replace($wert,$wert2,$text);
                         }
                      }
@@ -116,11 +116,11 @@ foreach ( $table as $tbl ) {
                      $text = str_replace('"','\'',$text);
                      $text = str_replace('DOPPELPUNKTHOCH',':"',$text);
                      $text = str_replace('HOCHSEMIKOLON','";',$text);
-                     preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
+                     preg_match_all('~s:([0-9]*):"([^(";)]*)";~u',$text,$values);
                      if ( !empty($values[0]) ) {
                         foreach ( $values[0] as $key => $wert ) {
-                           if (strlen($values[2][$key]) != $values[1][$key] ) {
-                              $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
+                           if (mb_strlen($values[2][$key]) != $values[1][$key] ) {
+                              $wert2 = str_replace($values[1][$key],mb_strlen($values[2][$key]),$wert);
                               $text = str_replace($wert,$wert2,$text);
                            }
                         }

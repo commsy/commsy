@@ -142,12 +142,12 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
       }
       if (!$show_title_field){
          $html .= '<div style="padding-bottom:5px; ">';
-         $temp_mod_func = strtoupper($this->_environment->getCurrentModule()) . '_' . strtoupper($this->_environment->getCurrentFunction());
+         $temp_mod_func = mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') . '_' . mb_strtoupper($this->_environment->getCurrentFunction(), 'UTF-8');
          $tempMessage = "";
          switch( $temp_mod_func  )
          {
             case 'ACCOUNT_STATUS':
-               $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ändern (Portal)
+               $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status Ã¤ndern (Portal)
                break;
             case 'CONFIGURATION_AGB':
                $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');	// Nutzungsvereinbarungen OK
@@ -168,7 +168,7 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');	// Termindarstellung OK
                break;
             case 'CONFIGURATION_DEFAULTS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen für Räume OK
+               $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen fÃ¼r RÃ¤ume OK
                break;
             case 'CONFIGURATION_DISCUSSION':
                $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');	// Art der Diskussion OK
@@ -192,19 +192,19 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');	// IMS-Account Einstellungen (Server)
                break;
             case 'CONFIGURATION_LANGUAGE':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// Verfügbare Sprachen (Server)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// VerfÃ¼gbare Sprachen (Server)
                break;
             case 'CONFIGURATION_MAIL':
                $tempMessage = getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');	// E-Mail-Texte OK
                break;
             case 'CONFIGURATION_NEWS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// Ankündigungen bearbeiten (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// AnkÃ¼ndigungen bearbeiten (Portal)
                break;
             case 'CONFIGURATION_PLUGIN':
                $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');	// Sponsoren und Werbung
                break;
             case 'CONFIGURATION_PORTALHOME':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumübersicht (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der RaumÃ¼bersicht (Portal)
                break;
             case 'CONFIGURATION_PREFERENCES':
                $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');	// Allgemeine Einstellungen bearbeiten (pers. Raum)
@@ -213,7 +213,7 @@ class cs_configuration_home_form_view extends cs_configuration_form_view {
                $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');	// E-Mail-Newsletter (priv.)
                break;
             case 'CONFIGURATION_ROOM_OPENING':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// Raumeröffnungen (Portal)
+               $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// RaumerÃ¶ffnungen (Portal)
                break;
             case 'CONFIGURATION_RUBRIC':
                $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');	// Auswahl der Rubriken OK

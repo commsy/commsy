@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -147,7 +147,7 @@ class cs_auth_ldap extends cs_auth_manager {
 
       $granted = false;
       /** check if password is correct */
-      if ( empty($password) || strlen($password) == 0 ) {
+      if ( empty($password) || mb_strlen($password) == 0 ) {
          $password = microtime();
       }
       $access = $this->_field_userid.'='.$uid.','.$this->_baseuser;
@@ -190,7 +190,7 @@ class cs_auth_ldap extends cs_auth_manager {
                   array_shift($base_user_array);
                }
 
-               if ( strtolower($access) != strtolower($access_first) ) {
+               if ( mb_strtolower($access, 'UTF-8') != mb_strtolower($access_first, 'UTF-8') ) {
                   $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
                   if ( $bind ) {
                      $granted = true;

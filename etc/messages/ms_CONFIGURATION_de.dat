@@ -4,231 +4,231 @@ $message["CONFIGURATION_ACCOUNT_OPTIONS_TITLE"]["de"] = "Zutrittsbedingungen";
 $message["CONFIGURATION_AGB_FORM_HEADLINE"]["de"] = "Nutzungsvereinbarungen";
 $message["CONFIGURATION_AGB_FORM_TEXT"]["de"] = "Text";
 $message["CONFIGURATION_AGB_FORM_WANT"]["de"] = "Einschalten?";
-$message["CONFIGURATION_AGB_FORM_WANT_DESC"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs bewußt ankreuzen, um Zutritt zu diesem Raum zu erhalten.";
-$message["CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme am Portal integriert. Potentielle Mitglieder müssen die AGBs bewußt ankreuzen, um eine Kennung zu erhalten.";
+$message["CONFIGURATION_AGB_FORM_WANT_DESC"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen mÃ¼ssen die AGBs bewuÃŸt ankreuzen, um Zutritt zu diesem Raum zu erhalten.";
+$message["CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme am Portal integriert. Potentielle Mitglieder mÃ¼ssen die AGBs bewuÃŸt ankreuzen, um eine Kennung zu erhalten.";
 $message["CONFIGURATION_AGB_TEXT_ERROR"]["de"] = "Bitte geben Sie AGBs an.";
-$message["CONFIGURATION_ANNOUNCEMENT"]["de"] = "Ankündigungen";
+$message["CONFIGURATION_ANNOUNCEMENT"]["de"] = "AnkÃ¼ndigungen";
 $message["CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE"]["de"] = "Kennung anlegen";
-$message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE"]["de"] = "Passwort ändern";
-$message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL"]["de"] = "URL zur Passwortänderung";
-$message["CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE"]["de"] = "Kennung ändern";
-$message["CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE"]["de"] = "UserID ändern";
+$message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE"]["de"] = "Passwort Ã¤ndern";
+$message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL"]["de"] = "URL zur PasswortÃ¤nderung";
+$message["CONFIGURATION_AUTHENTICATION_CHANGE_USERDATA_TITLE"]["de"] = "Kennung Ã¤ndern";
+$message["CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE"]["de"] = "UserID Ã¤ndern";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT"]["de"] = "keine Quelle";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT_TYPE"]["de"] = "kein Typ";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_NEW"]["de"] = "Neue Quelle eingeben";
 $message["CONFIGURATION_AUTHENTICATION_CONACT_MAIL_TITLE"]["de"] = "Kontakt-E-Mail-Adresse";
-$message["CONFIGURATION_AUTHENTICATION_DBCOLUMNPASSWD"]["de"] = "Datenbank-Spalte mit Passwörtern";
+$message["CONFIGURATION_AUTHENTICATION_DBCOLUMNPASSWD"]["de"] = "Datenbank-Spalte mit PasswÃ¶rtern";
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNUSERID"]["de"] = "Datenbank-Spalte mit Benutzernamen";
 $message["CONFIGURATION_AUTHENTICATION_DBNAME"]["de"] = "Datenbank";
 $message["CONFIGURATION_AUTHENTICATION_DBTABLE"]["de"] = "Datenbanktabelle";
-$message["CONFIGURATION_AUTHENTICATION_DBTABLE_HINT_JOOMLA"]["de"] = "z.B. jos_users (hängt vom bei der Joomla!-Installation gewählten Datenbank-Präfix ab)";
-$message["CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE"]["de"] = "Kennung löschen";
+$message["CONFIGURATION_AUTHENTICATION_DBTABLE_HINT_JOOMLA"]["de"] = "z.B. jos_users (hÃ¤ngt vom bei der Joomla!-Installation gewÃ¤hlten Datenbank-PrÃ¤fix ab)";
+$message["CONFIGURATION_AUTHENTICATION_DELETE_ACCOUNT_TITLE"]["de"] = "Kennung lÃ¶schen";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE"]["de"] = "Quelle";
 $message["CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE"]["de"] = "Typ";
 $message["CONFIGURATION_AUTHENTICATION_HOST"]["de"] = "Server";
-$message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["de"] = "Bitte ergänzen Sie https:// oder http:// bei der Server-Adresse.";
+$message["CONFIGURATION_AUTHENTICATION_HOST_ERROR"]["de"] = "Bitte ergÃ¤nzen Sie https:// oder http:// bei der Server-Adresse.";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID"]["de"] = "UserID";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_DBCOLUMNUSERID_DESC"]["de"] = "In welchem Feld wird die UserID gespeichert? cn, uid, ...";
-$message["CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION"]["de"] = "Verschlüsselung der Passwörter der Nutzenden";
+$message["CONFIGURATION_AUTHENTICATION_LDAP_ENCRYPTION"]["de"] = "VerschlÃ¼sselung der PasswÃ¶rter der Nutzenden";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE"]["de"] = "Pfadname";
 $message["CONFIGURATION_AUTHENTICATION_LDAP_SUBTREE_OR"]["de"] = "und ggf. zum Herausfinden des Pfades einer Person die Angabe einer Kennung (falls abweichend zum Pfad auch als dn angebbar) mit umfassenden Leserechten";
 $message["CONFIGURATION_AUTHENTICATION_LINK"]["de"] = "Authentifizierung";
-$message["CONFIGURATION_AUTHENTICATION_LINK_DESC"]["de"] = "Hier können Sie weitere Authentifizierungsquellen einstellen und konfigurieren.";
+$message["CONFIGURATION_AUTHENTICATION_LINK_DESC"]["de"] = "Hier kÃ¶nnen Sie weitere Authentifizierungsquellen einstellen und konfigurieren.";
 $message["CONFIGURATION_AUTHENTICATION_NONE"]["de"] = "*keine";
 $message["CONFIGURATION_AUTHENTICATION_NOT_IMPLEMENTED"]["de"] = "nicht implementiert";
 $message["CONFIGURATION_AUTHENTICATION_PATH"]["de"] = "Pfad";
 $message["CONFIGURATION_AUTHENTICATION_PATH_DESC"]["de"] = "/pfad/zu/cas/login";
 $message["CONFIGURATION_AUTHENTICATION_PORT"]["de"] = "Port";
 $message["CONFIGURATION_AUTHENTICATION_PW"]["de"] = "Passwort";
-$message["CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION"]["de"] = "Verschlüsselung";
+$message["CONFIGURATION_AUTHENTICATION_TYPO3_ENCRYPTION"]["de"] = "VerschlÃ¼sselung";
 $message["CONFIGURATION_AUTHENTICATION_TYPO3_MD5"]["de"] = "MD5";
 $message["CONFIGURATION_AUTHENTICATION_USER"]["de"] = "Benutzername";
 $message["CONFIGURATION_AUTOSAVE_STATUS"]["de"] = "Automatisches Speichern";
 $message["CONFIGURATION_BACKUP_LINK"]["de"] = "Backup eines Raumes";
 $message["CONFIGURATION_BACKUP_LINK_DESC"]["de"] = "Einspielen eines Backups von einem Raum in CommSy.";
 $message["CONFIGURATION_BGIMAGE_REPEAT"]["de"] = "Hintergrundbild wiederholt darstellen";
-$message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von Schlagwörtern";
-$message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Schlagwörtern";
+$message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von SchlagwÃ¶rtern";
+$message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "MÃ¶gliche Zuordnung von SchlagwÃ¶rtern";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["de"] = "Beschreibung";
 $message["CONFIGURATION_COLOR_DESIGN"]["de"] = "Design";
 $message["CONFIGURATION_COLOR_FORM_CHOOSE_TEXT"]["de"] = "Farbschema";
-$message["CONFIGURATION_COMMUNITYROOM_OPENING"]["de"] = "Eröffnung von <br/> %_COMMUNITY_SUB_DATPL_LOW";
+$message["CONFIGURATION_COMMUNITYROOM_OPENING"]["de"] = "ErÃ¶ffnung von <br/> %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["de"] = "durch alle NutzerInnen";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_MODERATOR"]["de"] = "nur durch PortalmoderatorInnen";
 $message["CONFIGURATION_CONFIRMATION_FORM_TITLE"]["de"] = "Nutzungsver-<br/>
 einbarungen";
 $message["CONFIGURATION_DATES"]["de"] = "Voreinstellung";
 $message["CONFIGURATION_DATES_CHANGE"]["de"] = "Termindarstellung";
-$message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendarstellung und dem Teamkalender als voreingestellte Darstellung der Termine in diesem Raum.";
+$message["CONFIGURATION_DATES_DESC"]["de"] = "WÃ¤hlen Sie zwischen der Listendarstellung und dem Teamkalender als voreingestellte Darstellung der Termine in diesem Raum.";
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
-$message["CONFIGURATION_DEFAULTS"]["de"] = "Voreinstellungen für Räume";
-$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung:</span><br/> Wer CommSy 7 ausprobieren möchte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
+$message["CONFIGURATION_DEFAULTS"]["de"] = "Voreinstellungen fÃ¼r RÃ¤ume";
+$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung:</span><br/> Wer CommSy 7 ausprobieren mÃ¶chte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
  
 Wichtig sind dabei drei Dinge:
 <ul>
 <li>Man kann den Schalter jederzeit wieder auf CommSy 6 umstellen (im Bereich &quot;Raumgestaltung&quot; des Konfigurationsbereichs von CommSy 7)
 </li>
-<li>Die erstellten Einträge stehen immer zur Verfügung, egal wie oft ich zwischen den Versionen hin- und herschalte. Das Umschalten ist also völlig risikolos!
-</li><li>CommSy 7 ist noch eine Testversion: Sie läuft nach unser Einschätzung bereits zuverlässig und stabil. Es sind aber z.B. im Layout noch kleine Restarbeiten zu erledigen.</li></ul>";
+<li>Die erstellten EintrÃ¤ge stehen immer zur VerfÃ¼gung, egal wie oft ich zwischen den Versionen hin- und herschalte. Das Umschalten ist also vÃ¶llig risikolos!
+</li><li>CommSy 7 ist noch eine Testversion: Sie lÃ¤uft nach unser EinschÃ¤tzung bereits zuverlÃ¤ssig und stabil. Es sind aber z.B. im Layout noch kleine Restarbeiten zu erledigen.</li></ul>";
 $message["CONFIGURATION_DISCUSSION"]["de"] = "Art der Diskussion";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";
 $message["CONFIGURATION_DISCUSSION_DESC_3"]["de"] = "Beide Darstellungen";
-$message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
-$message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";
-$message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum können Einträge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
+$message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "WÃ¤hlen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern fÃ¼hren kann.";
+$message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "EintrÃ¤ge freischalten";
+$message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum kÃ¶nnen EintrÃ¤ge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
 $message["CONFIGURATION_EXTRA_CHOOSE_TEXT"]["de"] = "kein Extra";
 $message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA"]["de"] = "Extra";
-$message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA_DESC"]["de"] = "Wählen Sie ein Extra aus.";
+$message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA_DESC"]["de"] = "WÃ¤hlen Sie ein Extra aus.";
 $message["CONFIGURATION_EXTRA_FORM_DESC"]["de"] = "Ein- und Ausschalten von Plugins bzw. noch nicht freigegebenen Entwicklungen.";
 $message["CONFIGURATION_EXTRA_FORM_HEADLINE"]["de"] = "Extras";
-$message["CONFIGURATION_EXTRA_GROUPROOM"]["de"] = "Gruppenräume";
-$message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["de"] = "Mit dieser Funktion stehen in Projekträumen Gruppenräume zur Verfügung. Zur Nutzung müssen die Gruppenräume im Raum noch von den jeweiligen Raummoderatoren aktiviert werden.
+$message["CONFIGURATION_EXTRA_GROUPROOM"]["de"] = "GruppenrÃ¤ume";
+$message["CONFIGURATION_EXTRA_GROUPROOM_DESC"]["de"] = "Mit dieser Funktion stehen in ProjektrÃ¤umen GruppenrÃ¤ume zur VerfÃ¼gung. Zur Nutzung mÃ¼ssen die GruppenrÃ¤ume im Raum noch von den jeweiligen Raummoderatoren aktiviert werden.
 <br/><br/>
-Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
+Wird die Funktion fÃ¼r das Portal aktiviert, steht sie automatisch in allen RÃ¤umen bereit.";
 $message["CONFIGURATION_EXTRA_LOGARCHIVE"]["de"] = "Logdaten archivieren";
-$message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["de"] = "Sofern bei einem Raum aktiviert, werden die in CommSy gesammelten Logdaten nicht nach einer Karenzzeit gelöscht.";
+$message["CONFIGURATION_EXTRA_LOGARCHIVE_DESC"]["de"] = "Sofern bei einem Raum aktiviert, werden die in CommSy gesammelten Logdaten nicht nach einer Karenzzeit gelÃ¶scht.";
 $message["CONFIGURATION_EXTRA_MATERIALIMPORT"]["de"] = "Automatischer Materialimport";
-$message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["de"] = "Über diese Einstellung wird ein Formular in die Rubrik Materialien eingebunden. Über dieses Formular lassen sich externe Inhalte über ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat für E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
+$message["CONFIGURATION_EXTRA_MATERIALIMPORT_DESC"]["de"] = "Ãœber diese Einstellung wird ein Formular in die Rubrik Materialien eingebunden. Ãœber dieses Formular lassen sich externe Inhalte Ã¼ber ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat fÃ¼r E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
 $message["CONFIGURATION_EXTRA_PDA"]["de"] = "PDA-Export";
 $message["CONFIGURATION_EXTRA_PDA_DESC"]["de"] = "Mit dieser Option lassen sich einzelne Materialien in PDA-Format als ZIP-File herunterladen.";
 $message["CONFIGURATION_EXTRA_SPONSORING"]["de"] = "Sponsoring / Werbung";
-$message["CONFIGURATION_EXTRA_SPONSORING_DESC"]["de"] = "Die Auswahl des Extras Sponsoring bedeutet, dass in diesem Raum Sponsoren konfiguriert (eingestellt) werden können und dass die Sponsoreneinstellungen aus dem übergeordneten Raum nicht übernommen werden.";
+$message["CONFIGURATION_EXTRA_SPONSORING_DESC"]["de"] = "Die Auswahl des Extras Sponsoring bedeutet, dass in diesem Raum Sponsoren konfiguriert (eingestellt) werden kÃ¶nnen und dass die Sponsoreneinstellungen aus dem Ã¼bergeordneten Raum nicht Ã¼bernommen werden.";
 $message["CONFIGURATION_EXTRA_WIKI"]["de"] = "Raum-Wiki";
-$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermöglicht, das sich aus einem Raum heraus einrichten lässt.
+$message["CONFIGURATION_EXTRA_WIKI_DESC"]["de"] = "Mit dieser Einstellung wird die Anbindung an ein externes Wiki (pmWiki) ermÃ¶glicht, das sich aus einem Raum heraus einrichten lÃ¤sst.
 
-Wird die Funktion für das Portal aktiviert, steht sie automatisch in allen Räumen bereit.";
-$message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "Gruppenräume";
-$message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die Möglichkeit, Gruppen- räume einrichten zu können.";
+Wird die Funktion fÃ¼r das Portal aktiviert, steht sie automatisch in allen RÃ¤umen bereit.";
+$message["CONFIGURATION_GROUPROOM_LINK"]["de"] = "GruppenrÃ¤ume";
+$message["CONFIGURATION_GROUPROOM_LINK_DESC"]["de"] = "Aktivieren oder deaktivieren Sie hier die MÃ¶glichkeit, Gruppen- rÃ¤ume einrichten zu kÃ¶nnen.";
 $message["CONFIGURATION_HOME_STATUS"]["de"] = "Art der Darstellung";
 $message["CONFIGURATION_HTMLTEXTAREA"]["de"] = "Textfelddarstellung";
 $message["CONFIGURATION_HTMLTEXTAREA_CHANGE"]["de"] = "Textformatierung";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_0"]["de"] = "Ohne Icon-Leiste:<br>";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_1"]["de"] = "Mit der Standard-Leiste:<br>";
 $message["CONFIGURATION_HTMLTEXTAREA_DESC_2"]["de"] = "Mit der Minimalen-Leiste:<br>";
-$message["CONFIGURATION_LANGUAGE_LINK"]["de"] = "Verfügbare Sprachen";
-$message["CONFIGURATION_LANGUAGE_LINK_DESC"]["de"] = "Einstellung der zur Verfügung stehenden Sprachen.";
+$message["CONFIGURATION_LANGUAGE_LINK"]["de"] = "VerfÃ¼gbare Sprachen";
+$message["CONFIGURATION_LANGUAGE_LINK_DESC"]["de"] = "Einstellung der zur VerfÃ¼gung stehenden Sprachen.";
 $message["CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_DETAIL"]["de"] = "Einstellungen der Detailansichten";
 $message["CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_LIST"]["de"] = "Einstellungen der Listenansichten";
-$message["CONFIGURATION_LISTVIEWS_FORM_TITLE"]["de"] = "Konfiguration der Menüspalten";
-$message["CONFIGURATION_LISTVIEW_LENGTH"]["de"] = "Angezeigte Einträge";
+$message["CONFIGURATION_LISTVIEWS_FORM_TITLE"]["de"] = "Konfiguration der MenÃ¼spalten";
+$message["CONFIGURATION_LISTVIEW_LENGTH"]["de"] = "Angezeigte EintrÃ¤ge";
 $message["CONFIGURATION_LISTVIEW_LENGTH_ALL"]["de"] = "Alle";
 $message["CONFIGURATION_MAIL_CHOICE_ERROR"]["de"] = "Suchen Sie bitte einen E-Mail-Text aus.";
 $message["CONFIGURATION_MAIL_FORM_CHOOSE_MAIL"]["de"] = "E-Mail-Text";
-$message["CONFIGURATION_MAIL_FORM_CHOOSE_MAIL_DESC"]["de"] = "Wählen Sie einen E-Mail-Text aus.";
+$message["CONFIGURATION_MAIL_FORM_CHOOSE_MAIL_DESC"]["de"] = "WÃ¤hlen Sie einen E-Mail-Text aus.";
 $message["CONFIGURATION_MAIL_FORM_HEADLINE"]["de"] = "E-Mail Konfiguration";
 $message["CONFIGURATION_MOVE_LINKED_ROOM_TITLE"]["de"] = "%_PROJECT_SUB_NOMPL_LOW";
-$message["CONFIGURATION_MOVE_LINKED_ROOM_VALUE"]["de"] = "Verknüpfte %_PROJECT_SUB_NOMPL_LOW sollen mit umgezogen werden.";
+$message["CONFIGURATION_MOVE_LINKED_ROOM_VALUE"]["de"] = "VerknÃ¼pfte %_PROJECT_SUB_NOMPL_LOW sollen mit umgezogen werden.";
 $message["CONFIGURATION_MOVE_PORTAL_DESC"]["de"] = "Auf welches Portal soll der Raum umziehen?";
 $message["CONFIGURATION_NEWSLETTER"]["de"] = "Status";
-$message["CONFIGURATION_NEWSLETTER_DAILY"]["de"] = "Täglicher Newsletter";
+$message["CONFIGURATION_NEWSLETTER_DAILY"]["de"] = "TÃ¤glicher Newsletter";
 $message["CONFIGURATION_NEWSLETTER_DESC"]["de"] = "Einstellungen zum E-Mail-Newsletter.";
 $message["CONFIGURATION_NEWSLETTER_LINK"]["de"] = "E-Mail-Newsletter";
 $message["CONFIGURATION_NEWSLETTER_NONE"]["de"] = "Kein Newsletter";
-$message["CONFIGURATION_NEWSLETTER_NOTE"]["de"] = "Es werden nur Informationen zu den Räumen verschickt, die in dem Profilbereich &quot;Raumliste&quot; ausgewählt und offen sind. Bitte beachten Sie außerdem, dass diese E-Mail zurzeit nur im HTML-Format verschickt werden kann.";
+$message["CONFIGURATION_NEWSLETTER_NOTE"]["de"] = "Es werden nur Informationen zu den RÃ¤umen verschickt, die in dem Profilbereich &quot;Raumliste&quot; ausgewÃ¤hlt und offen sind. Bitte beachten Sie auÃŸerdem, dass diese E-Mail zurzeit nur im HTML-Format verschickt werden kann.";
 $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["de"] = "Hinweis";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["de"] = "E-Mail-Newsletter";
-$message["CONFIGURATION_NEWSLETTER_WEEKLY"]["de"] = "Wöchentlicher Newsletter";
-$message["CONFIGURATION_NO_SELECTION"]["de"] = "alle offenen Räume anzeigen (Standard)";
+$message["CONFIGURATION_NEWSLETTER_WEEKLY"]["de"] = "WÃ¶chentlicher Newsletter";
+$message["CONFIGURATION_NO_SELECTION"]["de"] = "alle offenen RÃ¤ume anzeigen (Standard)";
 $message["CONFIGURATION_ONLY_COMMUNITY_ROOMS"]["de"] = "nur %_COMMUNITY_SUB_AKKPL_BIG anzeigen (keine %_PROJECT_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_OUTOFSERVICE_FORM_TITLE"]["de"] = "Wartungsarbeiten";
 $message["CONFIGURATION_PATH_FORM_TITLE"]["de"] = "Pfade in %_TOPICS_SUB_DATPL_BIG";
-$message["CONFIGURATION_PICTURE_LOGO_DELETE_OPTION"]["de"] = "Aktuelles Portalbild löschen";
-$message["CONFIGURATION_PORTAL_HOME"]["de"] = "Gestaltung der Raumübersicht";
-$message["CONFIGURATION_PORTAL_HOME_DESC"]["de"] = "Hier können Sie die Darstellung der Raumübersicht bearbeiten.";
-$message["CONFIGURATION_PRESELECT_COMMUNITY_ROOMS"]["de"] = "Vorauswahl der %_COMMUNITY_SUB_NOMPL_BIG in der Liste aller Räume";
+$message["CONFIGURATION_PICTURE_LOGO_DELETE_OPTION"]["de"] = "Aktuelles Portalbild lÃ¶schen";
+$message["CONFIGURATION_PORTAL_HOME"]["de"] = "Gestaltung der RaumÃ¼bersicht";
+$message["CONFIGURATION_PORTAL_HOME_DESC"]["de"] = "Hier kÃ¶nnen Sie die Darstellung der RaumÃ¼bersicht bearbeiten.";
+$message["CONFIGURATION_PRESELECT_COMMUNITY_ROOMS"]["de"] = "Vorauswahl der %_COMMUNITY_SUB_NOMPL_BIG in der Liste aller RÃ¤ume";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DAILY"]["de"] = "Tag";
-$message["CONFIGURATION_PRIVATEROOM_HOME_DESC"]["de"] = "Hier können Sie die Zeitspanne für die Darstellung der Home festlegen.";
+$message["CONFIGURATION_PRIVATEROOM_HOME_DESC"]["de"] = "Hier kÃ¶nnen Sie die Zeitspanne fÃ¼r die Darstellung der Home festlegen.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_1"]["de"] = "Normal";
-$message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["de"] = "Detailliert (mit allen neuen Einträgen)";
-$message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["de"] = "<br/>ACHTUNG: Diese Seite beansprucht eventuell eine <br/>deutlich höhere Ladezeit!";
+$message["CONFIGURATION_PRIVATEROOM_HOME_DESC_2"]["de"] = "Detailliert (mit allen neuen EintrÃ¤gen)";
+$message["CONFIGURATION_PRIVATEROOM_HOME_DESC_3"]["de"] = "<br/>ACHTUNG: Diese Seite beansprucht eventuell eine <br/>deutlich hÃ¶here Ladezeit!";
 $message["CONFIGURATION_PRIVATEROOM_HOME_WEEKLY"]["de"] = "Tage";
 $message["CONFIGURATION_PRIVATEROOM_LINK"]["de"] = "Privater Raum";
-$message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["de"] = "nur bei anderer Raum-Teilnahme verfügbar";
-$message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["de"] = "immer verfügbar (Default)";
+$message["CONFIGURATION_PRIVATEROOM_LINK_OFF"]["de"] = "nur bei anderer Raum-Teilnahme verfÃ¼gbar";
+$message["CONFIGURATION_PRIVATEROOM_LINK_ON"]["de"] = "immer verfÃ¼gbar (Default)";
 $message["CONFIGURATION_PROJECTROOM_LINK"]["de"] = "Zuordnen von <br/>
 %_PROJECT_SUB_DATPL_LOW";
 $message["CONFIGURATION_PROJECTROOM_LINK_MANDATORY"]["de"] = "zwingend";
 $message["CONFIGURATION_PROJECTROOM_LINK_OPTIONAL"]["de"] = "optional";
-$message["CONFIGURATION_PROJECTROOM_OPENING"]["de"] = "Eröffnung von <br/> %_PROJECT_SUB_DATPL_LOW";
-$message["CONFIGURATION_PROJECTROOM_OPENING_COMMUNITYROOM"]["de"] = "ausschließlich in  %_COMMUNITY_SUB_DATPL_LOW";
+$message["CONFIGURATION_PROJECTROOM_OPENING"]["de"] = "ErÃ¶ffnung von <br/> %_PROJECT_SUB_DATPL_LOW";
+$message["CONFIGURATION_PROJECTROOM_OPENING_COMMUNITYROOM"]["de"] = "ausschlieÃŸlich in  %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_PROJECTROOM_OPENING_PORTAL"]["de"] = "in  %_COMMUNITY_SUB_DATPL_LOW und dem Portal";
 $message["CONFIGURATION_ROOM_HOME"]["de"] = "Konfiguration der Home";
-$message["CONFIGURATION_ROOM_HOME_DESC"]["de"] = "Hier können Sie die Darstellung der Rubriken auf der Home festlegen.";
-$message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "Raumeröffnungen";
-$message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter welchen Bedingungen wer welche Räume eröffnen darf.";
+$message["CONFIGURATION_ROOM_HOME_DESC"]["de"] = "Hier kÃ¶nnen Sie die Darstellung der Rubriken auf der Home festlegen.";
+$message["CONFIGURATION_ROOM_OPENING_LINK"]["de"] = "RaumerÃ¶ffnungen";
+$message["CONFIGURATION_ROOM_OPENING_LINK_DESC"]["de"] = "Geben Sie an, unter welchen Bedingungen wer welche RÃ¤ume erÃ¶ffnen darf.";
 $message["CONFIGURATION_ROOM_OPTIONS_DESC"]["de"] = "Stellen Sie z.B. <span class=&quot;bold&quot;>Raumname</span>, <span class=&quot;bold&quot;>Logo</span>, <span class=&quot;bold&quot;>Farbschema</span> ein.";
 $message["CONFIGURATION_ROOM_OPTIONS_TITLE"]["de"] = "Raumgestaltung";
-$message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt über die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen können Sie einstellen,
+$message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt Ã¼ber die Select-Boxen, die nachfolgend nebeneinander dargestellt sind. Mit Hilfe dieser Select-Boxen kÃ¶nnen Sie einstellen,
 <ul>
-<li><b>welche Rubriken</b> Sie im Raum verwenden möchten und
+<li><b>welche Rubriken</b> Sie im Raum verwenden mÃ¶chten und
 </li><li>in <b>welcher Reihenfolge</b> diese Rubriken dargestellt werden sollen.</li>
 </ul>";
-$message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewählen.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["de"] = "Zusätzliche Rubrikeinstellungen";
-$message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["de"] = "Wählen Sie die Rubriken im Raum aus und deren Darstellung auf der Home.";
+$message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewÃ¤hlen.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span> und <span style=&quot;font-weight:bold&quot;>GruppenrÃ¤umen</span>.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["de"] = "ZusÃ¤tzliche Rubrikeinstellungen";
+$message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["de"] = "WÃ¤hlen Sie die Rubriken im Raum aus und deren Darstellung auf der Home.";
 $message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["de"] = "Einstellung der Rubriken";
 $message["CONFIGURATION_SCRIBD_LINK"]["de"] = "Office-Dokumente";
-$message["CONFIGURATION_SCRIBD_LINK_DESC"]["de"] = "Zugangsdaten für die Integration von Scribd.";
+$message["CONFIGURATION_SCRIBD_LINK_DESC"]["de"] = "Zugangsdaten fÃ¼r die Integration von Scribd.";
 $message["CONFIGURATION_SELECTION"]["de"] = "Raumanzeige";
 $message["CONFIGURATION_SERVICE_DESC"]["de"] = "Einstellungen zum Handhabungssupport des CommSyService.";
 $message["CONFIGURATION_SERVICE_EMAIL"]["de"] = "Service E-Mail";
 $message["CONFIGURATION_SERVICE_EMAIL_MODERATOR"]["de"] = "E-Mail an Moderation";
 $message["CONFIGURATION_SERVICE_EMAIL_PORTAL"]["de"] = "portalweit";
-$message["CONFIGURATION_SERVICE_EMAIL_RESET"]["de"] = "Zurücksetzen?";
+$message["CONFIGURATION_SERVICE_EMAIL_RESET"]["de"] = "ZurÃ¼cksetzen?";
 $message["CONFIGURATION_SERVICE_EMAIL_ROOM"]["de"] = "raumweit";
 $message["CONFIGURATION_SERVICE_EMAIL_SERVER"]["de"] = "serverweit";
 $message["CONFIGURATION_SERVICE_LINK"]["de"] = "Handhabungssupport";
 $message["CONFIGURATION_SERVICE_TITLE"]["de"] = "Handhabungssupport";
 $message["CONFIGURATION_SHOW_ANNOUNCEMENT"]["de"] = "als Bereich anzeigen (Standard)";
-$message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["de"] = "keine Ankündigungen anzeigen";
+$message["CONFIGURATION_SHOW_ANNOUNCEMENT_NOT"]["de"] = "keine AnkÃ¼ndigungen anzeigen";
 $message["CONFIGURATION_SHOW_EXPANDED"]["de"] = "Ausgeklappte Darstellung als Standard";
 $message["CONFIGURATION_SKIN_FORM_CHOOSE_TEXT"]["de"] = "Darstellung";
 $message["CONFIGURATION_SORT_ROOMS"]["de"] = "Raumsortierung";
-$message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["de"] = "nach Aktivität (Standard)";
+$message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["de"] = "nach AktivitÃ¤t (Standard)";
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["de"] = "nach Titel";
-$message["CONFIGURATION_SPONSOR_DESC"]["de"] = "Hier können Sie die Anzeige von Sponsoren und Werbung konfigurieren.";
+$message["CONFIGURATION_SPONSOR_DESC"]["de"] = "Hier kÃ¶nnen Sie die Anzeige von Sponsoren und Werbung konfigurieren.";
 $message["CONFIGURATION_SPONSOR_LINK"]["de"] = "Sponsoren und Werbung";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>Schlagwörter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span> (mit <span style=&quot;font-weight:bold&quot;>Pfaden</span>).";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["de"] = "Verwenden Sie <span class=&quot;bold&quot;>SchlagwÃ¶rter</span>, <span class=&quot;bold&quot;>Kategorien</span> oder die <span class=&quot;bold&quot;>Netznavigation</span> (mit <span style=&quot;font-weight:bold&quot;>Pfaden</span>).";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["de"] = "Strukturierungshilfen";
-$message["CONFIGURATION_TAGS_FORM_TITLE"]["de"] = "Schlagwörter und Kategorien";
+$message["CONFIGURATION_TAGS_FORM_TITLE"]["de"] = "SchlagwÃ¶rter und Kategorien";
 $message["CONFIGURATION_TAG_EDIT"]["de"] = "Bearbeitung";
 $message["CONFIGURATION_TAG_EDIT_BY_ALL"]["de"] = "Durch alle TeilnehmerInnen";
 $message["CONFIGURATION_TAG_EDIT_BY_MODERATOR"]["de"] = "Nur durch ModeratorInnen bearbeitbar";
 $message["CONFIGURATION_TAG_MANDATORY"]["de"] = "Zwingende Zuordnung von Kategorien";
-$message["CONFIGURATION_TAG_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Kategorien";
+$message["CONFIGURATION_TAG_NOT_MANDATORY"]["de"] = "MÃ¶gliche Zuordnung von Kategorien";
 $message["CONFIGURATION_TAG_STATUS"]["de"] = "Zuordnung";
-$message["CONFIGURATION_TDOD_MANAGEMENT_DESC"]["de"] = "Wählen Sie zwischen einfachen Aufgaben (Option 1) und Aufgaben mit Zeitmanagement (Option 2). Option 2 ist komplexer ermöglicht aber eine Protokollierung von Aufgaben über Arbeitsschritte.";
+$message["CONFIGURATION_TDOD_MANAGEMENT_DESC"]["de"] = "WÃ¤hlen Sie zwischen einfachen Aufgaben (Option 1) und Aufgaben mit Zeitmanagement (Option 2). Option 2 ist komplexer ermÃ¶glicht aber eine Protokollierung von Aufgaben Ã¼ber Arbeitsschritte.";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS"]["de"] = "Alle CommSy-NutzerInnen";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS"]["de"] = "Alle Mitglieder %_COMMUNITY_ART_DEF_GENS_LOW zugeordneten %_COMMUNITY_SUB_GENS_BIG";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS"]["de"] = "Nur Raummoderatoren";
 $message["CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS"]["de"] = "Alle Raummitglieder";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DEFAULT_COMMUNITY_TITLE"]["de"] = "Default-Vorlage <br/> (%_COMMUNITY_SUB_NOMPL_BIG)";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DEFAULT_TITLE"]["de"] = "Default-Vorlage <br/> (%_PROJECT_SUB_NOMPL_BIG)";
-$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC"]["de"] = "Der Raum muss archiviert sein und kann dann bei der Eröffnung eines neuen Raumes als Vorlage ausgesucht werden. Alle Inhalte (außer den Informationen zu Personen) werden in den neuen Raum kopiert.";
+$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC"]["de"] = "Der Raum muss archiviert sein und kann dann bei der ErÃ¶ffnung eines neuen Raumes als Vorlage ausgesucht werden. Alle Inhalte (auÃŸer den Informationen zu Personen) werden in den neuen Raum kopiert.";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE"]["de"] = "Vorlage";
 $message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE"]["de"] = "Vorlage erstellen";
-$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["de"] = "Raum als Vorlage verfügbar machen.";
-$message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC"]["de"] = "Bei Auswahl einer Vorlage werden sämtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum übernommen, mit Ausnahme der Informationen zu Personen.";
+$message["CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE"]["de"] = "Raum als Vorlage verfÃ¼gbar machen.";
+$message["CONFIGURATION_TEMPLATE_FORM_SELECT_DESC"]["de"] = "Bei Auswahl einer Vorlage werden sÃ¤mtliche Voreinstellungen und Inhalte der Vorlage in den neuen Raum Ã¼bernommen, mit Ausnahme der Informationen zu Personen.";
 $message["CONFIGURATION_TEMPLATE_GROUP"]["de"] = "Zielgruppe";
 $message["CONFIGURATION_TEMPLATE_NO_CHOICE"]["de"] = "leerer Raum";
 $message["CONFIGURATION_TEXTAREA_TITLE"]["de"] = "Textformatierung";
-$message["CONFIGURATION_TEXTAREA_TITLE_DESC"]["de"] = "Iconleisten für die Formatierung in Textfeldern.";
-$message["CONFIGURATION_TIME_FORM_ELEMENT_AD_TITLE"]["de"] = "Zeittakt hinzufügen";
+$message["CONFIGURATION_TEXTAREA_TITLE_DESC"]["de"] = "Iconleisten fÃ¼r die Formatierung in Textfeldern.";
+$message["CONFIGURATION_TIME_FORM_ELEMENT_AD_TITLE"]["de"] = "Zeittakt hinzufÃ¼gen";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_CHOICE_COMMUNITY_DESC"]["de"] = "Zeittakte des Portals in der Rubrik %_PROJECT_SUB_NOMPL_BIG anzeigen?";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_CHOICE_TITLE"]["de"] = "Zeittakte anzeigen";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_FUTURE_TITLE"]["de"] = "Zeittakte in der Zukunft";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_NAME_TITLE"]["de"] = "Name der Zeitakte";
-$message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC"]["de"] = "Platzhalter für 4-stellige Jahreszahlen:<br/>
+$message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC"]["de"] = "Platzhalter fÃ¼r 4-stellige Jahreszahlen:<br/>
 - %1 = aktuelles Jahr<br/>
-- %2 = zukünftiges Jahr<br/>
+- %2 = zukÃ¼nftiges Jahr<br/>
 - %3 = vergangenes Jahr<br/>
-<br/>Platzhalter für 2-stellige Jahreszahlen:
+<br/>Platzhalter fÃ¼r 2-stellige Jahreszahlen:
 <ul style=&quot;margin:0px;&quot;>
 <li>%4 = aktuelles Jahr</li>
-<li>%5 = zukünftiges Jahr</li>
+<li>%5 = zukÃ¼nftiges Jahr</li>
 <li>%6 = vergangenes Jahr</li>
 </ul>
 <br/>Format bei &quot;von bis&quot;: TT.MM";

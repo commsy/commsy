@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -385,7 +385,7 @@ if ($current_user->isGuest()) {
 
          // display form
          } else {
-            // In den Listen der Gemeinschaftsräume und persönlichen Räume
+            // In den Listen der GemeinschaftsrÃ¤ume und persÃ¶nlichen RÃ¤ume
             if ( ($environment->inCommunityRoom() and $environment->getCurrentModule() == CS_PROJECT_TYPE)
                   or ($environment->inPrivateRoom() and $environment->getCurrentModule() == CS_MYROOM_TYPE)
                ) {
@@ -407,7 +407,7 @@ if ($current_user->isGuest()) {
             }
          }
 
-         //Wofür wird das gebraucht, nach dem Code von davor????
+         //WofÃ¼r wird das gebraucht, nach dem Code von davor????
          if ( ($environment->inCommunityRoom() and $environment->getCurrentModule() == CS_PROJECT_TYPE)
             or ($environment->inPrivateRoom() and $environment->getCurrentModule() == CS_MYROOM_TYPE)
          ) {
@@ -490,7 +490,7 @@ if ($current_user->isGuest()) {
             $languages = $environment->getAvailableLanguageArray();
             foreach ($languages as $language) {
                if ( !empty($_POST['wellcome1_'.$language.'_reset']) ) {
-                  $values['wellcome1_'.$language] = $translator->getMessageInLang(strtolower($language),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(strtolower($language),'COMMON_IN').' ...';
+                  $values['wellcome1_'.$language] = $translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'COMMON_IN').' ...';
                }
                if ( !empty($_POST['wellcome2_'.$language.'_reset']) ) {
                   $values['wellcome2_'.$language] = '... '.$values['title'];
@@ -817,9 +817,9 @@ if ($current_user->isGuest()) {
        $description = $item->getDescriptionArray();
        foreach ($languages as $language) {
           if (!empty($_POST['description_'.$language])) {
-             $description[strtoupper($language)] = $_POST['description_'.$language];
+             $description[mb_strtoupper($language, 'UTF-8')] = $_POST['description_'.$language];
           } else {
-             $description[strtoupper($language)] = '';
+             $description[mb_strtoupper($language, 'UTF-8')] = '';
           }
        }
        $item->setDescriptionArray($description);
@@ -827,27 +827,27 @@ if ($current_user->isGuest()) {
           $description = $item->getDescriptionWellcome1Array();
           foreach ($languages as $language) {
              if ( !empty($_POST['wellcome1_'.$language.'_reset']) ) {
-                unset($description[strtoupper($language)]);
+                unset($description[mb_strtoupper($language, 'UTF-8')]);
              } elseif ( isset($_POST['wellcome1_'.$language])
                         and !empty($_POST['wellcome1_'.$language])
-                        and $_POST['wellcome1_'.$language] != $translator->getMessageInLang(strtolower($language),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(strtolower($language),'COMMON_IN').' ...'
+                        and $_POST['wellcome1_'.$language] != $translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'COMMON_IN').' ...'
                 ) {
-                $description[strtoupper($language)] = $_POST['wellcome1_'.$language];
-             } elseif(isset($description[strtoupper($language)])) {
-                unset($description[strtoupper($language)]);
+                $description[mb_strtoupper($language, 'UTF-8')] = $_POST['wellcome1_'.$language];
+             } elseif(isset($description[mb_strtoupper($language, 'UTF-8')])) {
+                unset($description[mb_strtoupper($language, 'UTF-8')]);
              }
           }
           $item->setDescriptionWellcome1Array($description);
           $description = $item->getDescriptionWellcome2Array();
           foreach ($languages as $language) {
              if ( !empty($_POST['wellcome2_'.$language.'_reset']) ) {
-                unset($description[strtoupper($language)]);
+                unset($description[mb_strtoupper($language, 'UTF-8')]);
              } elseif ( isset($_POST['wellcome2_'.$language])
                   and $_POST['wellcome2_'.$language] != '... '.$item->getTitle()
                 ) {
-                $description[strtoupper($language)] = $_POST['wellcome2_'.$language];
-             } elseif ( isset($description[strtoupper($language)]) ) {
-                unset($description[strtoupper($language)]);
+                $description[mb_strtoupper($language, 'UTF-8')] = $_POST['wellcome2_'.$language];
+             } elseif ( isset($description[mb_strtoupper($language, 'UTF-8')]) ) {
+                unset($description[mb_strtoupper($language, 'UTF-8')]);
              }
           }
           $item->setDescriptionWellcome2Array($description);

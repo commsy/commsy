@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -153,7 +153,7 @@ class cs_become_member_page extends cs_left_page {
                       $temp_language = $this->_environment->getSelectedLanguage();
                   }
                   $tempMessage = '';
-                  switch ( strtoupper($temp_language) ){
+                  switch ( mb_strtoupper($temp_language, 'UTF-8') ){
                      case 'DE':
                         $tempMessage = $this->_translator->getMessage('DE');
                         break;

@@ -2,8 +2,8 @@
 $message["PRIVATE_ROOM_PROJECTROOM_CLOSED"]["de"] = "archiviert";
 $message["PRIVATE_ROOM_PROJECTROOM_LOCKED"]["de"] = "gesperrt";
 $message["PRIVATE_ROOM_PROJECTROOM_TEMPLATE"]["de"] = "Vorlage";
-$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["de"] = "Neue Einträge der letzten %1 Tage";
-$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["de"] = "Neue Einträge seit gestern";
-$message["PRIVATE_ROOM_SHORT_VIEW_DESCRIPTION"]["de"] = "Aktivitäten der letzten %1 Tage";
-$message["PRIVATE_ROOM_TITLE"]["de"] = "Persönlicher Raum von";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION"]["de"] = "Neue EintrÃ¤ge der letzten %1 Tage";
+$message["PRIVATE_ROOM_SHORT_DETAILED_VIEW_DESCRIPTION2"]["de"] = "Neue EintrÃ¤ge seit gestern";
+$message["PRIVATE_ROOM_SHORT_VIEW_DESCRIPTION"]["de"] = "AktivitÃ¤ten der letzten %1 Tage";
+$message["PRIVATE_ROOM_TITLE"]["de"] = "PersÃ¶nlicher Raum von";
 ?>

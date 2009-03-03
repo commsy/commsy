@@ -120,10 +120,10 @@ class iCalEvent extends iCalBase {
 	* @param string $summary  Title for the event
 	* @param int $class  (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
 	* @param array $attendees  key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON] (example: array('Michi' => 'flaimo@gmx.net,1'); )
-	* @param int $prio  riority = 0–9
-	* @param int $frequency  frequency: 0 = once, secoundly – yearly = 1–7
+	* @param int $prio  riority = 0Â–9
+	* @param int $frequency  frequency: 0 = once, secoundly Â– yearly = 1Â–7
 	* @param mixed $rec_end  recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
-	* @param int $interval  Interval for frequency (every 2,3,4 weeks…)
+	* @param int $interval  Interval for frequency (every 2,3,4 weeksÂ…)
 	* @param string $days  Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
 	* @param string $weekstart  Startday of the Week ( 0 = Sunday - 6 = Saturday)
 	* @param string $exept_dates  exeption dates: Array with timestamps of dates that should not be includes in the recurring event

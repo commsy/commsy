@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -141,7 +141,7 @@ class cs_tag_form extends cs_rubric_form {
                $this->_form->addTextField('tag'.'#'.$child->getItemID(),$child->getTitle(),'','','',$len_text_field,false,$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'),'option'.'#'.$child->getItemID(),'','',$arrows);
                $this->_form->combine('horizontal');
                if ($linked_rubric != 'home'){
-                  $this->_form->addButton('option'.'#'.$child->getItemID(),getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
+                  $this->_form->addButton('option'.'#'.$child->getItemID(),getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
                   $this->_form->combine('horizontal');
                }
                $this->_form->addButton('option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_DELETE_BUTTON'));
@@ -159,13 +159,14 @@ class cs_tag_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addSubHeadline('headline1',ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')),'','',3);
+      include_once('functions/text_functions.php');
+      $this->_form->addSubHeadline('headline1',cs_ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')),'','',3);
       $this->_form->addTextField('new_tag','','','','',30,false,'','','','','','',false,'zu');
       $this->_form->combine('horizontal');
       $this->_form->addSelect('father_id',$this->_values_tree,'','','', 1, false,false,false,'','','','',12);
       $this->_form->combine('horizontal');
       $this->_form->addButton('option',$this->_translator->getMessage('COMMON_ADD_BUTTON'),'','',80);
-      $this->_form->addSubHeadline('headline2',ucfirst($this->_translator->getMessage('COMMON_SORT_BUTTON')),'','',3);
+      $this->_form->addSubHeadline('headline2',cs_ucfirst($this->_translator->getMessage('COMMON_SORT_BUTTON')),'','',3);
       $this->_form->addSelect('sort1',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',11);
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sort_action',$this->_sort_actions,'','','', 1, false,false,false,'','','','',7);
@@ -173,7 +174,7 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->addSelect('sort2',$this->_second_sort_tree,'','','', 1, false,false,false,'','','','',11);
       $this->_form->combine('horizontal');
       $this->_form->addButton('option',getMessage('TAG_SORT_BUTTON'),'','',80);
-      $this->_form->addSubHeadline('headline3',ucfirst($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON')),'','',3);
+      $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON')),'','',3);
       $this->_form->addSelect('sel1',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sel2',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
@@ -184,7 +185,7 @@ class cs_tag_form extends cs_rubric_form {
 
 
       if ( isset($this->_root_tag) ) {
-         $this->_form->addSubHeadline('headline4',ucfirst($this->_translator->getMessage('COMMON_EDIT')),'','',3);
+         $this->_form->addSubHeadline('headline4',cs_ucfirst($this->_translator->getMessage('COMMON_EDIT')),'','',3);
          $this->_createFormForChildren($this->_root_tag,0);
       }
    }

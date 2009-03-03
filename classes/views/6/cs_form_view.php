@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blˆssl, Matthias Finck, Dirk Fust, Franz Gr¸nig,
+// Copyright (c)2002-2007 Dirk Bl√∂ssl, Matthias Finck, Dirk Fust, Franz Gr√ºnig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -1157,7 +1157,7 @@ class cs_form_view extends cs_view {
          $with_htmltextarea = $current_context->withHtmlTextArea();
          $html_status = $current_context->getHtmlTextAreaStatus();
      }
-     $current_browser = strtolower($this->_environment->getCurrentBrowser());
+     $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
      if ( !isset($c_html_textarea)
           or !$c_html_textarea
@@ -1827,17 +1827,17 @@ class cs_form_view extends cs_view {
          if ( $this->_environment->getCurrentFunction() == 'mail' ) {
             $html .= '<h2 class="pagetitle">'.getMessage('COMMON_MAIL_FORM_TITLE').'</h2>';
          } else {
-            $temp_mod_func = strtoupper($this->_environment->getCurrentModule()) . '_' . strtoupper($this->_environment->getCurrentFunction());
+            $temp_mod_func = mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') . '_' . mb_strtoupper($this->_environment->getCurrentFunction(), 'UTF-8');
             $tempMessage = "";
             switch( $temp_mod_func  )
             {
-               case 'ACCOUNT_PASSWORD':      // Password ‰ndern
+               case 'ACCOUNT_PASSWORD':      // Password √§ndern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
                   break;
-               case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ‰ndern
+               case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen √§ndern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
                   break;
-               case 'ACCOUNT_STATUS':        // Status ‰ndern (Portal)
+               case 'ACCOUNT_STATUS':        // Status √§ndern (Portal)
                   $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
@@ -1858,7 +1858,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_DATES':   // Termindarstellung
                   $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_DEFAULTS': // Voreinstellungen f¸r R‰ume
+               case 'CONFIGURATION_DEFAULTS': // Voreinstellungen f√ºr R√§ume
                   $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_DISCUSSION': // Art der Diskussion
@@ -1870,7 +1870,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_EXTRA':   // Extras einstellen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenr‰ume" eingeschaltet ist
+               case 'CONFIGURATION_GROUPROOM': // Wenn das Extra "Gruppenr√§ume" eingeschaltet ist
                   $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');
                   break;
                case 'CONFIGURATION_HOMEPAGE': // Raum-Webseite einstellen
@@ -1885,7 +1885,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_IMS':     // IMS-Account Einstellungen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_LANGUAGE': // Verf¸gbare Sprachen (Server)
+               case 'CONFIGURATION_LANGUAGE': // Verf√ºgbare Sprachen (Server)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');
                   break;
                case 'CONFIGURATION_MAIL':    // E-Mail-Texte
@@ -1894,13 +1894,13 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_MOVE':    // Raum auf anderes Portal umziehen (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_MOVE_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_NEWS':    // Ank¸ndigungen bearbeiten (Portal)
+               case 'CONFIGURATION_NEWS':    // Ank√ºndigungen bearbeiten (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PLUGIN':  // Sponsoren und Werbung
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raum¸bersicht (Portal)
+               case 'CONFIGURATION_PORTALHOME': // Gestaltung der Raum√ºbersicht (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');
                   break;
                case 'CONFIGURATION_PREFERENCES': // Allgemeine Einstellungen bearbeiten (pers. Raum)
@@ -1909,7 +1909,7 @@ class cs_form_view extends cs_view {
                case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // E-Mail-Newsletter (priv.)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');
                   break;
-               case 'CONFIGURATION_ROOM_OPENING': // Raumerˆffnungen (Portal)
+               case 'CONFIGURATION_ROOM_OPENING': // Raumer√∂ffnungen (Portal)
                   $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
                case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
@@ -2221,7 +2221,7 @@ class cs_form_view extends cs_view {
                $pos = $i;
             }
             if ($connection != CS_SECTION_TYPE and $connection != CS_DISCARTICLE_TYPE){
-               switch ( strtoupper($connection) )
+               switch ( mb_strtoupper($connection, 'UTF-8') )
                {
                  case 'ANNOUNCEMENT':
                      $temp_title = $this->_translator->getMessage('ANNOUNCEMENTS');
@@ -2305,7 +2305,7 @@ class cs_form_view extends cs_view {
       $mod = $this->_with_modifying_actions;
       $module = Type2Module($connection);
       if ($connection != CS_SECTION_TYPE and $connection != CS_DISCARTICLE_TYPE){
-            switch ( strtoupper($connection) )
+            switch ( mb_strtoupper($connection, 'UTF-8') )
             {
                case 'ANOUNCEMENT':
                   $temp_title = $this->_translator->getMessage('ANNOUNCEMENTS');
@@ -2372,7 +2372,7 @@ class cs_form_view extends cs_view {
          $html .= '<div style="border-top:0px; text-align:center; padding-bottom:3px;">'.LF;
          $params = array();
          $tempMessage = "";
-         switch( strtoupper($connection) )
+         switch( mb_strtoupper($connection, 'UTF-8') )
          {
             case 'GROUP':                 // Button: Gruppen zuordnen (erst ab 20 vorhand. Gruppen) OK
                $tempMessage = getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON');
@@ -2395,7 +2395,7 @@ class cs_form_view extends cs_view {
             case 'TODO':              // Button: TODOien zuordnen (erst ab 20 vorhand. TODOien) OK
                $tempMessage = getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON');
                break;
-            case 'PROJECT':               // Button: Projektr‰ume zuordnen (erst ab 20 vorhand. Projektr‰umen) OK
+            case 'PROJECT':               // Button: Projektr√§ume zuordnen (erst ab 20 vorhand. Projektr√§umen) OK
                $tempMessage = getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON');
                break;
             case 'TOPIC':                 // Button: Themen suchen (erst ab 20 vorhand. Themen)OK

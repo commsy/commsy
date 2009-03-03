@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -42,7 +42,7 @@ function changeWikis ($directory,$count) {
          changeWikis($directory.'/'.$entry,$count);
       } elseif (is_file($directory.'/'.$entry) and $entry == 'commsy_config.php') {
          $str = file_get_contents($directory.'/'.$entry);
-         if ( stristr($str,'authuser.php') and !stristr($str,'authusercommsy.php') ) {
+         if ( mb_stristr($str,'authuser.php') and !mb_stristr($str,'authusercommsy.php') ) {
             $str = str_replace('include_once("$FarmD/scripts/authuser.php");','include_once("$FarmD/cookbook/authusercommsy.php");'.LF.'include_once("$FarmD/scripts/authuser.php");',$str);
             file_put_contents($directory.'/'.$entry,$str);
          }

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -56,7 +56,7 @@ class cs_agb_form extends cs_rubric_form {
       // agb text
       $context = $this->_environment->getCurrentContextItem();
       $text_array = $context->getAGBTextArray();
-      $this->_agb_text = $text_array[strtoupper(getSelectedLanguage())];
+      $this->_agb_text = $text_array[mb_strtoupper(getSelectedLanguage(), 'UTF-8')];
    }
 
    /** create the form, INTERNAL

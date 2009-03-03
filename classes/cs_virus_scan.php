@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -53,7 +53,7 @@ class cs_virus_scan {
                } else {
                   $filename_text = $filename;
                }
-               if ( strtoupper($virus_name) != 'OVERSIZED.ZIP' ) {
+               if ( mb_strtoupper($virus_name, 'UTF-8') != 'OVERSIZED.ZIP' ) {
                   $this->_virus_name = $virus_name;
                   $this->_output = $this->_translator->getMessage('VIRUS_VIRUS_FOUND',$virus_name,$filename_text);
                   unlink($filename);
@@ -63,11 +63,11 @@ class cs_virus_scan {
          } elseif ( file_exists($this->_path."/".$this->_bin) ) {
             // viren scanning with shell command
             $output = shell_exec($this->_path."/".$this->_bin." ".escapeshellcmd($filename." | grep FOUND"));
-            if (($output != '') and (stristr($output,'FOUND'))) {
+            if (($output != '') and (mb_stristr($output,'FOUND'))) {
                // maybe its only the filename, so remove it from output
                $output = str_replace($filename.': ', "", $output);
-               if ( stristr($output,'FOUND')
-                    and !stristr($output,'Oversized.Zip')
+               if ( mb_stristr($output,'FOUND')
+                    and !mb_stristr($output,'Oversized.Zip')
                   ) {
                   // still a 'FOUND' in output?
                   $ret_val = false;

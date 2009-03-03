@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -68,10 +68,10 @@ class cs_errorbox_view extends cs_text_view {
                )
          ) {
          $text = 'width: 60%;';
-      } elseif ($this->_width and !stristr($this->_width,'em') and !stristr($this->_width,'%')) {
+      } elseif ($this->_width and !mb_stristr($this->_width,'em') and !mb_stristr($this->_width,'%')) {
          $width = round($this->_width/12,0);
          $text = ' width: '.$width.'em;';
-      } elseif (stristr($this->_width,'em') or stristr($this->_width,'%')) {
+      } elseif (mb_stristr($this->_width,'em') or mb_stristr($this->_width,'%')) {
          $text = ' width: '.$this->_width;
       } else {
          $text = 'width: 35em;';

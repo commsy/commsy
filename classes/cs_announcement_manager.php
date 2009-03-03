@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -145,6 +145,9 @@ class cs_announcement_manager extends cs_manager {
    }
 
    function _performQuery ($mode = 'select') {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       if ($mode == 'count') {
          $query = 'SELECT count('.$this->_db_table.'.item_id) as count';
       } elseif ($mode == 'id_array') {
@@ -503,7 +506,7 @@ class cs_announcement_manager extends cs_manager {
         $link_manager = $this->_environment->getLinkManager();
         $link_manager->deleteLinks($item_id,0,'relevant_for');
         unset($link_manager);
-        //  $link_manager->deleteLinksBecauseItemIsDeleted($item_id);  // so w‰re es einheitlich
+        //  $link_manager->deleteLinksBecauseItemIsDeleted($item_id);  // so w√§re es einheitlich
         parent::delete($item_id);
      }
   }

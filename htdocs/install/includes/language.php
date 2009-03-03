@@ -1,9 +1,9 @@
 <?php
 
-// Copyright (c)2002-2008 Dirk Blˆssl, Matthias Finck, Dirk Fust, Franz Gr¸nig,
+// Copyright (c)2002-2008 Dirk Bl√∂ssl, Matthias Finck, Dirk Fust, Franz Gr√ºnig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -28,20 +28,20 @@ $language['en'] = array();
 $language['de']['buttonstart'] = 'Installation starten';
 $language['en']['buttonstart'] = 'Start the setup';
 
-$language['de']['buttonprev'] = 'Zur¸ck';
+$language['de']['buttonprev'] = 'Zur√ºck';
 $language['en']['buttonprev'] = 'Previous';
 
 $language['de']['buttonnext'] = 'Weiter';
 $language['en']['buttonnext'] = 'Next';
 
-$language['de']['buttonrecheck'] = 'Erneut pr¸fen';
+$language['de']['buttonrecheck'] = 'Erneut pr√ºfen';
 $language['en']['buttonrecheck'] = 'Check again';
 
 //Startseite
 $language['de']['welcome'] = 'Willkommen zur CommSy Installation';
 $language['en']['welcome'] = 'Welcome to the commsy setup';
 
-$language['de']['welcometext'] = 'Vielen Dank, dass Sie sich f¸r die Benutzung von CommSy entschieden haben. Es kann sofort mit der Installation losgehen, bitte pr¸fen Sie jedoch vorher die benˆtigten Einstellungen.';
+$language['de']['welcometext'] = 'Vielen Dank, dass Sie sich f√ºr die Benutzung von CommSy entschieden haben. Es kann sofort mit der Installation losgehen, bitte pr√ºfen Sie jedoch vorher die ben√∂tigten Einstellungen.';
 $language['en']['welcometext'] = 'Thank you for choosing CommSy for using. Before we start with the setup, check the requirements please.';
 
 $language['de']['reqnecessary'] = 'Wichtige Voraussetzungen';
@@ -50,7 +50,7 @@ $language['en']['reqnecessary'] = 'Necessary requirements';
 $language['de']['reqoptional'] = 'Optionale Voraussetzungen';
 $language['en']['reqoptional'] = 'Optional requirements';
 
-$language['de']['php5'] = 'PHP 5.x - Unterst¸tzung';
+$language['de']['php5'] = 'PHP 5.x - Unterst√ºtzung';
 $language['en']['php5'] = 'PHP 5.x - support';
 
 $language['de']['mysql5'] = 'MySQL-Datenbank Version 5';
@@ -76,16 +76,16 @@ $language['de']['licenseaccept'] = 'Ich habe die Lizenzbestimmungen gelesen und 
 $language['en']['licenseaccept'] = 'I have read the license and accept them!';
 
 //CHMOD Seite
-$language['de']['chmod'] = '‹berpr¸fung der Schreibrechte';
+$language['de']['chmod'] = '√úberpr√ºfung der Schreibrechte';
 $language['en']['chmod'] = 'Checking writing rights';
 
-$language['de']['phpsettings'] = '‹berpr¸fung der richtigen PHP-Einstellungen';
+$language['de']['phpsettings'] = '√úberpr√ºfung der richtigen PHP-Einstellungen';
 $language['en']['phpsettings'] = 'Checking the PHP settings';
 
 $language['de']['phpsettings_title'] = 'PHP-Einstellungen';
 $language['en']['phpsettings_title'] = 'PHP settings';
 
-$language['de']['version'] = '‹berpr¸fung der PHP-Version';
+$language['de']['version'] = '√úberpr√ºfung der PHP-Version';
 $language['en']['version'] = 'Checking php version';
 
 $language['de']['ok'] = 'Okay';
@@ -111,7 +111,7 @@ $language['en']['database'] = 'Database';
 $language['de']['basedata'] = 'Stammdaten';
 $language['en']['basedata'] = 'Master data';
 
-$language['de']['basedatatext'] = 'Diese Angaben werden unbedingt benˆtigt!<br/>Achten Sie auf genaue Angaben dieser Daten!';
+$language['de']['basedatatext'] = 'Diese Angaben werden unbedingt ben√∂tigt!<br/>Achten Sie auf genaue Angaben dieser Daten!';
 $language['en']['basedatatext'] = 'These settings are required!<br/>Please check, if they are correct!';
 
 $language['de']['abspath'] = 'Datei-Pfad';
@@ -135,7 +135,7 @@ $language['en']['toportal'] = 'To the CommSy portal';
 $language['de']['commsycron'] = 'Siehe <a href="../../docs/docu_installation_de.html" class="link_in_text" target="_blank">Installationsanweisungen</a>.';
 $language['en']['commsycron'] = 'See <a href="../../docs/docu_installation_en.html" class="link_in_text" target="_blank">installation guide</a>.';
 
-$language['de']['addsoftware'] = 'Zus‰tzliche Software';
+$language['de']['addsoftware'] = 'Zus√§tzliche Software';
 $language['en']['addsoftware'] = 'Additional software';
 
 $language['de']['addsoftware_clamav'] = 'Anti Virus: <a href="http://www.clamav.net/" class="link_in_text" target="_blank">ClamAV</a> - keine spezielle Version';

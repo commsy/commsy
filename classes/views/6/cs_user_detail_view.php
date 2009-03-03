@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -202,7 +202,7 @@ class cs_user_detail_view extends cs_detail_view {
          ) {
          global $c_commsy_domain;
          if ( strstr($c_commsy_domain,'http') ) {
-            $host = substr($c_commsy_domain,strrpos($c_commsy_domain,'/')+1);
+            $host = mb_substr($c_commsy_domain,mb_strrpos($c_commsy_domain,'/')+1);
          } else {
             $host = $c_commsy_domain;
          }
@@ -420,7 +420,7 @@ class cs_user_detail_view extends cs_detail_view {
 
       $current_context = $this->_environment->getCurrentContextItem();
       $language = $current_context->getLanguage();
-      if (strtoupper($language) == 'USER' or ($this->_display_mod == 'admin' and $this->_environment->inPortal())) {
+      if (mb_strtoupper($language, 'UTF-8') == 'USER' or ($this->_display_mod == 'admin' and $this->_environment->inPortal())) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_LANGUAGE');
          switch ( cs_strtoupper($item->getLanguage()) )
@@ -853,7 +853,7 @@ class cs_user_detail_view extends cs_detail_view {
             $context = $this->_environment->getCurrentContextItem();
             $html .='		<div class="netnavigation_panel">     '.LF;
             $text = '';
-            switch ( strtoupper($connection) )
+            switch ( mb_strtoupper($connection, 'UTF-8') )
             {
                case 'ANNOUNCEMENT':
                   $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
@@ -910,7 +910,7 @@ class cs_user_detail_view extends cs_detail_view {
          }
       }
       foreach ($this->_modified_items_array as $connection => $ids) {
-         switch ( strtoupper($connection) )
+         switch ( mb_strtoupper($connection, 'UTF-8') )
          {
          case 'ANNOUNCEMENT':
             $text = $this->_translator->getMessage('ANNOUNCEMENTS');
@@ -971,7 +971,7 @@ class cs_user_detail_view extends cs_detail_view {
          $module = Type2Module($connection);
          $manager = $this->_environment->getItemManager();
          $html .=' <div class="netnavigation_panel">     '.LF;
-         switch ( strtoupper($connection) )
+         switch ( mb_strtoupper($connection, 'UTF-8') )
          {
             case 'ANNOUNCEMENT':
                $text = $this->_translator->getMessage('ANNOUNCEMENTS');

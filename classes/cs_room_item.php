@@ -695,8 +695,8 @@ class cs_room_item extends cs_context_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -714,7 +714,7 @@ class cs_room_item extends cs_context_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_HEADER',$value_array);
    }
 
@@ -729,8 +729,8 @@ class cs_room_item extends cs_context_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -748,7 +748,7 @@ class cs_room_item extends cs_context_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_HEADER',$value_array);
    }
 

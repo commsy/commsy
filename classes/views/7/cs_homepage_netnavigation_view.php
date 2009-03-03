@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -85,7 +85,7 @@ class cs_homepage_netnavigation_view extends cs_view {
                $rubric_list = $label_manager->get();
                $list = clone $rubric_list;
                unset($rubric_list);
-               $temp_link = strtoupper($link_name[0]);
+               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
                $selrubric = '';
                switch ( $temp_link )
                {
@@ -142,7 +142,7 @@ class cs_homepage_netnavigation_view extends cs_view {
 
    function _Name2SelectOption ($name) {
      $length = 70;
-     if ( strlen($name)>$length ) {
+     if ( mb_strlen($name)>$length ) {
          $name = chunkText($name,$length);
      }
      return $name;

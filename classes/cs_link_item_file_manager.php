@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -57,7 +57,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
 
       $file_id_array = array();
       foreach ($id_array as $key => $value) {
-         if (stristr($key,CS_FILE_TYPE)) {
+         if (mb_stristr($key,CS_FILE_TYPE)) {
             $real_file_id = str_replace(CS_FILE_TYPE,'',$key);
             $file_id_array[] = $real_file_id;
          }

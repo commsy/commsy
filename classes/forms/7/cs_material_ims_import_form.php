@@ -100,7 +100,7 @@ class cs_material_ims_import_form extends cs_rubric_form {
       $file = $this->_form_post['ims_upload']['name'];
       $file_elements =  explode('.',$file);
       if ( isset($file_elements[1]) and !empty($file_elements[1]) ){
-         $file_type = strtoupper( $file_elements[1] );
+         $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'ZIP') {
             $this->_error_array[] = getMessage('DATES_WRONG_FILE_FORMAT');
 	   $error = true;

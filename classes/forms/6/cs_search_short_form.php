@@ -171,7 +171,7 @@ class cs_search_short_form extends cs_form {
          }
          if ( $link_name[1] != 'none' and $display) {
             $this->_value_rubric_select[$i]['value'] = $link_name[0];
-            $temp_link = strtoupper($link_name[0]);
+            $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
             $tempMessage = "";
             switch ( $temp_link )
             {

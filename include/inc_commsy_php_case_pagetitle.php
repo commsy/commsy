@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -107,7 +107,7 @@
          break;
       default:
          $text = '';
-         if ( $tempModule == strtoupper(CS_PLUGIN_TYPE)
+         if ( $tempModule == mb_strtoupper(CS_PLUGIN_TYPE, 'UTF-8')
               and !empty($plugin_module)
               and $environment->isPlugin($plugin_module)
             ) {

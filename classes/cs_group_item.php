@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -86,7 +86,7 @@ class cs_group_item extends cs_label_item {
 
    public function setDiscussionNotificationArray ( $value ) {
       if ( !empty($value) ) {
-         $value = implode('§§', $value);
+         $value = implode('Â§Â§', $value);
          $this->_setExtra('DISCUSSION_NOTIFICATION_ARRAY',(string)$value);
       } else {
          $this->_unsetExtra('DISCUSSION_NOTIFICATION_ARRAY');
@@ -97,7 +97,7 @@ class cs_group_item extends cs_label_item {
       $retour = array();
       if ( $this->_issetExtra('DISCUSSION_NOTIFICATION_ARRAY') ) {
          $retour = $this->_getExtra('DISCUSSION_NOTIFICATION_ARRAY');
-         $retour = explode('§§', $retour);
+         $retour = explode('Â§Â§', $retour);
       }
       return $retour;
    }   

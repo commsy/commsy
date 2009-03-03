@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -182,8 +182,8 @@ if (isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON')))
        $user_id = $user_item->getUserID();
        $user_test_item = $room_item->getUserByUserID($user_id,$user_item->getAuthSource());
        if ( !isset($user_test_item)
-            and strtoupper($user_id) != 'GUEST'
-            and strtoupper($user_id) != 'ROOT'
+            and mb_strtoupper($user_id, 'UTF-8') != 'GUEST'
+            and mb_strtoupper($user_id, 'UTF-8') != 'ROOT'
           ) {
           $user_item->save();
           $user_item->setCreatorID2ItemID();

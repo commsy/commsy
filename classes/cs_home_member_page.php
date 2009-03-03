@@ -3,7 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
 // Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez

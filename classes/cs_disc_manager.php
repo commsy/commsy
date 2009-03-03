@@ -303,5 +303,13 @@ class cs_disc_manager {
    public function getLastSavedFileName () {
       return $this->_last_saved_filename;
    }
+   
+   public function getCurrentFileName($context_id, $file_id, $file_name){
+      if(file_exists($this->getFilePath() . 'cid' . $context_id . '_' . $file_id . '_' . $file_name)){
+         return 'cid' . $context_id . '_' . $file_id . '_' . $file_name;
+      } else {
+         return $file_id;
+      }
+   }
 }
 ?>

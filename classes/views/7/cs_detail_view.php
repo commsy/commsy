@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blˆssl, Matthias Finck, Dirk Fust, Franz Gr¸nig,
+// Copyright (c)2002-2007 Dirk Bl√∂ssl, Matthias Finck, Dirk Fust, Franz Gr√ºnig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -440,7 +440,7 @@ class cs_detail_view extends cs_view {
             $html .= '<div class="commsy_panel" style="margin-bottom:1px;">'.LF;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
-      $html .= '<div style="white-space:nowrap;">'.'Liste ausgew‰hlter Materialien ('.count($ids).')</div>'.LF;
+      $html .= '<div style="white-space:nowrap;">'.'Liste ausgew√§hlter Materialien ('.count($ids).')</div>'.LF;
       $html .='</div>'.LF;
       $html .= '<div class="right_box_main" style="padding:0px;" >'.LF;
 
@@ -487,7 +487,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 'Eintr‰ge '.($forward_start+1).' bis '.($start)
+                                 'Eintr√§ge '.($forward_start+1).' bis '.($start)
                                  );
           $html .='</li>';
           $html .='</ul>';
@@ -542,7 +542,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 'Eintr‰ge '.($end+2).' bis '.($forward_end+1)
+                                 'Eintr√§ge '.($end+2).' bis '.($forward_end+1)
                                  );
           $html .='</li>';
           $html .='</ul>';
@@ -633,7 +633,7 @@ class cs_detail_view extends cs_view {
                $type = $label_item->getLabelType();
             }
             $text = '';
-            switch ( strtoupper($type) ){
+            switch ( mb_strtoupper($type, 'UTF-8') ){
                case 'ANNOUNCEMENT':
                   $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
                   break;
@@ -1122,7 +1122,7 @@ class cs_detail_view extends cs_view {
       $html .= '<div id="search_box" style="float:right; width:28%; white-space:nowrap; text-align-left; padding-top:5px; margin:0px;">'.LF;
       $html .= $this->_getSearchAsHTML();
       $html .= '</div>'.LF;
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $html .='<div style="width: 99%;">'.LF;
@@ -1135,7 +1135,7 @@ class cs_detail_view extends cs_view {
       $html .='</div>';
       $html .='<div style="vertical-align:bottom;">'.LF;
       $tempMessage = '';
-      switch ( strtoupper($this->_environment->getCurrentModule()) ) {
+      switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
          case 'ANNOUNCEMENT':
             $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_DETAIL');
             $tempMessage = '<img src="images/commsyicons/32x32/announcement.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
@@ -1265,7 +1265,7 @@ class cs_detail_view extends cs_view {
          $html .='</div>'.LF;
          $html .='</div>'.LF;
       }
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width= ' width:100%; padding-right:10px; ';
@@ -1381,7 +1381,7 @@ class cs_detail_view extends cs_view {
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '<script type="text/javascript">'.LF;
-         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
             $html .= 'preInitCommSyPanels(Array('.$this->_right_box_config['title_string'].'),Array('.$this->_right_box_config['desc_string'].'),Array('.$this->_right_box_config['config_string'].'), Array(),Array('.$this->_right_box_config['size_string'].'));'.LF;
@@ -1549,7 +1549,7 @@ class cs_detail_view extends cs_view {
          $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
       }
       $html .= '<a name="annotations"></a>'.LF;
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
          $html .='<div style="width:100%; padding:5px 10px 5px 5px; background-color:#FFFFFF;">'.LF;
@@ -1701,9 +1701,9 @@ class cs_detail_view extends cs_view {
                   $in_list = $path_item_list->inList($item);
                   if ($in_list){
                      $title = $topic_item->getTitle();
-                     $length = strlen($title);
+                     $length = mb_strlen($title);
                      if ( $length > 22 ) {
-                        $title = substr($title,0,22).'...';
+                        $title = mb_substr($title,0,22).'...';
                      }
                      $params['iid'] = $topic_item->getItemID();
                      $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
@@ -1788,7 +1788,7 @@ class cs_detail_view extends cs_view {
                }
                $link_created = $this->_translator->getDateInLang($link_item->getCreationDate());
                $text = '';
-               switch ( strtoupper($type) )
+               switch ( mb_strtoupper($type, 'UTF-8') )
                {
                   case 'ANNOUNCEMENT':
                      $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
@@ -2223,7 +2223,7 @@ class cs_detail_view extends cs_view {
             $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_REFERENCED_ENTRIES').' '.($pos+1).' / '.$count_all.'</span>'.LF;
          }
        }else{
-         switch ( strtoupper($this->_environment->getCurrentModule()) ){
+         switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ){
             case 'ANNOUNCEMENT':
                $text = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
                break;
@@ -2688,10 +2688,10 @@ class cs_detail_view extends cs_view {
                     )
                     and
                     (
-                       stristr(strtolower($file->getFilename()),'png')
-                       or stristr(strtolower($file->getFilename()),'jpg')
-                       or stristr(strtolower($file->getFilename()),'jpeg')
-                       or stristr(strtolower($file->getFilename()),'gif')
+                       mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                       or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                     )
                   ) {
                   $this->_with_slimbox = true;
@@ -2764,7 +2764,7 @@ class cs_detail_view extends cs_view {
             $current_context = $this->_environment->getCurrentContextItem();
             $with_htmltextarea = $current_context->withHtmlTextArea();
             $html_status = $current_context->getHtmlTextAreaStatus();
-            $current_browser = strtolower($this->_environment->getCurrentBrowser());
+            $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
             $current_browser_version = $this->_environment->getCurrentBrowserVersion();
             if ( !isset($c_html_textarea)
                  or !$c_html_textarea

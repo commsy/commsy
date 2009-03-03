@@ -97,10 +97,9 @@ class Mail_mime extends PEAR
 
         // change charset:  also change at mail.php line 95 mb_language
         $this->_build_params = array(
-                                     'text_encoding' => '7bit',
+                                     'text_encoding' => '8bit',
                                      'html_encoding' => 'quoted-printable',
-                                     '7bit_wrap'     => 998,
-                                     'charset'       => 'iso-8859-1'
+                                     'charset'       => 'utf-8'
                                     );
     }
 

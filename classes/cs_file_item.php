@@ -236,8 +236,8 @@ class cs_file_item extends cs_item {
 
    function setPostFile($post_data) {
       $this->setTempName($post_data["tmp_name"]);
-      $filename = rawurlencode(rawurldecode(basename($post_data["name"])));
-      $filename = str_replace('%20','_',$filename);
+      $filename = rawurldecode(basename(rawurlencode($post_data["name"])));
+      $filename = str_replace(' ','_',$filename);
       $this->setFileName($filename);
    }
 
@@ -288,12 +288,12 @@ class cs_file_item extends cs_item {
    }
 
    function getMime() {
-      $extension = cs_strtolower(substr(strrchr($this->getDisplayName(),'.'),1));
+      $extension = cs_strtolower(mb_substr(strrchr($this->getDisplayName(),'.'),1));
       return empty($this->_mime[$extension]) ? 'application/octetstream' : $this->_mime[$extension];
    }
 
    function getExtension () {
-      return cs_strtolower(substr(strrchr($this->getDisplayName(),'.'),1));
+      return cs_strtolower(mb_substr(strrchr($this->getDisplayName(),'.'),1));
    }
 
    function getUrl () {
@@ -316,7 +316,7 @@ class cs_file_item extends cs_item {
    }
 
    function getFileIcon($title_of_image = '' ) {
-      $ext = cs_strtolower(substr(strrchr($this->getFileName(),'.'),1));
+      $ext = cs_strtolower(mb_substr(strrchr($this->getFileName(),'.'),1));
       $img = '<img src="images/';
       if ( !empty($this->_icon[$ext]) ) {
          $img .= $this->_icon[$ext];
@@ -345,7 +345,7 @@ class cs_file_item extends cs_item {
    }
 
    function getIconFilename() {
-      $ext = cs_strtolower(substr(strrchr($this->getFileName(),'.'),1));
+      $ext = cs_strtolower(mb_substr(strrchr($this->getFileName(),'.'),1));
       if ( !empty($this->_icon[$ext]) ) {
          $img = $this->_icon[$ext];
       } else {
@@ -378,13 +378,31 @@ class cs_file_item extends cs_item {
             unset($context_item);
          }
       }
-      $retour = $disc_manager->getFilePath().'cid'.$this->getContextID().'_'.$this->getFileID().'_'.$this->getFileName();
+      $retour = $disc_manager->getFilePath().$disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName());
       $disc_manager->setContextID($this->_environment->getCurrentContextID());
       return $retour;
    }
 
     function getDiskFileNameWithoutFolder() {
-      return 'cid'.$this->getContextID().'_'.$this->getFileID().'_'.$this->getFileName();
+      $disc_manager = $this->_environment->getDiscManager();
+      $disc_manager->setContextID($this->getContextID());
+      $portal_id = $this->getPortalID();
+      if ( isset($portal_id) and !empty($portal_id) ) {
+         $disc_manager->setPortalID($portal_id);
+      } else {
+         $context_item = $this->getContextItem();
+         if ( isset($context_item) ) {
+            $portal_item = $context_item->getContextItem();
+            if ( isset($portal_item) ) {
+               $disc_manager->setPortalID($portal_item->getItemID());
+               unset($portal_item);
+            }
+            unset($context_item);
+         }
+      }
+      $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName());
+      $disc_manager->setContextID($this->_environment->getCurrentContextID());
+      return $retour;
    }
 
    function save() {
@@ -608,7 +626,7 @@ class cs_file_item extends cs_item {
    public function isImage () {
       $retour = false;
       $mime = $this->getMime();
-      if ( stristr($mime,'image') ) {
+      if ( mb_stristr($mime,'image') ) {
          $retour = true;
       }
       return $retour;

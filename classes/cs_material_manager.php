@@ -465,8 +465,8 @@ class cs_material_manager extends cs_manager {
          $randum_number = rand(0,999999);
          $uid = 'cron_job';
          $temp_number = '';
-         for ($i=0; $i<strlen($current_time); $i++) {
-            $temp_number .= substr($current_time,$i,1).substr($uid,$i,1).substr($randum_number,$i,1);
+         for ($i=0; $i<mb_strlen($current_time); $i++) {
+            $temp_number .= mb_substr($current_time,$i,1).mb_substr($uid,$i,1).mb_substr($randum_number,$i,1);
          }
          $temp_number = md5($temp_number);
       }

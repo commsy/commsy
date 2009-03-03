@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -182,7 +182,7 @@ class cs_homepage_detail_view extends cs_detail_view {
      # $with_htmltextarea = $current_context->withHtmlTextArea();
      $with_htmltextarea = true;
      $html_status = $current_context->getHtmlTextAreaStatus();
-     $current_browser = strtolower($this->_environment->getCurrentBrowser());
+     $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       if ( !isset($c_html_textarea)
           or !$c_html_textarea
          or !$with_htmltextarea

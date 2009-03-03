@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -52,8 +52,8 @@ class cs_page {
       if ( !empty($post_array['activitymodus']) ) {
          $this->_values['activitymodus'] = $post_array['activitymodus'];
       }
-      /*HOT-FIX: Suchbegriff über die $_GET, weil die andere Methode einen falschen Wert liefert
-      TBD: Klären, warum $this->_environment->getCurrentParameterArray() nicht auf der $_GET arbeitet*/
+      /*HOT-FIX: Suchbegriff Ã¼ber die $_GET, weil die andere Methode einen falschen Wert liefert
+      TBD: KlÃ¤ren, warum $this->_environment->getCurrentParameterArray() nicht auf der $_GET arbeitet*/
       if (!empty($_GET['search'])) {
          $this->_values['search'] = $_GET['search'];
       }

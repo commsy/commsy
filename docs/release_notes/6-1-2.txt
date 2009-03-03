@@ -13,5 +13,5 @@ Bugfix-Release:
 1982032 	sql-dump: files: extras fehlt
 1981829 	Installation: mysql 4 nicht erkannt
 1981769 	Link_Items: Noch da, obwohl ein Ende fehlt
-1979347 	Gruppen mit Raum: gelöscht
+1979347 	Gruppen mit Raum: gelÃ¶scht
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/

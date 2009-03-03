@@ -756,6 +756,9 @@ class cs_user_manager extends cs_manager {
    }
 
    function getRoomUserByIDsForCache($context_id, $id_array = 0) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       if ( !$this->_cache_on ) {
          // do nothing
       } elseif ( !empty($context_id) and !empty($id_array)) {

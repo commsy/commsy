@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -28,16 +28,16 @@ class cs_html_textarea {
 
 		// some configurations
 		global $c_commsy_url_path;
-		if ( strlen($c_commsy_url_path) > 1 and substr($c_commsy_url_path,strlen($c_commsy_url_path)-1) == '/') {
-		   $c_commsy_url_path = substr($c_commsy_url_path,0,strlen($c_commsy_url_path)-1);
+		if ( mb_strlen($c_commsy_url_path) > 1 and mb_substr($c_commsy_url_path,mb_strlen($c_commsy_url_path)-1) == '/') {
+		   $c_commsy_url_path = mb_substr($c_commsy_url_path,0,mb_strlen($c_commsy_url_path)-1);
 		}
 		global $c_fckeditor_url_path;
-		if ( strlen($c_fckeditor_url_path) > 1 and substr($c_fckeditor_url_path,strlen($c_fckeditor_url_path)-1) == '/') {
-		   $c_fckeditor_url_path = substr($c_fckeditor_url_path,0,strlen($c_fckeditor_url_path)-1);
+		if ( mb_strlen($c_fckeditor_url_path) > 1 and mb_substr($c_fckeditor_url_path,mb_strlen($c_fckeditor_url_path)-1) == '/') {
+		   $c_fckeditor_url_path = mb_substr($c_fckeditor_url_path,0,mb_strlen($c_fckeditor_url_path)-1);
 		}
 		global $c_fckeditor_file_path;
-		if ( strlen($c_fckeditor_file_path) > 1 and substr($c_fckeditor_file_path,strlen($c_fckeditor_file_path)-1) == '/') {
-		   $c_fckeditor_file_path = substr($c_fckeditor_file_path,0,strlen($c_fckeditor_file_path)-1);
+		if ( mb_strlen($c_fckeditor_file_path) > 1 and mb_substr($c_fckeditor_file_path,mb_strlen($c_fckeditor_file_path)-1) == '/') {
+		   $c_fckeditor_file_path = mb_substr($c_fckeditor_file_path,0,mb_strlen($c_fckeditor_file_path)-1);
 		}
 
 		// value translations

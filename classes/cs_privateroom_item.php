@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -73,7 +73,7 @@ class cs_privateroom_item extends cs_room_item {
       if ( $this->isDesign7() ) {
          $retour = array();
          foreach (explode(',',$rubrics) as $rubric){
-            if (!stristr($rubric,CS_USER_TYPE) ) {
+            if (!mb_stristr($rubric,CS_USER_TYPE) ) {
                $retour[] = $rubric;
             }
          }
@@ -440,7 +440,7 @@ class cs_privateroom_item extends cs_room_item {
                         }
                      }
                      $tempMessage = '';
-                     switch ( strtoupper($rubric_array[0]) ){
+                     switch ( mb_strtoupper($rubric_array[0], 'UTF-8') ){
                         case 'ANNOUNCEMENT':
                            $tempMessage = $translator->getMessage('ANNOUNCEMENT_INDEX');
                            break;
@@ -619,8 +619,8 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -637,14 +637,14 @@ class cs_privateroom_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = strtoupper($rubric).'_'.strtoupper($funct);
+         $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
          $tempMessage = "";
          switch( $temp )
          {
             case 'HOME_INDEX':             // getestet
                 $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_INDEX',$link);
                 break;
-            case 'HOME_USAGEINFO':         // siehe "Übersicht der Einstellungsoptionen" / "Nutzungshinweise bearbeiten"
+            case 'HOME_USAGEINFO':         // siehe "Ãœbersicht der Einstellungsoptionen" / "Nutzungshinweise bearbeiten"
                 $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_USAGEINFO',$link);
                 break;
             case 'MYROOM_INDEX':           // getestet
@@ -691,8 +691,8 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -709,7 +709,7 @@ class cs_privateroom_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-        $temp = strtoupper($rubric);
+        $temp = mb_strtoupper($rubric, 'UTF-8');
          $tempMessage = "";
          switch( $temp )
          {
@@ -757,10 +757,10 @@ class cs_privateroom_item extends cs_room_item {
          $value_array = array();
       }
       if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
@@ -778,10 +778,10 @@ class cs_privateroom_item extends cs_room_item {
          $value_array = array();
       }
       if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
@@ -800,8 +800,8 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -818,11 +818,11 @@ class cs_privateroom_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = strtoupper($rubric).'_'.strtoupper($funct);
+         $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
          $tempMessage = "";
          switch( $temp )
          {
-            case 'ANNOTATION_EDIT':       // getestet: pers. Raum/Meine Räume/<1 Raum>/Neue Anmerkung erstellen
+            case 'ANNOTATION_EDIT':       // getestet: pers. Raum/Meine RÃ¤ume/<1 Raum>/Neue Anmerkung erstellen
                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_ANNOTATION_EDIT_FORM',$link);
                break;
             case 'BUZZWORDS_EDIT':        // getestet: pers. Raum, "Materialien" / Materialarten bearbeiten
@@ -925,8 +925,8 @@ class cs_privateroom_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -943,7 +943,7 @@ class cs_privateroom_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = strtoupper($rubric);
+         $temp = mb_strtoupper($rubric, 'UTF-8');
          $tempMessage = "";
          switch( $temp )
          {

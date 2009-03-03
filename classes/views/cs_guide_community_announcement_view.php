@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -79,9 +79,9 @@ class cs_guide_community_announcement_view extends cs_view {
                }
                $current_user = $this->_environment->getCurrentUserItem();
                $params['room_id'] = $community->getItemID();
-               $length = strlen($community->getTitle());
-               if ( $length > 20 and !stristr($community->getTitle(),' ') ) {
-                  $title = substr($community->getTitle(),0,20).'...';
+               $length = mb_strlen($community->getTitle());
+               if ( $length > 20 and !mb_stristr($community->getTitle(),' ') ) {
+                  $title = mb_substr($community->getTitle(),0,20).'...';
                } else {
                   $title = $community->getTitle();
                }

@@ -3,107 +3,107 @@ $message["HELP_ACCOUNT_EDIT"]["de"] = "<br />
 <br />
 <span style=&quot;font-weight:bold;&quot;>Im %_PROJECT_SUB_DATS_BIG</span><br />
 <br />
-Hier können Sie den Teilnahmestatus der einzelnen BenutzerInnen verändern, also einzelne TeilnehmerInnen (z.B. TutorInnen) zu ModeratorInnen ernennen oder Kennungen von BenutzerInnen, die nicht mehr an %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG teilnehmen, für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG sperren, indem Sie deren Status auf &quot;geschlossen&quot; setzen. Nachden Sie auf &quot;Änderung speichern&quot; geklickt haben, können Sie die / den BenutzerIn per E-Mail über die Änderung informieren.<br />
+Hier kÃ¶nnen Sie den Teilnahmestatus der einzelnen BenutzerInnen verÃ¤ndern, also einzelne TeilnehmerInnen (z.B. TutorInnen) zu ModeratorInnen ernennen oder Kennungen von BenutzerInnen, die nicht mehr an %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG teilnehmen, fÃ¼r %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG sperren, indem Sie deren Status auf &quot;geschlossen&quot; setzen. Nachden Sie auf &quot;Ã„nderung speichern&quot; geklickt haben, kÃ¶nnen Sie die / den BenutzerIn per E-Mail Ã¼ber die Ã„nderung informieren.<br />
 <br />
 ModeratorInnen haben das Recht, den CommSy-Raum zu konfigurieren und Kennungen zu administrieren.<br />
 <br />
 <span style=&quot;font-weight:bold;&quot;>in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG</span><br />
 <br />
-Hier können Sie den Teilnahmestatus der einzelnen BenutzerInnen verändern, also andere Mitglieder zu ModeratorInnen ernennen oder Kennungen von BenutzerInnen für %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG sperren, indem Sie deren Status auf &quot;geschlossen&quot; setzen. Nachden Sie auf &quot;Änderung speichern&quot; geklickt haben, können Sie die / den BenutzerIn per E-Mail über die Änderung informieren.";
+Hier kÃ¶nnen Sie den Teilnahmestatus der einzelnen BenutzerInnen verÃ¤ndern, also andere Mitglieder zu ModeratorInnen ernennen oder Kennungen von BenutzerInnen fÃ¼r %_COMMUNITY_ART_DEF_AKKS_LOW %_COMMUNITY_SUB_AKKS_BIG sperren, indem Sie deren Status auf &quot;geschlossen&quot; setzen. Nachden Sie auf &quot;Ã„nderung speichern&quot; geklickt haben, kÃ¶nnen Sie die / den BenutzerIn per E-Mail Ã¼ber die Ã„nderung informieren.";
 $message["HELP_ACCOUNT_EDIT_LINKS"]["de"] = "HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
-$message["HELP_ACCOUNT_INDEX"]["de"] = "Im Bereich &quot;Kennungen&quot; erhalten Sie eine Übersicht aller BenutzerInnen, die sich in Ihrem Raum angemeldet haben.<br />
+$message["HELP_ACCOUNT_INDEX"]["de"] = "Im Bereich &quot;Kennungen&quot; erhalten Sie eine Ãœbersicht aller BenutzerInnen, die sich in Ihrem Raum angemeldet haben.<br />
 <br />
-Um nach bestimmten Kennungen zu suchen, steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten sowie ein Suchfeld zur Verfügung. So können Sie sich beispielsweise alle Kennungen anzeigen lassen, die &quot;in Beantragung&quot; sind.<br />
+Um nach bestimmten Kennungen zu suchen, steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten sowie ein Suchfeld zur VerfÃ¼gung. So kÃ¶nnen Sie sich beispielsweise alle Kennungen anzeigen lassen, die &quot;in Beantragung&quot; sind.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen Einträge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen EintrÃ¤ge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern.<br />
 <br />
 <span style=&quot;font-weight:bold;&quot;>eine Kennungen bearbeiten</span><br />
-Um den Status von TeilnehmerInnen zu verändern, klicken Sie auf den Namen des jeweiligen Mitglieds. Sie gelangen dann auf eine Bearbeitungsseite und können dort den Status der Kennung ändern.
+Um den Status von TeilnehmerInnen zu verÃ¤ndern, klicken Sie auf den Namen des jeweiligen Mitglieds. Sie gelangen dann auf eine Bearbeitungsseite und kÃ¶nnen dort den Status der Kennung Ã¤ndern.
 <br /><br />
 <span style=&quot;font-weight:bold;&quot;>mehrere Kennungen bearbeiten</span><br />
-Um den Status von mehreren TeilnehmerInnen gleichzeitig zu verändern, wählen Sie die Kennungen in der Liste aus und wählen danach ein Aktion unten rechts. Drücken Sie dann auf &quot;ausführen&quot;, wird die Aktion auf alle gewählten Kennungen angewendet.<br />
+Um den Status von mehreren TeilnehmerInnen gleichzeitig zu verÃ¤ndern, wÃ¤hlen Sie die Kennungen in der Liste aus und wÃ¤hlen danach ein Aktion unten rechts. DrÃ¼cken Sie dann auf &quot;ausfÃ¼hren&quot;, wird die Aktion auf alle gewÃ¤hlten Kennungen angewendet.<br />
 <br />
-Erläuterung zu den Aktionen:
+ErlÃ¤uterung zu den Aktionen:
 <ul>
-<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) löschen</span>: Alle angewählten Kennungen werden gelöscht, sofern diese sich noch nie eingeloggt hatten.</li>
-<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) sperren</span>: Alle angewählten Kennungen werden gesperrt, d.h. die Kennungen haben keinen Zugriff mehr auf den Raum, tauchen unter Personen nicht mehr auf, können aber wieder aktiviert werden..</li>
-<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) freischalten</span>: Alle angewählten Kennungen werden zu normalen Mitgliedern im Raum. Sie tauchen in Personen auf, werden im Projektraum in die Gruppe &quot;Alle Mitglieder&quot; eingetragen und dürfen fortan den Raum aktiv nutzen.</li>
+<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) lÃ¶schen</span>: Alle angewÃ¤hlten Kennungen werden gelÃ¶scht, sofern diese sich noch nie eingeloggt hatten.</li>
+<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) sperren</span>: Alle angewÃ¤hlten Kennungen werden gesperrt, d.h. die Kennungen haben keinen Zugriff mehr auf den Raum, tauchen unter Personen nicht mehr auf, kÃ¶nnen aber wieder aktiviert werden..</li>
+<li><span style=&quot;font-weight:bold;&quot;>Kennung(en) freischalten</span>: Alle angewÃ¤hlten Kennungen werden zu normalen Mitgliedern im Raum. Sie tauchen in Personen auf, werden im Projektraum in die Gruppe &quot;Alle Mitglieder&quot; eingetragen und dÃ¼rfen fortan den Raum aktiv nutzen.</li>
 <li><span style=&quot;font-weight:bold;&quot;>Status: BenutzerIn</span>: Siehe Kennung(en) freischalten</li>
-<li><span style=&quot;font-weight:bold;&quot;>Status: ModeratorIn</span>: Alle angewählten Kennungen werden zu Moderatoren, d.h. sie können den Raum konfigurieren und Kennungen freischalten.</li>
-<li><span style=&quot;font-weight:bold;&quot;>Zur AnsprechpartnerIn machen</span>: AnsprechpartnerInnen werden bei der Außendarstellung als Kontaktpersonen genannt.</li>
-<li><span style=&quot;font-weight:bold;&quot;>Status AnsprechpartnerIn entfernen</span>: Die Kennung tauchen nicht mehr in der Außendarstellung als AnsprechpartnerInnen auf.</li>
-<li><span style=&quot;font-weight:bold;&quot;>E-Mail: Kennung & Passwort</span> (nur Gemeinschaftsraum): An alle ausgewählten Kennungen wird eine E-Mail mit der Kennung und einem Hinweis zur Erlangung eines neuen Passwortes verschickt..</li>
-<li><span style=&quot;font-weight:bold;&quot;>E-Mail: Kennungen zusammenführen</span> (nur Gemeinschaftsraum): An alle ausgewählten Kennungen wird eine E-Mail mit allen unter der E-Mail-Adresse eingetragenen Kennungen verschickt sowie Hinweise, wie diese Kennungen zusammengelegt werden können..</li>
-<li><span style=&quot;font-weight:bold;&quot;>E-Mail schicken</span>: An alle ausgewählten Kennungen wird eine E-Mail geschickt.</li>
+<li><span style=&quot;font-weight:bold;&quot;>Status: ModeratorIn</span>: Alle angewÃ¤hlten Kennungen werden zu Moderatoren, d.h. sie kÃ¶nnen den Raum konfigurieren und Kennungen freischalten.</li>
+<li><span style=&quot;font-weight:bold;&quot;>Zur AnsprechpartnerIn machen</span>: AnsprechpartnerInnen werden bei der AuÃŸendarstellung als Kontaktpersonen genannt.</li>
+<li><span style=&quot;font-weight:bold;&quot;>Status AnsprechpartnerIn entfernen</span>: Die Kennung tauchen nicht mehr in der AuÃŸendarstellung als AnsprechpartnerInnen auf.</li>
+<li><span style=&quot;font-weight:bold;&quot;>E-Mail: Kennung & Passwort</span> (nur Gemeinschaftsraum): An alle ausgewÃ¤hlten Kennungen wird eine E-Mail mit der Kennung und einem Hinweis zur Erlangung eines neuen Passwortes verschickt..</li>
+<li><span style=&quot;font-weight:bold;&quot;>E-Mail: Kennungen zusammenfÃ¼hren</span> (nur Gemeinschaftsraum): An alle ausgewÃ¤hlten Kennungen wird eine E-Mail mit allen unter der E-Mail-Adresse eingetragenen Kennungen verschickt sowie Hinweise, wie diese Kennungen zusammengelegt werden kÃ¶nnen..</li>
+<li><span style=&quot;font-weight:bold;&quot;>E-Mail schicken</span>: An alle ausgewÃ¤hlten Kennungen wird eine E-Mail geschickt.</li>
 </ul>";
 $message["HELP_ACCOUNT_INDEX_LINKS"]["de"] = "HELP_COMMON_REGISTER HELP_COMMON_NAVIGATE HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
 $message["HELP_ACCOUNT_INDEX_TITLE"]["de"] = "Konfiguration - Kennungen";
-$message["HELP_ADDITIONAL_INFO"]["de"] = "Weiterführende Informationen";
-$message["HELP_ALL_EDIT"]["de"] = "Auf einer Bearbeitungsseite können Sie Ihren Eintrag anlegen oder ändern.<br />
+$message["HELP_ADDITIONAL_INFO"]["de"] = "WeiterfÃ¼hrende Informationen";
+$message["HELP_ALL_EDIT"]["de"] = "Auf einer Bearbeitungsseite kÃ¶nnen Sie Ihren Eintrag anlegen oder Ã¤ndern.<br />
 <br />
-Für alle mit einem Stern (*) versehenen Felder müssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufüllen.<br />
+FÃ¼r alle mit einem Stern (*) versehenen Felder mÃ¼ssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufÃ¼llen.<br />
 <br />
-Text, den Sie in ein Formularfeld eingeben, können Sie auf vielfältige Weise formatieren, z.B. Überschriften oder Aufzählungen. Auch Hyperlinks (z.B. <a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;><a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;>http://www.commsy.de</a></a>) oder E-Mail-Adressen können Sie eingeben. Einen Überblick über alle Formatierungsmöglichkeiten erhalten Sie über den Link &quot;Formatierungsmöglichkeiten&quot; unten in der Liste.<br />
+Text, den Sie in ein Formularfeld eingeben, kÃ¶nnen Sie auf vielfÃ¤ltige Weise formatieren, z.B. Ãœberschriften oder AufzÃ¤hlungen. Auch Hyperlinks (z.B. <a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;><a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;>http://www.commsy.de</a></a>) oder E-Mail-Adressen kÃ¶nnen Sie eingeben. Einen Ãœberblick Ã¼ber alle FormatierungsmÃ¶glichkeiten erhalten Sie Ã¼ber den Link &quot;FormatierungsmÃ¶glichkeiten&quot; unten in der Liste.<br />
 <br />
-Nähere Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
+NÃ¤here Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
 <br />
-In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG können Sie für jeden Ihrer Beiträge festlegen, ob dieser nur von Ihnen oder von allen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG bearbeitet werden darf.";
+In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG kÃ¶nnen Sie fÃ¼r jeden Ihrer BeitrÃ¤ge festlegen, ob dieser nur von Ihnen oder von allen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG bearbeitet werden darf.";
 $message["HELP_ALL_EDIT_LINKS"]["de"] = "HELP_COMMON_FORMAT HELP_COMMON_EDIT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
-$message["HELP_ANNOUNCEMENT_DETAIL"]["de"] = "Jedes CommSy-Mitglied hat die Möglichkeit, mit Ankündigungen auf zukünftige Ereignisse aufmerksam zu machen, die für die CommSy-Gemeinschaft interessant sind.<br />
+$message["HELP_ANNOUNCEMENT_DETAIL"]["de"] = "Jedes CommSy-Mitglied hat die MÃ¶glichkeit, mit AnkÃ¼ndigungen auf zukÃ¼nftige Ereignisse aufmerksam zu machen, die fÃ¼r die CommSy-Gemeinschaft interessant sind.<br />
 <br />
-Ankündigungen erscheinen für einen bei der Erstellung festgelegten Zeitraum auf der CommSy-Startseite.<br />
+AnkÃ¼ndigungen erscheinen fÃ¼r einen bei der Erstellung festgelegten Zeitraum auf der CommSy-Startseite.<br />
 <br />
-Um eine Ankündigung zu schreiben, klicken Sie auf &quot;neue Ankündigung&quot;.<br />
+Um eine AnkÃ¼ndigung zu schreiben, klicken Sie auf &quot;neue AnkÃ¼ndigung&quot;.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfügbaren Angaben zu diesem Eintrag angezeigt.  Änderungen an dem Eintrag sind über den Link &quot;bearbeiten&quot; möglich. <br />
+In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfÃ¼gbaren Angaben zu diesem Eintrag angezeigt.  Ã„nderungen an dem Eintrag sind Ã¼ber den Link &quot;bearbeiten&quot; mÃ¶glich. <br />
 <br />
-Über den Link &quot;versenden&quot; können Sie einen Hinweis auf diesen Beitrag an ausgewählte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
+Ãœber den Link &quot;versenden&quot; kÃ¶nnen Sie einen Hinweis auf diesen Beitrag an ausgewÃ¤hlte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
 <br />
-Am Ende eines Eintrags finden Sie Informationen darüber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmäßig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
+Am Ende eines Eintrags finden Sie Informationen darÃ¼ber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmÃ¤ÃŸig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) wird zudem dargestellt, mit welchen Einträgen dieser Beitrag verknüpft wurde. <br />
+In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) wird zudem dargestellt, mit welchen EintrÃ¤gen dieser Beitrag verknÃ¼pft wurde. <br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
 <br />
-Zu jedem Beitrag können <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
+Zu jedem Beitrag kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
 $message["HELP_ANNOUNCEMENT_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE";
 $message["HELP_ANNOUNCEMENT_INDEX_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE";
-$message["HELP_CHAT_INDEX"]["de"] = "Hier können Sie mit anderen Personen %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG chatten. Es wird empfohlen, Javascript zu aktivieren. Über den Button &quot;Chat speichern&quot; haben Sie die Möglichkeit, ein Protokoll der aktuellen Chat-Sitzung als Textdatei auf ihren Computer zu laden.";
-$message["HELP_COMMON_EDIT"]["de"] = "Sie können Ihre Einträge bearbeiten, indem Sie auf der Detailseite des jeweiligen Eintrags auf &quot;bearbeiten&quot; klicken. Sie können dann die gewünschten Änderungen vornehmen und bestätigen, indem Sie auf &quot;Änderungen speichern&quot; klicken, oder verwerfen, indem Sie auf &quot;abbrechen&quot; klicken.<br />
+$message["HELP_CHAT_INDEX"]["de"] = "Hier kÃ¶nnen Sie mit anderen Personen %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG chatten. Es wird empfohlen, Javascript zu aktivieren. Ãœber den Button &quot;Chat speichern&quot; haben Sie die MÃ¶glichkeit, ein Protokoll der aktuellen Chat-Sitzung als Textdatei auf ihren Computer zu laden.";
+$message["HELP_COMMON_EDIT"]["de"] = "Sie kÃ¶nnen Ihre EintrÃ¤ge bearbeiten, indem Sie auf der Detailseite des jeweiligen Eintrags auf &quot;bearbeiten&quot; klicken. Sie kÃ¶nnen dann die gewÃ¼nschten Ã„nderungen vornehmen und bestÃ¤tigen, indem Sie auf &quot;Ã„nderungen speichern&quot; klicken, oder verwerfen, indem Sie auf &quot;abbrechen&quot; klicken.<br />
 <br />
-Für alle mit einem Stern (*) versehenen Felder müssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufüllen.<br />
+FÃ¼r alle mit einem Stern (*) versehenen Felder mÃ¼ssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufÃ¼llen.<br />
 <br />
-Nähere Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
+NÃ¤here Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
 <br />
-In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG können Sie für jeden Ihrer Beiträge festlegen, ob dieser nur von Ihnen oder von allen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG bearbeitet werden darf.<br />
+In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG kÃ¶nnen Sie fÃ¼r jeden Ihrer BeitrÃ¤ge festlegen, ob dieser nur von Ihnen oder von allen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG bearbeitet werden darf.<br />
 <br />
-ModeratorInnen haben abweichend davon die Möglichkeit, alle Beiträge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG zu bearbeiten.";
-$message["HELP_COMMON_EDIT_TITLE"]["de"] = "Einträge bearbeiten / löschen";
-$message["HELP_COMMON_FORMAT"]["de"] = "Text, den Sie in ein Formularfeld eingeben, können Sie auf vielfältige Weise formatieren. Das kann insbesondere beim Erstellen von Materialien sinnvoll sein, aber auch, um z.B. längere Neuigkeiten etc. zu strukturieren.<br />
-
-<br />
-
-<span style=&quot;font-weight:bold;&quot;>Absätze / Formatierungen beenden</span><br />
+ModeratorInnen haben abweichend davon die MÃ¶glichkeit, alle BeitrÃ¤ge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG zu bearbeiten.";
+$message["HELP_COMMON_EDIT_TITLE"]["de"] = "EintrÃ¤ge bearbeiten / lÃ¶schen";
+$message["HELP_COMMON_FORMAT"]["de"] = "Text, den Sie in ein Formularfeld eingeben, kÃ¶nnen Sie auf vielfÃ¤ltige Weise formatieren. Das kann insbesondere beim Erstellen von Materialien sinnvoll sein, aber auch, um z.B. lÃ¤ngere Neuigkeiten etc. zu strukturieren.<br />
 
 <br />
 
-Generell wird ein Text in Absätze aufgeteilt, indem Sie eine Leerzeile einfügen.<br />
+<span style=&quot;font-weight:bold;&quot;>AbsÃ¤tze / Formatierungen beenden</span><br />
 
 <br />
 
-Um eine vorangegangene Formatierung wieder zu beenden (um z.B. nach einer Aufzählung wieder in normalem Text weiterzuschreiben), müssen Sie ebenfalls mindestens eine Leerzeile einfügen.<br />
+Generell wird ein Text in AbsÃ¤tze aufgeteilt, indem Sie eine Leerzeile einfÃ¼gen.<br />
 
 <br />
 
-<span style=&quot;font-weight:bold;&quot;>Überschriften</span><br />
+Um eine vorangegangene Formatierung wieder zu beenden (um z.B. nach einer AufzÃ¤hlung wieder in normalem Text weiterzuschreiben), mÃ¼ssen Sie ebenfalls mindestens eine Leerzeile einfÃ¼gen.<br />
 
 <br />
 
-Durch das Voranstellen eines Ausrufezeichens (&quot;!Text&quot;) können Sie eine Überschrift erzeugen; mit &quot;!!Text&quot;,  &quot;!!!Text&quot; bzw. &quot;!!!!Text&quot; können Sie die Überschrift vergrößern.<br />
+<span style=&quot;font-weight:bold;&quot;>Ãœberschriften</span><br />
+
+<br />
+
+Durch das Voranstellen eines Ausrufezeichens (&quot;!Text&quot;) kÃ¶nnen Sie eine Ãœberschrift erzeugen; mit &quot;!!Text&quot;,  &quot;!!!Text&quot; bzw. &quot;!!!!Text&quot; kÃ¶nnen Sie die Ãœberschrift vergrÃ¶ÃŸern.<br />
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px&quot;>
 
@@ -225,17 +225,17 @@ Durch das Voranstellen eines Ausrufezeichens (&quot;!Text&quot;) können Sie eine
 
 <br />
 
-<span style=&quot;font-weight:bold;&quot;>Aufzählungen</span><br />
+<span style=&quot;font-weight:bold;&quot;>AufzÃ¤hlungen</span><br />
 
 <br />
 
-mit - wird eine nicht-nummerierte Aufzählung eröffnet,<br />
+mit - wird eine nicht-nummerierte AufzÃ¤hlung erÃ¶ffnet,<br />
 
 <br />
 
-mit # wird entsprechend eine nummerierte Aufzählung erstellt.<br /><br />
+mit # wird entsprechend eine nummerierte AufzÃ¤hlung erstellt.<br /><br />
 
-Listen könnnen nicht geschachtelt werden, es ist also nicht möglich, eine nummerierte Aufzählung in einer nicht-nummerierten zu öffnen. In diesem Fall wird die nicht-nummerierte Aufzählung zuerst geschlossen und eine nummerierte Aufzählung beginnt.<br />
+Listen kÃ¶nnnen nicht geschachtelt werden, es ist also nicht mÃ¶glich, eine nummerierte AufzÃ¤hlung in einer nicht-nummerierten zu Ã¶ffnen. In diesem Fall wird die nicht-nummerierte AufzÃ¤hlung zuerst geschlossen und eine nummerierte AufzÃ¤hlung beginnt.<br />
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px&quot;>
 
@@ -329,7 +329,7 @@ Listen könnnen nicht geschachtelt werden, es ist also nicht möglich, eine nummer
 
 <br />
 
-Texte können gefettet werden, indem sie zwischen zwei Sternchen &quot;*&quot; geschrieben werden.<br />
+Texte kÃ¶nnen gefettet werden, indem sie zwischen zwei Sternchen &quot;*&quot; geschrieben werden.<br />
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px&quot;>
 
@@ -345,7 +345,7 @@ Texte können gefettet werden, indem sie zwischen zwei Sternchen &quot;*&quot; ge
 
 <br />
 
-Texte können kursiv gesetzt werden, indem sie zwischen zwei Unterstriche &quot;_&quot; geschrieben werden.<br />
+Texte kÃ¶nnen kursiv gesetzt werden, indem sie zwischen zwei Unterstriche &quot;_&quot; geschrieben werden.<br />
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px&quot;>
 
@@ -361,7 +361,7 @@ _Text_ wird zu <span style=&quot;font-style:italic;&quot;>Text</span>
 
 <br />
 
-Mit drei oder mehr Strichen --- kann eine waagrechte Linie über die gesamte Breite erzeugt werden (außer den Strichen dürfen keine weiteren Zeichen mehr in dieser  Zeile stehen).<br />
+Mit drei oder mehr Strichen --- kann eine waagrechte Linie Ã¼ber die gesamte Breite erzeugt werden (auÃŸer den Strichen dÃ¼rfen keine weiteren Zeichen mehr in dieser  Zeile stehen).<br />
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px&quot;>
 
@@ -390,19 +390,19 @@ Mit drei oder mehr Strichen --- kann eine waagrechte Linie über die gesamte Brei
 
 <br />
 
-<span style=&quot;font-weight:bold;&quot;>Links auf andere CommSy-Beiträge und ins Internet</span><br />
+<span style=&quot;font-weight:bold;&quot;>Links auf andere CommSy-BeitrÃ¤ge und ins Internet</span><br />
 
 <br />
 
-Hyperlinks (z.B. http://www.commsy.de) oder E-Mail-Adressen (z.B.  name@domain.tld) können Sie direkt in das Formular eingeben. Sie werden dann automatisch zu funktionierenden Links.<br /><br />
+Hyperlinks (z.B. http://www.commsy.de) oder E-Mail-Adressen (z.B.  name@domain.tld) kÃ¶nnen Sie direkt in das Formular eingeben. Sie werden dann automatisch zu funktionierenden Links.<br /><br />
 
-Sie können auf sämtliche Einträge in einem CommSy durch Angabe der entsprechenden Referenznummer verlinken, indem Sie diese in eckige Klammern schreiben: [1234]. Lassen Sie vor und nach dem Klammernpaar jeweils ein Leerzeichen.<br /><br />
+Sie kÃ¶nnen auf sÃ¤mtliche EintrÃ¤ge in einem CommSy durch Angabe der entsprechenden Referenznummer verlinken, indem Sie diese in eckige Klammern schreiben: [1234]. Lassen Sie vor und nach dem Klammernpaar jeweils ein Leerzeichen.<br /><br />
 
-Um einen Link auf einen CommSy-Eintrag mit einem Wort als Link zu erhalten, schreiben Sie dieses Wort ohne Leerzeichen vor die öffnende eckige Klammer: Text[1234].<br /><br />
+Um einen Link auf einen CommSy-Eintrag mit einem Wort als Link zu erhalten, schreiben Sie dieses Wort ohne Leerzeichen vor die Ã¶ffnende eckige Klammer: Text[1234].<br /><br />
 
-Das gleiche Vorgehen funktioniert auch mit einer beliebigen Web-Adresse: CommSy[http://www.commsy.de]. Hier wird ein Link erstellt, bei dem nach einem Klick auf das Wort &quot;CommSy&quot; die angegebene Seite geöffnet wird.<br /><br />
+Das gleiche Vorgehen funktioniert auch mit einer beliebigen Web-Adresse: CommSy[http://www.commsy.de]. Hier wird ein Link erstellt, bei dem nach einem Klick auf das Wort &quot;CommSy&quot; die angegebene Seite geÃ¶ffnet wird.<br /><br />
 
-Um einen Satz mit Leerzeichen als Link zu benutzen, verwenden Sie folgendes Konstrukt: [<Adresse>|<Text mit Leerzeichen>|<flag>]. Dabei ist <span style=&quot;font-style:italic;&quot;><Adresse></span> die zu öffnende Web-Adresse und <span style=&quot;font-style:italic;&quot;><Text mit Leerzeichen></span> ein beliebiger Text. <span style=&quot;font-style:italic;&quot;><flag></span> gibt an, ob die Website im gleichen Browserfenster oder in einem neuen geöffnet werden soll: &quot;_blank&quot; öffnet in einem neuen Fenster, &quot;internal&quot; nutzt das selbe Fenster.<br />
+Um einen Satz mit Leerzeichen als Link zu benutzen, verwenden Sie folgendes Konstrukt: [<Adresse>|<Text mit Leerzeichen>|<flag>]. Dabei ist <span style=&quot;font-style:italic;&quot;><Adresse></span> die zu Ã¶ffnende Web-Adresse und <span style=&quot;font-style:italic;&quot;><Text mit Leerzeichen></span> ein beliebiger Text. <span style=&quot;font-style:italic;&quot;><flag></span> gibt an, ob die Website im gleichen Browserfenster oder in einem neuen geÃ¶ffnet werden soll: &quot;_blank&quot; Ã¶ffnet in einem neuen Fenster, &quot;internal&quot; nutzt das selbe Fenster.<br />
 
 <br />
 
@@ -436,13 +436,13 @@ Wenn die Referenznummer nicht exisitiert (so wie vermutlich in den folgenden Bei
 
 <br />
 
-In der Rubrik Materialien (und nur dort) können Sie auch Bilder im Material und in seinen Abschnitten anzeigen lassen.<br />
+In der Rubrik Materialien (und nur dort) kÃ¶nnen Sie auch Bilder im Material und in seinen Abschnitten anzeigen lassen.<br />
 
-Dazu muss das Bild als Datei an das Material angehängt sein. Bilder vom Typ Jpeg, Gif und Png können angezeigt werden.<br />
+Dazu muss das Bild als Datei an das Material angehÃ¤ngt sein. Bilder vom Typ Jpeg, Gif und Png kÃ¶nnen angezeigt werden.<br />
 
 Um das Bild im Text zu platzieren, schreiben Sie einfach den Bildnamen in eckige Klammern: [Blau.jpg]<br />
 
-Das Bild wird dadurch an der Stelle im Text eingefügt, an der Sie es angegeben haben. Zusätzlich wird das Bild automatisch auf skaliert, wenn es zu groß ist (d.h. wenn eine Seite mehr als 200 Pixel lang ist). So zerstören große Bilder nicht das Layout. Ein Klick auf das skalierte Bild öffnet das Bild in Originalgröße.
+Das Bild wird dadurch an der Stelle im Text eingefÃ¼gt, an der Sie es angegeben haben. ZusÃ¤tzlich wird das Bild automatisch auf skaliert, wenn es zu groÃŸ ist (d.h. wenn eine Seite mehr als 200 Pixel lang ist). So zerstÃ¶ren groÃŸe Bilder nicht das Layout. Ein Klick auf das skalierte Bild Ã¶ffnet das Bild in OriginalgrÃ¶ÃŸe.
 
 <div style=&quot;background-color:#DDDDDD;border-width:1px;border-color:black;border-style:dashed;margin:10px;padding:10px;&quot;>
 
@@ -482,7 +482,7 @@ Um das Bild vom Text umfliessen zu lassen, gibt es eine Erweiterung des obigen B
 
 [<Bildname>|<Position>]<br />
 
-<span style=&quot;font-style:italic;&quot;><Bildname></span> ist wie oben der Name des an das Material angehängten Bildes,  <span style=&quot;font-style:italic;&quot;><Position></span> bestimmt, an welchem Rand das Bild stehen soll:<br />
+<span style=&quot;font-style:italic;&quot;><Bildname></span> ist wie oben der Name des an das Material angehÃ¤ngten Bildes,  <span style=&quot;font-style:italic;&quot;><Position></span> bestimmt, an welchem Rand das Bild stehen soll:<br />
 
 <ul>
 
@@ -552,190 +552,190 @@ Das Bild wird auch hier skaliert.<br />
 </table>
 
 </div>";
-$message["HELP_COMMON_FORMAT_TITLE"]["de"] = "Formatierungsmöglichkeiten";
+$message["HELP_COMMON_FORMAT_TITLE"]["de"] = "FormatierungsmÃ¶glichkeiten";
 $message["HELP_COMMON_INFO"]["de"] = "Allgemeine Hilfethemen";
-$message["HELP_COMMON_LINK"]["de"] = "Auf der Detailseite eines Beitrags werden in der Spalte rechts alle Verbindungen zu anderen Einträgen in diesem Raum angezeigt, also beispielsweise zugehörige Materialien, %_TOPICS_SUB_NOMPL_BIG oder Gruppen. Dabei kann mit einem Klick sofort zu dem verknüpften Eintrag gesprungen werden. Diese Verknüpfungsmöglichkeiten von Einträgen nennen wir <span style=&quot;font-weight:bold;&quot;>Netznavigation</span>, da hierdurch ein Netz von Informationen entsteht, das verschiedene Perspektiven auf die Inhalte eines Raums ermöglicht. Beispielsweise können Sie sich dadurch alle Termine, Diskussionen, Materialien und natürlich Mitglieder einer Gruppe im %_PROJECT_SUB_NOMS_BIG anzeigen lassen und so ohne großen Aufwand auf dem Laufenden bleiben.<br />
+$message["HELP_COMMON_LINK"]["de"] = "Auf der Detailseite eines Beitrags werden in der Spalte rechts alle Verbindungen zu anderen EintrÃ¤gen in diesem Raum angezeigt, also beispielsweise zugehÃ¶rige Materialien, %_TOPICS_SUB_NOMPL_BIG oder Gruppen. Dabei kann mit einem Klick sofort zu dem verknÃ¼pften Eintrag gesprungen werden. Diese VerknÃ¼pfungsmÃ¶glichkeiten von EintrÃ¤gen nennen wir <span style=&quot;font-weight:bold;&quot;>Netznavigation</span>, da hierdurch ein Netz von Informationen entsteht, das verschiedene Perspektiven auf die Inhalte eines Raums ermÃ¶glicht. Beispielsweise kÃ¶nnen Sie sich dadurch alle Termine, Diskussionen, Materialien und natÃ¼rlich Mitglieder einer Gruppe im %_PROJECT_SUB_NOMS_BIG anzeigen lassen und so ohne groÃŸen Aufwand auf dem Laufenden bleiben.<br />
 <br />
-Um <span style=&quot;font-weight:bold;&quot;>%_TOPICS_SUB_NOMPL_LOW</span> (sofern verfügbar) oder <span style=&quot;font-weight:bold;&quot;>%_INSTITUTION_SUB_AKKPL_BIG</span> (nur in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG) mit Ihrem Beitrag zu verknüpfen, können Sie zum einen den Eintrag direkt bearbeiten: Auf der Bearbeitungsseite finden Sie ein Auswahlmenü mit allen vorhandenen %_INSTITUTION_SUB_DATPL_BIG bzw. %_TOPICS_SUB_NOMPL_LOW, aus dem Sie den gewünschten Eintrag auswählen können. Zum anderen können Sie über den Link &quot;zuordnen&quot; direkt in der Netznavigation eine Verknüpfung vornehmen.<br />
+Um <span style=&quot;font-weight:bold;&quot;>%_TOPICS_SUB_NOMPL_LOW</span> (sofern verfÃ¼gbar) oder <span style=&quot;font-weight:bold;&quot;>%_INSTITUTION_SUB_AKKPL_BIG</span> (nur in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG) mit Ihrem Beitrag zu verknÃ¼pfen, kÃ¶nnen Sie zum einen den Eintrag direkt bearbeiten: Auf der Bearbeitungsseite finden Sie ein AuswahlmenÃ¼ mit allen vorhandenen %_INSTITUTION_SUB_DATPL_BIG bzw. %_TOPICS_SUB_NOMPL_LOW, aus dem Sie den gewÃ¼nschten Eintrag auswÃ¤hlen kÃ¶nnen. Zum anderen kÃ¶nnen Sie Ã¼ber den Link &quot;zuordnen&quot; direkt in der Netznavigation eine VerknÃ¼pfung vornehmen.<br />
 <br />
-Um <span style=&quot;font-weight:bold;&quot;>Materialien</span> mit Ihrem Beitrag zu verknüpfen, klicken Sie zunächst auf &quot;bearbeiten&quot; und dann auf &quot;Materialien auswählen&quot;. Es wird Ihnen dann eine Liste der verfügbaren Materialien angezeigt, die Sie entsprechend sortieren oder einschränken können. Wählen Sie die gewünschten Materialien aus und klicken Sie dann auf &quot;Material anhängen&quot;.<br />
+Um <span style=&quot;font-weight:bold;&quot;>Materialien</span> mit Ihrem Beitrag zu verknÃ¼pfen, klicken Sie zunÃ¤chst auf &quot;bearbeiten&quot; und dann auf &quot;Materialien auswÃ¤hlen&quot;. Es wird Ihnen dann eine Liste der verfÃ¼gbaren Materialien angezeigt, die Sie entsprechend sortieren oder einschrÃ¤nken kÃ¶nnen. WÃ¤hlen Sie die gewÃ¼nschten Materialien aus und klicken Sie dann auf &quot;Material anhÃ¤ngen&quot;.<br />
 <br />
-Außerdem können Sie Ihren Beitrag mit beliebigen anderen CommSy-Beiträgen <span style=&quot;font-weight:bold;&quot;>direkt verlinken</span>, indem Sie die Referenznummer des betreffenden Beitrags in eckige Klammern setzen. Sie finden die Referenznummer unten auf jeder Detailseite, indem Sie die Bearbeitungshistorie durch einen Klick auf das Pluszeichen vor &quot;zuletzt bearbeitet von&quot; aufklappen.<br />
+AuÃŸerdem kÃ¶nnen Sie Ihren Beitrag mit beliebigen anderen CommSy-BeitrÃ¤gen <span style=&quot;font-weight:bold;&quot;>direkt verlinken</span>, indem Sie die Referenznummer des betreffenden Beitrags in eckige Klammern setzen. Sie finden die Referenznummer unten auf jeder Detailseite, indem Sie die Bearbeitungshistorie durch einen Klick auf das Pluszeichen vor &quot;zuletzt bearbeitet von&quot; aufklappen.<br />
 <br />
 <span style=&quot;font-weight:bold;&quot;>Beispiel:</span> In diesem Material <a href=&quot;commsy.php?cid=&mod=content&fct=detail&iid=12345&quot;><a href=&quot;commsy.php?cid=&mod=content&fct=detail&iid=12345&quot;>[12345]</a></a> findet ihr einige Anmerkungen zu ...";
-$message["HELP_COMMON_LINK_TITLE"]["de"] = "Netznavigation und Verknüpfungen mit weiteren CommSy-Einträgen";
-$message["HELP_COMMON_NAVIGATE"]["de"] = "Um das Navigieren zwischen verschiedenen %_PROJECT_SUB_DATPL_BIG und %_COMMUNITY_SUB_DATPL_BIG zu erleichtern, finden Sie links unterhalb Ihres Namens, der nach dem Login erscheint, ein Menü zum Ausklappen, das alle %_PROJECT_SUB_NOMPL_BIG und %_COMMUNITY_SUB_NOMPL_BIG, in denen Sie Mitglied sind auflistet. Wählen Sie hier einfach den Raum aus, in den Sie wechseln möchten.";
-$message["HELP_COMMON_NAVIGATE_TITLE"]["de"] = "Navigieren zwischen verschiedenen Räumen";
-$message["HELP_COMMON_PASSWD"]["de"] = "Klicken Sie unter Ihrem Namen auf der linken Seite auf &quot;Passwort ändern&quot;, wenn Sie eingeloggt sind. Sie werden dann gebeten, sich ein neues Passwort auszusuchen und dieses zu bestätigen.<br />
+$message["HELP_COMMON_LINK_TITLE"]["de"] = "Netznavigation und VerknÃ¼pfungen mit weiteren CommSy-EintrÃ¤gen";
+$message["HELP_COMMON_NAVIGATE"]["de"] = "Um das Navigieren zwischen verschiedenen %_PROJECT_SUB_DATPL_BIG und %_COMMUNITY_SUB_DATPL_BIG zu erleichtern, finden Sie links unterhalb Ihres Namens, der nach dem Login erscheint, ein MenÃ¼ zum Ausklappen, das alle %_PROJECT_SUB_NOMPL_BIG und %_COMMUNITY_SUB_NOMPL_BIG, in denen Sie Mitglied sind auflistet. WÃ¤hlen Sie hier einfach den Raum aus, in den Sie wechseln mÃ¶chten.";
+$message["HELP_COMMON_NAVIGATE_TITLE"]["de"] = "Navigieren zwischen verschiedenen RÃ¤umen";
+$message["HELP_COMMON_PASSWD"]["de"] = "Klicken Sie unter Ihrem Namen auf der linken Seite auf &quot;Passwort Ã¤ndern&quot;, wenn Sie eingeloggt sind. Sie werden dann gebeten, sich ein neues Passwort auszusuchen und dieses zu bestÃ¤tigen.<br />
 <br />
-Auch Ihre Kennung können Sie links ändern. Sollten Sie mehrere Kennungen für dieses CommSy besitzen, z.B., weil Sie sich versehentlich mehrmals angemeldet haben, können Sie diese Kennungen auch unter &quot;Kennung ändern&quot; zusammenlegen.<br />
+Auch Ihre Kennung kÃ¶nnen Sie links Ã¤ndern. Sollten Sie mehrere Kennungen fÃ¼r dieses CommSy besitzen, z.B., weil Sie sich versehentlich mehrmals angemeldet haben, kÃ¶nnen Sie diese Kennungen auch unter &quot;Kennung Ã¤ndern&quot; zusammenlegen.<br />
 <br />
-Ihren Namen und Ihre E-Mail-Adresse bzw. Ihr gesamtes Profil können Sie in Ihrem persönlichen Raum ändern. Folgen Sie einfach dem Link &quot;Mein Profil&quot; auf der linken Seite.";
-$message["HELP_COMMON_PASSWD_TITLE"]["de"] = "Passwort / Kennung ändern";
-$message["HELP_COMMON_REGISTER_TITLE"]["de"] = "Anmeldung für %_PROJECT_ART_UNDEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG";
-$message["HELP_COMMON_RIGHTS"]["de"] = "Als angemeldetes CommSy-Mitglied können Sie beliebige Einträge im System vornehmen, also z.B. %_PROJECT_SUB_AKKPL_BIG eröffnen, %_TOPICS_SUB_AKKPL_LOW eintragen, Materialien einstellen usw. Sie brauchen hierzu keine Genehmigung durch die Moderation, und Ihre Beiträge werden auch nicht geprüft, bevor sie im System erscheinen.<br />
+Ihren Namen und Ihre E-Mail-Adresse bzw. Ihr gesamtes Profil kÃ¶nnen Sie in Ihrem persÃ¶nlichen Raum Ã¤ndern. Folgen Sie einfach dem Link &quot;Mein Profil&quot; auf der linken Seite.";
+$message["HELP_COMMON_PASSWD_TITLE"]["de"] = "Passwort / Kennung Ã¤ndern";
+$message["HELP_COMMON_REGISTER_TITLE"]["de"] = "Anmeldung fÃ¼r %_PROJECT_ART_UNDEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG";
+$message["HELP_COMMON_RIGHTS"]["de"] = "Als angemeldetes CommSy-Mitglied kÃ¶nnen Sie beliebige EintrÃ¤ge im System vornehmen, also z.B. %_PROJECT_SUB_AKKPL_BIG erÃ¶ffnen, %_TOPICS_SUB_AKKPL_LOW eintragen, Materialien einstellen usw. Sie brauchen hierzu keine Genehmigung durch die Moderation, und Ihre BeitrÃ¤ge werden auch nicht geprÃ¼ft, bevor sie im System erscheinen.<br />
 <br />
-Es gibt <span style=&quot;font-weight:bold;&quot;>keine anonymen Beiträge</span> in einem CommSy: Mit jedem Eintrag wird der Name der Urheberin bzw. des Urhebers gespeichert.<br />
+Es gibt <span style=&quot;font-weight:bold;&quot;>keine anonymen BeitrÃ¤ge</span> in einem CommSy: Mit jedem Eintrag wird der Name der Urheberin bzw. des Urhebers gespeichert.<br />
 <br />
-In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG können Sie für jeden Ihrer Beiträge festlegen, ob dieser nur für Sie oder für alle Mitglieder dieses %_PROJECT_SUB_GENS_BIG bearbeitbar sein soll. <br />
+In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG kÃ¶nnen Sie fÃ¼r jeden Ihrer BeitrÃ¤ge festlegen, ob dieser nur fÃ¼r Sie oder fÃ¼r alle Mitglieder dieses %_PROJECT_SUB_GENS_BIG bearbeitbar sein soll. <br />
 <br />
-ModeratorInnen haben abweichend davon die Möglichkeit, alle Beiträge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG zu bearbeiten. Dasselbe gilt für die ModeratorInnen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG.<br />
+ModeratorInnen haben abweichend davon die MÃ¶glichkeit, alle BeitrÃ¤ge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG zu bearbeiten. Dasselbe gilt fÃ¼r die ModeratorInnen in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG.<br />
 <br />
-Wenn Sie einen <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_NOMS_BIG</span> eröffnen, sind Sie als %_PROJECT_SUB_NOMS_BIGmoderatorIn gleichzeitig verantwortlich für die Administration dieses Raums: Sie können %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG Ihren Anforderungen entsprechend konfigurieren und schalten insbesondere die Kennungen Ihrer TeilnehmerInnen frei, die sich für %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG anmelden. Sie können TeilnehmerInnen Ihres %_PROJECT_SUB_GENS_BIG (z.B. TutorInnen) explizit zu ModeratorInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG ernennen: diese verfügen dann über dieselben Rechte wie Sie.<br />
+Wenn Sie einen <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_NOMS_BIG</span> erÃ¶ffnen, sind Sie als %_PROJECT_SUB_NOMS_BIGmoderatorIn gleichzeitig verantwortlich fÃ¼r die Administration dieses Raums: Sie kÃ¶nnen %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG Ihren Anforderungen entsprechend konfigurieren und schalten insbesondere die Kennungen Ihrer TeilnehmerInnen frei, die sich fÃ¼r %_PROJECT_ART_DEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG anmelden. Sie kÃ¶nnen TeilnehmerInnen Ihres %_PROJECT_SUB_GENS_BIG (z.B. TutorInnen) explizit zu ModeratorInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG ernennen: diese verfÃ¼gen dann Ã¼ber dieselben Rechte wie Sie.<br />
 <br />
-Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> übernimmt die Moderation eines CommSys die administrativen Aufgaben wie die Verwaltung der Kennungen etc. Die Moderation ist außerdem Ihr Ansprechpartner bei Fragen oder Problemen.";
+Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> Ã¼bernimmt die Moderation eines CommSys die administrativen Aufgaben wie die Verwaltung der Kennungen etc. Die Moderation ist auÃŸerdem Ihr Ansprechpartner bei Fragen oder Problemen.";
 $message["HELP_COMMON_RIGHTS_TITLE"]["de"] = "Rechte";
 $message["HELP_COMMON_SETUP_TITLE"]["de"] = "%_PROJECT_SUB_NOMPL_BIG einrichten";
-$message["HELP_COMMON_STRUCTURE"]["de"] = "CommSy teilt sich in zwei Bereiche auf: %_COMMUNITY_ART_DEF_AKKS_BIG %_COMMUNITY_SUB_AKKS_BIG, der allen Mitgliedern eines CommSys zugänglich ist, und %_PROJECT_ART_DEF_AKKPL_LOW %_PROJECT_SUB_AKKPL_BIG für kleinere, geschlossene Gruppen (z.B. die TeilnehmerInnen einer Lehrveranstaltung). Alle %_PROJECT_SUB_NOMS_BIG sind %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG. Sie können dort selbst %_PROJECT_SUB_AKKPL_BIG einrichten.<br />
+$message["HELP_COMMON_STRUCTURE"]["de"] = "CommSy teilt sich in zwei Bereiche auf: %_COMMUNITY_ART_DEF_AKKS_BIG %_COMMUNITY_SUB_AKKS_BIG, der allen Mitgliedern eines CommSys zugÃ¤nglich ist, und %_PROJECT_ART_DEF_AKKPL_LOW %_PROJECT_SUB_AKKPL_BIG fÃ¼r kleinere, geschlossene Gruppen (z.B. die TeilnehmerInnen einer Lehrveranstaltung). Alle %_PROJECT_SUB_NOMS_BIG sind %_COMMUNITY_ART_DEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG. Sie kÃ¶nnen dort selbst %_PROJECT_SUB_AKKPL_BIG einrichten.<br />
 <br />
-Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> finden Sie Informationen zu Lehrveranstaltungen und %_PROJECT_SUB_DATPL_BIG, den Personen und %_INSTITUTION_SUB_DATPL_BIG, die dieses CommSy benutzen, ihren inhaltlichen Interessen und Fachgebieten sowie Materialien, die für alle CommSy-Mitglieder zugänglich sind. Sie können hier solche Informationen auch selbst eingeben. Auch Gäste können %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG betreten, haben aber nur Zugriff auf bestimmte Inhalte und können insbesondere auch keine eigenen Beiträge schreiben.<br />
+Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> finden Sie Informationen zu Lehrveranstaltungen und %_PROJECT_SUB_DATPL_BIG, den Personen und %_INSTITUTION_SUB_DATPL_BIG, die dieses CommSy benutzen, ihren inhaltlichen Interessen und Fachgebieten sowie Materialien, die fÃ¼r alle CommSy-Mitglieder zugÃ¤nglich sind. Sie kÃ¶nnen hier solche Informationen auch selbst eingeben. Auch GÃ¤ste kÃ¶nnen %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG betreten, haben aber nur Zugriff auf bestimmte Inhalte und kÃ¶nnen insbesondere auch keine eigenen BeitrÃ¤ge schreiben.<br />
 <br />
-In %_PROJECT_ART_DEF_DATPL_LOW  <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_DATPL_BIG</span> arbeiten kleinere Gruppen (typischerweise 10 - 30 Personen) in einem geschützten Raum zusammen. Diejenigen, die %_PROJECT_ART_UNDEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG einrichten, bestimmen über den Zugang zu %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG. In %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG können Materialien ausgetauscht, Diskussionen geführt, Termine koordiniert, Texte geschrieben und andere für die Organisation und den inhaltlichen Austausch wichtige Aufgaben erledigt werden.<br />
+In %_PROJECT_ART_DEF_DATPL_LOW  <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_DATPL_BIG</span> arbeiten kleinere Gruppen (typischerweise 10 - 30 Personen) in einem geschÃ¼tzten Raum zusammen. Diejenigen, die %_PROJECT_ART_UNDEF_AKKS_LOW %_PROJECT_SUB_AKKS_BIG einrichten, bestimmen Ã¼ber den Zugang zu %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG. In %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG kÃ¶nnen Materialien ausgetauscht, Diskussionen gefÃ¼hrt, Termine koordiniert, Texte geschrieben und andere fÃ¼r die Organisation und den inhaltlichen Austausch wichtige Aufgaben erledigt werden.<br />
 <br />
-Alle Räume (%_PROJECT_SUB_NOMPL_BIG und %_COMMUNITY_SUB_NOMPL_BIG) haben dieselbe Struktur: Eine Einstiegsseite präsentiert einen Überblick über die Rubriken des jeweiligen Raums und Informationen über neue Beiträge zur schnellen Orientierung. Die einzelnen Rubriken verfügen jeweils über eine Überblickseite (Listenansicht), auf der alle verfügbaren Einträge aufgeführt sind. Diese Liste kann durchsucht und / oder sortiert werden. Zur Detailansicht eines Beitrags, die alle verfügbaren Informationen über diesen Beitrag darstellt, gelangen Sie, indem Sie in der Listenansicht auf den Titel des Beitrags klicken. <br />
+Alle RÃ¤ume (%_PROJECT_SUB_NOMPL_BIG und %_COMMUNITY_SUB_NOMPL_BIG) haben dieselbe Struktur: Eine Einstiegsseite prÃ¤sentiert einen Ãœberblick Ã¼ber die Rubriken des jeweiligen Raums und Informationen Ã¼ber neue BeitrÃ¤ge zur schnellen Orientierung. Die einzelnen Rubriken verfÃ¼gen jeweils Ã¼ber eine Ãœberblickseite (Listenansicht), auf der alle verfÃ¼gbaren EintrÃ¤ge aufgefÃ¼hrt sind. Diese Liste kann durchsucht und / oder sortiert werden. Zur Detailansicht eines Beitrags, die alle verfÃ¼gbaren Informationen Ã¼ber diesen Beitrag darstellt, gelangen Sie, indem Sie in der Listenansicht auf den Titel des Beitrags klicken. <br />
 <br />
-Zu jedem Beitrag können Sie <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> schreiben.<br />
+Zu jedem Beitrag kÃ¶nnen Sie <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> schreiben.<br />
 <br />
-Neue Beiträge erstellen Sie in jeder Rubrik über den Link &quot;neue/r [Name der Rubrik]&quot;.";
+Neue BeitrÃ¤ge erstellen Sie in jeder Rubrik Ã¼ber den Link &quot;neue/r [Name der Rubrik]&quot;.";
 $message["HELP_COMMON_STRUCTURE_TITLE"]["de"] = "Aufbau und Struktur von CommSy";
-$message["HELP_CONFIGURATION_AGB"]["de"] = "Hier können Sie Nutzungsvereinbarungen (oder auch AGBs) eintragen und aktivieren. Diese werden dann in den Teilnahmeanmeldungsprozess integriert. Der Anfragende muss eine Checkbox aktivieren und damit die AGBs bestätigen, sonst wird er/sie nicht zur Teilnahme am Raum vom System zugelassen.";
-$message["HELP_CONFIGURATION_COLOR"]["de"] = "Über die Selectbox können Sie eine bestimmte Farbe zur Bearbeitung wählen. Wählen Sie dann ein Farbe aus der Farbmatrix. Alternativ können Sie im unteren Bereich die Farben im Hexadezimal-Format direkt angeben.
+$message["HELP_CONFIGURATION_AGB"]["de"] = "Hier kÃ¶nnen Sie Nutzungsvereinbarungen (oder auch AGBs) eintragen und aktivieren. Diese werden dann in den Teilnahmeanmeldungsprozess integriert. Der Anfragende muss eine Checkbox aktivieren und damit die AGBs bestÃ¤tigen, sonst wird er/sie nicht zur Teilnahme am Raum vom System zugelassen.";
+$message["HELP_CONFIGURATION_COLOR"]["de"] = "Ãœber die Selectbox kÃ¶nnen Sie eine bestimmte Farbe zur Bearbeitung wÃ¤hlen. WÃ¤hlen Sie dann ein Farbe aus der Farbmatrix. Alternativ kÃ¶nnen Sie im unteren Bereich die Farben im Hexadezimal-Format direkt angeben.
 <ul>
 <li><span style=&quot;font-weight: bold;&quot;>Darstellungbereich</span>: Die Hintergrundfarbe der &quot;Karteikarte&quot; auf dem die Inhalte stehen.</li>
-<li><span style=&quot;font-weight: bold;&quot;>Listenüberschriften</span>: Die Farbe des Balkens in Listenübersichten, sowie die Farbe der Trennstriche z.B. in Formularen.</li>
+<li><span style=&quot;font-weight: bold;&quot;>ListenÃ¼berschriften</span>: Die Farbe des Balkens in ListenÃ¼bersichten, sowie die Farbe der Trennstriche z.B. in Formularen.</li>
 <li><span style=&quot;font-weight: bold;&quot;>Hyperlink</span>: Die Farbe von Hyperlinks.</li>
 <li><span style=&quot;font-weight: bold;&quot;>Navigationsreiter</span>: Die Hintergrundfarbe der nicht aktivivierten Karteireiter.</li>
 </ul>
-Die Farben werden sich sofort ändern, aber sie werden nur übernommen, wenn Sie die &quot;Änderungen speichern&quot;.";
-$message["HELP_CONFIGURATION_DEFAULTS"]["de"] = "Die Auswahl einer der Voreinstellungen führt zur Umsortierung und Einschaltung bestimmter Rubriken sowie zur Umbenennung von Rubriken. Sie haben nachträglich die Möglichkeit, Rubriken noch ein- und auszuschalten sowie andere Rubrikreihenfolgen einzustellen.";
-$message["HELP_CONFIGURATION_HOME"]["de"] = "Hier stehen Ihnen alle Rubriken zur Verfügung, die Sie unter &quot;Auswahl der Rubriken&quot; ausgewählt haben. Die einzelnen Optionen bedeuten:
+Die Farben werden sich sofort Ã¤ndern, aber sie werden nur Ã¼bernommen, wenn Sie die &quot;Ã„nderungen speichern&quot;.";
+$message["HELP_CONFIGURATION_DEFAULTS"]["de"] = "Die Auswahl einer der Voreinstellungen fÃ¼hrt zur Umsortierung und Einschaltung bestimmter Rubriken sowie zur Umbenennung von Rubriken. Sie haben nachtrÃ¤glich die MÃ¶glichkeit, Rubriken noch ein- und auszuschalten sowie andere Rubrikreihenfolgen einzustellen.";
+$message["HELP_CONFIGURATION_HOME"]["de"] = "Hier stehen Ihnen alle Rubriken zur VerfÃ¼gung, die Sie unter &quot;Auswahl der Rubriken&quot; ausgewÃ¤hlt haben. Die einzelnen Optionen bedeuten:
 <ul>
-<li><span style=&quot;font-weight:bold;&quot;>ausgeklappt</span>: Es werden die neusten Einträge dieser Rubrik auf der Startseite als Liste präsentiert. Ausnahmen: Gruppen, %_TOPICS_SUB_NOMPL_BIG, %_INSTITUTION_SUB_NOMPL_BIG, Personen. Hier werden immer alle Einträge angezeigt, nicht die neusten.</li>
-<li><span style=&quot;font-weight:bold;&quot;>zugeklappt</span>: Es wird nur ein Balken mit Informationen (neu Einträge, Anzahl der Einträge insgesamt) zur Rubrik präsentiert.</li>
+<li><span style=&quot;font-weight:bold;&quot;>ausgeklappt</span>: Es werden die neusten EintrÃ¤ge dieser Rubrik auf der Startseite als Liste prÃ¤sentiert. Ausnahmen: Gruppen, %_TOPICS_SUB_NOMPL_BIG, %_INSTITUTION_SUB_NOMPL_BIG, Personen. Hier werden immer alle EintrÃ¤ge angezeigt, nicht die neusten.</li>
+<li><span style=&quot;font-weight:bold;&quot;>zugeklappt</span>: Es wird nur ein Balken mit Informationen (neu EintrÃ¤ge, Anzahl der EintrÃ¤ge insgesamt) zur Rubrik prÃ¤sentiert.</li>
 </ul>
-In Projekträumen können Sie hier noch einstellen, wie lange die neuen Einträge auf der Startseite verweilen sollen. Hier können Sie Tage zwischen 1 und 99 eintragen.";
-$message["HELP_CONFIGURATION_HTMLTEXTAREA"]["de"] = "Hiermit können Sie zur Textformatierung in Textareas (größere Textfelder) den FCKeditor in einer minimalen und einer normalen Variante einschalten. Texte lassen sich dann im Sinne einer Textverarbeitung gestalten.";
-$message["HELP_CONFIGURATION_MAIL"]["de"] = "Über die Selectbox können Sie bestimmte E-Mail-Text zur Bearbeitung wählen. Diese E-Mail-Texte werden bei entsprechenden Aktionen automatisch verschickt oder vorher Ihnen als Vorschlag angeboten. In diesem Formular sind die E-Mail-Texte in Anrede und Grußformel sowie Inhalt getrennt.";
-$message["HELP_CONFIGURATION_NEWSLETTER"]["de"] = "Wenn Sie den Newsletter aktivieren, wird wöchentlich ein E-Mail-Newsletter an alle Teilnehmenden, die dies wollen, verschickt. Der Newsletter wird immer in der Nacht von Sonntag auf Montag versendet. In diesem Newsletter wird die Aktivität des Raumes in der letzten Woche zusammengefasst dargestellt.<br/><br/>
-Mitglieder des Raums können den Newsletter auf dessen persönlichen Seite unter Einstellungen (unten) abonnieren.";
+In ProjektrÃ¤umen kÃ¶nnen Sie hier noch einstellen, wie lange die neuen EintrÃ¤ge auf der Startseite verweilen sollen. Hier kÃ¶nnen Sie Tage zwischen 1 und 99 eintragen.";
+$message["HELP_CONFIGURATION_HTMLTEXTAREA"]["de"] = "Hiermit kÃ¶nnen Sie zur Textformatierung in Textareas (grÃ¶ÃŸere Textfelder) den FCKeditor in einer minimalen und einer normalen Variante einschalten. Texte lassen sich dann im Sinne einer Textverarbeitung gestalten.";
+$message["HELP_CONFIGURATION_MAIL"]["de"] = "Ãœber die Selectbox kÃ¶nnen Sie bestimmte E-Mail-Text zur Bearbeitung wÃ¤hlen. Diese E-Mail-Texte werden bei entsprechenden Aktionen automatisch verschickt oder vorher Ihnen als Vorschlag angeboten. In diesem Formular sind die E-Mail-Texte in Anrede und GruÃŸformel sowie Inhalt getrennt.";
+$message["HELP_CONFIGURATION_NEWSLETTER"]["de"] = "Wenn Sie den Newsletter aktivieren, wird wÃ¶chentlich ein E-Mail-Newsletter an alle Teilnehmenden, die dies wollen, verschickt. Der Newsletter wird immer in der Nacht von Sonntag auf Montag versendet. In diesem Newsletter wird die AktivitÃ¤t des Raumes in der letzten Woche zusammengefasst dargestellt.<br/><br/>
+Mitglieder des Raums kÃ¶nnen den Newsletter auf dessen persÃ¶nlichen Seite unter Einstellungen (unten) abonnieren.";
 $message["HELP_CONFIGURATION_PREFERENCES"]["de"] = "<p>
    <span style=&quot;font-weight: bold;&quot;>Titel</span><br/>
-   Der Titel eines Raumes (Gemeinschaftsraum oder Projektraum) erscheint auf jeder Seite des Raumes oben als &quot;Überschrift&quot; (sofern &quot;Name anzeigen&quot; ausgewählt ist), sowie auf der Raumliste und den Raumbeschreibungen auf dem Portal bzw. in der Projektraumliste im Gemeinschaftsraum. Generell gilt, dass der Name abhängig von der Einstellung &quot;Name anzeigen&quot; als &quot;Überschrift&quot; angezeigt wird oder nicht. In Raumlisten wird der Titel hingegen immer angezeigt.
+   Der Titel eines Raumes (Gemeinschaftsraum oder Projektraum) erscheint auf jeder Seite des Raumes oben als &quot;Ãœberschrift&quot; (sofern &quot;Name anzeigen&quot; ausgewÃ¤hlt ist), sowie auf der Raumliste und den Raumbeschreibungen auf dem Portal bzw. in der Projektraumliste im Gemeinschaftsraum. Generell gilt, dass der Name abhÃ¤ngig von der Einstellung &quot;Name anzeigen&quot; als &quot;Ãœberschrift&quot; angezeigt wird oder nicht. In Raumlisten wird der Titel hingegen immer angezeigt.
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Logo</span><br/>
-   Wenn Sie hier ein Logo angeben, wird das aktuelle Logo mit dem neuen überschrieben. Wenn Sie kein Logo mehr präsentieren wollen, dann wählen Sie bitte die Option &quot;Aktuelles Logo löschen&quot;. Das Logo eines Raumes (Gemeinschaftsraum oder Projektraum) erscheint auf jeder Seite des Raumes oben links neben dem Raumnamen oder ohne Raumnamen (je nach Wahl von &quot;Name anzeigen&quot; beim Titel), sowie auf der Beschreibung des Raumes auf dem Portal bzw. des Projektraumes im Gemeinschaftsraum.
+   Wenn Sie hier ein Logo angeben, wird das aktuelle Logo mit dem neuen Ã¼berschrieben. Wenn Sie kein Logo mehr prÃ¤sentieren wollen, dann wÃ¤hlen Sie bitte die Option &quot;Aktuelles Logo lÃ¶schen&quot;. Das Logo eines Raumes (Gemeinschaftsraum oder Projektraum) erscheint auf jeder Seite des Raumes oben links neben dem Raumnamen oder ohne Raumnamen (je nach Wahl von &quot;Name anzeigen&quot; beim Titel), sowie auf der Beschreibung des Raumes auf dem Portal bzw. des Projektraumes im Gemeinschaftsraum.
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Status</span><br/>
    Der Status des Raumes regelt die Lese- und Schreibberechtigungen der Mitglieder:
    <ul>
-      <li><span style=&quot;font-weight: bold;&quot;>Offene</span> Räume sind für alle Mitglieder offen, nicht für die Welt. Neue Teilnehmende können sich anmelden und Veränderungen (z.B. neue Beiträge) sind möglich.</li>
-      <li><span style=&quot;font-weight: bold;&quot;>Geschlossene</span> Räume können nur noch lesend von den Mitgliedern des Raumes betreten werden. Es sind keine Änderungen mehr möglich. Außerdem können sich an geschlossenen Räumen keine neuen TeilnehmerInnen anmelden.</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Offene</span> RÃ¤ume sind fÃ¼r alle Mitglieder offen, nicht fÃ¼r die Welt. Neue Teilnehmende kÃ¶nnen sich anmelden und VerÃ¤nderungen (z.B. neue BeitrÃ¤ge) sind mÃ¶glich.</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Geschlossene</span> RÃ¤ume kÃ¶nnen nur noch lesend von den Mitgliedern des Raumes betreten werden. Es sind keine Ã„nderungen mehr mÃ¶glich. AuÃŸerdem kÃ¶nnen sich an geschlossenen RÃ¤umen keine neuen TeilnehmerInnen anmelden.</li>
    </ul>
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Sprache</span><br/>
-   In dieser Sprache wird der Raum allen Teilnehmenden präsentiert. Bei der Einstellung &quot;Benutzereinstellung&quot; wird der Raum jedem Nutzenden in der vom Nutzenden in CommSy und jedem Gast (nur Portal und Gemeinschaftsraum, im Projektraum gibt es keinen Gastzugang) in der im Browser eingestellten Sprache präsentiert.
+   In dieser Sprache wird der Raum allen Teilnehmenden prÃ¤sentiert. Bei der Einstellung &quot;Benutzereinstellung&quot; wird der Raum jedem Nutzenden in der vom Nutzenden in CommSy und jedem Gast (nur Portal und Gemeinschaftsraum, im Projektraum gibt es keinen Gastzugang) in der im Browser eingestellten Sprache prÃ¤sentiert.
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Neue Mitglieder</span><br/>
    Diese Einstellung regelt, ob die Teilnahmeanfragen explizit freigeschaltet werden sollen oder nicht:
    <ul>
-      <li><span style=&quot;font-weight: bold;&quot;>Teilnahme nie überprüfen</span> bedeutet, dass Anfragende automatisch zu Mitgliedern werden und Zugriff auf den Raum erhalten.</li>
-      <li><span style=&quot;font-weight: bold;&quot;>Teilnahme immer überprüfen</span> bedeutet, dass Moderatoren des Raumes neuen Mitgliedern explizit erlauben müssen, den Raum zu betreten. Ist diese Erlaubnis nicht erteilt, darf der Anfragende nicht in den Raum.</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Teilnahme nie Ã¼berprÃ¼fen</span> bedeutet, dass Anfragende automatisch zu Mitgliedern werden und Zugriff auf den Raum erhalten.</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Teilnahme immer Ã¼berprÃ¼fen</span> bedeutet, dass Moderatoren des Raumes neuen Mitgliedern explizit erlauben mÃ¼ssen, den Raum zu betreten. Ist diese Erlaubnis nicht erteilt, darf der Anfragende nicht in den Raum.</li>
    </ul>
 </p>
 <p>
-   <span style=&quot;font-weight: bold;&quot;>Gemeinschaftsräume</span> (nur Projekträume)<br/>
-   Projekträume können mit Gemeinschaftsräumen verknüpft werden, so dass diese in den Gemeinschaftsräumen in der Rubrik Projekträume auftauchen. Als Moderator eine Projektraumes können Sie zu allen Gemeinschaftsräumen diese Verknüpfung herstellen, in denen Sie auch Mitglied sind. Gemeinschaftsräume, in denen Sie nicht Mitglied sind, werden ausgegraut dargestellt, sie sind nicht wählbar.
+   <span style=&quot;font-weight: bold;&quot;>GemeinschaftsrÃ¤ume</span> (nur ProjektrÃ¤ume)<br/>
+   ProjektrÃ¤ume kÃ¶nnen mit GemeinschaftsrÃ¤umen verknÃ¼pft werden, so dass diese in den GemeinschaftsrÃ¤umen in der Rubrik ProjektrÃ¤ume auftauchen. Als Moderator eine Projektraumes kÃ¶nnen Sie zu allen GemeinschaftsrÃ¤umen diese VerknÃ¼pfung herstellen, in denen Sie auch Mitglied sind. GemeinschaftsrÃ¤ume, in denen Sie nicht Mitglied sind, werden ausgegraut dargestellt, sie sind nicht wÃ¤hlbar.
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Gastzugang</span> (nur Gemeinschaftsraum)<br/>
-   Diese Einstellung regelt, ob Gäste lesenden Zugang zum Gemeinschaftsraum bekommen dürfen. Lesend bedeutet, dass Sie nur Dinge anschauen, aber nicht selbst aktiv werden können. Die Aktivierung des Gastzugangs hat darüber hinaus noch zwei Auswirkungen:
+   Diese Einstellung regelt, ob GÃ¤ste lesenden Zugang zum Gemeinschaftsraum bekommen dÃ¼rfen. Lesend bedeutet, dass Sie nur Dinge anschauen, aber nicht selbst aktiv werden kÃ¶nnen. Die Aktivierung des Gastzugangs hat darÃ¼ber hinaus noch zwei Auswirkungen:
    <ul>
-      <li><span style=&quot;font-weight: bold;&quot;>Personendaten</span>: Die Personendaten alle Mitglieder des Gemeinschaftsraumes sind nicht von Gästen einsehbar, es sei denn, das Mitglied hat für sich eingestellt, dass auch Gäste die Daten sehen dürfen. Einstellbar unter Personen -> eigene Personendaten -> Einstellungen (unten).</li>
-      <li><span style=&quot;font-weight: bold;&quot;>Materialien</span>: Materialien sind für Gäste erst einmal nur in der Materialienliste sichbar. Gäste haben aber keinen Zugriff auf die Detailinformationen und auf ggf. angehängte Dateien. EinE EinstellerIn eines Materials kann bei der Moderation des Raumes die webweite Veröffentlichung eines Materials betragen. Stimmt die Moderation zu, so ist das Material auch für Gäste einsehbar. Die webweite Veröffentlichung kann im Bearbeitungsformular eines Materials beantragt werden.</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Personendaten</span>: Die Personendaten alle Mitglieder des Gemeinschaftsraumes sind nicht von GÃ¤sten einsehbar, es sei denn, das Mitglied hat fÃ¼r sich eingestellt, dass auch GÃ¤ste die Daten sehen dÃ¼rfen. Einstellbar unter Personen -> eigene Personendaten -> Einstellungen (unten).</li>
+      <li><span style=&quot;font-weight: bold;&quot;>Materialien</span>: Materialien sind fÃ¼r GÃ¤ste erst einmal nur in der Materialienliste sichbar. GÃ¤ste haben aber keinen Zugriff auf die Detailinformationen und auf ggf. angehÃ¤ngte Dateien. EinE EinstellerIn eines Materials kann bei der Moderation des Raumes die webweite VerÃ¶ffentlichung eines Materials betragen. Stimmt die Moderation zu, so ist das Material auch fÃ¼r GÃ¤ste einsehbar. Die webweite VerÃ¶ffentlichung kann im Bearbeitungsformular eines Materials beantragt werden.</li>
    </ul>
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Semesterauswahl</span> (nur Gemeinschaftsraum)<br/>
-   Diese Option ist nur verfügbar, wenn die Rubrik Lehrveranstaltungen aktiviert ist und bestimmt das aktuelle Semester, so dass in der Rubrik Lehrveranstaltunge per Default nur die Veranstaltungen des aktuellen Semesters angezeigt werden. Diese Einschränkung kann vom Nutzenden aufgehoben werden.
+   Diese Option ist nur verfÃ¼gbar, wenn die Rubrik Lehrveranstaltungen aktiviert ist und bestimmt das aktuelle Semester, so dass in der Rubrik Lehrveranstaltunge per Default nur die Veranstaltungen des aktuellen Semesters angezeigt werden. Diese EinschrÃ¤nkung kann vom Nutzenden aufgehoben werden.
 </p>
 <p>
    <span style=&quot;font-weight: bold;&quot;>Beschreibung</span><br/>
-   Die Beschreibung des Raumes wird für die Außendarstellung des Raumes auf dem Portal bzw. von Projekträumen auch in Gemeinschaftsräumen gebraucht. Sie können hier für jede von CommSy unterstützte Sprache ein Beschreibung eingeben. Sofern Sie nur eine Beschreibung in einer Sprache eingeben, wird diese auch präsentiert, wenn der Nutzende eigentlich eine andere Spache für sich eingestellt hat.
+   Die Beschreibung des Raumes wird fÃ¼r die AuÃŸendarstellung des Raumes auf dem Portal bzw. von ProjektrÃ¤umen auch in GemeinschaftsrÃ¤umen gebraucht. Sie kÃ¶nnen hier fÃ¼r jede von CommSy unterstÃ¼tzte Sprache ein Beschreibung eingeben. Sofern Sie nur eine Beschreibung in einer Sprache eingeben, wird diese auch prÃ¤sentiert, wenn der Nutzende eigentlich eine andere Spache fÃ¼r sich eingestellt hat.
 </p>";
-$message["HELP_CONFIGURATION_RUBRIC"]["de"] = "Wählen Sie mit Hilfe der Selectboxen die Reihenfolge der zur Verfügung stehenden Rubriken. Mit &quot;-----&quot; können Sie Plätze leer lassen, so dass dadurch Rubriken ausgeschaltet werden können. Zwei- oder mehrfach können Sie keine Rubriken anschalten.";
-$message["HELP_CONFIGURATION_SERVICE"]["de"] = "Hiermit aktivieren Sie eine Link zum CommSyService, dem Dienstleister rund um CommSy. Der Link wird in Form eines kleinen Bildes unten rechts auf jeder Seite angezeigt. Der Link führt zu einem Formular, in das der Nutzende seine Anfrage eintippen kann. CommSy-BetreuerInnen werden dann über diese Anfrage informiert und können per E-Mail antworten.<br/><br/>
-Achtung: Dieser Service ist kostenpflichtig. Nähere Informationen finden Sie auf der Webseite des CommSy-Service: <a href=&quot;http://service.commsy.de/&quot;>http://service.commsy.de/</a>";
-$message["HELP_CONFIGURATION_SPONSOR"]["de"] = "Hiermit können Sie Logos von Partnern (Sponsoren) auf den Seiten Ihres Raumes einblenden.
+$message["HELP_CONFIGURATION_RUBRIC"]["de"] = "WÃ¤hlen Sie mit Hilfe der Selectboxen die Reihenfolge der zur VerfÃ¼gung stehenden Rubriken. Mit &quot;-----&quot; kÃ¶nnen Sie PlÃ¤tze leer lassen, so dass dadurch Rubriken ausgeschaltet werden kÃ¶nnen. Zwei- oder mehrfach kÃ¶nnen Sie keine Rubriken anschalten.";
+$message["HELP_CONFIGURATION_SERVICE"]["de"] = "Hiermit aktivieren Sie eine Link zum CommSyService, dem Dienstleister rund um CommSy. Der Link wird in Form eines kleinen Bildes unten rechts auf jeder Seite angezeigt. Der Link fÃ¼hrt zu einem Formular, in das der Nutzende seine Anfrage eintippen kann. CommSy-BetreuerInnen werden dann Ã¼ber diese Anfrage informiert und kÃ¶nnen per E-Mail antworten.<br/><br/>
+Achtung: Dieser Service ist kostenpflichtig. NÃ¤here Informationen finden Sie auf der Webseite des CommSy-Service: <a href=&quot;http://service.commsy.de/&quot;>http://service.commsy.de/</a>";
+$message["HELP_CONFIGURATION_SPONSOR"]["de"] = "Hiermit kÃ¶nnen Sie Logos von Partnern (Sponsoren) auf den Seiten Ihres Raumes einblenden.
 <ul>
 <li>Der <span style=&quot;font-weight:bold;&quot;>Hauptsponsor</span> erscheint oben rechts. Es kann nur einen Hauptsponsor geben.</li>
 <li><span style=&quot;font-weight:bold;&quot;>Sponsoren</span> werden unten auf der Seite nacheinander angezeigt.</li>
 </ul>";
-$message["HELP_CONFIGURATION_USAGEINFO"]["de"] = "Nutzungshinweise werden auf allen Seiten einer Rubrik (Übersichtsseite, Detailseiten, Formulare usw.) in der CommSy-Leiste dargestellt.<br/><br/>Zur Eingabe von Nutzungshinweisen für eine Rubrik wählen Sie bitte zunächst eine Rubrik aus. Die Startseite (Home) ist vorausgewählt. Nun können Sie eine Überschrift und den Nutzungshinweis eintragen. Mit der Wahl &quot;Hinweis anzeigen&quot; wird der Nutzungshinweis angezeigt. Wählen Sie hier das Häkchen ab, wenn die Hinweise nicht mehr in dieser Rubrik angezeigt werden sollen.";
-$message["HELP_DATE_DETAIL"]["de"] = "Hier können Ereignisse angekündigt werden, die für die TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG relevant sind.<br />
+$message["HELP_CONFIGURATION_USAGEINFO"]["de"] = "Nutzungshinweise werden auf allen Seiten einer Rubrik (Ãœbersichtsseite, Detailseiten, Formulare usw.) in der CommSy-Leiste dargestellt.<br/><br/>Zur Eingabe von Nutzungshinweisen fÃ¼r eine Rubrik wÃ¤hlen Sie bitte zunÃ¤chst eine Rubrik aus. Die Startseite (Home) ist vorausgewÃ¤hlt. Nun kÃ¶nnen Sie eine Ãœberschrift und den Nutzungshinweis eintragen. Mit der Wahl &quot;Hinweis anzeigen&quot; wird der Nutzungshinweis angezeigt. WÃ¤hlen Sie hier das HÃ¤kchen ab, wenn die Hinweise nicht mehr in dieser Rubrik angezeigt werden sollen.";
+$message["HELP_DATE_DETAIL"]["de"] = "Hier kÃ¶nnen Ereignisse angekÃ¼ndigt werden, die fÃ¼r die TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG relevant sind.<br />
 <br />
-Neben dem Ort, an dem das Ereignis stattfindet, ist die Angabe der Anfangszeit oder eines Zeitraumes erforderlich. Außerdem kann jeder Termin einer oder mehreren Gruppen und einem oder mehreren %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind) zugeordnet werden.<br />
+Neben dem Ort, an dem das Ereignis stattfindet, ist die Angabe der Anfangszeit oder eines Zeitraumes erforderlich. AuÃŸerdem kann jeder Termin einer oder mehreren Gruppen und einem oder mehreren %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind) zugeordnet werden.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfügbaren Angaben zu diesem Eintrag angezeigt.  Änderungen an dem Eintrag sind über den Link &quot;bearbeiten&quot; möglich. Einen neuen Beitrag können Sie erstellen, indem Sie auf &quot;neuer Termin&quot; klicken.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfÃ¼gbaren Angaben zu diesem Eintrag angezeigt.  Ã„nderungen an dem Eintrag sind Ã¼ber den Link &quot;bearbeiten&quot; mÃ¶glich. Einen neuen Beitrag kÃ¶nnen Sie erstellen, indem Sie auf &quot;neuer Termin&quot; klicken.<br />
 <br />
-Über den Link &quot;versenden&quot; können Sie einen Hinweis auf diesen Beitrag an ausgewählte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
+Ãœber den Link &quot;versenden&quot; kÃ¶nnen Sie einen Hinweis auf diesen Beitrag an ausgewÃ¤hlte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
 <br />
-Am Ende eines Eintrags finden Sie Informationen darüber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmäßig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
+Am Ende eines Eintrags finden Sie Informationen darÃ¼ber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmÃ¤ÃŸig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) wird zudem dargestellt, mit welchen Einträgen dieser Beitrag verknüpft wurde. <br />
+In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) wird zudem dargestellt, mit welchen EintrÃ¤gen dieser Beitrag verknÃ¼pft wurde. <br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
 <br />
-Zu jedem Beitrag können <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
+Zu jedem Beitrag kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
 $message["HELP_DATE_DETAIL_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_LINK HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
-$message["HELP_DATE_INDEX"]["de"] = "Hier können Ereignisse angekündigt werden, die für die TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG relevant sind.<br />
+$message["HELP_DATE_INDEX"]["de"] = "Hier kÃ¶nnen Ereignisse angekÃ¼ndigt werden, die fÃ¼r die TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG relevant sind.<br />
 <br />
-Neben dem Ort, an dem das Ereignis stattfindet, ist die Angabe der Anfangszeit oder eines Zeitraumes erforderlich. Außerdem kann jeder Termin einer oder mehreren Gruppen und einem oder mehreren %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind) zugeordnet werden.<br />
+Neben dem Ort, an dem das Ereignis stattfindet, ist die Angabe der Anfangszeit oder eines Zeitraumes erforderlich. AuÃŸerdem kann jeder Termin einer oder mehreren Gruppen und einem oder mehreren %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind) zugeordnet werden.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung (z.B. können Sie sich alle Einträge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung (z.B. kÃ¶nnen Sie sich alle EintrÃ¤ge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen Einträge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen EintrÃ¤ge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Auf die Detailansicht eines Listeneintrags kommen Sie, wenn Sie den entsprechenden Titel anklicken.";
 $message["HELP_DATE_INDEX_LINKS"]["de"] = "HELP_COMMON_LINK HELP_COMMON_NAVIGATE HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
-$message["HELP_DISCUSSION_CLOSE"]["de"] = "Eine Diskussion kann mit einem Abschlussbeitrag - z.B. einem zusammenfassenden Fazit - beendet werden. Um eine solche Zusammenfassung zu unterstützen, werden alle Beiträge zu dieser Diskussion nochmals in einem Textfeld dargestellt.<br />
+$message["HELP_DISCUSSION_CLOSE"]["de"] = "Eine Diskussion kann mit einem Abschlussbeitrag - z.B. einem zusammenfassenden Fazit - beendet werden. Um eine solche Zusammenfassung zu unterstÃ¼tzen, werden alle BeitrÃ¤ge zu dieser Diskussion nochmals in einem Textfeld dargestellt.<br />
 <br />
-Danach können keine weiteren Beiträge mehr zu dieser Diskussion geschrieben werden. Natürlich können aber beliebig neue Diskussionen eröffnet werden.";
+Danach kÃ¶nnen keine weiteren BeitrÃ¤ge mehr zu dieser Diskussion geschrieben werden. NatÃ¼rlich kÃ¶nnen aber beliebig neue Diskussionen erÃ¶ffnet werden.";
 $message["HELP_DISCUSSION_CLOSE_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
-$message["HELP_DISCUSSION_DETAIL"]["de"] = "Auf der Detailseite werden Ihnen alle Beiträge in chronologischer Reihenfolge angezeigt, die bislang zu dieser Diskussion geschrieben wurden.<br />
+$message["HELP_DISCUSSION_DETAIL"]["de"] = "Auf der Detailseite werden Ihnen alle BeitrÃ¤ge in chronologischer Reihenfolge angezeigt, die bislang zu dieser Diskussion geschrieben wurden.<br />
 <br />
-Sofern die Diskussion nicht geschlossen wurde (s. u.), können Sie sich an der Diskussion beteiligen. Benutzen Sie dazu das Formular, das direkt unter dem letzten Beitrag angezeigt wird. Um auf andere Beiträge Bezug zu nehmen, schreiben Sie einfach die Nummer des entsprechenden Beitrags in eckige Klammern.<br />
+Sofern die Diskussion nicht geschlossen wurde (s. u.), kÃ¶nnen Sie sich an der Diskussion beteiligen. Benutzen Sie dazu das Formular, das direkt unter dem letzten Beitrag angezeigt wird. Um auf andere BeitrÃ¤ge Bezug zu nehmen, schreiben Sie einfach die Nummer des entsprechenden Beitrags in eckige Klammern.<br />
 <br />
-Über den Link &quot;bearbeiten&quot; können Sie den Titel der Diskussion sowie die Zuordnung zu Gruppen und %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind) ändern.<br />
+Ãœber den Link &quot;bearbeiten&quot; kÃ¶nnen Sie den Titel der Diskussion sowie die Zuordnung zu Gruppen und %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind) Ã¤ndern.<br />
 <br />
-Eine Diskussion kann mit einem <span style=&quot;font-weight:bold;&quot;>Abschlussbeitrag</span> - z.B. einem zusammenfassenden Fazit - beendet werden. Klicken Sie dazu auf &quot;abschließen&quot;. Danach können keine weiteren Beiträge mehr zu dieser Diskussion geschrieben werden.<br />
+Eine Diskussion kann mit einem <span style=&quot;font-weight:bold;&quot;>Abschlussbeitrag</span> - z.B. einem zusammenfassenden Fazit - beendet werden. Klicken Sie dazu auf &quot;abschlieÃŸen&quot;. Danach kÃ¶nnen keine weiteren BeitrÃ¤ge mehr zu dieser Diskussion geschrieben werden.<br />
 <br />
-Über den Link &quot;versenden&quot; können Sie einen Hinweis auf diesen Beitrag an ausgewählte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
+Ãœber den Link &quot;versenden&quot; kÃ¶nnen Sie einen Hinweis auf diesen Beitrag an ausgewÃ¤hlte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
 <br />
-Eine neue Diskussion eröffnen Sie über den Link &quot;neue Diskussion&quot;.<br />
+Eine neue Diskussion erÃ¶ffnen Sie Ã¼ber den Link &quot;neue Diskussion&quot;.<br />
 <br />
-Über die Pfeile können Sie zwischen den verschiedenen Diskussionen blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den verschiedenen Diskussionen blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> gelangen Sie, indem Sie den Link &quot;Diskussionen&quot; in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> gelangen Sie, indem Sie den Link &quot;Diskussionen&quot; in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
 $message["HELP_DISCUSSION_DETAIL_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_LINK HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
-$message["HELP_DISCUSSION_INDEX"]["de"] = "Alle TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG können Diskussionen initiieren, indem sie einen <span style=&quot;font-weight:bold;&quot;>Initialbeitrag</span> schreiben, der in der Liste der Diskussionen erscheint und von anderen TeilnehmerInnen beantwortet werden kann.<br />
+$message["HELP_DISCUSSION_INDEX"]["de"] = "Alle TeilnehmerInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG kÃ¶nnen Diskussionen initiieren, indem sie einen <span style=&quot;font-weight:bold;&quot;>Initialbeitrag</span> schreiben, der in der Liste der Diskussionen erscheint und von anderen TeilnehmerInnen beantwortet werden kann.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung (z.B. können Sie sich alle Einträge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung (z.B. kÃ¶nnen Sie sich alle EintrÃ¤ge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen Einträge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen EintrÃ¤ge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Auf die Detailansicht eines Listeneintrags kommen Sie, wenn Sie den entsprechenden Titel anklicken.";
 $message["HELP_DISCUSSION_INDEX_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_LINK HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
@@ -748,14 +748,14 @@ $message["HELP_FUNCTION_CLOSE_USER"]["de"] = "Teilnahme beenden";
 $message["HELP_FUNCTION_COLOR"]["de"] = "Farben bearbeiten";
 $message["HELP_FUNCTION_COMMON"]["de"] = "Raum bearbeiten";
 $message["HELP_FUNCTION_DATES"]["de"] = "Termindarstellung";
-$message["HELP_FUNCTION_DEFAULTS"]["de"] = "Voreinstellungen für Räume";
+$message["HELP_FUNCTION_DEFAULTS"]["de"] = "Voreinstellungen fÃ¼r RÃ¤ume";
 $message["HELP_FUNCTION_DETAIL"]["de"] = "Detailansicht";
 $message["HELP_FUNCTION_DISCUSSION"]["de"] = "Art der Diskussionen";
 $message["HELP_FUNCTION_EDIT"]["de"] = "Bearbeitungsseite";
 $message["HELP_FUNCTION_EDIT_DISCARTICLE"]["de"] = "Bearbeitungsseite";
 $message["HELP_FUNCTION_EXPORT"]["de"] = "Raum exportieren";
 $message["HELP_FUNCTION_EXTRA"]["de"] = "Extras einstellen";
-$message["HELP_FUNCTION_GROUPROOM"]["de"] = "Gruppenräume";
+$message["HELP_FUNCTION_GROUPROOM"]["de"] = "GruppenrÃ¤ume";
 $message["HELP_FUNCTION_HOME"]["de"] = "Konfiguration der Home";
 $message["HELP_FUNCTION_HOMEPAGE"]["de"] = "Raum-Webseite einstellen";
 $message["HELP_FUNCTION_HTMLTEXTAREA"]["de"] = "Textformatierung";
@@ -764,12 +764,12 @@ $message["HELP_FUNCTION_IMS"]["de"] = "IMS-Account Einstellungen";
 $message["HELP_FUNCTION_INDEX"]["de"] = "Listenansicht";
 $message["HELP_FUNCTION_MAIL"]["de"] = "E-Mail";
 $message["HELP_FUNCTION_MOVE"]["de"] = "Raum auf anderes Portal umziehen";
-$message["HELP_FUNCTION_NEWS"]["de"] = "Portal-Ankündigungen";
+$message["HELP_FUNCTION_NEWS"]["de"] = "Portal-AnkÃ¼ndigungen";
 $message["HELP_FUNCTION_NEWSLETTER"]["de"] = "E-Mail-Newsletter";
-$message["HELP_FUNCTION_PORTALHOME"]["de"] = "Gestaltung der Raumübersicht";
+$message["HELP_FUNCTION_PORTALHOME"]["de"] = "Gestaltung der RaumÃ¼bersicht";
 $message["HELP_FUNCTION_PREFERENCES"]["de"] = "Allgemeine Einstellungen";
 $message["HELP_FUNCTION_PRIVATEROOM_NEWSLETTER"]["de"] = "E-Mail-Newsletter";
-$message["HELP_FUNCTION_ROOM_OPENING"]["de"] = "Raumeröffnungen";
+$message["HELP_FUNCTION_ROOM_OPENING"]["de"] = "RaumerÃ¶ffnungen";
 $message["HELP_FUNCTION_RUBRIC"]["de"] = "Auswahl der Rubriken";
 $message["HELP_FUNCTION_SERVICE"]["de"] = "Handhabungssupport";
 $message["HELP_FUNCTION_SPONSOR"]["de"] = "Sponsoring";
@@ -777,118 +777,118 @@ $message["HELP_FUNCTION_STATISTIC"]["de"] = "Serverstatistik";
 $message["HELP_FUNCTION_TIME"]["de"] = "Zeittakte";
 $message["HELP_FUNCTION_USAGEINFO"]["de"] = "Nutzungshinweise bearbeiten";
 $message["HELP_FUNCTION_WIKI"]["de"] = "Wiki";
-$message["HELP_GROUP_DETAIL"]["de"] = "Gruppen ermöglichen eine bessere Koordination der Arbeit in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG, indem die Einträge verschiedener Rubriken bestimmten Gruppen zugeordnet und auch E-Mails an einzelne Gruppen verschickt werden können.<br />
+$message["HELP_GROUP_DETAIL"]["de"] = "Gruppen ermÃ¶glichen eine bessere Koordination der Arbeit in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG, indem die EintrÃ¤ge verschiedener Rubriken bestimmten Gruppen zugeordnet und auch E-Mails an einzelne Gruppen verschickt werden kÃ¶nnen.<br />
 <br />
-Jede/r %_PROJECT_SUB_NOMS_BIGteilnehmerIn kann Gruppen anlegen (klicken Sie dazu auf &quot;neue Gruppe&quot;), auch der Beitritt zu bzw. Austritt aus einer Gruppe wird von den TeilnehmerInnen selbst vorgenommen: Klicken Sie dazu auf den Link &quot;beitreten&quot; bzw. &quot;austreten&quot;. Die Gruppe &quot;Alle Mitglieder&quot; wird automatisch vom System angelegt und umfasst alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen. Sie kann nicht gelöscht oder verändert werden. <br />
+Jede/r %_PROJECT_SUB_NOMS_BIGteilnehmerIn kann Gruppen anlegen (klicken Sie dazu auf &quot;neue Gruppe&quot;), auch der Beitritt zu bzw. Austritt aus einer Gruppe wird von den TeilnehmerInnen selbst vorgenommen: Klicken Sie dazu auf den Link &quot;beitreten&quot; bzw. &quot;austreten&quot;. Die Gruppe &quot;Alle Mitglieder&quot; wird automatisch vom System angelegt und umfasst alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen. Sie kann nicht gelÃ¶scht oder verÃ¤ndert werden. <br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> wird eine Beschreibung der jeweiligen Gruppe sowie eine Liste ihrer Mitglieder angezeigt. Diese Beschreibung können Sie verändern, indem Sie auf den Link &quot;bearbeiten&quot; klicken. In der Netznavigation (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) erhalten Sie zudem eine Übersicht über alle Materialien, Termine, Diskussionen, %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind), die dieser Gruppe zugeordnet wurden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> wird eine Beschreibung der jeweiligen Gruppe sowie eine Liste ihrer Mitglieder angezeigt. Diese Beschreibung kÃ¶nnen Sie verÃ¤ndern, indem Sie auf den Link &quot;bearbeiten&quot; klicken. In der Netznavigation (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) erhalten Sie zudem eine Ãœbersicht Ã¼ber alle Materialien, Termine, Diskussionen, %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind), die dieser Gruppe zugeordnet wurden.<br />
 <br />
-Über den Link &quot;E-Mail schreiben&quot; können Sie eine E-Mail an die jeweiligen Gruppenmitglieder verschicken. <br />
+Ãœber den Link &quot;E-Mail schreiben&quot; kÃ¶nnen Sie eine E-Mail an die jeweiligen Gruppenmitglieder verschicken. <br />
 <br />
-Am Ende eines Eintrags finden Sie Informationen darüber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmäßig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
+Am Ende eines Eintrags finden Sie Informationen darÃ¼ber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmÃ¤ÃŸig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
 $message["HELP_GROUP_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_NAVIGATE HELP_COMMON_STRUCTURE";
-$message["HELP_GROUP_INDEX"]["de"] = "Gruppen ermöglichen eine bessere Koordination der Arbeit in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG, indem die Einträge verschiedener Rubriken bestimmten Gruppen zugeordnet und auch E-Mails an einzelne Gruppen verschickt werden können.<br />
+$message["HELP_GROUP_INDEX"]["de"] = "Gruppen ermÃ¶glichen eine bessere Koordination der Arbeit in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG, indem die EintrÃ¤ge verschiedener Rubriken bestimmten Gruppen zugeordnet und auch E-Mails an einzelne Gruppen verschickt werden kÃ¶nnen.<br />
 <br />
-Jede/r %_PROJECT_SUB_NOMS_BIGteilnehmerIn kann eine Gruppe anlegen, auch der Beitritt zu bzw. Austritt aus einer Gruppe wird von den TeilnehmerInnen selbst vorgenommen. Die Gruppe &quot;Alle Mitglieder&quot; wird automatisch vom System angelegt und umfasst alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen. Sie kann nicht gelöscht oder verändert werden. Über die Gruppe &quot;Alle Mitglieder&quot; können Sie auf einfache Weise E-Mails an alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen verschicken.<br />
+Jede/r %_PROJECT_SUB_NOMS_BIGteilnehmerIn kann eine Gruppe anlegen, auch der Beitritt zu bzw. Austritt aus einer Gruppe wird von den TeilnehmerInnen selbst vorgenommen. Die Gruppe &quot;Alle Mitglieder&quot; wird automatisch vom System angelegt und umfasst alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen. Sie kann nicht gelÃ¶scht oder verÃ¤ndert werden. Ãœber die Gruppe &quot;Alle Mitglieder&quot; kÃ¶nnen Sie auf einfache Weise E-Mails an alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen verschicken.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung. Mit Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung. Mit Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Name&quot; bewirkt eine alphabetische Sortierung nach den Gruppennamen, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Name&quot; bewirkt eine alphabetische Sortierung nach den Gruppennamen, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Auf die Detailansicht eines Listeneintrags kommen Sie, wenn Sie den entsprechenden Titel anklicken.";
 $message["HELP_GROUP_INDEX_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_LINK HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
-$message["HELP_GROUP_MAIL"]["de"] = "Hier können Sie eine E-Mail an die Mitglieder einer Gruppe schicken.";
+$message["HELP_GROUP_MAIL"]["de"] = "Hier kÃ¶nnen Sie eine E-Mail an die Mitglieder einer Gruppe schicken.";
 $message["HELP_GROUP_MAIL_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_STRUCTURE";
 $message["HELP_GROUP_MAIL_TITLE"]["de"] = "E-Mail an die Gruppe";
-$message["HELP_HEADLINE"]["de"] = "Hilfe für %1";
-$message["HELP_HOME_INDEX"]["de"] = "In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG arbeiten kleinere Gruppen (typischerweise 10 - 30 Personen) in einem geschützten Raum zusammen, der nur für die jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugänglich ist. Alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen sind in der Rubrik &quot;Personen&quot; in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG aufgeführt.<br />
+$message["HELP_HEADLINE"]["de"] = "Hilfe fÃ¼r %1";
+$message["HELP_HOME_INDEX"]["de"] = "In %_PROJECT_ART_DEF_DATPL_LOW %_PROJECT_SUB_DATPL_BIG arbeiten kleinere Gruppen (typischerweise 10 - 30 Personen) in einem geschÃ¼tzten Raum zusammen, der nur fÃ¼r die jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugÃ¤nglich ist. Alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen sind in der Rubrik &quot;Personen&quot; in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG aufgefÃ¼hrt.<br />
 <br />
-Auf der <span style=&quot;font-weight:bold;&quot;>Einstiegsseite</span> %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG finden Sie eine Übersicht über aktuelle Informationen aus den verschiedenen in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfügbaren Rubriken. Mit einem regelmäßigen Blick auf die Einstiegsseite Ihres %_PROJECT_SUB_GENS_BIG können Sie sich schnell über neue Beiträge informieren.<br />
+Auf der <span style=&quot;font-weight:bold;&quot;>Einstiegsseite</span> %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG finden Sie eine Ãœbersicht Ã¼ber aktuelle Informationen aus den verschiedenen in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfÃ¼gbaren Rubriken. Mit einem regelmÃ¤ÃŸigen Blick auf die Einstiegsseite Ihres %_PROJECT_SUB_GENS_BIG kÃ¶nnen Sie sich schnell Ã¼ber neue BeitrÃ¤ge informieren.<br />
 <br />
-Die <span style=&quot;font-weight:bold;&quot;>Gestaltung der Einstiegsseite</span> ist anpassbar: Die ModeratorInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG können wählen, ob und in welcher Reihenfolge die Rubriken angezeigt werden sollen und ob sie &quot;ausgeklappt&quot; dargestellt werden (also mit einer Anzeige der jeweils neuesten Beiträge). Auch die Zeitspanne, innerhalb der neue Beiträge auf der Einstiegsseite sichtbar sind, kann eingestellt werden.";
+Die <span style=&quot;font-weight:bold;&quot;>Gestaltung der Einstiegsseite</span> ist anpassbar: Die ModeratorInnen %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG kÃ¶nnen wÃ¤hlen, ob und in welcher Reihenfolge die Rubriken angezeigt werden sollen und ob sie &quot;ausgeklappt&quot; dargestellt werden (also mit einer Anzeige der jeweils neuesten BeitrÃ¤ge). Auch die Zeitspanne, innerhalb der neue BeitrÃ¤ge auf der Einstiegsseite sichtbar sind, kann eingestellt werden.";
 $message["HELP_HOME_INDEX_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_PASSWD HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE";
 $message["HELP_HOME_INDEX_TITLE"]["de"] = "%_PROJECT_SUB_NOMS_BIG - Einstiegsseite";
 $message["HELP_INSTITUTION_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
 $message["HELP_INSTITUTION_INDEX_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
 $message["HELP_MAIL_TO_MODERATOR_TITLE"]["de"] = "E-Mail an die Moderatoren dieses CommSy-Raums schicken";
-$message["HELP_MATERIAL_DETAIL"]["de"] = "Materialien dienen sowohl dem Hochladen von Dateien als auch dem Erstellen neuer Texte. Jedes Material kann dabei in mehrere Abschnitte unterteilt werden, die eine Strukturierung des Materials ermöglichen. Klicken Sie dazu auf &quot;Abschnitt hinzufügen&quot;. <br />
+$message["HELP_MATERIAL_DETAIL"]["de"] = "Materialien dienen sowohl dem Hochladen von Dateien als auch dem Erstellen neuer Texte. Jedes Material kann dabei in mehrere Abschnitte unterteilt werden, die eine Strukturierung des Materials ermÃ¶glichen. Klicken Sie dazu auf &quot;Abschnitt hinzufÃ¼gen&quot;. <br />
 <br />
-Sie können an ein Material wiederum andere Materialien &quot;anhängen&quot; und so Dossier-artige Zusammenstellungen von Materialien erzeugen.<br />
+Sie kÃ¶nnen an ein Material wiederum andere Materialien &quot;anhÃ¤ngen&quot; und so Dossier-artige Zusammenstellungen von Materialien erzeugen.<br />
 <br />
-Um ein neues Material zu erstellen, klicken Sie auf &quot; <span style=&quot;font-weight:bold;&quot;>neues Material</span> &quot;. Dadurch wird ein Formular aufgerufen, in das Sie Informationen wie AutorInnen, Titel, Jahr, bibliografische Angaben, Zusammenfassung etc. eintragen können. Auch eine oder mehrere Dateien können Sie hier hochladen.<br />
+Um ein neues Material zu erstellen, klicken Sie auf &quot; <span style=&quot;font-weight:bold;&quot;>neues Material</span> &quot;. Dadurch wird ein Formular aufgerufen, in das Sie Informationen wie AutorInnen, Titel, Jahr, bibliografische Angaben, Zusammenfassung etc. eintragen kÃ¶nnen. Auch eine oder mehrere Dateien kÃ¶nnen Sie hier hochladen.<br />
 <br />
-Sie können <span style=&quot;font-weight:bold;&quot;>Materialien kopieren</span>, indem Sie auf &quot;kopieren&quot; klicken. Sie können diese Materialien in beliebigen anderen Räumen wieder einfügen,indem Sie in den betreffenden Raum wechseln, die Rubrik &quot;Materialien&quot; aufrufen und dort auf &quot;Kopien&quot; klicken.<br />
+Sie kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Materialien kopieren</span>, indem Sie auf &quot;kopieren&quot; klicken. Sie kÃ¶nnen diese Materialien in beliebigen anderen RÃ¤umen wieder einfÃ¼gen,indem Sie in den betreffenden Raum wechseln, die Rubrik &quot;Materialien&quot; aufrufen und dort auf &quot;Kopien&quot; klicken.<br />
 <br />
-Über den Link &quot;versenden&quot; können Sie einen Hinweis auf dieses Material an ausgewählte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
+Ãœber den Link &quot;versenden&quot; kÃ¶nnen Sie einen Hinweis auf dieses Material an ausgewÃ¤hlte Mitglieder %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG per E-Mail verschicken.<br />
 <br />
-Am Ende eines Eintrags finden Sie Informationen darüber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmäßig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
+Am Ende eines Eintrags finden Sie Informationen darÃ¼ber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmÃ¤ÃŸig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) wird zudem dargestellt, mit welchen Einträgen dieser Beitrag verknüpft wurde. <br />
+In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) wird zudem dargestellt, mit welchen EintrÃ¤gen dieser Beitrag verknÃ¼pft wurde. <br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
 <br />
-Zu jedem Beitrag können <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.<br />
+Zu jedem Beitrag kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.<br />
 <br />
-<span style=&quot;font-weight:bold;&quot;>Materialien in %_PROJECT_SUB_DATS_BIG</span> sind - wie alle %_PROJECT_SUB_NOMS_BIGeinträge - nur den jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugänglich. In %_PROJECT_SUB_DATPL_BIG haben Sie die Möglichkeit, Materialien zur gemeinschaftlichen Bearbeitung durch andere %_PROJECT_SUB_NOMS_BIGteilnehmerInnen freizugeben. Auch können Sie jedes Material als relevant für eine oder mehrere Gruppen und eines oder mehrere %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind) kennzeichnen.<br />
+<span style=&quot;font-weight:bold;&quot;>Materialien in %_PROJECT_SUB_DATS_BIG</span> sind - wie alle %_PROJECT_SUB_NOMS_BIGeintrÃ¤ge - nur den jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugÃ¤nglich. In %_PROJECT_SUB_DATPL_BIG haben Sie die MÃ¶glichkeit, Materialien zur gemeinschaftlichen Bearbeitung durch andere %_PROJECT_SUB_NOMS_BIGteilnehmerInnen freizugeben. Auch kÃ¶nnen Sie jedes Material als relevant fÃ¼r eine oder mehrere Gruppen und eines oder mehrere %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind) kennzeichnen.<br />
 <br />
-<span style=&quot;font-weight:bold;&quot;>Materialien in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG</span> sind allen Mitgliedern des jeweiligen CommSys zugänglich. Insbesondere können hier Ergebnisse aus %_PROJECT_SUB_DATPL_BIG veröffentlicht werden. Sie können Ihre Materialien auch für Gäste (also Personen ohne CommSy-Kennung) freigeben. Über die Freigabe entscheidet jedoch letztlich (v. a. unter urheberrechtlichen Gesichtspunkten) die Moderation des jeweiligen CommSys.";
+<span style=&quot;font-weight:bold;&quot;>Materialien in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG</span> sind allen Mitgliedern des jeweiligen CommSys zugÃ¤nglich. Insbesondere kÃ¶nnen hier Ergebnisse aus %_PROJECT_SUB_DATPL_BIG verÃ¶ffentlicht werden. Sie kÃ¶nnen Ihre Materialien auch fÃ¼r GÃ¤ste (also Personen ohne CommSy-Kennung) freigeben. Ãœber die Freigabe entscheidet jedoch letztlich (v. a. unter urheberrechtlichen Gesichtspunkten) die Moderation des jeweiligen CommSys.";
 $message["HELP_MATERIAL_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_NAVIGATE HELP_COMMON_RIGHTS";
-$message["HELP_MATERIAL_EDIT"]["de"] = "Auf der Bearbeitungsseite können Sie Ihr Material anlegen oder ändern.<br />
+$message["HELP_MATERIAL_EDIT"]["de"] = "Auf der Bearbeitungsseite kÃ¶nnen Sie Ihr Material anlegen oder Ã¤ndern.<br />
 <br />
-Für alle mit einem Stern (*) versehenen Felder müssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufüllen. Um ein Mindestmaß an Strukturierung zu gewährleisten, sind bei den Materialien AutorInnen, Titel und Jahr Pflichtfelder. Nähere Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
+FÃ¼r alle mit einem Stern (*) versehenen Felder mÃ¼ssen Angaben gemacht werden, die anderen sind nur bei Bedarf auszufÃ¼llen. Um ein MindestmaÃŸ an Strukturierung zu gewÃ¤hrleisten, sind bei den Materialien AutorInnen, Titel und Jahr Pflichtfelder. NÃ¤here Hinweise zu den einzelnen Feldern finden sich in der rechten Spalte der Bearbeitungsmaske.<br />
 <br />
-Auch <span style=&quot;font-weight:bold;&quot;>Dateien</span> können Sie hier <span style=&quot;font-weight:bold;&quot;>hochladen</span> : Klicken Sie hierzu auf &quot;Datei auswählen&quot; (bzw. &quot;durchsuchen&quot;) und suchen Sie auf Ihrer Festplatte oder einem anderen Datenträger nach der gewünschten Datei. Klicken Sie dann auf &quot;Datei hinzufügen&quot;, um die Datei in das CommSy hochzuladen. Sie können einem Material mehrere Dateien hinzufügen.<br />
+Auch <span style=&quot;font-weight:bold;&quot;>Dateien</span> kÃ¶nnen Sie hier <span style=&quot;font-weight:bold;&quot;>hochladen</span> : Klicken Sie hierzu auf &quot;Datei auswÃ¤hlen&quot; (bzw. &quot;durchsuchen&quot;) und suchen Sie auf Ihrer Festplatte oder einem anderen DatentrÃ¤ger nach der gewÃ¼nschten Datei. Klicken Sie dann auf &quot;Datei hinzufÃ¼gen&quot;, um die Datei in das CommSy hochzuladen. Sie kÃ¶nnen einem Material mehrere Dateien hinzufÃ¼gen.<br />
 <br />
-Außerdem haben Sie die Möglichkeit, die <span style=&quot;font-weight:bold;&quot;>Art des Materials</span> festzulegen, indem Sie aus der bestehenden Liste auswählen oder eine neue Materialart definieren, und Schlagwörter auszuwählen bzw. neu einzugeben. Beides dient der Strukturierung und besseren Auffindbarkeit von Materialien. <br />
+AuÃŸerdem haben Sie die MÃ¶glichkeit, die <span style=&quot;font-weight:bold;&quot;>Art des Materials</span> festzulegen, indem Sie aus der bestehenden Liste auswÃ¤hlen oder eine neue Materialart definieren, und SchlagwÃ¶rter auszuwÃ¤hlen bzw. neu einzugeben. Beides dient der Strukturierung und besseren Auffindbarkeit von Materialien. <br />
 <br />
-<span style=&quot;font-weight:bold;&quot;>Text</span>, den Sie in ein Formularfeld eingeben, können Sie auf vielfältige Weise <span style=&quot;font-weight:bold;&quot;>formatieren</span>, z.B. Überschriften oder Aufzählungen. Auch Hyperlinks (z.B. <a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;><a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;>http://www.commsy.de</a></a>) oder E-Mail-Adressen können Sie eingeben. Einen Überblick über alle Formatierungsmöglichkeiten erhalten Sie über den Link &quot;Formatierungsmöglichkeiten&quot; unten in der Liste.<br />
+<span style=&quot;font-weight:bold;&quot;>Text</span>, den Sie in ein Formularfeld eingeben, kÃ¶nnen Sie auf vielfÃ¤ltige Weise <span style=&quot;font-weight:bold;&quot;>formatieren</span>, z.B. Ãœberschriften oder AufzÃ¤hlungen. Auch Hyperlinks (z.B. <a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;><a href=&quot;http://www.commsy.de&quot; target=&quot;_blank&quot;>http://www.commsy.de</a></a>) oder E-Mail-Adressen kÃ¶nnen Sie eingeben. Einen Ãœberblick Ã¼ber alle FormatierungsmÃ¶glichkeiten erhalten Sie Ã¼ber den Link &quot;FormatierungsmÃ¶glichkeiten&quot; unten in der Liste.<br />
 <br />
-Sie haben außerdem die Möglichkeit, ein bearbeitetes Material in einer neuen <span style=&quot;font-weight:bold;&quot;>Version</span> zu speichern. Damit bleibt das Material in seiner ursprünglichen Form erhalten, und Sie können bei Bedarf wieder darauf zugreifen.<br />
+Sie haben auÃŸerdem die MÃ¶glichkeit, ein bearbeitetes Material in einer neuen <span style=&quot;font-weight:bold;&quot;>Version</span> zu speichern. Damit bleibt das Material in seiner ursprÃ¼nglichen Form erhalten, und Sie kÃ¶nnen bei Bedarf wieder darauf zugreifen.<br />
 <br />
-Auf der Detailseite Ihres Materials können Sie zudem <span style=&quot;font-weight:bold;&quot;>Abschnitte</span> für Ihr Material anlegen und bearbeiten. Auf diese Weise können Sie strukturierte Texte erstellen.<br />
+Auf der Detailseite Ihres Materials kÃ¶nnen Sie zudem <span style=&quot;font-weight:bold;&quot;>Abschnitte</span> fÃ¼r Ihr Material anlegen und bearbeiten. Auf diese Weise kÃ¶nnen Sie strukturierte Texte erstellen.<br />
 <br />
-In <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_DATPL_BIG</span> können Sie im Feld &quot;Bearbeitungsmodus&quot; festlegen, ob nur Sie oder alle Mitglieder Ihres %_PROJECT_SUB_GENS_BIG diesen Beitrag bearbeiten dürfen.<br />
+In <span style=&quot;font-weight:bold;&quot;>%_PROJECT_SUB_DATPL_BIG</span> kÃ¶nnen Sie im Feld &quot;Bearbeitungsmodus&quot; festlegen, ob nur Sie oder alle Mitglieder Ihres %_PROJECT_SUB_GENS_BIG diesen Beitrag bearbeiten dÃ¼rfen.<br />
 <br />
-Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> können Sie im Feld &quot;Öffentlichkeit&quot; festlegen, ob Ihr Material nur angemeldeten CommSy-Mitgliedern oder auch Gästen präsentiert werden soll (nach einer Unbedenklichkeitsprüfung durch die Moderation Ihres CommSys).";
+Im <span style=&quot;font-weight:bold;&quot;>%_COMMUNITY_SUB_DATS_BIG</span> kÃ¶nnen Sie im Feld &quot;Ã–ffentlichkeit&quot; festlegen, ob Ihr Material nur angemeldeten CommSy-Mitgliedern oder auch GÃ¤sten prÃ¤sentiert werden soll (nach einer UnbedenklichkeitsprÃ¼fung durch die Moderation Ihres CommSys).";
 $message["HELP_MATERIAL_EDIT_LINKS"]["de"] = "HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
-$message["HELP_MATERIAL_INDEX"]["de"] = "In dieser Rubrik finden Sie eine Übersicht aller Materialien in %_PROJECT_ART_UNDEF_DATS_LOW %_PROJECT_SUB_DATS_BIG oder %_COMMUNITY_ART_UNDEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG. Materialien dienen sowohl zum <span style=&quot;font-weight:bold;&quot;>Hochladen von Dateien</span> als auch zum <span style=&quot;font-weight:bold;&quot;>Erstellen neuer Texte</span>. Jedes Material kann dabei in mehrere Abschnitte unterteilt werden, die eine Strukturierung des Materials ermöglichen. Sie können an ein Material wiederum andere Materialien anhängen und so Dossier-artige Zusammenstellungen von Materialien erzeugen.<br />
+$message["HELP_MATERIAL_INDEX"]["de"] = "In dieser Rubrik finden Sie eine Ãœbersicht aller Materialien in %_PROJECT_ART_UNDEF_DATS_LOW %_PROJECT_SUB_DATS_BIG oder %_COMMUNITY_ART_UNDEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG. Materialien dienen sowohl zum <span style=&quot;font-weight:bold;&quot;>Hochladen von Dateien</span> als auch zum <span style=&quot;font-weight:bold;&quot;>Erstellen neuer Texte</span>. Jedes Material kann dabei in mehrere Abschnitte unterteilt werden, die eine Strukturierung des Materials ermÃ¶glichen. Sie kÃ¶nnen an ein Material wiederum andere Materialien anhÃ¤ngen und so Dossier-artige Zusammenstellungen von Materialien erzeugen.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung (z.B. können Sie sich alle Einträge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). MIt Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung (z.B. kÃ¶nnen Sie sich alle EintrÃ¤ge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). MIt Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen Einträge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen EintrÃ¤ge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Auf die Detailansicht eines Materials kommen Sie, wenn Sie den entsprechenden Titel anklicken.<br />
 <br />
-Um ein neues Material zu erstellen, klicken Sie auf &quot;neues Material&quot;. Dadurch wird ein Formular aufgerufen, in das Sie Informationen wie AutorInnen, Titel, Jahr, bibliografische Angaben, Zusammenfassung etc. eintragen können. Auch <span style=&quot;font-weight:bold;&quot;>Dateien</span> können Sie hier hochladen.<br />
+Um ein neues Material zu erstellen, klicken Sie auf &quot;neues Material&quot;. Dadurch wird ein Formular aufgerufen, in das Sie Informationen wie AutorInnen, Titel, Jahr, bibliografische Angaben, Zusammenfassung etc. eintragen kÃ¶nnen. Auch <span style=&quot;font-weight:bold;&quot;>Dateien</span> kÃ¶nnen Sie hier hochladen.<br />
 <br />
-Zur Strukturierung der Materialien gibt es die Möglichkeit, die <span style=&quot;font-weight:bold;&quot;>Art des Materials</span> (z.B. Protokoll, Literaturquelle etc.) festzulegen. Über den Link &quot;Materialarten&quot; gelangen Sie auf eine Übersichtsseite, auf der alle Materialarten, die im jeweiligen %_PROJECT_SUB_DATS_BIG definiert wurden, in alphabetischer Reihenfolge dargestellt sind. Sie können diese Bezeichnungen auch ändern, zusammenführen oder löschen.<br />
+Zur Strukturierung der Materialien gibt es die MÃ¶glichkeit, die <span style=&quot;font-weight:bold;&quot;>Art des Materials</span> (z.B. Protokoll, Literaturquelle etc.) festzulegen. Ãœber den Link &quot;Materialarten&quot; gelangen Sie auf eine Ãœbersichtsseite, auf der alle Materialarten, die im jeweiligen %_PROJECT_SUB_DATS_BIG definiert wurden, in alphabetischer Reihenfolge dargestellt sind. Sie kÃ¶nnen diese Bezeichnungen auch Ã¤ndern, zusammenfÃ¼hren oder lÃ¶schen.<br />
 <br />
-Als weitere Strukturierungsmöglichkeit können Sie beliebige <span style=&quot;font-weight:bold;&quot;>Schlagwörter</span> für Ihr Material eingeben. Über den Link *&quot;Schlagwörter&quot; gelangen Sie auf eine Übersichtsseite, auf der alle Schlagwörter, die im jeweiligen %_PROJECT_SUB_DATS_BIG definiert wurden, in alphabetischer Reihenfolge dargestellt sind. Sie können diese Bezeichnungen auch ändern, zusammenführen oder löschen.<br />
+Als weitere StrukturierungsmÃ¶glichkeit kÃ¶nnen Sie beliebige <span style=&quot;font-weight:bold;&quot;>SchlagwÃ¶rter</span> fÃ¼r Ihr Material eingeben. Ãœber den Link *&quot;SchlagwÃ¶rter&quot; gelangen Sie auf eine Ãœbersichtsseite, auf der alle SchlagwÃ¶rter, die im jeweiligen %_PROJECT_SUB_DATS_BIG definiert wurden, in alphabetischer Reihenfolge dargestellt sind. Sie kÃ¶nnen diese Bezeichnungen auch Ã¤ndern, zusammenfÃ¼hren oder lÃ¶schen.<br />
 <br />
-Sie können <span style=&quot;font-weight:bold;&quot;>Materialien kopieren</span>, indem Sie auf das Kopiersymbol hinter einem Materialeintrag in der Liste klicken. Sie können diese Materialien in beliebigen anderen Räumen wieder einfügen, indem Sie in den betreffenden Raum wechseln, die Rubrik &quot;Materialien&quot; aufrufen und dort auf &quot;Kopien&quot; klicken.<br />
+Sie kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Materialien kopieren</span>, indem Sie auf das Kopiersymbol hinter einem Materialeintrag in der Liste klicken. Sie kÃ¶nnen diese Materialien in beliebigen anderen RÃ¤umen wieder einfÃ¼gen, indem Sie in den betreffenden Raum wechseln, die Rubrik &quot;Materialien&quot; aufrufen und dort auf &quot;Kopien&quot; klicken.<br />
 <br />
-<span style=&quot;font-weight:bold;&quot;>Materialien in %_PROJECT_SUB_DATPL_BIG</span> sind - wie alle %_PROJECT_SUB_NOMS_BIGeinträge - nur den jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugänglich. In %_PROJECT_SUB_DATPL_BIG haben Sie die Möglichkeit, Materialien zur gemeinschaftlichen Bearbeitung durch andere %_PROJECT_SUB_NOMS_BIGteilnehmerInnen freizugeben. Auch können Sie jedes Material als relevant für eine oder mehrere Gruppen und eines oder mehrere %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfügbar sind) kennzeichnen.<br />
+<span style=&quot;font-weight:bold;&quot;>Materialien in %_PROJECT_SUB_DATPL_BIG</span> sind - wie alle %_PROJECT_SUB_NOMS_BIGeintrÃ¤ge - nur den jeweiligen %_PROJECT_SUB_NOMS_BIGteilnehmerInnen zugÃ¤nglich. In %_PROJECT_SUB_DATPL_BIG haben Sie die MÃ¶glichkeit, Materialien zur gemeinschaftlichen Bearbeitung durch andere %_PROJECT_SUB_NOMS_BIGteilnehmerInnen freizugeben. Auch kÃ¶nnen Sie jedes Material als relevant fÃ¼r eine oder mehrere Gruppen und eines oder mehrere %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW  %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind) kennzeichnen.<br />
 <br />
-<span style=&quot;font-weight:bold;&quot;>Materialien in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG</span> sind allen Mitgliedern des jeweiligen CommSys zugänglich. Insbesondere können hier Ergebnisse aus %_PROJECT_SUB_DATPL_BIG veröffentlicht werden. Sie können Ihre Materialien auch für Gäste (also Personen ohne CommSy-Kennung) freigeben. Über die Freigabe entscheidet jedoch letztlich (v. a. unter urheberrechtlichen Gesichtspunkten) die Moderation des jeweiligen CommSys.";
+<span style=&quot;font-weight:bold;&quot;>Materialien in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG</span> sind allen Mitgliedern des jeweiligen CommSys zugÃ¤nglich. Insbesondere kÃ¶nnen hier Ergebnisse aus %_PROJECT_SUB_DATPL_BIG verÃ¶ffentlicht werden. Sie kÃ¶nnen Ihre Materialien auch fÃ¼r GÃ¤ste (also Personen ohne CommSy-Kennung) freigeben. Ãœber die Freigabe entscheidet jedoch letztlich (v. a. unter urheberrechtlichen Gesichtspunkten) die Moderation des jeweiligen CommSys.";
 $message["HELP_MATERIAL_INDEX_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_NAVIGATE HELP_COMMON_RIGHTS";
 $message["HELP_MODULE_ACCOUNT"]["de"] = "Kennungen";
 $message["HELP_MODULE_ANNOTATION"]["de"] = "Anmerkungen";
-$message["HELP_MODULE_ANNOUNCEMENT"]["de"] = "Ankündigungen";
-$message["HELP_MODULE_BUZZWORDS"]["de"] = "Schlagwörter";
+$message["HELP_MODULE_ANNOUNCEMENT"]["de"] = "AnkÃ¼ndigungen";
+$message["HELP_MODULE_BUZZWORDS"]["de"] = "SchlagwÃ¶rter";
 $message["HELP_MODULE_CAMPUS_SEARCH"]["de"] = "Suche in %_COMMUNITY_ART_DEF_DATS_LOW %_COMMUNITY_SUB_DATS_BIG";
 $message["HELP_MODULE_CHAT"]["de"] = "Chat";
 $message["HELP_MODULE_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMS_BIG";
@@ -902,7 +902,7 @@ $message["HELP_MODULE_INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
 $message["HELP_MODULE_LABELS"]["de"] = "Materialarten";
 $message["HELP_MODULE_LANGUAGE"]["de"] = "Sprache";
 $message["HELP_MODULE_MATERIAL"]["de"] = "Materialien";
-$message["HELP_MODULE_MYROOM"]["de"] = "Meine Räume";
+$message["HELP_MODULE_MYROOM"]["de"] = "Meine RÃ¤ume";
 $message["HELP_MODULE_PROJECT"]["de"] = "%_PROJECT_SUB_NOMS_BIG";
 $message["HELP_MODULE_RUBRIC"]["de"] = "eine Rubrik";
 $message["HELP_MODULE_SECTION"]["de"] = "Abschnitt";
@@ -910,61 +910,61 @@ $message["HELP_MODULE_TAG"]["de"] = "Kategorien";
 $message["HELP_MODULE_TODO"]["de"] = "Aufgaben";
 $message["HELP_MODULE_TOPIC"]["de"] = "%_TOPIC_SUB_NOMPL_BIG";
 $message["HELP_MODULE_USER"]["de"] = "Personen";
-$message["HELP_NOT_AVAILABLE"]["de"] = "Leider keine Hilfe verfügbar";
-$message["HELP_TOPIC_DETAIL"]["de"] = "Jedes CommSy-Mitglied kann neue <span style=&quot;font-weight:bold;&quot;>%_TOPICS_SUB_NOMPL_LOW</span> (z.B. die eigenen Arbeits- und Forschungsgebiete o. ä.) mit Titel und einer Beschreibung eintragen. Klicken Sie dazu auf &quot;Neuen Eintrag erstellen&quot;.<br />
+$message["HELP_NOT_AVAILABLE"]["de"] = "Leider keine Hilfe verfÃ¼gbar";
+$message["HELP_TOPIC_DETAIL"]["de"] = "Jedes CommSy-Mitglied kann neue <span style=&quot;font-weight:bold;&quot;>%_TOPICS_SUB_NOMPL_LOW</span> (z.B. die eigenen Arbeits- und Forschungsgebiete o. Ã¤.) mit Titel und einer Beschreibung eintragen. Klicken Sie dazu auf &quot;Neuen Eintrag erstellen&quot;.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfügbaren Angaben zu diesem Eintrag angezeigt.  Änderungen an dem Eintrag sind über den Link &quot;bearbeiten&quot; möglich.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Detailansicht</span> werden alle verfÃ¼gbaren Angaben zu diesem Eintrag angezeigt.  Ã„nderungen an dem Eintrag sind Ã¼ber den Link &quot;bearbeiten&quot; mÃ¶glich.<br />
 <br />
-Über den Link &quot;E-Mail schreiben&quot; können Sie eine E-Mail an die Personen verschicken, die sich diesem Thema zugeordnet haben.<br />
+Ãœber den Link &quot;E-Mail schreiben&quot; kÃ¶nnen Sie eine E-Mail an die Personen verschicken, die sich diesem Thema zugeordnet haben.<br />
 <br />
-Sie können sich selbst einem Thema zuordnen und damit Ihr Interesse, Ihre Zuständigkeit Ihre Mitarbeit o.ä. an diesem Thema bekunden, indem Sie auf &quot;beitreten&quot; klicken, bzw. diese Zuordnung wieder rückgängig machen, indem Sie auf &quot;austreten&quot; klicken.<br />
+Sie kÃ¶nnen sich selbst einem Thema zuordnen und damit Ihr Interesse, Ihre ZustÃ¤ndigkeit Ihre Mitarbeit o.Ã¤. an diesem Thema bekunden, indem Sie auf &quot;beitreten&quot; klicken, bzw. diese Zuordnung wieder rÃ¼ckgÃ¤ngig machen, indem Sie auf &quot;austreten&quot; klicken.<br />
 <br />
-Am Ende eines Eintrags finden Sie Informationen darüber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmäßig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
+Am Ende eines Eintrags finden Sie Informationen darÃ¼ber, von welchen Mitgliedern %_PROJECT_ART_DEF_GENS_LOW %_PROJECT_SUB_GENS_BIG der betreffende Beitrag bearbeitet wurde. Dabei wird standardmÃ¤ÃŸig nur angezeigt, wer den Beitrag zuletzt bearbeitet hat. Durch einen Klick auf das kleine Pluszeichen vor dem Namen gelangen Sie zu der kompletten Bearbeitungshistorie.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) wird zudem dargestellt, mit welchen Einträgen dieser Beitrag verknüpft wurde. <br />
+In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) wird zudem dargestellt, mit welchen EintrÃ¤gen dieser Beitrag verknÃ¼pft wurde. <br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.<br />
 <br />
-Zu jedem Beitrag können <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
+Zu jedem Beitrag kÃ¶nnen <span style=&quot;font-weight:bold;&quot;>Anmerkungen</span> geschrieben werden. Diese werden unterhalb des jeweiligen Beitrags dargestellt. Sie erstellen eine Anmerkung, indem Sie dort auf &quot;neue Anmerkung&quot; klicken.";
 $message["HELP_TOPIC_DETAIL_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
-$message["HELP_TOPIC_INDEX"]["de"] = "Jedes CommSy-Mitglied kann neue %_TOPICS_SUB_NOMPL_BIG (z.B. die eigenen Arbeits- und Forschungsgebiete o. ä.) mit Titel und einer Beschreibung eintragen. Klicken Sie dazu auf &quot;Neuen Eintrag erstellen&quot;.<br />
+$message["HELP_TOPIC_INDEX"]["de"] = "Jedes CommSy-Mitglied kann neue %_TOPICS_SUB_NOMPL_BIG (z.B. die eigenen Arbeits- und Forschungsgebiete o. Ã¤.) mit Titel und einer Beschreibung eintragen. Klicken Sie dazu auf &quot;Neuen Eintrag erstellen&quot;.<br />
 <br />
 %_TOPICS_SUB_NOMPL_LOW dienen der inhaltlichen Strukturierung der Inhalte %_COMMUNITY_ART_UNDEF_GENS_LOW %_COMMUNITY_SUB_GENS_BIG oder  %_PROJECT_ART_UNDEF_GENS_LOW %_PROJECT_SUB_GENS_BIG.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung (z.B. können Sie sich alle Einträge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung (z.B. kÃ¶nnen Sie sich alle EintrÃ¤ge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen Einträge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Titel&quot; bewirkt eine alphabetische Sortierung nach den Titeln der jeweiligen EintrÃ¤ge, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Auf die Detailansicht eines Listeneintrags kommen Sie, wenn Sie den entsprechenden Titel anklicken.";
 $message["HELP_TOPIC_INDEX_LINKS"]["de"] = "HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_LINK HELP_COMMON_STRUCTURE HELP_COMMON_RIGHTS";
 $message["HELP_USER_DETAIL"]["de"] = "Alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen haben in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG
- eine eigene Seite, um sich mit Namen, Bild und weiteren Kontaktdaten zu präsentieren. Im Gegensatz zum %_COMMUNITY_SUB_DATS_BIG wird für jedes Mitglied automatisch eine Seite mit Namen und E-Mail- Adresse angelegt, die weitere Ausgestaltung der persönlichen Seite bleibt jedoch jeder/m selbst überlassen. Wie alle Einträge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG
+ eine eigene Seite, um sich mit Namen, Bild und weiteren Kontaktdaten zu prÃ¤sentieren. Im Gegensatz zum %_COMMUNITY_SUB_DATS_BIG wird fÃ¼r jedes Mitglied automatisch eine Seite mit Namen und E-Mail- Adresse angelegt, die weitere Ausgestaltung der persÃ¶nlichen Seite bleibt jedoch jeder/m selbst Ã¼berlassen. Wie alle EintrÃ¤ge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG
  sind auch die Personenseiten nur innerhalb %_PROJECT_ART_DEF_GENS_LOW jeweiligen %_PROJECT_SUB_GENS_BIG einsehbar.<br />
 <br />
-Änderungen an Ihrer Personenseite sind über den Link &quot;bearbeiten&quot; möglich. Auf der Bearbeitungsseite können Sie sich auch Gruppen und %_TOPICS_SUB_NOMPL_BIG zuordnen, in bzw. an denen Sie mitarbeiten möchten (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfügbar sind).<br />
+Ã„nderungen an Ihrer Personenseite sind Ã¼ber den Link &quot;bearbeiten&quot; mÃ¶glich. Auf der Bearbeitungsseite kÃ¶nnen Sie sich auch Gruppen und %_TOPICS_SUB_NOMPL_BIG zuordnen, in bzw. an denen Sie mitarbeiten mÃ¶chten (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind).<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und Verknüpfung mit weiteren CommSy-Einträgen&quot; unten in der Liste) sehen Sie zudem eine Übersicht der CommSy-Beiträge, die von der betreffenden Person verfasst wurden, sowie der Gruppen und %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfügbar sind), denen sie sich zugeordnet hat.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Netznavigation</span> auf der rechten Seite (siehe Link &quot;Netznavigation und VerknÃ¼pfung mit weiteren CommSy-EintrÃ¤gen&quot; unten in der Liste) sehen Sie zudem eine Ãœbersicht der CommSy-BeitrÃ¤ge, die von der betreffenden Person verfasst wurden, sowie der Gruppen und %_TOPICS_SUB_NOMPL_BIG (sofern diese Rubriken in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG verfÃ¼gbar sind), denen sie sich zugeordnet hat.<br />
 <br />
-Über die Pfeile können Sie zwischen den einzelnen Einträgen dieser Rubrik blättern.<br />
+Ãœber die Pfeile kÃ¶nnen Sie zwischen den einzelnen EintrÃ¤gen dieser Rubrik blÃ¤ttern.<br />
 <br />
-Zurück zur <span style=&quot;font-weight:bold;&quot;>Listenübersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
+ZurÃ¼ck zur <span style=&quot;font-weight:bold;&quot;>ListenÃ¼bersicht</span> einer Rubrik gelangen Sie, indem Sie den Namen der Rubrik in der Navigationsleiste (die &quot;Karteikartenreiter&quot;) anklicken.";
 $message["HELP_USER_DETAIL_LINKS"]["de"] = "HELP_COMMON_PASSWD HELP_COMMON_EDIT HELP_COMMON_LINK HELP_COMMON_FORMAT HELP_COMMON_NAVIGATE HELP_COMMON_STRUCTURE";
 $message["HELP_USER_DETAIL_TITLE"]["de"] = "Personen - Detailansicht [%_PROJECT_SUB_NOMS_BIG]";
-$message["HELP_USER_INDEX"]["de"] = "Alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen haben in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG eine eigene Seite, um sich mit Namen, Bild und weiteren Kontaktdaten zu präsentieren. Im Gegensatz zum %_COMMUNITY_SUB_DATS_BIG wird für jedes Mitglied automatisch eine Seite mit Namen und E-Mail- Adresse angelegt, die weitere Ausgestaltung der persönlichen Seite bleibt jedoch jeder/m selbst überlassen. Wie alle Einträge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG sind auch die Personenseiten nur innerhalb %_PROJECT_ART_DEF_GENS_LOW  jeweiligen %_PROJECT_SUB_GENS_BIG einsehbar.<br />
+$message["HELP_USER_INDEX"]["de"] = "Alle %_PROJECT_SUB_NOMS_BIGteilnehmerInnen haben in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG eine eigene Seite, um sich mit Namen, Bild und weiteren Kontaktdaten zu prÃ¤sentieren. Im Gegensatz zum %_COMMUNITY_SUB_DATS_BIG wird fÃ¼r jedes Mitglied automatisch eine Seite mit Namen und E-Mail- Adresse angelegt, die weitere Ausgestaltung der persÃ¶nlichen Seite bleibt jedoch jeder/m selbst Ã¼berlassen. Wie alle EintrÃ¤ge in %_PROJECT_ART_DEF_DATS_LOW %_PROJECT_SUB_DATS_BIG sind auch die Personenseiten nur innerhalb %_PROJECT_ART_DEF_GENS_LOW  jeweiligen %_PROJECT_SUB_GENS_BIG einsehbar.<br />
 <br />
-In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> können Sie sich entweder alle oder eine Auswahl von Einträgen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen Auswahlmöglichkeiten zur Verfügung (z.B. können Sie sich alle Einträge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes können Sie auch ganz gezielt nach bestimmten Einträgen suchen. Als Suchbegriff können dabei auch Wortteile verwendet werden, zwischen Groß- und Kleinschreibung wird nicht unterschieden.<br />
+In der <span style=&quot;font-weight:bold;&quot;>Listenansicht</span> kÃ¶nnen Sie sich entweder alle oder eine Auswahl von EintrÃ¤gen anzeigen lassen. Dazu steht Ihnen oberhalb der Liste ein Formular mit verschiedenen AuswahlmÃ¶glichkeiten zur VerfÃ¼gung (z.B. kÃ¶nnen Sie sich alle EintrÃ¤ge anzeigen lassen, die einer bestimmten Gruppe zugeordnet wurden). Mit Hilfe eines Suchfeldes kÃ¶nnen Sie auch ganz gezielt nach bestimmten EintrÃ¤gen suchen. Als Suchbegriff kÃ¶nnen dabei auch Wortteile verwendet werden, zwischen GroÃŸ- und Kleinschreibung wird nicht unterschieden.<br />
 <br />
-Sie können die Liste sortieren, indem Sie auf die jeweiligen Überschriften klicken. (Beispiel: Ein Klick auf die Überschrift &quot;Name&quot; bewirkt eine alphabetische Sortierung nach den Namen der %_PROJECT_SUB_NOMS_BIGmitglieder, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
+Sie kÃ¶nnen die Liste sortieren, indem Sie auf die jeweiligen Ãœberschriften klicken. (Beispiel: Ein Klick auf die Ãœberschrift &quot;Name&quot; bewirkt eine alphabetische Sortierung nach den Namen der %_PROJECT_SUB_NOMS_BIGmitglieder, ein weiterer Klick kehrt die Sortierreihenfolge um).<br />
 <br />
-Sie können sich wahlweise 10, 20, 50 oder auch alle Listeneinträge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
+Sie kÃ¶nnen sich wahlweise 10, 20, 50 oder auch alle ListeneintrÃ¤ge pro Seite anzeigen lassen. Diese Auswahl wirkt sich auf alle Listenansichten im CommSy aus.<br />
 <br />
-Wenn die Liste mehr als die ausgewählte Anzahl an Elementen umfasst, können Sie mit Hilfe der Pfeile zwischen den einzelnen Übersichtsseiten blättern. <br />
+Wenn die Liste mehr als die ausgewÃ¤hlte Anzahl an Elementen umfasst, kÃ¶nnen Sie mit Hilfe der Pfeile zwischen den einzelnen Ãœbersichtsseiten blÃ¤ttern. <br />
 <br />
 Sie gelangen auf eine bestimmte Personenseite, indem Sie den Namen der Person anklicken.";
 $message["HELP_USER_INDEX_LINKS"]["de"] = "HELP_COMMON_NAVIGATE HELP_COMMON_LINK HELP_COMMON_EDIT HELP_COMMON_FORMAT HELP_COMMON_PASSWD HELP_COMMON_STRUCTURE";

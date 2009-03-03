@@ -37,10 +37,15 @@ class db_mysql_connector {
          trigger_error('can not connect zu mysql database: '.$data['host'],E_USER_ERROR);
       } else {
          mysql_select_db($data['database'], $this->_db_link);
+         mysql_query("SET NAMES 'utf8'");
+         mysql_query("SET CHARACTER SET 'utf8'"); 
       }
    }
 
    public function performQuery ($query) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       $result = mysql_query($query,$this->_db_link);
       if ( $this->_log_query ) {
          $this->_query_array[] = $query;
@@ -57,15 +62,15 @@ class db_mysql_connector {
             echo('Query: '.$query.'<br/><hr/>'."\n");
          }
       } else {
-         if ( substr(trim($query),0,6) == 'SELECT'
-              or substr(trim($query),0,4) == 'SHOW'
+         if ( mb_substr(trim($query),0,6) == 'SELECT'
+              or mb_substr(trim($query),0,4) == 'SHOW'
             ) {
             $retour = array();
             while ( $row = mysql_fetch_assoc($result) ) {
                $retour[] = $row;
             }
             mysql_free_result($result);
-         } elseif ( substr(trim($query),0,6) == 'INSERT' ) {
+         } elseif ( mb_substr(trim($query),0,6) == 'INSERT' ) {
             if ( strstr($query,'INSERT INTO chat')
                  or strstr($query,'INSERT INTO auth')
                  or strstr($query,'INSERT INTO item_link_file')
@@ -117,6 +122,9 @@ class db_mysql_connector {
    }
 
    public function text_php2db ( $text ) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       if ( get_magic_quotes_gpc() ) {
          $text = stripslashes($text);
       }

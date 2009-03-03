@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -49,12 +49,12 @@ if ($count_project < 1) {
       $treffer = array();
       $treffer2 = array();
       $set_chat_link = false;
-      $home_conf_exist = preg_match('ß(<HOMECONF>(.+)</HOMECONF>)ß', $extra, $treffer);
+      $home_conf_exist = preg_match('~(<HOMECONF>(.+)</HOMECONF>)~', $extra, $treffer);
       if ($home_conf_exist == true) {
-         if (strpos($extra,'chat_none')!=false){
+         if (mb_strpos($extra,'chat_none')!=false){
             $set_chat_link = true;
             $home_conf_string = str_replace(',chat_none','', $treffer[2]);
-            $extra = preg_replace('ß(<HOMECONF>.+</HOMECONF>)ß', '<HOMECONF>'.$home_conf_string.'</HOMECONF>', $extra);
+            $extra = preg_replace('~(<HOMECONF>.+</HOMECONF>)~u', '<HOMECONF>'.$home_conf_string.'</HOMECONF>', $extra);
             // save project
             $insert_query = 'UPDATE room SET extras="'.addslashes($extra).'" WHERE item_id="'.$project_id.'"';
             select($insert_query);

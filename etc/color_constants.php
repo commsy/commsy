@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -185,7 +185,7 @@ $cs_color['SCHEMA_4']['disabled']                   = '#B0B0B0';
 $cs_color['SCHEMA_4']['warning']                    = 'red';
 $cs_color['SCHEMA_4']['page_title']                 = '#000000';
 
-//Alles im grünen Bereich
+//Alles im grÃ¼nen Bereich
 $cs_color['SCHEMA_5']['schema']                     = 'SCHEMA_5';
 $cs_color['SCHEMA_5']['tabs_background']            = '#4B6F85';
 $cs_color['SCHEMA_5']['tabs_focus']                 = '#80CB8F';

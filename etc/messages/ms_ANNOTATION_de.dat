@@ -1,10 +1,10 @@
 <?php
 $message["ANNOTATION_ADD_NEW_BUTTON"]["de"] = "Neue Anmerkung speichern";
 $message["ANNOTATION_CHANGE_BUTTON"]["de"] = "Anmerkung speichern";
-$message["ANNOTATION_DELETE_BUTTON"]["de"] = "Anmerkung löschen";
+$message["ANNOTATION_DELETE_BUTTON"]["de"] = "Anmerkung lÃ¶schen";
 $message["ANNOTATION_EDIT"]["de"] = "Anmerkung bearbeiten";
-$message["ANNOTATION_ENTER_NEW"]["de"] = "Anmerkung hinzufügen";
+$message["ANNOTATION_ENTER_NEW"]["de"] = "Anmerkung hinzufÃ¼gen";
 $message["ANNOTATION_FOR_NEWER_VERSION"]["de"] = "Anmerkung zu einer neueren Version";
-$message["ANNOTATION_FOR_OLDER_VERSION"]["de"] = "Anmerkung zu einer älteren Version";
+$message["ANNOTATION_FOR_OLDER_VERSION"]["de"] = "Anmerkung zu einer Ã¤lteren Version";
 $message["ANNOTATION_SAVE_BUTTON"]["de"] = "Anmerkung speichern";
 ?>

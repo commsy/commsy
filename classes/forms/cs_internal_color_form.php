@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -363,7 +363,7 @@ class cs_internal_color_form extends cs_rubric_form {
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
          if (empty($this->_values['color_choice'])){
-            $this->_values['color_choice'] = 'COMMON_COLOR_'.strtoupper($color['schema']);
+            $this->_values['color_choice'] = 'COMMON_COLOR_'.mb_strtoupper($color['schema'], 'UTF-8');
          }
          if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
             for ($i=1; $i<17; $i++){
@@ -375,7 +375,7 @@ class cs_internal_color_form extends cs_rubric_form {
             }
          }
        } else {
-         $this->_values['color_choice'] = 'COMMON_COLOR_'.strtoupper($color['schema']);
+         $this->_values['color_choice'] = 'COMMON_COLOR_'.mb_strtoupper($color['schema'], 'UTF-8');
          if ($this->_values['color_choice']=='COMMON_COLOR_SCHEMA_OWN'){
             $this->_values['color_1'] = $color['tabs_background'];
             $this->_values['color_2'] = $color['tabs_focus'];

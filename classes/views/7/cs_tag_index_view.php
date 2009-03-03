@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -81,7 +81,7 @@ var $_count_entries = 0;
       $html .= '<div class="profile_title" style="float:right">'.$title.'</div>';
       $html .= '<h2 id="profile_title">'.getMessage('COMMON_TAG_NEW_ATTACH').'</h2>';
       $html .='</div>'.LF;
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width= ' width:100%; padding-right:10px;';

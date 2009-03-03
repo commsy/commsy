@@ -687,7 +687,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<span style=&quot;font-wei
     <li>(:slideshare DOC-ID:) for slideshare-presentations</li>
     <li>Arguments:
     <ul>
-        <li>DOC-ID: slideshare.net \"doc=\"-value of the presentation (see WordPress-source below)</li>
+        <li>DOC-ID: slideshare.net &quot;doc=&quot;-value of the presentation (see WordPress-source below)</li>
     </ul>
     </li>
     <li>Bsp: (:slideshare quicktour-1209540124077378-8:)<br/>or use:<br/></li>

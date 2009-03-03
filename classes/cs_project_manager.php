@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -63,7 +63,7 @@ class cs_project_manager extends cs_context_manager {
   var $_interval_limit = NULL;
 
   /**
-   * string - enth‰lt die USERID eines Benutzers
+   * string - enth√§lt die USERID eines Benutzers
    */
   var $_user_id_limit = NULL;
 

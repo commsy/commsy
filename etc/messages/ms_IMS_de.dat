@@ -1,4 +1,4 @@
 <?php
 $message["IMS_PASSWORD_ERROR"]["de"] = "Passworte sind nicht gleich oder leer!";
-$message["IMS_UPLOAD_DESCRIPTION"]["de"] = "Über &quot;Durchsuchen...&quot; können Sie ein ZIP-komprimiertes IMS-Paket von Ihrem lokalen System auswählen. Durch Wahl der Schaltfläche &quot;Material importieren&quot; wird es hochgeladen und in den CommSy-Raum importiert.";
+$message["IMS_UPLOAD_DESCRIPTION"]["de"] = "Ãœber &quot;Durchsuchen...&quot; kÃ¶nnen Sie ein ZIP-komprimiertes IMS-Paket von Ihrem lokalen System auswÃ¤hlen. Durch Wahl der SchaltflÃ¤che &quot;Material importieren&quot; wird es hochgeladen und in den CommSy-Raum importiert.";
 ?>

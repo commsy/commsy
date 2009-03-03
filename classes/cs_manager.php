@@ -199,6 +199,9 @@ class cs_manager {
     * @param array array of ids to be loaded from db
     */
    function setIDArrayLimit ($id_array){
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       $this->_id_array_limit = (array)$id_array;
    }
 
@@ -246,12 +249,12 @@ class cs_manager {
       $limit = cs_strtoupper($limit);
 
       //find all occurances of quoted text and store them in an array
-      preg_match_all('/(\\"(.+?)\\\")/',$limit,$literal_array);
+      preg_match_all('~(\\"(.+?)\\\")~u',$limit,$literal_array);
       //delete this occurances from the original string
-      $limit = preg_replace('/(\\\"(.+?)\\\")/','',$limit);
+      $limit = preg_replace('~(\\\"(.+?)\\\")~u','',$limit);
 
-      preg_match_all('/\s-([\w'.SPECIAL_CHARS.']+)/',$limit,$this->_search_negative_array);
-      $limit = preg_replace('/\s-([\w'.SPECIAL_CHARS.']+)/','',$limit);
+      preg_match_all('~\s-([\w'.SPECIAL_CHARS.']+)~u',$limit,$this->_search_negative_array);
+      $limit = preg_replace('~\s-([\w'.SPECIAL_CHARS.']+)~u','',$limit);
 
       //clean up the resulting array from quots
       $literal_array = str_replace('"','',$literal_array[2]);
@@ -283,7 +286,7 @@ class cs_manager {
             $search_limit_query .= '(';
             $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,$this->_search_array[$i]).'%"';
             $search_limit_query .= ' OR ';
-            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,strtoupper(htmlentities($this->_search_array[$i]))).'%"';
+            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,mb_strtoupper(htmlentities($this->_search_array[$i], ENT_NOQUOTES, 'UTF-8'), 'UTF-8')).'%"';
             $search_limit_query .= ')';
             if ($j+1 < count($field_array)) {
                $search_limit_query .= ' OR ';
@@ -303,7 +306,7 @@ class cs_manager {
                $search_limit_query .= '(';
                $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,$this->_search_negative_array[1][$i]).'%"';
                $search_limit_query .= ' AND ';
-               $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,strtoupper(htmlentities($this->_search_negative_array[1][$i]))).'%"';
+               $search_limit_query .= 'UPPER('.$field_array[$j].') NOT LIKE BINARY "%'.encode(AS_DB,mb_strtoupper(htmlentities($this->_search_negative_array[1][$i], ENT_NOQUOTES, 'UTF-8'), 'UTF-8')).'%"';
                $search_limit_query .= ')';
                if ($j+1 < count($field_array)) {
                   $search_limit_query .= ' AND ';
@@ -439,6 +442,9 @@ class cs_manager {
     * @return object cs_list list of commsy items
     */
   function get () {
+     // ------------------
+     // --->UTF8 - OK<----
+     // ------------------
      return $this->_data;
   }
 
@@ -660,6 +666,9 @@ class cs_manager {
    * @return object cs_item an item
    */
    function _buildItem ($db_array) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       $item = $this->getNewItem();
       if ( isset($item) ) {
          $item->_setItemData(encode(FROM_DB,$db_array));
@@ -672,6 +681,9 @@ class cs_manager {
    * depends on _performQuery(), which must be overwritten
    */
    function select () {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       $result = $this->_performQuery();
       $this->_id_array = NULL;
       if ( isset($this->_output_limit)
@@ -698,11 +710,27 @@ class cs_manager {
                  and !empty($query_result) ) {
                $this->_data .= '<'.$this->_db_table.'_item>'.LF;
                foreach ($query_result as $key => $value) {
+                  // ------------
+                  // --->UTF8<---
+                  // innerhalb einer Kodierung kein Problem
+                  // an dieser Stelle noch vor dem encode, d.h.
+                  // entweder latin-1 oder utf-8 - je nach DB Zustand
+                  //
                   $value = str_replace('<','lt_commsy_export',$value);
                   $value = str_replace('>','gt_commsy_export',$value);
                   $value = str_replace('&','and_commsy_export',$value);
+                  // --->UTF8<---
+                  // ------------
                   if ( $key == 'extras' ) {
+                     // ------------
+                     // --->UTF8<---
+                     // innerhalb einer Kodierung kein Problem
+                     // an dieser Stelle noch vor dem encode, d.h.
+                     // entweder latin-1 oder utf-8 - je nach DB Zustand
+                     //
                      $value = serialize($value);
+                     // --->UTF8<---
+                     // ------------
                   }
                   $this->_data .= '<'.$key.'>'.$value.'</'.$key.'>'.LF;
                   unset($value);
@@ -777,6 +805,9 @@ class cs_manager {
     * @return array $this->_id_array id array of selected materials
     */
    function getIDArray () {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       if ( empty($this->_id_array) ) {
          $result = $this->_performQuery('id_array');
          if ( is_array($result) ) {
@@ -1048,12 +1079,12 @@ class cs_manager {
          foreach ($result as $query_result) {
             $item_id = $query_result['item_id'];
             $desc = $query_result['description'];
-            preg_match_all('/\[[0-9]*(\]|\|)/', $query_result['description'], $matches);
+            preg_match_all('~\[[0-9]*(\]|\|)~u', $query_result['description'], $matches);
             if ( isset($matches[0]) ) {
                foreach ($matches[0] as $match) {
-                  $id = substr($match,1);
-                  $last_char = substr($id,strlen($id));
-                  $id = substr($id,0,strlen($id)-1);
+                  $id = mb_substr($match,1);
+                  $last_char = mb_substr($id,mb_strlen($id));
+                  $id = mb_substr($id,0,mb_strlen($id)-1);
                   if ( isset($id_array[$id]) ) {
                      $desc = str_replace('['.$id.$last_char,'['.$id_array[$id].$last_char,$desc);
                   }

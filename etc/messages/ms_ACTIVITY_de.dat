@@ -1,7 +1,7 @@
 <?php
 $message["ACTIVITY_ACTIVE_MEMBERS"]["de"] = "Mitglieder, die angemeldet waren";
 $message["ACTIVITY_ACTIVE_MEMBERS_DESC"]["de"] = "aktive Mitglieder (%1 Tage)";
-$message["ACTIVITY_NEW_ENTRIES"]["de"] = "neue Beiträge";
+$message["ACTIVITY_NEW_ENTRIES"]["de"] = "neue BeitrÃ¤ge";
 $message["ACTIVITY_NEW_ENTRIES_SINGULAR"]["de"] = "neuer Beitrag";
 $message["ACTIVITY_PAGE_IMPRESSIONS"]["de"] = "Seitenaufrufe";
 $message["ACTIVITY_PAGE_IMPRESSIONS_SINGULAR"]["de"] = "Seitenaufruf";

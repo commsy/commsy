@@ -34,8 +34,8 @@ $message["DATES_JULY_LONG"]["de"] = "Juli";
 $message["DATES_JULY_SHORT"]["de"] = "Jul";
 $message["DATES_JUNE_LONG"]["de"] = "Juni";
 $message["DATES_JUNE_SHORT"]["de"] = "Jun";
-$message["DATES_MARCH_LONG"]["de"] = "M‰rz";
-$message["DATES_MARCH_SHORT"]["de"] = "M‰rz";
+$message["DATES_MARCH_LONG"]["de"] = "M√§rz";
+$message["DATES_MARCH_SHORT"]["de"] = "M√§rz";
 $message["DATES_MAY_LONG"]["de"] = "Mai";
 $message["DATES_MAY_SHORT"]["de"] = "Mai";
 $message["DATES_NON_PUBLIC"]["de"] = "nur private Termine";
@@ -68,11 +68,11 @@ $message["DATES_TIME_DAY_START"]["de"] = "Beginn";
 $message["DATES_TIME_DAY_START_DESC"]["de"] = "Datum: TT.MM.JJJJ - z.B. 24.12.2006<br/>
 Uhrzeit: SS:MM - z.B. 12:30";
 $message["DATES_TIPP_FOR_ENTRIES"]["de"] = "Tipp: Klicken Sie auf einen Tag, um einen Termin einzutragen.";
-$message["DATES_TITLE_DESC"]["de"] = "Titel des Termins <i>(private Eintr‰ge werden gesondert dargestellt)</i>";
+$message["DATES_TITLE_DESC"]["de"] = "Titel des Termins <i>(private Eintr√§ge werden gesondert dargestellt)</i>";
 $message["DATES_UPLOADFILE"]["de"] = "Termindatei";
-$message["DATES_UPLOADFILE_DESC"]["de"] = "Eine CSV Datei ausw‰hlen (*.csv).";
+$message["DATES_UPLOADFILE_DESC"]["de"] = "Eine CSV Datei ausw√§hlen (*.csv).";
 $message["DATES_WEEK_TIPP_FOR_ENTRIES"]["de"] = "Tipp: Klicken Sie auf eine Stunde eines Tages, um einen Termin einzutragen.";
 $message["DATES_WRONG_DATE_FORMAT"]["de"] = "Ein Datum sollte das Format TT.MM.JJJJ haben!
 (Weitere Informationen in der Hilfe)";
-$message["DATES_WRONG_FILE_FORMAT"]["de"] = "Die ausgew‰hlte Datei muss eine CSV-Datei sein!";
+$message["DATES_WRONG_FILE_FORMAT"]["de"] = "Die ausgew√§hlte Datei muss eine CSV-Datei sein!";
 ?>

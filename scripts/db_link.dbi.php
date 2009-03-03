@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -27,7 +27,7 @@
 function select($select, $quiet = false, $charset = 'latin1') {
    global $DB_Name,$DB_Hostname,$DB_Username, $DB_Password, $error, $errno, $success;
    $link = mysql_pconnect ($DB_Hostname, $DB_Username, $DB_Password)
-           or die ("keine Verbindung möglich");
+           or die ("keine Verbindung mÃ¶glich");
 
    $db_link = mysql_select_db($DB_Name,$link)
               or die ("Database nicht gefunden (beim lesen)");
@@ -52,7 +52,7 @@ function select($select, $quiet = false, $charset = 'latin1') {
 function select_auth($select) {
    global $AUTH_Name,$AUTH_Hostname,$AUTH_Username, $AUTH_Password, $error, $errno, $success;
    $link = mysql_pconnect ($AUTH_Hostname, $AUTH_Username, $AUTH_Password)
-           or die ("keine Verbindung möglich");
+           or die ("keine Verbindung mÃ¶glich");
 
    $db_link = mysql_select_db($AUTH_Name,$link)
               or die ("Database nicht gefunden (beim lesen)");
@@ -70,7 +70,7 @@ function select_auth($select) {
 function insert($insert, $charset = 'latin1') {
    global $DB_Name,$DB_Hostname,$DB_Username,$DB_Password,$success;
    $link2 = mysql_pconnect ($DB_Hostname, $DB_Username, $DB_Password)
-            or die ("keine Verbindung möglich");
+            or die ("keine Verbindung mÃ¶glich");
 
    $db_link = mysql_select_db($DB_Name,$link2)
               or die ("Database nicht gefunden (beim schreiben)");

@@ -196,6 +196,9 @@ class cs_annotations_manager extends cs_manager {
   }
 
   function getAllAnnotationItemListByIDArray($id_array){
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       if (!empty($id_array)){
          foreach($id_array as $id){
             if (!in_array($id,$this->_item_id_array)){

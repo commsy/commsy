@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -35,7 +35,7 @@ $context_item = $environment->getCurrentContextItem();
 
 $module = (isset($_GET['module'])) ? cs_strtoupper($_GET['module']) : '';
 $function = (isset($_GET['function'])) ? cs_strtoupper($_GET['function']) : '';
-$function .= (($module=='CAMPUS_SEARCH') and isset($_GET['parameter']) and (substr($_GET['parameter'], 0, 6)=='modus=')) ? '_'.cs_strtoupper(substr($_GET['parameter'], 6)) : '';
+$function .= (($module=='CAMPUS_SEARCH') and isset($_GET['parameter']) and (mb_substr($_GET['parameter'], 0, 6)=='modus=')) ? '_'.cs_strtoupper(mb_substr($_GET['parameter'], 6)) : '';
 
 // called from context-help-page
 if (isset($_GET['context'])){

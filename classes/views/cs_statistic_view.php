@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -838,7 +838,7 @@ class cs_statistic_view extends cs_view {
          if ($room['is_open'] != 1) {
             $name_text .= ' <span class="changed">['.$this->_translator->getMessage('COMMON_CLOSED').']</span>';
          }
-         $temp_roomtype = strtoupper($room['type']);
+         $temp_roomtype = mb_strtoupper($room['type'], 'UTF-8');
          // ---> Remark for testing: Login as root, configure server, server statistics, choose active/used rooms <---
          switch( $temp_roomtype )
          {
@@ -873,7 +873,7 @@ class cs_statistic_view extends cs_view {
           } else {
             $temp_text .= BRLF;
           }
-          $temp_rubric = strtoupper($rubric_array[0]);
+          $temp_rubric = mb_strtoupper($rubric_array[0], 'UTF-8');
           // ---> Remark for testing: Login as root, configure server, server statistics, choose active/used rooms, look at "Rubric activity" <---
           switch( $temp_rubric )
           {

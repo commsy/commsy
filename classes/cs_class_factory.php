@@ -45,7 +45,7 @@ class cs_class_factory {
            and $this->_class_array[$name]['switchable']
            and !empty($this->_design_folder)
            and !empty($this->_class_array[$name]['folder'])
-           and !stristr($this->_class_array[$name]['folder'],'/'.$this->_design_folder.'/')
+           and !mb_stristr($this->_class_array[$name]['folder'],'/'.$this->_design_folder.'/')
          ) {
          $this->_class_array[$name]['folder'] .= $this->_design_folder.'/';
       }

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -213,8 +213,8 @@ class cs_homepage_item extends cs_item {
      $manager->moveRight($this);
    }
 
-   function _saveFileLinks() { // es: das ist so komplex, weil wir die filelinks nicht aus der db löschen können
-                                 //wenn jemandem was eleganteres einfällt: nur zu
+   function _saveFileLinks() { // es: das ist so komplex, weil wir die filelinks nicht aus der db lÃ¶schen kÃ¶nnen
+                                 //wenn jemandem was eleganteres einfÃ¤llt: nur zu
       if ( isset($this->_filelist_changed) and $this->_filelist_changed ) {
          $this->setModificationDate(NULL);
          $link_manager = $this->_environment->getLinkManager();

@@ -212,7 +212,7 @@ class class_ads {
             $isbn = $material_item->getISBN();
             $color = $context_item->getColorArray();
             if (!empty($isbn)) {
-               $retour .= LF.'<div style="float:left;margin-right:8px;"><iframe src="http://rcm-de.amazon.de/e/cm?t=hitev-21&amp;o=3&amp;nou=1&amp;p=8&amp;l=as1&amp;asins='.$isbn.'&amp;fc1=000000&amp;IS2=1&amp;lt1=_blank&amp;lc1='.substr($color['hyperlink'],1).'&amp;bc1=000000&amp;bg1='.substr($color['content_background'],1).'&amp;f=ifr" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe></div>'.LF.LF;
+               $retour .= LF.'<div style="float:left;margin-right:8px;"><iframe src="http://rcm-de.amazon.de/e/cm?t=hitev-21&amp;o=3&amp;nou=1&amp;p=8&amp;l=as1&amp;asins='.$isbn.'&amp;fc1=000000&amp;IS2=1&amp;lt1=_blank&amp;lc1='.mb_substr($color['hyperlink'],1).'&amp;bc1=000000&amp;bg1='.mb_substr($color['content_background'],1).'&amp;f=ifr" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe></div>'.LF.LF;
             }
          }
       }

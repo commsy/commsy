@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -396,7 +396,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-         if ( strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
+         if ( mb_strlen($this->_values['auth_source']) == 2 and $this->_values['auth_source'] != -1) {
             $this->_values['auth_source'] = -1;
          }
          if ( isset($this->_values['auth_type_hidden']) and !empty($this->_values['auth_type_hidden']) ) {
@@ -413,16 +413,16 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          }
          if ( !isset($this->_values['encryption'])
               and isset($this->_values['auth_type'])
-              and strtolower($this->_values['auth_type']) == 'typo3'
+              and mb_strtolower($this->_values['auth_type'], 'UTF-8') == 'typo3'
            ) {
             $this->_values['encryption'] = 'md5';
          }
          if ( !isset($this->_values['port'])
               and isset($this->_values['auth_type'])
             ) {
-            if ( strtolower($this->_values['auth_type']) == 'typo3' ) {
+            if ( mb_strtolower($this->_values['auth_type'], 'UTF-8') == 'typo3' ) {
                $this->_values['port'] = '3306';
-            } elseif ( strtolower($this->_values['auth_type']) == 'ldap' ) {
+            } elseif ( mb_strtolower($this->_values['auth_type'], 'UTF-8') == 'ldap' ) {
                $this->_values['port'] = '389';
             }
          }
@@ -606,11 +606,11 @@ class cs_configuration_authentication_form extends cs_rubric_form {
     */
    function _checkValues () {
       // check choosen auth source
-      if (strlen($this->_form_post['auth_source']) == 2 and $this->_form_post['auth_source'] != -1) {
+      if (mb_strlen($this->_form_post['auth_source']) == 2 and $this->_form_post['auth_source'] != -1) {
          $this->_error_array[] = getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
          $this->_form->setFailure('auth_source','');
       }
-      if ( strlen($this->_form_post['auth_source']) == 2 and
+      if ( mb_strlen($this->_form_post['auth_source']) == 2 and
            $this->_form_post['auth_source'] == -1 and
            isset($this->_form_post['option']) and
            isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))
@@ -621,7 +621,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
 
       // CAS
       if ( !empty($this->_form_post['auth_type'])
-           and strtoupper($this->_form_post['auth_type']) == 'CAS'
+           and mb_strtoupper($this->_form_post['auth_type'], 'UTF-8') == 'CAS'
            and !( strstr($this->_form_post['host'],'https://')
                   or strstr($this->_form_post['host'],'http://')
                 )

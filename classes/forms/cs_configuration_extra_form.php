@@ -179,7 +179,7 @@ class cs_configuration_extra_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-         if ( strlen($this->_values['extra']) == 2 and $this->_values['extra'] != -1) {
+         if ( mb_strlen($this->_values['extra']) == 2 and $this->_values['extra'] != -1) {
             $this->_values['extra'] = -1;
          }
          if ( !empty($this->_form_post['description_hidden']) ) {
@@ -195,11 +195,11 @@ class cs_configuration_extra_form extends cs_rubric_form {
     */
    function _checkValues () {
       // check choosen mail text
-      if (strlen($this->_form_post['extra']) == 2 and $this->_form_post['extra'] != -1) {
+      if (mb_strlen($this->_form_post['extra']) == 2 and $this->_form_post['extra'] != -1) {
          $this->_error_array[] = getMessage('CONFIGURATION_EXTRA_CHOICE_ERROR');
          $this->_form->setFailure('extra','');
       }
-      if ( strlen($this->_form_post['extra']) == 2 and
+      if ( mb_strlen($this->_form_post['extra']) == 2 and
            $this->_form_post['extra'] == -1 and
            isset($this->_form_post['option']) and
            isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))

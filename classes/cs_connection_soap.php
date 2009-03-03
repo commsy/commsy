@@ -45,6 +45,9 @@ class cs_connection_soap {
       $this->_environment = $environment;
    }
 
+   // ------------
+   // --->UTF8<---
+   // Kann  beides entfallen, sobald die Umstellung intern durch ist.
    private function _encode_input ($value) {
       return utf8_decode($value);
    }
@@ -52,6 +55,8 @@ class cs_connection_soap {
    private function _encode_output ($value) {
       return utf8_encode($value);
    }
+   // --->UTF8<---
+   // ------------
 
    public function getGuestSession($portal_id) {
       if ( empty($portal_id) ) {
@@ -932,7 +937,7 @@ class cs_connection_soap {
                      foreach ($extra_xml_object->children() as $key => $extra_xml) {
                         $extra_xml = $this->_encode_input($extra_xml);
                         if ( $key == 'study_log' ) {
-                           $xml .= '<study_log>'.htmlentities($extra_xml).'</study_log>';
+                           $xml .= '<study_log>'.htmlentities($extra_xml, ENT_NOQUOTES, 'UTF-8').'</study_log>';
                         }
                      }
                      if ( !empty($xml) ) {
@@ -1284,7 +1289,7 @@ class cs_connection_soap {
                if ($item_list_xml != '<items_list></items_list>') {
                   $item_list_xml = str_replace('<deletion_date></deletion_date>','',$item_list_xml);
                   $item_list_xml = str_replace('<deleter_id></deleter_id>','',$item_list_xml);
-                  $item_list_xml = preg_replace('$<context_id>[\d]*</context_id>$','',$item_list_xml);
+                  $item_list_xml = preg_replace('~<context_id>[\d]*</context_id>~u','',$item_list_xml);
                   $result .= $item_list_xml;
                }
                $result .= '</room_item>'.LF;

@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -710,10 +710,10 @@ class cs_todo_index_view extends cs_room_index_view {
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-	           if ( stristr(strtolower($file->getFilename()),'png')
-	                 or stristr(strtolower($file->getFilename()),'jpg')
-	                 or stristr(strtolower($file->getFilename()),'jpeg')
-	                 or stristr(strtolower($file->getFilename()),'gif')
+	           if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
 	               ) {
                       $this->_with_slimbox = true;
 	                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';

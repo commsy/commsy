@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -175,18 +175,18 @@ class cs_log_manager extends cs_manager {
       $text = 'NULL';
       if ( !empty($array['post_content']) ) {
          // warum zwei mal strtoupper ??? (TBD)
-         $post_text = strtoupper($array['post_content']);
-         $post_content_big = strtoupper($post_text);
-         if( !empty($post_content_big) and (stristr($post_content_big,'SELECT') !==false
-            or stristr( $post_content_big,'INSERT') !==false
-            or stristr($post_content_big, 'UPDATE') !==false)) {
+         $post_text = mb_strtoupper($array['post_content'], 'UTF-8');
+         $post_content_big = mb_strtoupper($post_text, 'UTF-8');
+         if( !empty($post_content_big) and (mb_stristr($post_content_big,'SELECT') !==false
+            or mb_stristr( $post_content_big,'INSERT') !==false
+            or mb_stristr($post_content_big, 'UPDATE') !==false)) {
            $text = $array['post_content'];
          }
       }
       if ( empty($array['user_item_id']) ) {
          $array['user_item_id'] = '0';
       }
-      if ( empty($array['iid']) or strtoupper($array['iid']) == 'NEW' ) {
+      if ( empty($array['iid']) or mb_strtoupper($array['iid'], 'UTF-8') == 'NEW' ) {
          $array['iid'] = '0';
       }
       $query = 'INSERT DELAYED INTO log SET '.

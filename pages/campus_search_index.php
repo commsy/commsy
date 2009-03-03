@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -268,7 +268,7 @@ $buzzword_manager->select();
 $buzzword_list = $buzzword_manager->get();
 $count_all = 0;
 
-/*Durchführung möglicher Einschränkungen*/
+/*DurchfÃ¼hrung mÃ¶glicher EinschrÃ¤nkungen*/
 foreach($sel_array as $rubric => $value){
    $label_manager = $environment->getManager($rubric);
    $label_manager->setContextLimit($environment->getCurrentContextID());
@@ -285,7 +285,7 @@ foreach ($rubric_array as $rubric) {
    $rubric_ids = array();
    $rubric_list = new cs_list();
    $rubric_manager = $environment->getManager($rubric);
-   /*Vorbereitung der Manager und Abzählen aller Einträge */
+   /*Vorbereitung der Manager und AbzÃ¤hlen aller EintrÃ¤ge */
    if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
       $rubric_manager->setContextLimit($environment->getCurrentContextID());
    }

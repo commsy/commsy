@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -25,9 +25,9 @@
 function del_dos_line_feeds ($file) {
    $retour = false;
    $file_string = file_get_contents($file);
-   if (preg_match('/<?[PHP|php]+\r\r/',$file_string)) {
-      $file_string = preg_replace('/\r\n?/',"\n",$file_string);
-      $file_string = preg_replace('/\n\n?/',"\n",$file_string);
+   if (preg_match('~<?[PHP|php]+\r\r~u',$file_string)) {
+      $file_string = preg_replace('~\r\n?~u',"\n",$file_string);
+      $file_string = preg_replace('~\n\n?~u',"\n",$file_string);
       $file_string = trim($file_string);
       if (@file_put_contents($file,$file_string)) {
          echo($file.' success<br/>'."\n");
@@ -46,15 +46,15 @@ function runFilesInDir ($directory) {
    while (false !== ($entry = readdir($directory_handle))) {
       if ( $entry != '.'
            and $entry != '..'
-           and !stristr($entry,'CVSROOT')
-           and !stristr($entry,'lib')
-           and !stristr($entry,'TestSource')
-           and !stristr($entry,'var')
-           and !stristr($entry,'CVS')
+           and !mb_stristr($entry,'CVSROOT')
+           and !mb_stristr($entry,'lib')
+           and !mb_stristr($entry,'TestSource')
+           and !mb_stristr($entry,'var')
+           and !mb_stristr($entry,'CVS')
            and is_dir($directory.'/'.$entry)
          ) {
          $do = $do or runFilesInDir($directory.'/'.$entry);
-      } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+      } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
          $do = $do or del_dos_line_feeds($directory.'/'.$entry);
       }
    }

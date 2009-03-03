@@ -1,8 +1,8 @@
 <?php
 $message["MYAREA_ACCOUNT"]["de"] = "Kennung";
-$message["MYAREA_ACCOUNT_CHANGE"]["de"] = "Kennung ändern";
+$message["MYAREA_ACCOUNT_CHANGE"]["de"] = "Kennung Ã¤ndern";
 $message["MYAREA_ACCOUNT_PROFIL"]["de"] = "Meine Profildaten";
-$message["MYAREA_AUTH_PASSWORD_SET"]["de"] = "Passwort ändern";
+$message["MYAREA_AUTH_PASSWORD_SET"]["de"] = "Passwort Ã¤ndern";
 $message["MYAREA_CHANGE_MY_ACTUAL_ROOMS"]["de"] = "Raum wechseln:";
 $message["MYAREA_CLIPBOARD_HEADER"]["de"] = "Kopien";
 $message["MYAREA_CLIPBOARD_HEADER_1"]["de"] = "Kopie";
@@ -16,11 +16,11 @@ $message["MYAREA_LOGIN_AS_GUEST"]["de"] = "Als Gast im Raum";
 $message["MYAREA_LOGIN_BUTTON"]["de"] = "Anmelden";
 $message["MYAREA_LOGIN_NOT_LOGGED_IN"]["de"] = "Nicht angemeldet";
 $message["MYAREA_LOGIN_PASSWORD_FORGET_LINK"]["de"] = "Passwort vergessen?";
-$message["MYAREA_LOGIN_TO_ALL_PORTALS"]["de"] = "Server (Portalübersicht)";
-$message["MYAREA_LOGIN_TO_OWN_ROOM"]["de"] = "Mein persönlicher Raum";
-$message["MYAREA_LOGIN_TO_PORTAL_OVERVIEW"]["de"] = "Raumübersicht";
+$message["MYAREA_LOGIN_TO_ALL_PORTALS"]["de"] = "Server (PortalÃ¼bersicht)";
+$message["MYAREA_LOGIN_TO_OWN_ROOM"]["de"] = "Mein persÃ¶nlicher Raum";
+$message["MYAREA_LOGIN_TO_PORTAL_OVERVIEW"]["de"] = "RaumÃ¼bersicht";
 $message["MYAREA_LOGOUT"]["de"] = "Abmelden";
-$message["MYAREA_MY_ACTUAL_ROOMS"]["de"] = "Meine aktuellen Räume";
+$message["MYAREA_MY_ACTUAL_ROOMS"]["de"] = "Meine aktuellen RÃ¤ume";
 $message["MYAREA_MY_COPIES"]["de"] = "Meine Kopien";
 $message["MYAREA_MY_PROFILE"]["de"] = "Mein Profil";
 $message["MYAREA_PASSWORD"]["de"] = "Passwort";

@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -106,7 +106,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
         if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
            $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
         } else {
-           switch ( strtoupper($rubric) ){
+           switch ( mb_strtoupper($rubric, 'UTF-8') ){
               case 'ANNOUNCEMENT':
                  $select_array[$i]['text'] = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                  break;

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -54,7 +54,7 @@ if (!empty($_GET['cid'])) {
 
 .panelContent{
    <?php
-   $current_browser = strtolower($environment->getCurrentBrowser());
+   $current_browser = mb_strtolower($environment->getCurrentBrowser(), 'UTF-8');
    $current_browser_version = $environment->getCurrentBrowserVersion();
    if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.')) or (strstr($current_browser_version,'7.'))) ){
       echo('margin:-2px 0px 2px 0px;');
@@ -162,7 +162,7 @@ div.index_forward_links{
 div.right_box_main{
    border: 1px solid <?php echo($color['tabs_background'])?>;
    <?php
-   $current_browser = strtolower($environment->getCurrentBrowser());
+   $current_browser = mb_strtolower($environment->getCurrentBrowser(), 'UTF-8');
    $current_browser_version = $environment->getCurrentBrowserVersion();
    if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.')) or (strstr($current_browser_version,'7.'))) ){
       echo('margin:-2px 0px 0px 0px;');

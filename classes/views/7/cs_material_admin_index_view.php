@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -228,7 +228,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
          $html .='<div id="commsy_panels">'.LF;
          $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
          $tempMessage = '';
-         switch ( strtoupper($this->_environment->getCurrentModule()) ) {
+         switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
             case 'ANNOUNCEMENT':
                $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
                break;
@@ -316,7 +316,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
          $html .='</div>'.LF;
       }
 
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width= ' width:100%; padding-right:10px;';

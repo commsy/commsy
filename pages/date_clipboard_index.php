@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -129,9 +129,9 @@ if($command == 'paste') {
          $import_date = $import_list->getFirst();
          $converted_day_start = convertDateFromInput($import_date->getStartingDay(),$environment->getSelectedLanguage());
          if ($converted_day_start['conforms'] == TRUE) {
-            $year = substr($converted_day_start['datetime'],0,4);
-            $month = substr($converted_day_start['datetime'],5,2);
-            $day = substr($converted_day_start['datetime'],8,2);
+            $year = mb_substr($converted_day_start['datetime'],0,4);
+            $month = mb_substr($converted_day_start['datetime'],5,2);
+            $day = mb_substr($converted_day_start['datetime'],8,2);
             $d_time = mktime ( 3, 0, 0, $month, $day, $year );
             $thisdate = date ( "Ymd", $d_time );
             $wday = date ( "w", $d_time );
@@ -235,7 +235,7 @@ if (!empty($date_id_array)) {
       }
 }
 
-// Termine anderer Räume
+// Termine anderer RÃ¤ume
 $room_sort = $rooms->getFirst();
 while ($room_sort) {
    if (!empty($date_id_array)) {

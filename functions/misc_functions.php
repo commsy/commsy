@@ -56,16 +56,16 @@ function Debug_GetBacktrace()
            else
            {
                $v = (string) @$v;
-               $str = htmlspecialchars(substr($v,0,$MAXSTRLEN));
-               if (strlen($v) > $MAXSTRLEN) $str .= '...';
+               $str = htmlspecialchars(mb_substr($v,0,$MAXSTRLEN), ENT_NOQUOTES, 'UTF-8');
+               if (mb_strlen($v) > $MAXSTRLEN) $str .= '...';
                $args[] = "\"".$str."\"";
            }
        }
        $s .= $arr['function'].'('.implode(', ',$args).')</font>';
        $Line = (isset($arr['line'])? $arr['line'] : "unknown");
        $File = (isset($arr['file'])? $arr['file'] : "unknown");
-       $s .= sprintf("<font color=#808080 size=-1> # line %4d, file: <a href=\"file:/%s\">%s</a></font>",
-           $Line, $File, $File);
+       //$s .= sprintf("<font color=#808080 size=-1> # line %4d, file: <a href=\"file:/%s\">%s</a></font>",$Line, $File, $File);
+       $s .= "<font color=#808080 size=-1> # line " . $Line . ", file: <a href=\"file:/" . $File . "\">" . $File . "</a></font>";
        $s .= "\n";
    }
    $s .= '</pre>';
@@ -83,10 +83,10 @@ function Debug_GetBacktrace()
  */
 function getCommSyVersion() {
    $releasestring     = '$Name$';   // this is replaced on a "cvs release"
-   if (strlen($releasestring) > 9 ) {
-      $temp1 = stristr($releasestring, 'Rel');
-      $temp2 = substr($temp1, 4);
-      $temp3 = substr($temp2, 0, strlen($temp2)-1);
+   if (mb_strlen($releasestring) > 9 ) {
+      $temp1 = mb_stristr($releasestring, 'Rel');
+      $temp2 = mb_substr($temp1, 4);
+      $temp3 = mb_substr($temp2, 0, mb_strlen($temp2)-1);
       $temp4 = strtr($temp3, '-', '.');
       $commsyversion = $temp4;
    }
@@ -109,7 +109,7 @@ function getCommSyVersion() {
  * @return  returns true or false
  */
 function isOption( $option, $string ) {
-   return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option), $string ) == 0 || (strcmp( $option, htmlentities($string) )) == 0 );
+   return (strcmp( $option, $string ) == 0) || (strcmp( htmlentities($option, ENT_NOQUOTES, 'UTF-8'), $string ) == 0 || (strcmp( $option, htmlentities($string, ENT_NOQUOTES, 'UTF-8') )) == 0 );
 }
 
 /**
@@ -139,13 +139,13 @@ function array2XML ($array) {
             $data = $array[$key];
             // convert > and < to their html entities (gt; and &lt;)
             if ( strstr($data,"<") ) {
-               $data = ereg_replace("<", "%CS_LT;", $data);
+               $data = mb_ereg_replace("<", "%CS_LT;", $data);
             }
             if ( strstr($data,">") ) {
-               $data = ereg_replace(">", "%CS_GT;", $data);
+               $data = mb_ereg_replace(">", "%CS_GT;", $data);
             }
             if ( strstr($data,"&") ) {
-               $data = ereg_replace("&", "%CS_AND;", $data);
+               $data = mb_ereg_replace("&", "%CS_AND;", $data);
             }
          }
 
@@ -155,7 +155,7 @@ function array2XML ($array) {
          if ( is_int($key) ) {
             $key = 'XML_'.$key;
          }
-         $xml .= '<'.strtoupper($key).'>'.$data.'</'.strtoupper($key).'>'."\n";
+         $xml .= '<'.mb_strtoupper($key, 'UTF-8').'>'.$data.'</'.mb_strtoupper($key, 'UTF-8').'>'."\n";
       }
    }
    return $xml;
@@ -176,9 +176,9 @@ function XMLToArray($xml) {
    }
    foreach ($children as $element => $value) {
       if ( strstr($element,'XML_') ) {
-         $element_begin = substr($element,0,4);
+         $element_begin = mb_substr($element,0,4);
          if ($element_begin = 'XML_') {
-            $element = substr($element,4);
+            $element = mb_substr($element,4);
          }
       }
       if ($value instanceof SimpleXMLElement) {
@@ -194,13 +194,13 @@ function XMLToArray($xml) {
             } elseif ( isset($value) ) {
                // convert > and < to their html entities (gt; and &lt;)
                if ( strstr($value,"%CS_AND;") ) {
-                  $value = ereg_replace("%CS_AND;", "&", $value);
+                  $value = mb_ereg_replace("%CS_AND;", "&", $value);
                }
                if ( strstr($value,"%CS_LT;") ) {
-                  $value = ereg_replace("%CS_LT;", "<", $value);
+                  $value = mb_ereg_replace("%CS_LT;", "<", $value);
                }
                if ( strstr($value,"%CS_GT;") ) {
-                  $value = ereg_replace("%CS_GT;", ">", $value);
+                  $value = mb_ereg_replace("%CS_GT;", ">", $value);
                }
                $value = utf8_decode($value); // needed for PHP5
             } else {
@@ -347,7 +347,7 @@ function multi_array_merge ($array1, $array2) {
  */
 function isXMLcorrect ($xml) {
    $retour = false;
-   if (ereg("^<[_[:alnum:]]+>([ÄÖÜäöüßéó´`!'§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([ÄÖÜäöüßéó´`!'§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>[ÄÖÜäöüßéó´`!'§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([ÄÖÜäöüßéó´`!'§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([ÄÖÜäöüßéó´`!'§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>$",$xml)) {
+   if (mb_ereg("^<[_[:alnum:]]+>([Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÃ©Ã³Â´`!'Â§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÃ©Ã³Â´`!'Â§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>[Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÃ©Ã³Â´`!'Â§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÃ©Ã³Â´`!'Â§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*|(<[_[:alnum:]]+>([Ã„Ã–ÃœÃ¤Ã¶Ã¼ÃŸÃ©Ã³Â´`!'Â§$%&/()=?[:alnum:][:punct:][:blank:][:cntrl:]]*</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>)*)</[_[:alnum:]]+>$",$xml)) {
       $retour = true;
    } else {
       include_once('functions/error_functions.php');
@@ -434,12 +434,12 @@ function redirect_with_url ($url) {
       $post_content = '';
    }
    $log = false;
-   $post_content_big = strtoupper($post_content);
+   $post_content_big = mb_strtoupper($post_content, 'UTF-8');
    if ( empty($post_content_big)
         or ( !empty($post_content_big)
-             and ( stristr($post_content_big,'SELECT') !==false
-                   or stristr( $post_content_big, 'INSERT') !==false
-                   or stristr( $post_content_big, 'UPDATE') !==false
+             and ( mb_stristr($post_content_big,'SELECT') !==false
+                   or mb_stristr( $post_content_big, 'INSERT') !==false
+                   or mb_stristr( $post_content_big, 'UPDATE') !==false
                  )
            )
       ) {
@@ -543,7 +543,7 @@ function pr ($value) {
  */
 function pr_xml ($value) {
    echo('<pre>');
-   print_r(str_replace('&lt;','<br/>&lt;',htmlentities($value)));
+   print_r(str_replace('&lt;','<br/>&lt;',htmlentities($value, ENT_NOQUOTES, 'UTF-8')));
    echo('</pre>'.LF.LF);
 }
 

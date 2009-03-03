@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -132,7 +132,7 @@ if ( isset($_GET['cid']) ) {
 			if($enddate != '-1')
 			{
 	                $iCal->addToDo($title, //Title for the event
-                                        html_entity_decode(strip_tags($item->getDescription())), //Description
+                                        html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'), //Description
                                         '', // location
                                         strtotime($item->getCreationDate()), //Start time for the event (timestamp)
 
@@ -140,21 +140,21 @@ if ( isset($_GET['cid']) ) {
                                         $enddate, // End time for the event (timestamp)
                                         $percent, //The percent completion of the ToDo
 
-                                        5, //priority = 0–9
+                                        5, //priority = 0Â–9
                                         $status, //Status of the event (0 = TENTATIVE, 1 = CONFIRMED, 2 = CANCELLED)
                                         1, //(0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
 
-                                        array($item->getCreatorItem()->getFullname(),$item->getCreatorItem()->getEmail()),//The organizer – use array('Name', 'name@domain.com')
+                                        array($item->getCreatorItem()->getFullname(),$item->getCreatorItem()->getEmail()),//The organizer Â– use array('Name', 'name@domain.com')
                                         $attendee_array, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
-                                        $categories, //Array with Strings (example: array('Freetime','Party'))                                                1, //$weekstart  Startday of the Week ( 0 = Sunday – 6 = Saturday)
+                                        $categories, //Array with Strings (example: array('Freetime','Party'))                                                1, //$weekstart  Startday of the Week ( 0 = Sunday Â– 6 = Saturday)
 
                                         strtotime($item->getModificationDate()), // Last modification of the to-to (timestamp)
-                                        '', //Array with all the alarm information, “''” for no alarm
-                                        0, //frequency: 0 = once, secoundly – yearly = 1–7
+                                        '', //Array with all the alarm information, Â“''Â” for no alarm
+                                        0, //frequency: 0 = once, secoundly Â– yearly = 1Â–7
                                         $recurrency_end, // recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
-                                        1, // Interval for frequency (every 2,3,4 weeks…)
+                                        1, // Interval for frequency (every 2,3,4 weeksÂ…)
                                         array(), //Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
-                                        1, // Startday of the Week ( 0 = Sunday – 6 = Saturday)
+                                        1, // Startday of the Week ( 0 = Sunday Â– 6 = Saturday)
                                         '', //exeption dates: Array with timestamps of dates that should not be includes in the recurring event
                                         $path.'commsy.php?cid='.$_GET['cid'].'&mod=todo&fct=detail&iid='.$item->getItemID(), // optional URL for that event
 				       $language, // Language of the Strings
@@ -227,7 +227,7 @@ if ( isset($_GET['cid']) ) {
 								$item->getPlace(), // Location
 								1, // Transparancy (0 = OPAQUE | 1 = TRANSPARENT)
 								$categories, // Array with Strings
-								html_entity_decode(strip_tags($item->getDescription())), // Description
+								html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'), // Description
 								$title, // Title
 								1, // Class (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
 								$attendee_array, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])

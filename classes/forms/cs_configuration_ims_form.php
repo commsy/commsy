@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -78,7 +78,7 @@ class cs_configuration_ims_form extends cs_rubric_form {
       $this->_form->addEmptyLine();
       $val = ini_get('upload_max_filesize');
       $val = trim($val);
-      $last = $val[strlen($val)-1];
+      $last = $val[mb_strlen($val)-1];
       switch($last) {
          case 'k':
          case 'K':

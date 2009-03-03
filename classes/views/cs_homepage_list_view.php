@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -311,8 +311,8 @@ class cs_homepage_list_view extends cs_list_view_plain {
    function _compareWithSearchText ($value) {
       if ( !empty($this->_search_array) ){
              foreach ($this->_search_array as $search_text) {
-               if ( stristr($value,$search_text) ) {
-                     $value = preg_replace('/'.preg_quote($search_text,'/').'/i','*$0*',$value);
+               if ( mb_stristr($value,$search_text) ) {
+                     $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
                }
             }
          }

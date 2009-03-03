@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -213,10 +213,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Projektraums';
         $retour['DE']['AKKS']= 'Projektraum';
         $retour['DE']['DATS']= 'Projektraum';
-        $retour['DE']['NOMPL']= 'Projekträume';
-        $retour['DE']['GENPL']= 'Projekträume';
-        $retour['DE']['AKKPL']= 'Projekträume';
-        $retour['DE']['DATPL']= 'Projekträumen';
+        $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'project workspace';
         $retour['EN']['GENS']= 'project workspace';
@@ -273,10 +273,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Gemeinschaftsraums';
         $retour['DE']['AKKS']= 'Gemeinschaftsraum';
         $retour['DE']['DATS']= 'Gemeinschaftsraum';
-        $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-        $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-        $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-        $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+        $retour['DE']['NOMPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['GENPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['AKKPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['DATPL']= 'GemeinschaftsrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'community workspace';
         $retour['EN']['GENS']= 'community workspace';
@@ -325,10 +325,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Klassenraums';
         $retour['DE']['AKKS']= 'Klassenraum';
         $retour['DE']['DATS']= 'Klassenraum';
-        $retour['DE']['NOMPL']= 'Klassenräume';
-        $retour['DE']['GENPL']= 'Klassenräume';
-        $retour['DE']['AKKPL']= 'Klassenräume';
-        $retour['DE']['DATPL']= 'Klassenräumen';
+        $retour['DE']['NOMPL']= 'KlassenrÃ¤ume';
+        $retour['DE']['GENPL']= 'KlassenrÃ¤ume';
+        $retour['DE']['AKKPL']= 'KlassenrÃ¤ume';
+        $retour['DE']['DATPL']= 'KlassenrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'class workspace';
         $retour['EN']['GENS']= 'class workspace';
@@ -355,10 +355,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Schulraums';
         $retour['DE']['AKKS']= 'Schulraum';
         $retour['DE']['DATS']= 'Schulraum';
-        $retour['DE']['NOMPL']= 'Schulräume';
-        $retour['DE']['GENPL']= 'Schulräume';
-        $retour['DE']['AKKPL']= 'Schulräume';
-        $retour['DE']['DATPL']= 'Schulräumen';
+        $retour['DE']['NOMPL']= 'SchulrÃ¤ume';
+        $retour['DE']['GENPL']= 'SchulrÃ¤ume';
+        $retour['DE']['AKKPL']= 'SchulrÃ¤ume';
+        $retour['DE']['DATPL']= 'SchulrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'school workspace';
         $retour['EN']['GENS']= 'school workspace';
@@ -378,10 +378,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Projektraums';
         $retour['DE']['AKKS']= 'Projektraum';
         $retour['DE']['DATS']= 'Projektraum';
-        $retour['DE']['NOMPL']= 'Projekträume';
-        $retour['DE']['GENPL']= 'Projekträume';
-        $retour['DE']['AKKPL']= 'Projekträume';
-        $retour['DE']['DATPL']= 'Projekträumen';
+        $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+        $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'project workspace';
         $retour['EN']['GENS']= 'project workspace';
@@ -439,10 +439,10 @@ class cs_community_item extends cs_room_item {
         $retour['DE']['GENS']= 'Gemeinschaftsraums';
         $retour['DE']['AKKS']= 'Gemeinschaftsraum';
         $retour['DE']['DATS']= 'Gemeinschaftsraum';
-        $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-        $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-        $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-        $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+        $retour['DE']['NOMPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['GENPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['AKKPL']= 'GemeinschaftsrÃ¤ume';
+        $retour['DE']['DATPL']= 'GemeinschaftsrÃ¤umen';
         $retour['EN']['GENUS']= 'M';
         $retour['EN']['NOMS']= 'community workspace';
         $retour['EN']['GENS']= 'community workspace';
@@ -595,8 +595,8 @@ class cs_community_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -612,7 +612,7 @@ class cs_community_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub_func = strtoupper($rubric) . '_' . strtoupper($funct);
+         $temp_rub_func = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage = "";
          switch( $temp_rub_func )
          {
@@ -676,7 +676,7 @@ class cs_community_item extends cs_room_item {
          }
          $retour = $tempMessage;
 
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct) or $retour =='tbd'){
+         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8') or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
          }
@@ -696,10 +696,10 @@ class cs_community_item extends cs_room_item {
          $value_array = array();
       }
       if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
@@ -717,10 +717,10 @@ class cs_community_item extends cs_room_item {
          $value_array = array();
       }
       if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
@@ -740,8 +740,8 @@ class cs_community_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -758,17 +758,17 @@ class cs_community_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub_func = strtoupper($rubric).'_'.strtoupper($funct);
+         $temp_rub_func = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
          $tempMessage = "";
          switch( $temp_rub_func )
          {
             case 'ACCOUNT_EDIT':          // Raumeinstellungen, Kennungen, <ein Benutzer>, Bearbeiten
                $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_EDIT_FORM', $link);
                break;
-            case 'ACCOUNT_PREFERENCES':   // Raumeinstellungen, Kennungen, <ein Benutzer>, Einstellungen ändern
+            case 'ACCOUNT_PREFERENCES':   // Raumeinstellungen, Kennungen, <ein Benutzer>, Einstellungen Ã¤ndern
                $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_PREFERENCES_FORM', $link);
                break;
-            case 'ACCOUNT_STATUS':        // Raumeinstellungen, Kennungen, <ein Benutzer>, Status ändern
+            case 'ACCOUNT_STATUS':        // Raumeinstellungen, Kennungen, <ein Benutzer>, Status Ã¤ndern
                $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_STATUS_FORM', $link);
                break;
             case 'ANNOTATION_EDIT':
@@ -873,7 +873,7 @@ class cs_community_item extends cs_room_item {
             case 'RUBRIC_MAIL':
                $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_RUBRIC_MAIL_FORM', $link);
                break;
-            case 'SECTION_EDIT':   // Nutzungshinweise unter Materialien, <ein Material>, Abschnitt hinzufügen
+            case 'SECTION_EDIT':   // Nutzungshinweise unter Materialien, <ein Material>, Abschnitt hinzufÃ¼gen
                $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_SECTION_EDIT_FORM', $link);
                break;
             case 'TODO_EDIT':
@@ -920,9 +920,9 @@ class cs_community_item extends cs_room_item {
                break;
          }
          $retour = $tempMessage;
-         if ( $retour == 'USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct).'_FORM'
+         if ( $retour == 'USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8').'_FORM'
               or $retour == 'tbd'
-              or $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct).'_FORM'
+              or $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8').'_FORM'
             ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
@@ -944,8 +944,8 @@ class cs_community_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -962,7 +962,7 @@ class cs_community_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub = strtoupper($rubric);
+         $temp_rub = mb_strtoupper($rubric, 'UTF-8');
          $tempMessage = "";
          switch( $temp_rub )
          {
@@ -1005,7 +1005,7 @@ class cs_community_item extends cs_room_item {
          }
          $retour = $tempMessage;
 
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour =='tbd'){
+         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_EDIT_FORM' or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_FORM_COMMING_SOON');
          }
          }
@@ -1026,8 +1026,8 @@ class cs_community_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -1044,7 +1044,7 @@ class cs_community_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub = strtoupper($rubric);
+         $temp_rub = mb_strtoupper($rubric, 'UTF-8');
          $tempMessage = "";
          switch( $temp_rub )
          {
@@ -1102,7 +1102,7 @@ class cs_community_item extends cs_room_item {
          }
          $retour = $tempMessage;
 
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_INDEX' or $retour =='tbd'){
+         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_INDEX' or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMMING_SOON');
          }
          }

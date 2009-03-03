@@ -3,7 +3,7 @@
 //
 // Copyright (c)2002-2003 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -49,7 +49,7 @@
      $params = $environment->getCurrentParameterArray();
 
      //find images in string
-     $reg_exp = '/\<a\s{1}href=\"(.*)\"\s{1}t/';
+     $reg_exp = '~\<a\s{1}href=\"(.*)\"\s{1}t~u';
      preg_match_all($reg_exp, $output, $matches_array);
      $i = 0;
      $iids = array();
@@ -77,12 +77,14 @@
              copy('htdocs/images/'.$file->getIconFilename(),$icon);
              $output = str_replace('images/'.$file->getIconFilename(),$file->getIconFilename(), $output);
 
-             $thumb_name = $file->getFilename();
-             $point_position = strrpos($thumb_name,'.');
-             $thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , strlen($thumb_name));
-             $thumb_disk_name = $file->getDiskFileName();
-             $point_position = strrpos($thumb_disk_name,'.');
-             $thumb_disk_name = substr_replace ( $thumb_disk_name, '_thumb.png', $point_position , strlen($thumb_disk_name));
+             $thumb_name = $file->getFilename() . '_thumb';
+             //$point_position = mb_strrpos($thumb_name,'.');
+             //$thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , mb_strlen($thumb_name));
+             //$thumb_name = substr($thumb_name, 0, $point_position).'_thumb.png'.substr($thumb_name, $point_position+mb_strlen($thumb_name));
+             $thumb_disk_name = $file->getDiskFileName() . '_thumb';
+             //$point_position = mb_strrpos($thumb_disk_name,'.');
+             //$thumb_disk_name = substr_replace ( $thumb_disk_name, '_thumb.png', $point_position , mb_strlen($thumb_disk_name));
+             //$thumb_disk_name = substr($thumb_disk_name, 0, $point_position).'_thumb.png'.substr($thumb_disk_name, $point_position+mb_strlen($thumb_disk_name));
              if ( file_exists(realpath($thumb_disk_name)) ) {
                 copy($thumb_disk_name,$directory.'/'.$thumb_name);
                 $output = str_replace($match, $thumb_name, $output);
@@ -92,7 +94,7 @@
        $i++;
      }
 
-     preg_match_all('/\<img\s{1}style=" padding:5px;"\s{1}src=\"(.*)\"\s{1}a/', $output, $imgatt_array);
+     preg_match_all('~\<img\s{1}style=" padding:5px;"\s{1}src=\"(.*)\"\s{1}a~u', $output, $imgatt_array);
      $i = 0;
      foreach($imgatt_array[1] as $img)
      {
@@ -105,7 +107,7 @@
        foreach($filearray as $fi)
        {
           $imgname = strstr($fi,$imgatt_array[1][$i]);
-          $img = preg_replace('/cid\d{1,}_\d{1,}_/','',$img);
+          $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
 
            if($imgname != false)
          {
@@ -147,21 +149,21 @@
      }
 
      // thumbs_new
-     preg_match_all('/\<img(.*)src=\"((.*)_thumb.png)\"/', $output, $imgatt_array);
+     preg_match_all('~\<img(.*)src=\"((.*)_thumb.png)\"~u', $output, $imgatt_array);
      foreach($imgatt_array[2] as $img)
      {
        $img_old = $img;
        $img = str_replace('commsy.php/','',$img);
        $img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
        $img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-       $img = substr($img,0,strlen($img)/2);
-       $img = preg_replace('/cid\d{1,}_\d{1,}_/','',$img);
+       $img = mb_substr($img,0,mb_strlen($img)/2);
+       $img = preg_replace('~cid\d{1,}_\d{1,}_~u','',$img);
        $output = str_replace($img_old,$img,$output);
      }
 
      $output = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
      $output = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
-     $output = preg_replace('/cid\d{1,}_\d{1,}_/','',$output);
+     $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output);
      //write string into file
      fwrite($handle, $output);
      fclose($handle);

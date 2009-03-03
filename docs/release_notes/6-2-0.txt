@@ -9,7 +9,7 @@ Features (Nummern von SourceForge):
 2043000 	LDAP: erweitern
 2043045 	escapeshellcmd
 2035192 	Session Riding verhindern
-2032402 	Cron: nur aktive Räume
+2032402 	Cron: nur aktive RÃ¤ume
 2023554 	Passwort vergessen: nachgelagert via email
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/
 
@@ -17,12 +17,12 @@ Detailliertere Informationen: http://sourceforge.net/projects/commsy/
 Bugs (Nummern von SourceForge):
 -----
 Bugfix-Release:
-2082293  	Hilfe: Schriftgröße massiv zu klein
-2135415 	EN: Datumsformat in Ankündigungen
+2082293  	Hilfe: SchriftgrÃ¶ÃŸe massiv zu klein
+2135415 	EN: Datumsformat in AnkÃ¼ndigungen
 2135396 	Grammatikfehler
-2118864 	Personendarstellung im persönlichen Raum
+2118864 	Personendarstellung im persÃ¶nlichen Raum
 2057499 	Homepage: Bug nach Login
 1891972 	E-Mail: zerschossene Header
-2033969 	root: passwort ändern geht nicht
+2033969 	root: passwort Ã¤ndern geht nicht
 2040022 	Out of Service: Falscher Text
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/

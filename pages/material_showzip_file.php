@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -25,13 +25,13 @@ if ( !empty($_GET['iid']) and !empty($_GET['file']) ) {
    $file_manager = $environment->getFileManager();
    $file = $file_manager->getItem($_GET['iid']);
    $_GET['file'] = str_replace(" ", "%20", $_GET['file']);
-   $_GET['file'] = str_replace("ß", "%DF", $_GET['file']);
-   $_GET['file'] = str_replace("ü", "%FC", $_GET['file']);
-   $_GET['file'] = str_replace("ä", "%E4", $_GET['file']);
+   $_GET['file'] = str_replace("ÃŸ", "%DF", $_GET['file']);
+   $_GET['file'] = str_replace("Ã¼", "%FC", $_GET['file']);
+   $_GET['file'] = str_replace("Ã¤", "%E4", $_GET['file']);
    $location = './var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$_GET['file'];
 
    if ( file_exists($location) ) {
-      $extension = strtolower(substr(strrchr($_GET['file'],"."),1));
+      $extension = mb_strtolower(mb_substr(strrchr($_GET['file'],"."),1), 'UTF-8');
       if ( $extension != 'html' and $extension != 'htm' ) {
          $mimetype = $file_manager->getMime($_GET['file']);
          header('Content-type: '.$mimetype.'');

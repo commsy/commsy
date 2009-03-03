@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -101,7 +101,7 @@ if ($command != 'error') { // only if user is allowed to edit user
    $portal_language = $portal_user_item->getLanguage();
    $current_language = $translator->getSelectedLanguage();
    $change_language = false;
-   if ( strtoupper($portal_language) != strtoupper($current_language) ) {
+   if ( mb_strtoupper($portal_language, 'UTF-8') != mb_strtoupper($current_language, 'UTF-8') ) {
       if ( $portal_language == 'browser' ) {
          $portal_language = $environment->getBrowserLanguage();
          if ( empty($portal_language)

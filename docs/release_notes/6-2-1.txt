@@ -2,9 +2,9 @@ CommSy Version 6.2.1
 
 Features (Nummern von SourceForge):
 -----
-2149604  	Eingeschränkte Zuordnung
+2149604  	EingeschrÃ¤nkte Zuordnung
 2128360 	Aufgaben en Block als erledigt markieren
-2140266 	Vorlagen für GR
+2140266 	Vorlagen fÃ¼r GR
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/
 
 

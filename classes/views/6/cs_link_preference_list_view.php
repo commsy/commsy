@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -73,11 +73,11 @@ var $_configuration_rubric_list = NULL;
       $context_item = $this->_environment->getCurrentContextItem();
       $html = '                     <td width="25%" style="vertical-align: baseline; padding-bottom:10px;">'.LF;
       if ( !$context_item->isClosed()
-          or ( stristr($item->getLink(),'configuration')
-               and stristr($item->getLink(),'archive')
+          or ( mb_stristr($item->getLink(),'configuration')
+               and mb_stristr($item->getLink(),'archive')
              )
-          or ( stristr($item->getLink(),'configuration')
-                and stristr($item->getLink(),'preferences')
+          or ( mb_stristr($item->getLink(),'configuration')
+                and mb_stristr($item->getLink(),'preferences')
               )
        ) {
          $html .= '                        '.'<span style="font-weight:bold">'.$item->getLink().'</span>'.LF;
@@ -88,11 +88,11 @@ var $_configuration_rubric_list = NULL;
 
       $html .= '                     <span style="width:70%; vertical-align: baseline;">'.LF;
       if ( !$context_item->isClosed()
-          or ( stristr($item->getLink(),'configuration')
-               and stristr($item->getLink(),'archive')
+          or ( mb_stristr($item->getLink(),'configuration')
+               and mb_stristr($item->getLink(),'archive')
              )
-          or ( stristr($item->getLink(),'configuration')
-                and stristr($item->getLink(),'preferences')
+          or ( mb_stristr($item->getLink(),'configuration')
+                and mb_stristr($item->getLink(),'preferences')
               )
        ) {
          $html .= '                        '.$item->getLinkIcon().' '.$item->getDescription().LF;

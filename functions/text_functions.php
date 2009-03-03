@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -32,11 +32,11 @@ function _text_get2php ($text) {
 
 function _text_form2php ($text) {
    // Fix up line feed characters from different clients (Windows, Mac => Unix)
-   $text = preg_replace('/\r\n?/', "\n", $text);
+   $text = preg_replace('~\r\n?~u', "\n", $text);
    $text = trim($text);
 
    // security out of fckeditor
-   // dann muss die ganze Ausgabenseite überdacht werden
+   // dann muss die ganze Ausgabenseite Ã¼berdacht werden
    /*
    preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$',$text,$values);
    foreach ($values as $key => $value) {
@@ -62,7 +62,7 @@ function _text_form2php ($text) {
 }
 
 function _text_db2php ($text) { 
-//   // dies ist nötig auf grund von mysql_real_escape_string in _text_php2db
+//   // dies ist nÃ¶tig auf grund von mysql_real_escape_string in _text_php2db
 //   $text = str_replace('\n','COMMSYLN',$text);
 //   $text = str_replace('\*','COMMSYSTERN',$text);
 //   $text = str_replace('\_','COMMSYSTRICH',$text);
@@ -71,6 +71,17 @@ function _text_db2php ($text) {
 //   $text = str_replace('\#','COMMSYSCHWEINEGATTER',$text);
 //   $text = str_replace('\(:','COMMSYWIKIBEGIN',$text);
 
+   // ------------
+   // --->UTF8<---
+   // $text kommt als utf8 kodiert aus der Datenbank
+   // nur konvertieren, solange CommSy intern noch nicht
+   // utf8 verwendet wird.
+   //
+   // $text = iconv("UTF-8", "ISO-8859-1", $text);
+   //
+   // --->UTF8<---
+   // ------------
+   
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
    global $c_jsmath_enable;
@@ -79,7 +90,7 @@ function _text_db2php ($text) {
       ) {
       if ( strstr($text,'{$') ) {
          $matches = array();
-         $exp = '/\\{\\$(.*?)\\$\\}/e';
+         $exp = '~\\{\\$(.*?)\\$\\}~eu';
          $found = preg_match_all($exp,$text,$matches);
          if ( $found > 0 ) {
             foreach ($matches[0] as $key => $value) {
@@ -91,7 +102,7 @@ function _text_db2php ($text) {
    }
 
 //   $text = stripslashes($text);
-   $text = preg_replace('/\\\(?!\*|_|!|-|#|\(:|n)/', '', $text);
+   $text = preg_replace('~\\\(?!\*|_|!|-|#|\(:|n)~u', '', $text);
 
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
@@ -111,11 +122,30 @@ function _text_db2php ($text) {
 //   $text = str_replace('COMMSYMINUS','\-',$text);
 //   $text = str_replace('COMMSYSCHWEINEGATTER','\#',$text);
 //   $text = str_replace('COMMSYWIKIBEGIN','\(:',$text);
+
+   // ------------
+   // --->UTF8<---
+   // Testweise, um Daten utf-8 kodiert im System zu haben.
+   //
+   //$text = iconv("ISO-8859-1", "UTF-8", $text);
+   //
+   // --->UTF8<---
+   // ------------
+
    return $text;
 }
 
 function _text_file2php ($text) {
    $text = str_replace('&quot;','"',$text);
+   // ------------
+   // --->UTF8<---
+   // Umkodierung, sobald interne Verwendung und Kodierung der eingelesenen
+   // Dateien voneinander abweichen.
+   //
+   //$text = iconv("UTF-8", "ISO-8859-1", $text);
+   //
+   // --->UTF8<---
+   // ------------ 
    return $text;
 }
 
@@ -136,6 +166,28 @@ function _text_php2db ($text) {
       $environment =  $this->_environment;
    }
    $db_connection = $environment->getDBConnector();
+   
+   // ------------
+   // --->UTF8<---
+   // $text muss als utf8 kodiert in die Datenbank
+   // nur konvertieren, solange CommSy intern noch nicht
+   // utf8 verwendet wird.
+   //
+   // $text = iconv("ISO-8859-1", "UTF-8", $text);
+   //
+   // --->UTF8<---
+   // ------------
+   
+   
+   // ------------
+   // --->UTF8<---
+   // Testweise, um Daten utf-8 kodiert im System zu haben.
+   //
+   //$text = iconv("UTF-8", "ISO-8859-1", $text);
+   //
+   // --->UTF8<---
+   // ------------
+   
    $text = $db_connection->text_php2db($text);
    return $text;
 }
@@ -197,6 +249,16 @@ function _text_php2file ($text) {
    $text = str_replace('"','&quot;',$text);
    $text = str_replace('&lt;','<',$text);
    $text = str_replace('&gt;','>',$text);
+   // ------------
+   // --->UTF8<---
+   // Umkodierung, sobald interne Verwendung und Kodierung der eingelesenen
+   // Dateien voneinander abweichen.
+   //
+   //$text = iconv("ISO-8859-1", "UTF-8", $text);
+   //
+   // --->UTF8<---
+   // ------------
+   
    return $text;
 }
 
@@ -206,7 +268,16 @@ function _text_php2file ($text) {
 function _text_php2rss ($text) {
    $text = str_replace('&','&amp;',$text);
    $text = str_replace('<','&lt;',$text);
-   $text = utf8_encode($text);
+   
+   // ------------
+   // --->UTF8<---
+   // kann nach umstellung entfallen
+   //
+   //$text = utf8_encode($text);
+   //
+   // --->UTF8<---
+   // ------------
+
    return $text;
 }
 
@@ -229,8 +300,10 @@ define ("FROM_GET", 14);
 
 function encode ($mode, $value) {
    if (!empty($value)) {
-      if (is_array($value) and count($value) > 0) {
-         return _array_encode($value,$mode);
+      if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
+         if(count($value) > 0){  // werden leere Arrays an die _text_encode weitergegeben
+            return _array_encode($value,$mode);
+         }
       } else {
          return _text_encode($value,$mode);
       }
@@ -366,8 +439,10 @@ function _array_encode ($array, $mode) {
 
    $retour_array = array();
    foreach ($array as $key => $value) {
-      if (is_array($value) and count($value) > 0) {
-         $retour_array[$key] = _array_encode($value, $mode);
+      if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
+         if(count($value) > 0){  // werden leere Arrays an die _text_encode weitergegeben
+            $retour_array[$key] = _array_encode($value, $mode);
+         }
       } else {
          $retour_array[$key] = _text_encode($value, $mode);
       }
@@ -383,12 +458,12 @@ function _format_html_long ($text) {
    $list_open = false;
 
    //split up paragraphs in lines
-   $lines = preg_split('/\s*\n/', $text);
+   $lines = preg_split('~\s*\n~u', $text);
    foreach ($lines as $line) {
       $line_html = '';
       $hr_line = false;
       //find horizontal rulers
-      if (preg_match('/^--(-+)\s*($|\n|<)/', $line)) {
+      if (preg_match('~^--(-+)\s*($|\n|<)~u', $line)) {
          if ($list_open) {
             $line_html.= _close_list($last_list_type);
             $list_open = false;
@@ -398,7 +473,7 @@ function _format_html_long ($text) {
       }
 
       //process lists
-      elseif (!($hr_line) and preg_match('/^(-|#)(\s*)(.*)/s', $line, $matches)) {
+      elseif (!($hr_line) and preg_match('~^(-|#)(\s*)(.*)~su', $line, $matches)) {
          $list_type = $matches[1];
 
          if (!$list_open) {
@@ -444,13 +519,19 @@ function _format_html_long ($text) {
  * &gt; -> >
  */
 function _format_html_entity_decode ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $retour = $text;
-   $retour = html_entity_decode($retour);
+   $retour = html_entity_decode($retour, ENT_NOQUOTES, 'UTF-8');
    $retour = str_replace("&#039;","'",$retour); // html_entity_decode doesn't decode "&#039;"
    return $retour;
 }
 
 function _decode_backslashes ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $retour = $text;
    $retour = str_replace("\*","*",$retour);
    $retour = str_replace("\_","_",$retour);
@@ -461,6 +542,9 @@ function _decode_backslashes ($text) {
 }
 
 function _br_with_nl ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $text = str_replace('<br />','<br />'."\n",$text);
    return $text;
 }
@@ -469,6 +553,9 @@ function _br_with_nl ($text) {
 returns the html-code for opening a list
 */
 function _open_list ($list_type) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $html = '';
    if ($list_type == '#') {
       $html.= '<ol>'."\n";
@@ -483,6 +570,9 @@ function _open_list ($list_type) {
 returns the html-code for closing a list
 */
 function _close_list ($list_type) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $html = '';
    if ($list_type == '#') {
       $html.= '</ol>'."\n";
@@ -494,42 +584,51 @@ function _close_list ($list_type) {
 }
 
 function _display_headers ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $matches = array();
 
-   while (preg_match('/(^|\n)(\s*)(!+)(\s*)(.*)/', $text, $matches)) {
-      $bang_number = strlen($matches[3]);
+   while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $text, $matches)) {
+      $bang_number = mb_strlen($matches[3]);
       $head_level = max(5 - $bang_number, 1); //normal (one '!') is h4, biggest is h1; The more '!', the bigger the heading
       $heading = '<h'.$head_level.'>'."\n   ".$matches[5]."\n".'</h'.$head_level.'>'."\n";
-      $text = preg_replace('/(^|\n)(\s*)(!+)(\s*)(.*)/', $heading, $text, 1);
+      $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, $text, 1);
    }
 
    return $text;
 }
 
 function _emphasize_text ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    // fett
-   $text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style="font-weight:bold;">$2</span>$3', $text);
+   $text = preg_replace('~(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])~u', '$1<span style="font-weight:bold;">$2</span>$3', $text);
    // kursiv
-   $text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\_([^_]+)\_($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style=font-style:italic;>$2</span>$3', $text);
+   $text = preg_replace('~(^|\n|\t|\s|[ >\/_[{(])\_([^_]+)\_($|\n|\t|[ <\/_.)\]},!?;])~u', '$1<span style=font-style:italic;>$2</span>$3', $text);
    return $text;
 }
 
 function activate_urls ($text) {
-   $url_string = '§((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   $url_string = '^((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
    $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
-   $url_string .= '([.?:),;!]*($|\s|<|&quot;))§'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+   $url_string .= '([.?:),;!]*($|\s|<|&quot;))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
    $text = preg_replace($url_string, '<a href="$1" target="_blank">$1</a>$4', $text);
 
-   $text = preg_replace('$<a href="www$','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
+   $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
 
    // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-   $text = preg_replace('§( |^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))§', ' <a href="mailto:$3">$3</a>', $text);
+   $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', ' <a href="mailto:$3">$3</a>', $text);
    return $text;
 }
 
 /** Wenn im Text Gruppierungen von zwei oder mehr Leerzeichen
  *  vorkommen, werden diese durch entsprechende &nbsp; Tags
- *  ersetzt, um die Ursprüngliche formatierung zu bewaren
+ *  ersetzt, um die UrsprÃ¼ngliche formatierung zu bewaren
  *
  *  !WIRD ZUR ZEIT NICHT VERWENDET!
  *
@@ -538,20 +637,23 @@ function activate_urls ($text) {
  */
 
 function _preserve_whitespaces($text) {
-  preg_match_all('/ {2,}/', $text, $matches);
-  $matches = array_unique($matches[0]);
-  rsort($matches);
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   preg_match_all('~ {2,}~u', $text, $matches);
+   $matches = array_unique($matches[0]);
+   rsort($matches);
 
-  foreach ($matches as $match) {
-    $replacement = ' ';
+   foreach ($matches as $match) {
+      $replacement = ' ';
 
-    for ($x = 1; $x < strlen($match); $x++) {
-      $replacement .= '&nbsp;';
-    }
-    $text = str_replace($match, $replacement, $text);
-  }
+      for ($x = 1; $x < mb_strlen($match); $x++) {
+         $replacement .= '&nbsp;';
+      }
+      $text = str_replace($match, $replacement, $text);
+   }
 
-  return $text;
+   return $text;
 }
 
 /** returns a string that is x characters at the most but won't
@@ -567,24 +669,24 @@ function chunkText ($text, $length) {
    $last_tag  = ':)';
 
    $text = trim($text);
-   $mySubstring = preg_replace('/^(.{1,$length})[ .,].*/', '\\1', $text); // ???
-   if (strlen($mySubstring) > $length) {
-      $mySubstring = substr($text, 0, $length);
+   $mySubstring = preg_replace('~^(.{1,$length})[ .,].*~u', '\\1', $text); // ???
+   if (mb_strlen($mySubstring) > $length) {
+      $mySubstring = mb_substr($text, 0, $length);
       if ( strstr($text,$first_tag)
            and strstr($text,$last_tag)
          ) {
-         if ( strrpos($mySubstring,$last_tag) < strrpos($mySubstring,$first_tag) ) {
-            $mySubstring2 = substr($text, $length);
-            $mySubstring .= substr($mySubstring2,0,strpos($mySubstring2,$last_tag)+2);
+         if ( mb_strrpos($mySubstring,$last_tag) < mb_strrpos($mySubstring,$first_tag) ) {
+            $mySubstring2 = mb_substr($text, $length);
+            $mySubstring .= mb_substr($mySubstring2,0,mb_strpos($mySubstring2,$last_tag)+2);
             $mySubstring .= ' ';
          }
       }
       if ( strstr($mySubstring,' ') ) {
-         $mySubstring = substr($mySubstring,0,strrpos($mySubstring,' '));
+         $mySubstring = mb_substr($mySubstring,0,mb_strrpos($mySubstring,' '));
       }
       $mySubstring .= ' ...';
    }
-   $mySubstring = preg_replace('/\n/', ' ', $mySubstring);
+   $mySubstring = preg_replace('~\n~u', ' ', $mySubstring);
    return $mySubstring;
 }
 /** returns an URL that is x characters at the most
@@ -596,6 +698,9 @@ function chunkText ($text, $length) {
  * @return text for replacement in preg_replace_function
  */
 function spezial_chunkURL ($text) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $text = $text[1];
    $text = chunkText($text,45);
    return '">'.$text.'</a>';
@@ -609,7 +714,7 @@ function parseText2Id ($text) {
    $matches_with_text = array();
 
    // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-   preg_match_all('|([\w.'.SPECIAL_CHARS.'-]+)\[(\d+)\]|i', $text, $matches_with_text);
+   preg_match_all('^([\w.'.SPECIAL_CHARS.'-]+)\[(\d+)\]^iu', $text, $matches_with_text);
    if (count($matches_with_text[0]) > 0) {
       $result = $text;
       $word_part = $matches_with_text[1];
@@ -620,12 +725,12 @@ function parseText2Id ($text) {
          if ($reference < 100) {
             $params = array();
             $params['iid'] = $current_item_id;
-            $result = preg_replace('/'.$word.'\['.$reference.'\]/i', ahref_curl($environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
+            $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
             unset($params);
          } else {
             $params = array();
             $params['iid'] = $reference;
-            $result = preg_replace('/'.$word.'\['.$reference.'\]/i', ahref_curl($environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
+            $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
             unset($params);
          }
       }
@@ -633,7 +738,7 @@ function parseText2Id ($text) {
    }
 
    // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
-   preg_match_all('|([.\w'.SPECIAL_CHARS.'-]+)\[(https?:\/\/['.RFC1738_CHARS.']*)\]|i', $text, $matches_with_urls);//preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
+   preg_match_all('^([.\w'.SPECIAL_CHARS.'-]+)\[(https?:\/\/['.RFC1738_CHARS.']*)\]^iu', $text, $matches_with_urls);//preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
    if (count($matches_with_urls[0]) > 0) {
       $result = $text;
       $word_part = $matches_with_urls[1];
@@ -642,11 +747,11 @@ function parseText2Id ($text) {
          $word = $word_part[$i];
          $http = $http_part[$i];
          if (!empty($word)) {
-            if (!stristr($word,'|')) {
-               $result = preg_replace('%'.$word.'\['.$http.'\]%', '<a href="'.$http.'" target="_blank">'.$word.'</a>', $result);
+            if (!mb_stristr($word,'|')) {
+               $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$word.'</a>', $result);
             }
          } else {
-            $result = preg_replace('%'.$word.'\['.$http.'\]%', '<a href="'.$http.'" target="_blank">'.$http_part[$i].'</a>', $result);
+            $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$http_part[$i].'</a>', $result);
          }
       }
       $text = $result;
@@ -654,7 +759,7 @@ function parseText2Id ($text) {
 
    // long urls: [<url>|<sentence with spaces>|<flag>] becomes a link to <url> under <sentence with spaces>
    // <flag> cann be "internal" or "_blank". Internal opens <url> in this browser window, _blank uses another
-   preg_match_all('§\[(http?://['.RFC1738_CHARS.']*)\|([\w'.SPECIAL_CHARS.' -]+)\|(\w+)\]§', $text, $matches_with_long_urls); //
+   preg_match_all('^\[(http?://['.RFC1738_CHARS.']*)\|([\w'.SPECIAL_CHARS.' -]+)\|(\w+)\]^u', $text, $matches_with_long_urls); //
    if (count($matches_with_long_urls[0]) > 0) {
       $result = $text;
       $http_part = $matches_with_long_urls[1];
@@ -700,7 +805,7 @@ function parseText2Id ($text) {
    }*/
 
    // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
-   preg_match_all('/\[(\d+)\]/', $text, $matches_stand_alone);//(^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
+   preg_match_all('~\[(\d+)\]~u', $text, $matches_stand_alone);//(^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
    $matches_stand_alone = array_unique($matches_stand_alone[1]);
    if (!empty($matches_stand_alone)) {
       $result = $text;
@@ -708,13 +813,13 @@ function parseText2Id ($text) {
          if ($item <= 100) {
             $params = array();
             $params['iid'] = $current_item_id;
-            $result = preg_replace('/\['.$item.'\]/i', ahref_curl($environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
+            $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
             unset($params);
          }
          else {
             $params = array();
             $params['iid'] = $item;
-            $result = preg_replace('/\['.$item.'\]/i', ahref_curl($environment->getCurrentContextID(), 'content', 'detail', $params, "[".$item."]", '', '', ''), $result);
+            $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($environment->getCurrentContextID(), 'content', 'detail', $params, "[".$item."]", '', '', ''), $result);
             unset($params);
          }
       }
@@ -729,14 +834,14 @@ function parseText2Id ($text) {
  *
  * Needed to ensure proper searching in CommSy with standard PHP settings
  * When the 'locale' setting of PHP is not set properly, the search for language specific characters
- * like 'ä', 'ü', 'ö', 'á' etc doesn't work correct, because the standard PHP strtoupper doesn't translate
+ * like 'Ã¤', 'Ã¼', 'Ã¶', 'Ã¡' etc doesn't work correct, because the standard PHP strtoupper doesn't translate
  * them (http://de3.php.net/manual/en/function.strtoupper.php)
  *
  * Our extended implementation translates correct without respect to 'locale'
  */
 
 function cs_strtoupper ($value) {
-   return (strtoupper(strtr($value, LC_CHARS, UC_CHARS)));
+   return (mb_strtoupper(strtr($value, LC_CHARS, UC_CHARS), 'UTF-8'));
 }
 
 /**
@@ -744,14 +849,14 @@ function cs_strtoupper ($value) {
  *
  * Needed to ensure proper searching in CommSy with standard PHP settings
  * When the 'locale' setting of PHP is not set properly, the search for language specific characters
- * like 'ä', 'ü', 'ö', 'á' etc doesn't work correct, because the standard PHP strtolower doesn't translate
+ * like 'Ã¤', 'Ã¼', 'Ã¶', 'Ã¡' etc doesn't work correct, because the standard PHP strtolower doesn't translate
  * them (http://de3.php.net/manual/en/function.strtolower.php)
  *
  * Our extended implementation translates correct without respect to 'locale'
  */
 
 function cs_strtolower ($value) {
-   return (strtolower(strtr($value, UC_CHARS, LC_CHARS)));
+   return (mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8'));
 }
 
 /** Translates HTML-Enteties into their ISO8859-1 counterpart
@@ -814,15 +919,21 @@ function convertHtml2TagBrakes ($text) {
 // It does not recognize all options specified by RFC 2822, especially quoted strings with whitespaces
 // are not recognized, but we would have to build a parser to accomplish that...
 function isEmailValid($email) {
-   $result = preg_match('§(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)\.[A-z]+§',$email);
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   $result = preg_match('^(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)\.[A-z]+^u',$email);
    return $result;
 }
 
 // Checks if there are umlauts or special characters in the string.
 function withUmlaut($value) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $retour = true;
    $regs = array();
-   ereg('[A-Za-z0-9]+',$value,$regs);
+   mb_ereg('[A-Za-z0-9]+',$value,$regs);
    if ( $regs[0] == $value ) {
       $retour = false;
    }
@@ -830,18 +941,24 @@ function withUmlaut($value) {
 }
 
 function toggleUmlaut($value) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $retour = $value;
-   $retour = str_replace('Ä','Ae',$retour);
-   $retour = str_replace('ä','ae',$retour);
-   $retour = str_replace('Ö','Oe',$retour);
-   $retour = str_replace('ö','oe',$retour);
-   $retour = str_replace('Ü','Ue',$retour);
-   $retour = str_replace('ü','ue',$retour);
-   $retour = str_replace('ß','ss',$retour);
+   $retour = str_replace('Ã„','Ae',$retour);
+   $retour = str_replace('Ã¤','ae',$retour);
+   $retour = str_replace('Ã–','Oe',$retour);
+   $retour = str_replace('Ã¶','oe',$retour);
+   $retour = str_replace('Ãœ','Ue',$retour);
+   $retour = str_replace('Ã¼','ue',$retour);
+   $retour = str_replace('ÃŸ','ss',$retour);
    return $retour;
 }
 
 function cs_unserialize ( $extra ) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
    $retour = '';
 
    if ( !empty($extra) ) {
@@ -851,33 +968,43 @@ function cs_unserialize ( $extra ) {
          $counter = 0;
          $laenge = array();
          $temp_text = array();
+//         while ( strstr($text,'<!-- KFC TEXT -->') ) {
+//            $pos1 = strpos($text,'<!-- KFC TEXT -->');
+//            $text_temp = substr($text,$pos1+17);
+//            $pos2 = strpos($text_temp,'<!-- KFC TEXT -->');
+//            $text_value = substr($text_temp,0,$pos2);
+//            $laenge[$counter] = strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
+//            $temp_text['FCK_TEXT_'.$counter] = '<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->';
+//            $text = str_replace('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->','FCK_TEXT_'.$counter,$text);
+//            $counter++;
+//         }
          while ( strstr($text,'<!-- KFC TEXT -->') ) {
-            $pos1 = strpos($text,'<!-- KFC TEXT -->');
-            $text_temp = substr($text,$pos1+17);
-            $pos2 = strpos($text_temp,'<!-- KFC TEXT -->');
-            $text_value = substr($text_temp,0,$pos2);
-            $laenge[$counter] = strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
+            $pos1 = mb_strpos($text,'<!-- KFC TEXT -->');
+            $text_temp = mb_substr($text,$pos1+17);
+            $pos2 = mb_strpos($text_temp,'<!-- KFC TEXT -->');
+            $text_value = mb_substr($text_temp,0,$pos2);
+            $laenge[$counter] = mb_strlen('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->');
             $temp_text['FCK_TEXT_'.$counter] = '<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->';
             $text = str_replace('<!-- KFC TEXT -->'.$text_value.'<!-- KFC TEXT -->','FCK_TEXT_'.$counter,$text);
             $counter++;
          }
-         preg_match_all('$s:([0-9]*):"FCK_TEXT_([0-9]*)$',$text,$values);
+         preg_match_all('~s:([0-9]*):"FCK_TEXT_([0-9]*)~u',$text,$values);
          foreach ( $values[0] as $key => $wert ) {
             $wert2 = str_replace($values[1][$key],$laenge[$values[2][$key]],$wert);
             $text = str_replace($wert,$wert2,$text);
          }
 
-         preg_match_all('$FCK_TEXT_[0-9]*$',$text,$values);
+         preg_match_all('~FCK_TEXT_[0-9]*~u',$text,$values);
          foreach ( $values[0] as $key => $wert ) {
             $text = str_replace($wert,$temp_text[$wert],$text);
          }
          $extra_array = unserialize($text);
          if ( empty($extra_array) ) {
-            preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
+            preg_match_all('~s:([0-9]*):"([^(";)]*)";~u',$text,$values);
             if ( !empty($values[0]) ) {
                foreach ( $values[0] as $key => $wert ) {
-                  if (strlen($values[2][$key]) != $values[1][$key] ) {
-                     $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
+                  if (mb_strlen($values[2][$key]) != $values[1][$key] ) {
+                     $wert2 = str_replace($values[1][$key],mb_strlen($values[2][$key]),$wert);
                      $text = str_replace($wert,$wert2,$text);
                   }
                }
@@ -891,11 +1018,11 @@ function cs_unserialize ( $extra ) {
                $text = str_replace('"','\'',$text);
                $text = str_replace('DOPPELPUNKTHOCH',':"',$text);
                $text = str_replace('HOCHSEMIKOLON','";',$text);
-               preg_match_all('$s:([0-9]*):"([^(";)]*)";$',$text,$values);
+               preg_match_all('~s:([0-9]*):"([^(";)]*)";~u',$text,$values);
                if ( !empty($values[0]) ) {
                   foreach ( $values[0] as $key => $wert ) {
-                     if (strlen($values[2][$key]) != $values[1][$key] ) {
-                        $wert2 = str_replace($values[1][$key],strlen($values[2][$key]),$wert);
+                     if (mb_strlen($values[2][$key]) != $values[1][$key] ) {
+                        $wert2 = str_replace($values[1][$key],mb_strlen($values[2][$key]),$wert);
                         $text = str_replace($wert,$wert2,$text);
                      }
                   }
@@ -909,5 +1036,10 @@ function cs_unserialize ( $extra ) {
       $retour = $extra_array;
    }
    return $retour;
+}
+
+function cs_ucfirst($text){
+    $return_text = mb_strtoupper(mb_substr($text, 0, 1, 'UTF-8'), 'UTF-8');
+    return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
 }
 ?>

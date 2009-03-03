@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -175,7 +175,7 @@ if ( isOption($command,getMessage('COMMON_CANCEL_BUTTON')) ) {
             if ( !empty($error_array) ) {
                $error_string = $translator->getMessage('ERROR_SEND_EMAIL_TO');
                foreach ($error_array as $error) {
-                  $error = htmlentities($error);
+                  $error = htmlentities($error, ENT_NOQUOTES, 'UTF-8');
                   $error = str_replace(',',BRLF,$error);
                   $error_string .= BRLF.$error;
                }

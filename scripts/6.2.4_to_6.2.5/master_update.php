@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Dirk Bloessl Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -137,7 +137,7 @@ foreach ($scripts as $script) {
    }
    flush();
 
-   // um mysql eine verschnaufpause zwischen jedem script zu gönnen
+   // um mysql eine verschnaufpause zwischen jedem script zu gÃ¶nnen
    sleep(5);
 }
 

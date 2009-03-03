@@ -3,7 +3,7 @@ CommSy Version 6.2.4
 Features (Nummern von SourceForge):
 -----
 2342959  	Medieneinbindung: Slideshare  
-1917242  	Sensible Buttonfl‰che vergrˆﬂern - Tennisellbogen vermeiden
+1917242  	Sensible Buttonfl√§che vergr√∂√üern - Tennisellbogen vermeiden
 1950684 	Portal: Raumsuche
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/
 
@@ -12,6 +12,6 @@ Bugs (Nummern von SourceForge):
 -----
 Bugfix-Release:
 2602261  	Privaterraum: rubriken nicht schaltbar
-2602091 	Raum-Webseite: ‹bersicht
+2602091 	Raum-Webseite: √úbersicht
 2595508 	Customized room List
 Detailliertere Informationen: http://sourceforge.net/projects/commsy/

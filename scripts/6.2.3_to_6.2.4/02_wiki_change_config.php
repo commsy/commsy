@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -42,13 +42,13 @@ function changeWikis2 ($directory,$count) {
          changeWikis2($directory.'/'.$entry,$count);
       } elseif (is_file($directory.'/'.$entry) and $entry == 'commsy_config.php') {
          $str = file_get_contents($directory.'/'.$entry);
-         if ( stristr($str,'$COMMSY_ROOM_ID') and !stristr($str,'session_name') ) {
+         if ( mb_stristr($str,'$COMMSY_ROOM_ID') and !mb_stristr($str,'session_name') ) {
             $str = str_replace(array("\r\n", "\r"), "\n", $str);
             $str_array = explode("\n",$str);
             $str_out = '';
             foreach ( $str_array as $value ) {
                $str_out .= $value.LF;
-               if ( stristr($value, '$COMMSY_ROOM_ID = "') ) {
+               if ( mb_stristr($value, '$COMMSY_ROOM_ID = "') ) {
                   $str_out .= 'session_name(\'SESSID-\'.$COMMSY_ROOM_ID);'.LF;
                }
             }

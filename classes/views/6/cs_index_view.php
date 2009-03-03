@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -324,11 +324,11 @@ class cs_index_view extends cs_view {
        $search_array = array();
 
        //find all occurances of quoted text and store them in an array
-       preg_match_all('/("(.+?)")/',$search_text,$literal_array);
+       preg_match_all('~("(.+?)")~u',$search_text,$literal_array);
        //delete this occurances from the original string
-       $search_text = preg_replace('/("(.+?)")/','',$search_text);
+       $search_text = preg_replace('~("(.+?)")~u','',$search_text);
 
-       $search_text = preg_replace('/-(\w+)/','',$search_text);
+       $search_text = preg_replace('~-(\w+)~u','',$search_text);
 
        //clean up the resulting array from quots
        $literal_array = str_replace('"','',$literal_array[2]);
@@ -1277,7 +1277,7 @@ EOD;
       // @segment-end 17331
       // @segment-begin 64852 asHTML():display_rubrik_title/rubrik_clipboard_title
       $tempMessage = '';
-      switch ( strtoupper($this->_environment->getCurrentModule()) ) {
+      switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
          case 'ANNOUNCEMENT':
             $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
             break;
@@ -1355,7 +1355,7 @@ EOD;
          $html .='<div id="commsy_panels">'.LF;
             $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
             $tempMessage = '';
-            switch ( strtoupper($this->_environment->getCurrentModule()) ) {
+            switch ( mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') ) {
                case 'ANNOUNCEMENT':
                   $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
                   break;
@@ -1672,7 +1672,7 @@ EOD;
       $html .= '<div class="infocolor">'.$this->_getIntervalLinksFirstLineAsHTML().' '.$this->_getIntervalLinksSecondLineAsHTML().'</div>'.LF;
       $connection = $this->_environment->getCurrentModule();
       $text = '';
-      switch ( strtoupper($connection) ){
+      switch ( mb_strtoupper($connection, 'UTF-8') ){
          case 'ANNOUNCEMENT':
             $text .= $this->_translator->getMessage('ANNOUNCEMENTS');
             break;
@@ -2315,8 +2315,8 @@ EOD;
    function _compareWithSearchText($value){
       if ( !empty($this->_search_array) ){
          foreach ($this->_search_array as $search_text) {
-            if ( stristr($value,$search_text) ) {
-               $value = preg_replace('/'.preg_quote($search_text,'/').'/i','*$0*',$value);
+            if ( mb_stristr($value,$search_text) ) {
+               $value = preg_replace('~'.preg_quote($search_text,'/').'~iu','*$0*',$value);
             }
          }
       }
@@ -2414,7 +2414,7 @@ EOD;
 
    function _Name2SelectOption ($name) {
      $length = 70;
-     if ( strlen($name)>$length ) {
+     if ( mb_strlen($name)>$length ) {
          $name = chunkText($name,$length);
      }
      return $name;
@@ -2485,7 +2485,7 @@ EOD;
             if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
                $list = $this->getAvailableRubric($link_name[0]);
                $selrubric = $this->getSelectedRubric($link_name[0]);
-               $temp_link = strtoupper($link_name[0]);
+               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
                switch ( $temp_link )
                {
                   case 'GROUP':
@@ -2558,10 +2558,10 @@ EOD;
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-               if ( stristr(strtolower($file->getFilename()),'png')
-                 or stristr(strtolower($file->getFilename()),'jpg')
-                 or stristr(strtolower($file->getFilename()),'jpeg')
-                 or stristr(strtolower($file->getFilename()),'gif')
+               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                ) {
                    $this->_with_slimbox = true;
                    $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';

@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -471,11 +471,11 @@ class cs_connection_soap_ims {
             if (!empty($password)) {
                $encryption_method = $user_info->getPasswordEncryptionMethod();
                if ( empty($encryption_method)
-                    or strtoupper($encryption_method) == 'PLAIN'
+                    or mb_strtoupper($encryption_method, 'UTF-8') == 'PLAIN'
                   ) {
                   //Plain text PW, MD5 it
                   $auth_item->setPassword($user_info->getPassword());
-               } elseif ( strtoupper($encryption_method == 'MD5') ) {
+               } elseif ( mb_strtoupper($encryption_method, 'UTF-8') == 'MD5' ) {
                   //just set it
                   $auth_item->setPasswordMD5($user_info->getPassword());
                } else {
@@ -1254,10 +1254,10 @@ class cs_connection_soap_ims {
                   //Properties
                   $properties = '';
                   $properties_array = array();
-                  preg_match('#<properties.+?</properties>#is',$ims_xml,$properties);
+                  preg_match('~<properties.+?</properties>~isu',$ims_xml,$properties);
                   if ( isset($properties[0]) ) {
                      $properties = $properties[0];
-                     preg_match('#<targets>.+?</targets>#is',$ims_xml,$targets);
+                     preg_match('~<targets>.+?</targets>~isu',$ims_xml,$targets);
                      if ( isset($targets[0]) ) {
                         $targets = $targets[0];
                         $server_item = $this->_environment->getServerItem();
@@ -1275,7 +1275,7 @@ class cs_connection_soap_ims {
                            }
                            if ( !empty($name_array) ) {
                               foreach ($name_array as $portal_target) {
-                                 $properties_array[] = preg_replace('#<targets>.+?</targets>#is','<targets>'.$portal_target.'</targets>',$properties);
+                                 $properties_array[] = preg_replace('~<targets>.+?</targets>~isu','<targets>'.$portal_target.'</targets>',$properties);
                               }
                            }
                         }
@@ -1295,7 +1295,7 @@ class cs_connection_soap_ims {
                      $path_array_person =  $check_result['path_array'];
                      $return_array = array_merge($check_result['error_array'],$return_array);
 
-                     preg_match_all('#<person.+?</person>#is',$ims_xml,$person_results);
+                     preg_match_all('~<person.+?</person>~isu',$ims_xml,$person_results);
                      $person_results = $person_results[0];
                      $person_values = array();
                      foreach ($person_results as $person) {
@@ -1319,7 +1319,7 @@ class cs_connection_soap_ims {
                      $path_array_group =  $check_result['path_array'];
                      $return_array = array_merge($check_result['error_array'],$return_array);
 
-                     preg_match_all('#<group.+?</group>#is',$ims_xml,$group_results);
+                     preg_match_all('~<group.+?</group>~isu',$ims_xml,$group_results);
                      $group_results = $group_results[0];
                      $group_values = array();
                      foreach ($group_results as $group) {
@@ -1348,7 +1348,7 @@ class cs_connection_soap_ims {
                      $path_array_membership =  $check_result['path_array'];
                      $return_array = array_merge($check_result['error_array'],$return_array);
 
-                     preg_match_all('#<membership.+?</membership>#is',$ims_xml,$membership_results);
+                     preg_match_all('~<membership.+?</membership>~isu',$ims_xml,$membership_results);
                      $membership_results = $membership_results[0];
                      $membership_values = array();
                      foreach ($membership_results as $membership) {
@@ -1550,11 +1550,11 @@ class cs_connection_soap_ims {
       //shorten path from outermost tag (simple_xml works imlpicitly on outermost tag, so it's not needed)
       //$path = strstr($path,'/');
       //eval is dangerous- check $path to see if it seems suspicious
-      $path_valid = preg_match('#^\w+(/\w+)*(\[@\w+\]?)?$#',$path);
+      $path_valid = preg_match('~^\w+(/\w+)*(\[@\w+\]?)?$~u',$path);
       //Convert to simple_xml notation
       $path = str_replace ( '/', '->', $path);
       $result = '';
-      $at_number = substr_count($path,'@');
+      $at_number = mb_substr_count($path,'@');
       if ($at_number == 0 AND $path_valid == 1) {
          eval('$result = (string) $simple_xml_object->'.$path.';');
          $result = utf8_decode($result);
@@ -1584,7 +1584,7 @@ class cs_connection_soap_ims {
       if ($pathfile == FALSE) {
          $result = FALSE;
       } else {
-         $regexp = '#<var name="(.+?)">(\s|\n)*?<path>(.+?)</path>(\s|\n)*?(<path>(.+?)</path>(\s|\n)*?)*</var>#';
+         $regexp = '~<var name="(.+?)">(\s|\n)*?<path>(.+?)</path>(\s|\n)*?(<path>(.+?)</path>(\s|\n)*?)*</var>~u';
          $match_results = array();
          preg_match_all($regexp,$pathfile,$match_results);
          $keys =  $match_results[1];

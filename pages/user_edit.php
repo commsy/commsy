@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -476,7 +476,7 @@ if ($command != 'error') { // only if user is allowed to edit user
             }
 
             #########################################################
-            # Gruppen können im Formular nicht mehr gesetzt werden
+            # Gruppen kÃ¶nnen im Formular nicht mehr gesetzt werden
             #########################################################
             /*
             // group
@@ -504,7 +504,7 @@ if ($command != 'error') { // only if user is allowed to edit user
             $user_item->setGroupListByID($group_array);
             */
             #########################################################
-            # Gruppen können im Formular nicht mehr gesetzt werden
+            # Gruppen kÃ¶nnen im Formular nicht mehr gesetzt werden
             #########################################################
             if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
                $id_array = array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));

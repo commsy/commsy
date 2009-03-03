@@ -138,7 +138,7 @@ class cs_step_form extends cs_rubric_form {
       $this->_form->addAnchor('fileupload');
       $val = ini_get('upload_max_filesize');
       $val = trim($val);
-      $last = $val[strlen($val)-1];
+      $last = $val[mb_strlen($val)-1];
       switch($last) {
          case 'k':
          case 'K':
@@ -173,14 +173,14 @@ class cs_step_form extends cs_rubric_form {
             $px = '380';
          } elseif ($browser == 'FIREFOX') {
             $operation_system = $this->_environment->getCurrentOperatingSystem();
-            if (strtoupper($operation_system) == 'LINUX') {
+            if (mb_strtoupper($operation_system, 'UTF-8') == 'LINUX') {
                $px = '360';
-            } elseif (strtoupper($operation_system) == 'MAC OS') {
+            } elseif (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                $px = '352';
             }
          } elseif ($browser == 'MOZILLA') {
             $operation_system = $this->_environment->getCurrentOperatingSystem();
-            if (strtoupper($operation_system) == 'MAC OS') {
+            if (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                $px = '336'; // camino
             }
          }

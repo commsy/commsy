@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -99,6 +99,11 @@ class cs_page_homepage_view extends cs_page_view {
       $retour .= '<html>'.LF;
       $retour .= '<head>'.LF;
       $retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>'.LF;
+      // ------------
+      // --->UTF8<---
+      //$retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'.LF;
+      // --->UTF8<---
+      // ------------
       $retour .= '   <meta http-equiv="expires" content="0"/>'.LF;
       $retour .= '   <meta name="MSSmartTagsPreventParsing" content="TRUE"/>'.LF;
       $retour .= '   <link rel="stylesheet" type="text/css" href="homepage_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;

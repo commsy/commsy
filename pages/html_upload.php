@@ -25,16 +25,16 @@ function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
 
    $handle = @opendir($dir);
    while ( $file = @readdir($handle) ) {
-      if ( preg_match("=^\.{1,2}$=", $file) ) {
+      if ( preg_match("~^\.{1,2}$~u", $file) ) {
          continue;
       }
-      $newfilename = strtolower($file);
+      $newfilename = mb_strtolower($file, 'UTF-8');
       rename($dir.$file,$dir.$newfilename);
       $file = $newfilename;
       if ( is_dir($dir.$file) ) {
          $namearray = listfilenames($dir.$file."/", $pos + 3,$fileitem,$environment,$namearray);
       } else {
-         $extension = strtolower(substr(strrchr($dir.$file,"."),1));
+         $extension = mb_strtolower(mb_substr(strrchr($dir.$file,"."),1), 'UTF-8');
          if ( is_file($dir.$file) ) {
             $namearray['filename'][] = $file;
             $namearray['dirname'][] = $dir;
@@ -48,14 +48,14 @@ function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
 function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
    $handle = @opendir($dir);
    while ( $file = @readdir($handle) ) {
-      if ( preg_match("=^\.{1,2}$=", $file) ) {
+      if ( preg_match("~^\.{1,2}$~u", $file) ) {
          continue;
       }
 
       if ( is_dir($dir.$file) ) {
          replace_files($dir.$file."/", $pos + 3,$fileitem,$environment,$namearray);
       } else {
-         $extension = strtolower(substr(strrchr($dir.$file,"."),1));
+         $extension = mb_strtolower(mb_substr(strrchr($dir.$file,"."),1), 'UTF-8');
          if ( is_file($dir.$file) and ($extension == "htm" OR $extension == "html" OR $extension == "js" OR $extension == "xml" OR $extension == "xslt" OR $extension == "xsd")){
             $replacement = replacement($environment,$fileitem,$dir,$file,$namearray);
             $open = fopen($dir.$file,'w');
@@ -78,13 +78,13 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
    }
    foreach ( $namearray['filename'] as $name ) {
       //!'(.*?)show.gif!
-      $pattern = "![\./\wÄÖÜäöü_-]{0,}".$name."!is";
+      $pattern = "~[\./\wÃ„Ã–ÃœÃ¤Ã¶Ã¼_-]{0,}".$name."~isu";
       preg_match_all($pattern, $filecontent, $current_treffer);
       foreach ( $current_treffer[0] as $treffer ) {
-         $trefferlowercase = strtolower($treffer);
+         $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
          $replacement = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
 
-         if ( !stristr($filecontent,$replacement) ) {
+         if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
          }
       }

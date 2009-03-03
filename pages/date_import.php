@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -111,12 +111,12 @@ else {
                if (isset($dates_data[$_POST['startday']])){
                   $starting_day_array = explode('.',$dates_data[$_POST['startday']]);
                   if ( isset($starting_day_array[2]) ){
-                     if (strlen($starting_day_array[1])==1){
+                     if (mb_strlen($starting_day_array[1])==1){
                         $month = '0'.$starting_day_array[1];
                      }else{
                         $month = $starting_day_array[1];
                      }
-                     if (strlen($starting_day_array[2])==1){
+                     if (mb_strlen($starting_day_array[2])==1){
                         $day = '0'.$starting_day_array[2];
                      }else{
                         $day = $starting_day_array[2];
@@ -133,12 +133,12 @@ else {
                if (isset($dates_data[$_POST['endday']])){
                   $ending_day_array = explode('.',$dates_data[$_POST['endday']]);
                   if ( isset($ending_day_array[2]) ){
-                     if (strlen($ending_day_array[1])==1){
+                     if (mb_strlen($ending_day_array[1])==1){
                         $month = '0'.$ending_day_array[1];
                      }else{
                         $month = $ending_day_array[1];
                      }
-                     if (strlen($ending_day_array[2])==1){
+                     if (mb_strlen($ending_day_array[2])==1){
                         $day = '0'.$ending_day_array[2];
                      }else{
                         $day = $ending_day_array[2];

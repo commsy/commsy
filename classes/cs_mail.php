@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -213,9 +213,9 @@ class cs_mail extends Mail
          }
 
          // send email seperately (one email for one receiver)
-         if ( strlen($this->recipients)>$range
-              or ( isset($this->cc_recipients) and strlen($this->cc_recipients)>$range )
-              or ( isset($this->bcc_recipients) and strlen($this->bcc_recipients)>$range )
+         if ( mb_strlen($this->recipients)>$range
+              or ( isset($this->cc_recipients) and mb_strlen($this->cc_recipients)>$range )
+              or ( isset($this->bcc_recipients) and mb_strlen($this->bcc_recipients)>$range )
             ) {
             $to_array = array();
             $to_array = explode(',',$this->recipients);
@@ -284,7 +284,7 @@ class cs_mail extends Mail
    private function _cleanRecipients ( $value ) {
       $retour = $value;
       $retour = str_replace(', ',',',$retour);
-      if ( substr_count($retour,'@') != substr_count($retour,',')+1 ) {
+      if ( mb_substr_count($retour,'@') != mb_substr_count($retour,',')+1 ) {
          $retour_array = explode(',',$retour);
          $retour2_array = array();
          $mail_address = '';

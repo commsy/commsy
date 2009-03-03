@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -359,11 +359,11 @@ if ($command != 'error') { // only if user is allowed to edit colors
 function generate_colour_gradient($height, $rgb){
     $image = imagecreate(1, $height);
 
-    $rgb = str_ireplace('#', '', $rgb);
+    $rgb = str_replace('#', '', $rgb);
 
-    $r = hexdec(substr($rgb, 0, 2));
-    $g = hexdec(substr($rgb, 2, 2));
-    $b = hexdec(substr($rgb, 4, 2));
+    $r = hexdec(mb_substr($rgb, 0, 2));
+    $g = hexdec(mb_substr($rgb, 2, 2));
+    $b = hexdec(mb_substr($rgb, 4, 2));
 
     $border = ImageColorAllocate($image,$r,$g,$b);
 

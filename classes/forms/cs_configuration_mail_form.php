@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -178,7 +178,7 @@ class cs_configuration_mail_form extends cs_rubric_form {
          $languages[] = $context_item->getLanguage();
       }
 
-      if (!empty($this->_form_post['mail_text']) and strlen($this->_form_post['mail_text']) > 2) {
+      if (!empty($this->_form_post['mail_text']) and mb_strlen($this->_form_post['mail_text']) > 2) {
          switch ( $this->_form_post['mail_text'] ){
             case 'MAIL_CHOICE_HELLO':
                $headline = ': '.$translator->getMessage('MAIL_CHOICE_HELLO');
@@ -238,7 +238,7 @@ class cs_configuration_mail_form extends cs_rubric_form {
          $mandatory = false;
       }
       foreach ($languages as $language) {
-         switch ( strtoupper($language) ){
+         switch ( mb_strtoupper($language, 'UTF-8') ){
             case 'DE':
                $this->_form->addHeadline('headline',
                                          $translator->getMessage('DE').$headline
@@ -320,7 +320,7 @@ class cs_configuration_mail_form extends cs_rubric_form {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;
-         if ( strlen($this->_values['mail_text']) == 2 and $this->_values['mail_text'] != -1) {
+         if ( mb_strlen($this->_values['mail_text']) == 2 and $this->_values['mail_text'] != -1) {
             $this->_values['mail_text'] = -1;
          }
          foreach ($this->_values['text'] as $key => $value) {
@@ -337,11 +337,11 @@ class cs_configuration_mail_form extends cs_rubric_form {
     */
    function _checkValues () {
       // check choosen mail text
-      if (strlen($this->_form_post['mail_text']) == 2 and $this->_form_post['mail_text'] != -1) {
+      if (mb_strlen($this->_form_post['mail_text']) == 2 and $this->_form_post['mail_text'] != -1) {
          $this->_error_array[] = getMessage('CONFIGURATION_MAIL_CHOICE_ERROR');
          $this->_form->setFailure('mail_text','');
       }
-      if ( strlen($this->_form_post['mail_text']) == 2 and
+      if ( mb_strlen($this->_form_post['mail_text']) == 2 and
            $this->_form_post['mail_text'] == -1 and
            isset($this->_form_post['option']) and
            isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))

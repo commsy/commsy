@@ -165,12 +165,12 @@ class cs_list {
    }
 
    private function _translateUmlaute ( $value ) {
-      $value = str_replace('Ä','Azzz',$value);
-      $value = str_replace('Ö','Ozzz',$value);
-      $value = str_replace('Ü','Uzzz',$value);
-      $value = str_replace('ä','azzz',$value);
-      $value = str_replace('ö','ozzz',$value);
-      $value = str_replace('ü','uzzz',$value);
+      $value = str_replace('Ã„','Azzz',$value);
+      $value = str_replace('Ã–','Ozzz',$value);
+      $value = str_replace('Ãœ','Uzzz',$value);
+      $value = str_replace('Ã¤','azzz',$value);
+      $value = str_replace('Ã¶','ozzz',$value);
+      $value = str_replace('Ã¼','uzzz',$value);
       return $value;
    }
 

@@ -1,6 +1,6 @@
 <?php
 $message["VISIBLE_ALWAYS"]["de"] = "webweit";
-$message["VISIBLE_NEVER"]["de"] = "nicht für andere sichtbar";
+$message["VISIBLE_NEVER"]["de"] = "nicht fÃ¼r andere sichtbar";
 $message["VISIBLE_ONLY_LOGGED"]["de"] = "raumweit";
 $message["VISIBLE_PROPERTY"]["de"] = "Sichtbarkeit";
 $message["VISIBLE_PROPERTY_DESC"]["de"] = "<ul>

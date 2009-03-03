@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -625,13 +625,18 @@ class cs_page_view extends cs_view {
       $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.LF;
       $retour .= '<html>'.LF;
       $retour .= '<head>'.LF;
-      $retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>'.LF;
+      //$retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>'.LF;
+      // ------------
+      // --->UTF8<---
+      $retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'.LF;
+      // --->UTF8<---
+      // ------------
       $retour .= '   <meta http-equiv="expires" content="-1"/>'.LF;
       $retour .= '   <meta http-equiv="cache-control" content="no-cache"/>'.LF;
       $retour .= '   <meta http-equiv="pragma" content="no-cache"/>'.LF;
       $retour .= '   <meta name="MSSmartTagsPreventParsing" content="TRUE"/>'.LF;
       $retour .= '   <meta name="CommsyBaseURL" content="'.$c_commsy_url_path.'"/>'.LF;
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( !($current_browser == 'msie' and strstr($current_browser_version,'5.')) ){
          $retour .= $this->_getIncludedCSSAsHTML();
@@ -1175,7 +1180,7 @@ class cs_page_view extends cs_view {
       if ($context_item->showTitle() and !$this->_environment->inPortal()) {
          if (!$context_item->isPrivateRoom()){
             if ( !$this->_environment->inPortal() ){
-               $length = strlen($this->_text_as_html_short($this->_name_room));
+               $length = mb_strlen($this->_text_as_html_short($this->_name_room));
                $html_text = $this->_text_as_html_short($this->_name_room);
             } else {
                $current_portal = $this->_environment->getCurrentPortalItem();
@@ -1333,12 +1338,12 @@ class cs_page_view extends cs_view {
          $id_array = $session->getValue($rubric.'_clipboard');
          $count = count($id_array);
          if ($count > 0){
-             $temp = strtoupper($rubric);
+             $temp = mb_strtoupper($rubric, 'UTF-8');
              $theRubricMessage = "";
              switch( $temp )
              {
                 case 'ANNOUNCEMENT':
-                   $theRubricMessage = getMessage('COMMON_ANNOUNCEMENT_INDEX');  // Ankündigungen
+                   $theRubricMessage = getMessage('COMMON_ANNOUNCEMENT_INDEX');  // AnkÃ¼ndigungen
                    break;
                 case 'DATE':
                    $theRubricMessage = getMessage('COMMON_DATE_INDEX');          // Termine
@@ -1420,7 +1425,7 @@ class cs_page_view extends cs_view {
 
           // @segment-end 70706
           // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
-               $length = strlen($fullname);
+               $length = mb_strlen($fullname);
                if ($length < 20) {
                   $html .= $fullname;
                } else {
@@ -1504,7 +1509,7 @@ class cs_page_view extends cs_view {
                $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
                // selectbox
                $width_auth_selectbox = 6.5;
-               if ( strtolower($this->_environment->getCurrentBrowser()) == 'msie' ) {
+               if ( mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8') == 'msie' ) {
                   $width_auth_selectbox = 6.7;
                }
                $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source" tabindex="3">'.LF;
@@ -1602,7 +1607,7 @@ class cs_page_view extends cs_view {
                   $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
                   global $c_annonymous_account_array;
                   if ( isset($own_room)
-                       and empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])
+                       and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
                      ) {
                      $current_portal_item = $this->_environment->getCurrentPortalItem();
                      if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
@@ -1684,7 +1689,7 @@ class cs_page_view extends cs_view {
             if (!$this->_environment->inServer() ) {
                global $c_annonymous_account_array;
                if ( !$this->_current_user->isRoot()
-                    and empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])
+                    and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
                   ) {
                   $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
                   $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
@@ -1719,7 +1724,7 @@ class cs_page_view extends cs_view {
             // @segment-begin 1467 no-cs_modus/user-status><0:link-become_member-in-room("Teilnahme beantragen")
             if ( !$this->_current_user->isRoot() ) {
                global $c_annonymous_account_array;
-               if ( empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()]) ) {
+               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()]) ) {
                   if ($this->_environment->inCommunityRoom() and !$this->_current_user->isUser()){
                      $params['cs_modus'] = 'become_member';
                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;

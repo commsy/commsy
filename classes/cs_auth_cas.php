@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -78,14 +78,14 @@ class cs_auth_cas extends cs_auth_manager {
       if ( !empty($page) ) {
          foreach ( $page as $value ) {
             if (strstr($value,'CASTGC')) {
-               preg_match('|CASTGC=[a-zA-Z0-9-]+;|',$value,$treffer);
+               preg_match('~CASTGC=[a-zA-Z0-9-]+;~u',$value,$treffer);
                $cas_tgc = $treffer[0];
-               $cas_tgc = substr($cas_tgc,7);
-               $cas_tgc = substr($cas_tgc,0,strlen($cas_tgc)-1);
-               preg_match('|Path=[/a-zA-Z0-9-]+;|',$value,$treffer);
+               $cas_tgc = mb_substr($cas_tgc,7);
+               $cas_tgc = mb_substr($cas_tgc,0,mb_strlen($cas_tgc)-1);
+               preg_match('~Path=[/a-zA-Z0-9-]+;~u',$value,$treffer);
                $cas_path = $treffer[0];
-               $cas_path = substr($cas_path,5);
-               $cas_path = substr($cas_path,0,strlen($cas_path)-1);
+               $cas_path = mb_substr($cas_path,5);
+               $cas_path = mb_substr($cas_path,0,mb_strlen($cas_path)-1);
                setcookie('CASTGC', $cas_tgc, 0, $cas_path, '', 0);
                $retour = true;
             }
@@ -140,9 +140,9 @@ class cs_auth_cas extends cs_auth_manager {
       $xml = file_get_contents($url);
       if ( !empty($xml) ) {
          if ( strstr($xml,'authenticationSuccess') ) {
-            $pos1 = strpos($xml,'<cas:user>');
-            $retour = substr($xml,$pos1+strlen('<cas:user>'));
-            $retour = trim(substr($retour,0,strpos($retour,'</')));
+            $pos1 = mb_strpos($xml,'<cas:user>');
+            $retour = mb_substr($xml,$pos1+mb_strlen('<cas:user>'));
+            $retour = trim(mb_substr($retour,0,mb_strpos($retour,'</')));
             if ( empty($retour) ) {
                include_once('functions/error_functions.php');
                trigger_error('validateTicket: can not get user_id from granted ticket.'.BRLF.'URL: '.$url.BRLF,E_USER_ERROR);
@@ -174,10 +174,10 @@ class cs_auth_cas extends cs_auth_manager {
       $url .= ';jsessionid='.$value;
       $page = file_get_contents($url);
       if ( !empty($page) ) {
-         preg_match('|name="lt" value="[A-Za-z0-9-_]+"|',$page,$treffer);
+         preg_match('~name="lt" value="[A-Za-z0-9-_]+"~u',$page,$treffer);
          if ( !empty($treffer[0]) ) {
             $ticket = $treffer[0];
-            $retour = substr($ticket,17,strlen($ticket)-18);
+            $retour = mb_substr($ticket,17,mb_strlen($ticket)-18);
          } else {
             include_once('functions/error_functions.php');
             trigger_error('_getLoginTicket: can not get login ticket from page the cas server send.'.BRLF.'URL: '.$url.BRLF,E_USER_ERROR);
@@ -201,9 +201,9 @@ class cs_auth_cas extends cs_auth_manager {
       if ( !empty($page) ) {
          foreach ( $page as $value ) {
             if (strstr($value,'JSESSIONID')) {
-               preg_match('|JSESSIONID=[A-Z0-9]+;|',$value,$treffer);
+               preg_match('~JSESSIONID=[A-Z0-9]+;~u',$value,$treffer);
                $ticket = $treffer[0];
-               $retour = substr($ticket,11,strlen($ticket)-12);
+               $retour = mb_substr($ticket,11,mb_strlen($ticket)-12);
             }
          }
          if ( !isset($retour) or empty($retour) ) {

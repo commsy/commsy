@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -138,8 +138,8 @@ class cs_group_form extends cs_rubric_form {
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
-            if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
-              $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+            if (isset($rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS']) ){
+              $genus = $rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS'];
             }else{
                $genus = $rubric_array['EN']['GENUS'];
             }
@@ -160,8 +160,8 @@ class cs_group_form extends cs_rubric_form {
          $new='';
          $context_item = $this->_environment->getCurrentContextItem();
          $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
-         if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
-           $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+         if (isset($rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS']) ){
+           $genus = $rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS'];
          } else {
             $genus = $rubric_array['EN']['GENUS'];
          }

@@ -20,7 +20,7 @@ if ($handle = opendir('.')) {
              $commsy_config = file_get_contents('commsy_config.php');
              if ( !empty($commsy_config) ) {
                 $treffer = array();
-                preg_match('§COMMSY_WIKI_TITLE[ ]*=[ ]*["|\'](.*)["|\']§',$commsy_config,$treffer);
+                preg_match('~COMMSY_WIKI_TITLE[ ]*=[ ]*["|\'](.*)["|\']~u',$commsy_config,$treffer);
                 if ( !empty($treffer[1]) ) {
                    $temp_array['title'] = stripslashes($treffer[1]);
                    $wiki_array[] = $temp_array;

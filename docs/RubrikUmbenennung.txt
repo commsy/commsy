@@ -23,8 +23,8 @@
 
 
 Vorgehensweise:
-Wenn man eine Rubrik umbenennbar machen möchte, muss man folgendes beachten:
-1. Im Extrafeld des Raumes, dessen Rubrik man umbennen möchte, muss ein Array der oben angegebenen Form eingetragen werden. Hierbei entspricht:
+Wenn man eine Rubrik umbenennbar machen mÃ¶chte, muss man folgendes beachten:
+1. Im Extrafeld des Raumes, dessen Rubrik man umbennen mÃ¶chte, muss ein Array der oben angegebenen Form eingetragen werden. Hierbei entspricht:
 
 S = Singular
 P = Plural
@@ -34,8 +34,8 @@ P = Plural
 4 = Dativ
 GENUS = Geschlecht: Zur Auswahl stehen N = Neutrum, F = Feminin, M = Maskulin
 
-2. Es muss ein Datanbankskript geben, dass bei einem Update den Standard-Array mit den Originalbegriffen in alle betreffenden Raum-Items einträgt.
+2. Es muss ein Datanbankskript geben, dass bei einem Update den Standard-Array mit den Originalbegriffen in alle betreffenden Raum-Items eintrÃ¤gt.
 
-3. Im Initialisierungsprozess von Räumen müssen initiale Werte in die Extras-Felder geschrieben werden.
+3. Im Initialisierungsprozess von RÃ¤umen mÃ¼ssen initiale Werte in die Extras-Felder geschrieben werden.
 
-4. In den entsprechenden Konfigurationsbereichen muss eine Formular enstehen, mit dem die entsprechenden Werte gesetzt werden können.
+4. In den entsprechenden Konfigurationsbereichen muss eine Formular enstehen, mit dem die entsprechenden Werte gesetzt werden kÃ¶nnen.

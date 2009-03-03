@@ -4,7 +4,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -642,7 +642,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $current_context = $this->_environment->getCurrentContextItem();
             $with_htmltextarea = $current_context->withHtmlTextArea();
             $html_status = $current_context->getHtmlTextAreaStatus();
-            $current_browser = strtolower($this->_environment->getCurrentBrowser());
+            $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
             $current_browser_version = $this->_environment->getCurrentBrowserVersion();
             if ( !isset($c_html_textarea)
                  or !$c_html_textarea
@@ -690,7 +690,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '<td style="padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
             $val = ini_get('upload_max_filesize');
             $val = trim($val);
-            $last = $val[strlen($val)-1];
+            $last = $val[mb_strlen($val)-1];
             switch($last) {
                case 'k':
                case 'K':
@@ -718,14 +718,14 @@ class cs_todo_detail_view extends cs_detail_view {
                $px = '380';
             } elseif ($browser == 'FIREFOX') {
                $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (strtoupper($operation_system) == 'LINUX') {
+               if (mb_strtoupper($operation_system, 'UTF-8') == 'LINUX') {
                   $px = '360';
-               } elseif (strtoupper($operation_system) == 'MAC OS') {
+               } elseif (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                   $px = '352';
                }
             } elseif ($browser == 'MOZILLA') {
                $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (strtoupper($operation_system) == 'MAC OS') {
+               if (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                   $px = '336'; // camino
                }
             }
@@ -797,10 +797,10 @@ class cs_todo_detail_view extends cs_detail_view {
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-               if ( stristr(strtolower($file->getFilename()),'png')
-                 or stristr(strtolower($file->getFilename()),'jpg')
-                 or stristr(strtolower($file->getFilename()),'jpeg')
-                 or stristr(strtolower($file->getFilename()),'gif')
+               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                   ) {
                    $this->_with_slimbox = true;
                    $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';

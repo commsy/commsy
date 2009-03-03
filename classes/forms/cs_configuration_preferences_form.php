@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -153,8 +153,8 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_PROJECT_TYPE);
-            if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
-               $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+            if (isset($rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS']) ){
+               $genus = $rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS'];
             } else {
                $genus = $rubric_array['EN']['GENUS'];
             }
@@ -574,7 +574,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
 
         if ( empty($this->_iid) or $this->_iid == 'NEW'
              or ($this->_type == CS_PROJECT_TYPE and $this->_environment->inCommunityRoom())
-             or ($this->_type == CS_SERVER_TYPE) // TBD: ggf. LinkeLeiste auf Serverebene einführen
+             or ($this->_type == CS_SERVER_TYPE) // TBD: ggf. LinkeLeiste auf Serverebene einfÃ¼hren
            ) {
            // do nothing
         } else {
@@ -711,7 +711,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          $zaehler++;
               $tmpArray = $this->_environment->getAvailableLanguageArray();
          foreach ($tmpArray as $item){
-            switch ( strtoupper($item) ){
+            switch ( mb_strtoupper($item, 'UTF-8') ){
                case 'DE':
                   $languageArray[$zaehler]['text']= getMessage('DE');
                   break;
@@ -937,7 +937,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
    $tmpArray = $this->_environment->getAvailableLanguageArray();
    $zaehler = 0;
    foreach ($tmpArray as $item){
-      switch ( strtoupper($item) ){
+      switch ( mb_strtoupper($item, 'UTF-8') ){
          case 'DE':
             $languageArray[$zaehler]['text']= getMessage('DE');
             break;
@@ -972,11 +972,11 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          if ( $language == $this->_description_text ) {
             $this->_form->addTextField('wellcome1_'.$language,'',$this->_translator->getMessage('COMMON_DESCRIPTION'),'',255,35);
             $this->_form->combine('horizontal');
-            $this->_form->addCheckbox('wellcome1_'.$language.'_reset','1','','',strtolower($this->_translator->getMessage('COMMON_RESET')).'?');
+            $this->_form->addCheckbox('wellcome1_'.$language.'_reset','1','','',mb_strtolower($this->_translator->getMessage('COMMON_RESET'), 'UTF-8').'?');
             $this->_form->combine();
             $this->_form->addTextField('wellcome2_'.$language,'',$this->_translator->getMessage('COMMON_DESCRIPTION'),'',255,35);
             $this->_form->combine('horizontal');
-            $this->_form->addCheckbox('wellcome2_'.$language.'_reset','1','','',strtolower($this->_translator->getMessage('COMMON_RESET')).'?');
+            $this->_form->addCheckbox('wellcome2_'.$language.'_reset','1','','',mb_strtolower($this->_translator->getMessage('COMMON_RESET'), 'UTF-8').'?');
             $this->_form->combine();
          } else {
                  $this->_form->addHidden('wellcome1_'.$language,'');
@@ -1248,7 +1248,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
         $this->_values['member_check'] = 'always';
         $this->_values['show_title'] = 'yes';
 
-        // Zuordnen des aktuellen Gemeinschatsraums in zu einem daraus neu geöffneten Raum.
+        // Zuordnen des aktuellen Gemeinschatsraums in zu einem daraus neu geÃ¶ffneten Raum.
         if ( $this->_environment->inCommunityRoom() and $this->_environment->getCurrentModule() == CS_PROJECT_TYPE ){
            $this->_values['communityrooms'] = $this->_environment->getCurrentContextID();
         }
@@ -1266,11 +1266,11 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          // default language of room
          $current_user = $this->_environment->getCurrentUserItem();
          $lang = $current_user->getLanguage();
-         if ( empty($lang) or strtoupper($lang) == 'BROWSER' ) {
+         if ( empty($lang) or mb_strtoupper($lang, 'UTF-8') == 'BROWSER' ) {
             $lang = $this->_environment->getSelectedLanguage();
          }
          if ( !empty($lang) ) {
-            $this->_values['language'] = strtolower($lang);
+            $this->_values['language'] = mb_strtolower($lang, 'UTF-8');
          }
       }
    }

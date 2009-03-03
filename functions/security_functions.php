@@ -37,7 +37,10 @@ function getToken () {
 }
 
 function addTokenToPost ( $value ) {
-   $pattern = '§<form[^>]*method=[\'|"|][p|P][o|O][s|S][t|T][\'|"|][^>]*>§';
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   $pattern = '~<form[^>]*method=[\'|"|][p|P][o|O][s|S][t|T][\'|"|][^>]*>~u';
    $replace = '$0'.LF.'<div style=\'display:none;\'><input type=\'hidden\' name=\'security_token\' value=\''.getToken().'\'/></div>';
    $value = preg_replace($pattern,$replace,$value);
    return $value;

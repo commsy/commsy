@@ -134,8 +134,8 @@ class cs_group_detail_view extends cs_detail_view {
             if ( !empty($desc) ) {
                $char = '';
                $i = 1;
-               while ( (empty($char) or $char == LF) and $i < strlen($desc) ) {
-                  $char = $desc[strlen($desc)-$i];
+               while ( (empty($char) or $char == LF) and $i < mb_strlen($desc) ) {
+                  $char = $desc[mb_strlen($desc)-$i];
                   $i++;
                }
                if ( $char != '>' ) {
@@ -454,7 +454,7 @@ class cs_group_detail_view extends cs_detail_view {
       }
       $current_user = $this->_environment->getCurrentUserItem();
 
-      // Anzeige auﬂerhalb des Anmeldeprozesses
+      // Anzeige au√üerhalb des Anmeldeprozesses
       if ( ( $mode !='member'
              and $mode !='info'
              and $mode !='email'

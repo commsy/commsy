@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -80,7 +80,7 @@ if ( $current_iid == 'NEW' ) {
    $tag_array = array();
    $material_manager = $environment->getMaterialManager();
    $material_item = $material_manager->getItem($current_iid);
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
    if(empty($_POST)){
       $buzzword_array = array();
       $buzzwords = $material_item->getBuzzwordList();
@@ -106,7 +106,7 @@ if ( $current_iid == 'NEW' ) {
       $link_item_array = $material_item->getAllLinkedItemIDArray();
       $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$link_item_array);
    }
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
 }
 
 // Check access rights
@@ -153,14 +153,14 @@ else {
    // Cancel editing
    if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       cleanup_session($current_iid);
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
       $session->unsetValue('buzzword_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_tag_ids');
       $session->unsetValue('tag_post_vars');
       $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
       $session->unsetValue('linked_items_post_vars');
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
       if ( $current_iid == 'NEW' ) {
          redirect($environment->getCurrentContextID(), 'material', 'index', '');
       } else {
@@ -183,11 +183,11 @@ else {
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
          if (empty($session_post_vars)){
             $session_post_vars = $_POST;
          }
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
          if ( !empty($command) and isOption($command, getMessage('COMMON_NEW_BUZZWORD_BUTTON')) ){
             $session_post_vars['new_buzzword']='';
          }
@@ -447,7 +447,7 @@ else {
             $item_files_upload_to = $material_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
 
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
       if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids')){
          $material_item->setBuzzwordListByID($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids'));
          $session->unsetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_buzzword_ids');
@@ -460,7 +460,7 @@ else {
          $material_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
          $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
       }
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
 
 
             if ( isset($_POST['public']) ) {

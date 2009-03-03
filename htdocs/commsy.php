@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -320,8 +320,8 @@ if ( !empty($SID) ) {
             $session->reset(); // so session will not saved at redirect
          }
          $url = $_SERVER['SCRIPT_NAME'].'?'.$_SERVER['QUERY_STRING'];
-         if (stristr($url,'&SID=')) {
-            $url = substr($url,0,strpos($url,'&SID='));
+         if (mb_stristr($url,'&SID=')) {
+            $url = mb_substr($url,0,mb_strpos($url,'&SID='));
          }
          redirect_with_url($url);
       } else {
@@ -338,7 +338,7 @@ if ( !empty($SID) ) {
    /** password forget (END) **/
 
    if ( isset($session)
-        and strtoupper($session->getValue('user_id')) == 'GUEST'
+        and mb_strtoupper($session->getValue('user_id'), 'UTF-8') == 'GUEST'
         and !$outofservice
       ) {
       $cas_ticket = '';
@@ -488,8 +488,8 @@ if ( !empty($SID) ) {
          $session->reset(); // so session will not saved at redirect
       }
       $url = $_SERVER['SCRIPT_NAME'].'?'.$_SERVER['QUERY_STRING'];
-      if (stristr($url,'&SID=')) {
-         $url = substr($url,0,strpos($url,'&SID='));
+      if (mb_stristr($url,'&SID=')) {
+         $url = mb_substr($url,0,mb_strpos($url,'&SID='));
       }
       redirect_with_url($url);
    }
@@ -710,13 +710,13 @@ if ( $environment->isOutputModeNot('XML') ) {
       $page->setPageName($translator->getMessage('COMMON_FOREIGN_ROOM'));
    } elseif ( $context_item_current->isPrivateRoom() ) {
       $page->setRoomName($translator->getMessage('COMMON_PRIVATEROOM'));
-      $tempModule = strtoupper($environment->getCurrentModule());
+      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
       $tempMessage = "";
       include_once('include/inc_commsy_php_case_pagetitle.php');
       $page->setPageName($tempMessage);
    } else {
       $page->setRoomName($title);
-      $tempModule = strtoupper($environment->getCurrentModule());
+      $tempModule = mb_strtoupper($environment->getCurrentModule(), 'UTF-8');
       $tempMessage = "";
       include_once('include/inc_commsy_php_case_pagetitle.php');
       $page->setPageName($tempMessage);
@@ -882,7 +882,7 @@ if ( $environment->isOutputModeNot('XML') ) {
          $link_name = explode('_',$item);
          if ( $link_name[1] != 'none' ) {
             $tempMessage = "";
-            switch ( strtoupper($link_name[0]) )
+            switch ( mb_strtoupper($link_name[0], 'UTF-8') )
             {
                case 'ANNOUNCEMENT':
                   $tempMessage = $translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');

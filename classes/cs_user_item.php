@@ -387,7 +387,7 @@ class cs_user_item extends cs_item {
     */
    function setHomepage ($value) {
       if ( !empty($value) and $value != '-1' ) {
-         if ( !ereg("http://([a-z0-9_./?&=#:@]|-)*",$value) ) {
+         if ( !mb_ereg("http://([a-z0-9_./?&=#:@]|-)*",$value) ) {
             $value = "http://".$value;
          }
       }
@@ -895,7 +895,7 @@ class cs_user_item extends cs_item {
     *                 false, if user is not a guest
     */
    function isReallyGuest () {
-      return $this->_getValue('status') == 0 and strtolower($this->_getValue('user_id')) == 'guest';
+      return $this->_getValue('status') == 0 and mb_strtolower($this->_getValue('user_id'), 'UTF-8') == 'guest';
    }
 
       /** user has requested an account
@@ -1029,7 +1029,7 @@ class cs_user_item extends cs_item {
             $this->updateWikiNotification();
           }
       } else {
-        // Wenn der Benutzer gesperrt oder geloescht ist, müssen Profile und
+        // Wenn der Benutzer gesperrt oder geloescht ist, mÃ¼ssen Profile und
         // Notification entsprechend angepasst werden
         // 0 = gesperrt & geloescht (+ deletion_date)
         //
@@ -1383,7 +1383,7 @@ class cs_user_item extends cs_item {
     * @return object user_item User-Item from the community room
     */
    function getRelatedCommSyUserItem () {
-      if ( strtoupper($this->getUserID()) == 'ROOT' ) {
+      if ( mb_strtoupper($this->getUserID(), 'UTF-8') == 'ROOT' ) {
          $retour = $this;
       } else {
          $item_manager = $this->_environment->getItemManager();

@@ -1,6 +1,6 @@
 <?php
 $message["ALL"]["de"] = "Alle";
-$message["ANNOUNCEMENTS"]["de"] = "Ankündigungen";
+$message["ANNOUNCEMENTS"]["de"] = "AnkÃ¼ndigungen";
 $message["BROWSER"]["de"] = "Browsereinstellung";
 $message["COMMUNITYS"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["DATES"]["de"] = "Termine";
@@ -15,11 +15,11 @@ $message["LOGO"]["de"] = "Logo";
 $message["LOGOUT"]["de"] = "Abmelden";
 $message["MARK"]["de"] = "*";
 $message["MATERIALS"]["de"] = "Materialien";
-$message["MYROOMS"]["de"] = "Meine Räume";
-$message["PRIVATEROOM"]["de"] = "Persönlicher Raum";
-$message["PRIVATEROOMS"]["de"] = "Meine Räume";
+$message["MYROOMS"]["de"] = "Meine RÃ¤ume";
+$message["PRIVATEROOM"]["de"] = "PersÃ¶nlicher Raum";
+$message["PRIVATEROOMS"]["de"] = "Meine RÃ¤ume";
 $message["PROJECTS"]["de"] = "%_PROJECT_SUB_NOMPL_BIG";
-$message["RU"]["de"] = "Rumänisch";
+$message["RU"]["de"] = "RumÃ¤nisch";
 $message["TODOS"]["de"] = "Aufgaben";
 $message["TOPICS"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 ?>

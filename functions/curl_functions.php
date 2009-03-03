@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Edouard Simon, Monique Strauss, JosÃ¯Â¿Â½ Manuel GonzÃ¯Â¿Â½lez VÃ¯Â¿Â½zquez
 //
 //    This file is part of CommSy.
 //
@@ -128,7 +128,7 @@ function curl( $context_id, $module, $function, $parameter, $fragment='', $fileh
  */
 function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragment='', $filehack='', $file='' ) {
    if ( empty($file) ) {
-      $address = substr($_SERVER['SCRIPT_NAME'],strrpos($_SERVER['SCRIPT_NAME'],'/')+1);
+      $address = mb_substr($_SERVER['SCRIPT_NAME'],mb_strrpos($_SERVER['SCRIPT_NAME'],'/')+1);
    } else {
       $address = $file;
       if ( !strstr($file,'.php') ) {
@@ -159,8 +159,8 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    if ( !empty($filehack) ) {
       global $environment;
       if ( isset($environment)
-           and strtoupper($environment->getCurrentOperatingSystem()) == strtoupper('Mac OS')
-           and strtoupper($environment->getCurrentBrowser()) == strtoupper('SAFARI')
+           and mb_strtoupper($environment->getCurrentOperatingSystem(), 'UTF-8') == mb_strtoupper('Mac OS', 'UTF-8')
+           and mb_strtoupper($environment->getCurrentBrowser(), 'UTF-8') == mb_strtoupper('SAFARI', 'UTF-8')
          ) {
          $filehack = rawurldecode($filehack);
          include_once('functions/text_functions.php');

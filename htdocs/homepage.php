@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -240,8 +240,8 @@ if (!empty($SID)) {
       $session_manager->delete($SID,true);
       $session->reset(); // so session will not saved at redirect
       $url = $_SERVER['SCRIPT_NAME'].'?'.$_SERVER['QUERY_STRING'];
-      if (stristr($url,'&SID=')) {
-         $url = substr($url,0,strpos($url,'&SID='));
+      if (mb_stristr($url,'&SID=')) {
+         $url = mb_substr($url,0,mb_strpos($url,'&SID='));
       }
       redirect_with_url($url);
    }

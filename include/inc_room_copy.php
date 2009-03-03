@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -213,7 +213,7 @@ if ($old_room->withInformationBox()){
 // link modifier item
 $manager = $environment->getLinkModifierItemManager();
 foreach ($id_array as $value) {
-   if ( !stristr($value,CS_FILE_TYPE) ) {
+   if ( !mb_stristr($value,CS_FILE_TYPE) ) {
       $manager->markEdited($value,$creator_id);
    }
 }
@@ -241,12 +241,12 @@ unset($data_type_array);
 $array = $new_room->getUsageInfoTextArray();
 $new_array = array();
 foreach ( $array as $key => $value ) {
-   preg_match_all('/\[[0-9]*(\]|\|)/', $value, $matches);
+   preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
    if ( isset($matches[0]) ) {
       foreach ($matches[0] as $match) {
-         $id = substr($match,1);
-         $last_char = substr($id,strlen($id));
-         $id = substr($id,0,strlen($id)-1);
+         $id = mb_substr($match,1);
+         $last_char = mb_substr($id,mb_strlen($id));
+         $id = mb_substr($id,0,mb_strlen($id)-1);
          if ( isset($new_id_array[$id]) ) {
             $value = str_replace('['.$id.$last_char,'['.$new_id_array[$id].$last_char,$value);
          }
@@ -260,12 +260,12 @@ $new_room->setUsageInfoTextArray($new_array);
 $array = $new_room->getUsageInfoFormTextArray();
 $new_array = array();
 foreach ( $array as $key => $value ) {
-   preg_match_all('/\[[0-9]*(\]|\|)/', $value, $matches);
+   preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
    if ( isset($matches[0]) ) {
       foreach ($matches[0] as $match) {
-         $id = substr($match,1);
-         $last_char = substr($id,strlen($id));
-         $id = substr($id,0,strlen($id)-1);
+         $id = mb_substr($match,1);
+         $last_char = mb_substr($id,mb_strlen($id));
+         $id = mb_substr($id,0,mb_strlen($id)-1);
          if ( isset($new_id_array[$id]) ) {
             $value = str_replace('['.$id.$last_char,'['.$new_id_array[$id].$last_char,$value);
          }

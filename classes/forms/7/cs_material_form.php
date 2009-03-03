@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -174,7 +174,7 @@ class cs_material_form extends cs_rubric_form {
          $creator_item = $this->_item->getCreatorItem();
          $fullname = $creator_item->getFullname();
       } elseif ( !empty($this->_form_post['iid'])
-                 and strtolower($this->_form_post['iid']) != 'new'
+                 and mb_strtolower($this->_form_post['iid'], 'UTF-8') != 'new'
                ) {
          $manager = $this->_environment->getManager(CS_MATERIAL_TYPE);
          $item = $manager->getItem($this->_form_post['iid']);
@@ -379,7 +379,7 @@ class cs_material_form extends cs_rubric_form {
       $this->_form->addAnchor('fileupload');
       $val = ini_get('upload_max_filesize');
       $val = trim($val);
-      $last = $val[strlen($val)-1];
+      $last = $val[mb_strlen($val)-1];
       switch($last) {
          case 'k':
          case 'K':
@@ -414,14 +414,14 @@ class cs_material_form extends cs_rubric_form {
             $px = '380';
          } elseif ($browser == 'FIREFOX') {
             $operation_system = $this->_environment->getCurrentOperatingSystem();
-            if (strtoupper($operation_system) == 'LINUX') {
+            if (mb_strtoupper($operation_system, 'UTF-8') == 'LINUX') {
                $px = '370';
-            } elseif (strtoupper($operation_system) == 'MAC OS') {
+            } elseif (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                $px = '362';
             }
          } elseif ($browser == 'MOZILLA') {
             $operation_system = $this->_environment->getCurrentOperatingSystem();
-            if (strtoupper($operation_system) == 'MAC OS') {
+            if (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
                $px = '336'; // camino
             }
          }
@@ -604,7 +604,7 @@ class cs_material_form extends cs_rubric_form {
     */
    function _checkValues () {
       $current_context = $this->_environment->getCurrentContextItem();
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
       if ( $current_context->isTagMandatory() ){
          $session = $this->_environment->getSessionItem();
          $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
@@ -619,7 +619,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
       }
-/*** Neue Schlagwörter und Tags***/
+/*** Neue SchlagwÃ¶rter und Tags***/
    }
 
 }

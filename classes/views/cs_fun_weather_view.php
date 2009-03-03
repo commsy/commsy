@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -42,7 +42,7 @@ class cs_fun_weather_view extends cs_view {
    }
 
    public function setCountry ($value) {
-      $this->_country = strtoupper($value);
+      $this->_country = mb_strtoupper($value, 'UTF-8');
    }
 
    public function setPLZ ($value) {

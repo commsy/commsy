@@ -20,7 +20,7 @@ RFE:
 - Diskussionen: [neu] beim einzelnen Beitrag auch anzeigen
 - Gruppenraum: weniger Rubriken
 - Hinweis bei der Diskussionsauswahl
-- Löschen im privaten Raum
+- LÃ¶schen im privaten Raum
 - Lange abgebrochene Links: kompletten Link in Hovertext
 - Links auf Portal zum R?ume er?ffnen: Leerzeichen sparen
 - Materialien f?r den PDA
@@ -40,9 +40,9 @@ Bugs:
 - Awarenessbberechnung
 - Bilder auf der Personenseite
 - Darstellungsfehler Handhabungssupport
-- Dateien lassen sich nicht komplett abwählen
+- Dateien lassen sich nicht komplett abwÃ¤hlen
 - Dateien werden nicht mitkopiert
-- Diskussion: Fehler beim Themen anhängen
+- Diskussion: Fehler beim Themen anhÃ¤ngen
 - Diskussion: Position des Initialbeitrages wird nicht gesetzt
 - Diskussion: bearbeiten
 - Diskussion: linear: verlinkung fehlerhaft
@@ -61,11 +61,11 @@ Bugs:
 - Gruppenraum: Fehler im Link - Teilnahme freischalten
 - Gruppenraum: Fehler im Text - Teilnahme freischalten
 - Gruppenraum: Teilnahmeanfrage: Weiter:
-- Gruppenraum: nicht im persönlichen Raum unter "Meine Räume" sichtbar
+- Gruppenraum: nicht im persÃ¶nlichen Raum unter "Meine RÃ¤ume" sichtbar
 - Installation: DUMP: position_field in discussion_articles fehlt
-- Kennung ändern: Privater Raum weg
+- Kennung Ã¤ndern: Privater Raum weg
 - Kontext von Schablonen
-- Link "Gemeinschaftsraum neu eröffnen" für Gast sichtbar
+- Link "Gemeinschaftsraum neu erÃ¶ffnen" fÃ¼r Gast sichtbar
 - Link auf Textformatierungen fehlerhaft (nicht reproduzierbar)
 - Material: alte Version zur neuen machen: Abschnitte sind weg
 - Newsletter: Fehler in Verlinkung von Perspektiven
@@ -73,7 +73,7 @@ Bugs:
 - Person: Bilder hochladen
 - Personenverzeichnis von CommSy WWW-weit lesbar
 - Portal: Speichern von Beschreibung
-- Portal: email-adresse bei Kennung ändern
+- Portal: email-adresse bei Kennung Ã¤ndern
 - Problem im Raum qu.int.as (nicht reproduzierbar)
 - Schabloneneinstellung
 - Schlagworte / Art des Materials: nicht bearbeitbar
@@ -81,11 +81,11 @@ Bugs:
 - Thema: Diskussion zu ordnen geht nicht
 - Umbennung von Rubriken: Gremien sind Themen
 - Verwendung der 'contact's in der Raumsuche
-- Zeittakte: abwählen geht nicht
-- Zeittakte: umwählen geht nicht
+- Zeittakte: abwÃ¤hlen geht nicht
+- Zeittakte: umwÃ¤hlen geht nicht
 - Zuordnung von GR zu PR
 - [2_5.swf] wird nicht angezeigt
 - contact_detail noch im Code -> muss user_detail sein
 - einige Dateien lassen sich nicht kopieren
 - fehlende Bildanzeige in der Farbkonfiguration
-- persönlicher Newsletter zeigt alle Räume nicht nur die von der Home
+- persÃ¶nlicher Newsletter zeigt alle RÃ¤ume nicht nur die von der Home

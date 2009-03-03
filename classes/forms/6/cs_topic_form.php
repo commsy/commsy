@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -140,8 +140,8 @@ class cs_topic_form extends cs_rubric_form {
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_TOPIC_TYPE);
-            if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
-              $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+            if (isset($rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS']) ){
+              $genus = $rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS'];
             } else {
                $genus = $rubric_array['EN']['GENUS'];
             }
@@ -162,8 +162,8 @@ class cs_topic_form extends cs_rubric_form {
          $new='';
          $context_item = $this->_environment->getCurrentContextItem();
          $rubric_array = $context_item->_getRubricArray(CS_TOPIC_TYPE);
-         if (isset($rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS']) ){
-           $genus = $rubric_array[strtoupper($this->_environment->getSelectedLanguage())]['GENUS'];
+         if (isset($rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS']) ){
+           $genus = $rubric_array[mb_strtoupper($this->_environment->getSelectedLanguage(), 'UTF-8')]['GENUS'];
          } else {
             $genus = $rubric_array['EN']['GENUS'];
          }
@@ -211,7 +211,7 @@ class cs_topic_form extends cs_rubric_form {
                   $item_type .= 's';
                }
 
-               $temp_item_type = strtoupper($item_type);
+               $temp_item_type = mb_strtoupper($item_type, 'UTF-8');
                switch ( $temp_item_type )
                {
                   case 'ANNOUNCEMENT':

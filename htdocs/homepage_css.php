@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -306,7 +306,7 @@ div.project-gauge-bar {
 
 <?php
 // Improve layout for Safari
-if ( strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') === false ) {
+if ( mb_strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') === false ) {
    echo('/* All input fields have the same font setting */'.LF);
    echo('input, textarea {'.LF);
    echo('   font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;'.LF);

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -508,7 +508,7 @@ class cs_page_room_view extends cs_page_view {
          }
       }
       $html .= '<td style="verticale-align:middle; padding-top:5px;">';
-      $length = strlen($context_item->getTitle());
+      $length = mb_strlen($context_item->getTitle());
       $title = $context_item->getTitle();
       if ($length < 25){
         $size = '';
@@ -656,7 +656,7 @@ class cs_page_room_view extends cs_page_view {
          $html .= '<a id="top" name="top"></a>'.LF;
 
          $html_id = '';
-         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
             $html_id = 'id="ie"';
@@ -1001,7 +1001,7 @@ class cs_page_room_view extends cs_page_view {
                }
                $html .= '</div>'.LF;
                $html .= '</div>'.LF;
-               $current_browser = strtolower($this->_environment->getCurrentBrowser());
+               $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
                $current_browser_version = $this->_environment->getCurrentBrowserVersion();
                if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
                   $width= ' width:100%; padding-right:10px;';
@@ -1116,7 +1116,7 @@ class cs_page_room_view extends cs_page_view {
                $html .='</div>'.LF;
                $html .= '<script type="text/javascript">'.LF;
                /*******************************/
-               /* TBD: Die Werte des dritten Arrays setzen, falls die Ver‰nderungen*/
+               /* TBD: Die Werte des dritten Arrays setzen, falls die Ver√§nderungen*/
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
@@ -1166,7 +1166,7 @@ class cs_page_room_view extends cs_page_view {
             $text = $date_array[2].' '.$month.' '.$date_array[0];
          }
          $text .=', ';
-         if (strlen($current_time[1])==1){
+         if (mb_strlen($current_time[1])==1){
             $current_time[1] = '0'.$current_time[1];
          }
          $text .= $current_time[2].':'.$current_time[1];
@@ -1373,11 +1373,11 @@ class cs_page_room_view extends cs_page_view {
             } else {
                $flag_lang = $lang;
             }
-            if ( strtolower($selected_language) == $lang ) {
+            if ( mb_strtolower($selected_language, 'UTF-8') == $lang ) {
                $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>';
                $html .= $img.'&nbsp;&nbsp;';
             } elseif ( $language != 'user' ) {
-               $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'_gray.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'" title="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,strtoupper($language))).'"/>';
+               $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'_gray.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,mb_strtoupper($language, 'UTF-8'))).'" title="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG_DISABLED',$this->_translator->getMessageInLang($lang,mb_strtoupper($language, 'UTF-8'))).'"/>';
                $html .= $img.'&nbsp;&nbsp;';
             } else {
                $img = '<img style="vertical-align:bottom;" src="images/flags/'.$flag_lang.'.gif" alt="'.$this->_translator->getMessageInLang($lang,'COMMON_CHANGE_LANGUAGE_WITH_FLAG').'"/>';
@@ -1485,7 +1485,7 @@ class cs_page_room_view extends cs_page_view {
                unset($params['show_copies']);
                unset($params['profile_page']);
                global $c_annonymous_account_array;
-               if ( empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])) {
+               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])) {
                   $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
                   $html .= $this->_getCopyLinkAsHTML();
                }

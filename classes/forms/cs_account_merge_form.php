@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -121,9 +121,9 @@ class cs_account_merge_form extends cs_rubric_form {
    function _checkValues () {
       global $c_annonymous_account_array;
       $current_user = $this->_environment->getCurrentUserItem();
-      if ( !empty($c_annonymous_account_array[strtolower($current_user->getUserID()).'_'.$current_user->getAuthSource()]) ) {
+      if ( !empty($c_annonymous_account_array[mb_strtolower($current_user->getUserID(), 'UTF-8').'_'.$current_user->getAuthSource()]) ) {
          $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$current_user->getUserID());
-      } elseif ( !empty($c_annonymous_account_array[strtolower($this->_form_post['user_id']).'_'.$this->_form_post['auth_source']]) ) {
+      } elseif ( !empty($c_annonymous_account_array[mb_strtolower($this->_form_post['user_id'], 'UTF-8').'_'.$this->_form_post['auth_source']]) ) {
          $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$this->_form_post['user_id']);
       } elseif ( !empty($this->_form_post['user_id'])
            and !empty($this->_form_post['password'])

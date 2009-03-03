@@ -11,7 +11,7 @@ Features:
     * Konfiguration der Listenansichten
     * Konfigurationsbereich aufgeraeumt
     * Mein Bereich: Redesign
-    * Netznavigation: alles mit allem verknüpfen können
+    * Netznavigation: alles mit allem verknÃ¼pfen kÃ¶nnen
     * Pfade entflaggt und weiterentwickelt
     * RSS: "entflaggen"
     * RSS: staendig verfuegbar
@@ -21,10 +21,10 @@ Features:
 Bugs:
 -----
     * Passwort, Kennung aendern -> Fehlerseite
-    * Newsletter: Aktivität von Gruppen mit Guppenräumen
+    * Newsletter: AktivitÃ¤t von Gruppen mit GuppenrÃ¤umen
     * COMMON_MESSAGETAG_ERROR cs_community_item(894)
     * Home: persoenlicher Raum
-    * Kennung ändern im persönlichen Raum Home
+    * Kennung Ã¤ndern im persÃ¶nlichen Raum Home
     * Raum: Kennungen bearbeiten -> %x erklaerungsbeduerftig
     * Teilnahme-Code: TABINDEX
     * Teilnahme: E-Mail: fatal error

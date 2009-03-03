@@ -3,7 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
 // Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
@@ -486,7 +486,7 @@ class cs_material_detail_view extends cs_detail_view {
                break;
             case 'thesis':
                {
-                  $temp_Thesis_Kind = strtoupper($item->getThesisKind());
+                  $temp_Thesis_Kind = mb_strtoupper($item->getThesisKind(), 'UTF-8');
                   switch ( $temp_Thesis_Kind )
                   {
                      case 'BACHELOR':
@@ -813,10 +813,10 @@ class cs_material_detail_view extends cs_detail_view {
                if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                   $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
                } else {
-                  if ( stristr(strtolower($file->getFilename()),'png')
-                    or stristr(strtolower($file->getFilename()),'jpg')
-                    or stristr(strtolower($file->getFilename()),'jpeg')
-                    or stristr(strtolower($file->getFilename()),'gif')
+                  if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                      ) {
                       $this->_with_slimbox = true;
                       $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';

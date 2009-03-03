@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -315,10 +315,10 @@ else {
           $first = false;
           $user_id .= '1';
        } else {
-          $count = $user_id{strlen($user_id)-1};
+          $count = $user_id{mb_strlen($user_id)-1};
           $count = (int)$count;
           $count++;
-          $user_id = substr($user_id,0,strlen($user_id)-1);
+          $user_id = mb_substr($user_id,0,mb_strlen($user_id)-1);
           $user_id .= $count;
        }
          }

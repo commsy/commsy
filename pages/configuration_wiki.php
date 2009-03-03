@@ -37,8 +37,8 @@ if ( !empty($_GET['iid']) ) {
 }
 
 // hier muss auf den aktuellen Kontext referenziert werden,
-// da sonst später diese Einstellung wieder überschrieben wird
-// in der commsy.php beim Speichern der Aktivität
+// da sonst spÃ¤ter diese Einstellung wieder Ã¼berschrieben wird
+// in der commsy.php beim Speichern der AktivitÃ¤t
 $current_context_item = $environment->getCurrentContextItem();
 if ($current_iid == $current_context_item->getItemID()) {
    $item = $current_context_item;

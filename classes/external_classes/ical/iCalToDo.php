@@ -119,19 +119,19 @@ class iCalToDo extends iCalBase {
 	* @param int $duration  Duration of the todo in minutes
 	* @param int $end  Start time for the event (timestamp)
 	* @param int $percent  The percent completion of the ToDo
-	* @param int $prio  riority = 0–9
+	* @param int $prio  riority = 0Â–9
 	* @param int $status  Status of the event (0 = TENTATIVE, 1 = CONFIRMED, 2 = CANCELLED)
 	* @param int $class  (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
-	* @param array $organizer  The organizer – use array('Name', 'name@domain.com')
+	* @param array $organizer  The organizer Â– use array('Name', 'name@domain.com')
 	* @param array $attendees  key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON] (example: array('Michi' => 'flaimo@gmx.net,1'); )
 	* @param array $categories  Array with Strings (example: array('Freetime','Party'))
 	* @param int $last_mod  Last modification of the to-to (timestamp)
 	* @param array) $alarm  Array with all the alarm information, "''" for no alarm
-	* @param int $frequency  frequency: 0 = once, secoundly – yearly = 1–7
+	* @param int $frequency  frequency: 0 = once, secoundly Â– yearly = 1Â–7
 	* @param mixed $rec_end  recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
-	* @param int $interval  Interval for frequency (every 2,3,4 weeks…)
+	* @param int $interval  Interval for frequency (every 2,3,4 weeksÂ…)
 	* @param string $days  Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
-	* @param string $weekstart  Startday of the Week ( 0 = Sunday – 6 = Saturday)
+	* @param string $weekstart  Startday of the Week ( 0 = Sunday Â– 6 = Saturday)
 	* @param string $exept_dates  exeption dates: Array with timestamps of dates that should not be includes in the recurring event
 	* @param string $url  optional URL for that event
 	* @param string $lang  Language of the strings used in the event (iso code)

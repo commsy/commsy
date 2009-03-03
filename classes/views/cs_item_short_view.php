@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -277,7 +277,7 @@ class cs_item_short_view extends cs_home_view {
       $description = $item->getDescription();
       if ( empty($description) ) {
          $description = '&nbsp;';
-      } elseif (strlen($description) > $len) {
+      } elseif (mb_strlen($description) > $len) {
          $description = chunkText($description,$len).' ... ';
          $params = array();
          $params['iid'] = $item->getItemID();

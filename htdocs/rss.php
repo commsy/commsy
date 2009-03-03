@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -134,24 +134,42 @@ if ( isset($_GET['cid']) ) {
    $maintitle = str_replace('&','&amp;',$maintitle);
 
    //RSS File Header
+//   $rss = '<?xml version="1.0" encoding="utf-8"? >
+//
+//   <rss version="2.0">
+//
+//     <channel>
+//      <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
+//      <link>'.$path.'commsy.php</link>
+//      <ttl>60</ttl>
+//      <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
+//      <language>'.$context_item->getLanguage().'</language>
+//      <copyright>-</copyright>
+//      <pubDate>'.$date.'</pubDate>
+//      <image>
+//        <url>'.$path.'images/commsy_logo_transparent.gif</url>
+//        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
+//        <link>'.$path.'commsy.php</link>
+//      </image>';
+      
    $rss = '<?xml version="1.0" encoding="utf-8"?>
 
    <rss version="2.0">
 
      <channel>
-      <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
-      <link>'.$path.'commsy.php?cid='.$context_item->getItemID().'</link>
+      <title>'.$translator->getMessage('RSS_TITLE',$maintitle).'</title>
+      <link>'.$path.'commsy.php</link>
       <ttl>60</ttl>
-      <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
-      <language>'.$language.'</language>
+      <description>'.$translator->getMessage('RSS_DESCRIPTION',$maintitle).'</description>
+      <language>'.$context_item->getLanguage().'</language>
       <copyright>-</copyright>
       <pubDate>'.$date.'</pubDate>
       <image>
         <url>'.$path.'images/commsy_logo_transparent.gif</url>
-        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
+        <title>'.$translator->getMessage('RSS_TITLE',$maintitle).'</title>
         <link>'.$path.'commsy.php</link>
       </image>';
-
+      
    $type_limit_array = array();
    $type_limit_array[] = 'user';
    $type_limit_array[] = 'annotation';
@@ -244,7 +262,7 @@ if ( isset($_GET['cid']) ) {
             if ( isset($linked_item) ) {
                $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
                $description = $item->getDescriptionWithoutHTML();
-               if (strlen($description) > $desc_len)
+               if (mb_strlen($description) > $desc_len)
                {
                   $description = chunkText($description,$desc_len);
                }
@@ -298,7 +316,7 @@ if ( isset($_GET['cid']) ) {
             if ( !empty($linked_item) ) {
                $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
                $description = $item->getDescriptionWithoutHTML();
-               if ( strlen($description) > $desc_len ) {
+               if ( mb_strlen($description) > $desc_len ) {
                   $description = chunkText($item->getDescription(),$desc_len);
                }
                $user_item = $item->getModificatorItem();
@@ -331,7 +349,7 @@ if ( isset($_GET['cid']) ) {
             } else {
                $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
                $description = $item->getDescriptionWithoutHTML();
-               if ( strlen($description) > $desc_len ) {
+               if ( mb_strlen($description) > $desc_len ) {
                   $description = chunkText($description,$desc_len);
                }
                $user_item = $item->getModificatorItem();
@@ -349,7 +367,7 @@ if ( isset($_GET['cid']) ) {
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_ANNOUNCEMENT_TITLE',$item->getTitle());
             $description = $item->getDescriptionWithoutHTML();
-            if(strlen($description) > $desc_len)
+            if(mb_strlen($description) > $desc_len)
             {
                $description = chunkText($description,$desc_len);
             }
@@ -368,7 +386,7 @@ if ( isset($_GET['cid']) ) {
             $linked_item = $item->getLinkedItem();
             $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
             $description = $item->getDescriptionWithoutHTML();
-            if ( strlen($description) > $desc_len ) {
+            if ( mb_strlen($description) > $desc_len ) {
                $description = chunkText($description,$desc_len);
             }
             $user_item = $item->getModificatorItem();
@@ -387,7 +405,7 @@ if ( isset($_GET['cid']) ) {
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_DATE_TITLE',$item->getTitle());
             $description = $item->getDescriptionWithoutHTML();
-            if(strlen($description) > $desc_len)
+            if(mb_strlen($description) > $desc_len)
             {
                $description = chunkText($description,$desc_len);
             }
@@ -407,7 +425,7 @@ if ( isset($_GET['cid']) ) {
                case 'group':
                   $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
                   $description = $item->getDescriptionWithoutHTML();
-                  if(strlen($description) > $desc_len)
+                  if(mb_strlen($description) > $desc_len)
                   {
                      $description = chunkText($description,$desc_len);
                   }
@@ -418,7 +436,7 @@ if ( isset($_GET['cid']) ) {
                case 'institution':
                   $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
                   $description = $item->getDescriptionWithoutHTML();
-                  if(strlen($description) > $desc_len)
+                  if(mb_strlen($description) > $desc_len)
                   {
                      $description = chunkText($description,$desc_len);
                   }
@@ -429,7 +447,7 @@ if ( isset($_GET['cid']) ) {
                case 'topic':
                   $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
                   $description = $item->getDescriptionWithoutHTML();
-                  if(strlen($description) > $desc_len)
+                  if(mb_strlen($description) > $desc_len)
                   {
                      $description = chunkText($description,$desc_len);
                   }
@@ -449,7 +467,7 @@ if ( isset($_GET['cid']) ) {
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
             $description = $item->getDescriptionWithoutHTML();
-            if(strlen($description) > $desc_len)
+            if(mb_strlen($description) > $desc_len)
             {
                $description = chunkText($description,$desc_len);
             }
@@ -481,7 +499,7 @@ if ( isset($_GET['cid']) ) {
       if ( isset($description)
            and !empty($description)
          ) {
-         if ( strlen($description) > $desc_len ) {
+         if ( mb_strlen($description) > $desc_len ) {
             $description = chunkText($description,$desc_len);
          } elseif ($description == '0') {
             $description = '';

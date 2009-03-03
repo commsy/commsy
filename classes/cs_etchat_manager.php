@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -45,16 +45,16 @@ class cs_etchat_manager extends cs_manager {
       $sql = 'SELECT etchat_roomname FROM etchat_rooms WHERE etchat_id_room="'.$context->getItemID().'";';
       $result = $this->_db_connector->performQuery($sql);
       if ( empty($result[0])
-           or $result[0]['etchat_roomname'] != htmlentities($context->getTitle())
+           or $result[0]['etchat_roomname'] != htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8')
          ) {
          // no -> enter chat room
          if ( empty($result[0]) ) {
-            $sql = 'INSERT INTO etchat_rooms VALUES ('.$context->getItemID().',"'.addslashes(htmlentities($context->getTitle())).'");';
+            $sql = 'INSERT INTO etchat_rooms VALUES ('.$context->getItemID().',"'.addslashes(htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8')).'");';
          }
 
          // new name -> change room
          else {
-            $sql = 'UPDATE etchat_rooms SET etchat_roomname="'.addslashes(htmlentities($context->getTitle())).'" WHERE etchat_id_room='.$context->getItemID().';';
+            $sql = 'UPDATE etchat_rooms SET etchat_roomname="'.addslashes(htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8')).'" WHERE etchat_id_room='.$context->getItemID().';';
          }
          $result = $this->_db_connector->performQuery($sql);
          if ( !empty($result) ) {
@@ -85,13 +85,13 @@ class cs_etchat_manager extends cs_manager {
       }
       if ( empty($result[0])
            or empty($result[0]['etchat_username'])
-           or $result[0]['etchat_username'] != htmlentities($user_fullname)
+           or $result[0]['etchat_username'] != htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')
          ) {
          // no -> enter user
          if ( empty($result[0]) ) {
-            $sql = 'INSERT INTO etchat_user VALUES ('.$user_item_id.',"'.addslashes(htmlentities($user_fullname)).'",NULL,"gast");';
+            $sql = 'INSERT INTO etchat_user VALUES ('.$user_item_id.',"'.addslashes(htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')).'",NULL,"gast");';
          } else {
-            $sql = 'UPDATE etchat_user SET etchat_username="'.addslashes(htmlentities($user_fullname)).'" WHERE etchat_user_id='.$user_item_id.';';
+            $sql = 'UPDATE etchat_user SET etchat_username="'.addslashes(htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')).'" WHERE etchat_user_id='.$user_item_id.';';
          }
          $result = $this->_db_connector->performQuery($sql);
          if ( !empty($result) ) {
@@ -103,7 +103,7 @@ class cs_etchat_manager extends cs_manager {
 
       // user message
       $translator = $this->_environment->getTranslationObject();
-      $message_etchat_enter_chatroom = $translator->getMessage('ETCHAT_USER_ENTER_CHATROOM',htmlentities($user_fullname));
+      $message_etchat_enter_chatroom = $translator->getMessage('ETCHAT_USER_ENTER_CHATROOM',htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8'));
       $time = date('U')-2;
       $sql = 'SELECT count(*) FROM etchat_messages WHERE etchat_user_fid="'.$user_item_id.'" AND etchat_text="'.addslashes($message_etchat_enter_chatroom).'" AND etchat_fid_room="'.$user->getContextID().'" AND etchat_timestamp>="'.$time.'";';
       $result = $this->_db_connector->performQuery($sql);
@@ -128,7 +128,7 @@ class cs_etchat_manager extends cs_manager {
          } else {
             $user_param_all = $_SERVER['REMOTE_ADDR']."@".@gethostbyaddr($_SERVER['REMOTE_ADDR'])."@".@getenv('HTTP_X_FORWARDED_FOR');
          }
-         $sql = "INSERT INTO etchat_useronline ( etchat_onlineuser_fid, etchat_onlinetimestamp, etchat_onlineip, etchat_fid_room, etchat_user_online_room_name, etchat_user_online_user_name, etchat_user_online_user_priv) VALUES ( '".$user_item_id."', ".date('U').", '".$user_param_all."', ".$user->getContextID()." ,'".addslashes(htmlentities($context->getTitle()))."', '".addslashes(htmlentities($user_item_id))."', 'gast')";
+         $sql = "INSERT INTO etchat_useronline ( etchat_onlineuser_fid, etchat_onlinetimestamp, etchat_onlineip, etchat_fid_room, etchat_user_online_room_name, etchat_user_online_user_name, etchat_user_online_user_priv) VALUES ( '".$user_item_id."', ".date('U').", '".$user_param_all."', ".$user->getContextID()." ,'".addslashes(htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8'))."', '".addslashes(htmlentities($user_item_id, ENT_NOQUOTES, 'UTF-8'))."', 'gast')";
          $result = $this->_db_connector->performQuery($sql);
          if ( empty($result)
               or !is_numeric($result)

@@ -2,10 +2,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -63,7 +63,7 @@ class cs_configuration_language_form extends cs_rubric_form {
        foreach ($lang_array as $lang) {
           $temp_array = array();
           $temp_array['text'] = $this->_translator->getLanguageLabelTranslated($lang);
-          $temp_array['text'] .= LF.'<img src="images/'.strtolower($lang).'.gif" style="vertical-align: middle;" alt="Language '.strtolower($lang).'"/>'.LF;
+          $temp_array['text'] .= LF.'<img src="images/'.mb_strtolower($lang, 'UTF-8').'.gif" style="vertical-align: middle;" alt="Language '.mb_strtolower($lang, 'UTF-8').'"/>'.LF;
           $temp_array['value'] = $lang;
           $this->_language_array[] = $temp_array;
           unset($temp_array);

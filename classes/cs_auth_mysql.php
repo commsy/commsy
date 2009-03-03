@@ -6,7 +6,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -63,19 +63,19 @@ class cs_auth_mysql extends cs_auth_manager {
 
    function _toggleUmlaut($user_id, $pos) {
       $array = array ();
-      $array['ä'] = 'ae';
-      $array['ö'] = 'oe';
-      $array['ü'] = 'ue';
-      $array['ß'] = 'ss';
-      $array['ae'] = 'ä';
-      $array['oe'] = 'ö';
-      $array['ue'] = 'ü';
-      $array['ss'] = 'ß';
+      $array['Ã¤'] = 'ae';
+      $array['Ã¶'] = 'oe';
+      $array['Ã¼'] = 'ue';
+      $array['ÃŸ'] = 'ss';
+      $array['ae'] = 'Ã¤';
+      $array['oe'] = 'Ã¶';
+      $array['ue'] = 'Ã¼';
+      $array['ss'] = 'ÃŸ';
 
       $retour = array ();
 
       $counter = 0;
-      for ($i = 0; $i < strlen($user_id); $i++) {
+      for ($i = 0; $i < mb_strlen($user_id); $i++) {
          if (in_array($user_id[$i], $array) or (isset ($user_id[$i +1]) and in_array($user_id[$i] . $user_id[$i +1], $array))) {
             $counter++;
             if ($pos == $counter) {
@@ -90,9 +90,9 @@ class cs_auth_mysql extends cs_auth_manager {
          $len = 1;
       }
 
-      $first = substr($user_id, 0, $position);
-      $umlaut = substr($user_id, $position, $len);
-      $last = substr($user_id, $position + $len);
+      $first = mb_substr($user_id, 0, $position);
+      $umlaut = mb_substr($user_id, $position, $len);
+      $last = mb_substr($user_id, $position + $len);
       $retour[] = $first . $umlaut . $last;
       $retour[] = $first . $array[$umlaut] . $last;
 
@@ -101,17 +101,17 @@ class cs_auth_mysql extends cs_auth_manager {
 
    function _getMultipleUserIDArray($user_id) {
       $array = array ();
-      $array['ä'] = 'ae';
-      $array['ö'] = 'oe';
-      $array['ü'] = 'ue';
-      $array['ß'] = 'ss';
-      $array['ae'] = 'ä';
-      $array['oe'] = 'ö';
-      $array['ue'] = 'ü';
-      $array['ss'] = 'ß';
+      $array['Ã¤'] = 'ae';
+      $array['Ã¶'] = 'oe';
+      $array['Ã¼'] = 'ue';
+      $array['ÃŸ'] = 'ss';
+      $array['ae'] = 'Ã¤';
+      $array['oe'] = 'Ã¶';
+      $array['ue'] = 'Ã¼';
+      $array['ss'] = 'ÃŸ';
       $retour = array ();
       $counter = 0;
-      for ($i = 0; $i < strlen($user_id); $i++) {
+      for ($i = 0; $i < mb_strlen($user_id); $i++) {
          if (in_array($user_id[$i], $array) or (isset ($user_id[$i +1]) and in_array($user_id[$i] . $user_id[$i +1], $array))) {
             $counter++;
          }

@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -557,8 +557,8 @@ class cs_server_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -576,7 +576,7 @@ class cs_server_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_HEADER',$value_array);
    }
 
@@ -591,8 +591,8 @@ class cs_server_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -610,7 +610,7 @@ class cs_server_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_HEADER',$value_array);
    }
 
@@ -625,7 +625,7 @@ class cs_server_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
    }
 
@@ -640,7 +640,7 @@ class cs_server_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
    }
 
@@ -657,8 +657,8 @@ class cs_server_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
@@ -687,7 +687,7 @@ class cs_server_item extends cs_guide_item {
                                                );
                                      "'
                            );
-         $temp = strtoupper($rubric) . '_' . strtoupper($funct);
+         $temp = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage      = "";
          switch( $temp )
          {
@@ -859,7 +859,7 @@ class cs_server_item extends cs_guide_item {
     */
    function setOutOfServiceByLanguage ($value, $language) {
       $desc_array = $this->getOutOfServiceArray();
-      $desc_array[strtoupper($language)] = $value;
+      $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
       $this->setOutOfServiceArray($desc_array);
    }
 

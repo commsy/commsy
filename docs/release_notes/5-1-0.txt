@@ -8,12 +8,12 @@ plugin that enables you to upload multiple files and at the same time get progre
 
 Bugs:
 -----
- * CS_COMMUNITY_TYPE wurde im community_item nicht übersetzt
- * Raum: Konfiguration: Voreinstellungen für Räume: Dort werden die umbenennbaren Rubriken übersetzt. Macht hier keinen Sinn. -> bis auf Rumänisch gefixt
- * Diskussionen: Beiträge konnten nicht mehr bearbeitet werden, wenn die Diskussion auf "nur von xy bearbeitbar" gestellt war.
- * CAS: keine Verbindung zu externem Server möglich
+ * CS_COMMUNITY_TYPE wurde im community_item nicht Ã¼bersetzt
+ * Raum: Konfiguration: Voreinstellungen fÃ¼r RÃ¤ume: Dort werden die umbenennbaren Rubriken Ã¼bersetzt. Macht hier keinen Sinn. -> bis auf RumÃ¤nisch gefixt
+ * Diskussionen: BeitrÃ¤ge konnten nicht mehr bearbeitet werden, wenn die Diskussion auf "nur von xy bearbeitbar" gestellt war.
+ * CAS: keine Verbindung zu externem Server mÃ¶glich
  * portal news: links fehlten
- * Installationsanleitungen (de / en) ergänzt
+ * Installationsanleitungen (de / en) ergÃ¤nzt
  * Installationsanleitung deutsch nun auch ausdruckbar
  * Installationsanleitung englisch nun auch ausdruckbar
  * Portal: Breite der Errorbox berichtigt
@@ -21,8 +21,8 @@ Bugs:
 
 RFE:
 ----
- * Links zum Raum eröffnen wurden getrennt nach Gemeinschaftsraum und Projektraum. So können Projekträume gleich Gemeinschaftsräumen und Semestern zugeordnet werden.
- * rudimentärer XML-Export zum Einspielen von Backups
+ * Links zum Raum erÃ¶ffnen wurden getrennt nach Gemeinschaftsraum und Projektraum. So kÃ¶nnen ProjektrÃ¤ume gleich GemeinschaftsrÃ¤umen und Semestern zugeordnet werden.
+ * rudimentÃ¤rer XML-Export zum Einspielen von Backups
  * Mehrfach-Upload [ij 19.12.06]
- * Kennung löschen: Warnhinweis eingefügt, dass auch alle Inhalte gelöscht (überschrieben) werden.
+ * Kennung lÃ¶schen: Warnhinweis eingefÃ¼gt, dass auch alle Inhalte gelÃ¶scht (Ã¼berschrieben) werden.
  * Portal: PR einrichten gleich Semester und GR zuordnen (SF 1468352)

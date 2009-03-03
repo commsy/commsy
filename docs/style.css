@@ -3,7 +3,7 @@
 /*kompletter Hintergrund*/
 .background
 {
-background-color: #FFFFFF;         /*weiß*/
+background-color: #FFFFFF;         /*weiÃŸ*/
 }
 
 /*Text im Seitenkopf*/
@@ -279,7 +279,7 @@ color: #000000;                        /*schwarz*/
 }
 
 
-/*Für Seitenkopf*/
+/*FÃ¼r Seitenkopf*/
 .h1
 {
 font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
@@ -290,7 +290,7 @@ color: #333333;
 }
 
 
-/*Für Textüberschrift*/
+/*FÃ¼r TextÃ¼berschrift*/
 .h2, h2
 {
 font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
@@ -303,7 +303,7 @@ padding-bottom: 0px;
 }
 
 
-/*Für Textüberschrift 2. Ebene*/
+/*FÃ¼r TextÃ¼berschrift 2. Ebene*/
 .h3
 {
 font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
@@ -313,7 +313,7 @@ font-weight: bold;
 color: #333333;
 }
 
-/*Für Textüberschrift 3. Ebene*/
+/*FÃ¼r TextÃ¼berschrift 3. Ebene*/
 .h4, h4
 {
 font-family: Arial, Helvetica, "Nimbus Sans L", sans-serif;
@@ -337,7 +337,7 @@ color: #333333;
 background-color: #FFFFFF;
 }
 
-/*Für Kasten-Tabelle, hinzugefügt F.M. 20070726 */
+/*FÃ¼r Kasten-Tabelle, hinzugefÃ¼gt F.M. 20070726 */
 .boxtable
 {
 /* border:1px solid #C0C0C0; */

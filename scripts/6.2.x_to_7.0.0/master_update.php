@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Dirk Bloessl Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Edouard Simon, Monique Strauss, JosÃÂ© Manuel GonzÃÂ¡lez VÃÂ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -59,7 +59,7 @@ $time_start_all = getmicrotime();
 
 $current_dir = getcwd();
 $current_dir = str_replace('\\','/',$current_dir);
-$current_dir = substr($current_dir,strrpos($current_dir,'/')+1);
+$current_dir = mb_substr($current_dir,mb_strrpos($current_dir,'/')+1);
 $current_dir = str_replace('_',' ',$current_dir);
 
 $title = 'Master Update Script for CommSy Update '.$current_dir;
@@ -137,7 +137,7 @@ foreach ($scripts as $script) {
    }
    flush();
 
-   // um mysql eine verschnaufpause zwischen jedem script zu g�nnen
+   // um mysql eine verschnaufpause zwischen jedem script zu gÃÂ¶nnen
    sleep(5);
 }
 

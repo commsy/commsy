@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -119,7 +119,7 @@ $year = '';
 
 if ( $seldisplay_mode == 'calendar' ) {
 
-   // Initialisierung der benötigten Werte
+   // Initialisierung der benÃ¶tigten Werte
    $day = date("d");
    $year = date("Y");
    $month = date("Ymd");
@@ -173,7 +173,7 @@ if ( $seldisplay_mode == 'calendar' ) {
       $old_presentation_mode = $presentation_mode;
    }
    //Berechnung der neuen Werte
-   //Beim Blättern der Einträge
+   //Beim BlÃ¤ttern der EintrÃ¤ge
    if (!isset($_GET['year']) or !isset($_GET['month']) or !isset($_GET['week'])){
       if(isset($_GET['week']) and $old_week != $week){
          $month = date("Ymd", $week);
@@ -181,16 +181,16 @@ if ( $seldisplay_mode == 'calendar' ) {
          $presentation_mode = '1';
       }
       if(isset($_GET['month']) and $old_month != $month){
-         $year = substr($month,0,4);
-         $real_month = substr($month,4,2);
+         $year = mb_substr($month,0,4);
+         $real_month = mb_substr($month,4,2);
          $d_time = mktime(3,0,0,$real_month,'1',$year);
          $wday = date("w",$d_time);
          $week = mktime(3,0,0,$real_month,1 - ($wday - 1),$year);
          $presentation_mode = '2';
       }
       if (isset($_GET['year']) and $old_year != $year){
-         $real_month = substr($old_month,4,2);
-         $real_day = substr($old_month,6,2);
+         $real_month = mb_substr($old_month,4,2);
+         $real_day = mb_substr($old_month,6,2);
          $d_time = mktime(3,0,0,$real_month,$real_day,$year);
          $month = date("Ymd",$d_time);
          $wday = date("w",$d_time);
@@ -203,8 +203,8 @@ if ( $seldisplay_mode == 'calendar' ) {
       if (isset($history['0']['function']) and $history['0']['function'] =='edit'){
          $month = $_GET['month'];
          $year = $_GET['year'];
-         $real_month = substr($month,4,2);
-         $day = substr($month,6,2);
+         $real_month = mb_substr($month,4,2);
+         $day = mb_substr($month,6,2);
          $d_time = mktime(3,0,0,$real_month,$day,$year);
          $wday = date("w",$d_time);
          if (empty($wday)){
@@ -229,15 +229,15 @@ if ( $seldisplay_mode == 'calendar' ) {
             $temp_year = date("Y", $week);
             $presentation_mode = '1';
          }elseif(isset($_GET['month']) and $old_month != $month){
-            $temp_year = substr($month,0,4);
-            $real_month = substr($month,4,2);
+            $temp_year = mb_substr($month,0,4);
+            $real_month = mb_substr($month,4,2);
             $d_time = mktime(3,0,0,$real_month,'1',$temp_year);
             $wday = date("w",$d_time);
             $temp_week = mktime(3,0,0,$real_month,1 - ($wday - 1),$temp_year);
             $presentation_mode = '2';
          }elseif (isset($_GET['year']) and $old_year != $year){
-            $real_month = substr($old_month,4,2);
-            $real_day = substr($old_month,6,2);
+            $real_month = mb_substr($old_month,4,2);
+            $real_day = mb_substr($old_month,6,2);
             $d_time = mktime(3,0,0,$real_month,$real_day,$year);
             $temp_month = date("Ymd",$d_time);
             $wday = date("w",$d_time);
@@ -557,17 +557,17 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
    $dates_manager->setDateModeLimit(2);
    $dates_manager->setYearLimit($year);
    if (!empty($presentation_mode) and $presentation_mode =='2'){
-      $real_month = substr($month,4,2);
-      $first_char = substr($real_month,0,1);
+      $real_month = mb_substr($month,4,2);
+      $first_char = mb_substr($real_month,0,1);
       if ($first_char == '0'){
-         $real_month = substr($real_month,1,2);
+         $real_month = mb_substr($real_month,1,2);
       }
       $dates_manager->setMonthLimit($real_month);
    }else{
-      $real_month = substr($month,4,2);
-      $first_char = substr($real_month,0,1);
+      $real_month = mb_substr($month,4,2);
+      $first_char = mb_substr($real_month,0,1);
       if ($first_char == '0'){
-         $real_month = substr($real_month,1,2);
+         $real_month = mb_substr($real_month,1,2);
       }
       $dates_manager->setMonthLimit2($real_month);
    }
@@ -682,17 +682,17 @@ if ($seldisplay_mode=='calendar' and !($mode == 'formattach' or $mode == 'detail
    }
    if (!empty($month)) {
       if (!empty($presentation_mode) and $presentation_mode =='2'){
-         $real_month = substr($month,4,2);
-         $first_char = substr($real_month,0,1);
+         $real_month = mb_substr($month,4,2);
+         $first_char = mb_substr($real_month,0,1);
          if ($first_char == '0'){
-            $real_month = substr($real_month,1,2);
+            $real_month = mb_substr($real_month,1,2);
          }
          $dates_manager->setMonthLimit($real_month);
       }else{
-         $real_month = substr($month,4,2);
-         $first_char = substr($real_month,0,1);
+         $real_month = mb_substr($month,4,2);
+         $first_char = mb_substr($real_month,0,1);
          if ($first_char == '0'){
-            $real_month = substr($real_month,1,2);
+            $real_month = mb_substr($real_month,1,2);
          }
          $dates_manager->setMonthLimit2($real_month);
       }

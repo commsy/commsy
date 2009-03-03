@@ -183,7 +183,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
    $availability = '';
    $authors_array = array();
 
-/**Daten für die Bibliografischen Angaben: werden spÃ¤ter durch das xslt ersetzt**/
+/**Daten fÃ¼r die Bibliografischen Angaben: werden spÃƒÂ¤ter durch das xslt ersetzt**/
    $contributors_array = array();
    $editor_array = array();
    $bib_kind = 'buch';
@@ -230,7 +230,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             break;
 
 
-/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+/**Daten fÃ¼r die Bibliografischen Angaben: werden spÃ¤ter durch das xslt ersetzt**/
        case 'dc:contributor':
             if (isset($values_array[$key]['value'])){
                $contributors_array[] = utf8_decode($values_array[$key]['value']);
@@ -339,7 +339,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
    }
 
 
-/**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
+/**Daten fÃ¼r die Bibliografischen Angaben: werden spÃ¤ter durch das xslt ersetzt**/
    $biblio = '';
    switch ($bib_kind) {
       case 'Buch':
@@ -364,7 +364,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -411,12 +411,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             $firstname = '';
             if (isset($author_array[1])){
                $first_name_array = explode(' ',$author_array[1]);
-               $lastname = strtoupper($author_array[0]);
+               $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                $j = 0;
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -469,7 +469,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -510,12 +510,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             $firstname = '';
             if (isset($author_array[1])){
                $first_name_array = explode(' ',$author_array[1]);
-               $lastname = strtoupper($author_array[0]);
+               $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                $j = 0;
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -565,7 +565,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -607,12 +607,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             $firstname = '';
             if (isset($author_array[1])){
                $first_name_array = explode(' ',$author_array[1]);
-               $lastname = strtoupper($author_array[0]);
+               $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                $j = 0;
                foreach($first_name_array as $fname){
                   $j++;
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '.';
                      if (isset($first_name_array[$j])){
                         $firstname .= ' ';
@@ -707,7 +707,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                      foreach($first_name_array as $fname){
                         $j++;
                         if (!empty($fname)){
-                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                            $firstname .= '.';
                            if (isset($first_name_array[$j])){
                               $firstname .= ' ';
@@ -751,7 +751,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                         foreach($first_name_array as $fname){
                            $j++;
                            if (!empty($fname)){
-                              $firstname .= strtoupper(substr($fname,0,1));
+                              $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                               $firstname .= '.';
                               if (isset($first_name_array[$j])){
                                  $firstname .= ' ';
@@ -800,12 +800,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                   $firstname = '';
                   if (isset($author_array[1])){
                      $first_name_array = explode(' ',$author_array[1]);
-                     $lastname = strtoupper($author_array[0]);
+                     $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                      $j = 0;
                      foreach($first_name_array as $fname){
                         $j++;
                         if (!empty($fname)){
-                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                            $firstname .= '.';
                            if (isset($first_name_array[$j])){
                               $firstname .= ' ';
@@ -837,12 +837,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                       $firstname = '';
                       if (isset($editor_array[1])){
                          $first_name_array = explode(' ',$editor_array[1]);
-                         $lastname = strtoupper($editor_array[0]);
+                         $lastname = mb_strtoupper($editor_array[0], 'UTF-8');
                          $j = 0;
                          foreach($first_name_array as $fname){
                             $j++;
                             if (!empty($fname)){
-                               $firstname .= strtoupper(substr($fname,0,1));
+                               $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                                $firstname .= '.';
                                if (isset($first_name_array[$j])){
                                   $firstname .= ' ';
@@ -898,7 +898,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                      foreach($first_name_array as $fname){
                         $j++;
                         if (!empty($fname)){
-                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                            $firstname .= '.';
                            if (isset($first_name_array[$j])){
                               $firstname .= ' ';
@@ -952,12 +952,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                   $firstname = '';
                   if (isset($author_array[1])){
                      $first_name_array = explode(' ',$author_array[1]);
-                     $lastname = strtoupper($author_array[0]);
+                     $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                      $j = 0;
                      foreach($first_name_array as $fname){
                         $j++;
                         if (!empty($fname)){
-                           $firstname .= strtoupper(substr($fname,0,1));
+                           $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                            $firstname .= '.';
                            if (isset($first_name_array[$j])){
                               $firstname .= ' ';
@@ -1020,7 +1020,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                $lastname = $author_array[0];
                foreach($first_name_array as $fname){
                   if (!empty($fname)){
-                     $firstname .= substr($fname,0,1);
+                     $firstname .= mb_substr($fname,0,1);
                      $firstname .= '. ';
                   }
                }
@@ -1060,10 +1060,10 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             $firstname = '';
             if (isset($author_array[1])){
                $first_name_array = explode(' ',$author_array[1]);
-               $lastname = strtoupper($author_array[0]);
+               $lastname = mb_strtoupper($author_array[0], 'UTF-8');
                foreach($first_name_array as $fname){
                   if (!empty($fname)){
-                     $firstname .= strtoupper(substr($fname,0,1));
+                     $firstname .= mb_strtoupper(mb_substr($fname,0,1), 'UTF-8');
                      $firstname .= '. ';
                   }
                }
@@ -1267,7 +1267,7 @@ function getMaterialListByIMSZip($filename,$file_tmp_name, $target_directory,$en
          unlink($target_directory.'/imsmanifest.xml');
       }
       if($has_manifest) {
-         $filename = str_replace('.zip','',strtolower($filename));
+         $filename = str_replace('.zip','',mb_strtolower($filename, 'UTF-8'));
          $zip->extractTo($target_directory.$filename);
          _getMaterialListByXML($target_directory.$filename);
       }

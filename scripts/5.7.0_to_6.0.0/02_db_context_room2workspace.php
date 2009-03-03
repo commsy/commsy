@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, JosÈ Manuel Gonz·lez V·zquez
+// Edouard Simon, Monique Strauss, Jos√© Manuel Gonz√°lez V√°zquez
 //
 //    This file is part of CommSy.
 //
@@ -128,10 +128,10 @@ foreach ( $table as $tbl ) {
             $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['GENS'] = 'Schulraums';
             $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['AKKS'] = 'Schulraum';
             $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['DATS'] = 'Schulraum';
-            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['NOMPL'] = 'Schulr‰ume';
-            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['GENPL'] = 'Schulr‰ume';
-            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['AKKPL'] = 'Schulr‰ume';
-            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['DATPL'] = 'Schulr‰umen';
+            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['NOMPL'] = 'Schulr√§ume';
+            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['GENPL'] = 'Schulr√§ume';
+            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['AKKPL'] = 'Schulr√§ume';
+            $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['DATPL'] = 'Schulr√§umen';
             $extra_array['RUBRIC_TRANSLATION_ARRAY']['COMMUNITY']['DE']['GENUS'] = 'M';
          }
 

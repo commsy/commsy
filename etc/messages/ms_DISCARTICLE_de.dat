@@ -2,6 +2,6 @@
 $message["DISCARTICLE_ANSWER_NEW"]["de"] = "Antworten";
 $message["DISCARTICLE_CHANGE_BUTTON"]["de"] = "Beitrag speichern";
 $message["DISCARTICLE_EDIT"]["de"] = "Beitrag editieren";
-$message["DISCARTICLE_ENTER_NEW"]["de"] = "Beitrag hinzufügen";
+$message["DISCARTICLE_ENTER_NEW"]["de"] = "Beitrag hinzufÃ¼gen";
 $message["DISCARTICLE_SAVE_BUTTON"]["de"] = "Beitrag speichern";
 ?>

@@ -181,8 +181,8 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$SHOW_COMMSY_LOGIN = "0";'.LF;
       }
       $language = $item->getLanguage();
-      if (!empty($language) and strtoupper($language)!='USER'){
-         $str .= '$COMMSY_LANGUAGE = "'.strtolower($item->getLanguage()).'";'.LF;
+      if (!empty($language) and mb_strtoupper($language, 'UTF-8')!='USER'){
+         $str .= '$COMMSY_LANGUAGE = "'.mb_strtolower($item->getLanguage(), 'UTF-8').'";'.LF;
       }
       $str .= LF.'global $FarmD;'.LF.LF;
       if ( $item->isPortal() ) {
@@ -228,7 +228,7 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$EnableAtomLink = 0;'.LF;
          $str .= '@include_once("$FarmD/cookbook/feedlinks.php");'.LF;
          $str .= "\$FeedFmt['rss']['item']['title'] = '{\$Group} / {\$Title} : {\$LastModified}';".LF;
-//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Änderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
+//        $str .= '$change = "Auf der Seite &lt;b&gt;{\$Title}&lt;/br&gt; hat es eine Ã„nderung gegeben! &lt;br&gt;&lt;br&gt;";'.LF;
          $str .= "\$FeedFmt['rss']['item']['description'] = \$change . ' {\$LastModifiedSummary} - ge&auml;ndert von: {\$LastModifiedBy}';".LF.LF;
       }
 
@@ -314,13 +314,13 @@ class cs_wiki_manager extends cs_manager {
                 $titleForForm = $discussion;
 //                $discussionArray = explode (' ', $discussion);
 //                for ($index = 0; $index < sizeof($discussionArray); $index++) {
-//                    $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-//                    $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ã¤", "ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ã„", "Ae", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ã¶", "oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ã–", "Oe", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ã¼", "ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("Ãœ", "Ue", $discussionArray[$index]);
+//                    $discussionArray[$index] = str_replace("ÃŸ", "ss", $discussionArray[$index]);
 //                    $first_letter = substr($discussionArray[$index], 0, 1);
 //                    $rest = substr($discussionArray[$index], 1);
 //                    $first_letter = strtoupper($first_letter);
@@ -403,7 +403,7 @@ class cs_wiki_manager extends cs_manager {
                     if ( $item->WikiEnableDiscussionNotification() == "1" ) {
 
                         if ( $item->WikiEnableDiscussionNotificationGroups() == "1" ) {
-                            // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
+                            // CommSy-Gruppen erstellen, zuordnung erfolgt Ã¼ber diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
 //                            $this->updateGroupNotificationFiles();
@@ -726,12 +726,12 @@ function updateWikiProfileFile($user){
       chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
 
       // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
-      $firstnameFirstLetter = substr($user->getFirstname(), 0, 1);
-      $firstnameRest = substr($user->getFirstname(), 1);
-      $firstname = strtoupper($firstnameFirstLetter) . $firstnameRest;
-      $lastnameFirstLetter = substr($user->getLastname(), 0, 1);
-      $lastnameRest = substr($user->getLastname(), 1);
-      $lastname = strtoupper($lastnameFirstLetter) . $lastnameRest;
+      $firstnameFirstLetter = mb_substr($user->getFirstname(), 0, 1);
+      $firstnameRest = mb_substr($user->getFirstname(), 1);
+      $firstname = mb_strtoupper($firstnameFirstLetter, 'UTF-8') . $firstnameRest;
+      $lastnameFirstLetter = mb_substr($user->getLastname(), 0, 1);
+      $lastnameRest = mb_substr($user->getLastname(), 1);
+      $lastname = mb_strtoupper($lastnameFirstLetter, 'UTF-8') . $lastnameRest;
       $name_for_profile = $firstname . $lastname;
 
 //      $useridFirstLetter = substr($user->getUserID(), 0, 1);
@@ -867,7 +867,7 @@ function updateNotification(){
    $old_dir = getcwd();
    chdir($c_commsy_path_file);
    if($context_item->WikiEnableDiscussionNotificationGroups() != "1"){
-      // Alle Foren mit allen Nutzern füllen
+      // Alle Foren mit allen Nutzern fÃ¼llen
       $discussion_array = $context_item->getWikiDiscussionArray();
       foreach($discussion_array as $discussion){
          $user_manager = $this->_environment->getUserManager();
@@ -913,16 +913,16 @@ function updateNotification(){
 function getDiscussionWikiName($discussion){
     $discussionArray = explode (' ', $discussion);
     for ($index = 0; $index < sizeof($discussionArray); $index++) {
-        $discussionArray[$index] = str_replace("ä", "ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ä", "Ae", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ö", "oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ö", "Oe", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ü", "ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
-        $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
-        $first_letter = substr($discussionArray[$index], 0, 1);
-        $rest = substr($discussionArray[$index], 1);
-        $first_letter = strtoupper($first_letter);
+        $discussionArray[$index] = str_replace("Ã¤", "ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ã„", "Ae", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ã¶", "oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ã–", "Oe", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ã¼", "ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("Ãœ", "Ue", $discussionArray[$index]);
+        $discussionArray[$index] = str_replace("ÃŸ", "ss", $discussionArray[$index]);
+        $first_letter = mb_substr($discussionArray[$index], 0, 1);
+        $rest = mb_substr($discussionArray[$index], 1);
+        $first_letter = mb_strtoupper($first_letter, 'UTF-8');
         $discussionArray[$index] = $first_letter . $rest;
     }
     $discussion = implode('',$discussionArray);
@@ -964,7 +964,7 @@ function exportMaterialToWiki($current_item_id){
 
    // Kurzfassung fuer Wiki vorbereiten
    $description = $material_item->getDescription();
-   if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
+   if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
       $description = _text_php2html_long($description);
    }
 
@@ -990,7 +990,7 @@ function exportMaterialToWiki($current_item_id){
       $returnwiki = implode('%0a', $returnwiki);
    } else {
       // Ohne Perl
-      $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
+      $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
       $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
    }
    chdir($old_dir);
@@ -1004,7 +1004,7 @@ function exportMaterialToWiki($current_item_id){
       $file_link_array = array();
       foreach ($file_array as $file) {
          $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
-         $new_filename = preg_replace("/cid([0-9]*)_/", "", $new_filename);
+         $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
          copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
          $new_link = $this->encodeUrlToHtml($file->getFileName());
          $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
@@ -1026,7 +1026,7 @@ function exportMaterialToWiki($current_item_id){
 
          // Abschnitt fuer Wiki vorbereiten
          $description = $section->getDescription();
-         if(!preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$', $description)){
+         if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
             $description = _text_php2html_long($section->getDescription());
          }
          $params = array();
@@ -1051,7 +1051,7 @@ function exportMaterialToWiki($current_item_id){
             $returnwiki = implode('%0a', $returnwiki);
          } else {
             // Ohne Perl
-            $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~', '', $c_pmwiki_path_url);
+            $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
             $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
          }
          chdir($old_dir);
@@ -1065,7 +1065,7 @@ function exportMaterialToWiki($current_item_id){
             $file_link_array = array();
             foreach ($file_array as $file) {
                $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
-               $new_filename = preg_replace("/cid([0-9]*)_/", "", $new_filename);
+               $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
                copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
                $new_link = $this->encodeUrlToHtml($file->getFileName());
                $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
@@ -1162,13 +1162,13 @@ function exportMaterialToWiki($current_item_id){
 }
 
 function encodeUmlaute($html){
-        $html = str_replace("ä", "&auml;", $html);
-        $html = str_replace("Ä", "&Auml;", $html);
-        $html = str_replace("ö", "&ouml;", $html);
-        $html = str_replace("Ö", "&Ouml;", $html);
-        $html = str_replace("ü", "&uuml;", $html);
-        $html = str_replace("Ü", "&Uuml;", $html);
-        $html = str_replace("ß", "&szlig;", $html);
+        $html = str_replace("Ã¤", "&auml;", $html);
+        $html = str_replace("Ã„", "&Auml;", $html);
+        $html = str_replace("Ã¶", "&ouml;", $html);
+        $html = str_replace("Ã–", "&Ouml;", $html);
+        $html = str_replace("Ã¼", "&uuml;", $html);
+        $html = str_replace("Ãœ", "&Uuml;", $html);
+        $html = str_replace("ÃŸ", "&szlig;", $html);
         return $html;
 }
 
@@ -1225,18 +1225,18 @@ function getGroupsForWiki($complete){
                     $group = explode('.', $file);
                     if((!in_array($group[0], $result['groups']))
                       && ($group[0] != '')
-                      && (!stristr($group[0], 'Site'))
-                      && (!stristr($group[0], 'SiteAdmin'))
-                      && (!stristr($group[0], 'Main'))
-                      && (!stristr($group[0], 'Discussion_Backup_'))
-                      && (!stristr($group[0], 'FoxNotifyLists'))
-                      && (!stristr($group[0], 'Profiles'))){
+                      && (!mb_stristr($group[0], 'Site'))
+                      && (!mb_stristr($group[0], 'SiteAdmin'))
+                      && (!mb_stristr($group[0], 'Main'))
+                      && (!mb_stristr($group[0], 'Discussion_Backup_'))
+                      && (!mb_stristr($group[0], 'FoxNotifyLists'))
+                      && (!mb_stristr($group[0], 'Profiles'))){
                          $result['groups'][] = $group[0];
                          $found = false;
                          $dir2=opendir($directory);
                          while($fileGroupAttributes=readdir($dir2)) {
                           if (!is_dir($fileGroupAttributes) && $fileGroupAttributes != "." && $fileGroupAttributes != ".."){
-                             if(stristr($fileGroupAttributes, $group[0] . '.GroupAttributes')){
+                             if(mb_stristr($fileGroupAttributes, $group[0] . '.GroupAttributes')){
                                 $file_contents = file_get_contents($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $group[0] . '.GroupAttributes');
                              $file_contents_array = explode("\n", $file_contents);
                              for ($index = 0; $index < sizeof($file_contents_array); $index++) {
@@ -1257,7 +1257,7 @@ function getGroupsForWiki($complete){
        }
    }
 
-   // zusätzlich noch in der wiki-config nach den bisher freigegebenen Dateien suchen.
+   // zusÃ¤tzlich noch in der wiki-config nach den bisher freigegebenen Dateien suchen.
 
    return $result;
 }
@@ -1297,7 +1297,7 @@ function setWikiGroupsAsPublic($groups){
       if($dir=opendir($directory)){
           while($file=readdir($dir)) {
               if (!is_dir($file) && $file != "." && $file != ".."){
-                    if(stristr($file, '.GroupAttributes')){
+                    if(mb_stristr($file, '.GroupAttributes')){
                        unlink($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $file);
                     }
               }

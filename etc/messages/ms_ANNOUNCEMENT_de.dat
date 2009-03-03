@@ -1,16 +1,16 @@
 <?php
-$message["ANNOUNCEMENT_ACTUAL_TITLE"]["de"] = "Aktuelle Ank¸ndigungen";
-$message["ANNOUNCEMENT_CHANGE_BUTTON"]["de"] = "Ank¸ndigung speichern";
-$message["ANNOUNCEMENT_DETAIL"]["de"] = "Ank¸ndigung";
-$message["ANNOUNCEMENT_EDIT"]["de"] = "Ank¸ndigung ‰ndern";
-$message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ank¸ndigung erstellen";
-$message["ANNOUNCEMENT_INDEX"]["de"] = "Ank¸ndigungen";
-$message["ANNOUNCEMENT_SAVE_BUTTON"]["de"] = "Ank¸ndigung speichern";
+$message["ANNOUNCEMENT_ACTUAL_TITLE"]["de"] = "Aktuelle Ank√ºndigungen";
+$message["ANNOUNCEMENT_CHANGE_BUTTON"]["de"] = "Ank√ºndigung speichern";
+$message["ANNOUNCEMENT_DETAIL"]["de"] = "Ank√ºndigung";
+$message["ANNOUNCEMENT_EDIT"]["de"] = "Ank√ºndigung √§ndern";
+$message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ank√ºndigung erstellen";
+$message["ANNOUNCEMENT_INDEX"]["de"] = "Ank√ºndigungen";
+$message["ANNOUNCEMENT_SAVE_BUTTON"]["de"] = "Ank√ºndigung speichern";
 $message["ANNOUNCEMENT_SHOW_HOME_DATE"]["de"] = "Angezeigt auf der Home bis";
-$message["ANNOUNCEMENT_TIME_DAY_END"]["de"] = "G¸ltig bis";
-$message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["de"] = "Zu diesem Datum verschwindet Ihre Ank¸ndigung von der Einstiegsseite des Raums.<br/>
+$message["ANNOUNCEMENT_TIME_DAY_END"]["de"] = "G√ºltig bis";
+$message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["de"] = "Zu diesem Datum verschwindet Ihre Ank√ºndigung von der Einstiegsseite des Raums.<br/>
 <br/>
 Datum: TT.MM.JJJJ - z.B. 24.12.2006<br/>
 Uhrzeit: SS:MM - z.B. 12:30";
-$message["ANNOUNCEMENT_VALIDITY_DATE"]["de"] = "g¸ltig bis";
+$message["ANNOUNCEMENT_VALIDITY_DATE"]["de"] = "g√ºltig bis";
 ?>

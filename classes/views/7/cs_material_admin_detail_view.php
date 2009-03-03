@@ -384,7 +384,7 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
          $html .='</div>'.LF;
          $html .='</div>'.LF;
       }
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width= ' width:100%; padding-right:10px; ';
@@ -463,7 +463,7 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '<script type="text/javascript">'.LF;
-         $current_browser = strtolower($this->_environment->getCurrentBrowser());
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE and $current_browser == 'msie' and !strstr($current_browser_version,'7.')){
             $html .= 'preInitCommSyPanels(Array('.$this->_right_box_config['title_string'].'),Array('.$this->_right_box_config['desc_string'].'),Array('.$this->_right_box_config['config_string'].'), Array(),Array('.$this->_right_box_config['size_string'].'));'.LF;

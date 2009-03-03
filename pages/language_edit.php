@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -40,7 +40,7 @@ $params['with_modifying_actions'] = true;
 $language_form_view = $class_factory->getClass(LANGUAGE_FORM_VIEW,$params);
 unset($params);
 $language_form_view->setAction(curl($environment->getCurrentContextID(),$current_module,$current_function,''));
-$language_form_view->setTitle('Management von Übersetzung und Sprachen');
+$language_form_view->setTitle('Management von Ãœbersetzung und Sprachen');
 if ( $environment->inPortal() or $environment->inServer() ){
    $page->addForm($language_form_view);
 } else {

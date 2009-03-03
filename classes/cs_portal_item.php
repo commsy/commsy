@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -389,10 +389,10 @@ class cs_portal_item extends cs_guide_item {
          $retour['DE']['GENS']= 'Gemeinschaftsraums';
          $retour['DE']['AKKS']= 'Gemeinschaftsraum';
          $retour['DE']['DATS']= 'Gemeinschaftsraum';
-         $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-         $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-         $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-         $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+         $retour['DE']['NOMPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['GENPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['AKKPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['DATPL']= 'GemeinschaftsrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'community workspace';
          $retour['EN']['GENS']= 'community workspace';
@@ -411,10 +411,10 @@ class cs_portal_item extends cs_guide_item {
           $retour['DE']['GENS']= 'Projektraums';
           $retour['DE']['AKKS']= 'Projektraum';
           $retour['DE']['DATS']= 'Projektraum';
-          $retour['DE']['NOMPL']= 'Projekträume';
-          $retour['DE']['GENPL']= 'Projekträume';
-          $retour['DE']['AKKPL']= 'Projekträume';
-          $retour['DE']['DATPL']= 'Projekträumen';
+          $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+          $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+          $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+          $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
           $retour['EN']['GENUS']= 'M';
           $retour['EN']['NOMS']= 'project workspace';
           $retour['EN']['GENS']= 'project workspace';
@@ -432,10 +432,10 @@ class cs_portal_item extends cs_guide_item {
          $retour['DE']['GENS']= 'Schulraums';
          $retour['DE']['AKKS']= 'Schulraum';
          $retour['DE']['DATS']= 'Schulraum';
-         $retour['DE']['NOMPL']= 'Schulräume';
-         $retour['DE']['GENPL']= 'Schulräume';
-         $retour['DE']['AKKPL']= 'Schulräume';
-         $retour['DE']['DATPL']= 'Schulräumen';
+         $retour['DE']['NOMPL']= 'SchulrÃ¤ume';
+         $retour['DE']['GENPL']= 'SchulrÃ¤ume';
+         $retour['DE']['AKKPL']= 'SchulrÃ¤ume';
+         $retour['DE']['DATPL']= 'SchulrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'school workspace';
          $retour['EN']['GENS']= 'school workspace';
@@ -454,10 +454,10 @@ class cs_portal_item extends cs_guide_item {
          $retour['DE']['GENS']= 'Klassenraums';
          $retour['DE']['AKKS']= 'Klassenraum';
          $retour['DE']['DATS']= 'Klassenraum';
-         $retour['DE']['NOMPL']= 'Klassenräume';
-         $retour['DE']['GENPL']= 'Klassenräume';
-         $retour['DE']['AKKPL']= 'Klassenräume';
-         $retour['DE']['DATPL']= 'Klassenräumen';
+         $retour['DE']['NOMPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['GENPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['AKKPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['DATPL']= 'KlassenrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'class workspace';
          $retour['EN']['GENS']= 'class workspace';
@@ -475,10 +475,10 @@ class cs_portal_item extends cs_guide_item {
          $retour['DE']['GENS']= 'Gemeinschaftsraums';
          $retour['DE']['AKKS']= 'Gemeinschaftsraum';
          $retour['DE']['DATS']= 'Gemeinschaftsraum';
-         $retour['DE']['NOMPL']= 'Gemeinschaftsräume';
-         $retour['DE']['GENPL']= 'Gemeinschaftsräume';
-         $retour['DE']['AKKPL']= 'Gemeinschaftsräume';
-         $retour['DE']['DATPL']= 'Gemeinschaftsräumen';
+         $retour['DE']['NOMPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['GENPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['AKKPL']= 'GemeinschaftsrÃ¤ume';
+         $retour['DE']['DATPL']= 'GemeinschaftsrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'community workspace';
          $retour['EN']['GENS']= 'community workspace';
@@ -497,10 +497,10 @@ class cs_portal_item extends cs_guide_item {
          $retour['DE']['GENS']= 'Projektraums';
          $retour['DE']['AKKS']= 'Projektraum';
          $retour['DE']['DATS']= 'Projektraum';
-         $retour['DE']['NOMPL']= 'Projekträume';
-         $retour['DE']['GENPL']= 'Projekträume';
-         $retour['DE']['AKKPL']= 'Projekträume';
-         $retour['DE']['DATPL']= 'Projekträumen';
+         $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'project workspace';
          $retour['EN']['GENS']= 'project workspace';
@@ -545,7 +545,7 @@ class cs_portal_item extends cs_guide_item {
       $value2['NAME'] = CS_TIME_TYPE;
 
      foreach ($value as $lang => $name) {
-        $value2[strtoupper($lang)]['NOMPL'] = $name;
+        $value2[mb_strtoupper($lang, 'UTF-8')]['NOMPL'] = $name;
      }
      $this->setRubricArray(CS_TIME_TYPE, $value2);
    }
@@ -1144,8 +1144,8 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -1163,7 +1163,7 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_HEADER',$value_array);
    }
 
@@ -1178,8 +1178,8 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $retour = getMessage('USAGE_INFO_HEADER');
       }
@@ -1197,7 +1197,7 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_HEADER',$value_array);
    }
 
@@ -1212,7 +1212,7 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $value_array = array();
       }
-      $value_array[strtoupper($rubric)]=$string;
+      $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
    }
 
@@ -1228,8 +1228,8 @@ class cs_portal_item extends cs_guide_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          $link = ahref_curl($this->_environment->getCurrentContextID(),
                             'help',
@@ -1249,7 +1249,7 @@ class cs_portal_item extends cs_guide_item {
             $retour = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM');
             $temp = 'CONFIGURATION_TIME';
          } else {
-            $temp = strtoupper($rubric).'_'.strtoupper($funct);
+            $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
             $tempMessage = "";
             // ---> Remark for testing: Login as root, "Configure Portal" <---
             switch( $temp )
@@ -1260,10 +1260,10 @@ class cs_portal_item extends cs_guide_item {
                case 'ACCOUNT_EDIT':          // getestet: eine Kennung bearbeiten
                   $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON',$link);
                   break;
-               case 'ACCOUNT_STATUS':        // getestet: Benutzer Status ändern (als Root/Moderator)
+               case 'ACCOUNT_STATUS':        // getestet: Benutzer Status Ã¤ndern (als Root/Moderator)
                   $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON',$link);
                   break;
-               case 'COMMUNITY_EDIT':        // getestet: Gemeinschaftsraum neu eröffnen
+               case 'COMMUNITY_EDIT':        // getestet: Gemeinschaftsraum neu erÃ¶ffnen
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_COMMUNITY_EDIT_FORM',$link);
                   break;
                case 'CONFIGURATION_AGB':     // getestet: Portal / Einstellungen / Nutzungsvereinbarungen und Textareas mit Extra-Tags
@@ -1290,7 +1290,7 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_MOVE':    // getestet und Textareas mit Extra-Tags
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MOVE_FORM',$link);
                   break;
-               case 'CONFIGURATION_NEWS':    // getestet Portal-Ankündigungen bearbeiten und Textareas mit Extra-Tags
+               case 'CONFIGURATION_NEWS':    // getestet Portal-AnkÃ¼ndigungen bearbeiten und Textareas mit Extra-Tags
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_NEWS_FORM',$link);
                   break;
                case 'CONFIGURATION_PORTALHOME': // getestet
@@ -1299,7 +1299,7 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_PREFERENCES': // getestet
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM',$link);
                   break;
-               case 'CONFIGURATION_ROOM_OPENING': // getestet Voreinst. f. Räume, z. B. Schule, Uni, Business
+               case 'CONFIGURATION_ROOM_OPENING': // getestet Voreinst. f. RÃ¤ume, z. B. Schule, Uni, Business
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_ROOM_OPENING_FORM',$link);
                   break;
                case 'CONFIGURATION_SERVICE': // getestet Handhabungssupport
@@ -1308,7 +1308,7 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_WIKI':    // getestet Einstellungen Raum-Wiki
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_WIKI_FORM',$link);
                   break;
-               case 'PROJECT_EDIT':          // getestet: Projektraum neu eröffnen
+               case 'PROJECT_EDIT':          // getestet: Projektraum neu erÃ¶ffnen
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_PROJECT_EDIT_FORM',$link);
                   break;
                case 'MAIL_TO_MODERATOR':      //
@@ -1422,7 +1422,7 @@ class cs_portal_item extends cs_guide_item {
       if ( !$list->isEmpty() ) {
          $item = $list->getFirst();
          while ( $item ) {
-            if ( !$item->show() or strtoupper($item->getSourceType()) != 'CAS' ) {
+            if ( !$item->show() or mb_strtoupper($item->getSourceType(), 'UTF-8') != 'CAS' ) {
                $list->removeElement($item);
             }
             $item = $list->getNext();
@@ -1514,7 +1514,7 @@ class cs_portal_item extends cs_guide_item {
          $retour = $desc_array[cs_strtoupper($language)];
       } else {
          $translator = $this->_environment->getTranslationObject();
-         $retour = $translator->getMessageInLang(strtolower($language),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(strtolower($language),'COMMON_IN').' ...';
+         $retour = $translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'HOMEPAGE_PAGE_ROOT_TITLE').' '.$translator->getMessageInLang(mb_strtolower($language, 'UTF-8'),'COMMON_IN').' ...';
       }
       return $retour;
    }
@@ -1541,7 +1541,7 @@ class cs_portal_item extends cs_guide_item {
     */
    function setDescriptionWellcome1ByLanguage ($value, $language) {
       $desc_array = $this->getDescriptionWellcome1Array();
-      $desc_array[strtoupper($language)] = $value;
+      $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
       $this->setDescriptionWellcome1Array($desc_array);
    }
 
@@ -1605,7 +1605,7 @@ class cs_portal_item extends cs_guide_item {
     */
    function setDescriptionWellcome2ByLanguage ($value, $language) {
       $desc_array = $this->getDescriptionWellcome2Array();
-      $desc_array[strtoupper($language)] = $value;
+      $desc_array[mb_strtoupper($language, 'UTF-8')] = $value;
       $this->setDescriptionWellcome2Array($desc_array);
    }
 

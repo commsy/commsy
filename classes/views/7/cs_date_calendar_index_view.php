@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -161,10 +161,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<div class="right_box_title">'.LF;
       $date = date("Y-m-d");
       $date_array = explode('-',$date);
-      $month = substr($this->_month,4,2);
-      $first_char = substr($month,0,1);
+      $month = mb_substr($this->_month,4,2);
+      $first_char = mb_substr($month,0,1);
       if ($first_char == '0'){
-         $month = substr($month,1,2);
+         $month = mb_substr($month,1,2);
       }
       $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
       $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
@@ -183,7 +183,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .='</div>'.LF;
 
       $width = '';
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
          $width = 'width:170px;';
@@ -291,10 +291,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .='<div>';
       $date = date("Y-m-d");
       $date_array = explode('-',$date);
-      $month = substr($this->_month,4,2);
-      $first_char = substr($month,0,1);
+      $month = mb_substr($this->_month,4,2);
+      $first_char = mb_substr($month,0,1);
       if ($first_char == '0'){
-         $month = substr($month,1,2);
+         $month = mb_substr($month,1,2);
       }
       $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
             $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
@@ -329,7 +329,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                                                       $this->_environment->getCurrentModule(),
                                                                       $this->_environment->getCurrentFunction(),
                                                                       $params).'" method="get" name="indexform">'.LF;
-      $current_browser = strtolower($this->_environment->getCurrentBrowser());
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
       if ( $current_browser == 'msie' ){
          $html .='<div id="right_boxes_area" style="width:17%; padding-top: 10px; font-size:10pt;">'.LF;
@@ -487,7 +487,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             ) {
                $list = $this->getAvailableRubric($link_name[0]);
                $selrubric = $this->getSelectedRubric($link_name[0]);
-               $temp_link = strtoupper($link_name[0]);
+               $temp_link = mb_strtoupper($link_name[0], 'UTF-8');
                switch ( $temp_link )
                {
                   case 'GROUP':
@@ -662,13 +662,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if ( $language=='en'){
             $text = $startmonth.' '.$startday.' - '.$endmonat.' '.$endtag;
          }else{
-            $first_char = substr($startday,0,1);
+            $first_char = mb_substr($startday,0,1);
             if ($first_char == '0'){
-               $startday = substr($startday,1,2);
+               $startday = mb_substr($startday,1,2);
             }
-            $first_char = substr($endtag,0,1);
+            $first_char = mb_substr($endtag,0,1);
             if ($first_char == '0'){
-               $endtag = substr($endtag,1,2);
+               $endtag = mb_substr($endtag,1,2);
             }
             $text = $startday.'. '.$startmonth.' - '.$endtag.'. '.$endmonat;
          }
@@ -732,11 +732,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }else{
          $month = $this->_month;
       }
-      $year = substr($month,0,4);
-      $month = substr($month,4,2);
-      $first_char = substr($month,0,1);
+      $year = mb_substr($month,0,4);
+      $month = mb_substr($month,4,2);
+      $first_char = mb_substr($month,0,1);
       if ($first_char == '0'){
-         $month = substr($month,1,2);
+         $month = mb_substr($month,1,2);
       }
       $d_time = mktime ( 3, 0, 0, $month, 1, $year );
       $thisdate = date ( "Ymd", $d_time );
@@ -1073,7 +1073,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $current_time = localtime();
 
       //Do some time calculations
-      $month = substr($this->_month,4,2);
+      $month = mb_substr($this->_month,4,2);
       $year = $this->_year;
       $days = daysInMonth($month,$year);
       $first_day_week_day = $this->weekDayofDate(1,$month,$year);
@@ -1124,21 +1124,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
             //date begins at least one month before currently displayed month, ends in currently displayed month
             // OR date begins in a year before the current and ends in
-       if ( ($start_date_month < sprintf ("%02d",$month) OR $start_date_year < $year) AND $end_date_month == sprintf ("%02d",$month)){
+       if ( ($start_date_month < $month OR $start_date_year < $year) AND $end_date_month == $month AND $end_date_year == $year){
                for ($i=0;$i < $end_date_day;$i++) {
              $format_array[$empty_fields+$i]['dates'][] = $current_date;
           }
 
        //date begins in currently displayed month, ends aftet currently displayed month
        //OR date begins in currently displayed year and ends after currently displayed year
-       } elseif ($start_date_month == sprintf ("%02d",$month) AND ($end_date_month > sprintf ("%02d",$month) OR $end_date_year > $year ) ){
+       } elseif ($start_date_month == $month AND $start_date_year == $year AND ($end_date_month > $month OR $end_date_year > $year ) ){
           $rest_month = $days - $start_date_day;
           for ($i=0;$i <= $rest_month;$i++) {
              $format_array[$empty_fields+$start_date_day-1+$i]['dates'][] = $current_date;
           }
 
             //date begins before and ends after currently displayed month
-       } elseif ( ($start_date_month < sprintf("%02d",$month) OR ($start_date_year < $year)) AND $end_date_month > sprintf("%02d",$month)) {
+       } elseif ( ($start_date_month < $month OR ($start_date_year < $year)) AND ($end_date_month > $month OR ($end_date_year > $year))) {
           for ($i=0;$i < $days;$i++) {
              $format_array[$empty_fields+$i]['dates'][] = $current_date;
           }
@@ -1193,21 +1193,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $new_date = '';
                foreach ($dates_on_day as $date) {
                   if ( $entries < 4 ) {
-                     $length = strlen($date->getTitle());
+                     $length = mb_strlen($date->getTitle());
                      if ( $length > 20 ) {
-                        $new_date = substr($date->getTitle(),0,20).'<br />&nbsp;&nbsp;';
+                        $new_date = mb_substr($date->getTitle(),0,20).'<br />&nbsp;&nbsp;';
                         if ( $length > 40 ) {
-                           $new_date .= substr($date->getTitle(),20,20).'...';
+                           $new_date .= mb_substr($date->getTitle(),20,20).'...';
                         } else {
-                           $new_date .= substr($date->getTitle(),20,$length-20);
+                           $new_date .= mb_substr($date->getTitle(),20,$length-20);
                         }
                      } else {
                         $new_date = $date->getTitle();
                      }
                   } else {
-                     $length = strlen($date->getTitle());
+                     $length = mb_strlen($date->getTitle());
                      if ($length > 20) {
-                        $new_date = substr($date->getTitle(),0,20).'...';
+                        $new_date = mb_substr($date->getTitle(),0,20).'...';
                      } else {
                         $new_date = $date->getTitle();
                      }
@@ -1344,24 +1344,40 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $end_time_array = convertTimeFromInput($current_date->getEndingTime(),$this->_environment->getSelectedLanguage());
     if ($start_date_day != '') {
             $date_array[$start_date_array['day'].$start_date_array['month'].$start_date_array['year']][] = $current_date;
-            $start_day = substr($current_date->getStartingDay(),8,2);
+            $start_day = mb_substr($current_date->getStartingDay(),8,2);
             $start_month = $start_date_array['month'];
-            $start_year = substr($current_date->getStartingDay(),0,4);
-            $first_char = substr($start_day,0,1);
+            $start_year = mb_substr($current_date->getStartingDay(),0,4);
+            $first_char = mb_substr($start_day,0,1);
             if ($first_char == '0'){
-               $start_day = substr($start_day,1,2);
+               $start_day = mb_substr($start_day,1,2);
             }
-            $first_char = substr($start_month,0,1);
+            $first_char = mb_substr($start_month,0,1);
             if ($first_char == '0'){
-               $start_month = substr($start_month,1,2);
+               $start_month = mb_substr($start_month,1,2);
             }
-            $end_day = substr($current_date->getEndingDay(),8,2);
-            $first_char = substr($end_day,0,1);
+            $end_day = mb_substr($current_date->getEndingDay(),8,2);
+            $first_char = mb_substr($end_day,0,1);
             if ($first_char == '0'){
-               $end_day = substr($end_day,1,2);
+               $end_day = mb_substr($end_day,1,2);
             }
-            if ($start_day != $end_day and !empty($end_day)){
-               while ($start_day != $end_day){
+            $end_month = mb_substr($current_date->getEndingDay(),5,2);
+            $first_char = mb_substr($end_month,0,1);
+            if ($first_char == '0'){
+               $end_month = mb_substr($end_month,1,2);
+            }
+            $end_year = mb_substr($current_date->getEndingDay(),0,4);
+            $first_char = mb_substr($end_year,0,1);
+            if ($first_char == '0'){
+               $end_year = mb_substr($end_year,1,2);
+            }
+            if (((($start_day != $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
+                  ($start_day == $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
+                  ($start_day != $end_day and !empty($end_day) and $start_month == $end_month and !empty($end_month))) or
+                  ($start_year < $end_year and !empty($end_year)))){
+               while ((($start_day != $end_day and $start_month != $end_month) or
+                      ($start_day == $end_day and $start_month != $end_month) or
+                      ($start_day != $end_day and $start_month == $end_month)) or
+                      ($start_year < $end_year)){
                   $temp_date = clone $current_date;
                   if ($current_date->getStartingTime()){
                      $temp_date->setStartingTime('00:00:00');
@@ -1378,11 +1394,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      }
                   }
                   $temp_start_day = $start_day;
-                  if (strlen($temp_start_day) == 1){
+                  if (mb_strlen($temp_start_day) == 1){
                      $temp_start_day = '0'.$temp_start_day;
                   }
                   $temp_start_month = $start_month;
-                  if (strlen($temp_start_month) == 1){
+                  if (mb_strlen($temp_start_month) == 1){
                      $temp_start_month = '0'.$temp_start_month;
                   }
                   $temp_starting_day = $start_year.'-'.$temp_start_month.'-'.$temp_start_day;
@@ -1407,9 +1423,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $startyear = date ("Y",$week_start);
          $startarraymonth = $startmonth;
          $startmonth = $month_array[$startmonth-1];
-         $first_char = substr($startday,0,1);
+         $first_char = mb_substr($startday,0,1);
          if ($first_char == '0'){
-            $display_startday = substr($startday,1,2);
+            $display_startday = mb_substr($startday,1,2);
          }else{
             $display_startday = $startday;
          }
@@ -1483,9 +1499,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                foreach($display_date_array[$day_entries] as $date){
                   $starting_time = $date->getStartingTime();
                   if (empty($starting_time)){
-                     $length = strlen($date->getTitle());
+                     $length = mb_strlen($date->getTitle());
                      if ( $length > 20 ) {
-                        $new_date = substr($date->getTitle(),0,20).'...';
+                        $new_date = mb_substr($date->getTitle(),0,20).'...';
                      } else {
                         $new_date = $date->getTitle();
                      }
@@ -1496,25 +1512,25 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $date_text[1] = $title;
                      }
                   }else{
-                     $display_start_time = substr($date->getStartingTime(),0,2);
-                     $first_char = substr($display_start_time,0,1);
+                     $display_start_time = mb_substr($date->getStartingTime(),0,2);
+                     $first_char = mb_substr($display_start_time,0,1);
                      if ($first_char == '0'){
-                       $display_start_time = substr($display_start_time,1,2);
+                       $display_start_time = mb_substr($display_start_time,1,2);
                      }
                      if ( $display_start_time=='0' ){
                        $display_start_time ='6';
                      }
                      if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
-                        $length = strlen($date->getTitle());
+                        $length = mb_strlen($date->getTitle());
                         if ($length > 20) {
-                           $new_date = substr($date->getTitle(),0,19).'...';
+                           $new_date = mb_substr($date->getTitle(),0,19).'...';
                         } else {
                            $new_date = $date->getTitle();
                         }
                       } else {
-                        $length = strlen($date->getTitle());
+                        $length = mb_strlen($date->getTitle());
                         if ( $length > 20 ) {
-                           $new_date = substr($date->getTitle(),0,19).'...';
+                           $new_date = mb_substr($date->getTitle(),0,19).'...';
                         } else {
                            $new_date = $date->getTitle();
                         }
@@ -1529,12 +1545,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      }
                      $ending_time = $date->getEndingTime();
                      if ( !empty($ending_time) ){
-                        $display_ending_time = substr($date->getEndingTime(),0,2);
-                        $first_char = substr($display_ending_time,0,1);
+                        $display_ending_time = mb_substr($date->getEndingTime(),0,2);
+                        $first_char = mb_substr($display_ending_time,0,1);
                         if ($first_char == '0'){
-                           $display_ending_time = substr($display_ending_time,1,2);
+                           $display_ending_time = mb_substr($display_ending_time,1,2);
                         }
-                        $display_ending_minutes = substr($date->getEndingTime(),3,2);
+                        $display_ending_minutes = mb_substr($date->getEndingTime(),3,2);
                         if ($display_ending_minutes !='00'){
                            $display_ending_time++;
                         }
@@ -1616,14 +1632,14 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $count = $j-2;
                $week_start = $this->_week_start + ( 3600 * 24 * $count);
                $startday = date ( "d", $week_start);
-               $first_char = substr($startday,0,1);
+               $first_char = mb_substr($startday,0,1);
                if ($first_char == '0'){
-                  $startday = substr($startday,1,2);
+                  $startday = mb_substr($startday,1,2);
                }
                $startmonth = date ( "Ymd", $week_start );
-               $first_char = substr($startmonth,0,1);
+               $first_char = mb_substr($startmonth,0,1);
                if ($first_char == '0'){
-                  $startmonth = substr($startmonth,1,2);
+                  $startmonth = mb_substr($startmonth,1,2);
                }
                $startyear = date ( "Y", $week_start );
                $params = array();

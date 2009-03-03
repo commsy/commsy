@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -126,7 +126,7 @@ else {
                $room_item->setUsageInfoHeaderForRubric( $_POST['info_text'],  $_POST['title']);
             }
             if (! empty($_POST['text']) ){
-               if ( stristr($_POST['text'],'<!-- KFC TEXT -->') ){
+               if ( mb_stristr($_POST['text'],'<!-- KFC TEXT -->') ){
                   $text = str_replace('<!-- KFC TEXT -->','',$_POST['text']);
                } else{
                   $text =  $_POST['text'];
@@ -162,7 +162,7 @@ else {
                $room_item->setUsageInfoHeaderForRubricForm( $_POST['info_text'],  $_POST['title']);
             }
             if (! empty($_POST['text_form']) ){
-               if ( stristr($_POST['text_form'],'<!-- KFC TEXT -->') ){
+               if ( mb_stristr($_POST['text_form'],'<!-- KFC TEXT -->') ){
                   $text = str_replace('<!-- KFC TEXT -->','',$_POST['text']);
                } else{
                   $text =  $_POST['text_form'];

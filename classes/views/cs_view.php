@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez, Johannes Schultze
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez, Johannes Schultze
 //
 //    This file is part of CommSy.
 //
@@ -234,24 +234,42 @@ class cs_view {
    //Text functions --------------------------------------------------------------------------------------------------------------------------------------------
 
    private function _cleanBadCode ( $text ) {
-
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       $search = array();
       $replace = array();
 
-      $search[]  = '§<([/]{0,1}[j|J][a|A][v|V][a|A][s|S][c|C][r|R][i|I][p|P][t|T])§';
+//      $search[]  = 'Â§<([/]{0,1}[j|J][a|A][v|V][a|A][s|S][c|C][r|R][i|I][p|P][t|T])Â§';
+//      $replace[] = '&lt;$1';
+//      $search[]  = 'Â§<([/]{0,1}[s|S][c|C][r|R][i|I][p|P][t|T])Â§';
+//      $replace[] = '&lt;$1';
+//      $search[]  = 'Â§<([/]{0,1}[j|J][s|S][c|C][r|R][i|I][p|P][t|T])Â§';
+//      $replace[] = '&lt;$1';
+//      $search[]  = 'Â§<(\?)Â§';
+//      $replace[] = '&lt;$1';
+//      $search[]  = 'Â§(\?)>Â§';
+//      $replace[] = '$1&gt;';
+//      $search[]  = 'Â§<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])Â§';
+//      $replace[] = '&lt;$1';
+//      $search[]  = 'Â§<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])Â§';
+//      $replace[] = '&lt;$1';
+      
+      $search[]  = '~<([/]{0,1}[j|J][a|A][v|V][a|A][s|S][c|C][r|R][i|I][p|P][t|T])~u';
       $replace[] = '&lt;$1';
-      $search[]  = '§<([/]{0,1}[s|S][c|C][r|R][i|I][p|P][t|T])§';
+      $search[]  = '~<([/]{0,1}[s|S][c|C][r|R][i|I][p|P][t|T])~u';
       $replace[] = '&lt;$1';
-      $search[]  = '§<([/]{0,1}[j|J][s|S][c|C][r|R][i|I][p|P][t|T])§';
+      $search[]  = '~<([/]{0,1}[j|J][s|S][c|C][r|R][i|I][p|P][t|T])~u';
       $replace[] = '&lt;$1';
-      $search[]  = '§<(\?)§';
+      $search[]  = '~<(\?)~u';
       $replace[] = '&lt;$1';
-      $search[]  = '§(\?)>§';
+      $search[]  = '~(\?)>~u';
       $replace[] = '$1&gt;';
-      $search[]  = '§<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])§';
+      $search[]  = '~<([/]{0,1}[e|E][m|M][b|B][e|E][d|D])~u';
       $replace[] = '&lt;$1';
-      $search[]  = '§<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])§';
+      $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
       $replace[] = '&lt;$1';
+      
       $text = preg_replace($search,$replace,$text);
 
       return $text;
@@ -266,7 +284,7 @@ class cs_view {
    }
 
    function _cs_htmlspecialchars1 ($text) {
-      $text = htmlspecialchars($text);
+      $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
       global $c_html_textarea;
       if ( !isset($c_html_textarea) or !$c_html_textarea ) {
          $text = str_replace('<img','&lt;img',$text);
@@ -280,7 +298,7 @@ class cs_view {
    }
 
    function _text_as_html_long ($text,$htmlTextArea=true) {
-      preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$',$text,$values);
+      preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
       }
@@ -340,7 +358,7 @@ class cs_view {
 
    // @segment-begin 51609  _text_as_html_short($text)
    function _text_as_html_short ($text) {
-      $text = htmlspecialchars($text);
+      $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
       $text = $this->_emphasize_text($text);
       $text = $this->_decode_backslashes($text);
       return $text;
@@ -351,7 +369,7 @@ class cs_view {
        $text = $this->_text_as_html_short($text);
       $text = str_replace('&lt;BR&gt;', "<br />", $text);
       $text = str_replace('&lt;SPACE&gt;', "&nbsp;", $text);
-      $text = preg_replace('§&lt;DISABLED&gt;(.*)&lt;/DISABLED&gt;§','<span class="disabled">$1</span>',$text);
+      $text = preg_replace('~&lt;DISABLED&gt;(.*)&lt;/DISABLED&gt;~u','<span class="disabled">$1</span>',$text);
       return $text;
    }
 
@@ -378,43 +396,51 @@ class cs_view {
 
    //help functions for text functions ----------------------------------------------------------------------------------------------------------------------
    function _delete_unnecassary_br($text) {
-       $text = preg_replace ('§<br( /)?>(</h\d>)§', '$2', $text);
-      $text = preg_replace ('§<br( /)?>(</li>)§', '</li>', $text);
-
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
+      $text = preg_replace ('~<br( /)?>(</h\d>)~u', '$2', $text);
+      $text = preg_replace ('~<br( /)?>(</li>)~u', '</li>', $text);
       return $text;
    }
 
    function _emphasize_text ($text) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       // bold
       //$text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style="font-weight:bold;">$2</span>$3', $text);
-      $text = preg_replace('§\*([^*]+)\*§', '<span style="font-weight:bold;">$1</span>', $text);
+      $text = preg_replace('~\*([^*]+)\*~u', '<span style="font-weight:bold;">$1</span>', $text);
       // italic
-      #$text = preg_replace('§_([^_]+)_§', '<span style="font-style:italic;">$1</span>', $text);
-      $text = preg_replace('§(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|[ <\/.)\]},!?;])§', '$1<span style=font-style:italic;>$2</span>$3', $text);
+      #$text = preg_replace('Â§_([^_]+)_Â§', '<span style="font-style:italic;">$1</span>', $text);
+      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|[ <\/.)\]},!?;])~u', '$1<span style=font-style:italic;>$2</span>$3', $text);
       return $text;
    }
 
    function _activate_urls ($text) {
-      $url_string = '§([ |\n|>]{1})((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
+      $url_string = '^([ |\n|>]{1})((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
-      $url_string .= '([.?:),;!]*($|\s|<|&quot;))§'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+      $url_string .= '([.?:),;!]*($|\s|<|&quot;))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
       $text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
-      $text = preg_replace_callback('§">(.[^"]+)</a>§','spezial_chunkURL',$text);
+      $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
 
-      $text = preg_replace('$<a href="www$','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
+      $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
-      $text = preg_replace('§( |^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))§', ' <a href="mailto:$3">$3</a>', $text);
+      $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', ' <a href="mailto:$3">$3</a>', $text);
       return $text;
    }
 
    function _display_headers ($text) {
       $matches = array();
 
-      while (preg_match('/(^|\n)(\s*)(!+)(\s*)(.*)/', $text, $matches)) {
-         $bang_number = strlen($matches[3]);
+      while (preg_match('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $text, $matches)) {
+         $bang_number = mb_strlen($matches[3]);
          $head_level = max(5 - $bang_number, 1); //normal (one '!') is h4, biggest is h1; The more '!', the bigger the heading
          $heading = '<h'.$head_level.'>'."\n   ".$matches[5]."\n".'</h'.$head_level.'>'."\n";
-         $text = preg_replace('/(^|\n)(\s*)(!+)(\s*)(.*)/', $heading, $text, 1);
+         $text = preg_replace('~(^|\n)(\s*)(!+)(\s*)(.*)~u', $heading, $text, 1);
       }
 
       return $text;
@@ -428,12 +454,12 @@ class cs_view {
       $list_open = false;
 
       //split up paragraphs in lines
-      $lines = preg_split('/\s*\n/', $text);
+      $lines = preg_split('~\s*\n~u', $text);
       foreach ($lines as $line) {
          $line_html = '';
          $hr_line = false;
          //find horizontal rulers
-         if (preg_match('/^--(-+)\s*($|\n|<)/', $line)) {
+         if (preg_match('~^--(-+)\s*($|\n|<)~u', $line)) {
             if ($list_open) {
                $line_html.=$this->_close_list($last_list_type);
                $list_open = false;
@@ -443,7 +469,7 @@ class cs_view {
          }
 
          //process lists
-         elseif (!($hr_line) and preg_match('/^(-|#)(\s*)(.*)/s', $line, $matches)) {
+         elseif (!($hr_line) and preg_match('~^(-|#)(\s*)(.*)~su', $line, $matches)) {
             $list_type = $matches[1];
 
             if (!$list_open) {
@@ -480,12 +506,15 @@ class cs_view {
    }
 
    function _parseText2Id ($text) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
       global $current_item_id;
       $matches_stand_alone = array();
       $matches_with_text = array();
 
       // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-      preg_match_all('|([\w.'.SPECIAL_CHARS.'-]+)\[(\d+)\]|i', $text, $matches_with_text);
+      preg_match_all('~([\w.'.SPECIAL_CHARS.'-]+)\[(\d+)\]~iu', $text, $matches_with_text);
       if (count($matches_with_text[0]) > 0) {
          $result = $text;
          $word_part = $matches_with_text[1];
@@ -496,12 +525,12 @@ class cs_view {
             if ($reference < 100) {
                $params = array();
                $params['iid'] = $current_item_id;
-               $result = preg_replace('/'.$word.'\['.$reference.'\]/i', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
+               $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
                unset($params);
             } else {
                $params = array();
                $params['iid'] = $reference;
-               $result = preg_replace('/'.$word.'\['.$reference.'\]/i', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
+               $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
                unset($params);
             }
          }
@@ -509,7 +538,7 @@ class cs_view {
       }
 
       // urls with text: <text>[<url>] becomes a link under <text> to the url <url>
-      preg_match_all('|([.\w'.SPECIAL_CHARS.'-]+)\[(https?:\/\/['.RFC1738_CHARS.']*)\]|i', $text, $matches_with_urls);//preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
+      preg_match_all('^([.\w'.SPECIAL_CHARS.'-]+)\[(https?:\/\/['.RFC1738_CHARS.']*)\]^iu', $text, $matches_with_urls);//preg_match_all('/(\S+)(\[http:\/\/\S*\])[.:,;-?!]*($|\n|\t|<| )/', $text, $matches_with_urls);
       if (count($matches_with_urls[0]) > 0) {
    $result = $text;
    $word_part = $matches_with_urls[1];
@@ -518,11 +547,11 @@ class cs_view {
       $word = $word_part[$i];
       $http = $http_part[$i];
       if (!empty($word)) {
-         if (!stristr($word,'|')) {
-       $result = preg_replace('%'.$word.'\['.$http.'\]%', '<a href="'.$http.'" target="_blank">'.$word.'</a>', $result);
+         if (!mb_stristr($word,'|')) {
+       $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$word.'</a>', $result);
          }
       } else {
-         $result = preg_replace('%'.$word.'\['.$http.'\]%', '<a href="'.$http.'" target="_blank">'.$http_part[$i].'</a>', $result);
+         $result = preg_replace('~'.$word.'\['.$http.'\]~u', '<a href="'.$http.'" target="_blank">'.$http_part[$i].'</a>', $result);
       }
    }
    $text = $result;
@@ -530,7 +559,7 @@ class cs_view {
 
       // long urls: [<url>|<sentence with spaces>|<flag>] becomes a link to <url> under <sentence with spaces>
       // <flag> cann be "internal" or "_blank". Internal opens <url> in this browser window, _blank uses another
-      preg_match_all('§\[(http?://['.RFC1738_CHARS.']*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\|(\w+)\]§', $text, $matches_with_long_urls);
+      preg_match_all('^\[(http?://['.RFC1738_CHARS.']*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\|(\w+)\]^u', $text, $matches_with_long_urls);
       if (count($matches_with_long_urls[0]) > 0) {
          $result = $text;
    $http_part = $matches_with_long_urls[1];
@@ -553,8 +582,8 @@ class cs_view {
       }
 
       // long urls: [ITEM_ID|<sentence with spaces>] becomes a link to <url> under <sentence with spaces>
-      preg_match_all('§\[([0-9]*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\]§', $text, $matches_with_long_urls);
-      #preg_match_all('§\[([0-9]*)\|([\w'.SPECIAL_CHARS.' -]+)\]§', $text, $matches_with_long_urls);
+      preg_match_all('^\[([0-9]*)\|([\w'.SPECIAL_CHARS.' \)?!&;-]+)\]^u', $text, $matches_with_long_urls);
+      #preg_match_all('Â§\[([0-9]*)\|([\w'.SPECIAL_CHARS.' -]+)\]Â§', $text, $matches_with_long_urls);
       if (count($matches_with_long_urls[0]) > 0) {
          $result = $text;
    $http_part = $matches_with_long_urls[1];
@@ -574,7 +603,7 @@ class cs_view {
       }
 
       // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
-      preg_match_all('/\[(\d+)\]/', $text, $matches_stand_alone);//(^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
+      preg_match_all('~\[(\d+)\]~u', $text, $matches_stand_alone);//(^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
       $matches_stand_alone = array_unique($matches_stand_alone[1]);
       if (!empty($matches_stand_alone)) {
    $result = $text;
@@ -582,13 +611,13 @@ class cs_view {
       if ($item < 100) {
                $params = array();
                $params['iid'] = $current_item_id;
-         $result = preg_replace('/\['.$item.'\]/i', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
+         $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
                unset($params);
       }
       else {
                $params = array();
                $params['iid'] = $item;
-         $result = preg_replace('/\['.$item.'\]/i', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, "[".$item."]", '', '', ''), $result);
+         $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, "[".$item."]", '', '', ''), $result);
                unset($params);
       }
    }
@@ -676,21 +705,21 @@ class cs_view {
 
    /** Wenn im Text Gruppierungen von zwei oder mehr Leerzeichen
  *  vorkommen, werden diese durch entsprechende &nbsp; Tags
- *  ersetzt, um die Ursprüngliche formatierung zu bewaren
+ *  ersetzt, um die UrsprÃ¼ngliche formatierung zu bewaren
  *
  *  Wurde aufgrund folgenden Bugs erstellt:
  *  http://sourceforge.net/tracker/index.php?func=detail&aid=1062265&group_id=49014&atid=516467
  */
 
    function _preserve_whitespaces($text) {
-     preg_match_all('/ {2,}/', $text, $matches);
+     preg_match_all('~ {2,}~u', $text, $matches);
      $matches = array_unique($matches[0]);
      rsort($matches);
 
      foreach ($matches as $match) {
        $replacement = ' ';
 
-       for ($x = 1; $x < strlen($match); $x++) {
+       for ($x = 1; $x < mb_strlen($match); $x++) {
          $replacement .= '&nbsp;';
        }
        $text = str_replace($match, $replacement, $text);
@@ -712,13 +741,16 @@ class cs_view {
     * [<file_name] is equal to [<file_name>|right]
     */
    function _show_images($description,$item,$with_links = true) {
+      // ------------------
+      // --->UTF8 - OK<----
+      // ------------------
 
       $return_description = "";
       $width_string = '';
 
       //split description in paragraphs
-      //$paragraphs = preg_split('§\s*\n(\s*\n)+§', $description);
-      $paragraphs = preg_split('§(\s*<br( /)?>{2,})§', $description,-1,PREG_SPLIT_DELIM_CAPTURE);
+      //$paragraphs = preg_split('Â§\s*\n(\s*\n)+Â§', $description);
+      $paragraphs = preg_split('~(\s*<br( /)?>{2,})~u', $description,-1,PREG_SPLIT_DELIM_CAPTURE);
       $file_list = $item->getFileList();
       if ( $item->isA(CS_SECTION_TYPE) ) {
          $material_item = $item->getLinkedItem();
@@ -734,15 +766,15 @@ class cs_view {
       $file_name_array = array();
       //create array with filenames
       foreach ($file_array as $file) {
-         $file_name_array[] = htmlentities($file->getDisplayName());
+         $file_name_array[] = htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8');
       }
       foreach ($paragraphs as $paragraph) {
          $imgmatches = array();
          $zipmatches = array();
          //find everything in the form [<filename>.<extension>] or  [<filename>.<extension>|<align>] with <extension> one of jpg, jpeg, gif, png and <align> one of 'left', 'right', 'none'
-#			$image_found_in_paragraph = preg_match_all('§\[([A-z0-9_%&$-'.SPECIAL_CHARS.']+\.(png|PNG|jpe?g|JPE?G|gif|GIF|swf|SWF))(\|(left|right|none))?\]§',$paragraph,$matches);
-         $image_found_in_paragraph = preg_match_all('§\[([A-z0-9_%&$-\s'.SPECIAL_CHARS.';]+\.[A-z0-9_%&$-'.SPECIAL_CHARS.']{3,4})(\|(left|right|none))?\]§',$paragraph,$imgmatches);
-         $zip_with_html_found_in_paragraph = preg_match_all('§\[([A-z0-9_%&$-\s'.SPECIAL_CHARS.';]+\.zip)(\|(html))?\]§',$paragraph,$zipmatches);
+#			$image_found_in_paragraph = preg_match_all('Â§\[([A-z0-9_%&$-'.SPECIAL_CHARS.']+\.(png|PNG|jpe?g|JPE?G|gif|GIF|swf|SWF))(\|(left|right|none))?\]Â§',$paragraph,$matches);
+         $image_found_in_paragraph = preg_match_all('^\[([A-z0-9_%&$-\s'.SPECIAL_CHARS.';]+\.[A-z0-9_%&$-'.SPECIAL_CHARS.']{3,4})(\|(left|right|none))?\]^u',$paragraph,$imgmatches);
+         $zip_with_html_found_in_paragraph = preg_match_all('^\[([A-z0-9_%&$-\s'.SPECIAL_CHARS.';]+\.zip)(\|(html))?\]^u',$paragraph,$zipmatches);
          $images = $imgmatches[1];
          $zips = $zipmatches[1];
          if (isset($imgmatches[3])) {
@@ -776,7 +808,7 @@ class cs_view {
                $file = $file['file'];
                $name = $file->getDisplayName();
                $align_text = '';
-               if ($align == '' or stristr($file->getFilename(),'swf')) {
+               if ($align == '' or mb_stristr($file->getFilename(),'swf')) {
                   $align = '';
                   $align_text = '';
                } elseif ($align == 'none'){
@@ -786,7 +818,7 @@ class cs_view {
                   $align_text = '|'.$align;
                   $align = ' float:'.$align.';';
                }
-               if ( stristr(strtolower($file->getFilename()),'swf') ) {
+               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'swf') ) {
                   $with_links = false;
                   $show_width = '';
                   $show_height = '';
@@ -843,10 +875,10 @@ class cs_view {
                   $image_text .= '      </embed>'.LF;
                   $image_text .= '   </object>'.LF;
                   $image_text .= '</div>'.LF;
-               } elseif ( !stristr(strtolower($file->getFilename()),'png')
-                      and !stristr(strtolower($file->getFilename()),'jpg')
-                      and !stristr(strtolower($file->getFilename()),'jpeg')
-                      and !stristr(strtolower($file->getFilename()),'gif')
+               } elseif ( !mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                      and !mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                      and !mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                      and !mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                     ) {
                   $disc_manager = $this->_environment->getDiscManager();
                   if ( $disc_manager->existsFile($file->getDiskFileNameWithoutFolder()) ) {
@@ -889,9 +921,9 @@ class cs_view {
                }
                if ( !empty($image_text) ) {
                   if ( $with_links ) {
-                     $paragraph = str_replace('['.htmlentities($name).$align_text.']', '<div style="'.$align.' padding:5px;">'.'<a href="'.$file->getUrl().'">'.$image_text.'</a>'.'</div>',$paragraph);
+                     $paragraph = str_replace('['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').$align_text.']', '<div style="'.$align.' padding:5px;">'.'<a href="'.$file->getUrl().'">'.$image_text.'</a>'.'</div>',$paragraph);
                   } else {
-                     $paragraph = str_replace('['.htmlentities($name).']','<div style="'.$align.' padding:5px;">'.'</div>'.$image_text,$paragraph);
+                     $paragraph = str_replace('['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').']','<div style="'.$align.' padding:5px;">'.'</div>'.$image_text,$paragraph);
                   }
                }
             }
@@ -927,11 +959,11 @@ class cs_view {
                             if($file->getHasHTML() == '2') {
 
                                            $paragraph = str_replace(
-                           '['.htmlentities($name).'|html]','<a href="commsy.php?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>',$paragraph);
+                           '['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').'|html]','<a href="commsy.php?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>',$paragraph);
                             }
                             if(($file->getHasHTML() == '1')) {
                             $paragraph = str_replace(
-                           '['.htmlentities($name).'|html]',$file->getFileIcon().'&nbsp;<a href="'.$file->getUrl().'">'.$name.'</a>',$paragraph);
+                           '['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').'|html]',$file->getFileIcon().'&nbsp;<a href="'.$file->getUrl().'">'.$name.'</a>',$paragraph);
                             }
                          }
 
@@ -947,39 +979,42 @@ class cs_view {
    }
 
    function _create_thumb_name_from_image_name($name) {
-      $thumb_name = $name;
-      $point_position = strrpos($thumb_name,'.');
-      $thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , strlen($thumb_name));
+      //$thumb_name = $name;
+      //$point_position = mb_strrpos($thumb_name,'.');
+      //$thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , mb_strlen($thumb_name));
+      //$string = substr($string, 0, $position_needle).$replace.substr($string, $position_needle+$length_needle);
+      //$thumb_name = substr($thumb_name, 0, $point_position).'_thumb.png'.substr($thumb_name, $point_position+mb_strlen($thumb_name));
+      $thumb_name = $name . '_thumb';
       return $thumb_name;
    }
 
    function _newFormating ( $text ) {
 
       $reg_exp_father_array = array();
-      $reg_exp_father_array[]       = '/\\(:(.*?):\\)/e';
-      $reg_exp_father_array[]       = '/\[(.*?)\]/e';
+      $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
+      $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
 
       $reg_exp_array = array();
-      $reg_exp_array['(:flash']       = '/\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:quicktime']   = '/\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:wmplayer']    = '/\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:image']       = '/\\(:image (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:item']        = '/\\(:item ([0-9]*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:link']        = '/\\(:link (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:file']        = '/\\(:file (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:zip']         = '/\\(:zip (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:youtube']     = '/\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:googlevideo'] = '/\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:vimeo']       = '/\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:mp3']         = '/\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:lecture2go']  = '/\\(:lecture2go (.*?)(\\s.*?)?\\s*?:\\)/e';
+      $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:quicktime']   = '~\\(:quicktime (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:wmplayer']    = '~\\(:wmplayer (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:image']       = '~\\(:image (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:item']        = '~\\(:item ([0-9]*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:link']        = '~\\(:link (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:file']        = '~\\(:file (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:zip']         = '~\\(:zip (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:youtube']     = '~\\(:youtube (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:googlevideo'] = '~\\(:googlevideo (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
+      $reg_exp_array['(:lecture2go']  = '~\\(:lecture2go (.*?)(\\s.*?)?\\s*?:\\)~eu';
       if ( $this->_environment->isScribdAvailable() ) {
-         $reg_exp_array['(:office']      = '/\\(:office (.*?)(\\s.*?)?\\s*?:\\)/e';
+         $reg_exp_array['(:office']      = '~\\(:office (.*?)(\\s.*?)?\\s*?:\\)~eu';
       }
       // Test auf erforderliche Software; Windows-Server?
       //$reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
-      $reg_exp_array['(:slideshare']      = '/\\(:slideshare (.*?):\\)/e';
-      $reg_exp_array['[slideshare']      = '/\[slideshare (.*?)\]/e';
+      $reg_exp_array['(:slideshare']      = '~\\(:slideshare (.*?):\\)~eu';
+      $reg_exp_array['[slideshare']      = '~\[slideshare (.*?)\]~eu';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -987,9 +1022,9 @@ class cs_view {
       if ( isset($c_jsmath_enable)
            and $c_jsmath_enable
          ) {
-         $reg_exp_father_array[]   = '/\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}/e';
-         $reg_exp_array['{$$']     = '/\\{\\$\\$(.*?)\\$\$\\}/e'; // must be before next one
-         $reg_exp_array['{$']      = '/\\{\\$(.*?)\\$\\}/e';
+         $reg_exp_father_array[]   = '~\\{\\$[\\$]{0,1}(.*?)\\$[\\$]{0,1}\\}~eu';
+         $reg_exp_array['{$$']     = '~\\{\\$\\$(.*?)\\$\$\\}~eu'; // must be before next one
+         $reg_exp_array['{$']      = '~\\{\\$(.*?)\\$\\}~eu';
       }
 
       // is there wiki syntax ?
@@ -997,7 +1032,7 @@ class cs_view {
          $reg_exp_keys = array_keys($reg_exp_array);
          $clean_text = false;
          foreach ($reg_exp_keys as $key) {
-            if ( stristr($text,$key) ) {
+            if ( mb_stristr($text,$key) ) {
                $clean_text = true;
                break;
             }
@@ -1020,61 +1055,61 @@ class cs_view {
                   ##################################################
 
                   foreach ($reg_exp_array as $key => $reg_exp) {
-                     if ( $key == '(:flash' and stristr($value_new,'(:flash') ) {
+                     if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
                         $value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:wmplayer' and stristr($value_new,'(:wmplayer') ) {
+                     } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
                         $value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:quicktime' and stristr($value_new,'(:quicktime') ) {
+                     } elseif ( $key == '(:quicktime' and mb_stristr($value_new,'(:quicktime') ) {
                         $value_new = $this->_format_quicktime($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:image' and stristr($value_new,'(:image') ) {
+                     } elseif ( $key == '(:image' and mb_stristr($value_new,'(:image') ) {
                         $value_new = $this->_format_image($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:item' and stristr($value_new,'(:item') ) {
+                     } elseif ( $key == '(:item' and mb_stristr($value_new,'(:item') ) {
                         $value_new = $this->_format_item($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:link' and stristr($value_new,'(:link') ) {
+                     } elseif ( $key == '(:link' and mb_stristr($value_new,'(:link') ) {
                         $value_new = $this->_format_link($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:file' and stristr($value_new,'(:file') ) {
+                     } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
                         $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:zip' and stristr($value_new,'(:zip') ) {
+                     } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
                         $value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:youtube' and stristr($value_new,'(:youtube') ) {
+                     } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
                         $value_new = $this->_format_youtube($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:googlevideo' and stristr($value_new,'(:googlevideo') ) {
+                     } elseif ( $key == '(:googlevideo' and mb_stristr($value_new,'(:googlevideo') ) {
                         $value_new = $this->_format_googlevideo($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:vimeo' and stristr($value_new,'(:vimeo') ) {
+                     } elseif ( $key == '(:vimeo' and mb_stristr($value_new,'(:vimeo') ) {
                         $value_new = $this->_format_vimeo($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:mp3' and stristr($value_new,'(:mp3') ) {
+                     } elseif ( $key == '(:mp3' and mb_stristr($value_new,'(:mp3') ) {
                         $value_new = $this->_format_mp3($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:lecture2go' and stristr($value_new,'(:lecture2go') ) {
+                     } elseif ( $key == '(:lecture2go' and mb_stristr($value_new,'(:lecture2go') ) {
                         $value_new = $this->_format_lecture2go($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:office' and stristr($value_new,'(:office') ) {
+                     } elseif ( $key == '(:office' and mb_stristr($value_new,'(:office') ) {
                         $value_new = $this->_format_office($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:pdf' and stristr($value_new,'(:pdf') ) {
+                     } elseif ( $key == '(:pdf' and mb_stristr($value_new,'(:pdf') ) {
                         $value_new = $this->_format_pdf($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '(:slideshare' and stristr($value_new,'(:slideshare') ) {
+                     } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
                         $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '[slideshare' and stristr($value_new,'[slideshare') ) {
+                     } elseif ( $key == '[slideshare' and mb_stristr($value_new,'[slideshare') ) {
                         $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '{$' and stristr($value_new,'{$') ) {
+                     } elseif ( $key == '{$' and mb_stristr($value_new,'{$') ) {
                         $value_new = $this->_format_math1($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
-                     } elseif ( $key == '{$$' and stristr($value_new,'{$$') ) {
+                     } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
                         $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      }
@@ -1125,7 +1160,7 @@ class cs_view {
          unset($file_list);
          $file_name_array = array();
          foreach ($file_array as $file) {
-            $file_name_array[htmlentities($file->getDisplayName())] = $file;
+            $file_name_array[htmlentities($file->getDisplayName(), ENT_NOQUOTES, 'UTF-8')] = $file;
          }
          unset($file_array);
          $this->_item_file_list = $file_name_array;
@@ -1317,7 +1352,7 @@ class cs_view {
          }
       } else {
          $source = $array[1].$array[2];
-         $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
          $extern = true;
       }
       if ( !empty($array[3]) ) {
@@ -1401,7 +1436,7 @@ class cs_view {
          }
       } else {
          $source = $array[1].$array[2];
-         $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
          $extern = true;
       }
       if ( !empty($array[3]) ) {
@@ -1429,7 +1464,7 @@ class cs_view {
          $float = '';
       }
 
-      if ( strtolower($ext) == 'mp3' ) {
+      if ( mb_strtolower($ext, 'UTF-8') == 'mp3' ) {
          $args['height'] = 16;
       }
 
@@ -1497,7 +1532,7 @@ class cs_view {
          }
       } else {
          $source = $array[1].$array[2];
-         $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
          $extern = true;
       }
       if ( !empty($array[3]) ) {
@@ -1689,7 +1724,7 @@ class cs_view {
          }
       } else {
          $source = $array[1].$array[2];
-         $ext = cs_strtolower(substr(strrchr($source,'.'),1));
+         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
          $extern = true;
       }
       if ( !empty($array[3]) ) {
@@ -1991,7 +2026,7 @@ class cs_view {
 //            $office_text .= '<param name="scale" value="showall">'.LF;
 //            $office_text .= '<param name="wmode" value="opaque">'.LF;
 
-//            original: opaque, aber da div layer probleme, lieber transparent -> prüfen
+//            original: opaque, aber da div layer probleme, lieber transparent -> prÃ¼fen
 //            $office_text .= '<param name="wmode" value="transparent">'.LF;
 
 //            $office_text .= '<param name="devicefont" value="false">'.LF;
@@ -2040,10 +2075,10 @@ class cs_view {
                 $oldDir = getcwd();
                 chdir($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
                 $ausgabe = exec('pdf2swf ' . $file->getDiskFileNameWithoutFolder());
-                $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
+                $ausgabe = exec('swfcombine ' . $c_commsy_path_file . '/etc/fdviewer/fdviewer.swf \'#1\'=' . $c_commsy_path_file . "/" . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'swf -o ' . mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
                 chdir($oldDir);
 
-                $file->setFdViewerFile(substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
+                $file->setFdViewerFile(mb_substr($file->getDiskFileNameWithoutFolder(), 0, -3) . 'fdviewer.swf');
                 $file->saveExtras();
             }
 
@@ -2063,19 +2098,19 @@ class cs_view {
       if ( !empty($array[1]) ) {
          $slideshare_doc = array();
          $slideshare_id = array();
-         if(substr($array[0],0,1) == '('){
+         if(mb_substr($array[0],0,1) == '('){
             $slideshare_doc[] = $array[1];
             $slideshare_id[] = $array[1];
          }
-         if(substr($array[0],0,1) == '['){
+         if(mb_substr($array[0],0,1) == '['){
             // Different PHP-versions/installations can handle either '&' or '&amp;'
-            preg_match('/(?<=id=)(.*)(?=&amp;doc)/', $array[1], $slideshare_id);
+            preg_match('~(?<=id=)(.*)(?=&amp;doc)~u', $array[1], $slideshare_id);
             if(empty($slideshare_id)){
-               preg_match('/(?<=id=)(.*)(?=&doc)/', $array[1], $slideshare_id);
+               preg_match('~(?<=id=)(.*)(?=&doc)~u', $array[1], $slideshare_id);
             }
-            preg_match('/(?<=&amp;doc=)(.*)/', $array[1], $slideshare_doc);
+            preg_match('~(?<=&amp;doc=)(.*)~u', $array[1], $slideshare_doc);
             if(empty($slideshare_doc)){
-               preg_match('/(?<=&doc=)(.*)/', $array[1], $slideshare_doc);
+               preg_match('~(?<=&doc=)(.*)~u', $array[1], $slideshare_doc);
             }
          }
          $retour .= '<div style="width:425px;text-align:left" id="__ss_' . $slideshare_id[0] . '">';
@@ -2106,15 +2141,15 @@ class cs_view {
       if ( empty($array[1]) ) {
          // internal resource
          $file_name_array = $this->_getItemFileListForView();
-         $temp_file_name = htmlentities($array[2]);
+         $temp_file_name = htmlentities($array[2], ENT_NOQUOTES, 'UTF-8');
          if ( !empty($array[2]) and !empty($file_name_array[$temp_file_name]) ) {
             $file = $file_name_array[$temp_file_name];
          }
          if ( isset($file) ) {
-            if ( stristr(strtolower($file->getFilename()),'png')
-                 or stristr(strtolower($file->getFilename()),'jpg')
-                 or stristr(strtolower($file->getFilename()),'jpeg')
-                 or stristr(strtolower($file->getFilename()),'gif')
+            if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                ) {
                $source = $file->getUrl();
                $thumb_name = $this->_create_thumb_name_from_image_name($file->getDiskFileNameWithoutFolder());
@@ -2310,7 +2345,7 @@ class cs_view {
       $image_text = '';
       if ( !empty($array[1]) ) {
          $file_name_array = $this->_getItemFileListForView();
-         $temp_file_name = htmlentities($array[1]);
+         $temp_file_name = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
          $file = $file_name_array[$temp_file_name];
          if ( isset($file) ) {
 
@@ -2441,9 +2476,9 @@ class cs_view {
 
    function _parseArgs ($x) {
       $z = array();
-      preg_match_all('/([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)/',$x, $terms, PREG_SET_ORDER);
+      preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u',$x, $terms, PREG_SET_ORDER);
       foreach($terms as $t) {
-         $v = preg_replace('/^([\'"])?(.*)\\1$/', '$2', $t[3]);
+         $v = preg_replace('~^([\'"])?(.*)\\1$~u', '$2', $t[3]);
          if ($t[2]) { $z['#'][] = $t[2]; $z[$t[2]] = $v; }
          else { $z['#'][] = $t[1]; $z[$t[1]][] = $v; }
          $z['#'][] = $v;

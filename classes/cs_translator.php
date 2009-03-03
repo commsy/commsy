@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -112,7 +112,7 @@ class cs_translator {
    function _loadAllMessages () {
       $directory = dir($this->_file_path);
       while ( $entry = $directory->read() ) {
-         if ( strpos($entry,'s_') == 1 and strpos($entry,'.dat') and $entry[0] == 'm') {
+         if ( mb_strpos($entry,'s_') == 1 and mb_strpos($entry,'.dat') and $entry[0] == 'm') {
             if (file_exists($this->_file_path.$entry)) {
                include_once($this->_file_path.$entry);
                $this->_loaded_message_dats[] = $entry;
@@ -148,7 +148,7 @@ class cs_translator {
       } else {
          $directory = dir($this->_file_path);
          while ( $entry = $directory->read() ) {
-            if ( stristr($entry,$rubric) ) {
+            if ( mb_stristr($entry,$rubric) ) {
                if (file_exists($this->_file_path.$entry)) {
                   include_once($this->_file_path.$entry);
                   $this->_loaded_message_dats[] = $entry;
@@ -198,7 +198,7 @@ class cs_translator {
       }
       $this->_deleteLoadedMessageBundles();
       foreach ($lang_array as $language => $rubric_array) {
-        $filename = strtolower($this->_file_path.''."c3p0".'_'.$language.'.properties');
+        $filename = mb_strtolower($this->_file_path.''."c3p0".'_'.$language.'.properties', 'UTF-8');
         $messagefile = fopen($filename,"a");
         fwrite($messagefile, "// \$Id\$\n// DO NOT EDIT, CHANGES WILL BE LOST! - This file is generated on the basis of a PHP file\n// To make changes to this file use the edit message function within the commsy system itself\n");
         foreach ($rubric_array as $rubric => $message_array) {
@@ -216,7 +216,7 @@ class cs_translator {
    function _deleteAllMessages () {
       $directory = dir($this->_file_path);
       while ( $entry = $directory->read() ) {
-         if ( strpos($entry,'s_') == 1 and strpos($entry,'.dat') and $entry[0] == 'm') {
+         if ( mb_strpos($entry,'s_') == 1 and mb_strpos($entry,'.dat') and $entry[0] == 'm') {
             if (file_exists($this->_file_path.$entry)) {
                unlink($this->_file_path.$entry);
             }
@@ -230,7 +230,7 @@ class cs_translator {
    function _deleteAllMessageBundles () {
       $directory = dir($this->_file_path);
       while ( $entry = $directory->read() ) {
-         if ( strpos($entry,'s_') == 1 and strpos($entry,'.properties') and $entry[0] == 'm') {
+         if ( mb_strpos($entry,'s_') == 1 and mb_strpos($entry,'.properties') and $entry[0] == 'm') {
             if (file_exists($this->_file_path.$entry)) {
                unlink($this->_file_path.$entry);
             }
@@ -318,7 +318,7 @@ class cs_translator {
     * @return string rubric (first word)
     */
    function _getRubricOutMessageTag ($messag_tag) {
-      return substr($messag_tag,0,strpos($messag_tag,'_'));
+      return mb_substr($messag_tag,0,mb_strpos($messag_tag,'_'));
    }
 
    /** get an array of the available languages
@@ -332,14 +332,14 @@ class cs_translator {
          $language_array = array();
          $directory = dir($this->_file_path);
          while ( $entry = $directory->read() ) {
-            if ( stristr($entry,'COMMON_') and !stristr($entry,'#') ) {
+            if ( mb_stristr($entry,'COMMON_') and !mb_stristr($entry,'#') ) {
                $filename_array[] = $entry;
             }
          }
          foreach ($filename_array as $filename) {
-            $pos1 = strrpos($filename,'_')+1;
-            $pos2 = strpos($filename,'.');
-            $language = substr($filename,$pos1,$pos2-$pos1);
+            $pos1 = mb_strrpos($filename,'_')+1;
+            $pos2 = mb_strpos($filename,'.');
+            $language = mb_substr($filename,$pos1,$pos2-$pos1);
             $language_array[] = $language;
          }
          sort($language_array);
@@ -469,10 +469,10 @@ class cs_translator {
       if ( $this->_issetSessionLanguage() ) {
          $language = $this->_getSessionLanguage();
       }
-      if (!empty($this->_email_array[$MsgID][strtoupper($language)])) {
-         $retour = $this->text_replace($this->_email_array[$MsgID][strtoupper($language)],$param1,$param2,$param3,$param4,$param5);
-      } elseif (!empty($this->_email_array[$MsgID][strtolower($language)])) {
-         $retour = $this->text_replace($this->_email_array[$MsgID][strtolower($language)],$param1,$param2,$param3,$param4,$param5);
+      if (!empty($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')])) {
+         $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtoupper($language, 'UTF-8')],$param1,$param2,$param3,$param4,$param5);
+      } elseif (!empty($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')])) {
+         $retour = $this->text_replace($this->_email_array[$MsgID][mb_strtolower($language, 'UTF-8')],$param1,$param2,$param3,$param4,$param5);
       } else {
          if ($this->_inProjectRoom()) {
             switch ( $MsgID )
@@ -678,8 +678,8 @@ class cs_translator {
       if ($year_small_minus < 10) {
           $year_small_minus = '0'.$year_small_minus;
       }
-      if (isset($msg_array[1]) and !empty($this->_time_message_array[$msg_array[1]][strtoupper($language)])) {
-         $retour = $this->text_replace($this->_time_message_array[$msg_array[1]][strtoupper($language)],$msg_array[0],$msg_array[0]+1,$msg_array[0]-1,$year_small,$year_small_plus,$year_small_minus);
+      if (isset($msg_array[1]) and !empty($this->_time_message_array[$msg_array[1]][mb_strtoupper($language, 'UTF-8')])) {
+         $retour = $this->text_replace($this->_time_message_array[$msg_array[1]][mb_strtoupper($language, 'UTF-8')],$msg_array[0],$msg_array[0]+1,$msg_array[0]-1,$year_small,$year_small_plus,$year_small_minus);
       }
       return $retour;
    }
@@ -896,7 +896,7 @@ class cs_translator {
     */
    function tag_replace($text) {
       // filling the array $placeholders with the occurring placeholder strings
-      preg_match_all('/%(?:_[A-Z0-9]+)+/', $text, $placeholders);
+      preg_match_all('~%(?:_[A-Z0-9]+)+~u', $text, $placeholders);
 
       // if placeholders were found, explode them into their sub-elements
       if (count($placeholders[0]) > 0){
@@ -995,7 +995,8 @@ class cs_translator {
          $text = 'rubric';
       }
       if ($upper_case == 'BIG') {
-         $text = ucfirst($text);
+         include_once('functions/text_functions.php');
+         $text = cs_ucfirst($text);
       }
       return $text;
    }
@@ -1068,14 +1069,15 @@ class cs_translator {
          $text = $cs_article[$language][$mode][$rubric_array[$language]['GENUS']][cs_strtoupper($position)];
       }
       if ($upper_case == 'BIG') {
-         $text = ucfirst($text);
+         include_once('functions/text_functions.php');
+         $text = cs_ucfirst($text);
       }
       return $text;
    }
 
    function getDateTimeInLang($datetime, $oclock=true){
       $date = $this->_getDateTimeInLang ($datetime, $oclock);
-      $date = eregi_replace('/',' ',$date);
+      $date = mb_eregi_replace('/',' ',$date);
       return $date;
    }
 
@@ -1086,9 +1088,9 @@ class cs_translator {
       if ( $this->_issetSessionLanguage() ) {
          $language = $this->_getSessionLanguage();
       }
-      $length = strlen($datetime);
+      $length = mb_strlen($datetime);
 
-      if (substr_count($datetime,'-') == 2) {
+      if (mb_substr_count($datetime,'-') == 2) {
          $year  = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
          $month = $datetime[5].$datetime[6];
          $day   = $datetime[8].$datetime[9];
@@ -1126,7 +1128,7 @@ class cs_translator {
          } elseif ($hour == 12) {
             $ampm = 'pm';
          }
-         if (strlen($hour) == 1) {
+         if (mb_strlen($hour) == 1) {
             $hour = '0'.$hour;
          }
          $Datetime = $day.'/'.$this->getShortMonthName($month).'/'.$year.' '.$hour.':'.$min.$ampm;
@@ -1136,7 +1138,7 @@ class cs_translator {
          $Datetime = $day.'.'.$month.'.'.$year.' '.$hour.':'.$min;#.':'.$sec;
       }
 
-      $Datetime = eregi_replace(' ',', ',$Datetime);
+      $Datetime = mb_eregi_replace(' ',', ',$Datetime);
       if ($language != 'en' and $oclock) {
          $Datetime = $Datetime.' '.getMessage('DATES_OCLOCK');
       }
@@ -1196,7 +1198,7 @@ function getShortMonthNameToInt($month) {
 
    function getDateTimeInLangWithoutOClock ($datetime, $oclock=true){
       $date = $this->_getDateTimeInLangWithoutOClock ($datetime, $oclock);
-      $date = eregi_replace('/',' ',$date);
+      $date = mb_eregi_replace('/',' ',$date);
       return $date;
    }
 
@@ -1207,9 +1209,9 @@ function getShortMonthNameToInt($month) {
       if ( $this->_issetSessionLanguage() ) {
          $language = $this->_getSessionLanguage();
       }
-      $length = strlen($datetime);
+      $length = mb_strlen($datetime);
 
-      if (substr_count($datetime,'-') == 2) {
+      if (mb_substr_count($datetime,'-') == 2) {
          $year  = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
          $month = $datetime[5].$datetime[6];
          $day   = $datetime[8].$datetime[9];
@@ -1247,7 +1249,7 @@ function getShortMonthNameToInt($month) {
          } elseif ($hour == 12) {
             $ampm = 'pm';
          }
-         if (strlen($hour) == 1) {
+         if (mb_strlen($hour) == 1) {
             $hour = '0'.$hour;
          }
          $Datetime = $day.'/'.$this->getShortMonthName($month).'/'.$year.' '.$hour.':'.$min.$ampm;
@@ -1257,7 +1259,7 @@ function getShortMonthNameToInt($month) {
          $Datetime = $day.'.'.$month.'.'.$year.' '.$hour.':'.$min;#.':'.$sec;
       }
 
-      $Datetime = eregi_replace(' ',', ',$Datetime);
+      $Datetime = mb_eregi_replace(' ',', ',$Datetime);
       return $Datetime;
    }
 
@@ -1272,15 +1274,15 @@ function getShortMonthNameToInt($month) {
     */
    function getDateInLang ($datetime) {
       $Date = explode(' ',$this->_getDateTimeInLang($datetime));
-      $Date[0] = eregi_replace(',','',$Date[0]);
-      $Date[0] = eregi_replace('/',' ',$Date[0]);
+      $Date[0] = mb_eregi_replace(',','',$Date[0]);
+      $Date[0] = mb_eregi_replace('/',' ',$Date[0]);
       return $Date[0];
    }
 
    function getDateInLangWithoutOClock($datetime) {
       $Date = explode(' ',$this->_getDateTimeInLangWithoutOClock($datetime));
-      $Date[0] = eregi_replace(',','',$Date[0]);
-      $Date[0] = eregi_replace('/',' ',$Date[0]);
+      $Date[0] = mb_eregi_replace(',','',$Date[0]);
+      $Date[0] = mb_eregi_replace('/',' ',$Date[0]);
       return $Date[0];
    }
 
@@ -1292,7 +1294,7 @@ function getShortMonthNameToInt($month) {
          $language = $this->_getSessionLanguage();
       }
 
-      if (substr_count($timestring,':') == 2) {
+      if (mb_substr_count($timestring,':') == 2) {
          $hour = $timestring[0].$timestring[1];
          $min = $timestring[3].$timestring[4];
       } else {
@@ -1309,7 +1311,7 @@ function getShortMonthNameToInt($month) {
          } else if ($hour == 12) {
             $ampm = ' pm';
          }
-         if (strlen($hour) == 1) {
+         if (mb_strlen($hour) == 1) {
             $hour = '0'.$hour;
          }
          $ret_time = $hour.':'.$min.$ampm;
@@ -1329,7 +1331,7 @@ function getShortMonthNameToInt($month) {
          $language = $this->_getSessionLanguage();
       }
 
-      if (substr_count($datestring,'-') == 2) {
+      if (mb_substr_count($datestring,'-') == 2) {
          $year  = $datestring[0].$datestring[1].$datestring[2].$datestring[3];
          $month = $datestring[5].$datestring[6];
          $day   = $datestring[8].$datestring[9];
@@ -1374,7 +1376,7 @@ function getShortMonthNameToInt($month) {
 
    public function getLanguageLabelTranslated ( $language ) {
       $retour = '';
-      switch ( strtoupper($language) )
+      switch ( mb_strtoupper($language, 'UTF-8') )
       {
          case 'DE':
             $retour = $this->getMessage('DE');
@@ -1388,7 +1390,7 @@ function getShortMonthNameToInt($month) {
 
    public function getLanguageLabelOriginally ( $language ) {
       $retour = '';
-      switch ( strtoupper($language) )
+      switch ( mb_strtoupper($language, 'UTF-8') )
       {
          case 'DE':
             $retour = $this->getMessageInLang($language,'DE');
@@ -1424,7 +1426,7 @@ function getShortMonthNameToInt($month) {
       while ( false !== ($entry = readdir($directory_handle)) ) {
          if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry)) {
             $used_tags = $this->_searchDirForUsed($directory.'/'.$entry, $used_tags);
-         } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+         } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
             $used_tags = $this->_searchFileForUsed($directory.'/'.$entry, $used_tags);
          }
       }
@@ -1435,19 +1437,19 @@ function getShortMonthNameToInt($month) {
       $file_content = file($filename);
 
       for($i = 0; $i < count($file_content); $i++) {
-         if ( preg_match_all('§getMessage\([\s\S]*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches) ) {
+         if ( preg_match_all('~getMessage\([\s\S]*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches) ) {
             if (count($matches) > 0) {
                for ($j=0; $j < count($matches[1]); $j++) {
-                  if ( strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
+                  if ( mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
                      $used_tags[] = $matches[1][$j];
                   }
                }
             }
         }
-        if ( preg_match_all('§getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches) ) {
+        if ( preg_match_all('~getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches) ) {
            if (count($matches) > 0) {
               for ($j=0; $j < count($matches[1]); $j++) {
-                 if ( strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
+                 if ( mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
                     $used_tags[] = $matches[1][$j];
                  }
               }

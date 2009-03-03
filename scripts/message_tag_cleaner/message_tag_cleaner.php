@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -52,7 +52,7 @@ switch ($_POST['option']) {
    case 'Tags in der Whitelist anzeigen':
       $mode = 'show_whitelist';
       break;
-   case 'markierte Tags löschen':
+   case 'markierte Tags lÃ¶schen':
       $mode = 'delete';
       break;
    default:
@@ -85,7 +85,7 @@ function isWhitelisted($TagID){
 
   if (count($whitelist) > 0) {
     foreach ($whitelist as $entry) {
-      if (preg_match('/'.trim($entry).'/', $TagID)) {
+      if (preg_match('~'.trim($entry).'~u', $TagID)) {
         $whitelisted = true;
         break;
       }
@@ -109,7 +109,7 @@ function searchDirForOrphans($directory, $TagID) {
         $orphan = false;
         break;
       }
-    } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+    } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
       if (false == searchFileForOrphans($directory.'/'.$entry, $TagID)) {
         $orphan = false;
         break;
@@ -124,7 +124,7 @@ function searchFileForOrphans($filename, $TagID) {
   $file_content = file($filename);
 
   foreach($file_content as $line) {
-    if(preg_match('/\''.$TagID.'\'/', $line)) {
+    if(preg_match('~\''.$TagID.'\'~u', $line)) {
       $orphan = false;
       break;
     }
@@ -214,7 +214,7 @@ function searchDirForUsed($directory, $used_tags) {
   while(false !== ($entry = readdir($directory_handle))) {
     if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry)) {
       $used_tags = searchDirForUsed($directory.'/'.$entry, $used_tags);
-    } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+    } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
       $used_tags = searchFileForUsed($directory.'/'.$entry, $used_tags);
     }
   }
@@ -227,7 +227,7 @@ function searchDirForUsed2($directory, $used_tags) {
   while ( false !== ($entry = readdir($directory_handle)) ) {
      if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry)) {
         $used_tags = searchDirForUsed2($directory.'/'.$entry, $used_tags);
-     } elseif (is_file($directory.'/'.$entry) and preg_match('/\.php$/',$entry)) {
+     } elseif (is_file($directory.'/'.$entry) and preg_match('~\.php$~u',$entry)) {
         $used_tags = searchFileForUsed2($directory.'/'.$entry, $used_tags);
      }
   }
@@ -238,21 +238,21 @@ function searchFileForUsed($filename, $used_tags) {
   $file_content = file($filename);
 
   for($i = 0; $i < count($file_content); $i++) {
-    if(preg_match_all('§getMessage\([\s\S]*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches)) {
+    if(preg_match_all('~getMessage\([\s\S]*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches)) {
       if (count($matches) > 0) {
         for ($j=0; $j < count($matches[0]); $j++) {
           $tag_pos = $matches[1][$j];
           $used_tags[$tag_pos][] = $filename . ': Line ' . (string)($i + 1);
-          $used_tags[$tag_pos][] = htmlentities(trim($file_content[$i]));
+          $used_tags[$tag_pos][] = htmlentities(trim($file_content[$i]), ENT_NOQUOTES, 'UTF-8');
         }
       }
     }
-    if(preg_match_all('§getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches)) {
+    if(preg_match_all('~getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches)) {
       if (count($matches) > 0) {
         for ($j=0; $j < count($matches[0]); $j++) {
           $tag_pos = $matches[1][$j];
           $used_tags[$tag_pos][] = $filename . ': Line ' . (string)($i + 1);
-          $used_tags[$tag_pos][] = htmlentities(trim($file_content[$i]));
+          $used_tags[$tag_pos][] = htmlentities(trim($file_content[$i]), ENT_NOQUOTES, 'UTF-8');
         }
       }
     }
@@ -264,19 +264,19 @@ function searchFileForUsed2($filename, $used_tags) {
   $file_content = file($filename);
 
   for($i = 0; $i < count($file_content); $i++) {
-    if ( preg_match_all('§getMessage\([\s\S]*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches) ) {
+    if ( preg_match_all('~getMessage\([\s\S]*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches) ) {
       if (count($matches) > 0) {
         for ($j=0; $j < count($matches[1]); $j++) {
-            if ( strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
+            if ( mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
                $used_tags[] = $matches[1][$j];
             }
          }
       }
     }
-    if ( preg_match_all('§getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'§U', $file_content[$i], $matches) ) {
+    if ( preg_match_all('~getMessageInLang\([\s\S]*,\s*\'([A-Z0-9_]+)\'~Uu', $file_content[$i], $matches) ) {
       if (count($matches) > 0) {
         for ($j=0; $j < count($matches[1]); $j++) {
-            if ( strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
+            if ( mb_strlen($matches[1][$j]) > 1 and !in_array($matches[1][$j],$used_tags) ) {
                $used_tags[] = $matches[1][$j];
             }
         }
@@ -332,6 +332,13 @@ if ($mode == 'delete') {
 <html>
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <?
+  // ------------
+  // --->UTF8<---
+  //$retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'.LF;
+  // --->UTF8<---
+  // ------------
+  ?>
   <meta http-equiv="expires" content="0">
   <meta name="MSSmartTagsPreventParsing" content="TRUE">
   <title>CommSy MessageTag Cleaner v0.2</title>
@@ -353,8 +360,8 @@ if ($mode == 'delete') {
   ');
   if ($mode == 'show_orphans') {
     echo('
-      <input type="checkbox" name="really_delete">Wirklich löschen</br>
-      <input type="submit" name="option" value="markierte Tags löschen"></br></br>
+      <input type="checkbox" name="really_delete">Wirklich lÃ¶schen</br>
+      <input type="submit" name="option" value="markierte Tags lÃ¶schen"></br></br>
     ');
   }
   echo('<input type="checkbox" name="show_used"');
@@ -457,7 +464,7 @@ if ($mode == 'delete') {
         echo($entry.'</br>');
       }
     } else {
-      echo('Kein MessageTag passt zu den Einträgen der Whitelist.');
+      echo('Kein MessageTag passt zu den EintrÃ¤gen der Whitelist.');
     }
 
 // show used
@@ -468,15 +475,15 @@ if ($mode == 'delete') {
   } elseif ($mode == 'delete') {
     if (isset($_POST['really_delete']) and $_POST['really_delete']) {
       echo('</br>');
-      echo('Anzahl gelöschter MessageTags: '.count($_POST['orphans']).'</br>');
-      echo('Gelöschte MessageTags:</br>');
+      echo('Anzahl gelÃ¶schter MessageTags: '.count($_POST['orphans']).'</br>');
+      echo('GelÃ¶schte MessageTags:</br>');
 
       foreach ($_POST['orphans'] as $TagID) {
         echo($TagID.'</br>');
       }
     } else {
       echo('</br>');
-      echo('Keine Tags gelöscht, da die Sicherheitscheckbox nicht angeklickt wurde.');
+      echo('Keine Tags gelÃ¶scht, da die Sicherheitscheckbox nicht angeklickt wurde.');
     }
   }
   echo('</form>');

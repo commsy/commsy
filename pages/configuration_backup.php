@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -147,7 +147,7 @@ else {
                   $xml = file_get_contents($_FILES['upload']['tmp_name']);
                   unlink($_FILES['upload']['tmp_name']);
                   $xml = utf8_encode($xml);
-                  $test = substr($xml,0,strpos($xml,'>')+1);
+                  $test = mb_substr($xml,0,mb_strpos($xml,'>')+1);
                   if ( $test == '<commsy_export>') {
                      $do_it = true;
                   }

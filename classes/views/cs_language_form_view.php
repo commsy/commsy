@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -83,7 +83,7 @@ function asHTML () {
          $i=$i+1;
       }
       $MessageID="";
-//      $MessageText = "Save speichert sowohl Änderungen als auch die Eingabe von neuen Messages mit deren Übersetzungen. Delete löscht die gerade angezeigte Message aus der Liste.";
+//      $MessageText = "Save speichert sowohl Ã„nderungen als auch die Eingabe von neuen Messages mit deren Ãœbersetzungen. Delete lÃ¶scht die gerade angezeigte Message aus der Liste.";
    } elseif($_POST['option']== 'Go') {
       $MessageID=$_POST['MessageName'];
       $i=0;
@@ -92,7 +92,7 @@ function asHTML () {
          $languages[$i]['value'] = $message[$MessageID][$item];
          $i= $i+1;
       }
-      //$MessageText = "Es wurde soeben folgende Message ausgewählt : ".$_POST['MessageName']." <br />. Sie können nun Änderungen vornehmen und mit Save speichern oder die Message ".$MessageName." mit Delete löschen.";
+      //$MessageText = "Es wurde soeben folgende Message ausgewÃ¤hlt : ".$_POST['MessageName']." <br />. Sie kÃ¶nnen nun Ã„nderungen vornehmen und mit Save speichern oder die Message ".$MessageName." mit Delete lÃ¶schen.";
    } elseif($_POST['option']== 'Save') {
       $i=0;
       $MessageID=$_POST['MessageID'];
@@ -109,7 +109,7 @@ function asHTML () {
       $translator->setMessageArray($lang->getMessageArray());
       $translator->saveMessages();
 //      header ("Location: ".$this->_return_url);
-//      $MessageText = "Die neuen Übersetzungen wurden für die Message : ".$MessageID." wurden gespeichert.!";
+//      $MessageText = "Die neuen Ãœbersetzungen wurden fÃ¼r die Message : ".$MessageID." wurden gespeichert.!";
    } elseif($_POST['option']== 'Delete') {
       $i=0;
       $lang->deleteMessage($_POST['MessageID']);
@@ -117,7 +117,7 @@ function asHTML () {
       $translator->setMessageArray($lang->getMessageArray());
       $translator->saveMessages();
 
-//      $MessageText = "Die Message : ".$MessageID." wurde gelöscht.!";
+//      $MessageText = "Die Message : ".$MessageID." wurde gelÃ¶scht.!";
       foreach ($translator->getAvailableLanguages() as $item){
          $languages[$i]['lang'] = $item;
          $languages[$i]['value'] = '';
@@ -138,7 +138,7 @@ function asHTML () {
          $i= $i+1;
       }
       #header ("Location: ".$this->_return_url);
-//      $MessageText = "Die Sprache : ".$newLanguage." wurde hinzugefügt!";
+//      $MessageText = "Die Sprache : ".$newLanguage." wurde hinzugefÃ¼gt!";
    } elseif ($_POST['option']== 'DeleteLang') {
       $i=0;
       $MessageID= '';
@@ -152,7 +152,7 @@ function asHTML () {
          $i= $i+1;
       }
       #header ("Location: ".$this->_return_url);
-//      $MessageText = "Die Sprache : ".$newLanguage." wurde gelöscht!";
+//      $MessageText = "Die Sprache : ".$newLanguage." wurde gelÃ¶scht!";
    }
       $html  = '';
       $html .= '<!-- BEGIN OF LANGUAGEMANAGERVIEW -->'."\n";
@@ -173,7 +173,7 @@ function asHTML () {
       $html .= '<form enctype="multipart/form-data" method="post" action="'.$this->_return_url.'" name="f">'."\n";
       $html .= '<table border="0" cellpadding="2" cellspacing="4" summary="Layout">'."\n";
       $html .= '<tr>'."\n";
-      $html .= '<td valign="top" align="left" style="width:200px;">Vorhandene Einträge :<br />'."\n";
+      $html .= '<td valign="top" align="left" style="width:200px;">Vorhandene EintrÃ¤ge :<br />'."\n";
       $html .= '<select name="MessageName" style="width:400px; "size="20">'."\n";
       foreach ($message as $key => $value) {
          if ($key == $MessageID) {
@@ -184,9 +184,9 @@ function asHTML () {
       }
       $html .= '</select>'."\n";
       $html .= '<br />'."\n";
-      $html .= 'Zum Editieren bitte eine MessageID auswählen und <br />'."\n";
+      $html .= 'Zum Editieren bitte eine MessageID auswÃ¤hlen und <br />'."\n";
       $html .= '<input type="submit" name="option" value="Go"/>'."\n";
-      $html .= 'drücken.'."\n";
+      $html .= 'drÃ¼cken.'."\n";
       $html .= '</td>'."\n";
       $html .= '<td style="width:600px;">'."\n";
       $html .= '<table border="0" cellpadding="2" cellspacing="2" width="100%" summary="Layout">'."\n";
@@ -218,9 +218,9 @@ function asHTML () {
       $html .= '</td>'."\n";
       $html .= '</tr>'."\n";
       $html .= '<tr>'."\n";
-      $html .= '<td valign="top" align="left" style="width:200px; padding-top:50px;">Neue Sprache :<br/>'."\n";
+      $html .= '<td valign="top" align="left" style="width:200px; padding-top:50px;">Neue SpracheÂ :<br/>'."\n";
       $html .= '<input type="text" name="newLanguage" maxlength="255" size="43" value=""/>'."\n";
-      $html .= '<br />(es für beispielsweise Spanisch eingeben und Add drücken, falls die Sprache existiert und entfernt werden soll, bitte das Kürzel für die Sprache eingeben und DeleteLang drücken.)</td>'."\n";
+      $html .= '<br />(es fÃ¼r beispielsweise Spanisch eingeben und Add drÃ¼cken, falls die Sprache existiert und entfernt werden soll, bitte das KÃ¼rzel fÃ¼r die Sprache eingeben und DeleteLang drÃ¼cken.)</td>'."\n";
       $html .= '</tr>'."\n";
       $html .= '<tr>'."\n";
       $html .= '<td width="100%">'."\n";

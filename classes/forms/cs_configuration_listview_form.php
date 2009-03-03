@@ -3,10 +3,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶ssl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -117,7 +117,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
              $this->_form->addSubHeadline('header_list',getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_LIST'));
              for ( $i = 0; $i < count($this->_boxArray); $i++ ) {
                 $tempMessage = '';
-                switch (strtoupper($this->_boxArray[$i]['text'])){
+                switch (mb_strtoupper($this->_boxArray[$i]['text'], 'UTF-8')){
                    case 'ACTIONS':
                       $tempMessage = getMessage('COMMON_ACTIONS');
                       break;
@@ -138,7 +138,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
                       $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
                       break;
                 }
-                if ( strtoupper($this->_boxArray[$i]['text']) == 'ACTIONS' ){
+                if ( mb_strtoupper($this->_boxArray[$i]['text'], 'UTF-8') == 'ACTIONS' ){
                    $this->_form->addSelect($this->_boxArray[$i]['text'],
                                             $this->_optionArray2,
                                             '',
@@ -172,7 +172,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
              $this->_form->addSubHeadline('header_detail',getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_DETAIL'));
              for ( $i = 0; $i < count($this->_detailBoxArray); $i++ ) {
                 $tempMessage = '';
-                switch (strtoupper($this->_detailBoxArray[$i]['text'])){
+                switch (mb_strtoupper($this->_detailBoxArray[$i]['text'], 'UTF-8')){
                    case 'DETAILACTIONS':
                       $tempMessage = getMessage('COMMON_ACTIONS');
                       break;
@@ -189,7 +189,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
                       $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
                       break;
                 }
-                if ( strtoupper($this->_detailBoxArray[$i]['text']) == 'DETAILACTIONS' ){
+                if ( mb_strtoupper($this->_detailBoxArray[$i]['text'], 'UTF-8') == 'DETAILACTIONS' ){
                    $this->_form->addSelect($this->_detailBoxArray[$i]['text'],
                                             $this->_optionArray2,
                                             '',

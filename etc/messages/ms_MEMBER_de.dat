@@ -1,3 +1,3 @@
 <?php
-$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["de"] = "Die Teilnahme von %1 ist bereits entgültig gelöscht worden.";
+$message["MEMBER_EDIT_ERROR_JUST_DELETED"]["de"] = "Die Teilnahme von %1 ist bereits entgÃ¼ltig gelÃ¶scht worden.";
 ?>

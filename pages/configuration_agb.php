@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -89,10 +89,10 @@ if ($current_user->isGuest()) {
          $commsy = $environment->getCurrentContextItem();
          $languages = $environment->getAvailableLanguageArray();
          foreach ($languages as $language) {
-            if (!empty($_POST['agb_text_'.strtoupper($language)])) {
-               $agbtext_array[strtoupper($language)] = $_POST['agb_text_'.strtoupper($language)];
+            if (!empty($_POST['agb_text_'.mb_strtoupper($language, 'UTF-8')])) {
+               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = $_POST['agb_text_'.mb_strtoupper($language, 'UTF-8')];
             } else {
-               $agbtext_array[strtoupper($language)] = '';
+               $agbtext_array[mb_strtoupper($language, 'UTF-8')] = '';
             }
          }
 

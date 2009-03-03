@@ -3,7 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blösl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk BlÃ¶sl, Matthias Finck, Dirk Fust, Franz GrÃ¼nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
 // Edouard Simon, Monique Strauss, Jose Mauel Gonzalez Vazquez
@@ -384,10 +384,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Projektraums';
          $retour['DE']['AKKS']= 'Projektraum';
          $retour['DE']['DATS']= 'Projektraum';
-         $retour['DE']['NOMPL']= 'Projekträume';
-         $retour['DE']['GENPL']= 'Projekträume';
-         $retour['DE']['AKKPL']= 'Projekträume';
-         $retour['DE']['DATPL']= 'Projekträumen';
+         $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'project workspace';
          $retour['EN']['GENS']= 'project workspace';
@@ -408,10 +408,10 @@ class cs_project_item extends cs_room_item {
           $retour['DE']['GENS']= 'Fachs';
           $retour['DE']['AKKS']= 'Fach';
           $retour['DE']['DATS']= 'Fach';
-          $retour['DE']['NOMPL']= 'Fächer';
-          $retour['DE']['GENPL']= 'Fächer';
-          $retour['DE']['AKKPL']= 'Fächer';
-          $retour['DE']['DATPL']= 'Fächern';
+          $retour['DE']['NOMPL']= 'FÃ¤cher';
+          $retour['DE']['GENPL']= 'FÃ¤cher';
+          $retour['DE']['AKKPL']= 'FÃ¤cher';
+          $retour['DE']['DATPL']= 'FÃ¤chern';
           $retour['EN']['GENUS']= 'N';
           $retour['EN']['NOMS']= 'course';
           $retour['EN']['GENS']= 'course';
@@ -430,10 +430,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Klassenraums';
          $retour['DE']['AKKS']= 'Klassenraum';
          $retour['DE']['DATS']= 'Klassenraum';
-         $retour['DE']['NOMPL']= 'Klassenräume';
-         $retour['DE']['GENPL']= 'Klassenräume';
-         $retour['DE']['AKKPL']= 'Klassenräume';
-         $retour['DE']['DATPL']= 'Klassenräumen';
+         $retour['DE']['NOMPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['GENPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['AKKPL']= 'KlassenrÃ¤ume';
+         $retour['DE']['DATPL']= 'KlassenrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'class workspace';
          $retour['EN']['GENS']= 'class workspace';
@@ -452,10 +452,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Schulraums';
          $retour['DE']['AKKS']= 'Schulraum';
          $retour['DE']['DATS']= 'Schulraum';
-         $retour['DE']['NOMPL']= 'Schulräume';
-         $retour['DE']['GENPL']= 'Schulräume';
-         $retour['DE']['AKKPL']= 'Schulräume';
-         $retour['DE']['DATPL']= 'Schulräumen';
+         $retour['DE']['NOMPL']= 'SchulrÃ¤ume';
+         $retour['DE']['GENPL']= 'SchulrÃ¤ume';
+         $retour['DE']['AKKPL']= 'SchulrÃ¤ume';
+         $retour['DE']['DATPL']= 'SchulrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'school workspace';
          $retour['EN']['GENS']= 'school workspace';
@@ -500,10 +500,10 @@ class cs_project_item extends cs_room_item {
          $retour['DE']['GENS']= 'Projektraums';
          $retour['DE']['AKKS']= 'Projektraum';
          $retour['DE']['DATS']= 'Projektraum';
-         $retour['DE']['NOMPL']= 'Projekträume';
-         $retour['DE']['GENPL']= 'Projekträume';
-         $retour['DE']['AKKPL']= 'Projekträume';
-         $retour['DE']['DATPL']= 'Projekträumen';
+         $retour['DE']['NOMPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['GENPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['AKKPL']= 'ProjektrÃ¤ume';
+         $retour['DE']['DATPL']= 'ProjektrÃ¤umen';
          $retour['EN']['GENUS']= 'M';
          $retour['EN']['NOMS']= 'project workspace';
          $retour['EN']['GENS']= 'project workspace';
@@ -656,8 +656,8 @@ class cs_project_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       }else{
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -673,7 +673,7 @@ class cs_project_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub_func = strtoupper($rubric) . '_' . strtoupper($funct);
+         $temp_rub_func = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage = "";
          switch( $temp_rub_func )
          {
@@ -737,7 +737,7 @@ class cs_project_item extends cs_room_item {
          }
          $retour = $tempMessage;
 
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct) or $retour =='tbd'){
+         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8') or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
          }
@@ -756,10 +756,10 @@ class cs_project_item extends cs_room_item {
       } else {
          $value_array = array();
       }if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_TEXT',$value_array);
@@ -777,10 +777,10 @@ class cs_project_item extends cs_room_item {
          $value_array = array();
       }
       if(!empty($string)){
-         $value_array[strtoupper($rubric)]=$string;
+         $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[strtoupper($rubric)]) and $this->isDesign7()){
-            unset($value_array[strtoupper($rubric)]);
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+            unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
       $this->_addExtra('USAGE_INFO_FORM_TEXT',$value_array);
@@ -799,8 +799,8 @@ class cs_project_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour =  $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour =  $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
             $retour = '';
@@ -817,7 +817,7 @@ class cs_project_item extends cs_room_item {
                             '',
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = strtoupper($rubric) . '_' . strtoupper($funct);
+         $temp = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage      = "";
          // ---> Anmerkung zum Testen: Projektraumeinstellungen und auch alle Projektraum-Rubriken<---
          switch( $temp )
@@ -930,7 +930,7 @@ class cs_project_item extends cs_room_item {
             case 'RUBRIC_MAIL':                // getestet: Projektraum / Diskussionen / versenden
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_RUBRIC_MAIL_FORM',$link);
                break;
-            case 'SECTION_EDIT':               // getestet: Projektraum / Materialien / <ein Material> / Abschnitt hinzufügen
+            case 'SECTION_EDIT':               // getestet: Projektraum / Materialien / <ein Material> / Abschnitt hinzufÃ¼gen
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_SECTION_EDIT_FORM',$link);
                break;
             case 'TODO_EDIT':                  // getestet
@@ -1014,8 +1014,8 @@ class cs_project_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -1033,7 +1033,7 @@ class cs_project_item extends cs_room_item {
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
          $tempMessage = "";
-         switch( strtoupper($rubric) )
+         switch( mb_strtoupper($rubric, 'UTF-8') )
          {
             case 'ACCOUNT':
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ACCOUNT_INDEX',$link);
@@ -1070,7 +1070,7 @@ class cs_project_item extends cs_room_item {
                break;
          }
          $retour = $tempMessage;
-         if ($retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_INDEX' or $retour =='tbd'){
+         if ($retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_INDEX' or $retour =='tbd'){
             $retour = getMessage('USAGE_INFO_COMING_SOON');
          }
          }
@@ -1090,8 +1090,8 @@ class cs_project_item extends cs_room_item {
       } else {
          $retour = array();
       }
-      if (isset($retour[strtoupper($rubric)]) and !empty($retour[strtoupper($rubric)])){
-         $retour = $retour[strtoupper($rubric)];
+      if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
+         $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
          if ($this->isDesign7()){
             $retour = '';
@@ -1109,7 +1109,7 @@ class cs_project_item extends cs_room_item {
                             '',
                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
          $tempMessage = "";
-         switch( strtoupper($rubric) )
+         switch( mb_strtoupper($rubric, 'UTF-8') )
          {
             case 'ANNOUNCEMENT':
                $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_ANNOUNCEMENT_EDIT_FORM',$link);
@@ -1146,7 +1146,7 @@ class cs_project_item extends cs_room_item {
                break;
          }
          $retour = $tempMessage;
-         if ( $retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour =='tbd' ) {
+         if ( $retour =='USAGE_INFO_TEXT_PROJECTROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_EDIT_FORM' or $retour =='tbd' ) {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
          }

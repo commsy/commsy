@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2003 Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, JosÃ© Manuel GonzÃ¡lez VÃ¡zquez
 //
 //    This file is part of CommSy.
 //
@@ -456,7 +456,7 @@ class cs_link_manager extends cs_manager {
     *
     * @param object cs_item link_item
     */
-  function _update ($link_item) {   // wird nicht benötigt???
+  function _update ($link_item) {   // wird nicht benÃ¶tigt???
      parent::_update($link_item);
      $first_item = $link_item->getFirstLinkedItem();
      $second_item = $link_item->getSecondLinkedItem();
