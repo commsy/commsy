@@ -199,21 +199,21 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['iid'] = $item->getItemID();
          $params['mode'] = 'annotate';
-         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           'annotation',
                                           'edit',
                                           $params,
                                           $image,
-                                          getMessage('COMMON_EDIT_ITEM')).LF;
+                                          $this->_translator->getMessage('COMMON_EDIT_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
          $params = $this->_environment->getCurrentParameterArray();
-         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
          $params['annotation_iid'] = $item->getItemID();
@@ -231,12 +231,12 @@ class cs_detail_view extends cs_view {
                                           'detail',
                                           $params,
                                           $image,
-                                          getMessage('COMMON_DELETE_ITEM'),
+                                          $this->_translator->getMessage('COMMON_DELETE_ITEM'),
                                           '',
                                           $anchor).BRLF;
            unset($params);
        } else {
-         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
@@ -249,31 +249,31 @@ class cs_detail_view extends cs_view {
       if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $item->getItemID();
-         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           $this->_environment->getCurrentModule(),
                                           'edit',
                                           $params,
                                           $image,
-                                          getMessage('COMMON_EDIT_ITEM')).LF;
+                                          $this->_translator->getMessage('COMMON_EDIT_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
-         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                      $this->_environment->getCurrentModule(),
                                      'detail',
                                      $params,
                                      $image,
-                                     getMessage('COMMON_DELETE_ITEM')).LF;
+                                     $this->_translator->getMessage('COMMON_DELETE_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       $html .='&nbsp;&nbsp;&nbsp;';
@@ -289,41 +289,41 @@ class cs_detail_view extends cs_view {
       $html .= $this->_getAdditionalActionsAsHTML($item);
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
-      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                                    $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
       unset($params['mode']);
       if ( !$this->_environment->inPrivateRoom() ) {
          if ( $current_user->isUser() and $this->_with_modifying_actions ) {
             $params = array();
             $params['iid'] = $item->getItemID();
-            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EMAIL_TO').'"/>';
             $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'rubric',
                                     'mail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_EMAIL_TO')).LF;
+                                    $this->_translator->getMessage('COMMON_EMAIL_TO')).LF;
             unset($params);
          } else {
-            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EMAIL_TO').'"/>';
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
       $params['download']='zip';
       $params['mode']='print';
-      $image = '<img src="images/commsyicons/22x22/save.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DOWNLOAD').'"/>';
+      $image = '<img src="images/commsyicons/22x22/save.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DOWNLOAD').'"/>';
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_DOWNLOAD')).LF;
+                                    $this->_translator->getMessage('COMMON_DOWNLOAD')).LF;
       unset($params['download']);
       unset($params['mode']);
       $params = $this->_environment->getCurrentParameterArray();
@@ -331,7 +331,7 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['iid'] = $item->getItemID();
          $params['add_to_'.$this->_environment->getCurrentModule().'_clipboard'] = $item->getItemID();
-         $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         $image = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
@@ -340,9 +340,25 @@ class cs_detail_view extends cs_view {
                                     getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
+         $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>';
       }
+
+      // actions from rubric plugins
+      global $c_plugin_array;
+      if (isset($c_plugin_array['rubric']) and !empty($c_plugin_array['rubric'])) {
+         foreach ($c_plugin_array['rubric'] as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if (method_exists($plugin_class,'getDetailActionAsHTML')) {
+               $retour = $plugin_class->getDetailActionAsHTML();
+               if (isset($retour)) {
+                  $html .= $retour;
+               }
+            }
+         }
+      }
+
+
       if ( $current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = 'NEW';
