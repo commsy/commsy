@@ -24,12 +24,6 @@
 $test = false;
 #$test = true;
 
-if ( empty($bash) or !$bash ) {
-   define('LINEBREAK',"<br/>\n");
-} else {
-   define('LINEBREAK',"\n");
-}
-
 include_once('../../etc/cs_constants.php');
 include_once('../migration.conf.php');
 include_once('../db_link.dbi.php');
