@@ -38,7 +38,7 @@ class db_mysql_connector {
       } else {
          mysql_select_db($data['database'], $this->_db_link);
          mysql_query("SET NAMES 'utf8'");
-         mysql_query("SET CHARACTER SET 'utf8'"); 
+         mysql_query("SET CHARACTER SET 'utf8'");
       }
    }
 
@@ -79,8 +79,6 @@ class db_mysql_connector {
                  or strstr($query,'INSERT INTO link_modifier_item')
                  or strstr($query,'INSERT INTO materials')
                  or strstr($query,'INSERT INTO noticed')
-                 or strstr($query,'INSERT INTO ont_links')
-                 or strstr($query,'INSERT INTO ont_parents')
                  or strstr($query,'INSERT INTO reader')
                  or strstr($query,'INSERT INTO section')
                ) {
