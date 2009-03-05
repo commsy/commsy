@@ -64,7 +64,6 @@ function Debug_GetBacktrace()
        $s .= $arr['function'].'('.implode(', ',$args).')</font>';
        $Line = (isset($arr['line'])? $arr['line'] : "unknown");
        $File = (isset($arr['file'])? $arr['file'] : "unknown");
-       //$s .= sprintf("<font color=#808080 size=-1> # line %4d, file: <a href=\"file:/%s\">%s</a></font>",$Line, $File, $File);
        $s .= "<font color=#808080 size=-1> # line " . $Line . ", file: <a href=\"file:/" . $File . "\">" . $File . "</a></font>";
        $s .= "\n";
    }
