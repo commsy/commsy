@@ -481,7 +481,7 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
       }
 
-      if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
+      if (!$this->_environment->inServer() and (!$this->_environment->inPortal() or $this->_environment->getCurrentModule() == 'account')){
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
       }
       if($this->_environment->inPortal() or
