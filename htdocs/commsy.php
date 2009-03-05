@@ -974,6 +974,7 @@ if ( $environment->isOutputModeNot('XML') ) {
 }
 
 // display page
+header("Content-Type: text/html; charset=utf-8");
 if ( $environment->isOutputMode('XML') ) {
    echo($page->getContent());
 } else {

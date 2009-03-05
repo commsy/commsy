@@ -1260,12 +1260,14 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( empty($this->_ref_item) and !empty($this->_ref_iid) ) {
          $item_manager = $this->_environment->getItemManager();
          $tmp_item = $item_manager->getItem($this->_ref_iid);
-         $manager = $this->_environment->getManager($tmp_item->getItemType());
-         $this->_ref_item = $item = $manager->getItem($this->_ref_iid);
-         $retour = $this->_ref_item;
+         if ( isset($tmp_item) ) {
+            $manager = $this->_environment->getManager($tmp_item->getItemType());
+            $this->_ref_item = $item = $manager->getItem($this->_ref_iid);
+            $retour = $this->_ref_item;
+            unset($manager);
+         }
          unset($item_manager);
          unset($tmp_item);
-         unset($manager);
       }
       return $retour;
    }
