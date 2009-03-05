@@ -1326,6 +1326,9 @@ class cs_portal_item extends cs_guide_item {
                case 'ACCOUNT_PASSWORD':    // getestet Einstellungen Raum-Wiki
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_PASSWORD_FORM',$link);
                   break;
+               case 'CONFIGURATION_HTMLTEXTAREA':    // getestet Einstellungen Raum-Wiki
+                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_HTMLTEXTAREA_FORM',$link);
+                  break;
                default:
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
