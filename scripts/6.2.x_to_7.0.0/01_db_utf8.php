@@ -5,7 +5,7 @@
 //
 // Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
 // Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -481,16 +481,17 @@ while ($row = mysql_fetch_assoc($result) ) {
 $error_log_array = array();
 $char_trans_array = array();
 $char_trans_array[128] = 'EUR'; // EURO Zeichen
+$char_trans_array[130] = ",";
 $char_trans_array[131] = ",";
-$char_trans_array[131] = 'f';   // mathematisches f für Formel
+$char_trans_array[131] = 'f';   // mathematisches f fï¿½r Formel
 $char_trans_array[132] = '"';
 $char_trans_array[133] = '...';
-$char_trans_array[133] = ':';   // Zwei Kreuze übereinander
+$char_trans_array[133] = ':';   // Zwei Kreuze ï¿½bereinander
 $char_trans_array[145] = "'";
 $char_trans_array[146] = "'";
 $char_trans_array[147] = '"';
 $char_trans_array[148] = '"';
-$char_trans_array[149] = '*';   // Aufzählungspunkt
+$char_trans_array[149] = '*';   // Aufzï¿½hlungspunkt
 $char_trans_array[150] = '-';
 $char_trans_array[151] = '-';
 $char_trans_array[153] = 'TM';   // TM hochgestellt
@@ -556,7 +557,7 @@ foreach ( $table_array as $table ) {
                               $row2[$key][$place] = $char_trans_array[ord($char)];
                            } else {
                               echo(LINEBREAK);
-                              echo('keine Übersetzung für '.$char.' ('.ord($char).')');
+                              echo('keine ï¿½bersetzung fï¿½r '.$char.' ('.ord($char).')');
                               echo(LINEBREAK);
                            }
                         }
