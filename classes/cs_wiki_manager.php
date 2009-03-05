@@ -727,11 +727,21 @@ function updateWikiProfileFile($user){
 
       // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
       $firstnameFirstLetter = mb_substr($user->getFirstname(), 0, 1);
-      $firstnameRest = mb_substr($user->getFirstname(), 1);
-      $firstname = mb_strtoupper($firstnameFirstLetter, 'UTF-8') . $firstnameRest;
+      if(mb_ereg_match('[a-z]', $firstnameFirstLetter)){
+         $firstnameRest = mb_substr($user->getFirstname(), 1);
+         $firstname = mb_strtoupper($firstnameFirstLetter, 'UTF-8') . $firstnameRest;
+      } else {
+         $firstname = $user->getFirstname();
+      }
       $lastnameFirstLetter = mb_substr($user->getLastname(), 0, 1);
-      $lastnameRest = mb_substr($user->getLastname(), 1);
-      $lastname = mb_strtoupper($lastnameFirstLetter, 'UTF-8') . $lastnameRest;
+      if(mb_ereg_match('[a-z]', $lastnameFirstLetter)){
+         $lastnameRest = mb_substr($user->getLastname(), 1);
+         $lastname = mb_strtoupper($lastnameFirstLetter, 'UTF-8') . $lastnameRest;
+      } else {
+         $lastname = $user->getLastname();
+      }
+      $firstname = str_replace(' ', '', $firstname);
+      $lastname = str_replace(' ', '', $lastname);
       $name_for_profile = $firstname . $lastname;
 
 //      $useridFirstLetter = substr($user->getUserID(), 0, 1);
@@ -921,12 +931,14 @@ function getDiscussionWikiName($discussion){
         $discussionArray[$index] = str_replace("Ü", "Ue", $discussionArray[$index]);
         $discussionArray[$index] = str_replace("ß", "ss", $discussionArray[$index]);
         $first_letter = mb_substr($discussionArray[$index], 0, 1);
-        $rest = mb_substr($discussionArray[$index], 1);
-        $first_letter = mb_strtoupper($first_letter, 'UTF-8');
-        $discussionArray[$index] = $first_letter . $rest;
+        if(mb_ereg_match('[a-z]', $first_letter)){
+           $rest = mb_substr($discussionArray[$index], 1);
+           $first_letter = mb_strtoupper($first_letter, 'UTF-8');
+           $discussionArray[$index] = $first_letter . $rest;
+        }
     }
     $discussion = implode('',$discussionArray);
-        return $discussion;
+    return $discussion;
 }
 
 //------------------------------------------
@@ -981,7 +993,7 @@ function exportMaterialToWiki($current_item_id){
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
    file_put_contents($html_wiki_file, $description);
-   $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
+   $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding utf-8 ' . $html_wiki_file);
    $returnwiki = '';
    $returnstatus = '';
    $htmlwiki = exec($command, $returnwiki, $returnstatus);
@@ -990,6 +1002,10 @@ function exportMaterialToWiki($current_item_id){
       $returnwiki = implode('%0a', $returnwiki);
    } else {
       // Ohne Perl
+      // es muss eine zusätzliche Leerzeile am Anfang eingefügt werden:
+      $temp_description = file_get_contents($html_wiki_file);
+      $temp_description = '<br />' . "\n" . $temp_description;
+      file_put_contents($html_wiki_file, $temp_description);
       $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
       $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
    }
@@ -1044,13 +1060,16 @@ function exportMaterialToWiki($current_item_id){
          $old_dir = getcwd();
          chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
          file_put_contents($html_wiki_file, $description);
-         $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding iso-8859-1 ' . $html_wiki_file);
+         $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding utf-8 ' . $html_wiki_file);
          $htmlwiki = exec($command, $returnwiki, $returnstatus);
          if($returnstatus == 0){
             // Mit Perl
             $returnwiki = implode('%0a', $returnwiki);
          } else {
             // Ohne Perl
+            $temp_description = file_get_contents($html_wiki_file);
+            $temp_description = '<br />' . "\n" . $temp_description;
+            file_put_contents($html_wiki_file, $temp_description);
             $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
             $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
          }

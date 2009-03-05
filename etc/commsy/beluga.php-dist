@@ -23,7 +23,7 @@
 // Connection to Beluga, the library system of the university of hamburg
 // Configuration needs variables $with_ims_content_connection and ims_content_connection_temp_folder
 // in etc/commsy/ims.php
-// $url_for_beluga_system = 'http://path_to_beluga';
-// $url_for_beluga_upload = 'http://path_to_beluga_upload_folder';
+// $url_for_beluga_system = 'http://path_to_beluga/';
+// $url_for_beluga_upload = 'http://path_to_beluga_upload_folder/';
 
 ?>

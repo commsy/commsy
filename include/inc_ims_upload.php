@@ -87,11 +87,13 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
    foreach($bib_values_array as $key => $value){
       switch ($value['tag']){
          case 'beluga_url':
-            $material_item->setBibURL(utf8_decode($bib_values_array[$key]['value']));
+            //$material_item->setBibURL(utf8_decode($bib_values_array[$key]['value']));
+            $material_item->setBibURL($bib_values_array[$key]['value']);
             break;
          case 'beluga_cite':
             if(isset($bib_values_array[$key]['value'])){
-               $material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
+               //$material_item->setBibliographicValues(utf8_decode($bib_values_array[$key]['value']));
+               $material_item->setBibliographicValues($bib_values_array[$key]['value']);
             }
             break;
 #         case 'availability':
@@ -116,41 +118,49 @@ function _getAdditionalValuesByXMLArray($values_array){
   foreach($values_array as $key => $value){
      switch ($value['tag']){
        case 'dc:title':
-          $additional_values_array['title'] = utf8_decode($values_array[$key]['value']);
+          //$additional_values_array['title'] = utf8_decode($values_array[$key]['value']);
+          $additional_values_array['title'] = $values_array[$key]['value'];
           break;
        case 'vap:recordId':
           if (isset($values_array[$key]['attributes']['voc'])
                 and $values_array[$key]['attributes']['voc'] ==  'vap:PPN'
             ){
-                $additional_values_array['ppn'] = utf8_decode($values_array[$key]['value']);
+                //$additional_values_array['ppn'] = utf8_decode($values_array[$key]['value']);
+                $additional_values_array['ppn'] = $values_array[$key]['value'];
             }
             break;
        case 'dc:creator':
            if (isset($values_array[$key]['value'])){
                if (isset($additional_values_array['authors'])){
-                  $additional_values_array['authors'] = ', '.utf8_decode($values_array[$key]['value']);
+                  //$additional_values_array['authors'] = ', '.utf8_decode($values_array[$key]['value']);
+                  $additional_values_array['authors'] = ', '.$values_array[$key]['value'];
                }else{
-                  $additional_values_array['authors'] = utf8_decode($values_array[$key]['value']);
+                  //$additional_values_array['authors'] = utf8_decode($values_array[$key]['value']);
+                  $additional_values_array['authors'] = $values_array[$key]['value'];
                }
             }
             break;
        case 'dc:contributor':
            if (isset($values_array[$key]['value'])){
                if (isset($additional_values_array['contributors'])){
-                  $additional_values_array['contributors'] = ', '.utf8_decode($values_array[$key]['value']);
+                  //$additional_values_array['contributors'] = ', '.utf8_decode($values_array[$key]['value']);
+                  $additional_values_array['contributors'] = ', '.$values_array[$key]['value'];
                }else{
-                  $additional_values_array['contributors'] = utf8_decode($values_array[$key]['value']);
+                  //$additional_values_array['contributors'] = utf8_decode($values_array[$key]['value']);
+                  $additional_values_array['contributors'] = $values_array[$key]['value'];
                }
             }
             break;
        case 'dcterms:issued':
            if (isset($values_array[$key]['value'])){
-               $additional_values_array['year'] = utf8_decode($values_array[$key]['value']);
+               //$additional_values_array['year'] = utf8_decode($values_array[$key]['value']);
+               $additional_values_array['year'] = $values_array[$key]['value'];
            }
            break;
        case 'dcterms:abstract':
             if (isset($values_array[$key]['value'])){
-               $additional_values_array['abstract'] = utf8_decode($values_array[$key]['value']);
+               //$additional_values_array['abstract'] = utf8_decode($values_array[$key]['value']);
+               $additional_values_array['abstract'] = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:tableOfContents':
@@ -220,10 +230,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
    foreach($values_array as $key => $value){
      switch ($value['tag']){
        case 'beluga_url':
-            $beluga_url = utf8_decode($values_array[$key]['value']);
+            //$beluga_url = utf8_decode($values_array[$key]['value']);
+            $beluga_url = $values_array[$key]['value'];
             break;
        case 'availability':
-            $availability = utf8_decode($values_array[$key]['value']);
+            //$availability = utf8_decode($values_array[$key]['value']);
+            $availability = $values_array[$key]['value'];
             if ($availability == 'none'){
             	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
             }
@@ -233,7 +245,8 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
 /**Daten für die Bibliografischen Angaben: werden später durch das xslt ersetzt**/
        case 'dc:contributor':
             if (isset($values_array[$key]['value'])){
-               $contributors_array[] = utf8_decode($values_array[$key]['value']);
+               //$contributors_array[] = utf8_decode($values_array[$key]['value']);
+               $contributors_array[] = $values_array[$key]['value'];
             }
             break;
        case 'dc:medium':
@@ -243,7 +256,8 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             break;
        case 'dc:editor':
             if (isset($values_array[$key]['value'])){
-               $editor_array[] = utf8_decode($values_array[$key]['value']);
+               //$editor_array[] = utf8_decode($values_array[$key]['value']);
+               $editor_array[] = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:descritpion':
@@ -262,32 +276,40 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
                    or $values_array[$key]['value'] == 'Schriftenreihe'
                 )
             ){
-                $bib_kind = utf8_decode($values_array[$key]['value']);
+                //$bib_kind = utf8_decode($values_array[$key]['value']);
+                $bib_kind = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:bibliographicCitation':
             if (isset($values_array[$i+1]['attributes']['rfe.jtitle'])){
                $jounal_typ = 'article';
-               $journal_title = utf8_decode($values_array[$i+1]['attributes']['rfe.jtitle']);
+               //$journal_title = utf8_decode($values_array[$i+1]['attributes']['rfe.jtitle']);
+               $journal_title = $values_array[$i+1]['attributes']['rfe.jtitle'];
             }
             elseif ( isset($values_array[$i+1]['attributes']['rfe.btitle']) ){
                $jounal_typ = 'chapter';
-               $book_title = utf8_decode($values_array[$i+1]['attributes']['rfe.btitle']);
+               //$book_title = utf8_decode($values_array[$i+1]['attributes']['rfe.btitle']);
+               $book_title = $values_array[$i+1]['attributes']['rfe.btitle'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.epage'])){
-               $end_page = utf8_decode($values_array[$i+1]['attributes']['rfe.epage']);
+               //$end_page = utf8_decode($values_array[$i+1]['attributes']['rfe.epage']);
+               $end_page = $values_array[$i+1]['attributes']['rfe.epage'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.spage'])){
-               $start_page = utf8_decode($values_array[$i+1]['attributes']['rfe.spage']);
+               //$start_page = utf8_decode($values_array[$i+1]['attributes']['rfe.spage']);
+               $start_page = $values_array[$i+1]['attributes']['rfe.spage'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.issue'])){
-               $issue_number = utf8_decode($values_array[$i+1]['attributes']['rfe.issue']);
+               //$issue_number = utf8_decode($values_array[$i+1]['attributes']['rfe.issue']);
+               $issue_number = $values_array[$i+1]['attributes']['rfe.issue'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.publisher'])){
-               $jounal_publisher = utf8_decode($values_array[$i+1]['attributes']['rfe.publisher']);
+               //$jounal_publisher = utf8_decode($values_array[$i+1]['attributes']['rfe.publisher']);
+               $jounal_publisher = $values_array[$i+1]['attributes']['rfe.publisher'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe.location'])){
-               $jounal_location = utf8_decode($values_array[$i+1]['attributes']['rfe.location']);
+               //$jounal_location = utf8_decode($values_array[$i+1]['attributes']['rfe.location']);
+               $jounal_location = $values_array[$i+1]['attributes']['rfe.location'];
             }
             if (isset($values_array[$i+1]['attributes']['rfe_val_fmt'])){
                if (strstr($values_array[$i+1]['attributes']['rfe_val_fmt'],'dissertation')){
@@ -297,10 +319,12 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             break;
            case 'dc:publisher':
             if (isset($values_array[$key]['value'])){
-               $publisher = utf8_decode($values_array[$key]['value']);
+               //$publisher = utf8_decode($values_array[$key]['value']);
+               $publisher = $values_array[$key]['value'];
             }
             if (isset($values_array[$key]['attributes']['Location'])){
-               $location = utf8_decode($values_array[$key]['attributes']['Location']);
+               //$location = utf8_decode($values_array[$key]['attributes']['Location']);
+               $location = $values_array[$key]['attributes']['Location'];
             }
             break;
 /********************************************************************************/
@@ -308,21 +332,25 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
 
 
        case 'dc:title':
-            $title = utf8_decode($values_array[$key]['value']);
+            //$title = utf8_decode($values_array[$key]['value']);
+            $title = $values_array[$key]['value'];
             break;
        case 'dc:creator':
            if (isset($values_array[$key]['value'])){
-               $authors_array[] = utf8_decode($values_array[$key]['value']);
+               //$authors_array[] = utf8_decode($values_array[$key]['value']);
+               $authors_array[] = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:issued':
            if (isset($values_array[$key]['value'])){
-               $pub_date = utf8_decode($values_array[$key]['value']);
+               //$pub_date = utf8_decode($values_array[$key]['value']);
+               $pub_date = $values_array[$key]['value'];
            }
            break;
        case 'dcterms:abstract':
             if (isset($values_array[$key]['value'])){
-               $abstract = utf8_decode($values_array[$key]['value']);
+               //$abstract = utf8_decode($values_array[$key]['value']);
+               $abstract = $values_array[$key]['value'];
             }
             break;
        case 'dcterms:tableOfContents':
@@ -1248,6 +1276,7 @@ function _getMaterialListByXML($directory){
          }
          $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
       }
+      $material_item->setBibKind('common');
       $material_item->save();
       unset($material_item);
       $i++;

@@ -1,7 +1,7 @@
 version=pmwiki-2.2.0-beta67 ordered=1 urlencoded=1
 agent=Mozilla/5.0 (X11; U; Linux i686; de; rv:1.8.1.14) Gecko/20080404 Firefox/2.0.0.14
 author=
-charset=ISO-8859-1
+charset=UTF-8
 csum=
 ctime=1216983301
 host=127.0.0.1

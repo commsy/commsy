@@ -354,7 +354,8 @@ class cs_material_detail_view extends cs_detail_view {
             $temp_array = array();
          }
       }else
-      */if($bib_kind =='common'){
+      */
+      if($bib_kind =='common'){
 #         $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
 #         $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
 #         $formal_data1[] = $temp_array;

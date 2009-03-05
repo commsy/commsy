@@ -6,7 +6,7 @@ host=127.0.0.1
 name=PmWikiDe.SideBar
 rev=27
 targets=Main.HomePage,PmWikiDe.Anleitung,PmWikiDe.WikiWikiWeb,PmWikiDe.WikiStructure,PmWikiDe.WikiWord,PmWikiDe.WikiPage,PmWikiDe.WikiGroup,PmWikiDe.CreatingNewPages,PmWikiDe.TextFormattingRules,PmWikiDe.Passwords,PmWikiDe.Uploads,PmWikiDe.Links,Main.WikiList,Main.NewWiki,PmWikiDe.SideBar
-text=%25sidehead%25 Navigation%0a%0a* [[Main/HomePage]]%0a* [[Anleitung]]%0a** [[WikiWikiWeb | Idee]]%0a** [[WikiStructure | Struktur]]%0a** [[WikiWord | WikiWords]]%0a** [[WikiPage | WikiSeite]]%0a** [[WikiGroup | WikiGruppen]]%0a** [[CreatingNewPages | Neue&nbsp;Seite]]%0a** [[TextFormattingRules | Formatierung]]%0a** [[Passwords | Passwörter]]%0a** [[Uploads | Dateien]]%0a** [[Links | Verweise]]%0a* [[Main/WikiList|Liste&nbsp;der&nbsp;Wikis]]%0a* [[Main/NewWiki|Wiki&nbsp;einrichten]]%0a%0a%0a%25right%25 [-[[PmWikiDe.SideBar?action=edit | bearbeiten]]-]
+text=%25sidehead%25 Navigation%0a%0a* [[Main/HomePage]]%0a* [[Anleitung]]%0a** [[WikiWikiWeb | Idee]]%0a** [[WikiStructure | Struktur]]%0a** [[WikiWord | WikiWords]]%0a** [[WikiPage | WikiSeite]]%0a** [[WikiGroup | WikiGruppen]]%0a** [[CreatingNewPages | Neue&nbsp;Seite]]%0a** [[TextFormattingRules | Formatierung]]%0a** [[Passwords | PasswÃ¶rter]]%0a** [[Uploads | Dateien]]%0a** [[Links | Verweise]]%0a* [[Main/WikiList|Liste&nbsp;der&nbsp;Wikis]]%0a* [[Main/NewWiki|Wiki&nbsp;einrichten]]%0a%0a%0a%25right%25 [-[[PmWikiDe.SideBar?action=edit | bearbeiten]]-]
 time=1184851556
 author:1184851556=
 diff:1184851556:1184514904:=15d14%0a%3c * [[Main/WikiList|Liste&nbsp;der&nbsp;Wikis]]%0a
@@ -51,11 +51,11 @@ author:1184430792=
 diff:1184430792:1184430560:=7,8c7%0a%3c ** [[Uploads | Dateien]]%0a%3c %0a---%0a> %0a
 host:1184430792=127.0.0.1
 author:1184430560=
-diff:1184430560:1184430439:=6,8c6,7%0a%3c ** [[Passwords | Passwörter]]%0a%3c %0a%3c %25right%25 [-[[PmWikiDe.SideBar?action=edit | bearbeiten]]-]%0a\ No newline at end of file%0a---%0a> %0a> %25right%25 [-[[Site.SideBar?action=edit | bearbeiten]]-]%0a\ No newline at end of file%0a
+diff:1184430560:1184430439:=6,8c6,7%0a%3c ** [[Passwords | PasswÃ¶rter]]%0a%3c %0a%3c %25right%25 [-[[PmWikiDe.SideBar?action=edit | bearbeiten]]-]%0a\ No newline at end of file%0a---%0a> %0a> %25right%25 [-[[Site.SideBar?action=edit | bearbeiten]]-]%0a\ No newline at end of file%0a
 host:1184430560=127.0.0.1
 author:1184430439=
 diff:1184430439:1184430392:=5,7c5,9%0a%3c ** [[WikiWikiWeb | Idee]]%0a%3c %0a%3c %25right%25 [-[[Site.SideBar?action=edit | bearbeiten]]-]%0a\ No newline at end of file%0a---%0a> ** [[WikiWikiWeb | Was ist ein Wiki?]]%0a>  %0a> ----%0a> %0a> (:include Main/SideBar:)%0a\ No newline at end of file%0a
 host:1184430439=127.0.0.1
 author:1184430392=
-diff:1184430392:1168612944:=1,5c1,7%0a%3c %25sidehead%25 Navigation%0a%3c %0a%3c * [[Main/HomePage]]%0a%3c * [[Main/Anleitung]]%0a%3c ** [[WikiWikiWeb | Was ist ein Wiki?]]%0a---%0a> %25sidehead%25[[PmWikiDe|Deutsches Wiki]]%0a> * [[WikiWikiWeb | Was ist ein Wiki?]]%0a> * [[Installation | Installation]]%0a> * [[DocumentationIndex|Dokumentationsindex]]%0a> * [[ListeAllerSeiten | Liste aller deutschen Seiten]]%0a> * [[WikiSandbox|Sandkasten]]%0a> * [[RecentChanges | Aktuelle Änderungen]]%0a
+diff:1184430392:1168612944:=1,5c1,7%0a%3c %25sidehead%25 Navigation%0a%3c %0a%3c * [[Main/HomePage]]%0a%3c * [[Main/Anleitung]]%0a%3c ** [[WikiWikiWeb | Was ist ein Wiki?]]%0a---%0a> %25sidehead%25[[PmWikiDe|Deutsches Wiki]]%0a> * [[WikiWikiWeb | Was ist ein Wiki?]]%0a> * [[Installation | Installation]]%0a> * [[DocumentationIndex|Dokumentationsindex]]%0a> * [[ListeAllerSeiten | Liste aller deutschen Seiten]]%0a> * [[WikiSandbox|Sandkasten]]%0a> * [[RecentChanges | Aktuelle Ã„nderungen]]%0a
 host:1184430392=127.0.0.1
