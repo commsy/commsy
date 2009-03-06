@@ -1589,18 +1589,18 @@ class cs_environment {
    }
 
    public function getBelugaConnectionLink(){
-      global $url_for_beluga_system;
-      $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
-      if (!mb_stristr($commsy_link,'SID')) {
-         $session = $this->getSessionItem();
-         $commsy_link .='&CSID='.$session->getSessionID();
-      }else{
-         $commsy_link = str_replace('SID','CSID',$commsy_link);
-      }
-      $link = $url_for_beluga_system;
-      $link .='?commsy_url='.urldecode($commsy_link);
-      return $link;
-/* Neue Funktion ab Beluga 0.7
+//      global $url_for_beluga_system;
+//      $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+//      if (!mb_stristr($commsy_link,'SID')) {
+//         $session = $this->getSessionItem();
+//         $commsy_link .='&CSID='.$session->getSessionID();
+//      }else{
+//         $commsy_link = str_replace('SID','CSID',$commsy_link);
+//      }
+//      $link = $url_for_beluga_system;
+//      $link .='?commsy_url='.urldecode($commsy_link);
+//      return $link;
+// Neue Funktion ab Beluga 0.7
       global $url_for_beluga_system;
       $commsy_link = 'http://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
       if (!stristr($commsy_link,'SID')) {
@@ -1612,7 +1612,7 @@ class cs_environment {
       $link .='?export_system=commsy';
       $link .= '&export_url='.urlencode($commsy_link);
       return $link;
-*/
+//*/
    }
 
    public function setCacheOff () {
