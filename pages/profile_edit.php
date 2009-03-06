@@ -700,6 +700,21 @@ if ($command != 'error') { // only if user is allowed to edit user
                         $save = true;
                      }
                   }
+                  $change_name = false;
+                  if ( !empty($_POST['firstname'])
+                       and $portal_user->getFirstName() != $_POST['firstname']
+                     ) {
+                     $portal_user->setFirstName($_POST['firstname']);
+                     $change_name = true;
+                     $save = true;
+                  }
+                  if ( !empty($_POST['lastname'])
+                       and $portal_user->getLastName() != $_POST['lastname']
+                     ) {
+                     $portal_user->setLastName($_POST['lastname']);
+                     $change_name = true;
+                     $save = true;
+                  }
 
                   if ($save) {
                      $portal_user->save();
@@ -710,17 +725,6 @@ if ($command != 'error') { // only if user is allowed to edit user
                   $success = $success_1 and $success_2;
 
                   // change firstname and lastname in all other user_items of this user
-                  $change_name = false;
-                  if ( !empty($_POST['firstname'])
-                       and $portal_user->getFirstName() != $_POST['firstname']
-                     ) {
-                     $change_name = true;
-                  }
-                  if ( !empty($_POST['lastname'])
-                       and $portal_user->getLastName() != $_POST['lastname']
-                     ) {
-                     $change_name = true;
-                  }
                   if ( $change_name ) {
                      $user_manager = $environment->getUserManager();
                      $dummy_user = $user_manager->getNewItem();
