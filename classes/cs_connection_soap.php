@@ -49,11 +49,13 @@ class cs_connection_soap {
    // --->UTF8<---
    // Kann  beides entfallen, sobald die Umstellung intern durch ist.
    private function _encode_input ($value) {
-      return utf8_decode($value);
+      //return utf8_decode($value);
+      return $value();
    }
 
    private function _encode_output ($value) {
-      return utf8_encode($value);
+      //return utf8_encode($value);
+      return $value();
    }
    // --->UTF8<---
    // ------------
@@ -1543,6 +1545,7 @@ class cs_connection_soap {
    }
 
    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
+         _log_in_file(array(array('$user_id', $user_id)));
          $result = 'notAuthenticated';
          $session_id = $this->_encode_input($session_id);
          if ($this->_isSessionValid($session_id)) {
