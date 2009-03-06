@@ -583,6 +583,8 @@ class cs_community_item extends cs_room_item {
    }
 
    function getUsageInfoTextForRubric($rubric){
+      $translator = $this->_environment->getTranslationObject();
+
       // index Seiten
       $funct = $this->_environment->getCurrentFunction();
       if ($this->_issetExtra('USAGE_INFO_TEXT')) {
@@ -606,7 +608,7 @@ class cs_community_item extends cs_room_item {
                             array('module'=>$this->_environment->getCurrentModule(),
                                   'function'=>$this->_environment->getCurrentFunction(),
                                   'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
+                            $translator->getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
                             '',
                             'help',
                             '',
@@ -617,67 +619,70 @@ class cs_community_item extends cs_room_item {
          switch( $temp_rub_func )
          {
             case 'ACCOUNT_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX',$link);
                break;
             case 'ACCOUNT_STATUS':      //
-               $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
                break;
             case 'ANNOUNCEMENT_CLIPBOARD_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
                break;
             case 'ANNOUNCEMENT_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX',$link);
                break;
             case 'DATE_CLIPBOARD_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
                break;
             case 'DATE_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX',$link);
                break;
             case 'DISCUSSION_CLIPBOARD_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
                break;
             case 'DISCUSSION_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX',$link);
                break;
             case 'HOME_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX',$link);
                break;
             case 'HOME_USAGEINFO':        // getestet - Nutzungshinweise bearbeiten als Raum-Moderator
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_USAGEINFO',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_USAGEINFO',$link);
                break;
             case 'INSTITUTION_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX',$link);
                break;
             case 'MATERIAL_CLIPBOARD_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
                break;
             case 'MATERIAL_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX',$link);
                break;
             case 'PROJECT_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_INDEX',$link);
                break;
             case 'TODO_CLIPBOARD_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
                break;
             case 'TODO_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX',$link);
                break;
             case 'TOPIC_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX',$link);
                break;
             case 'USER_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX',$link);
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX',$link);
+               break;
+            case 'CAMPUS_SEARCH_INDEX':
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CAMPUS_SEARCH_INDEX',$link);
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item(679) ',$link);
+               $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item('.__LINE__.') ',$link);
                break;
          }
          $retour = $tempMessage;
 
          if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8') or $retour =='tbd'){
-            $retour = getMessage('USAGE_INFO_COMING_SOON');
+            $retour = $translator->getMessage('USAGE_INFO_COMING_SOON');
          }
          }
       }
