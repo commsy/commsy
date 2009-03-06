@@ -2,7 +2,8 @@
 -- version 2.10.3
 -- http://www.phpmyadmin.net
 --
--- Erstellungszeit: 14. Januar 2008 um 08:58
+-- Host: localhost
+-- Erstellungszeit: 06. MÃ¤rz 2009 um 12:19
 -- Server Version: 5.0.45
 -- PHP-Version: 5.2.3
 
@@ -15,7 +16,7 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `annotations`
+-- Tabellenstruktur fÃ¼r Tabelle `annotations`
 --
 
 CREATE TABLE `annotations` (
@@ -27,25 +28,25 @@ CREATE TABLE `annotations` (
   `deleter_id` int(11) default NULL,
   `deletion_date` datetime default NULL,
   `modification_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
   `linked_item_id` int(11) NOT NULL default '0',
   `linked_version_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `linked_item_id` (`linked_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `annotations`
+-- Daten fÃ¼r Tabelle `annotations`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `announcement`
+-- Tabellenstruktur fÃ¼r Tabelle `announcement`
 --
 
 CREATE TABLE `announcement` (
@@ -57,39 +58,39 @@ CREATE TABLE `announcement` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
   `enddate` datetime NOT NULL default '0000-00-00 00:00:00',
   `public` tinyint(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `announcement`
+-- Daten fÃ¼r Tabelle `announcement`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `auth`
+-- Tabellenstruktur fÃ¼r Tabelle `auth`
 --
 
 CREATE TABLE `auth` (
   `commsy_id` int(11) NOT NULL default '0',
-  `user_id` varchar(32) character set latin1 collate latin1_german2_ci NOT NULL,
-  `password_md5` varchar(32) collate latin1_german1_ci NOT NULL,
-  `firstname` varchar(50) collate latin1_german1_ci NOT NULL,
-  `lastname` varchar(50) collate latin1_german1_ci NOT NULL,
-  `email` varchar(100) collate latin1_german1_ci NOT NULL,
-  `language` varchar(10) collate latin1_german1_ci NOT NULL,
-  PRIMARY KEY  (`user_id`,`commsy_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+  `user_id` varchar(32) NOT NULL,
+  `password_md5` varchar(32) NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `language` varchar(10) NOT NULL,
+  PRIMARY KEY  (`commsy_id`,`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `auth`
+-- Daten fÃ¼r Tabelle `auth`
 --
 
 INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastname`, `email`, `language`) VALUES
@@ -98,7 +99,7 @@ INSERT INTO `auth` (`commsy_id`, `user_id`, `password_md5`, `firstname`, `lastna
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `auth_source`
+-- Tabellenstruktur fÃ¼r Tabelle `auth_source`
 --
 
 CREATE TABLE `auth_source` (
@@ -110,15 +111,15 @@ CREATE TABLE `auth_source` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `extras` text collate latin1_german1_ci,
+  `title` varchar(255) NOT NULL,
+  `extras` text,
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `auth_source`
+-- Daten fÃ¼r Tabelle `auth_source`
 --
 
 INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`) VALUES
@@ -127,7 +128,7 @@ INSERT INTO `auth_source` (`item_id`, `context_id`, `creator_id`, `modifier_id`,
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `dates`
+-- Tabellenstruktur fÃ¼r Tabelle `dates`
 --
 
 CREATE TABLE `dates` (
@@ -139,31 +140,31 @@ CREATE TABLE `dates` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci NOT NULL,
-  `start_time` varchar(100) collate latin1_german1_ci NOT NULL,
-  `end_time` varchar(100) collate latin1_german1_ci default NULL,
-  `start_day` varchar(100) collate latin1_german1_ci NOT NULL,
-  `end_day` varchar(100) collate latin1_german1_ci default NULL,
-  `place` varchar(100) collate latin1_german1_ci default NULL,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
+  `start_time` varchar(100) default NULL,
+  `end_time` varchar(100) default NULL,
+  `start_day` varchar(100) NOT NULL,
+  `end_day` varchar(100) default NULL,
+  `place` varchar(100) default NULL,
   `datetime_start` datetime NOT NULL default '0000-00-00 00:00:00',
   `datetime_end` datetime NOT NULL default '0000-00-00 00:00:00',
   `public` tinyint(11) NOT NULL default '0',
   `date_mode` tinyint(4) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `dates`
+-- Daten fÃ¼r Tabelle `dates`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `discussionarticles`
+-- Tabellenstruktur fÃ¼r Tabelle `discussionarticles`
 --
 
 CREATE TABLE `discussionarticles` (
@@ -176,23 +177,23 @@ CREATE TABLE `discussionarticles` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `subject` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci NOT NULL,
-  `position` varchar(255) collate latin1_german1_ci NOT NULL default '1',
+  `subject` varchar(255) NOT NULL,
+  `description` mediumtext,
+  `position` varchar(255) NOT NULL default '1',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `discussionarticles`
+-- Daten fÃ¼r Tabelle `discussionarticles`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `discussions`
+-- Tabellenstruktur fÃ¼r Tabelle `discussions`
 --
 
 CREATE TABLE `discussions` (
@@ -204,44 +205,44 @@ CREATE TABLE `discussions` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `title` varchar(200) collate latin1_german1_ci NOT NULL,
+  `title` varchar(200) NOT NULL,
   `latest_article_item_id` int(11) default NULL,
   `latest_article_modification_date` datetime default NULL,
   `status` int(2) NOT NULL default '1',
-  `discussion_type` varchar(10) collate latin1_german1_ci NOT NULL default 'simple',
+  `discussion_type` varchar(10) NOT NULL default 'simple',
   `public` tinyint(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `discussions`
+-- Daten fÃ¼r Tabelle `discussions`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `external2commsy_id`
+-- Tabellenstruktur fÃ¼r Tabelle `external2commsy_id`
 --
 
 CREATE TABLE `external2commsy_id` (
-  `external_id` varchar(255) collate latin1_german1_ci NOT NULL,
-  `source_system` varchar(60) collate latin1_german1_ci NOT NULL,
+  `external_id` varchar(255) NOT NULL,
+  `source_system` varchar(60) NOT NULL,
   `commsy_id` int(11) NOT NULL,
   PRIMARY KEY  (`external_id`,`source_system`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `external2commsy_id`
+-- Daten fÃ¼r Tabelle `external2commsy_id`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `files`
+-- Tabellenstruktur fÃ¼r Tabelle `files`
 --
 
 CREATE TABLE `files` (
@@ -252,61 +253,62 @@ CREATE TABLE `files` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `filename` varchar(255) collate latin1_german1_ci NOT NULL,
+  `filename` varchar(255) NOT NULL,
   `size` int(30) NOT NULL default '0',
-  `has_html` enum('0','1','2') collate latin1_german1_ci NOT NULL default '0',
+  `has_html` enum('0','1','2') NOT NULL default '0',
   `scan` tinyint(1) NOT NULL default '-1',
-  `extras` text collate latin1_german1_ci,
+  `extras` text,
   PRIMARY KEY  (`files_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `files`
+-- Daten fÃ¼r Tabelle `files`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `file_multi_upload`
+-- Tabellenstruktur fÃ¼r Tabelle `file_multi_upload`
 --
 
 CREATE TABLE `file_multi_upload` (
   `id` int(11) NOT NULL auto_increment,
   `session_id` varchar(150) NOT NULL,
   `file_array` text NOT NULL,
+  `cid` int(11) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `file_multi_upload`
+-- Daten fÃ¼r Tabelle `file_multi_upload`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `hash`
+-- Tabellenstruktur fÃ¼r Tabelle `hash`
 --
 
 CREATE TABLE `hash` (
   `user_item_id` int(11) NOT NULL,
-  `rss` char(32) collate latin1_german1_ci default NULL,
-  `ical` char(32) collate latin1_german1_ci default NULL,
+  `rss` char(32) default NULL,
+  `ical` char(32) default NULL,
   PRIMARY KEY  (`user_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `hash`
+-- Daten fÃ¼r Tabelle `hash`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `homepage_link_page_page`
+-- Tabellenstruktur fÃ¼r Tabelle `homepage_link_page_page`
 --
 
 CREATE TABLE `homepage_link_page_page` (
@@ -322,19 +324,19 @@ CREATE TABLE `homepage_link_page_page` (
   `deletion_date` datetime default NULL,
   `sorting_place` tinyint(4) default NULL,
   PRIMARY KEY  (`link_id`),
-  KEY `context_id` (`context_id`),
-  KEY `form_item_id` (`from_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=1 ;
+  KEY `from_item_id` (`from_item_id`),
+  KEY `context_id` (`context_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `homepage_link_page_page`
+-- Daten fÃ¼r Tabelle `homepage_link_page_page`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `homepage_page`
+-- Tabellenstruktur fÃ¼r Tabelle `homepage_page`
 --
 
 CREATE TABLE `homepage_page` (
@@ -346,40 +348,40 @@ CREATE TABLE `homepage_page` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
   `public` tinyint(11) NOT NULL default '0',
-  `page_type` varchar(10) collate latin1_german1_ci NOT NULL,
+  `page_type` varchar(10) NOT NULL,
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `homepage_page`
+-- Daten fÃ¼r Tabelle `homepage_page`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `items`
+-- Tabellenstruktur fÃ¼r Tabelle `items`
 --
 
 CREATE TABLE `items` (
   `item_id` int(11) NOT NULL auto_increment,
   `context_id` int(11) default NULL,
-  `type` varchar(15) collate latin1_german1_ci NOT NULL,
+  `type` varchar(15) NOT NULL,
   `deleter_id` int(11) default NULL,
   `deletion_date` datetime default NULL,
   `modification_date` datetime default NULL,
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `type` (`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=101 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=101 ;
 
 --
--- Daten für Tabelle `items`
+-- Daten fÃ¼r Tabelle `items`
 --
 
 INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_date`, `modification_date`) VALUES
@@ -390,7 +392,7 @@ INSERT INTO `items` (`item_id`, `context_id`, `type`, `deleter_id`, `deletion_da
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `item_link_file`
+-- Tabellenstruktur fÃ¼r Tabelle `item_link_file`
 --
 
 CREATE TABLE `item_link_file` (
@@ -400,17 +402,17 @@ CREATE TABLE `item_link_file` (
   `deleter_id` int(11) default NULL,
   `deletion_date` datetime default NULL,
   PRIMARY KEY  (`item_iid`,`item_vid`,`file_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `item_link_file`
+-- Daten fÃ¼r Tabelle `item_link_file`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `labels`
+-- Tabellenstruktur fÃ¼r Tabelle `labels`
 --
 
 CREATE TABLE `labels` (
@@ -422,25 +424,25 @@ CREATE TABLE `labels` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `name` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
-  `type` varchar(15) collate latin1_german1_ci NOT NULL,
-  `extras` text collate latin1_german1_ci,
+  `name` varchar(255) NOT NULL,
+  `description` text,
+  `type` varchar(15) NOT NULL,
+  `extras` text,
   `public` tinyint(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `labels`
+-- Daten fÃ¼r Tabelle `labels`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `links`
+-- Tabellenstruktur fÃ¼r Tabelle `links`
 --
 
 CREATE TABLE `links` (
@@ -448,23 +450,25 @@ CREATE TABLE `links` (
   `from_version_id` int(11) NOT NULL default '0',
   `to_item_id` int(11) NOT NULL default '0',
   `to_version_id` int(11) NOT NULL default '0',
-  `link_type` char(30) collate latin1_german1_ci NOT NULL,
+  `link_type` char(30) NOT NULL,
   `context_id` int(11) default NULL,
   `deleter_id` int(11) default NULL,
   `deletion_date` datetime default NULL,
+  `x` int(11) default NULL,
+  `y` int(11) default NULL,
   PRIMARY KEY  (`from_item_id`,`from_version_id`,`to_item_id`,`to_version_id`,`link_type`),
-  KEY `room_id` (`context_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+  KEY `context_id` (`context_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `links`
+-- Daten fÃ¼r Tabelle `links`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `link_items`
+-- Tabellenstruktur fÃ¼r Tabelle `link_items`
 --
 
 CREATE TABLE `link_items` (
@@ -476,146 +480,151 @@ CREATE TABLE `link_items` (
   `deletion_date` datetime default NULL,
   `modification_date` datetime default NULL,
   `first_item_id` int(11) NOT NULL default '0',
-  `first_item_type` varchar(15) collate latin1_german1_ci default NULL,
+  `first_item_type` varchar(15) default NULL,
   `second_item_id` int(11) NOT NULL default '0',
-  `second_item_type` varchar(15) collate latin1_german1_ci default NULL,
+  `second_item_type` varchar(15) default NULL,
   `sorting_place` tinyint(4) default NULL,
+  `extras` text,
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `first_item_id` (`first_item_id`),
   KEY `second_item_id` (`second_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `link_items`
+-- Daten fÃ¼r Tabelle `link_items`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `link_modifier_item`
+-- Tabellenstruktur fÃ¼r Tabelle `link_modifier_item`
 --
 
 CREATE TABLE `link_modifier_item` (
   `item_id` int(11) NOT NULL default '0',
   `modifier_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`,`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `link_modifier_item`
+-- Daten fÃ¼r Tabelle `link_modifier_item`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log`
+-- Tabellenstruktur fÃ¼r Tabelle `log`
 --
 
 CREATE TABLE `log` (
   `id` int(11) NOT NULL auto_increment,
-  `ip` varchar(15) collate latin1_german1_ci default NULL,
-  `agent` varchar(250) collate latin1_german1_ci default NULL,
+  `ip` varchar(15) default NULL,
+  `agent` varchar(250) default NULL,
   `timestamp` timestamp NULL default NULL,
-  `request` varchar(250) collate latin1_german1_ci default NULL,
-  `post_content` text collate latin1_german1_ci,
-  `method` varchar(10) collate latin1_german1_ci default NULL,
+  `request` varchar(250) default NULL,
+  `post_content` mediumtext,
+  `method` varchar(10) default NULL,
   `uid` int(11) default NULL,
-  `ulogin` varchar(250) collate latin1_german1_ci default NULL,
+  `ulogin` varchar(250) default NULL,
   `cid` int(11) default NULL,
-  `module` varchar(250) collate latin1_german1_ci default NULL,
-  `fct` varchar(250) collate latin1_german1_ci default NULL,
-  `param` varchar(250) collate latin1_german1_ci default NULL,
+  `module` varchar(250) default NULL,
+  `fct` varchar(250) default NULL,
+  `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
   PRIMARY KEY  (`id`),
-  KEY `rid` (`cid`),
-  KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=2 ;
+  KEY `timestamp` (`timestamp`),
+  KEY `cid` (`cid`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
--- Daten für Tabelle `log`
+-- Daten fÃ¼r Tabelle `log`
 --
+
+INSERT INTO `log` (`id`, `ip`, `agent`, `timestamp`, `request`, `post_content`, `method`, `uid`, `ulogin`, `cid`, `module`, `fct`, `param`, `iid`) VALUES
+(2, '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7 (.NET CLR 3.5.30729)', '2009-03-06 12:10:32', '/jackewit/commsy7/htdocs/commsy.php?', 'NULL', 'GET', 0, '', 99, 'home', 'index', '', 0),
+(3, '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7 (.NET CLR 3.5.30729)', '2009-03-06 12:10:34', '/jackewit/commsy7/htdocs/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&SID=be38654c2982c7c9955ec8a5a7511837', 'NULL', 'GET', 0, 'guest', 99, 'home', 'index', 'jscheck=1&isJS=1', 0);
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log_ads`
+-- Tabellenstruktur fÃ¼r Tabelle `log_ads`
 --
 
 CREATE TABLE `log_ads` (
   `id` int(11) NOT NULL auto_increment,
   `cid` int(11) default NULL,
-  `aim` varchar(255) collate latin1_german1_ci NOT NULL,
+  `aim` varchar(255) NOT NULL,
   `timestamp` timestamp NULL default NULL,
   PRIMARY KEY  (`id`),
-  KEY `rid` (`cid`),
+  KEY `cid` (`cid`),
   KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `log_ads`
+-- Daten fÃ¼r Tabelle `log_ads`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log_archive`
+-- Tabellenstruktur fÃ¼r Tabelle `log_archive`
 --
 
 CREATE TABLE `log_archive` (
   `id` int(11) NOT NULL auto_increment,
-  `ip` varchar(15) collate latin1_german1_ci default NULL,
-  `agent` varchar(250) collate latin1_german1_ci default NULL,
+  `ip` varchar(15) default NULL,
+  `agent` varchar(250) default NULL,
   `timestamp` timestamp NULL default NULL,
-  `request` varchar(250) collate latin1_german1_ci default NULL,
-  `post_content` text collate latin1_german1_ci,
-  `method` varchar(10) collate latin1_german1_ci default NULL,
+  `request` varchar(250) default NULL,
+  `post_content` mediumtext,
+  `method` varchar(10) default NULL,
   `uid` int(11) default NULL,
-  `ulogin` varchar(250) collate latin1_german1_ci default NULL,
+  `ulogin` varchar(250) default NULL,
   `cid` int(11) default NULL,
-  `module` varchar(250) collate latin1_german1_ci default NULL,
-  `fct` varchar(250) collate latin1_german1_ci default NULL,
-  `param` varchar(250) collate latin1_german1_ci default NULL,
+  `module` varchar(250) default NULL,
+  `fct` varchar(250) default NULL,
+  `param` varchar(250) default NULL,
   `iid` int(11) default NULL,
   PRIMARY KEY  (`id`),
   KEY `ulogin` (`ulogin`),
-  KEY `rid` (`cid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=1 ;
+  KEY `cid` (`cid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `log_archive`
+-- Daten fÃ¼r Tabelle `log_archive`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log_error`
+-- Tabellenstruktur fÃ¼r Tabelle `log_error`
 --
 
 CREATE TABLE `log_error` (
   `id` int(11) NOT NULL auto_increment,
   `datetime` datetime NOT NULL,
   `number` int(11) NOT NULL,
-  `type` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
-  `message` text NOT NULL,
-  `url` varchar(255) character set latin1 collate latin1_german1_ci default NULL,
-  `referer` varchar(255) character set latin1 collate latin1_german1_ci default NULL,
-  `file` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
+  `type` varchar(255) NOT NULL,
+  `message` mediumtext NOT NULL,
+  `url` varchar(255) default NULL,
+  `referer` varchar(255) default NULL,
+  `file` varchar(255) NOT NULL,
   `line` int(11) NOT NULL,
   `context` int(11) NOT NULL,
-  `module` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
-  `function` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
-  `user` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
+  `module` varchar(255) NOT NULL,
+  `function` varchar(255) NOT NULL,
+  `user` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Daten für Tabelle `log_error`
+-- Daten fÃ¼r Tabelle `log_error`
 --
 
 INSERT INTO `log_error` (`id`, `datetime`, `number`, `type`, `message`, `url`, `referer`, `file`, `line`, `context`, `module`, `function`, `user`) VALUES
@@ -624,20 +633,20 @@ INSERT INTO `log_error` (`id`, `datetime`, `number`, `type`, `message`, `url`, `
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `log_message_tag`
+-- Tabellenstruktur fÃ¼r Tabelle `log_message_tag`
 --
 
 CREATE TABLE `log_message_tag` (
   `id` int(11) NOT NULL auto_increment,
-  `tag` varchar(255) character set latin1 collate latin1_german1_ci NOT NULL,
-  `version` varchar(50) character set latin1 collate latin1_german1_ci NOT NULL,
+  `tag` varchar(255) NOT NULL,
+  `version` varchar(50) NOT NULL,
   `datetime` datetime NOT NULL,
-  `language` varchar(10) character set latin1 collate latin1_german1_ci default NULL,
+  `language` varchar(10) default NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Daten für Tabelle `log_message_tag`
+-- Daten fÃ¼r Tabelle `log_message_tag`
 --
 
 INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`) VALUES
@@ -646,7 +655,7 @@ INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`) V
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `materials`
+-- Tabellenstruktur fÃ¼r Tabelle `materials`
 --
 
 CREATE TABLE `materials` (
@@ -659,31 +668,30 @@ CREATE TABLE `materials` (
   `modifier_id` int(11) default NULL,
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
-  `author` varchar(200) collate latin1_german1_ci default NULL,
-  `publishing_date` varchar(20) collate latin1_german1_ci default NULL,
+  `title` varchar(255) NOT NULL,
+  `description` text,
+  `author` varchar(200) default NULL,
+  `publishing_date` varchar(20) default NULL,
   `public` tinyint(11) NOT NULL default '0',
   `world_public` smallint(2) NOT NULL default '0',
-  `extras` text collate latin1_german1_ci,
+  `extras` text,
   `new_hack` tinyint(1) NOT NULL default '0',
   `copy_of` int(11) default NULL,
   PRIMARY KEY  (`item_id`,`version_id`),
-  KEY `version_id` (`version_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
-  KEY `modificator` (`modifier_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+  KEY `modifier_id` (`modifier_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `materials`
+-- Daten fÃ¼r Tabelle `materials`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `noticed`
+-- Tabellenstruktur fÃ¼r Tabelle `noticed`
 --
 
 CREATE TABLE `noticed` (
@@ -692,17 +700,17 @@ CREATE TABLE `noticed` (
   `user_id` int(11) NOT NULL default '0',
   `read_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `noticed`
+-- Daten fÃ¼r Tabelle `noticed`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `portal`
+-- Tabellenstruktur fÃ¼r Tabelle `portal`
 --
 
 CREATE TABLE `portal` (
@@ -714,26 +722,26 @@ CREATE TABLE `portal` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `extras` text collate latin1_german1_ci,
-  `status` varchar(20) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `extras` text,
+  `status` varchar(20) NOT NULL,
   `activity` int(11) NOT NULL default '0',
-  `type` varchar(10) collate latin1_german1_ci NOT NULL default 'portal',
+  `type` varchar(10) NOT NULL default 'portal',
   `is_open_for_guests` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `portal`
+-- Daten fÃ¼r Tabelle `portal`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `reader`
+-- Tabellenstruktur fÃ¼r Tabelle `reader`
 --
 
 CREATE TABLE `reader` (
@@ -742,17 +750,17 @@ CREATE TABLE `reader` (
   `user_id` int(11) NOT NULL default '0',
   `read_date` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`item_id`,`version_id`,`user_id`,`read_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `reader`
+-- Daten fÃ¼r Tabelle `reader`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `room`
+-- Tabellenstruktur fÃ¼r Tabelle `room`
 --
 
 CREATE TABLE `room` (
@@ -764,29 +772,29 @@ CREATE TABLE `room` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `extras` text collate latin1_german1_ci,
-  `status` varchar(20) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `extras` text,
+  `status` varchar(20) NOT NULL,
   `activity` int(11) NOT NULL default '0',
-  `type` varchar(20) collate latin1_german1_ci NOT NULL default 'project',
+  `type` varchar(20) NOT NULL default 'project',
   `public` tinyint(11) NOT NULL default '0',
   `is_open_for_guests` tinyint(4) NOT NULL default '0',
   `continuous` tinyint(4) NOT NULL default '-1',
   `template` tinyint(4) NOT NULL default '-1',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `room`
+-- Daten fÃ¼r Tabelle `room`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `section`
+-- Tabellenstruktur fÃ¼r Tabelle `section`
 --
 
 CREATE TABLE `section` (
@@ -799,25 +807,25 @@ CREATE TABLE `section` (
   `deleter_id` int(11) default NULL,
   `deletion_date` datetime default NULL,
   `modification_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `description` text collate latin1_german1_ci,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
   `number` smallint(6) NOT NULL default '0',
   `material_item_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`,`version_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
   KEY `material_item_id` (`material_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `section`
+-- Daten fÃ¼r Tabelle `section`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `server`
+-- Tabellenstruktur fÃ¼r Tabelle `server`
 --
 
 CREATE TABLE `server` (
@@ -829,51 +837,82 @@ CREATE TABLE `server` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `extras` text collate latin1_german1_ci,
-  `status` varchar(20) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `extras` text,
+  `status` varchar(20) NOT NULL,
   `activity` int(11) NOT NULL default '0',
-  `type` varchar(10) collate latin1_german1_ci NOT NULL default 'server',
+  `type` varchar(10) NOT NULL default 'server',
   `is_open_for_guests` tinyint(4) NOT NULL default '1',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `server`
+-- Daten fÃ¼r Tabelle `server`
 --
 
 INSERT INTO `server` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `title`, `extras`, `status`, `activity`, `type`, `is_open_for_guests`) VALUES
-(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 15, 'server', 1);
+(99, 0, 99, 0, NULL, '2006-09-13 12:16:38', '2006-09-13 12:16:38', NULL, 'CommSy-Server', 'a:2:{s:8:"HOMECONF";s:0:"";s:12:"DEFAULT_AUTH";s:3:"100";}', '1', 16, 'server', 1);
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `session`
+-- Tabellenstruktur fÃ¼r Tabelle `session`
 --
 
 CREATE TABLE `session` (
   `id` int(11) NOT NULL auto_increment,
-  `session_id` varchar(150) collate latin1_german1_ci NOT NULL,
-  `session_key` varchar(30) collate latin1_german1_ci NOT NULL,
-  `session_value` longtext collate latin1_german1_ci NOT NULL,
+  `session_id` varchar(150) NOT NULL,
+  `session_key` varchar(30) NOT NULL,
+  `session_value` longtext NOT NULL,
   `created` datetime NOT NULL default '0000-00-00 00:00:00',
   PRIMARY KEY  (`id`),
   KEY `session_id` (`session_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=2 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Daten für Tabelle `session`
+-- Daten fÃ¼r Tabelle `session`
 --
 
 INSERT INTO `session` (`id`, `session_id`, `session_key`, `session_value`, `created`) VALUES
-(1, '1813df73cb169fcd34b07dfb97258039', 'new_session_type', 'a:5:{s:7:"user_id";s:5:"guest";s:9:"commsy_id";i:99;s:6:"cookie";s:1:"1";s:10:"javascript";i:1;s:7:"history";a:1:{i:0;a:4:{s:7:"context";i:99;s:6:"module";s:4:"home";s:8:"function";s:5:"index";s:9:"parameter";a:2:{s:7:"jscheck";s:1:"1";s:4:"isJS";s:1:"1";}}}}', '2008-01-14 08:55:00');
+(2, 'be38654c2982c7c9955ec8a5a7511837', 'new_session_type', 'a:5:{s:7:"user_id";s:5:"guest";s:9:"commsy_id";i:99;s:6:"cookie";s:1:"1";s:10:"javascript";i:1;s:7:"history";a:1:{i:0;a:4:{s:7:"context";i:99;s:6:"module";s:4:"home";s:8:"function";s:5:"index";s:9:"parameter";a:2:{s:7:"jscheck";s:1:"1";s:4:"isJS";s:1:"1";}}}}', '2009-03-06 12:10:34');
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `tag`
+-- Tabellenstruktur fÃ¼r Tabelle `step`
+--
+
+CREATE TABLE `step` (
+  `item_id` int(11) NOT NULL default '0',
+  `context_id` int(11) default NULL,
+  `creator_id` int(11) NOT NULL default '0',
+  `modifier_id` int(11) default NULL,
+  `creation_date` datetime default '0000-00-00 00:00:00',
+  `deleter_id` int(11) default NULL,
+  `deletion_date` datetime default NULL,
+  `modification_date` datetime default NULL,
+  `title` varchar(255) NOT NULL,
+  `description` mediumtext,
+  `minutes` float NOT NULL default '0',
+  `time_type` smallint(6) NOT NULL default '1',
+  `todo_item_id` int(11) NOT NULL,
+  PRIMARY KEY  (`item_id`),
+  KEY `context_id` (`context_id`),
+  KEY `creator_id` (`creator_id`),
+  KEY `todo_item_id` (`todo_item_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Daten fÃ¼r Tabelle `step`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur fÃ¼r Tabelle `tag`
 --
 
 CREATE TABLE `tag` (
@@ -885,20 +924,20 @@ CREATE TABLE `tag` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
   PRIMARY KEY  (`item_id`),
   KEY `context_id` (`context_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `tag`
+-- Daten fÃ¼r Tabelle `tag`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `tag2tag`
+-- Tabellenstruktur fÃ¼r Tabelle `tag2tag`
 --
 
 CREATE TABLE `tag2tag` (
@@ -914,19 +953,19 @@ CREATE TABLE `tag2tag` (
   `deletion_date` datetime default NULL,
   `sorting_place` tinyint(4) default NULL,
   PRIMARY KEY  (`link_id`),
-  KEY `context_id` (`context_id`),
-  KEY `form_item_id` (`from_item_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci AUTO_INCREMENT=1 ;
+  KEY `from_item_id` (`from_item_id`),
+  KEY `context_id` (`context_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Daten für Tabelle `tag2tag`
+-- Daten fÃ¼r Tabelle `tag2tag`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `tasks`
+-- Tabellenstruktur fÃ¼r Tabelle `tasks`
 --
 
 CREATE TABLE `tasks` (
@@ -937,23 +976,23 @@ CREATE TABLE `tasks` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
-  `status` varchar(20) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `status` varchar(20) NOT NULL,
   `linked_item_id` int(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `tasks`
+-- Daten fÃ¼r Tabelle `tasks`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `todos`
+-- Tabellenstruktur fÃ¼r Tabelle `todos`
 --
 
 CREATE TABLE `todos` (
@@ -965,25 +1004,27 @@ CREATE TABLE `todos` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `title` varchar(255) collate latin1_german1_ci NOT NULL,
+  `title` varchar(255) NOT NULL,
   `date` datetime default NULL,
   `status` tinyint(3) NOT NULL default '1',
-  `description` text collate latin1_german1_ci,
+  `minutes` float default NULL,
+  `time_type` smallint(6) NOT NULL default '1',
+  `description` mediumtext,
   `public` tinyint(11) NOT NULL default '0',
   PRIMARY KEY  (`item_id`),
-  KEY `room_id` (`context_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `todos`
+-- Daten fÃ¼r Tabelle `todos`
 --
 
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `user`
+-- Tabellenstruktur fÃ¼r Tabelle `user`
 --
 
 CREATE TABLE `user` (
@@ -995,25 +1036,25 @@ CREATE TABLE `user` (
   `creation_date` datetime NOT NULL default '0000-00-00 00:00:00',
   `modification_date` datetime default NULL,
   `deletion_date` datetime default NULL,
-  `user_id` varchar(32) character set latin1 collate latin1_german2_ci NOT NULL,
+  `user_id` varchar(32) NOT NULL,
   `status` tinyint(1) NOT NULL default '0',
   `is_contact` tinyint(4) NOT NULL default '0',
-  `firstname` varchar(50) collate latin1_german1_ci NOT NULL,
-  `lastname` varchar(50) collate latin1_german1_ci NOT NULL,
-  `email` varchar(100) collate latin1_german1_ci NOT NULL,
-  `city` varchar(100) collate latin1_german1_ci NOT NULL,
+  `firstname` varchar(50) NOT NULL,
+  `lastname` varchar(50) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
   `lastlogin` datetime default NULL,
   `visible` tinyint(4) NOT NULL default '1',
-  `extras` text collate latin1_german1_ci,
+  `extras` text,
   `auth_source` int(11) default NULL,
   PRIMARY KEY  (`item_id`),
+  KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
-  KEY `user_id` (`user_id`),
-  KEY `room_id` (`context_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
+  KEY `user_id` (`user_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Daten für Tabelle `user`
+-- Daten fÃ¼r Tabelle `user`
 --
 
 INSERT INTO `user` (`item_id`, `context_id`, `creator_id`, `modifier_id`, `deleter_id`, `creation_date`, `modification_date`, `deletion_date`, `user_id`, `status`, `is_contact`, `firstname`, `lastname`, `email`, `city`, `lastlogin`, `visible`, `extras`, `auth_source`) VALUES
