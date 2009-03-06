@@ -843,7 +843,7 @@ class cs_material_manager extends cs_manager {
     */
    function _buildItem($db_array) {
       include_once('functions/text_functions.php');
-      $db_array['extras'] = cs_unserialize($db_array['extras']);
+      $db_array['extras'] = mb_unserialize($db_array['extras']);
       foreach ( $db_array as $key => $value ) {   // Delete, when DB-fieldname is changed
          if ( $key == 'modificator' ) {
           $data_array['modificator_id'] = $db_array[$key];

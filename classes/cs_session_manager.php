@@ -120,7 +120,7 @@ class cs_session_manager {
                include_once('classes/cs_mail_obj.php');
             }
             include_once('functions/text_functions.php');
-            $session_array = cs_unserialize($session['session_value']);
+            $session_array = mb_unserialize($session['session_value']);
          } else {
             $session_array = array();
          }

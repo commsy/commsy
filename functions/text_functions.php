@@ -61,7 +61,7 @@ function _text_form2php ($text) {
    return $text;
 }
 
-function _text_db2php ($text) { 
+function _text_db2php ($text) {
 //   // dies ist nötig auf grund von mysql_real_escape_string in _text_php2db
 //   $text = str_replace('\n','COMMSYLN',$text);
 //   $text = str_replace('\*','COMMSYSTERN',$text);
@@ -81,7 +81,7 @@ function _text_db2php ($text) {
    //
    // --->UTF8<---
    // ------------
-   
+
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
    global $c_jsmath_enable;
@@ -114,7 +114,7 @@ function _text_db2php ($text) {
          $text = str_replace($value_new,$value,$text);
       }
    }
-   
+
 //   $text = str_replace('COMMSYLN',LF,$text);
 //   $text = str_replace('COMMSYSTERN','\*',$text);
 //   $text = str_replace('COMMSYSTRICH','\_',$text);
@@ -145,7 +145,7 @@ function _text_file2php ($text) {
    //$text = iconv("UTF-8", "ISO-8859-1", $text);
    //
    // --->UTF8<---
-   // ------------ 
+   // ------------
    return $text;
 }
 
@@ -166,7 +166,7 @@ function _text_php2db ($text) {
       $environment =  $this->_environment;
    }
    $db_connection = $environment->getDBConnector();
-   
+
    // ------------
    // --->UTF8<---
    // $text muss als utf8 kodiert in die Datenbank
@@ -177,8 +177,8 @@ function _text_php2db ($text) {
    //
    // --->UTF8<---
    // ------------
-   
-   
+
+
    // ------------
    // --->UTF8<---
    // Testweise, um Daten utf-8 kodiert im System zu haben.
@@ -187,7 +187,7 @@ function _text_php2db ($text) {
    //
    // --->UTF8<---
    // ------------
-   
+
    $text = $db_connection->text_php2db($text);
    return $text;
 }
@@ -258,7 +258,7 @@ function _text_php2file ($text) {
    //
    // --->UTF8<---
    // ------------
-   
+
    return $text;
 }
 
@@ -268,7 +268,7 @@ function _text_php2file ($text) {
 function _text_php2rss ($text) {
    $text = str_replace('&','&amp;',$text);
    $text = str_replace('<','&lt;',$text);
-   
+
    // ------------
    // --->UTF8<---
    // kann nach umstellung entfallen
@@ -1038,6 +1038,15 @@ function cs_unserialize ( $extra ) {
    return $retour;
 }
 
+function mb_unserialize($serial_str) {
+   $retour = unserialize($serial_str);
+   if ( empty($retour) ) {
+      $serial_str = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
+      $retour = unserialize($serial_str);
+   }
+   return $retour;
+}
+
 function cs_ucfirst($text){
     $return_text = mb_strtoupper(mb_substr($text, 0, 1, 'UTF-8'), 'UTF-8');
     return $return_text.mb_substr($text, 1, mb_strlen($text, 'UTF-8'), 'UTF-8');
@@ -1068,7 +1077,7 @@ if (!function_exists('mb_vsprintf')) {
       $newargv = array(); // unhandled args in unchanged encoding
 
       while ($format !== "") {
-     
+
         // Split the format in two parts: $pre and $post by the first %-directive
         // We get also the matched groups
         list ($pre, $sign, $filler, $align, $size, $precision, $type, $post) =
@@ -1076,7 +1085,7 @@ if (!function_exists('mb_vsprintf')) {
                        $format, 2, PREG_SPLIT_DELIM_CAPTURE) ;
 
         $newformat .= mb_convert_encoding($pre, $encoding, 'UTF-8');
-       
+
         if ($type == '') {
           // didn't match. do nothing. this is the last iteration.
         }
@@ -1089,14 +1098,14 @@ if (!function_exists('mb_vsprintf')) {
           $arg = mb_convert_encoding($arg, 'UTF-8', $encoding);
           $padding_pre = '';
           $padding_post = '';
-         
+
           // truncate $arg
           if ($precision !== '') {
             $precision = intval(substr($precision,1));
             if ($precision > 0 && mb_strlen($arg,$encoding) > $precision)
               $arg = mb_substr($precision,0,$precision,$encoding);
           }
-         
+
           // define padding
           if ($size > 0) {
             $arglen = mb_strlen($arg, $encoding);
@@ -1109,7 +1118,7 @@ if (!function_exists('mb_vsprintf')) {
                   $padding_pre = str_repeat($filler, $size - $arglen);
             }
           }
-         
+
           // escape % and pass it forward
           $newformat .= $padding_pre . str_replace('%', '%%', $arg) . $padding_post;
         }

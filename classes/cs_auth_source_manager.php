@@ -149,7 +149,7 @@ class cs_auth_source_manager extends cs_manager {
     * @return array Contains prepared data ( textfunctions applied etc. )
     */
   function _buildItem($db_array) {
-      $db_array['extras'] = cs_unserialize($db_array['extras']);
+      $db_array['extras'] = mb_unserialize($db_array['extras']);
       $item = parent::_buildItem($db_array);
       return $item;
   }

@@ -143,7 +143,7 @@ class cs_link_father_manager extends cs_manager {
                $value = utf8_decode((string)$xml_element);
                if ($xml_element->getName() == 'extras') {
                   include_once('functions/text_functions.php');
-                  $value = cs_unserialize($value);
+                  $value = mb_unserialize($value);
                }
                if ( !empty($value) ) {
                   $value = str_replace('lt_commsy_export','<',$value);

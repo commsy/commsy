@@ -679,7 +679,7 @@ class cs_file_manager extends cs_manager {
     */
    function _buildItem($db_array) {
       include_once('functions/text_functions.php');
-      $db_array['extras'] = cs_unserialize($db_array['extras']);
+      $db_array['extras'] = mb_unserialize($db_array['extras']);
       return parent::_buildItem($db_array);
    }
 

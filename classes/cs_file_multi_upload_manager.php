@@ -62,7 +62,7 @@ class cs_file_multi_upload_manager extends cs_manager {
       foreach ($result as $row) {
          if ( isset($row['file_array']) and !empty($row['file_array']) ) {
             include_once('functions/text_functions.php');
-            $array[] = cs_unserialize($row['file_array']);
+            $array[] = mb_unserialize($row['file_array']);
          }
       }
       return $array;

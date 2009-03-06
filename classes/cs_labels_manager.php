@@ -692,7 +692,7 @@ class cs_labels_manager extends cs_manager {
         }
      }
      include_once('functions/text_functions.php');
-     $db_array['extras'] = cs_unserialize($db_array['extras']);
+     $db_array['extras'] = mb_unserialize($db_array['extras']);
      $item = parent::_buildItem($db_array);
      return $item;
   }

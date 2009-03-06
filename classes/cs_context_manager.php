@@ -162,7 +162,7 @@ class cs_context_manager extends cs_manager {
       }
       if (isset($db_array['extras'])){
          include_once('functions/text_functions.php');
-         $db_array['extras'] = cs_unserialize($db_array['extras']);
+         $db_array['extras'] = mb_unserialize($db_array['extras']);
       }
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));

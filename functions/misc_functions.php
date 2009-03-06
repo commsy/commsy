@@ -189,7 +189,7 @@ function XMLToArray($xml) {
             $return[$element] = XMLToArray($value);
          } else {
             if ( !empty($element) and $element == 'extras') {
-               $value = unserialize(utf8_decode((string)$value));
+               $value = mb_unserialize(utf8_decode((string)$value));
             } elseif ( isset($value) ) {
                // convert > and < to their html entities (gt; and &lt;)
                if ( strstr($value,"%CS_AND;") ) {
