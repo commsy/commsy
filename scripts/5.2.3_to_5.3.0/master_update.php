@@ -102,7 +102,7 @@ foreach ($scripts as $script) {
 // end of execution time
 $time_end = getmicrotime();
 $time = round($time_end - $time_start_all,3);
-echo "<br/><br/><b>".count($scripts)." scripts processed in ".sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))." hours</b><br><br><br>\n";
+echo "<br/><br/><b>".count($scripts)." scripts processed in ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))." hours</b><br><br><br>\n";
 echo '<script type="text/javascript">window.scrollTo(1,10000000);</script>';
 echo('</body>'."\n");
 echo('</html>'."\n");

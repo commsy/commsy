@@ -65,8 +65,8 @@ echo ('commsy: convert source to utf8'."\n");
 //    closedir($dir_handle);
 //}
 
-$path = '/home/johannes/workspace/commsy/scripts/6.2.x_to_7.0.0';
-$file = '01_db_utf8.php';
+$path = '/home/johannes/workspace/commsy_wiki/cookbook';
+$file = 'authusercommsy.php';
 copy($path . '/' . $file, $path . '/' . '_latin1/' . $file);
 $file_contents = file_get_contents($path . '/' . $file);
 $file_contents = iconv("ISO-8859-1", "UTF-8", $file_contents);

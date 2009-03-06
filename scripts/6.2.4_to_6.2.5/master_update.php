@@ -175,7 +175,7 @@ if ( empty($bash) or !$bash ) {
    echo('</body>'."\n");
    echo('</html>'."\n");
 } else {
-   echo(count($scripts)." scripts processed in ".sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))." hours\n");
+   echo(count($scripts)." scripts processed in ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))." hours\n");
    echo("\n");
 }
 flush();
