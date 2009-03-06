@@ -49,7 +49,7 @@ class cs_etchat_manager extends cs_manager {
          ) {
          // no -> enter chat room
          if ( empty($result[0]) ) {
-            $sql = 'INSERT INTO etchat_rooms VALUES ('.$context->getItemID().',"'.addslashes(htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8')).'");';
+            $sql = 'INSERT INTO etchat_rooms VALUES ('.$context->getItemID().',"'.addslashes(htmlentities($context->getTitle(), ENT_NOQUOTES, 'UTF-8')).'","","NULL","NULL");';
          }
 
          // new name -> change room
@@ -89,7 +89,7 @@ class cs_etchat_manager extends cs_manager {
          ) {
          // no -> enter user
          if ( empty($result[0]) ) {
-            $sql = 'INSERT INTO etchat_user VALUES ('.$user_item_id.',"'.addslashes(htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')).'",NULL,"gast");';
+            $sql = 'INSERT INTO etchat_user VALUES ('.$user_item_id.',"'.addslashes(htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')).'",NULL,"gast","n");';
          } else {
             $sql = 'UPDATE etchat_user SET etchat_username="'.addslashes(htmlentities($user_fullname, ENT_NOQUOTES, 'UTF-8')).'" WHERE etchat_user_id='.$user_item_id.';';
          }

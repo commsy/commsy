@@ -150,12 +150,15 @@ if ( $external_tool == 'homepage' ) {
          pr('CHAT_ERROR');
       } else {
          session_start();
-         $_SESSION['user_id'] = $current_user->getItemID();
-         $_SESSION['username'] = $current_user->getFullname();
-         $_SESSION['user_priv'] = 'gast';
-         $_SESSION['room_id'] = $current_context->getItemID();
+//         $_SESSION['user_id'] = $current_user->getItemID();
+//         $_SESSION['username'] = $current_user->getFullname();
+//         $_SESSION['user_priv'] = 'gast';
+//         $_SESSION['id_room'] = $current_context->getItemID();
 
-         $url = $c_etchat_url.'/chat.php?room_id='.$current_context->getItemID();
+         $_SESSION['etchat_username'] = $current_user->getFullname();
+         $_SESSION['etchat_gender'] = 'n';
+
+         $url = $c_etchat_url.'/Zusatztool_Anbindung_an_Fremduserverwaltung.php';
          include_once('functions/misc_functions.php');
          redirect_with_url($url);
       }
