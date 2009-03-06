@@ -55,7 +55,7 @@ include_once('../update_functions.php');
 // time management for this script
 $time_start = getmicrotime();
 
-echo ('wiki: convert wikis to utf-8'."\n");
+echo ('wiki: convert wikis to utf-8'.LINEBREAK);
 $success = true;
 
 @include_once('../../etc/commsy/pmwiki.php');

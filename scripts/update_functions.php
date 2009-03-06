@@ -76,7 +76,7 @@ function update_progress_bar($total) {
 function getProcessedTimeInHTML ($time_start) {
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
-$retour = LINEBREAK."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))."\n";
+$retour = LINEBREAK."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60)).LINEBREAK;
 return $retour;
 }
 
