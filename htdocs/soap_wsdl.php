@@ -188,6 +188,25 @@
 <message name='getAuthenticationForWikiOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='savePosForItemIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:integer'/>
+  <part name='x' type='xsd:integer'/>
+  <part name='y' type='xsd:integer'/>
+</message>
+<message name='savePosForItemOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
+<message name='savePosForLinkIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='item_id' type='xsd:integer'/>
+  <part name='label_id' type='xsd:integer'/>
+  <part name='x' type='xsd:integer'/>
+  <part name='y' type='xsd:integer'/>
+</message>
+<message name='savePosForLinkOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -285,6 +304,14 @@
   <operation name='getAuthenticationForWiki'>
     <input message='tns:getAuthenticationForWikiIN'/>
     <output message='tns:getAuthenticationForWikiOUT'/>
+  </operation>
+  <operation name='savePosForItem'>
+    <input message='tns:savePosForItemIN'/>
+    <output message='tns:savePosForItemOUT'/>
+  </operation>
+  <operation name='savePosForLink'>
+    <input message='tns:savePosForLinkIN'/>
+    <output message='tns:savePosForLinkOUT'/>
   </operation>
 </portType>
 
@@ -547,6 +574,28 @@
   </operation>
   <operation name='getAuthenticationForWiki'>
     <soap:operation soapAction='urn:xmethodsCommSy#getAuthenticationForWiki'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='savePosForItem'>
+    <soap:operation soapAction='urn:xmethodsCommSy#savePosForItem'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='savePosForLink'>
+    <soap:operation soapAction='urn:xmethodsCommSy#savePosForLink'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

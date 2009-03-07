@@ -50,12 +50,12 @@ class cs_connection_soap {
    // Kann  beides entfallen, sobald die Umstellung intern durch ist.
    private function _encode_input ($value) {
       //return utf8_decode($value);
-      return $value();
+      return $value;
    }
 
    private function _encode_output ($value) {
       //return utf8_encode($value);
-      return $value();
+      return $value;
    }
    // --->UTF8<---
    // ------------
@@ -1579,6 +1579,48 @@ class cs_connection_soap {
             $result = new SoapFault($info,$info_text);
          }
          return $result;
+   }
+
+   public function savePosForItem ($session_id, $item_id, $x, $y) {
+      $result = true;
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
+         $auth_source = $session->getValue('auth_source');
+
+         // getItem
+         $item_id = $this->_encode_input($item_id);
+         $item_manager = $this->_environment->getItemManager();
+         $item_type = $item_manager->getItemType($item_id);
+         $manager = $this->_environment->getManager($item_type);
+         $item = $manager->getItem($item_id);
+         if ( $item->mayEditByUserID($user_id,$auth_source) ) {
+            $x = $this->_encode_input($x);
+            $y = $this->_encode_input($y);
+            $item->setPosX($x);
+            $item->setPosY($y);
+            $item->save();
+            $this->_log('material','SOAP:savePosForItem','SID='.$session_id.'&item_id='.$item_id.'&x='.$x.'&y='.$y);
+         } else {
+            $info = 'ERROR: SAVE POS FOR ITEM';
+            $info_text = 'user ('.$user_id.' / '.$auth_source.') is not allowed to edit item ('.$item_id.')';
+            $result = new SoapFault($info,$info_text);
+         }
+         $this->_updateSessionCreationDate($session_id);
+      } else {
+         $info = 'ERROR: SAVE POS FOR ITEM';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
+
+   public function savePosForLink ($session_id, $item_id, $label_id, $x, $y) {
+      $result = true;
+      return $result;
    }
 }
 ?>

@@ -844,14 +844,7 @@ class cs_material_manager extends cs_manager {
    function _buildItem($db_array) {
       include_once('functions/text_functions.php');
       $db_array['extras'] = mb_unserialize($db_array['extras']);
-      foreach ( $db_array as $key => $value ) {   // Delete, when DB-fieldname is changed
-         if ( $key == 'modificator' ) {
-          $data_array['modificator_id'] = $db_array[$key];
-         } else {
-            $data_array[$key] = $db_array[$key];
-         }
-      }                                           // Till here
-      return parent::_buildItem($data_array);
+      return parent::_buildItem($db_array);
    }
 
    /** build a new material item

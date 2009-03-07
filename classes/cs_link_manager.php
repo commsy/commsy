@@ -467,6 +467,7 @@ class cs_link_manager extends cs_manager {
               'second_item_id="'.encode(AS_DB,$second_item->getItemID()).'",'.
               'first_item_type="'.encode(AS_DB,$link_item->getFirstLinkedItemType()).'",'.
               'second_item_type="'.encode(AS_DB,$link_item->getSecondLinkedItemType()).'",'.
+              'extras="'.encode(AS_DB,serialize($link_item->getExtraInformation())).'"'.
               ' WHERE item_id="'.encode(AS_DB,$link_item->getItemID()).'"';
 
      $result = $this->_db_connector->performQuery($query);
@@ -941,6 +942,46 @@ class cs_link_manager extends cs_manager {
       }
 
       return $retour;
+   }
+
+  /** get a link item
+    *
+    * @param integer item_id id of the item
+    *
+    * @return object cs_link_item a link item
+    */
+   function getItem ($item_id) {
+      $item = NULL;
+      if ( array_key_exists($item_id,$this->_cached_items) ) {
+         $item = $this->_buildItem($this->_cached_items[$item_id]);
+      } elseif ( !empty($item_id) ) {
+         $query = 'SELECT * FROM '.$this->_db_table.' WHERE '.$this->_db_table.'.item_id = "'.encode(AS_DB,$item_id).'";';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) or empty($result[0]) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting one '.$this->_db_table.' item ('.$item_id.').',E_USER_WARNING);
+         } else {
+            $item = $this->_buildItem($result[0]);
+            if ( $this->_cache_on ) {
+               $this->_cached_items[$result[0]['item_id']] = $result[0];
+            }
+         }
+      }
+      return $item;
+   }
+
+   /** Prepares the db_array for the item
+    *
+    * @param $db_array Contains the data from the database
+    *
+    * @return array Contains prepared data ( textfunctions applied etc. )
+    */
+   function _buildItem($db_array) {
+      if ( !empty($db_array['extras']) ) {
+         include_once('functions/text_functions.php');
+         $db_array['extras'] = mb_unserialize($db_array['extras']);
+      }
+      return parent::_buildItem($db_array);
    }
 }
 ?>
