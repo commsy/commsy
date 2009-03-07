@@ -458,6 +458,29 @@ function getShortMonthNameToInt($month) {
    return $ret;
 }
 
+function getYearFromDateTime ( $datetime ) {
+   $retour = '';
+   if ( !empty($datetime) ) {
+      $retour = substr($datetime,0,4);
+   }
+   return $retour;
+}
+
+function getMonthFromDateTime ( $datetime ) {
+   $retour = '';
+   if ( !empty($datetime) ) {
+      $retour = substr($datetime,5,2);
+   }
+   return $retour;
+}
+
+function getDayFromDateTime ( $datetime ) {
+   $retour = '';
+   if ( !empty($datetime) ) {
+      $retour = substr($datetime,8,2);
+   }
+   return $retour;
+}
 
 date_default_timezone_set(date_default_timezone_get());
 ?>

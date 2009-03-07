@@ -1940,6 +1940,39 @@ class cs_item {
                $retour .= '            </item>'.LF;
             }
             $retour .= '         </list>'.LF;
+         } else {
+            $mod_list = $this->getModifierList();
+            if ( isset($mod_list) and $mod_list->isNotEmpty() ) {
+               $retour .= '         <list>'.LF;
+               $retour .= '            <type>author</type>'.LF;
+               $mod_item = $mod_list->getFirst();
+               while ( $mod_item ) {
+                  if ( isset($mod_item) ) {
+                     $retour .= '            <item>'.LF;
+                     $retour .= '               <type>author</type>'.LF;
+                     $retour .= '               <fullname><![CDATA['.trim($mod_item->getFullname()).']]></fullname>'.LF;
+                     $retour .= '               <firstname><![CDATA['.trim($mod_item->getFirstname()).']]></firstname>'.LF;
+                     $retour .= '               <lastname><![CDATA['.trim($mod_item->getLastname()).']]></lastname>'.LF;
+                     $retour .= '            </item>'.LF;
+                  }
+                  $mod_item = $mod_list->getNext();
+               }
+               $retour .= '         </list>'.LF;
+            }
+         }
+         $date = $this->getPublishingDate();
+         if ( !empty($date) ) {
+            $retour .= '         <date>'.LF;
+            $retour .= '            <year>'.$date.'</year>'.LF;
+            $retour .= '         </date>'.LF;
+         } else {
+            $mod_date = $this->getModificationDate();
+            include_once('functions/date_functions.php');
+            $retour .= '         <date>'.LF;
+            $retour .= '            <year>'.getYearFromDateTime($mod_date).'</year>'.LF;
+            $retour .= '            <month>'.getMonthFromDateTime($mod_date).'</month>'.LF;
+            $retour .= '            <day>'.getDayFromDateTime($mod_date).'</day>'.LF;
+            $retour .= '         </date>'.LF;
          }
       }
 
@@ -1972,6 +2005,23 @@ class cs_item {
       global $c_commsy_domain;
       global $c_commsy_url_path;
       $retour = $c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$this->getContextID(),$mod, $fct, $params);
+      return $retour;
+   }
+
+   public function getModifierList () {
+      $retour = NULL;
+      $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+      $modifiers = $link_modifier_item_manager->getModifiersOfItem($this->getItemID());
+      if ( !empty($modifiers) ) {
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->resetLimits();
+         $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+         $user_manager->setIDArrayLimit($modifiers);
+         $user_manager->select();
+         $retour = $user_manager->get();
+         unset($user_manager);
+      }
+      unset($link_modifier_item_manager);
       return $retour;
    }
 }

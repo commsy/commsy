@@ -403,8 +403,6 @@ class cs_material_item extends cs_item {
     * this method returns the publishing_date of the material
     *
     * @return string publishing_date of a material
-    *
-    * @author CommSy Development Group
     */
    function getPublishingDate () {
       return (int) $this->_getValue('publishing_date');
@@ -1526,6 +1524,50 @@ function _copySectionList ($copy_id) {
       return $wiki_manager->getExportToWikiLink($this->getItemID());
    }
    //------------- Materialexport -------------
+   //------------------------------------------
+
+   //------------------------------------------
+   //------------- study.log ------------------
+
+   /** get the x-position of the item
+    * this method get the x-position of the item for study.log
+    *
+    * @param int
+    */
+   function getPosX () {
+      $retour = $this->_getExtra('x');
+      return $retour;
+   }
+
+   /** get the y-position of the item
+    * this method get the y-position of the item for study.log
+    *
+    * @param int
+    */
+   function getPosY () {
+      $retour = $this->_getExtra('y');
+      return $retour;
+   }
+
+   /** set the x-position of the item
+    * this method set the x-position of the item for study.log
+    *
+    * @param int
+    */
+   function setPosX ($value) {
+      $this->_addExtra('x',(int)$value);
+   }
+
+   /** set the y-position of the item
+    * this method set the y-position of the item for study.log
+    *
+    * @param int
+    */
+   function setPosY ($value) {
+      $this->_addExtra('y',(int)$value);
+   }
+
+   //------------- study.log ------------------
    //------------------------------------------
 }
 ?>
