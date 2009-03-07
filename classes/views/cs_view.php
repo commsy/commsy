@@ -254,7 +254,7 @@ class cs_view {
 //      $replace[] = '&lt;$1';
 //      $search[]  = '§<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])§';
 //      $replace[] = '&lt;$1';
-      
+
       $search[]  = '~<([/]{0,1}[j|J][a|A][v|V][a|A][s|S][c|C][r|R][i|I][p|P][t|T])~u';
       $replace[] = '&lt;$1';
       $search[]  = '~<([/]{0,1}[s|S][c|C][r|R][i|I][p|P][t|T])~u';
@@ -269,7 +269,7 @@ class cs_view {
       $replace[] = '&lt;$1';
       $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
       $replace[] = '&lt;$1';
-      
+
       $text = preg_replace($search,$replace,$text);
 
       return $text;

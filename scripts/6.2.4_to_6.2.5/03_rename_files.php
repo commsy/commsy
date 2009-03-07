@@ -21,6 +21,7 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+set_time_limit(0);
 
 include_once('../migration.conf.php');
 include_once('../db_link.dbi.php');
