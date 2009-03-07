@@ -1591,7 +1591,6 @@ class cs_connection_soap {
          $portal_id = $session->getValue('commsy_id');
          $auth_source = $session->getValue('auth_source');
 
-         // getItem
          $item_id = $this->_encode_input($item_id);
          $item_manager = $this->_environment->getItemManager();
          $item_type = $item_manager->getItemType($item_id);
@@ -1609,6 +1608,10 @@ class cs_connection_soap {
             $info_text = 'user ('.$user_id.' / '.$auth_source.') is not allowed to edit item ('.$item_id.')';
             $result = new SoapFault($info,$info_text);
          }
+         unset($manager);
+         unset($item);
+         unset($session);
+         unset($item_manager);
          $this->_updateSessionCreationDate($session_id);
       } else {
          $info = 'ERROR: SAVE POS FOR ITEM';
@@ -1620,6 +1623,67 @@ class cs_connection_soap {
 
    public function savePosForLink ($session_id, $item_id, $label_id, $x, $y) {
       $result = true;
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $portal_id = $session->getValue('commsy_id');
+         $auth_source = $session->getValue('auth_source');
+
+         $item_id = $this->_encode_input($item_id);
+         $item_manager = $this->_environment->getItemManager();
+         $item_type = $item_manager->getItemType($item_id);
+
+         if ( $item_type == CS_LINKITEM_TYPE ) {
+            $result = $this->savePosForItem($session_id,$item_id,$x,$y);
+         } else {
+            $label_id = $this->_encode_input($label_id);
+            $label_type = $item_manager->getItemType($label_id);
+            if ( $label_type == CS_LINKITEM_TYPE ) {
+               $result = $this->savePosForItem($session_id,$label_id,$x,$y);
+            } else {
+               $manager = $this->_environment->getLinkManager();
+               if ( $item_type != CS_BUZZWORD_TYPE ) {
+                  $real_item_id = $item_id;
+                  $real_item_type = $item_type;
+                  $buzz_item_id = $label_id;
+                  $buzz_item_type = $label_type;
+               } else {
+                  $real_item_id = $label_id;
+                  $real_item_type = $label_type;
+                  $buzz_item_id = $item_id;
+                  $buzz_item_type = $item_type;
+               }
+               $manager_real_item = $this->_environment->getManager($real_item_type);
+               $real_item = $manager_real_item->getItem($real_item_id);
+               $link_type = 'buzzword_for';
+               $link_list = $manager->getLinks($link_type,$real_item);
+               foreach ( $link_list as $link_item ) {
+                  if ( $link_item['from_item_id'] == $buzz_item_id
+                       or $link_item['to_item_id'] == $buzz_item_id
+                     ) {
+                     $x = $this->_encode_input($x);
+                     $y = $this->_encode_input($y);
+                     $link_item['x'] = $x;
+                     $link_item['y'] = $y;
+                     $manager->savePos($link_item);
+                     $this->_log('material','SOAP:savePosForLink','SID='.$session_id.'&item_id='.$label_id.'&item_id='.$label_id.'&x='.$x.'&y='.$y);
+                     break;
+                  }
+               }
+            }
+         }
+         unset($manager_real_item);
+         unset($real_item);
+         unset($manager);
+         unset($item_manager);
+         $this->_updateSessionCreationDate($session_id);
+      } else {
+         $info = 'ERROR: SAVE POS FOR ITEM';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
       return $result;
    }
 }

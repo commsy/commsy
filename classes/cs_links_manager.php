@@ -470,6 +470,13 @@ class cs_links_manager extends cs_manager {
               'to_version_id="'.encode(AS_DB,$db_data['to_version_id']).'",'.
               'link_type="'.encode(AS_DB,$db_data['link_type']).'",';
      $query .= 'context_id="'.encode(AS_DB,$db_data['room_id']).'"';
+     if ( !empty($db_data['x']) ) {
+        $query .= ',x="'.encode(AS_DB,$db_data['x']).'"';
+     }
+     if ( !empty($db_data['y']) ) {
+        $query .= ',y="'.encode(AS_DB,$db_data['y']).'"';
+     }
+     $query .= ';';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');
@@ -477,8 +484,32 @@ class cs_links_manager extends cs_manager {
      }
   }
 
+   public function savePos ($db_data) {
+      if ( !empty($db_data)
+           and !empty($db_data['x'])
+           and !empty($db_data['y'])
+           and !empty($db_data['from_item_id'])
+           and !empty($db_data['to_item_id'])
+           and !empty($db_data['link_type'])
+         ) {
+         $sql =  'UPDATE '.$this->_db_table.' SET x="'.$db_data['x'].'",y="'.$db_data['y'].'"';
+         $sql .= ' WHERE from_item_id="'.$db_data['from_item_id'].'" AND to_item_id="'.$db_data['to_item_id'].'" AND link_type="'.$db_data['link_type'].'"';
+         if ( !empty($db_data['from_version_id']) ) {
+            $sql .= ' AND from_version_id="'.$db_data['from_version_id'].'"';
+         }
+         if ( !empty($db_data['to_version_id']) ) {
+            $sql .= ' AND to_version_id="'.$db_data['to_version_id'].'"';
+         }
+         $sql .= ';';
+         $result = $this->_db_connector->performQuery($sql);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems saving x and y from query: "'.$sql.'"',E_USER_WARNING);
+         }
+      }
+   }
 
-    /** save a link
+   /** save a link
     * save a link into the database table "links"
     *
     * @param array
