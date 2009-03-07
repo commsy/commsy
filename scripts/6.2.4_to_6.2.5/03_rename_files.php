@@ -30,13 +30,13 @@ include_once('../update_functions.php');
 // time management for this script
 $time_start = getmicrotime();
 
-echo ('commsy: rename files to fileID'."\n");
+echo ('commsy: rename files to fileID'.LINEBREAK);
 $success = true;
 
 // get file ids
 $count = array_shift(mysql_fetch_row(select('SELECT count( * ) FROM files')));
 if ($count < 1) {
-   echo "<br />nothing to do.";
+   echo "nothing to do.";
 } else {
    init_progress_bar($count);
    $sql = 'SELECT files.files_id, files.context_id, files.filename FROM files';

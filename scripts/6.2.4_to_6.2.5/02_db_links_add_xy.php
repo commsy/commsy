@@ -57,5 +57,5 @@ if ( in_array('y',$column_array) ) {
 // end of execution time
 $time_end = getmicrotime();
 $time = round($time_end - $time_start,3);
-echo "<br/>Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60))."\n";
+echo LINEBREAK."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60)).LINEBREAK;
 ?>
