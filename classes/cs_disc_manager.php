@@ -111,14 +111,16 @@ class cs_disc_manager {
    function copyFileFromRoomToRoom ($old_room_id, $old_file_id, $filename, $new_room_id, $new_file_id) {
       $retour = false;
       if ( empty($old_room_id) ) {
-         include_once('functions/error_functions.php');trigger_error('old_room_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('old_room_id is not set',E_USER_ERROR);
       }
       $this->_makeFolder($this->_first_id, $new_room_id);
       $source_file = $this->_file_path_basic;
       if (!empty($this->_first_id)) {
          $source_file .= $this->_first_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('first_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('first_id is not set',E_USER_ERROR);
       }
       $source_file .= $old_room_id.'/'.'cid'.$old_room_id.'_'.$old_file_id.'_'.$filename;
 
@@ -126,7 +128,8 @@ class cs_disc_manager {
       if (!empty($this->_first_id)) {
          $target_file .= $this->_first_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('first_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('first_id is not set',E_USER_ERROR);
       }
       $target_file .= $new_room_id.'/'.'cid'.$new_room_id.'_'.$new_file_id.'_'.$filename;
 
@@ -154,7 +157,8 @@ class cs_disc_manager {
       if (!empty($this->_first_id)) {
          $source_file .= $this->_first_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('first_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('first_id is not set',E_USER_ERROR);
       }
       $source_file .= $old_room_id.'/'.$picture_name;
 
@@ -303,7 +307,7 @@ class cs_disc_manager {
    public function getLastSavedFileName () {
       return $this->_last_saved_filename;
    }
-   
+
    public function getCurrentFileName($context_id, $file_id, $file_name){
       if(file_exists($this->getFilePath() . 'cid' . $context_id . '_' . $file_id . '_' . $file_name)){
          return 'cid' . $context_id . '_' . $file_id . '_' . $file_name;

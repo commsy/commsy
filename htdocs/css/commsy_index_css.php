@@ -118,7 +118,7 @@ span.select_link{
 .list tr{
 }
 
-table.list {
+table.list, div.index_flash {
    width: 100%;
    font-size:10pt;
    border: 1px solid <?php echo($color['tabs_background'])?>;

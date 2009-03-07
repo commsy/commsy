@@ -83,8 +83,7 @@ class cs_page_xml_view extends cs_page_view {
       }
 
       $retour .= '</commsy>';
-      return utf8_encode($retour);
-      #return $retour; // nach der migration zu utf8
+      return $retour;
    }
 }
 ?>
