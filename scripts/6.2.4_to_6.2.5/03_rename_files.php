@@ -63,8 +63,14 @@ if ($count < 1) {
 
       // rename file
       if ( file_exists($row['full_disc_filename']) ) {
-        echo ($row['full_disc_filename'] . ' -> ' . $row['new_full_disc_filename'] . "\n");
-        rename($row['full_disc_filename'], $row['new_full_disc_filename']);
+         echo ($row['full_disc_filename'] . ' -> ' . $row['new_full_disc_filename'] . "\n");
+         rename($row['full_disc_filename'], $row['new_full_disc_filename']);
+      }
+
+      // clean filename
+      if ( $row['filename'] != rawurldecode($row['filename'])) {
+         $sql = 'UPDATE files SET filename="'.addslashes(rawurldecode($row['filename'])).'" WHERE files_id="'.$row['files_id'].'";';
+         select($sql);
       }
 
       update_progress_bar($count);
