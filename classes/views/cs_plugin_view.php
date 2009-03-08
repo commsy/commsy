@@ -49,6 +49,11 @@ class cs_plugin_view extends cs_view {
     */
    private $_icon = NULL;
 
+   /**
+    * boolean - display title or not
+    */
+   private $_display_title = true;
+
    /** constructor: cs_text_view
     * the only available constructor, initial values for internal variables
     *
@@ -90,7 +95,7 @@ class cs_plugin_view extends cs_view {
     *
     * @param string value title of the plugin view
     */
-   function setTitle ($value) {
+   public function setTitle ($value) {
       $this->_title = (string)$value;
    }
 
@@ -99,8 +104,15 @@ class cs_plugin_view extends cs_view {
     *
     * @param string value title icon of the plugin view
     */
-   function setIcon ($value) {
+   public function setIcon ($value) {
       $this->_icon = (string)$value;
+   }
+
+   /** not display title
+    * this method sets a flag so the title will not be shown
+    */
+   public function notDisplayTitle () {
+      $this->_display_title = false;
    }
 
    /** get content of plugin as HTML
@@ -111,7 +123,9 @@ class cs_plugin_view extends cs_view {
    public function asHTML () {
       $html  = LF;
       $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' -->'.LF;
-      $html .= $this->_getTitleAsHTML();
+      if ($this->_display_title) {
+         $html .= $this->_getTitleAsHTML();
+      }
       if ( !empty($this->_content) ) {
          foreach ( $this->_content as $value ) {
             $html .= $value.LF;
