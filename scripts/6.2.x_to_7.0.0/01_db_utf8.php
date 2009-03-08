@@ -24,6 +24,26 @@
 
 set_time_limit(0);
 
+$memory_limit2 = 64 * 1024 * 1024;
+$memory_limit = ini_get('memory_limit');
+if ( !empty($memory_limit) ) {
+   if ( strstr($memory_limit,'M') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024 * 1024;
+   } elseif ( strstr($memory_limit,'K') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024;
+   }
+}
+if ( $memory_limit < $memory_limit2 ) {
+   ini_set('memory_limit',$memory_limit2);
+   $memory_limit3 = ini_get('memory_limit');
+   if ( $memory_limit3 != $memory_limit2 ) {
+      echo('Can not set memory limit. Please try 64M in your php.ini.');
+      exit();
+   }
+}
+
 include_once('../migration.conf.php');
 include_once('../db_link.dbi.php');
 include_once('../update_functions.php');
