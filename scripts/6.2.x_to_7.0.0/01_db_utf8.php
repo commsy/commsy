@@ -206,12 +206,21 @@ function changeCharInString ( $string, $string2, $char_array ) {
             if ( $string2[$place] != '?' ) {
                for ($i=($place-10); $i<=($place+10); $i++) {
                   if ( $string2[$i] == '?' ) {
-                      $string2[$i] = $char_array[ord($char)];
-                      break;
+                     if ( strlen($char_array[ord($char)]) == 1 ) {
+                        $string2[$place] = $char_array[ord($char)];
+                     } else {
+                        $string2 = substr($string2,0,$place).$char_array[ord($char)].substr($string2,($place+1));
+                     }
+                     $string2[$i] = $char_array[ord($char)];
+                     break;
                   }
                }
             } else {
-               $string2[$place] = $char_array[ord($char)];
+               if ( strlen($char_array[ord($char)]) == 1 ) {
+                  $string2[$place] = $char_array[ord($char)];
+               } else {
+                  $string2 = substr($string2,0,$place).$char_array[ord($char)].substr($string2,($place+1));
+               }
             }
          } else {
             #pr($string);
@@ -550,33 +559,131 @@ $error_log_array = array();
 $char_trans_array = array();
 $char_trans_array[128] = 'EUR'; // EURO Zeichen
 $char_trans_array[130] = ",";
-$char_trans_array[131] = 'f';   // mathematisches f f�r Formel
+$char_trans_array[131] = 'f';   // mathematisches f für Formel
 $char_trans_array[132] = '"';
 $char_trans_array[133] = '...';
-$char_trans_array[133] = ':';   // Zwei Kreuze übereinander
+$char_trans_array[134] = ':';   // †
 $char_trans_array[135] = ':';   // Zwei Kreuze übereinander
-$char_trans_array[139] = '<';
-$char_trans_array[145] = "'";
+$char_trans_array[136] = '^';   // ˆ
+$char_trans_array[137] = '%';   // ‰
+$char_trans_array[138] = 'S';   // Š
+$char_trans_array[139] = '<';   //
+$char_trans_array[140] = "CE";  // Œ
+$char_trans_array[141] = " ";   //
+$char_trans_array[142] = "Z";   // Ž
+$char_trans_array[143] = " ";   //
+$char_trans_array[144] = " ";   //
+$char_trans_array[145] = "'";   //
 $char_trans_array[146] = "'";
 $char_trans_array[147] = '"';
 $char_trans_array[148] = '"';
 $char_trans_array[149] = '*';   // Aufzählungspunkt
 $char_trans_array[150] = '-';
 $char_trans_array[151] = '-';
-$char_trans_array[153] = 'TM';   // TM hochgestellt
-$char_trans_array[154] = 's'; // š
-$char_trans_array[156] = 'ae'; // œ
-$char_trans_array[158] = 'z'; // ž
-$char_trans_array[171] = '<<'; // «
-$char_trans_array[187] = '>>'; // »
-$char_trans_array[196] = 'Ä'; // Ä
-$char_trans_array[214] = 'Ö'; // Ö
-$char_trans_array[220] = 'Ü'; // Ü
-$char_trans_array[223] = 'ß'; // ß
-$char_trans_array[228] = 'ä'; // ä
-$char_trans_array[233] = 'e'; // é
-$char_trans_array[246] = 'ö'; // ö
-$char_trans_array[252] = 'ü'; // ü
+$char_trans_array[152] = '~';   // ˜
+$char_trans_array[153] = 'TM';  // TM hochgestellt
+$char_trans_array[154] = 's';   // š
+$char_trans_array[155] = '>';   // ›
+$char_trans_array[156] = 'ae';  // œ
+$char_trans_array[157] = ' ';   //
+$char_trans_array[158] = 'z';   // ž
+$char_trans_array[159] = 'Y';   // Ÿ
+$char_trans_array[160] = ' ';   //
+$char_trans_array[161] = '!';   // ¡
+$char_trans_array[162] = 'e';   // ¢
+$char_trans_array[163] = 'L';   // £
+$char_trans_array[164] = 'o';   // ¤
+$char_trans_array[165] = 'Y';   // ¥
+$char_trans_array[166] = ':';   // ¦
+$char_trans_array[167] = '§';   // §
+$char_trans_array[168] = '-';   // ¨
+$char_trans_array[169] = 'c';   // ©
+$char_trans_array[170] = 'a';   // ª
+$char_trans_array[171] = '<<';  // «
+$char_trans_array[172] = '-';   // ¬
+$char_trans_array[173] = ' ';   //
+$char_trans_array[174] = 'R';   // ®
+$char_trans_array[175] = '-';   // ¯
+$char_trans_array[176] = 'o';   // °
+$char_trans_array[177] = '+';   // ±
+$char_trans_array[178] = '2';   // ²
+$char_trans_array[179] = '3';   // ³
+$char_trans_array[180] = "'";   // ´
+$char_trans_array[181] = 'y';   // µ
+$char_trans_array[182] = 'q';   // ¶
+$char_trans_array[183] = '.';   // ·
+$char_trans_array[184] = ',';   // ¸
+$char_trans_array[185] = '1';   // ¹
+$char_trans_array[186] = '0';   // º
+$char_trans_array[187] = '>>';  // »
+$char_trans_array[188] = '1/4';   // ¼
+$char_trans_array[189] = '1/2';   // ½
+$char_trans_array[190] = '3/4';   // ¾
+$char_trans_array[191] = '?';   // ¿
+$char_trans_array[192] = 'A';   // À
+$char_trans_array[193] = 'A';   // Á
+$char_trans_array[194] = 'A';   // Â
+$char_trans_array[195] = 'A';   // Ã
+$char_trans_array[196] = 'Ä';   // Ä
+$char_trans_array[197] = 'A';   // Å
+$char_trans_array[198] = 'AE';   // Æ
+$char_trans_array[199] = 'C';   // Ç
+$char_trans_array[200] = 'E';   // È
+$char_trans_array[201] = 'E';   // É
+$char_trans_array[202] = 'E';   // Ê
+$char_trans_array[203] = 'E';   // Ë
+$char_trans_array[204] = 'I';   // Ì
+$char_trans_array[205] = 'I';   // Í
+$char_trans_array[206] = 'I';   // Î
+$char_trans_array[207] = 'I';   // Ï
+$char_trans_array[208] = 'D';   // Ð
+$char_trans_array[209] = 'N';   // Ñ
+$char_trans_array[210] = 'O';   // Ò
+$char_trans_array[211] = 'O';   // Ó
+$char_trans_array[212] = 'O';   // Ô
+$char_trans_array[213] = 'O';   // Õ
+$char_trans_array[214] = 'Ö';   // Ö
+$char_trans_array[215] = 'x';   // ×
+$char_trans_array[216] = 'O';   // Ø
+$char_trans_array[217] = 'U';   // Ù
+$char_trans_array[218] = 'U';   // Ú
+$char_trans_array[219] = 'U';   // Û
+$char_trans_array[220] = 'Ü';   // Ü
+$char_trans_array[221] = 'Y';   // Ý
+$char_trans_array[222] = 'p';   // Þ
+$char_trans_array[223] = 'ß';   // ß
+$char_trans_array[224] = 'a';   // à
+$char_trans_array[225] = 'a';   // á
+$char_trans_array[226] = 'a';   // â
+$char_trans_array[227] = 'a';   // ã
+$char_trans_array[228] = 'ä';   // ä
+$char_trans_array[229] = 'a';   // å
+$char_trans_array[230] = 'ae';  // æ
+$char_trans_array[231] = 'c';   // ç
+$char_trans_array[232] = 'e';   // è
+$char_trans_array[233] = 'e';   // é
+$char_trans_array[234] = 'e';   // ê
+$char_trans_array[235] = 'e';   // ë
+$char_trans_array[236] = 'i';   // ì
+$char_trans_array[237] = 'i';   // í
+$char_trans_array[238] = 'i';   // î
+$char_trans_array[239] = 'i';   // ï
+$char_trans_array[240] = 'o';   // ð
+$char_trans_array[241] = 'n';   // ñ
+$char_trans_array[242] = 'o';   // ò
+$char_trans_array[243] = 'o';   // ó
+$char_trans_array[244] = 'o';   // ô
+$char_trans_array[245] = 'o';   // õ
+$char_trans_array[246] = 'ö';   // ö
+$char_trans_array[247] = '+';   // ÷
+$char_trans_array[248] = 'o';   // ø
+$char_trans_array[249] = 'u';   // ù
+$char_trans_array[250] = 'u';   // ú
+$char_trans_array[251] = 'u';   // û
+$char_trans_array[252] = 'ü';   // ü
+$char_trans_array[253] = 'y';   // ý
+$char_trans_array[254] = 'p';   // þ
+$char_trans_array[255] = 'y';   // ÿ
 
 foreach ( $table_array as $table ) {
    echo(LINEBREAK);
