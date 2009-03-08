@@ -3,9 +3,7 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
-// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, Jos� Manuel Gonz�lez V�zquez
+// Copyright (c)2009 Dr. Iver Jackewitz
 //
 //    This file is part of CommSy.
 //
@@ -291,6 +289,7 @@ echo('database: '.$DB_Name);
 $sql = 'SHOW VARIABLES LIKE "collation_database";';
 $result = select($sql);
 $row = mysql_fetch_assoc($result);
+mysql_free_result($result);
 if ( empty($row['Value']) or $row['Value'] != 'latin1_german1_ci' ) {
    $sql = 'ALTER DATABASE '.$DB_Name.' CHARACTER SET latin1 COLLATE latin1_german1_ci;';
    if ( select($sql) ) {
@@ -321,12 +320,14 @@ while ($row = mysql_fetch_assoc($result) ) {
       $table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
+mysql_free_result($result);
 
 init_progress_bar(count($table_array));
 foreach ( $table_array as $table ) {
    $sql = 'SHOW TABLE STATUS FROM '.$DB_Name.' WHERE name="'.$table.'";';
    $result = select($sql);
    $row = mysql_fetch_assoc($result);
+   mysql_free_result($result);
    if ( empty($row['Collation']) or $row['Collation'] != 'latin1_german1_ci' ) {
       $sql = 'ALTER TABLE '.$table.' CHARACTER SET latin1 COLLATE latin1_german1_ci;';
       $success[] = select($sql);
@@ -343,6 +344,7 @@ foreach ( $table_array as $table ) {
          $column_array[] = $row;
       }
    }
+   mysql_free_result($result);
    if ( !empty($column_array) ) {
       foreach ( $column_array as $column ) {
          $sql = ' ALTER TABLE '.$table.' CHANGE '.$column['Field'].' '.$column['Field'].' '.$column['Type'].' CHARACTER SET latin1 COLLATE latin1_german1_ci';
@@ -390,6 +392,7 @@ foreach ( $table_array as $table ) {
       while ($row = mysql_fetch_assoc($result) ) {
           $column_array[] = $row;
       }
+      mysql_free_result($result);
 
       $sql  = 'DROP TABLE IF EXISTS old_'.$table.';';
       $success_array[] = select($sql);
@@ -437,6 +440,7 @@ foreach ( $table_array as $table ) {
       while ($row = mysql_fetch_assoc($result) ) {
           $column_array[] = $row;
       }
+      mysql_free_result($result);
 
       $sql  = 'DROP TABLE IF EXISTS utf8_'.$table.';';
       $success_array[] = select($sql);
@@ -482,6 +486,7 @@ while ($row = mysql_fetch_assoc($result) ) {
       $table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
+mysql_free_result($result);
 
 foreach ( $table_array as $table ) {
    if ( in_array(str_replace('old_','',$table),$tabel_extra_array) ) {
@@ -490,6 +495,7 @@ foreach ( $table_array as $table ) {
       $sql = 'SELECT count(*) as count FROM '.$table.';';
       $result = select($sql);
       $row = mysql_fetch_assoc($result);
+      mysql_free_result($result);
       $count = $row['count'];
       if ( $count > 0 ) {
          init_progress_bar($count);
@@ -497,6 +503,7 @@ foreach ( $table_array as $table ) {
             $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
             $result = select($sql);
             $row = mysql_fetch_assoc($result);
+            mysql_free_result($result);
             if ( !empty($row) ) {
                $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
                $first = true;
@@ -603,6 +610,7 @@ while ($row = mysql_fetch_assoc($result) ) {
       $table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
+mysql_free_result($result);
 
 $error_log_array = array();
 $char_trans_array = array();
@@ -742,6 +750,7 @@ foreach ( $table_array as $table ) {
    $sql .= ';';
    $result = select($sql);
    $row = mysql_fetch_assoc($result);
+   mysql_free_result($result);
    $count = $row['count'];
    if ( $count > 0 ) {
       init_progress_bar($count);
@@ -751,6 +760,7 @@ foreach ( $table_array as $table ) {
          $sql .= ' LIMIT '.$i.',1;';
          $result = select($sql);
          $row = mysql_fetch_assoc($result);
+         mysql_free_result($result);
          $row_orig = $row;
 
          $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table);
@@ -758,6 +768,7 @@ foreach ( $table_array as $table ) {
          $sql2 .= ' LIMIT '.$i.',1;';
          $result2 = select($sql2,false,'utf8');
          $row2 = mysql_fetch_assoc($result2);
+         mysql_free_result($result2);
          $row2_orig = $row2;
 
          if ( !empty($row) and !empty($row2) ) {
@@ -912,6 +923,7 @@ foreach ( $table_no_copy_array as $table ) {
    $sql = 'SHOW TABLE STATUS FROM '.$DB_Name.' WHERE name="'.$table.'";';
    $result = select($sql);
    $row = mysql_fetch_assoc($result);
+   mysql_free_result($result);
    if ( empty($row['Collation']) or $row['Collation'] != 'utf8_general_ci' ) {
       $sql = 'ALTER TABLE '.$table.' CHARACTER SET utf8 COLLATE utf8_general_ci;';
       $success_array[] = select($sql);
@@ -927,6 +939,7 @@ foreach ( $table_no_copy_array as $table ) {
          $column_array[] = $row;
       }
    }
+   mysql_free_result($result);
 
    if ( !empty($column_array) ) {
       foreach ( $column_array as $column ) {
@@ -972,6 +985,7 @@ while ($row = mysql_fetch_assoc($result) ) {
       $utf8_table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
+mysql_free_result($result);
 
 init_progress_bar(count($utf8_table_array));
 foreach ( $utf8_table_array as $table ) {
@@ -981,6 +995,7 @@ foreach ( $utf8_table_array as $table ) {
    while ($row = mysql_fetch_assoc($result) ) {
        $column_array[] = $row;
    }
+   mysql_free_result($result);
 
    $sql  = 'DROP TABLE IF EXISTS '.str_replace('utf8_','',$table).';';
    $success_array[] = select($sql,false,'utf8');
@@ -1021,6 +1036,8 @@ while ($row = mysql_fetch_assoc($result) ) {
       $table_array[] = $row['Tables_in_'.$DB_Name];
    }
 }
+mysql_free_result($result);
+
 foreach ($table_array as $table) {
    $sql = 'DROP TABLE '.$table.';';
    $success_array[] = select($sql);
@@ -1044,6 +1061,7 @@ flush();
 $sql = 'SHOW VARIABLES LIKE "collation_database";';
 $result = select($sql);
 $row = mysql_fetch_assoc($result);
+mysql_free_result($result);
 if ( empty($row['Value']) or $row['Value'] != 'utf8_general_ci' ) {
    $sql = 'ALTER DATABASE '.$DB_Name.' CHARACTER SET utf8 COLLATE utf8_general_ci;';
    if ( select($sql) ) {
