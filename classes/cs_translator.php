@@ -100,6 +100,8 @@ class cs_translator {
    */
    var $_version;
 
+   private $_dat_folder_array = array();
+
    /** constructor
     * the only available constructor, initial values for internal variables
     */
@@ -143,6 +145,19 @@ class cs_translator {
                $message = encode(FROM_FILE,$message);
                $this->_message_array = multi_array_merge($this->_message_array,$message);
                unset($message);
+            }
+         } else {
+            foreach ( $this->_dat_folder_array as $folder ) {
+               if ( file_exists($folder.'/'.$entry) ) {
+                  include_once($folder.'/'.$entry);
+                  $this->_loaded_message_dats[] = $entry;
+                  if (!empty($message)) {
+                     $message = encode(FROM_FILE,$message);
+                     $this->_message_array = multi_array_merge($this->_message_array,$message);
+                     unset($message);
+                  }
+                  break;
+               }
             }
          }
       } else {
@@ -288,8 +303,6 @@ class cs_translator {
     * @param array message array to translate
     *
     * @return string $message_text message array as string
-    *
-    * @author CommSy Development Group
     */
    function _translate2JavaString($message_array) {
       ksort($message_array);
@@ -1457,6 +1470,10 @@ function getShortMonthNameToInt($month) {
         }
      }
      return $used_tags;
+   }
+
+   public function addMessageDatFolder ( $value ) {
+      $this->_dat_folder_array[] = $value;
    }
 }
 ?>
