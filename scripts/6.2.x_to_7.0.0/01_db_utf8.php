@@ -345,6 +345,13 @@ foreach ( $table_array as $table ) {
 }
 echo(LINEBREAK);
 
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
+
 // copy content
 echo(LINEBREAK);
 echo('STEP2: rename tables with content');
@@ -376,6 +383,13 @@ foreach ( $table_array as $table ) {
    update_progress_bar(count($table_array));
 }
 echo(LINEBREAK);
+
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
 
 // create utf8 tables
 echo(LINEBREAK);
@@ -424,6 +438,13 @@ foreach ( $table_array as $table ) {
    update_progress_bar(count($table_array));
 }
 echo(LINEBREAK);
+
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
 
 // copy content from old to utf8
 echo(LINEBREAK);
@@ -493,7 +514,15 @@ foreach ( $table_array as $table ) {
       }
       echo(LINEBREAK);
    }
+
+   // success
+   $success = true;
+   foreach ( $success_array as $success_item ) {
+      $success = $success && $success_item;
+   }
+   $success_array = array();
 }
+
 flush();
 
 // verifying some tables
@@ -830,6 +859,13 @@ foreach ( $table_array as $table ) {
       echo(LINEBREAK);
    }
    echo(LINEBREAK);
+
+   // success
+   $success = true;
+   foreach ( $success_array as $success_item ) {
+      $success = $success && $success_item;
+   }
+   $success_array = array();
 }
 
 if ( isset($error_log_array) and !empty($error_log_array) ) {
@@ -896,6 +932,13 @@ foreach ( $table_no_copy_array as $table ) {
 echo(LINEBREAK);
 flush();
 
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
+
 // copy content
 echo(LINEBREAK);
 echo('STEP7: rename utf8-tables with content');
@@ -936,6 +979,13 @@ foreach ( $utf8_table_array as $table ) {
 echo(LINEBREAK);
 flush();
 
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
+
 // delete old_tables
 echo(LINEBREAK);
 echo('STEP8: delete old tables');
@@ -958,6 +1008,13 @@ foreach ($table_array as $table) {
 echo('done');
 echo(LINEBREAK);
 flush();
+
+// success
+$success = true;
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+$success_array = array();
 
 // database to utf8
 echo(LINEBREAK);
