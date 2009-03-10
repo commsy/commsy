@@ -73,19 +73,21 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      $this->_form->addRadioGroup('dates_status',getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
      $this->_form->combine();
      $this->_form->addExplanation('dates',getMessage('CONFIGURATION_DATES_DESC'));
-     $this->_form->addEmptyline();
 
-     //Diskussionsoptionen
-     $radio_values = array();
-     $radio_values[0]['text'] = '<img src="images/configuration_discussion_not_threaded.gif" alt="picture_simple" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[0]['value'] = '1';
-     $radio_values[1]['text'] = '<img src="images/configuration_discussion_threaded.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[1]['value'] = '2';
-     $radio_values[2]['text'] = '<span style="vertical-align: top;">'.getMessage('CONFIGURATION_DISCUSSION_DESC_3').'</span>';
-     $radio_values[2]['value'] = '3';
-     $this->_form->addRadioGroup('discussion_status',getMessage('DISCUSSION_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
-     $this->_form->combine();
-     $this->_form->addExplanation('discussions',getMessage('CONFIGURATION_DISCUSSION_WARNING'));
+     if ( !$this->_environment->inPrivateRoom() ) {
+        $this->_form->addEmptyline();
+        // Diskussionsoptionen
+        $radio_values = array();
+        $radio_values[0]['text'] = '<img src="images/configuration_discussion_not_threaded.gif" alt="picture_simple" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[0]['value'] = '1';
+        $radio_values[1]['text'] = '<img src="images/configuration_discussion_threaded.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[1]['value'] = '2';
+        $radio_values[2]['text'] = '<span style="vertical-align: top;">'.getMessage('CONFIGURATION_DISCUSSION_DESC_3').'</span>';
+        $radio_values[2]['value'] = '3';
+        $this->_form->addRadioGroup('discussion_status',getMessage('DISCUSSION_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
+        $this->_form->combine();
+        $this->_form->addExplanation('discussions',getMessage('CONFIGURATION_DISCUSSION_WARNING'));
+     }
 
 
      $this->_form->addEmptyline();

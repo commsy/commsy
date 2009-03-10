@@ -46,14 +46,16 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_rubrics_array[3] = CS_TOPIC_TYPE;
       $this->_default_rubrics_array[4] = CS_USER_TYPE;
+      $this->_default_rubrics_array[5] = CS_TODO_TYPE;
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
+      $this->_default_home_conf_array[CS_USER_TYPE] = 'none';
 
       // rubric plugins
-      $i = 4;
+      $i = 5;
       $plugin_list = $this->_environment->getRubrikPluginClassList();
       if ( $plugin_list->isNotEmpty() ) {
          $plugin = $plugin_list->getFirst();

@@ -236,9 +236,6 @@ class cs_page_room_view extends cs_page_view {
          $hash_string = '&amp;hid='.$hash_manager->getRSSHashForUser($current_user_item->getItemID());
       }
 
-
-
-
       if ( $show_rss_link ) {
          $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
       }
@@ -271,6 +268,10 @@ class cs_page_room_view extends cs_page_view {
                case 'myroom':
                   $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
                   $link_title .= $this->_translator->getMessage('PRIVATEROOMS');
+                  break;
+               case 'todo':
+                  $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                  $link_title .= $link['title'];
                   break;
                default:
                   $link_title = '';
