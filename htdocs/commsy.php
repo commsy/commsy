@@ -668,6 +668,7 @@ if ( $environment->isOutputMode('XML') ) {
                $params['environment'] = $environment;
                $params['with_modifying_actions'] = $with_modifying_actions;
                $page = new cs_external_page_portal_view($params);
+               unset($params);
             } else {
                $params = array();
                $params['environment'] = $environment;
