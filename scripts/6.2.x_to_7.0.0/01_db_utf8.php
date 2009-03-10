@@ -22,7 +22,7 @@
 
 set_time_limit(0);
 
-$memory_limit2 = 64 * 1024 * 1024;
+$memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
 if ( !empty($memory_limit) ) {
    if ( strstr($memory_limit,'M') ) {
