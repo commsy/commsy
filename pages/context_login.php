@@ -156,9 +156,10 @@ if ( !empty($_POST['login_redirect']) ) {
    if ( empty($fct) ) {
       $fct = $environment->getCurrentFunction();
    }
-   $params = $history[0]['parameter'];
    if ( !isset($history[0]['parameter']) ) {
       $params = $environment->getCurrentParameterArray();
+   } else {
+      $params = $history[0]['parameter'];
    }
    if ( isset($error_array) and !empty($error_array) ) {
       if ( isset($auth_source) and !empty($auth_source) ) {
