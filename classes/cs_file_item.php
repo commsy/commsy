@@ -159,6 +159,7 @@ class cs_file_item extends cs_item {
       $this->_icon['rtf']     = "doc.png";
       $this->_mime['rtf']     = 'application/rtf';
       $this->_icon['ppt']     = "ppt.png";
+      $this->_icon['pot']     = "ppt.png";
       $this->_icon['pptx']    = "ppt.png";
       //Lassi-Dateien
       $this->_icon['lsi']     = "lassi_commsy.png";
