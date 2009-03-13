@@ -37,7 +37,7 @@ if ( $memory_limit < $memory_limit2 ) {
    ini_set('memory_limit',$memory_limit2);
    $memory_limit3 = ini_get('memory_limit');
    if ( $memory_limit3 != $memory_limit2 ) {
-      echo('Can not set memory limit. Please try 64M in your php.ini.');
+      echo('Can not set memory limit. Please try 640M in your php.ini.');
       exit();
    }
 }
@@ -538,21 +538,29 @@ unset($result);
 unset($row);
 
 foreach ( $table_array as $table ) {
-   if ( in_array(str_replace('old_','',$table),$tabel_extra_array) ) {
+   if ( $table != 'old_materials'
+        and in_array(str_replace('old_','',$table),$tabel_extra_array) ) {
       echo(LINEBREAK);
       echo(str_replace('old_','',$table));
-      $sql = 'SELECT count(*) as count FROM '.$table.';';
+      $item_id_string = 'item_id';
+      if ( $table == 'old_files' ) {
+          $item_id_string = 'files_id';
+      }
+      $sql = 'SELECT '.$item_id_string.' FROM '.$table.';';
       $result = select($sql);
       unset($sql);
-      $row = mysql_fetch_assoc($result);
+      $item_id_array = array();
+      while ( $row = mysql_fetch_assoc($result) ) {
+         $item_id_array[] = $row[$item_id_string];
+      }
       mysql_free_result($result);
       unset($result);
-      $count = $row['count'];
+      $count = count($item_id_array);
       unset($row);
       if ( $count > 0 ) {
          init_progress_bar($count);
-         for ( $i=0; $i<$count; $i++ ) {
-            $sql = 'SELECT * FROM '.$table.' LIMIT '.$i.',1;';
+         foreach ( $item_id_array as $id ) {
+            $sql = 'SELECT * FROM '.$table.' WHERE '.$item_id_string.'="'.$id.'";';
             $result = select($sql);
             unset($sql);
             $row = mysql_fetch_assoc($result);
@@ -607,6 +615,82 @@ foreach ( $table_array as $table ) {
 
 flush();
 
+// handle material
+$table = 'old_materials';
+echo(LINEBREAK);
+echo(str_replace('old_','',$table));
+$sql = 'SELECT item_id,version_id FROM '.$table.';';
+$result = select($sql);
+unset($sql);
+$item_id_array = array();
+while ( $row = mysql_fetch_assoc($result) ) {
+   if ( empty($row['version_id']) ) {
+      $row['version_id'] = '0';
+   }
+   $temp_array = array();
+   $temp_array['item_id'] = $row['item_id'];
+   $temp_array['version_id'] = $row['version_id'];
+   $item_id_array[] = $temp_array;
+}
+mysql_free_result($result);
+unset($result);
+$count = count($item_id_array);
+unset($row);
+if ( $count > 0 ) {
+   init_progress_bar($count);
+   foreach ( $item_id_array as $id ) {
+      $sql = 'SELECT * FROM '.$table.' WHERE item_id="'.$id['item_id'].'" AND version_id="'.$id['version_id'].'";';
+      $result = select($sql);
+      unset($sql);
+      $row = mysql_fetch_assoc($result);
+      mysql_free_result($result);
+      unset($result);
+      if ( !empty($row) ) {
+         $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
+         $first = true;
+         foreach ( $row as $key => $value ) {
+            if ( isset($value) ) {
+               if ( $first ) {
+                  $first = false;
+               } else {
+                  $sql .= ',';
+               }
+               $sql .= ' '.$key;
+               if ( $value == 'NULL' ) {
+                  $sql .= ' = NULL';
+               } elseif ( $key == 'extras' ) {
+                  $sql .= '="'.addslashes(utf8_encode_extras($value)).'"';
+               } else {
+                  if ( !is_utf8($value) ) {
+                     $sql .= '="'.addslashes(utf8_encode($value)).'"';
+                  } else {
+                     $sql .= '="'.addslashes($value).'"';
+                  }
+                  // mysql_real_escape_string ???
+               }
+            }
+         }
+         $sql .= ';';
+         $success_array[] = insert($sql,'utf8');
+         unset($sql);
+      }
+      update_progress_bar($count);
+   }
+} else {
+   echo(LINEBREAK);
+   echo('nothing to do');
+   echo(LINEBREAK);
+}
+echo(LINEBREAK);
+
+// success
+foreach ( $success_array as $success_item ) {
+   $success = $success && $success_item;
+}
+unset($success_array);
+$success_array = array();
+
+
 // verifying some tables
 echo(LINEBREAK);
 echo('STEP5: verifying');
@@ -632,27 +716,10 @@ $table_array_dont_verify[] = 'reader';
 $table_array_dont_verify[] = 'tag2tag';
 $table_array_dont_verify[] = 'tasks';
 
-/*
-$table_array_dont_verify[] = 'annotations';
-$table_array_dont_verify[] = 'announcement';
+// extra handling
 $table_array_dont_verify[] = 'auth';
-$table_array_dont_verify[] = 'auth_source';
-$table_array_dont_verify[] = 'dates';
-$table_array_dont_verify[] = 'discussionarticles';
-$table_array_dont_verify[] = 'discussions';
-$table_array_dont_verify[] = 'files';
-$table_array_dont_verify[] = 'homepage_page';
-$table_array_dont_verify[] = 'labels';
 $table_array_dont_verify[] = 'materials';
-$table_array_dont_verify[] = 'portal';
-$table_array_dont_verify[] = 'room';
 $table_array_dont_verify[] = 'section';
-$table_array_dont_verify[] = 'server';
-$table_array_dont_verify[] = 'step';
-$table_array_dont_verify[] = 'tag';
-$table_array_dont_verify[] = 'todos';
-$table_array_dont_verify[] = 'user';
-*/
 
 $sql = 'SHOW TABLES;';
 $result = select($sql);
@@ -803,22 +870,27 @@ $char_trans_array[255] = 'y';   // ÿ
 foreach ( $table_array as $table ) {
    echo(LINEBREAK);
    echo(str_replace('old_','',$table));
-   $sql = 'SELECT count(*) as count FROM '.$table;
-   #$sql .= ' WHERE item_id="1237290"';
-   $sql .= ';';
+   $item_id_string = 'item_id';
+   if ( $table == 'old_files' ) {
+       $item_id_string = 'files_id';
+   }
+   $sql = 'SELECT '.$item_id_string.' FROM '.$table.';';
    $result = select($sql);
    unset($sql);
-   $row = mysql_fetch_assoc($result);
+   $item_id_array = array();
+   while ( $row = mysql_fetch_assoc($result) ) {
+      $item_id_array[] = $row[$item_id_string];
+   }
    mysql_free_result($result);
    unset($result);
-   $count = $row['count'];
+   $count = count($item_id_array);
    unset($row);
    if ( $count > 0 ) {
       init_progress_bar($count);
-      for ( $i=0; $i<$count; $i++ ) {
+      foreach ( $item_id_array as $id ) {
          $sql = 'SELECT * FROM '.$table;
-         #$sql .= ' WHERE item_id="1237290"';
-         $sql .= ' LIMIT '.$i.',1;';
+         $sql .= ' WHERE '.$item_id_string.'="'.$id.'"';
+         $sql .= ';';
          $result = select($sql);
          unset($sql);
          $row = mysql_fetch_assoc($result);
@@ -827,8 +899,8 @@ foreach ( $table_array as $table ) {
          $row_orig = $row;
 
          $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table);
-         #$sql2 .= ' WHERE item_id="1237290"';
-         $sql2 .= ' LIMIT '.$i.',1;';
+         $sql2 .= ' WHERE '.$item_id_string.'="'.$id.'"';
+         $sql2 .= ';';
          $result2 = select($sql2,false,'utf8');
          unset($sql2);
          $row2 = mysql_fetch_assoc($result2);
@@ -871,28 +943,14 @@ foreach ( $table_array as $table ) {
                            $row[$key] = '';
                         }
                         if ( !empty($row[$key]) and empty($row2[$key]) ) {
-                           #if ( $row2['item_id'] == 1237290 ) {
-                           #pr($row2['item_id']);
                            $row2[$key] = utf8_decode_array(cs_unserialize_min($row2_orig[$key]));
-                           #pr($row2[$key]);
-                           #exit();
-                           #}
                         }
                      }
                      if ( stristr($table,'log_') or $table == 'log' ) {
                         $error_log_array[$table] = str_replace('old_','',$table);
                      } else {
                         if ( is_array($row[$key]) ) {
-                           #if ( $row2['item_id'] == 1237290 ) {
-                           #pr($row[$key]);
-                           #pr('______________________________________________');
-                           #pr($row2[$key]);
-                           #pr($row2['item_id']);
                            $row2[$key] = changeCharInArray($row[$key],$row2[$key],$char_trans_array);
-                           #pr('______________________________________________');
-                           #pr($row2[$key]);
-                           #exit();
-                           #}
                         } else {
                            $array_orig = str_split($row[$key]);
                            $array_utf8 = str_split($row2[$key]);
@@ -984,6 +1042,177 @@ if ( isset($error_log_array) and !empty($error_log_array) ) {
    echo(LINEBREAK);
 }
 flush();
+
+// extra behandlung
+$table_array_sp = array();
+$table_array_sp[] = 'old_auth';
+$table_array_sp[] = 'old_materials';
+$table_array_sp[] = 'old_section';
+
+foreach ( $table_array_sp as $table ) {
+   echo(LINEBREAK);
+   echo(str_replace('old_','',$table));
+   $item_id_string1 = 'item_id';
+   $item_id_string2 = 'version_id';
+   if ( $table == 'old_auth' ) {
+      $item_id_string1 = 'commsy_id';
+      $item_id_string2 = 'user_id';
+   }
+   $sql = 'SELECT '.$item_id_string1.','.$item_id_string2.' FROM '.$table.';';
+   $result = select($sql);
+   unset($sql);
+   $item_id_array = array();
+   while ( $row = mysql_fetch_assoc($result) ) {
+      $item_id_array[] = $row;
+   }
+   mysql_free_result($result);
+   unset($result);
+   $count = count($item_id_array);
+   unset($row);
+   if ( $count > 0 ) {
+      init_progress_bar($count);
+      foreach ( $item_id_array as $id ) {
+         $sql = 'SELECT * FROM '.$table;
+         $sql .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.$id[$item_id_string2].'"';
+         $sql .= ';';
+         $result = select($sql);
+         unset($sql);
+         $row = mysql_fetch_assoc($result);
+         mysql_free_result($result);
+         unset($result);
+         $row_orig = $row;
+
+         $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table);
+         $sql2 .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.$id[$item_id_string2].'"';
+         $sql2 .= ';';
+         $result2 = select($sql2,false,'utf8');
+         unset($sql2);
+         $row2 = mysql_fetch_assoc($result2);
+         mysql_free_result($result2);
+         unset($result2);
+         $row2_orig = $row2;
+
+         if ( !empty($row) and !empty($row2) ) {
+            foreach ( $row2 as $key2 => $value2 ) {
+               if ( $key2 != 'extras' ) {
+                  $row2[$key2] = utf8_decode($value2);
+               }
+            }
+            $diff = array();
+            $diff = array_diff($row,$row2);
+
+            // extra zerschossen?
+            $del_extra = false;
+            foreach ( $diff as $key_ex => $value_ex ) {
+               if ( $key_ex == 'extras'
+                    and substr_count($row['extras'], '?') == substr_count($row2['extras'], '?')
+                  ) {
+                  $del_extra = true;
+               }
+            }
+            if ( $del_extra ) {
+               unset($diff['extras']);
+            }
+
+            if ( !empty($diff) ) {
+               foreach ( $diff as $key => $value ) {
+                  if ( $value != 'NULL' ) {
+                     if ( $key == 'extras' ) {
+                        $row2[$key] = utf8_decode_array(mb_unserialize($row2_orig[$key]));
+                        if ( empty($row2[$key]) ) {
+                           $row2[$key] = '';
+                        }
+                        $row[$key] = mb_unserialize($row[$key]);
+                        if ( empty($row[$key]) ) {
+                           $row[$key] = '';
+                        }
+                        if ( !empty($row[$key]) and empty($row2[$key]) ) {
+                           $row2[$key] = utf8_decode_array(cs_unserialize_min($row2_orig[$key]));
+                        }
+                     }
+                     if ( stristr($table,'log_') or $table == 'log' ) {
+                        $error_log_array[$table] = str_replace('old_','',$table);
+                     } else {
+                        if ( is_array($row[$key]) ) {
+                           $row2[$key] = changeCharInArray($row[$key],$row2[$key],$char_trans_array);
+                        } else {
+                           $array_orig = str_split($row[$key]);
+                           $array_utf8 = str_split($row2[$key]);
+                           $diff_array = array_diff($array_orig,$array_utf8);
+                           unset($array_utf8);
+                           unset($array_orig);
+
+                           foreach ($diff_array as $place => $char ) {
+                              if ( !empty($char_trans_array[ord($char)]) ) {
+                                 $row2[$key][$place] = $char_trans_array[ord($char)];
+                              } else {
+                                 echo(LINEBREAK);
+                                 echo('keine &Uuml;bersetzung f&uuml;r '.$char.' ('.ord($char).')');
+                                 echo(LINEBREAK);
+                              }
+                           }
+                           unset($diff_array);
+                        }
+                        if ( is_array($row2[$key]) ) {
+                           $string_to_proof = serialize(utf8_encode_array($row2[$key]));
+                        } else {
+                           $string_to_proof = utf8_encode($row2[$key]);
+                        }
+
+                        if ( $row2_orig[$key] != $string_to_proof ) {
+
+                           $sql  = 'UPDATE '.str_replace('old_','utf8_',$table);
+                           if ($key == 'extras' ) {
+                              $sql .= ' SET '.$key.'="'.addslashes(serialize(utf8_encode_array($row2[$key]))).'"';
+                           } else {
+                              $sql .= ' SET '.$key.'="'.addslashes(utf8_encode($row2[$key])).'"';
+                           }
+                           $sql .= ' WHERE ';
+
+                           $first = true;
+                           foreach ( $row2_orig as $key_update => $value_update ) {
+                              if ( is_numeric($value_update)
+                                   or ( str_replace('old_','utf8_',$table) == 'utf8_auth'
+                                        and $key_update == 'user_id'
+                                      )
+                                 ) {
+                                 if ( $first ) {
+                                    $first = false;
+                                 } else {
+                                    $sql .= ' and ';
+                                 }
+                                 $sql .= $key_update.'="'.addslashes($value_update).'"';
+                              }
+                           }
+                           $sql .= ';';
+                           $success_array[] = select($sql,false,'utf8');
+                           unset($sql);
+                           unset($row);
+                           unset($row_orig);
+                           unset($row2);
+                           unset($row2_orig);
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         update_progress_bar($count);
+      }
+   } else {
+      echo(LINEBREAK);
+      echo('nothing to do');
+      echo(LINEBREAK);
+   }
+   echo(LINEBREAK);
+
+   // success
+   foreach ( $success_array as $success_item ) {
+      $success = $success && $success_item;
+   }
+   unset($success_array);
+   $success_array = array();
+}
 
 // rest tables to utf8
 echo(LINEBREAK);
