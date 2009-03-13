@@ -950,7 +950,7 @@ class cs_authentication {
 
       if (!$this->_environment->inServer() and $uid != 'root') {
          $portal_user = $this->_getPortalUserItem($uid,$auth_source);
-         if ( $portal_user->isUser() ) {
+         if ( isset($portal_user) and $portal_user->isUser() ) {
             $context_user = $this->_getContextUserItem($uid,$auth_source);
             if (isset($context_user)) {
                $this->_environment->setCurrentUserItem($context_user);

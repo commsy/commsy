@@ -260,7 +260,7 @@ function changeCharInString ( $string, $string2, $char_array ) {
             }
          } else {
             echo(LINEBREAK);
-            echo('keine &Uuml;bersetzung f&uuml;r '.$char.' ('.ord($char).')');
+            echo('keine Uebersetzung fuer '.$char.' ('.ord($char).')');
             echo(LINEBREAK);
          }
       }
@@ -462,16 +462,8 @@ echo('STEP3: create utf8-tables');
 echo(' and copy content for tables without extras');
 echo(LINEBREAK);
 flush();
-
 $tabel_extra_array = array();
-$tabel_extra_array[] = 'auth_source';
-$tabel_extra_array[] = 'files';
-$tabel_extra_array[] = 'labels';
-$tabel_extra_array[] = 'materials';
-$tabel_extra_array[] = 'portal';
-$tabel_extra_array[] = 'room';
-$tabel_extra_array[] = 'server';
-$tabel_extra_array[] = 'user';
+$tabel_extra_array[] = 'auth';
 
 init_progress_bar(count($table_array));
 foreach ( $table_array as $table ) {
@@ -523,7 +515,7 @@ $success_array = array();
 // copy content from old to utf8
 echo(LINEBREAK);
 echo('STEP4: copy content');
-echo(' for tables with extras');
+echo(' for tables with not numeric keys');
 echo(LINEBREAK);
 flush();
 
@@ -551,16 +543,26 @@ foreach ( $table_array as $table ) {
       select($sql);
       unset($sql);
 
-      $item_id_string = 'item_id';
-      if ( $table == 'old_files' ) {
-          $item_id_string = 'files_id';
+      if ( $table == 'old_auth' ) {
+         $item_id_string1 = 'commsy_id';
+         $item_id_string2 = 'user_id';
+         $sql = 'SELECT '.$item_id_string1.','.$item_id_string2.' FROM '.$table.';';
+      } else {
+         $item_id_string = 'item_id';
+         if ( $table == 'old_files' ) {
+            $item_id_string = 'files_id';
+         }
+         $sql = 'SELECT '.$item_id_string.' FROM '.$table.';';
       }
-      $sql = 'SELECT '.$item_id_string.' FROM '.$table.';';
       $result = select($sql);
       unset($sql);
       $item_id_array = array();
       while ( $row = mysql_fetch_assoc($result) ) {
-         $item_id_array[] = $row[$item_id_string];
+         if ( $table == 'old_auth' ) {
+            $item_id_array[] = $row;
+         } else {
+            $item_id_array[] = $row[$item_id_string];
+         }
       }
       mysql_free_result($result);
       unset($result);
@@ -569,7 +571,11 @@ foreach ( $table_array as $table ) {
       if ( $count > 0 ) {
          init_progress_bar($count);
          foreach ( $item_id_array as $id ) {
-            $sql = 'SELECT * FROM '.$table.' WHERE '.$item_id_string.'="'.$id.'";';
+            if ( $table == 'old_auth' ) {
+               $sql = 'SELECT * FROM '.$table.' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.addslashes($id[$item_id_string2]).'";';
+            } else {
+               $sql = 'SELECT * FROM '.$table.' WHERE '.$item_id_string.'="'.$id.'";';
+            }
             $result = select($sql);
             unset($sql);
             $row = mysql_fetch_assoc($result);
@@ -623,82 +629,6 @@ foreach ( $table_array as $table ) {
 }
 
 flush();
-
-// handle material
-$table = 'old_materials';
-echo(LINEBREAK);
-echo(str_replace('old_','',$table));
-$sql = 'SELECT item_id,version_id FROM '.$table.';';
-$result = select($sql);
-unset($sql);
-$item_id_array = array();
-while ( $row = mysql_fetch_assoc($result) ) {
-   if ( empty($row['version_id']) ) {
-      $row['version_id'] = '0';
-   }
-   $temp_array = array();
-   $temp_array['item_id'] = $row['item_id'];
-   $temp_array['version_id'] = $row['version_id'];
-   $item_id_array[] = $temp_array;
-}
-mysql_free_result($result);
-unset($result);
-$count = count($item_id_array);
-unset($row);
-if ( $count > 0 ) {
-   init_progress_bar($count);
-   foreach ( $item_id_array as $id ) {
-      $sql = 'SELECT * FROM '.$table.' WHERE item_id="'.$id['item_id'].'" AND version_id="'.$id['version_id'].'";';
-      $result = select($sql);
-      unset($sql);
-      $row = mysql_fetch_assoc($result);
-      mysql_free_result($result);
-      unset($result);
-      if ( !empty($row) ) {
-         $sql = 'INSERT INTO '.str_replace('old_','utf8_',$table).' SET';
-         $first = true;
-         foreach ( $row as $key => $value ) {
-            if ( isset($value) ) {
-               if ( $first ) {
-                  $first = false;
-               } else {
-                  $sql .= ',';
-               }
-               $sql .= ' '.$key;
-               if ( $value == 'NULL' ) {
-                  $sql .= ' = NULL';
-               } elseif ( $key == 'extras' ) {
-                  $sql .= '="'.addslashes(utf8_encode_extras($value)).'"';
-               } else {
-                  if ( !is_utf8($value) ) {
-                     $sql .= '="'.addslashes(utf8_encode($value)).'"';
-                  } else {
-                     $sql .= '="'.addslashes($value).'"';
-                  }
-                  // mysql_real_escape_string ???
-               }
-            }
-         }
-         $sql .= ';';
-         $success_array[] = insert($sql,'utf8');
-         unset($sql);
-      }
-      update_progress_bar($count);
-   }
-} else {
-   echo(LINEBREAK);
-   echo('nothing to do');
-   echo(LINEBREAK);
-}
-echo(LINEBREAK);
-
-// success
-foreach ( $success_array as $success_item ) {
-   $success = $success && $success_item;
-}
-unset($success_array);
-$success_array = array();
-
 
 // verifying some tables
 echo(LINEBREAK);
@@ -931,6 +861,9 @@ foreach ( $table_array as $table ) {
             foreach ( $diff as $key_ex => $value_ex ) {
                if ( $key_ex == 'extras'
                     and substr_count($row['extras'], '?') == substr_count($row2['extras'], '?')
+                    and ( !empty($row2['extras'])
+                          or empty($row['extras'])
+                        )
                   ) {
                   $del_extra = true;
                }
@@ -961,22 +894,7 @@ foreach ( $table_array as $table ) {
                         if ( is_array($row[$key]) ) {
                            $row2[$key] = changeCharInArray($row[$key],$row2[$key],$char_trans_array);
                         } else {
-                           $array_orig = str_split($row[$key]);
-                           $array_utf8 = str_split($row2[$key]);
-                           $diff_array = array_diff($array_orig,$array_utf8);
-                           unset($array_utf8);
-                           unset($array_orig);
-
-                           foreach ($diff_array as $place => $char ) {
-                              if ( !empty($char_trans_array[ord($char)]) ) {
-                                 $row2[$key][$place] = $char_trans_array[ord($char)];
-                              } else {
-                                 echo(LINEBREAK);
-                                 echo('keine &Uuml;bersetzung f&uuml;r '.$char.' ('.ord($char).')');
-                                 echo(LINEBREAK);
-                              }
-                           }
-                           unset($diff_array);
+                           $row2[$key] = changeCharInString($row[$key],$row2[$key],$char_trans_array);
                         }
                         if ( is_array($row2[$key]) ) {
                            $string_to_proof = serialize(utf8_encode_array($row2[$key]));
@@ -1082,7 +1000,7 @@ foreach ( $table_array_sp as $table ) {
       init_progress_bar($count);
       foreach ( $item_id_array as $id ) {
          $sql = 'SELECT * FROM '.$table;
-         $sql .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.$id[$item_id_string2].'"';
+         $sql .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.addslashes($id[$item_id_string2]).'"';
          $sql .= ';';
          $result = select($sql);
          unset($sql);
@@ -1092,7 +1010,7 @@ foreach ( $table_array_sp as $table ) {
          $row_orig = $row;
 
          $sql2 = 'SELECT * FROM '.str_replace('old_','utf8_',$table);
-         $sql2 .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.$id[$item_id_string2].'"';
+         $sql2 .= ' WHERE '.$item_id_string1.'="'.$id[$item_id_string1].'" AND '.$item_id_string2.'="'.addslashes(utf8_encode($id[$item_id_string2])).'"';
          $sql2 .= ';';
          $result2 = select($sql2,false,'utf8');
          unset($sql2);
@@ -1115,6 +1033,9 @@ foreach ( $table_array_sp as $table ) {
             foreach ( $diff as $key_ex => $value_ex ) {
                if ( $key_ex == 'extras'
                     and substr_count($row['extras'], '?') == substr_count($row2['extras'], '?')
+                    and ( !empty($row2['extras'])
+                          or empty($row['extras'])
+                        )
                   ) {
                   $del_extra = true;
                }
@@ -1145,22 +1066,7 @@ foreach ( $table_array_sp as $table ) {
                         if ( is_array($row[$key]) ) {
                            $row2[$key] = changeCharInArray($row[$key],$row2[$key],$char_trans_array);
                         } else {
-                           $array_orig = str_split($row[$key]);
-                           $array_utf8 = str_split($row2[$key]);
-                           $diff_array = array_diff($array_orig,$array_utf8);
-                           unset($array_utf8);
-                           unset($array_orig);
-
-                           foreach ($diff_array as $place => $char ) {
-                              if ( !empty($char_trans_array[ord($char)]) ) {
-                                 $row2[$key][$place] = $char_trans_array[ord($char)];
-                              } else {
-                                 echo(LINEBREAK);
-                                 echo('keine &Uuml;bersetzung f&uuml;r '.$char.' ('.ord($char).')');
-                                 echo(LINEBREAK);
-                              }
-                           }
-                           unset($diff_array);
+                           $row2[$key] = changeCharInString($row[$key],$row2[$key],$char_trans_array);
                         }
                         if ( is_array($row2[$key]) ) {
                            $string_to_proof = serialize(utf8_encode_array($row2[$key]));
