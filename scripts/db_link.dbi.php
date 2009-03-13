@@ -42,7 +42,7 @@ function select($select, $quiet = false, $charset = 'latin1') {
    $error = mysql_error();
    $errno = mysql_errno();
    if ( !empty($error) and !$quiet ) {
-      echo ('<hr/>'.$error.". QUERY: ".$select.'<hr/>');
+      echo (HLINE.$error.". QUERY: ".$select.HLINE);
       $success = false;
    }
    mysql_close ($link);
@@ -60,7 +60,7 @@ function select_auth($select) {
    $error = mysql_error();
    $errno = mysql_errno();
    if ( !empty($error) ) {
-      echo ('<hr/>'.$error.". QUERY: ".$select.'<hr/>');
+      echo (HLINE.$error.". QUERY: ".$select.HLINE);
       $success = false;
    }
    mysql_close ($link);
@@ -85,7 +85,7 @@ function insert($insert, $charset = 'latin1') {
    $error = mysql_error();
    $errno = mysql_errno();
    if ( !empty($error) ) {
-      echo ('<hr/>'.$error.". QUERY: ".$insert.'<hr/>');
+      echo (HLINE.$error.". QUERY: ".$insert.HLINE);
       $success = false;
    } else {
       $success = true;

@@ -27,7 +27,11 @@ if ( empty($bash) or !$bash ) {
 } else {
    define('LINEBREAK',"\n");
 }
-
+if ( empty($bash) or !$bash ) {
+   define('HLINE',"<hr/>\n");
+} else {
+   define('HLINE',"\n\n");
+}
 include_once('../../etc/cs_constants.php');
 include_once('../../functions/text_functions.php');
 include_once('../../functions/misc_functions.php');
