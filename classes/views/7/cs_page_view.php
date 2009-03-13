@@ -760,6 +760,22 @@ class cs_page_view extends cs_view {
          }
       }
       $retour .= LF.'<!-- END COMMSY FOOTER -->'.LF;
+
+      // bug in IE7
+      // script must be directly before body end tag
+      $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+      if ( isset($this->_form_view) ) {
+         $views[] = $this->_form_view;
+      }
+      $view = reset($views);
+      while ($view) {
+         if ( method_exists($view,'getContentForBeforeBodyEndAsHTML') ) {
+            $retour .= $view->getContentForBeforeBodyEndAsHTML();
+         }
+         $view = next($views);
+      }
+      unset($views);
+      unset($view);
       return $retour;
    }
 

@@ -30,12 +30,17 @@ $this->includeClass(VIEW);
 class cs_plugin_view extends cs_view {
 
    /**
-    * string - containing the description of the plugin view
+    * string - containing the content of the plugin view
     */
    private $_content = array();
 
    /**
-    * string - containing the data (text) of the plugin view
+    * string - containing the content of the plugin view
+    */
+   private $_content_before_body_end = array();
+
+   /**
+    * string - containing the data for html-head of the plugin view
     */
    private $_head = array();
 
@@ -81,10 +86,19 @@ class cs_plugin_view extends cs_view {
       $this->_content[] = (string)$value;
    }
 
+   /** add things of the plugin integrate before body end tag
+    * this method adds things like javascript to be integrated before body end tag
+    *
+    * @param string value content to be integrated before body end tag
+    */
+   public function addBeforeBodyEnd ($value) {
+      $this->_content_before_body_end[] = (string)$value;
+   }
+
    /** add things of the plugin integrate in HTML-header
     * this method adds things like javascript to be integrated in HTML-header
     *
-    * @param string value text of the text view
+    * @param string value text of the plugin view
     */
    public function addForHead ($value) {
       $this->_head[] = (string)$value;
@@ -122,7 +136,7 @@ class cs_plugin_view extends cs_view {
     */
    public function asHTML () {
       $html  = LF;
-      $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' -->'.LF;
+      $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' asHTML -->'.LF;
       if ($this->_display_title) {
          $html .= $this->_getTitleAsHTML();
       }
@@ -131,7 +145,7 @@ class cs_plugin_view extends cs_view {
             $html .= $value.LF;
          }
       }
-      $html .= '<!-- END OF PLUGIN '.$this->_name.' -->'.LF.LF;
+      $html .= '<!-- END OF PLUGIN '.$this->_name.' asHTML -->'.LF.LF;
       return $html;
    }
 
@@ -142,13 +156,30 @@ class cs_plugin_view extends cs_view {
     */
    public function getInfoForHeaderAsHTML () {
       $html  = LF;
-      $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' -->'.LF;
+      $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' getInfoForHeaderAsHTML -->'.LF;
       if ( !empty($this->_head) ) {
          foreach ( $this->_head as $value ) {
             $html .= '   '.$value.LF;
          }
       }
-      $html .= '<!-- END OF PLUGIN '.$this->_name.' -->'.LF.LF;
+      $html .= '<!-- END OF PLUGIN '.$this->_name.' getInfoForHeaderAsHTML -->'.LF.LF;
+      return $html;
+   }
+
+   /** get things to insert directly before body end tag
+    * this method returns things to integrate before body end tag
+    *
+    * @return string things before body end tag
+    */
+   public function getContentForBeforeBodyEndAsHTML () {
+      $html  = LF;
+      $html .= '<!-- BEGIN OF PLUGIN '.$this->_name.' getContentForBeforeBodyEndAsHTML -->'.LF;
+      if ( !empty($this->_content_before_body_end) ) {
+         foreach ( $this->_content_before_body_end as $value ) {
+            $html .= '   '.$value.LF;
+         }
+      }
+      $html .= '<!-- END OF PLUGIN '.$this->_name.' getContentForBeforeBodyEndAsHTML -->'.LF.LF;
       return $html;
    }
 
