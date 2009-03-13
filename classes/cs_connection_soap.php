@@ -191,217 +191,222 @@ class cs_connection_soap {
                     )
                ) {
                $user_id = $this->_encode_input($user_id);
-               $user_pwd = $this->_encode_input($user_pwd);
-               $portal_id = $this->_encode_input($portal_id);
-               $firstname = $this->_encode_input($firstname);
-               $lastname = $this->_encode_input($lastname);
-               $mail = $this->_encode_input($mail);
-               $agb = $this->_encode_input($agb);
-               if ( empty($agb) ) {
-                  $agb = false;
-               }
-               $language = 'DE'; // (TBD)
-               // $language = $this->_environment->getSelectedLanguage();
-               $auth_source_id = ''; // (TBD)
+               include_once('functions/text_functions.php');
+               if ( !withUmlaut($user_id) ) {
+                  $user_pwd = $this->_encode_input($user_pwd);
+                  $portal_id = $this->_encode_input($portal_id);
+                  $firstname = $this->_encode_input($firstname);
+                  $lastname = $this->_encode_input($lastname);
+                  $mail = $this->_encode_input($mail);
+                  $agb = $this->_encode_input($agb);
+                  if ( empty($agb) ) {
+                     $agb = false;
+                  }
+                  $language = 'DE'; // (TBD)
+                  // $language = $this->_environment->getSelectedLanguage();
+                  $auth_source_id = ''; // (TBD)
 
-               $portal_manager = $this->_environment->getPortalManager();
-               $portal_item = $portal_manager->getItem($portal_id);
-               if ( !empty($portal_item) ) {
-                  $this->_environment->setCurrentContextID($portal_id);
-                  $authentication = $this->_environment->getAuthenticationObject();
-                  $current_portal = $this->_environment->getCurrentPortalItem();
-                  $auth_source_id = $current_portal->getAuthDefault();
+                  $portal_manager = $this->_environment->getPortalManager();
+                  $portal_item = $portal_manager->getItem($portal_id);
+                  if ( !empty($portal_item) ) {
+                     $this->_environment->setCurrentContextID($portal_id);
+                     $authentication = $this->_environment->getAuthenticationObject();
+                     $current_portal = $this->_environment->getCurrentPortalItem();
+                     $auth_source_id = $current_portal->getAuthDefault();
 
-                  if ( $authentication->is_free($user_id,$auth_source_id) ) {
-                     // Create new item
-                     $new_account = $authentication->getNewItem();
-                     $new_account->setUserID($user_id);
-                     $new_account->setPassword($user_pwd);
-                     $new_account->setFirstname($firstname);
-                     $new_account->setLastname($lastname);
-                     $new_account->setLanguage($language);
-                     $new_account->setEmail($mail);
-                     $new_account->setPortalID($portal_id);
-                     if ( !empty($auth_source_id) ) {
-                        $new_account->setAuthSourceID($auth_source_id);
-                     } else {
-                        $current_portal = $this->_environment->getCurrentPortalItem();
-                        $new_account->setAuthSourceID($current_portal->getAuthDefault());
-                        $auth_source_id = $current_portal->getAuthDefault();
-                        unset($current_portal);
-                     }
-                     $save_only_user = false;
-                     $authentication->save($new_account,$save_only_user);
-
-                     $portal_user = $authentication->getUserItem();
-                     $error = $authentication->getErrorMessage();
-                     if ( empty($error) ) {
-                        // portal: send mail to moderators in different languages
-                        $portal_item = $this->_environment->getCurrentPortalItem();
-                        $user_list = $portal_item->getModeratorList();
-                        $email_addresses = array();
-                        $user_item = $user_list->getFirst();
-                        $recipients = '';
-                        $language = $portal_item->getLanguage();
-                        while ($user_item) {
-                           $want_mail = $user_item->getAccountWantMail();
-                           if (!empty($want_mail) and $want_mail == 'yes') {
-                              if ($language == 'user'  and $user_item->getLanguage() != 'browser') {
-                                 $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
-                              } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
-                                 $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
-                              } else {
-                                 $email_addresses[$language][] = $user_item->getEmail();
-                              }
-                              $recipients .= $user_item->getFullname().LF;
-                           }
-                           unset($user_item);
-                           $user_item = $user_list->getNext();
+                     if ( $authentication->is_free($user_id,$auth_source_id) ) {
+                        // Create new item
+                        $new_account = $authentication->getNewItem();
+                        $new_account->setUserID($user_id);
+                        $new_account->setPassword($user_pwd);
+                        $new_account->setFirstname($firstname);
+                        $new_account->setLastname($lastname);
+                        $new_account->setLanguage($language);
+                        $new_account->setEmail($mail);
+                        $new_account->setPortalID($portal_id);
+                        if ( !empty($auth_source_id) ) {
+                           $new_account->setAuthSourceID($auth_source_id);
+                        } else {
+                           $current_portal = $this->_environment->getCurrentPortalItem();
+                           $new_account->setAuthSourceID($current_portal->getAuthDefault());
+                           $auth_source_id = $current_portal->getAuthDefault();
+                           unset($current_portal);
                         }
-                        $translator = $this->_environment->getTranslationObject();
-                        $save_language = $translator->getSelectedLanguage();
-                        unset($user_item);
-                        unset($user_list);
-                        foreach ($email_addresses as $key => $value) {
-                           $translator->setSelectedLanguage($key);
-                           if (count($value) > 0) {
+                        $save_only_user = false;
+                        $authentication->save($new_account,$save_only_user);
+
+                        $portal_user = $authentication->getUserItem();
+                        $error = $authentication->getErrorMessage();
+                        if ( empty($error) ) {
+                           // portal: send mail to moderators in different languages
+                           $portal_item = $this->_environment->getCurrentPortalItem();
+                           $user_list = $portal_item->getModeratorList();
+                           $email_addresses = array();
+                           $user_item = $user_list->getFirst();
+                           $recipients = '';
+                           $language = $portal_item->getLanguage();
+                           while ($user_item) {
+                              $want_mail = $user_item->getAccountWantMail();
+                              if (!empty($want_mail) and $want_mail == 'yes') {
+                                 if ($language == 'user'  and $user_item->getLanguage() != 'browser') {
+                                    $email_addresses[$user_item->getLanguage()][] = $user_item->getEmail();
+                                 } elseif ($language == 'user' and $user_item->getLanguage() == 'browser') {
+                                    $email_addresses[$this->_environment->getSelectedLanguage()][] = $user_item->getEmail();
+                                 } else {
+                                    $email_addresses[$language][] = $user_item->getEmail();
+                                 }
+                                 $recipients .= $user_item->getFullname().LF;
+                              }
+                              unset($user_item);
+                              $user_item = $user_list->getNext();
+                           }
+                           $translator = $this->_environment->getTranslationObject();
+                           $save_language = $translator->getSelectedLanguage();
+                           unset($user_item);
+                           unset($user_list);
+                           foreach ($email_addresses as $key => $value) {
+                              $translator->setSelectedLanguage($key);
+                              if (count($value) > 0) {
+                                 include_once('classes/cs_mail.php');
+                                 $mail = new cs_mail();
+                                 $mail->set_to(implode(',',$value));
+                                 $server_item = $this->_environment->getServerItem();
+                                 $default_sender_address = $server_item->getDefaultSenderAddress();
+                                 if (!empty($default_sender_address)) {
+                                    $mail->set_from_email($default_sender_address);
+                                 } else {
+                                    $mail->set_from_email('@');
+                                 }
+                                 $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
+                                 $mail->set_reply_to_name($portal_user->getFullname());
+                                 $mail->set_reply_to_email($portal_user->getEmail());
+                                 $mail->set_subject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()));
+                                 $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                                 $body .= LF.LF;
+                                 $temp_language = $portal_user->getLanguage();
+                                 if ($temp_language == 'browser') {
+                                    $temp_language = $this->_environment->getSelectedLanguage();
+                                 }
+                                 $body .= $translator->getMessage('USER_GET_MAIL_BODY',
+                                                                  $portal_user->getFullname(),
+                                                                  $portal_user->getUserID(),
+                                                                  $portal_user->getEmail(),
+                                                                  $translator->getLanguageLabelTranslated($temp_language)
+                                                                 );
+                                 unset($temp_language);
+                                 $body .= LF.LF;
+                                 $check_message = 'NO';
+
+                                 switch ( $check_message )
+                                 {
+                                    case 'YES':
+                                       $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
+                                       break;
+                                    case 'NO':
+                                       $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
+                                       break;
+                                    default:
+                                       break;
+                                 }
+                                 $body .= LF.LF;
+                                 $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
+                                 $body .= LF;
+
+                                 $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
+                                 $body .= str_replace('soap.php','commsy.php',$url);
+                                 $mail->set_message($body);
+                                 $mail->send();
+                              }
+                           }
+                           $translator->setSelectedLanguage($save_language);
+
+                           // activate user
+                           $portal_user->makeUser();
+                           if ( $agb ) {
+                              $portal_user->setAGBAcceptance();
+                           }
+                           $portal_user->save();
+                           $current_user = $portal_user;
+                           $this->_environment->setCurrentUserItem($current_user);
+
+                           // send email to user
+                           if ($current_user->isUser()) {
+                              $mod_text = '';
+                              $mod_list = $portal_item->getContactModeratorList();
+                              if (!$mod_list->isEmpty()) {
+                                 $mod_item = $mod_list->getFirst();
+                                 $contact_moderator = $mod_item;
+                                 while ($mod_item) {
+                                    if (!empty($mod_text)) {
+                                       $mod_text .= ','.LF;
+                                    }
+                                    $mod_text .= $mod_item->getFullname();
+                                    $mod_text .= ' ('.$mod_item->getEmail().')';
+                                    unset($mod_item);
+                                    $mod_item = $mod_list->getNext();
+                                 }
+                              }
+                              unset($mod_item);
+                              unset($mod_list);
+
+                              $language = $this->_environment->getSelectedLanguage();
+                              $translator->setSelectedLanguage($language);
                               include_once('classes/cs_mail.php');
                               $mail = new cs_mail();
-                              $mail->set_to(implode(',',$value));
+                              $mail->set_to($current_user->getEmail());
+                              $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
                               $server_item = $this->_environment->getServerItem();
                               $default_sender_address = $server_item->getDefaultSenderAddress();
                               if (!empty($default_sender_address)) {
-                                 $mail->set_from_email($default_sender_address);
+                                  $mail->set_from_email($default_sender_address);
                               } else {
-                                 $mail->set_from_email('@');
+                                 $user_manager = $this->_environment->getUserManager();
+                                 $root_user = $user_manager->getRootUser();
+                                 $root_mail_address = $root_user->getEmail();
+                                 if ( !empty($root_mail_address) ) {
+                                    $mail->set_from_email($root_mail_address);
+                                 } else {
+                                    $mail->set_from_email('@');
+                                 }
                               }
-                              $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-                              $mail->set_reply_to_name($portal_user->getFullname());
-                              $mail->set_reply_to_email($portal_user->getEmail());
-                              $mail->set_subject($translator->getMessage('USER_GET_MAIL_SUBJECT',$portal_user->getFullname()));
+                              if (!empty($contact_moderator)) {
+                                 $mail->set_reply_to_email($contact_moderator->getEmail());
+                                 $mail->set_reply_to_name($contact_moderator->getFullname());
+                              }
+                              $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
                               $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                               $body .= LF.LF;
-                              $temp_language = $portal_user->getLanguage();
-                              if ($temp_language == 'browser') {
-                                 $temp_language = $this->_environment->getSelectedLanguage();
-                              }
-                              $body .= $translator->getMessage('USER_GET_MAIL_BODY',
-                                                               $portal_user->getFullname(),
-                                                               $portal_user->getUserID(),
-                                                               $portal_user->getEmail(),
-                                                               $translator->getLanguageLabelTranslated($temp_language)
-                                                              );
-                              unset($temp_language);
+                              $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$current_user->getFullname());
                               $body .= LF.LF;
-                              $check_message = 'NO';
-
-                              switch ( $check_message )
-                              {
-                                 case 'YES':
-                                    $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
-                                    break;
-                                 case 'NO':
-                                    $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
-                                    break;
-                                 default:
-                                    break;
-                              }
+                              $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$portal_user->getUserID(),$portal_item->getTitle());
                               $body .= LF.LF;
-                              $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
-                              $body .= LF;
-
-                              $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
+                              if ( empty($contact_moderator) ) {
+                                 $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;
+                                 $body .= $mod_text;
+                                 $body .= LF.LF;
+                              } else {
+                                 $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$portal_item->getTitle());
+                                 $body .= LF.LF;
+                              }
+                              $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
                               $body .= str_replace('soap.php','commsy.php',$url);
                               $mail->set_message($body);
                               $mail->send();
                            }
+
+                           // login in user
+                           return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
+                        } else {
+                           return new SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
                         }
-                        $translator->setSelectedLanguage($save_language);
-
-                        // activate user
-                        $portal_user->makeUser();
-                        if ( $agb ) {
-                           $portal_user->setAGBAcceptance();
-                        }
-                        $portal_user->save();
-                        $current_user = $portal_user;
-                        $this->_environment->setCurrentUserItem($current_user);
-
-                        // send email to user
-                        if ($current_user->isUser()) {
-                           $mod_text = '';
-                           $mod_list = $portal_item->getContactModeratorList();
-                           if (!$mod_list->isEmpty()) {
-                              $mod_item = $mod_list->getFirst();
-                              $contact_moderator = $mod_item;
-                              while ($mod_item) {
-                                 if (!empty($mod_text)) {
-                                    $mod_text .= ','.LF;
-                                 }
-                                 $mod_text .= $mod_item->getFullname();
-                                 $mod_text .= ' ('.$mod_item->getEmail().')';
-                                 unset($mod_item);
-                                 $mod_item = $mod_list->getNext();
-                              }
-                           }
-                           unset($mod_item);
-                           unset($mod_list);
-
-                           $language = $this->_environment->getSelectedLanguage();
-                           $translator->setSelectedLanguage($language);
-                           include_once('classes/cs_mail.php');
-                           $mail = new cs_mail();
-                           $mail->set_to($current_user->getEmail());
-                           $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$portal_item->getTitle()));
-                           $server_item = $this->_environment->getServerItem();
-                           $default_sender_address = $server_item->getDefaultSenderAddress();
-                           if (!empty($default_sender_address)) {
-                               $mail->set_from_email($default_sender_address);
-                           } else {
-                              $user_manager = $this->_environment->getUserManager();
-                              $root_user = $user_manager->getRootUser();
-                              $root_mail_address = $root_user->getEmail();
-                              if ( !empty($root_mail_address) ) {
-                                 $mail->set_from_email($root_mail_address);
-                              } else {
-                                 $mail->set_from_email('@');
-                              }
-                           }
-                           if (!empty($contact_moderator)) {
-                              $mail->set_reply_to_email($contact_moderator->getEmail());
-                              $mail->set_reply_to_name($contact_moderator->getFullname());
-                           }
-                           $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
-                           $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
-                           $body .= LF.LF;
-                           $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$current_user->getFullname());
-                           $body .= LF.LF;
-                           $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$portal_user->getUserID(),$portal_item->getTitle());
-                           $body .= LF.LF;
-                           if ( empty($contact_moderator) ) {
-                              $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;
-                              $body .= $mod_text;
-                              $body .= LF.LF;
-                           } else {
-                              $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$portal_item->getTitle());
-                              $body .= LF.LF;
-                           }
-                           $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
-                           $body .= str_replace('soap.php','commsy.php',$url);
-                           $mail->set_message($body);
-                           $mail->send();
-                        }
-
-                        // login in user
-                        return $this->authenticate($this->_encode_output($user_id),$this->_encode_output($user_pwd),$this->_encode_output($portal_id),$this->_encode_output($auth_source_id));
                      } else {
-                        return new SoapFault('ERROR','createUser: error while saving user account ('.$error.')! - '.__FILE__.' - '.__LINE__);
+                        return new SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
                      }
                   } else {
-                     return new SoapFault('ERROR','createUser: account is not free! - ('.$user_id.')'.__FILE__.' - '.__LINE__);
+                     return new SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
                   }
                } else {
-                  return new SoapFault('ERROR','createUser: Portal ID is not valid! - '.__FILE__.' - '.__LINE__);
+                  return new SoapFault('ERROR','createUser: user_id is not valid: user_id has umlauts! - '.__FILE__.' - '.__LINE__);
                }
             } else {
                return new SoapFault('ERROR','createUser: Logged in user is not allowed to create accounts. - '.__FILE__.' - '.__LINE__);
