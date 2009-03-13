@@ -298,20 +298,173 @@ for ( $i = 0; $i < 10; $i++ ) {
 echo(LINEBREAK);
 unset($count);
 
+$success_array = array();
+
 // begin migration
+echo(LINEBREAK);
+echo('0.STEP: clean user_ids from umlauts');
+echo(LINEBREAK);
+flush();
+
+$user_id_translation_array = array();
+$user_id_translation_array['ä'] = 'ae';
+$user_id_translation_array['Ä'] = 'Ae';
+$user_id_translation_array['ö'] = 'oe';
+$user_id_translation_array['Ö'] = 'Oe';
+$user_id_translation_array['ü'] = 'ue';
+$user_id_translation_array['Ü'] = 'Ue';
+$user_id_translation_array['ß'] = 'ss';
+
+$user_id_check_array = array();
+$user_id_check_array['ä'] = 'a';
+$user_id_check_array['Ä'] = 'A';
+$user_id_check_array['ö'] = 'o';
+$user_id_check_array['Ö'] = 'O';
+$user_id_check_array['ü'] = 'u';
+$user_id_check_array['Ü'] = 'U';
+$user_id_check_array['ß'] = 's';
+
+$user_id_array = array();
+$user_change_array = array();
+$sql  = 'SELECT user_id,commsy_id FROM auth WHERE';
+$sql .= ' user_id LIKE "'.utf8_decode('%ä%').'" OR user_id LIKE "'.utf8_decode('%Ä%').'"';
+$sql .= ' OR user_id LIKE "'.utf8_decode('%ö%').'" OR user_id LIKE "'.utf8_decode('%Ö%').'"';
+$sql .= ' OR user_id LIKE "'.utf8_decode('%ü%').'" OR user_id LIKE "'.utf8_decode('%Ü%').'"';
+$sql .= ' OR user_id LIKE "'.utf8_decode('%ß%').'"';
+$sql .= ' COLLATE latin1_german2_ci';
+$sql .= ';';
+$result = select($sql);
+unset($sql);
+while ( $row = mysql_fetch_assoc($result) ) {
+   $user_id_array[] = $row;
+}
+init_progress_bar(count($user_id_array));
+
+foreach ($user_id_array as $row) {
+   $user_id_as_array = str_split($row['user_id']);
+   $new_user_id = '';
+   foreach ( $user_id_as_array as $char ) {
+      if ( !empty($user_id_check_array[utf8_encode($char)]) ) {
+         $new_user_id .= $user_id_check_array[utf8_encode($char)];
+      } else {
+         $new_user_id .= $char;
+      }
+   }
+   $sql = 'SELECT count(*) as count FROM auth WHERE user_id="'.$new_user_id.'" AND commsy_id="'.$row['commsy_id'].'";';
+   $result2 = select($sql);
+   unset($sql);
+   $row2 = mysql_fetch_assoc($result2);
+   mysql_free_result($result2);
+   if ( $row2['count'] > 0 ) {
+      $row['user_id_check'] = $new_user_id;
+      $user_id_as_array = str_split($row['user_id']);
+      $new_user_id = '';
+      foreach ( $user_id_as_array as $char ) {
+         if ( !empty($user_id_translation_array[utf8_encode($char)]) ) {
+            $new_user_id .= $user_id_translation_array[utf8_encode($char)];
+         } else {
+            $new_user_id .= $char;
+         }
+      }
+      $row['user_id_new'] = $new_user_id;
+
+      $sql = 'SELECT count(*) as count FROM auth WHERE commsy_id="'.$row['commsy_id'].'" AND user_id="'.$new_user_id.'"';
+      $sql .= ' COLLATE latin1_german1_ci';
+      $sql .= ';';
+      $result2 = select($sql);
+      unset($sql);
+      $row2 = mysql_fetch_assoc($result2);
+      mysql_free_result($result2);
+      if ( $row2['count'] > 0 ) {
+         $row['user_id_new'] = $new_user_id.'utf8';
+      }
+
+      $sql = 'UPDATE auth SET user_id="'.addslashes($row['user_id_new']).'" WHERE user_id="'.addslashes($row['user_id']).'" AND commsy_id="'.$row['commsy_id'].'";';
+      select($sql);
+      unset($sql);
+
+      $sql = 'SELECT room.item_id FROM room INNER JOIN user ON room.item_id=user.context_id WHERE room.context_id="'.$row['commsy_id'].'" AND user.user_id="'.$row['user_id'].'";';
+      $result2 = select($sql);
+      unset($sql);
+      $room_id_array = array();
+      $room_id_array[] = $row['commsy_id'];
+      while ( $row2 = mysql_fetch_assoc($result2) ) {
+         $room_id_array[] = $row2['item_id'];
+      }
+      mysql_free_result($result2);
+
+      $sql = 'SELECT item_id FROM auth_source WHERE context_id="'.$row['commsy_id'].'" AND extras LIKE "%COMMSY_DEFAULT\";s:1:\"1\"%";';
+      $result2 = select($sql);
+      unset($sql);
+      $row2 = mysql_fetch_assoc($result2);
+      mysql_free_result($result2);
+
+      $sql  = 'UPDATE user SET user_id="'.addslashes($row['user_id_new']).'" WHERE user_id="'.addslashes($row['user_id']).'"';
+      if ( !empty($row2['item_id']) ) {
+         $sql .= ' AND auth_source="'.$row2['item_id'].'"';
+      }
+      $sql .= ' AND context_id IN ('.implode(',',$room_id_array).');';
+      select($sql);
+      unset($sql);
+      unset($room_id_array);
+
+      // send mail to user
+      $sql = 'SELECT email FROM user WHERE user_id="'.addslashes($row['user_id_new']).'"';
+      if ( !empty($row2['item_id']) ) {
+         $sql .= ' AND auth_source="'.$row2['item_id'].'"';
+      }
+      $sql .= ' AND context_id="'.$row['commsy_id'].'";';
+      $result2 = select($sql);
+      unset($sql);
+      $row2 = mysql_fetch_assoc($result2);
+      $email = $row2['email'];
+
+      $sql = 'SELECT title FROM portal WHERE item_id="'.$row['commsy_id'].'";';
+      $result2 = select($sql);
+      unset($sql);
+      $row2 = mysql_fetch_assoc($result2);
+      $commsy_portal_name = $row2['title'];;
+      if ( !empty($email) ) {
+         $from = 'info@commsy.net';
+         $nachricht  = $commsy_portal_name.LF;
+         $nachricht .= '------------------'.LF;
+         $nachricht .= 'Aufgrund der Migration der Datenbank von latin1 zu utf8 wurde Ihre Kennung geändert'.LF;
+         $nachricht .= '   von '.$row['user_id'].' zu '.$row['user_id_new'].'.'.LF;
+         $nachricht .= '---'.LF;
+         $nachricht .= 'We changed the database from latin1 to utf8, so we had to change your account'.LF;
+         $nachricht .= '   from '.$row['user_id'].' to '.$row['user_id_new'].'.'.LF;
+         $nachricht .= '---'.LF;
+         $nachricht .= $c_commsy_domain.$c_commsy_url_path;
+         @mail($email, $commsy_portal_name.': Kennung geändert / user-id changed', $nachricht, "FROM: $from");
+      }
+      $user_change_array[] = $row;
+   }
+   unset($row2);
+   update_progress_bar(count($user_id_array));
+}
+mysql_free_result($result);
+echo(LINEBREAK);
+
+if ( !empty($user_change_array) ) {
+   echo(LINEBREAK);
+   echo('the following user-ids changed:');
+   foreach ( $user_change_array as $row ) {
+      echo(LINEBREAK);
+      echo($row['user_id'].' -> '.$row['user_id_new']);
+   }
+   echo(LINEBREAK);
+}
+
 echo(LINEBREAK);
 echo('1.STEP: set character set and collation to latin1');
 echo(LINEBREAK);
 flush();
-
-$success_array = array();
 
 echo('database: '.$DB_Name);
 $sql = 'SHOW VARIABLES LIKE "collation_database";';
 $result = select($sql);
 $row = mysql_fetch_assoc($result);
 mysql_free_result($result);
-unset($result);
 if ( empty($row['Value']) or $row['Value'] != 'latin1_german1_ci' ) {
    $sql = 'ALTER DATABASE '.$DB_Name.' CHARACTER SET latin1 COLLATE latin1_german1_ci;';
    if ( select($sql) ) {
