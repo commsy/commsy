@@ -152,7 +152,7 @@ if (file_exists($filename)) {
 
 
 }
-
+header("Content-Type: text/html; charset=utf-8");
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -166,12 +166,7 @@ if (file_exists($filename)) {
 
  <!-- Meta der Seite -->
 
- <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
- <!-- ---- -->
- <!-- UTF8 -->
- <!-- <meta http-equiv="content-type" content="text/html; charset=utf-8" /> -->
- <!-- UTF8 -->
- <!-- ---- -->
+ <meta http-equiv="content-type" content="text/html; charset=utf-8" />
  <meta http-equiv="imagetoolbar" content="no" />
 
  <!-- Copyright der Seite -->
@@ -337,7 +332,7 @@ if (!isset($action)) {
    echo "<h1>".$language[$lang]['version']."</h1>";
 
    $php_version = phpversion();
-   if ( $php_version >= 5 ) {
+   if ( $php_version >= 5.2 ) {
       $checkphp = "<font style=\"color: #32C040;\"><strong>".$php_version."</strong></font>\n";
    } else {
       $checkphp = "<font style=\"color: #FF0030;\"><strong>".$php_version."</strong></font>\n";
@@ -346,7 +341,7 @@ if (!isset($action)) {
    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
    echo "<tr>";
    echo "<td width=\"40%\">PHP</td>";
-   echo "<td width=\"20%\">> 5</td>";
+   echo "<td width=\"20%\">>= 5.2</td>";
    echo "<td width=\"40%\" align=\"right\">".$checkphp."</td>";
    echo "</tr>";
    echo "</table>";
@@ -485,7 +480,7 @@ if (!isset($action)) {
 
    echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">";
    echo "<tr>";
-   echo "<td width=\"40%\">../etc/</td>";
+   echo "<td width=\"40%\">../etc/ (".$language[$lang]['for_installation'].")</td>";
    echo "<td width=\"20%\">&nbsp;</td>";
    echo "<td width=\"40%\" align=\"right\">".$checketc."</td>";
    echo "</tr>";
@@ -601,7 +596,7 @@ if (!isset($action)) {
       } else {
          $host = $_SESSION['dbhost'];
       }
-      echo '<td><input type="text" name="host" value="'.$host.'" class="formular" /></td>';
+      echo '<td><input type="text" name="host" value="'.$host.'" class="formular" tabindex="1"/></td>';
       echo '</tr>';
       echo '<tr>';
       echo '<td>Datenbank Name:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
@@ -610,7 +605,7 @@ if (!isset($action)) {
       {
          echo ' value="'.$_SESSION['dbname'].'"';
       }
-      echo ' class="formular" /></td>';
+      echo ' class="formular" tabindex="2"/></td>';
       echo '</tr>';
       echo '<tr>';
       echo '<td>User:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
@@ -619,7 +614,7 @@ if (!isset($action)) {
       {
          echo ' value="'.$_SESSION['dbuser'].'"';
       }
-      echo ' class="formular" /></td>';
+      echo ' class="formular" tabindex="3"/></td>';
       echo '</tr>';
       echo '<tr>';
       echo '<td>Passwort:&nbsp;&nbsp;&nbsp;&nbsp;</td>';
@@ -628,14 +623,18 @@ if (!isset($action)) {
       {
          echo ' value="'.$_SESSION['password'].'"';
       }
-      echo ' class="formular" /></td>';
+      echo ' class="formular" tabindex="4" onkeydown="if ((event.which && event.which == 13) ||
+    (event.keyCode && event.keyCode == 13))
+    {document.installation.submit[1].click();return false;}
+    else return true;"
+/></td>';
       echo '</tr>';
       echo '</table>';
       }
 
       echo "<br />";
       echo '<table width="100%" cellspacing="0" cellpadding="0"><tr>';
-      echo '<td width="33%" align="left"><p><input name="submit" type="submit" value="&nbsp;&nbsp;&laquo;&nbsp;&nbsp;'.$language[$lang]['buttonprev'].'&nbsp;&nbsp;" /></p></td>';
+      echo '<td width="33%" align="left"><p><input name="submit" type="submit" value="&nbsp;&nbsp;&laquo;&nbsp;&nbsp;'.$language[$lang]['buttonprev'].'&nbsp;&nbsp;" tabindex="6"/></p></td>';
       echo '<td align="center" width="33%">';
 
       if(isset($_POST['test']) and (!isset($sqlcheck1) or !isset($databasekcheck1) or !isset($databasekcheck2)))
@@ -648,7 +647,7 @@ if (!isset($action)) {
       echo '<td width="33%" align="right">';
       if(!isset($_POST['test']))
       {
-         echo '<p><input name="submit" type="submit" value="&nbsp;&nbsp;'.$language[$lang]['buttonnext'].'&nbsp;&nbsp;&raquo;&nbsp;&nbsp;" /></p>';
+         echo '<p><input name="submit" type="submit" value="&nbsp;&nbsp;'.$language[$lang]['buttonnext'].'&nbsp;&nbsp;&raquo;&nbsp;&nbsp;" tabindex="5"/></p>';
       } elseif(isset($_POST['test']) and isset($sqlcheck1) and isset($databasekcheck1) and isset($databasekcheck2))
       {
          echo '

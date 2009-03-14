@@ -50,8 +50,8 @@ $language['en']['reqnecessary'] = 'Necessary requirements';
 $language['de']['reqoptional'] = 'Optionale Voraussetzungen';
 $language['en']['reqoptional'] = 'Optional requirements';
 
-$language['de']['php5'] = 'PHP 5.x - Unterstützung';
-$language['en']['php5'] = 'PHP 5.x - support';
+$language['de']['php5'] = 'PHP ab 5.2 - Unterstützung';
+$language['en']['php5'] = 'PHP ab 5.2 - support';
 
 $language['de']['mysql5'] = 'MySQL-Datenbank Version 5';
 $language['en']['mysql5'] = 'MySQL 5.0 database';
@@ -65,8 +65,8 @@ $language['en']['phpsettings'] = 'PHP settings';
 $language['de']['newdatabase'] = 'Neue Datenbank anlegen';
 $language['en']['newdatabase'] = 'Create a new database';
 
-$language['de']['newdatabasetext'] = 'Bitte legen Sie eine (neue) Datenbank auf Ihrem Server an, und halten dessen Zugangsdaten bereit.';
-$language['en']['newdatabasetext'] = 'Please create a (new) database on your server and have the access data ready.';
+$language['de']['newdatabasetext'] = 'Bitte legen Sie eine (neue) Datenbank (utf8_general_ci) auf Ihrem Server an, und halten dessen Zugangsdaten bereit.';
+$language['en']['newdatabasetext'] = 'Please create a (new) database (utf8_general_ci) on your server and have the access data ready.';
 
 //Lizenz Seite
 $language['de']['license'] = 'Lizenzbestimmungen';
@@ -152,4 +152,7 @@ $language['en']['addsoftware_chat'] = 'Chat: <a href="http://www.et-world.de/sed
 
 $language['de']['addsoftware_commsywiki'] = 'Wiki: <a href="http://www.commsy.net/Software/Download" class="link_in_text" target="_blank">CommSyWiki</a> - keine spezielle Version';
 $language['en']['addsoftware_commsywiki'] = 'Wiki: <a href="http://www.commsy.net/Software/Download" class="link_in_text" target="_blank">CommSyWiki</a> - no version limitation';
+
+$language['de']['for_installation'] = 'für Installation';
+$language['en']['for_installation'] = 'for installation';
 ?>
