@@ -1550,27 +1550,27 @@ class cs_connection_soap {
    }
 
    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
-         _log_in_file(array(array('$user_id', $user_id)));
-         $result = 'notAuthenticated';
-         $session_id = $this->_encode_input($session_id);
-         if ($this->_isSessionValid($session_id)) {
-            $user_manager = $this->_environment->getUserManager();
-           $user_manager->setContextLimit($context_id);
+      #$this->_log_in_file(array(array('$user_id', $user_id)));
+      $result = 'notAuthenticated';
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
-           $user_manager->select();
-           $user_list = $user_manager->get();
-           if ($user_list->getCount() >= 1) {
-              $user_item = $user_list->getFirst();
-              if($user_item->getStatus() == 3){
-                  $result = 'moderator';
-               }
-               if($user_item->getStatus() == 2){
-                  $result = 'user';
-               }
-               if($user_item->getStatus() == 1){
-                  $result = 'notAuthenticated';
-               }
-           }
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if ( $user_list->getCount() >= 1 ) {
+            $user_item = $user_list->getFirst();
+            if ( $user_item->getStatus() == 3 ){
+               $result = 'moderator';
+            }
+            if ( $user_item->getStatus() == 2 ) {
+               $result = 'user';
+            }
+            if ( $user_item->getStatus() == 1 ) {
+               $result = 'notAuthenticated';
+            }
+         }
 //	        else {
 //				$this->_environment->setCurrentContextID($context_id);
 //				$context_item = $this->_environment->getCurrentContextItem();
@@ -1578,12 +1578,12 @@ class cs_connection_soap {
 //					$result = 'read';
 //	            }
 //	        }
-         } else {
-           $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
-            $info_text = 'session id ('.$session_id.') is not valid';
-            $result = new SoapFault($info,$info_text);
-         }
-         return $result;
+      } else {
+         $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
    }
 
    public function savePosForItem ($session_id, $item_id, $x, $y) {
