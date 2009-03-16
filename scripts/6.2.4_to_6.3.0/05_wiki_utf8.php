@@ -22,6 +22,28 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+set_time_limit(0);
+
+$memory_limit2 = 640 * 1024 * 1024;
+$memory_limit = ini_get('memory_limit');
+if ( !empty($memory_limit) ) {
+   if ( strstr($memory_limit,'M') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024 * 1024;
+   } elseif ( strstr($memory_limit,'K') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024;
+   }
+}
+if ( $memory_limit < $memory_limit2 ) {
+   ini_set('memory_limit',$memory_limit2);
+   $memory_limit3 = ini_get('memory_limit');
+   if ( $memory_limit3 != $memory_limit2 ) {
+      echo('Can not set memory limit. Please try 640M in your php.ini.');
+      exit();
+   }
+}
+
 function countWikis2 ($directory) {
    $directory_handle  = opendir($directory);
    $sum = 0;
@@ -38,7 +60,12 @@ function countWikis2 ($directory) {
 function changeWikis2 ($directory,$count) {
    $directory_handle  = opendir($directory);
    while ( false !== ($entry = readdir($directory_handle)) ) {
-      if ($entry != '.' and $entry != '..' and is_dir($directory.'/'.$entry) and !mb_stristr($entry, 'uploads')) {
+      if ( $entry != '.'
+           and $entry != '..'
+           and is_dir($directory.'/'.$entry)
+           and !mb_stristr($entry, 'uploads')
+           and !is_link($directory.'/'.$entry)
+         ) {
          changeWikis2($directory.'/'.$entry,$count);
       } elseif (is_file($directory.'/'.$entry)) {
          $file_contents = file_get_contents($directory.'/'.$entry);
