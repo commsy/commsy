@@ -98,10 +98,10 @@ class cs_page_homepage_view extends cs_page_view {
       $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">'.LF;
       $retour .= '<html>'.LF;
       $retour .= '<head>'.LF;
-      $retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>'.LF;
+      #$retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>'.LF;
       // ------------
       // --->UTF8<---
-      //$retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'.LF;
+      $retour .= '   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'.LF;
       // --->UTF8<---
       // ------------
       $retour .= '   <meta http-equiv="expires" content="0"/>'.LF;
