@@ -693,9 +693,11 @@ class cs_page_view extends cs_view {
          unset($view);
          $session = $this->_environment->getSession();
          $left_menue_status = $session->getValue('left_menue_status');
+         $cs_modus = $this->_environment->getValueOfParameter('cs_modus');
          if ( $left_menue_status != 'disapear'
               and $this->_environment->getCurrentModule() != 'help'
               and !$this->_environment->inServer()
+              and empty($cs_modus)
             ) {
 
             //Set Focus to login field
