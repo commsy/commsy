@@ -121,6 +121,7 @@ function displayCronResults ( $array ) {
 }
 
 set_time_limit(0);
+header("Content-Type: text/html; charset=utf-8");
 
 $memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
