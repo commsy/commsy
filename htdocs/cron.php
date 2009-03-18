@@ -122,6 +122,25 @@ function displayCronResults ( $array ) {
 
 set_time_limit(0);
 
+$memory_limit2 = 640 * 1024 * 1024;
+$memory_limit = ini_get('memory_limit');
+if ( !empty($memory_limit) ) {
+   if ( strstr($memory_limit,'M') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024 * 1024;
+   } elseif ( strstr($memory_limit,'K') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024;
+   }
+}
+if ( $memory_limit < $memory_limit2 ) {
+   ini_set('memory_limit',$memory_limit2);
+   $memory_limit3 = ini_get('memory_limit');
+   if ( $memory_limit3 != $memory_limit2 ) {
+      echo('Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.');
+   }
+}
+
 // pretend, we work from the CommSy basedir to allow
 // giving include files without "../" prefix all the time.
 chdir('..');
