@@ -955,6 +955,8 @@ function toggleUmlaut($value) {
    return $retour;
 }
 
+/** kann weg **/
+/** noch mal prüfen **/
 function cs_unserialize ( $extra ) {
    // ------------------
    // --->UTF8 - OK<----
@@ -1039,7 +1041,7 @@ function cs_unserialize ( $extra ) {
 }
 
 function mb_unserialize($serial_str) {
-   $retour = unserialize($serial_str);
+   $retour = @unserialize($serial_str);
    if ( empty($retour) ) {
       $serial_str = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
       $retour = unserialize($serial_str);
