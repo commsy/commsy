@@ -41,7 +41,7 @@ while ( $row = mysql_fetch_assoc($result) ) {
 mysql_free_result($result);
 if ( !in_array('room_privat',$table_array) ) {
 
-   $sql = " CREATE  TABLE  `commsy`.`room_privat` (  `item_id` int( 11  )  NOT  NULL default  '0',
+   $sql = " CREATE  TABLE  `room_privat` (  `item_id` int( 11  )  NOT  NULL default  '0',
  `context_id` int( 11  )  default NULL ,
  `creator_id` int( 11  )  NOT  NULL default  '0',
  `modifier_id` int( 11  )  default NULL ,
