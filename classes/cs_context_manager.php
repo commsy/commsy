@@ -290,63 +290,6 @@ class cs_context_manager extends cs_manager {
       return $list;
    }
 
-   function getRelatedOwnRoomForUser ($user_item, $context_id) {
-      $retour = NULL;
-      if ( !empty($user_item) ) {
-         if ( isset($this->_private_room_array[$user_item->getItemID()])
-              and !empty($this->_private_room_array[$user_item->getItemID()])
-            ) {
-            $retour = $this->_private_room_array[$user_item->getItemID()];
-         } else {
-            $query  = 'SELECT '.$this->_db_table.'.*';
-            $query .= ' FROM '.$this->_db_table;
-
-            $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
-                        AND user.auth_source="'.encode(AS_DB,$user_item->getAuthSource()).'"
-                        AND user.deletion_date IS NULL
-                        AND user.user_id="'.encode(AS_DB,$user_item->getUserID()).'"';
-            if (!$this->_all_room_limit) {
-               $query .= ' AND user.status >= "2"';
-            } else {
-               $query .= ' AND user.status >= "1"';
-            }
-
-            $query .= ' WHERE 1';
-            $query .= ' AND '.$this->_db_table.'.type = "privateroom"';
-            $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$context_id).'"';
-
-            if ($this->_delete_limit == true) {
-               $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
-            }
-            if (isset($this->_status_limit)) {
-               $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
-            }
-            $query .= ' ORDER BY title, creation_date DESC';
-
-            //store query
-            $this->_last_query = $query;
-
-            // perform query
-            $result = $this->_db_connector->performQuery($query);
-            if ( !isset($result) ) {
-               include_once('functions/error_functions.php');
-               trigger_error('Problems selecting '.$this->_db_table.' items.',E_USER_WARNING);
-            } elseif ( !empty($result[0]) ) {
-               $query_result = $result[0];
-               $item = $this->_buildItem($query_result);
-               if ( isset($item) ) {
-                  $item->setType(CS_PRIVATEROOM_TYPE);
-                  $this->_private_room_array[$user_item->getItemID()] = $item;
-                  $retour = $this->_private_room_array[$user_item->getItemID()];
-                  unset($item);
-               }
-            }
-         }
-         unset($user_item);
-      }
-      return $retour;
-   }
-
    function _getRelatedContextListForUserSortByTime ($user_id, $auth_source, $context_id, $grouproom = false) {
       $list = new cs_list();
 

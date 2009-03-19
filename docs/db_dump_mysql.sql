@@ -786,6 +786,30 @@ CREATE TABLE `room` (
   KEY `creator_id` (`creator_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+
+CREATE  TABLE  `room_privat` (
+ `item_id` int(11)  NOT  NULL default  '0',
+ `context_id` int(11)  default NULL ,
+ `creator_id` int(11)  NOT  NULL default  '0',
+ `modifier_id` int(11)  default NULL ,
+ `deleter_id` int(11)  default NULL ,
+ `creation_date` datetime NOT  NULL default  '0000-00-00 00:00:00',
+ `modification_date` datetime NOT  NULL default  '0000-00-00 00:00:00',
+ `deletion_date` datetime  default NULL ,
+ `title` varchar(255)  NOT  NULL ,
+ `extras` text,
+ `status` varchar(20)  NOT  NULL ,
+ `activity` int(11)  NOT  NULL default  '0',
+ `type` varchar(20)  NOT  NULL default  'privateroom',
+ `public` tinyint(11)  NOT  NULL default  '0',
+ `is_open_for_guests` tinyint(4)  NOT  NULL default  '0',
+ `continuous` tinyint(4)  NOT  NULL default  '-1',
+ `template` tinyint(4)  NOT  NULL default  '-1',
+ PRIMARY  KEY (`item_id`) ,
+ KEY  `context_id` (`context_id`) ,
+ KEY  `creator_id` (`creator_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
 --
 -- Daten für Tabelle `room`
 --

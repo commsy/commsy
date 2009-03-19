@@ -203,7 +203,7 @@ class cs_environment {
                } elseif ($type == CS_COMMUNITY_TYPE) {
                   $manager = $this->getRoomManager(); // room_manager for caching
                } elseif ($type == CS_PRIVATEROOM_TYPE) {
-                  $manager = $this->getRoomManager(); // room_manager for caching
+                  $manager = $this->getManager(CS_PRIVATEROOM_TYPE); // room_manager for caching
                } elseif ($type == CS_GROUPROOM_TYPE) {
                   $manager = $this->getRoomManager(); // room_manager for caching
                } elseif ($type == CS_PORTAL_TYPE) {

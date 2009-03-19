@@ -66,7 +66,7 @@ class cs_privateroom_manager extends cs_context_manager {
     * @param object cs_environment the environment
     */
   function cs_privateroom_manager ($environment) {
-     $this->_db_table = 'room';
+     $this->_db_table = 'room_privat';
      $this->_room_type = CS_PRIVATEROOM_TYPE;
      $this->cs_context_manager($environment);
   }
@@ -133,8 +133,8 @@ class cs_privateroom_manager extends cs_context_manager {
      $this->_auth_source_limit = (int)$limit;
   }
 
-  /** select communities limited by limits
-    * this method returns a list (cs_list) of communities within the database limited by the limits. the select statement is a bit tricky, see source code for further information
+  /** select privatrooms limited by limits
+    * this method returns a list (cs_list) of privatrooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */
   function _performQuery ($mode = 'select') {
      if ($mode == 'count') {
@@ -246,7 +246,8 @@ class cs_privateroom_manager extends cs_context_manager {
          $query .= " ORDER BY ".encode(AS_DB,$sortBy);
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
          } else {
             $list = new cs_list();
             // filter items with highest version_id, doing this in MySQL would be too expensive
@@ -289,7 +290,8 @@ class cs_privateroom_manager extends cs_context_manager {
                'status="'.encode(AS_DB,$item->getStatus()).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems creating new '.$this->_room_type.' item from query: "'.$query.'"', E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems creating new '.$this->_room_type.' item from query: "'.$query.'"', E_USER_ERROR);
       }
    }
 
@@ -315,7 +317,8 @@ class cs_privateroom_manager extends cs_context_manager {
       include_once('classes/cs_room_item.php');
       $item = new cs_room_item($this->_environment);
       if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
       } else {
         $result_array = array();
          foreach ($result as $query_result) {
@@ -325,8 +328,66 @@ class cs_privateroom_manager extends cs_context_manager {
          if (count($result_array) == 1) {
             $retour = $result_array[0];
          } else {
-            include_once('functions/error_functions.php');trigger_error('Multiple or no private rooms for user ('.$user_id.') form auth_source ('.$auth_source.') on portal ('.$context_id.')',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Multiple or no private rooms for user ('.$user_id.') form auth_source ('.$auth_source.') on portal ('.$context_id.')',E_USER_WARNING);
          }
+      }
+      return $retour;
+   }
+
+   function getRelatedOwnRoomForUser ($user_item, $context_id) {
+      $retour = NULL;
+      if ( !empty($user_item) ) {
+         if ( isset($this->_private_room_array[$user_item->getItemID()])
+              and !empty($this->_private_room_array[$user_item->getItemID()])
+            ) {
+            $retour = $this->_private_room_array[$user_item->getItemID()];
+         } else {
+            $query  = 'SELECT '.$this->_db_table.'.*';
+            $query .= ' FROM '.$this->_db_table;
+
+            $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
+                        AND user.auth_source="'.encode(AS_DB,$user_item->getAuthSource()).'"
+                        AND user.deletion_date IS NULL
+                        AND user.user_id="'.encode(AS_DB,$user_item->getUserID()).'"';
+            if (!$this->_all_room_limit) {
+               $query .= ' AND user.status >= "2"';
+            } else {
+               $query .= ' AND user.status >= "1"';
+            }
+
+            $query .= ' WHERE 1';
+            $query .= ' AND '.$this->_db_table.'.type = "privateroom"';
+            $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$context_id).'"';
+
+            if ($this->_delete_limit == true) {
+               $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
+            }
+            if (isset($this->_status_limit)) {
+               $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
+            }
+            $query .= ' ORDER BY title, creation_date DESC';
+
+            //store query
+            $this->_last_query = $query;
+
+            // perform query
+            $result = $this->_db_connector->performQuery($query);
+            if ( !isset($result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems selecting '.$this->_db_table.' items.',E_USER_WARNING);
+            } elseif ( !empty($result[0]) ) {
+               $query_result = $result[0];
+               $item = $this->_buildItem($query_result);
+               if ( isset($item) ) {
+                  $item->setType(CS_PRIVATEROOM_TYPE);
+                  $this->_private_room_array[$user_item->getItemID()] = $item;
+                  $retour = $this->_private_room_array[$user_item->getItemID()];
+                  unset($item);
+               }
+            }
+         }
+         unset($user_item);
       }
       return $retour;
    }

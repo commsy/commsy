@@ -1391,10 +1391,10 @@ class cs_user_item extends cs_item {
 
          if ( $item->getItemType() == CS_COMMUNITY_TYPE
               or $item->getItemType() == CS_PROJECT_TYPE
-              or $item->getItemType() == CS_PRIVATEROOM_TYPE
               or $item->getItemType() == CS_GROUPROOM_TYPE
             ) {
-            $room_manager = $this->_environment->getRoomManager();
+         } elseif ( $item->getItemType() == CS_PRIVATEROOM_TYPE ) {
+            $room_manager = $this->_environment->getManager(CS_PRIVATEROOM_TYPE);
             $room = $room_manager->getItem($this->getContextID());
             $portal_id = $room->getContextID();
          } elseif ( $item->getItemType() == CS_PORTAL_TYPE ) {
