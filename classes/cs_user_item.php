@@ -859,12 +859,31 @@ class cs_user_item extends cs_item {
      return $this->_getValue('status');
    }
 
+   /** get status of user
+    * this method returns an integer value corresponding with the users status
+    *
+    * @return int status
+    */
+   function getLastStatus () {
+     return $this->_getValue('status_last');
+   }
+
+   /** set user status last
+    * this method sets the last status of the user, if status changed
+    *
+    * @param int status
+    */
+   function setLastStatus ($value) {
+      $this->_setValue('status_last', (int)$value);
+   }
+
    /** set user status
     * this method sets the status of the user
     *
     * @param int status
     */
    function setStatus ($value) {
+      $this->setLastStatus($this->getStatus());
       $this->_setValue('status', (int)$value);
    }
 

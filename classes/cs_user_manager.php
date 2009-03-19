@@ -1151,6 +1151,7 @@ class cs_user_manager extends cs_manager {
   function saveItem ($item) {
      $setCreatorID2ItemID = false;
      $item_id = $item->getItemID();
+
      if (!empty($item_id)) {
         $this->_update($item);
      } else {
@@ -1191,7 +1192,12 @@ class cs_user_manager extends cs_manager {
      }
 
      // customized room list
-     if ( empty($item_id) ) {
+     if ( empty($item_id)
+          or ( $item->getLastStatus() != $item->getStatus()
+               and $item->isUser()
+               and $item->getLastStatus() < 2
+             )
+        ) {
         $private_room = $item->getOwnRoom();
         if ( isset($private_room) ) {
            $customized_room_id_array = $private_room->getCustomizedRoomIDArray();
