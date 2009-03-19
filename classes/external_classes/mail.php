@@ -93,7 +93,7 @@ class Mail extends PEAR
         if (isset($headers['Subject'])) {
            if ( function_exists('mb_encode_mimeheader') ) {
               mb_language('en'); // hat auswirkungen auf den Zeichensatz, warum ????
-              $subject = mb_encode_mimeheader($headers['Subject']);
+              $subject = mb_encode_mimeheader($headers['Subject'],"UTF-8");
            } else {
               $subject = $headers['Subject'];
            }
