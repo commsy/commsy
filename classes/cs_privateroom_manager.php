@@ -176,20 +176,20 @@ class cs_privateroom_manager extends cs_context_manager {
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY room.modification_date DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY room.creation_date ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, room.modification_date DESC';
+           $query .= ' ORDER BY user.lastname, '.$this->_db_table.'.modification_date DESC';
         } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY room.activity ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY room.activity DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
         } else {
-           $query .= ' ORDER BY room.title, room.modification_date DESC';
+           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY room.title DESC';
+        $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
      }
 
      if ($mode == 'select') {

@@ -205,10 +205,10 @@ class cs_room_manager extends cs_context_manager {
     // time (clock pulses)
     if ( isset($this->_time_limit) ) {
        if ($this->_time_limit != -1) {
-         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
          $query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
        } else {
-         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
        }
      }
 

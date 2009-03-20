@@ -177,20 +177,20 @@ class cs_myroom_manager extends cs_context_manager {
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY room.modification_date DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY room.creation_date ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, room.modification_date DESC';
+           $query .= ' ORDER BY user.lastname, '.$this->_db_table.'.modification_date DESC';
         } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY room.activity ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY room.activity DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
         } else {
-           $query .= ' ORDER BY room.title, room.modification_date DESC';
+           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY room.title DESC';
+        $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
      }
 
      if ($mode == 'select') {
@@ -212,15 +212,15 @@ class cs_myroom_manager extends cs_context_manager {
       $list = new cs_list();
       $query  = 'SELECT DISTINCT';
      if ($mode == 'count') {
-        $query .= ' count(DISTINCT room.item_id) as count';
+        $query .= ' count(DISTINCT '.$this->_db_table.'.item_id) as count';
      } elseif ($mode == 'id_array') {
-        $query .= ' room.item_id';
+        $query .= ' '.$this->_db_table.'.item_id';
      } else {
-        $query .= ' room.*';
+        $query .= ' '.$this->_db_table.'.*';
      }
       $query .= ' FROM room';
 
-      $query .= ' INNER JOIN user ON user.context_id=room.item_id
+      $query .= ' INNER JOIN user ON user.context_id='.$this->_db_table.'.item_id
                   AND user.deletion_date IS NULL
                   AND user.user_id="'.encode(AS_DB,$user_id).'"
                   AND user.auth_source="'.encode(AS_DB,$auth_source).'"';
@@ -231,21 +231,21 @@ class cs_myroom_manager extends cs_context_manager {
       }
 
      if ( !empty($this->_search_array) ) {
-        $query .= ' LEFT JOIN user AS user2 ON user2.context_id=room.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
+        $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
      }
 
       if ( isset($this->_topic_limit) ) {
-         $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id=room.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
-         $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id=room.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
+         $query .= ' LEFT JOIN link_items AS l41 ON ( l41.deletion_date IS NULL AND ((l41.first_item_id='.$this->_db_table.'.item_id AND l41.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
+         $query .= ' LEFT JOIN link_items AS l42 ON ( l42.deletion_date IS NULL AND ((l42.second_item_id='.$this->_db_table.'.item_id AND l42.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
       }
 
     // time (clock pulses)
     if ( isset($this->_time_limit) ) {
        if ($this->_time_limit != -1) {
-         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' INNER JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
          $query .= ' INNER JOIN labels AS time_label ON room_time.to_item_id=time_label.item_id AND time_label.type="time"';
        } else {
-         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id=room.item_id AND room_time.link_type="in_time"';
+         $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
        }
      }
       $query .= ' WHERE 1=1';
@@ -260,30 +260,30 @@ class cs_myroom_manager extends cs_context_manager {
       }
      if (isset($this->_status_limit)) {
         if ($this->_status_limit != 5) {
-           $query .= ' AND room.status = "'.encode(AS_DB,$this->_status_limit).'"';
+           $query .= ' AND '.$this->_db_table.'.status = "'.encode(AS_DB,$this->_status_limit).'"';
         } elseif ($this->_status_limit == 5) {
-           $query .= ' AND (room.status = "1" OR room.status = "2")';
+           $query .= ' AND ('.$this->_db_table.'.status = "1" OR '.$this->_db_table.'.status = "2")';
         }
      } else {
-        $query .= ' AND (room.status = "'.CS_ROOM_OPEN.'" OR room.status = "'.CS_ROOM_CLOSED.'" OR room.status = "'.CS_ROOM_LOCK.'")';
+        $query .= ' AND ('.$this->_db_table.'.status = "'.CS_ROOM_OPEN.'" OR '.$this->_db_table.'.status = "'.CS_ROOM_CLOSED.'" OR '.$this->_db_table.'.status = "'.CS_ROOM_LOCK.'")';
      }
 
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-       $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))','room.title');
+       $field_array = array('TRIM(CONCAT(user2.firstname," ",user2.lastname))',''.$this->_db_table.'.title');
        $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
        $query .= $search_limit_query_code;
          $query .= ' )';
       }
 
-      $query .= ' AND room.context_id="'.encode(AS_DB,$context_id).'"';
-      $query .= ' AND room.type !="privateroom"';
+      $query .= ' AND '.$this->_db_table.'.context_id="'.encode(AS_DB,$context_id).'"';
+      $query .= ' AND '.$this->_db_table.'.type !="privateroom"';
       if (isset($this->_room_type) and $this->_room_type !=CS_PRIVATEROOM_TYPE ) {
-         $query .= ' AND  room.type = "'.encode(AS_DB,$this->_room_type).'"';
+         $query .= ' AND  '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
       }
 
       if ($this->_delete_limit == true) {
-         $query .= ' AND room.deleter_id IS NULL';
+         $query .= ' AND '.$this->_db_table.'.deleter_id IS NULL';
       }
     // time (clock pulses)
     if (isset($this->_time_limit)) {
@@ -306,20 +306,20 @@ class cs_myroom_manager extends cs_context_manager {
      }
      elseif (isset($this->_order)) {
         if ($this->_order == 'date') {
-           $query .= ' ORDER BY room.modification_date DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY room.creation_date ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'creator') {
-           $query .= ' ORDER BY user.lastname, room.modification_date DESC';
+           $query .= ' ORDER BY user.lastname, '.$this->_db_table.'.modification_date DESC';
         } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY room.activity ASC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
         } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY room.activity DESC, room.title ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
         } else {
-           $query .= ' ORDER BY room.title, room.modification_date ASC';
+           $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date ASC';
         }
      } else {
-        $query .= ' ORDER BY room.title ASC';
+        $query .= ' ORDER BY '.$this->_db_table.'.title ASC';
      }
      if ($mode == 'select') {
         if (isset($this->_interval_limit) and isset($this->_from_limit)) {
