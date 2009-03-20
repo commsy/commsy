@@ -64,22 +64,18 @@ if ( !in_array('room_privat',$table_array) ) {
    select($sql);
    unset($sql);
 
-} else {
-   #$sql = 'TRUNCATE room_privat;';
-   #select($sql);
-   #unset($sql);
+   $sql = 'INSERT INTO room_privat SELECT * FROM room;';
+   select($sql);
+   unset($sql);
+
+   $sql = "DELETE  FROM `room_privat` WHERE `type` != 'privateroom';";
+   select($sql);
+   unset($sql);
+
+   $sql = "DELETE  FROM `room` WHERE `type` = 'privateroom';";
+   select($sql);
+   unset($sql);
 }
-
-$sql = 'INSERT INTO room_privat SELECT * FROM room;';
-select($sql);
-unset($sql);
-$sql = "DELETE  FROM `room_privat` WHERE `type` != 'privateroom';";
-select($sql);
-unset($sql);
-
-$sql = "DELETE  FROM `room` WHERE `type` = 'privateroom';";
-select($sql);
-unset($sql);
 
 $success = true;
 echo('done');
