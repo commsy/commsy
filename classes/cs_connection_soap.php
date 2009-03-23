@@ -1532,6 +1532,7 @@ class cs_connection_soap {
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
+         // auth source, sonst nicht eindeutig !!!
          $user_manager->select();
          $user_list = $user_manager->get();
          $user_info = '';
@@ -1545,7 +1546,47 @@ class cs_connection_soap {
          $info_text = 'session id ('.$session_id.') is not valid';
          $result = new SoapFault($info,$info_text);
       }
+      // ???
       $project_manager = $this->_environment->getProjectManager;
+      return $result;
+   }
+
+   public function getRSSUrl ($session_id) {
+      $retour = '';
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if ( $user_list->getCount() == 1 ) {
+            $user_item = $user_list->getFirst();
+            $user_priv_item = $user_item->getRelatedPrivateRoomUserItem();
+            $hash_manager = $this->_environment->getHashManager();
+            $retour = $hash_manager->getRSSHashForUser($user_priv_item->getItem());
+            unset($user_priv_item);
+            unset($user_item);
+            $result = $this->_encode_output($retour);
+         } else {
+            $info = 'ERROR: GET RSS URL';
+            $info_text = 'database error: user ('.$user_id.','.$auth_source_id.','.$context_id.') not equal';
+            $result = new SoapFault($info,$info_text);
+         }
+         unset($user_list);
+         unset($user_manager);
+         unset($session);
+      } else {
+         $info = 'ERROR: GET RSS URL';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
       return $result;
    }
 
