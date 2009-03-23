@@ -71,8 +71,9 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '<h2 class="pagetitle">'.$image.$this->_translator->getMessage('MYROOM_INDEX');
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .='</div>'.LF;
+      $html .='<div style="width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;
@@ -278,7 +279,6 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '</form>'.LF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;

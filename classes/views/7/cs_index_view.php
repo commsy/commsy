@@ -1533,6 +1533,7 @@ EOD;
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
+      $html .='</div>'.LF;
       $html .='<div style="font-size:0pt; width:100%; clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
@@ -1983,7 +1984,6 @@ EOD;
       }
       $html .='</div>'.LF;
       $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .= '<!-- END OF PLAIN LIST VIEW -->'.LF.LF;
       return $html;

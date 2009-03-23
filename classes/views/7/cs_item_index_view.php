@@ -1354,8 +1354,9 @@ var $_sel_rubric = '';
       }
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
+      $html .='</div>'.LF;
+      $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       return $html;

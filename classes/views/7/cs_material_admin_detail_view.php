@@ -458,8 +458,6 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
       $html .='<div style="clear:both;">'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '<script type="text/javascript">'.LF;
