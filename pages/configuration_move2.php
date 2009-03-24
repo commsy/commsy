@@ -240,6 +240,17 @@ else {
                      $auth_source_translation_array[$auth_source_item_old->getItemID()] = $auth_source_item_new->getItemID();
                   }
                }
+               if ( $auth_source_item_old->getSourceType() == 'LDAP'
+                    and $auth_source_item_new->getSourceType() == 'LDAP'
+                  ) {
+                  $auth_data_new = $auth_source_item_new->getAuthData();
+                  $auth_data_old = $auth_source_item_old->getAuthData();
+                  if ( $auth_data_new['HOST'] == $auth_data_new['HOST']
+                       and $auth_data_new['BASE'] == $auth_data_new['BASE']
+                     ) {
+                     $auth_source_translation_array[$auth_source_item_old->getItemID()] = $auth_source_item_new->getItemID();
+                  }
+               }
                $auth_source_item_new = $auth_source_list_new->getNext();
             }
          }
