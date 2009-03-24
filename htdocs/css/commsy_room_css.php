@@ -50,6 +50,8 @@ if (!empty($_GET['cid'])) {
 #ie_footer{
    width:expression(document.body.clientWidth < 990 ? "990px": "auto" && document.body.clientWidth > 1200 ? "1200px": "auto");
 }
+.commsy_footer{border-top:1px solid #B0B0B0; background-color:white;}
+
 /*General Settings */
 body {
    margin: 0px;
