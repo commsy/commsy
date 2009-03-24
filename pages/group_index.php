@@ -245,7 +245,7 @@ if ( $interval > 0 ) {
 }
 $group_manager->select();
 $group_list = $group_manager->get();        // returns a cs_list of group_items
-$ids = $group_list->getIDArray();   // returns an array of item ids
+$ids = $group_manager->getIDArray();   // returns an array of item ids
 $count_all_shown = count($ids);
 
 if (isset($_GET['select']) and $_GET['select']=='all'){

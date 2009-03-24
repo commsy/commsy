@@ -239,7 +239,7 @@ if ( $interval > 0 ) {
 }
 $institution_manager->select();
 $list = $institution_manager->get();        // returns a cs_list of institution_items
-$ids = $list->getIDArray();       // returns an array of item ids
+$ids = $institution_manager->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
 
 

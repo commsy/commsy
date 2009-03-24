@@ -267,7 +267,7 @@ foreach ($rubric_array as $rubric) {
       $rubric_manager->selectDistinct();
       $rubric_list = $rubric_manager->get();
       $item_list->addList($rubric_list);
-      $temp_rubric_ids = $rubric_list->getIDArray();
+      $temp_rubric_ids = $rubric_manager->getIDArray();
       if (!empty($temp_rubric_ids)){
          $rubric_ids = $temp_rubric_ids;
       }

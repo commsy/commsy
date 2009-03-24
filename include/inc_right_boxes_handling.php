@@ -352,7 +352,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
             $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
          }
          $item_list->addList($rubric_list);
-         $temp_rubric_ids = $rubric_list->getIDArray();
+         $temp_rubric_ids = $rubric_manager->getIDArray();
          if (!empty($temp_rubric_ids)){
             $rubric_ids = $temp_rubric_ids;
          }

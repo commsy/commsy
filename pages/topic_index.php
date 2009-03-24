@@ -280,7 +280,7 @@ if ( $interval > 0 ) {
 }
 $topic_manager->select();
 $list = $topic_manager->get();        // returns a cs_list of topic_items
-$ids = $list->getIDArray();       // returns an array of item ids
+$ids = $topic_manager->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
 
 

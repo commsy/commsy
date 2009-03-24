@@ -129,7 +129,7 @@ class cs_guide_room_list_page extends cs_page {
          }
          $manager->select();
          $list = $manager->get();
-         $ids = $list->getIDArray();
+         $ids = $manager->getIDArray();
          $count_all_shown = count($ids);
       } elseif ($this->_environment->inServer()) {
          $context_item = $this->_environment->getCurrentContextItem();

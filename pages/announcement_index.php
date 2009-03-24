@@ -477,7 +477,7 @@ if ( $interval > 0 ) {
 }
 $announcement_manager->select();
 $list = $announcement_manager->get();        // returns a cs_list of announcement_items
-$ids = $list->getIDArray();
+$ids = $announcement_manager->getIDArray();
 $count_all_shown = count($ids);
 
 $id_array = array();
