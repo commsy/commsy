@@ -1637,6 +1637,7 @@ class cs_connection_soap {
                   $retour .= '         <title><![CDATA['.$item->getTitle().']]></title>'.LF;
                   if ( $item->getItemID() > 99 ) {
                      global $c_commsy_domain, $c_commsy_url_path;
+                     include_once('functions/curl_functions.php');
                      $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
                   }
                   $retour .= '      </item>'.LF;
