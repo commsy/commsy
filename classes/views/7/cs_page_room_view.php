@@ -662,7 +662,7 @@ class cs_page_room_view extends cs_page_view {
          if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
             $html_id = 'id="ie"';
          }
-         $html .= '<div '.$html_id.' style="padding:0px; margin:0px;">'.LF;
+         $html .= '<div '.$html_id.' class="commsy_body" style="padding:0px; margin:0px;">'.LF;
 
       }
       $this->_send_first_html_part = true;
@@ -1249,8 +1249,8 @@ class cs_page_room_view extends cs_page_view {
 
          // @segment-end 35577
          // @segment-begin 91880 asHTML(): link"email_to_moderator"&co(right-bottom-corner)
-         $html .= '<div id="ie_footer" style="border-top:1px solid #B0B0B0; background-color:white;">'.LF;
-         $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:12px; padding-top:5px; padding-bottom:10px; background-color:white;">'.LF;
+         $html .= '<div id="ie_footer" class="commsy_footer">'.LF;
+         $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:12px; padding-top:5px; padding-bottom:10px; ">'.LF;
          $email_to_moderators = '';
          $current_user = $this->_environment->getCurrentUserItem();
          $current_context = $this->_environment->getCurrentContextItem();
