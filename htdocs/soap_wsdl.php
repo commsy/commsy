@@ -186,6 +186,12 @@
 <message name='getRSSUrlOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='getRoomListIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='getRoomListOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='getAuthenticationForWikiIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:string'/>
@@ -310,6 +316,10 @@
   <operation name='getRSSUrl'>
     <input message='tns:getRSSUrlIN'/>
     <output message='tns:getRSSUrlOUT'/>
+  </operation>
+  <operation name='getRoomList'>
+    <input message='tns:getRoomListIN'/>
+    <output message='tns:getRoomListOUT'/>
   </operation>
   <operation name='getAuthenticationForWiki'>
     <input message='tns:getAuthenticationForWikiIN'/>
@@ -584,6 +594,17 @@
   </operation>
   <operation name='getRSSUrl'>
     <soap:operation soapAction='urn:xmethodsCommSy#getRSSUrl'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getRoomList'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getRoomList'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

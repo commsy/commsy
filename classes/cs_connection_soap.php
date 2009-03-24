@@ -1606,6 +1606,65 @@ class cs_connection_soap {
       return $result;
    }
 
+   public function getRoomList ($session_id) {
+      $retour = '';
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if ( $user_list->getCount() == 1 ) {
+            $user_item = $user_list->getFirst();
+            $own_room = $user_item->getOwnRoom();
+            unset($user_item);
+            $list = $own_room->getCustomizedRoomList();
+            unset($own_room);
+            if ( isset($list) and $list->isNotEmpty() ) {
+               $retour = '<?xml version="1.0" encoding="utf-8"?>'.LF;
+               $retour .= '   <list>'.LF;
+               $item = $list->getFirst();
+               while ( $item ) {
+                  $retour .= '      <item>'.LF;
+                  $retour .= '         <title><![CDATA['.$item->getTitle().']]></title>'.LF;
+                  if ( $item->getItemID() > 99 ) {
+                     global $c_commsy_domain, $c_commsy_url_path;
+                     $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+                  }
+                  $retour .= '      </item>'.LF;
+                  $item = $list->getNext();
+               }
+               $retour .= '   </list>'.LF;
+               unset($list);
+               $result = $this->_encode_output($retour);
+            } else {
+               // bitte customized rooms list
+            }
+            unset($user_item);
+         } else {
+            $info = 'ERROR: GET ROOM LIST';
+            $info_text = 'database error: user ('.$user_id.','.$auth_source_id.','.$context_id.') not equal';
+            $result = new SoapFault($info,$info_text);
+         }
+         unset($user_list);
+         unset($user_manager);
+         unset($session);
+      } else {
+         $info = 'ERROR: GET ROOM LIST';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
+
    public function getAuthenticationForWiki ($session_id, $context_id, $user_id) {
       #$this->_log_in_file(array(array('$user_id', $user_id)));
       $result = 'notAuthenticated';
