@@ -1569,11 +1569,26 @@ class cs_connection_soap {
          if ( $user_list->getCount() == 1 ) {
             $user_item = $user_list->getFirst();
             $user_priv_item = $user_item->getRelatedPrivateRoomUserItem();
-            $hash_manager = $this->_environment->getHashManager();
-            $retour = $hash_manager->getRSSHashForUser($user_priv_item->getItem());
+            if ( isset($user_priv_item) ) {
+               $hash_manager = $this->_environment->getHashManager();
+               $retour = $hash_manager->getRSSHashForUser($user_priv_item->getItemID());
+               unset($hash_manager);
+               if ( !empty($retour) ) {
+                  global $c_commsy_domain, $c_commsy_url_path;
+                  $retour = $c_commsy_domain.$c_commsy_url_path.'/rss.php?cid='.$user_priv_item->getContextID().'&hid='.$retour;
+                  $result = $this->_encode_output($retour);
+               } else {
+                  $info = 'ERROR: GET RSS URL';
+                  $info_text = 'rss hash is empty ('.$user_id.','.$auth_source_id.','.$context_id.')';
+                  $result = new SoapFault($info,$info_text);
+               }
+            } else {
+               $info = 'ERROR: GET RSS URL';
+               $info_text = 'private room user does not exist ('.$user_id.','.$auth_source_id.','.$context_id.')';
+               $result = new SoapFault($info,$info_text);
+            }
             unset($user_priv_item);
             unset($user_item);
-            $result = $this->_encode_output($retour);
          } else {
             $info = 'ERROR: GET RSS URL';
             $info_text = 'database error: user ('.$user_id.','.$auth_source_id.','.$context_id.') not equal';
