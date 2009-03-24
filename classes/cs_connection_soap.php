@@ -1560,6 +1560,7 @@ class cs_connection_soap {
          $user_id = $session->getValue('user_id');
          $auth_source_id = $session->getValue('auth_source');
          $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);

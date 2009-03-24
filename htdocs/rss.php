@@ -151,7 +151,7 @@ if ( isset($_GET['cid']) ) {
 //        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
 //        <link>'.$path.'commsy.php</link>
 //      </image>';
-      
+
    $rss = '<?xml version="1.0" encoding="utf-8"?>
 
    <rss version="2.0">
@@ -169,7 +169,7 @@ if ( isset($_GET['cid']) ) {
         <title>'.$translator->getMessage('RSS_TITLE',$maintitle).'</title>
         <link>'.$path.'commsy.php</link>
       </image>';
-      
+
    $type_limit_array = array();
    $type_limit_array[] = 'user';
    $type_limit_array[] = 'annotation';
@@ -514,9 +514,9 @@ if ( isset($_GET['cid']) ) {
            <description>'.encode(AS_RSS,$description).'</description>
            <link>'.$link.'</link>
            <pubDate>'.encode(AS_RSS,$date).'</pubDate>
-           <author>'.encode(AS_RSS,$author).'</author>';
-         $rss .= '  <guid isPermaLink="false">'.$row['item_id'].'</guid>';
-         $rss .= '</item>';
+           <author>'.encode(AS_RSS,$author).'</author>'.LF;
+         $rss .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
+         $rss .= '         </item>';
          $counter++;
       }
    }
@@ -532,7 +532,7 @@ if ( isset($_GET['cid']) ) {
    // Wir werden eine XML Datei ausgeben
    header('Content-type: application/rss+xml; charset=UTF-8');
 
-   echo $rss;
+   echo($rss);
    exit();
 } else {
    chdir('..');
