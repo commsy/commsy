@@ -200,7 +200,7 @@ class cs_room_manager extends cs_context_manager {
         }
      }
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
-        $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id AND user2.deletion_date IS NULL AND user2.is_contact="1"';
+        $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id';
      }
 
     // time (clock pulses)
@@ -214,6 +214,10 @@ class cs_room_manager extends cs_context_manager {
      }
 
      $query .= ' WHERE 1';
+
+     if (isset($this->_search_array) AND !empty($this->_search_array)) {
+        $query .= ' AND user2.deletion_date IS NULL AND user2.is_contact="1"';
+     }
 
      if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(',',$this->_id_array_limit).')';
