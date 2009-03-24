@@ -188,6 +188,10 @@ class cs_step_item extends cs_item {
       return $this->_setValue('minutes',(int)$min);
    }
 
+   function cloneCopy() {
+      $clone_item = clone $this; // "clone" needed for php5
+      return $clone_item;
+   }
 
 
    /**

@@ -316,9 +316,43 @@ class cs_todo_item extends cs_item {
       $copy->setModificatorItem($user);
       $list = new cs_list();
       $copy->setGroupList($list);
-#      $copy->setInstitutionList($list);
       $copy->setTopicList($list);
       $copy->save();
+      $copy_id = $copy->getItemID();
+      $step_list = $this->getStepItemList();
+      $step_item = $step_list->getFirst();
+      while ( $step_item ) {
+         $step_item_copy = $step_item->cloneCopy();
+         $step_item_copy->setItemID('');
+         $file_list = $step_item->getFileList();
+         if ($file_list->isNotEmpty()) {
+            $file_item = $file_list->getFirst();
+            while ($file_item) {
+               $file_item->setTempName($file_item->getDiskFilename());
+               $file_item = $file_list->getNext();
+            }
+            $step_item_copy->setFileList($file_list);
+         }
+         $step_item_copy->setContextID($this->_environment->getCurrentContextID());
+         $user = $this->_environment->getCurrentUserItem();
+         $step_item_copy->setCreatorItem($user);
+         $step_item_copy->setModificatorItem($user);
+         $step_item_copy->setToDoID($copy_id);
+         $step_item_copy->save();
+
+         // error while saving files?
+         $error_array = $step_item_copy->getErrorArray();
+         if ( !empty($error_array) ) {
+            $error_array_sum = array_merge($error_array,$error_array_sum);
+         }
+         if (!empty($error_array_sum)) {
+            $copy->setErrorArray($error_array_sum);
+         }
+         if ($step_item->isDeleted()) {
+            $step_item_copy->delete();
+         }
+         $step_item = $step_list->getNext();
+      }
       return $copy;
    }
 

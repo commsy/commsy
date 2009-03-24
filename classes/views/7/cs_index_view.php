@@ -1666,6 +1666,7 @@ EOD;
          if ( !strstr($list_box_conf,'search_nodisplay')
             and ($context_item->withActivatingContent()
                  or $this->_environment->getCurrentModule() == CS_DATE_TYPE
+                 or $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
                  or $this->_environment->getCurrentModule() == CS_USER_TYPE
                  or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                  or $this->_environment->getCurrentModule() == CS_TODO_TYPE
@@ -2293,6 +2294,7 @@ EOD;
      $module = $this->_environment->getCurrentModule();
      if ($context_item->withActivatingContent()
           or $module == CS_DATE_TYPE
+          or $module == CS_ANNOUNCEMENT_TYPE
           or $module == CS_USER_TYPE
           or $module == CS_MATERIAL_TYPE
           or $module == CS_TODO_TYPE
