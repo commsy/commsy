@@ -461,7 +461,7 @@ if ( $interval > 0 ) {
 }
 $todo_manager->select();
 $list = $todo_manager->get();        // returns a cs_list of todo_items
-$ids = $todo_manager->getIDArray();       // returns an array of item ids
+$ids = $list->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
 
 $id_array = array();

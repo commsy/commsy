@@ -102,19 +102,16 @@ if ( isOption($right_box_command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
    $buzzword_manager->select();
    $buzzword_list = $buzzword_manager->get();
    $count_all = $buzzword_list->getCount();
+   $count_all_shown = $count_all;
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = $with_modifying_actions;
    $buzzword_view = $class_factory->getClass(BUZZWORD_INDEX_VIEW,$params);
    unset($params);
-   $ids = $buzzword_manager->getIDArray();
-   $count_all_shown = count($ids);
    $buzzword_view->setList($buzzword_list);
    $buzzword_view->setCountAllShown($count_all_shown);
    $buzzword_view->setCountAll($count_all);
 }
-
-
 
 if ( isOption($command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
    if (isset($_POST['return_attach_tag_list'])){
@@ -355,12 +352,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
             $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
          }
          $item_list->addList($rubric_list);
-         if ($rubric!=CS_MYROOM_TYPE) {
-            $temp_rubric_ids = $rubric_manager->getIDArray();
-         } else {
-            $current_user= $environment->getCurrentUser();
-            $temp_rubric_ids = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');;
-         }
+         $temp_rubric_ids = $rubric_list->getIDArray();
          if (!empty($temp_rubric_ids)){
             $rubric_ids = $temp_rubric_ids;
          }

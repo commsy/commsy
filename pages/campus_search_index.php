@@ -134,7 +134,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    // Find current restriction selection
    if ( isset($_POST['selrestriction']) ) {
       if ($_POST['selrestriction'] == 1){
-      	$selrestriction = 'title';
+         $selrestriction = 'title';
       }elseif($_POST['selrestriction'] == 2){
         $selrestriction = 'author';
       }else{
@@ -336,12 +336,7 @@ foreach ($rubric_array as $rubric) {
    }
 
    $search_list->addList($rubric_list);
-   if ($rubric!=CS_MYROOM_TYPE) {
-      $temp_rubric_ids = $rubric_manager->getIDArray();
-   } else {
-      $current_user= $environment->getCurrentUser();
-      $temp_rubric_ids = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');;
-   }
+   $temp_rubric_ids = $rubric_list->getIDArray();
    if (!empty($temp_rubric_ids)){
       $rubric_ids = $temp_rubric_ids;
    }

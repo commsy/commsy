@@ -69,7 +69,7 @@ class cs_homepage_room_list_page extends cs_page {
      }
      $manager->select();
      $list = $manager->get();
-     $ids = $manager->getIDArray();       // returns an array of item ids
+     $ids = $list->getIDArray();       // returns an array of item ids
      $count_all_shown = count($ids);
 
       // Prepare view object

@@ -182,12 +182,13 @@ class cs_room_manager extends cs_context_manager {
     * this method returns a list (cs_list) of rooms within the database limited by the limits. the select statement is a bit tricky, see source code for further information
     */
   function _performQuery ($mode = 'select') {
+     $query = '';
      if ($mode == 'count') {
-        $query = 'SELECT count(DISTINCT '.$this->_db_table.'.item_id) as count';
+        $query .= 'SELECT count(DISTINCT '.$this->_db_table.'.item_id) as count';
      } elseif ($mode == 'id_array') {
-         $query = 'SELECT DISTINCT '.$this->_db_table.'.item_id';
+         $query .= 'SELECT DISTINCT '.$this->_db_table.'.item_id';
      } else {
-        $query = 'SELECT DISTINCT '.$this->_db_table.'.*';
+        $query .= 'SELECT DISTINCT '.$this->_db_table.'.*';
      }
 
      $query .= ' FROM '.$this->_db_table;
@@ -331,6 +332,7 @@ class cs_room_manager extends cs_context_manager {
         }
      }
      $this->_last_query = $query;
+     #pr($query);
 
      // perform query
      $result = $this->_db_connector->performQuery($query);

@@ -264,20 +264,10 @@ foreach ($rubric_array as $rubric) {
          $rubric_manager->showNoNotActivatedEntries();
       }
 
-      #if ( $rubric != CS_MYROOM_TYPE ) {
-         $rubric_manager->selectDistinct();
-         $rubric_list = $rubric_manager->get();
-      #} else {
-      #   $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
-      #}
-
+      $rubric_manager->selectDistinct();
+      $rubric_list = $rubric_manager->get();
       $item_list->addList($rubric_list);
-      #if ($rubric!=CS_MYROOM_TYPE) {
-         $temp_rubric_ids = $rubric_manager->getIDArray();
-      #} else {
-      #   $current_user= $environment->getCurrentUser();
-      #   $temp_rubric_ids = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID(),'id_array');;
-      #}
+      $temp_rubric_ids = $rubric_list->getIDArray();
       if (!empty($temp_rubric_ids)){
          $rubric_ids = $temp_rubric_ids;
       }

@@ -304,5 +304,18 @@ class cs_list {
    function to_array () {
       return $this->_data;
    }
+
+   public function getIDArray () {
+      $retour = array();
+      $item = $this->getFirst();
+      while ( $item ) {
+         if ( method_exists($item,'getItemID') ) {
+            $retour[] = $item->getItemID();
+         }
+         $item = $this->getNext();
+      }
+
+      return $retour;
+   }
 }
 ?>

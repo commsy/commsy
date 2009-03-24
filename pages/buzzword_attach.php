@@ -128,7 +128,7 @@ $params['with_modifying_actions'] = $with_modifying_actions;
 $buzzword_view = $class_factory->getClass(BUZZWORD_INDEX_VIEW,$params);
 unset($params);
 
-$ids = $buzzword_manager->getIDArray();
+$ids = $buzzword_list->getIDArray();
 $count_all_shown = count($ids);
 
 // Set data for buzzword_view
