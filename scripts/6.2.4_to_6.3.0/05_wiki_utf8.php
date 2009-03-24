@@ -67,7 +67,13 @@ function changeWikis2 ($directory,$count) {
            and !is_link($directory.'/'.$entry)
          ) {
          changeWikis2($directory.'/'.$entry,$count);
-      } elseif (is_file($directory.'/'.$entry)) {
+      } elseif ( is_file($directory.'/'.$entry)
+                 and !stristr($entry,'.jpg')
+                 and !stristr($entry,'.jpeg')
+                 and !stristr($entry,'.gif')
+                 and !stristr($entry,'.png')
+                 and !stristr($entry,'.ico')
+               ) {
          $file_contents = file_get_contents($directory.'/'.$entry);
          $file_contents = iconv('ISO-8859-1', 'UTF-8', $file_contents);
          file_put_contents($directory . '/' . $entry, $file_contents);
