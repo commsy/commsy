@@ -268,6 +268,11 @@ if (!empty($_GET['SID'])) {
          ) {
    include_once('pages/context_login.php');
    exit();
+} elseif ( strtolower($environment->getCurrentFunction()) == 'getfile'
+           and strtolower($environment->getCurrentModule()) == 'picture'
+         ) {
+   include_once('pages/picture_getfile.php');
+   exit();
 } else {
    // no session created
    // so create session and redirect to requested page
@@ -561,6 +566,9 @@ if ( !$outofservice
           )
      and !( $environment->getCurrentModule() == 'material'
             and $environment->getCurrentFunction() == 'getfile'
+          )
+     and !( $environment->getCurrentModule() == 'room'
+            and $environment->getCurrentFunction() == 'change'
           )
    ) {
    include_once('pages/context_reload.php');
