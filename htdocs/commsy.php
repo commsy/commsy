@@ -514,6 +514,9 @@ if ( !empty($_POST)
      and !( $environment->getCurrentModule() == 'context'
             and $environment->getCurrentFunction() == 'login'
           )
+     and !( $environment->getCurrentModule() == 'room'
+            and $environment->getCurrentFunction() == 'change'
+          )
    ) {
    $csrf_error = false;
    if ( empty($_POST['security_token']) and empty($_GET['security_token']) ) {
