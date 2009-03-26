@@ -26,7 +26,7 @@ class cs_class_factory {
    private $_design_folder = NULL;
    private $_class_loaded_array = array();
 
-   public function __CONSTRUCT () {
+   public function __construct () {
        $class_config = array();
        include('etc/config_classes.php');
        $this->_class_array = $class_config;

@@ -69,10 +69,8 @@ class cs_profile_form extends cs_rubric_form {
     * the only available constructor
     *
     * @param object environment the environment object
-    *
-    * @author CommSy Development Group
     */
-   function __CONSTRUCT($params) {
+   function __construct ($params) {
       $this->cs_rubric_form($params);
       $this->_language = $this->_environment->getSelectedLanguage();
    }

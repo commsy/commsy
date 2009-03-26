@@ -97,7 +97,8 @@ if ( get_magic_quotes_runtime() ) {
       trigger_error('"magic_quotes_runtime" must be switched off for CommSy to work correctly. See "htaccess-dist".', E_USER_ERROR);
    }
 }
-if ( ini_get('register_globals') ) {
+$ini_reg_globals = ini_get('register_globals');
+if ( !empty($ini_reg_globals) and strtolower($ini_reg_globals) != 'off' ) {
    include_once('functions/error_functions.php');
    trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }

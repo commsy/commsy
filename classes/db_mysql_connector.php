@@ -30,7 +30,7 @@ class db_mysql_connector {
    private $_display = true;
    private $_db_connect_data = array();
 
-   public function __CONSTRUCT ($data) {
+   public function __construct ($data) {
       $this->_db_link = mysql_connect($data['host'],$data['user'],$data['password'],true);
       if ( empty($this->_db_link) or !$this->_db_link ) {
          include_once('functions/error_functions.php');
