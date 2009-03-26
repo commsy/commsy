@@ -418,7 +418,6 @@ class cs_view {
    }
 
    function _activate_urls ($text) {
-      pr($text);
       // ------------------
       // --->UTF8 - OK<----
       // ------------------
@@ -427,7 +426,6 @@ class cs_view {
       $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
       //$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
-      pr($text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
       $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
@@ -2130,6 +2128,32 @@ class cs_view {
       }
       return $retour;
    }
+
+//   function format_flickr($text, $array){  
+//   <!-- Start of Flickr Badge -->
+//<style type="text/css">
+///*
+//Images are wrapped in divs classed "flickr_badge_image" with ids "flickr_badge_imageX" where "X" is an integer specifying ordinal position. Below are some styles to get you started!
+//*/
+//#flickr_badge_uber_wrapper {text-align:center; width:150px;}
+//#flickr_badge_wrapper {padding:10px 0 10px 0;}
+//.flickr_badge_image {margin:0 10px 10px 10px;}
+//.flickr_badge_image img {border: 1px solid black !important;}
+//#flickr_badge_source {text-align:left; margin:0 10px 0 10px;}
+//#flickr_badge_icon {float:left; margin-right:5px;}
+//#flickr_www {display:block; padding:0 10px 0 10px !important; font: 11px Arial, Helvetica, Sans serif !important; color:#3993ff !important;}
+//#flickr_badge_uber_wrapper a:hover,
+//#flickr_badge_uber_wrapper a:link,
+//#flickr_badge_uber_wrapper a:active,
+//#flickr_badge_uber_wrapper a:visited {text-decoration:none !important; background:inherit !important;color:#3993ff;}
+//#flickr_badge_wrapper {border: solid 1px #000000}
+//#flickr_badge_source {padding:0 !important; font: 11px Arial, Helvetica, Sans serif !important; color:#666666 !important;}
+//</style>
+//<div id="flickr_badge_uber_wrapper"><a href="http://www.flickr.com" id="flickr_www">www.<strong style="color:#3993ff">flick<span style="color:#ff1c92">r</span></strong>.com</a><div id="flickr_badge_wrapper">
+//<script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=10&display=latest&size=t&layout=x&source=user_tag&user=22232211%40N02&tag=commsy"></script>
+//</div></div>
+//<!-- End of Flickr Badge -->
+//   }
 
    function _getDivNumber() {
       if ( !isset($this->_div_number) ) {
