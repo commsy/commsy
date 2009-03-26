@@ -426,7 +426,6 @@ class cs_view {
       $url_string .= '([.?:),;!]*($|\s|<|&quot;))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
       $text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
-
       $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
       $text = preg_replace('^( |\^|>|\n)(mailto:)?((['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*)@(['.RFC2822_CHARS.']+(\.['.RFC2822_CHARS.']+)*\.([A-z]{2,})))^u', ' <a href="mailto:$3">$3</a>', $text);
@@ -512,9 +511,8 @@ class cs_view {
       global $current_item_id;
       $matches_stand_alone = array();
       $matches_with_text = array();
-
       // ids with text: <text>[<number>] becomes a link under <text> to the commsy-object with id <number>
-      preg_match_all('~([\w.'.SPECIAL_CHARS.'-]+)\[(\d+)\]~iu', $text, $matches_with_text);
+      preg_match_all('~([\w.'.SPECIAL_CHARS.'&;-]+)\[(\d+)\]~iu', $text, $matches_with_text);
       if (count($matches_with_text[0]) > 0) {
          $result = $text;
          $word_part = $matches_with_text[1];
