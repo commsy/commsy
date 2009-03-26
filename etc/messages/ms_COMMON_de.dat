@@ -448,6 +448,7 @@ $message["COMMON_NEW_N"]["de"] = "neues";
 $message["COMMON_NEW_N_BIG"]["de"] = "Neues";
 $message["COMMON_NEW_PROJECT"]["de"] = "neuer %_PROJECT_SUB_NOMS_BIG";
 $message["COMMON_NEW_VERSION_MATERIAL"]["de"] = "neue Version vom Material";
+$message["COMMON_NEXT"]["de"] = "Weiter";
 $message["COMMON_NO"]["de"] = "Nein";
 $message["COMMON_NONE"]["de"] = "(keine)";
 $message["COMMON_NOTHING_ATTACHED"]["de"] = "nichts zugeordnet";

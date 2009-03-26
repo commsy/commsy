@@ -667,7 +667,7 @@ class cs_context_guide_detail_view extends cs_view {
             $formal_data[] = $temp_array;
         $temp_array = array();
             $temp_array[0] = '&nbsp;';
-            $temp_array[1]= '<input type="submit" name="option"  value="'.$this->_translator->getMessage('Weiter').'"/>'.LF;
+            $temp_array[1]= '<input type="submit" name="option"  value="'.$this->_translator->getMessage('COMMON_NEXT').'"/>'.LF;
             $formal_data[] = $temp_array;
             if ( !empty($formal_data) ) {
                $html .= $this->_getFormalDataAsHTML2($formal_data);
