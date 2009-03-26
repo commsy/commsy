@@ -219,6 +219,12 @@
 <message name='savePosForLinkOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='refreshSessionIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='refreshSessionOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -332,6 +338,10 @@
   <operation name='savePosForLink'>
     <input message='tns:savePosForLinkIN'/>
     <output message='tns:savePosForLinkOUT'/>
+  </operation>
+  <operation name='refreshSession'>
+    <input message='tns:refreshSessionIN'/>
+    <output message='tns:refreshSessionOUT'/>
   </operation>
 </portType>
 
@@ -638,6 +648,17 @@
   </operation>
   <operation name='savePosForLink'>
     <soap:operation soapAction='urn:xmethodsCommSy#savePosForLink'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='refreshSession'>
+    <soap:operation soapAction='urn:xmethodsCommSy#refreshSession'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

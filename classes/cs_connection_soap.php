@@ -535,6 +535,16 @@ class cs_connection_soap {
       $session_manager->updateSessionCreationDate($session_id);
    }
 
+   public function refreshSession ($session_id) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_updateSessionCreationDate($session_id);
+         return true;
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+   }
+
    public function IMS ($session_id, $ims_xml) {
       if ($this->_isSessionValid($session_id)) {
          include_once('classes/cs_connection_soap_ims.php');
