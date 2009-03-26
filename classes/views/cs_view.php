@@ -418,13 +418,16 @@ class cs_view {
    }
 
    function _activate_urls ($text) {
+      pr($text);
       // ------------------
       // --->UTF8 - OK<----
       // ------------------
-      $url_string = '^([ |\n|>]{1})((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
+      $url_string = '^(?<=([\s|\n|>|\(]{1}))((http://|https://|ftp://|www\.)'; //everything starting with http, https or ftp followed by "://" or www. is a url and will be avtivated
       $url_string .= "([".RFC1738_CHARS."]+?))"; //All characters allowed for FTP an HTTP URL's by RFC 1738 (non-greedy because of potential trailing punctuation marks)
-      $url_string .= '([.?:),;!]*($|\s|<|&quot;))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
-      $text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
+      $url_string .= '(?=([\.\?:\),;!]*($|\s|<|&quot;|&nbsp;)))^u'; //after the url is a space character- and perhaps before it a punctuation mark (which does not belong to the url)
+      //$text = preg_replace($url_string, '$1<a href="$2" target="_blank" title="$2">$2</a>$5', $text);
+      $text = preg_replace($url_string, '<a href="$2" target="_blank" title="$2">$2</a>', $text);
+      pr($text);
       $text = preg_replace_callback('~">(.[^"]+)</a>~u','spezial_chunkURL',$text);
       $text = preg_replace('~<a href="www~u','<a href="http://www',$text); //add "http://" to links that were activated with www in front only
       // mailto. A space or a linebreak has to be in front of everymail link. No links in bigger words (especially in urls) will be activated
