@@ -1649,7 +1649,7 @@ class cs_connection_soap {
                      $retour .= '         <id><![CDATA['.$item->getItemID().']]></id>'.LF;
                      global $c_commsy_domain, $c_commsy_url_path;
                      include_once('functions/curl_functions.php');
-                     $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+                     $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.str_replace('soap.php', 'commsy.php', _curl(false,$item->getItemID(),'home','index',array())).']]></url>'.LF;
                   }
                   $retour .= '      </item>'.LF;
                   $item = $list->getNext();
