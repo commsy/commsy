@@ -520,11 +520,13 @@ class cs_view {
          for ($i = 0; $i < count($word_part); $i ++) {
             $word = $word_part[$i];
             $reference = $reference_part[$i];
-            if ($reference < 100) {
-               $params = array();
-               $params['iid'] = $current_item_id;
-               $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
-               unset($params);
+            if ($reference <= 100) {
+               if($this->_environment->getCurrentModule() == 'discussion'){
+                  $params = array();
+                  $params['iid'] = $current_item_id;
+                  $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
+                  unset($params);
+               }
             } else {
                $params = array();
                $params['iid'] = $reference;
@@ -606,11 +608,13 @@ class cs_view {
       if (!empty($matches_stand_alone)) {
    $result = $text;
    foreach ($matches_stand_alone as $item) {
-      if ($item < 100) {
+      if ($item <= 100) {
+         if($this->_environment->getCurrentModule() == 'discussion'){
                $params = array();
                $params['iid'] = $current_item_id;
          $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
                unset($params);
+         }
       }
       else {
                $params = array();
