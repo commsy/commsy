@@ -264,6 +264,11 @@ class cs_page_view extends cs_view {
          }
       }
 
+      $portal_item = $this->_environment->getCurrentPortalItem();
+      $filename = 'htdocs/css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php';
+      if ( file_exists($filename) ) {
+          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      }
       $retour .= '   <link rel="stylesheet" media="print" type="text/css" href="css/commsy_print_css.php?cid='.$this->_environment->getCurrentContextID().'"/>'.LF;
 
       if ($this->_is_print_page) {
@@ -332,6 +337,11 @@ class cs_page_view extends cs_view {
       $pid = $this->_environment->getCurrentPortalID();
       if (file_exists('htdocs/'.$pid.'/commsy.css') ){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="'.$pid.'/commsy.css"/>'.LF;
+      }
+      $portal_item = $this->_environment->getCurrentPortalItem();
+      $filename = 'htdocs/css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php';
+      if ( file_exists($filename) ) {
+          $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
       return $retour;
    }
