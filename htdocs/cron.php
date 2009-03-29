@@ -22,9 +22,13 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-function performRoomIDArray ($id_array,$portal_name) {
+function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    global $environment;
-   $room_manager = $environment->getRoomManager();
+   if ( $privatrooms ) {
+      $room_manager = $environment->getPrivatRoomManager();
+   } else {
+      $room_manager = $environment->getRoomManager();
+   }
    $room_manager->setCacheOff();
    foreach ($id_array as $item_id) {
       $room = $room_manager->getItem($item_id);
@@ -214,7 +218,7 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // private rooms
       echo('<h4>Private Rooms</h4>'.LF);
-      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle());
+      performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
       echo('<hr/>'.LF);
 
       // unset
