@@ -25,7 +25,7 @@
 function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    global $environment;
    if ( $privatrooms ) {
-      $room_manager = $environment->getPrivatRoomManager();
+      $room_manager = $environment->getPrivateRoomManager();
    } else {
       $room_manager = $environment->getRoomManager();
    }
