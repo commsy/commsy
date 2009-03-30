@@ -1485,8 +1485,10 @@ class cs_page_room_view extends cs_page_view {
                unset($params['is_saved']);
                unset($params['show_copies']);
                unset($params['profile_page']);
-               global $c_annonymous_account_array;
-               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])) {
+               global $c_annonymous_account_array, $c_read_account_array;
+               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                    and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                  ) {
                   $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_PROFILE'),'','','','','','','style="color:#800000"').''.LF;
                   $html .= $this->_getCopyLinkAsHTML();
                }
@@ -1503,43 +1505,7 @@ class cs_page_room_view extends cs_page_view {
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
             $params = array();
-            if (!$this->_environment->inServer()) {
-
-/*               if ((!$user->isRoot() and $user->isUser()) or ($user->isGuest() and $user->getUserID() != 'guest')
-               ){
-                  $private_room_manager = $this->_environment->getPrivateRoomManager();
-                  $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-                  global $c_annonymous_account_array;
-                  if ( isset($own_room)
-                       and empty($c_annonymous_account_array[strtolower($this->_current_user->getUserID()).'_'.$this->_current_user->getAuthSource()])
-                     ) {
-                     $html .= '<span> '.ahref_curl($own_room->getItemID(), 'home',
-                                      'index',
-                                      '',
-                                      '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-                     $html .= ahref_curl($own_room->getItemID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                  }
-                  unset($own_room);
-               }
-               $html .= '<span> '.ahref_curl($this->_environment->getCurrentPortalID(), 'home',
-                                        'index',
-                                        '',
-                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-               $html .= ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', '',$this->_translator->getMessage('COMMON_PORTAL').' ('.$this->_translator->getMessage('MYAREA_LOGIN_TO_PORTAL_OVERVIEW').')','','','','','','','style="color:#800000"').'</span>'.LF;
-
-               // @segment-end 7294
-               // @segment-begin 90042 link-to:portal-overview-if-root-user
-               if ( $this->_current_user->isRoot() ) {
-                  $html .= BR.'<span> '.ahref_curl($this->_environment->getServerID(), 'home',
-                                        'index',
-                                        '',
-                                        '<img src="images/door_open_small.gif" style="vertical-align: middle" alt="door open"/>').LF;
-
-                  $html .= ahref_curl($this->_environment->getServerID(), 'home', 'index', '',$this->_translator->getMessage('MYAREA_LOGIN_TO_ALL_PORTALS'),'','','','','','','style="color:#800000"').'</span>'.LF;
-               }*/
-            } else {
+            if ($this->_environment->inServer()) {
                if ( $this->_current_user->isRoot() ) {
                   $html .= '<tr>';
                   $html .= '<td colspan ="2">';

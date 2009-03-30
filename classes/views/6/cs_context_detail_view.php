@@ -308,21 +308,26 @@ var $_room_type = 'context';
             } else {
                $html .= '<img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/>'.BRLF;
             }
-         if ($item->isOpen()) {
+            global $c_read_account_array;
+            $current_user_item_read = $this->_environment->getCurrentUserItem();
+            if ( $item->isOpen()
+                 and empty($c_read_account_array[mb_strtolower($current_user_item_read->getUserID(), 'UTF-8').'_'.$current_user_item_read->getAuthSource()])
+               ) {
                $actionCurl = curl( $item->getItemID(),
                                 'home',
                                 'index',
                                 '');
-          $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
+               $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:left;">';
                if (!$this->isPrintableView()) {
-                 $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER').'</a></div>'.LF;
-             }
-            else {
-               $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_ENTER').'</div>'.LF;
+                  $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER').'</a></div>'.LF;
+               }
+               else {
+                  $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_ENTER').'</div>'.LF;
+               }
+            } else {
+               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
             }
-         } else {
-            $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
-         }
+            unset($current_user_item_read);
             $html .= '</div>';
 
          } elseif ( $item->isLocked() ) {
@@ -345,27 +350,32 @@ var $_room_type = 'context';
          } else {
             $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
             $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
-         if ($item->isOpen()) {
-                $params['account'] = 'member';
+            global $c_read_account_array;
+            $current_user_item_read = $this->_environment->getCurrentUserItem();
+            if ( $item->isOpen()
+                 and empty($c_read_account_array[mb_strtolower($current_user_item_read->getUserID(), 'UTF-8').'_'.$current_user_item_read->getAuthSource()])
+               ) {
+               $params['account'] = 'member';
                $params['iid'] = $this->_item->getItemID();
                $actionCurl = curl( $this->_environment->getCurrentContextID(),
                                    CS_PROJECT_TYPE,
                                    'detail',
                                    $params,
                                    '');
-            if (!$this->isPrintableView()) {
-              $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+               if (!$this->isPrintableView()) {
+                 $html .= '<div style="padding-top:5px; text-align: center;">'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
+               }
+               else {
+                 $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_JOIN').'</div>'.LF;
+               }
+               unset($params);
+            } else {
+               $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
             }
-            else {
-              $html .= '<div style="padding-top:5px; text-align: center;">'.$this->_translator->getMessage('CONTEXT_JOIN').'</div>'.LF;
-            }
-              unset($params);
-         } else {
-            $html .= '<div style="padding-top:3px; text-align: center;"><span class="disabled">'.$this->_translator->getMessage('CONTEXT_JOIN').'</span></div>'.LF;
-         }
-           $html.= '</div>';
+            unset($current_user_item_read);
+            $html.= '</div>';
         }
-         $html .= '</div>'.LF;
+        $html .= '</div>'.LF;
         $html .= '<div>'.LF;
 
          // prepare moderator

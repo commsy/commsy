@@ -1276,15 +1276,20 @@ class cs_item {
    }
 
    function mayEdit ($user_item) {
-       if ( $user_item->isRoot() or
-           ($user_item->getContextID() == $this->getContextID()
-            and ($user_item->isModerator()
-                 or ($user_item->isUser()
-                     and ($user_item->getItemID() == $this->getCreatorID()
-                          or $this->isPublic())))) ) {
-         $access = true;
-      } else {
-         $access = false;
+      $access = false;
+      global $c_read_account_array;
+      if ( !isset($c_read_account_array)
+           or empty($c_read_account_array[mb_strtolower($user_item->getUserID(), 'UTF-8').'_'.$user_item->getAuthSource()])
+         ) {
+         if ( $user_item->isRoot() or
+              ($user_item->getContextID() == $this->getContextID()
+               and ($user_item->isModerator()
+                    or ($user_item->isUser()
+                        and ($user_item->getItemID() == $this->getCreatorID()
+                             or $this->isPublic()))))
+            ) {
+            $access = true;
+         }
       }
       return $access;
    }
@@ -1311,10 +1316,12 @@ class cs_item {
 
    function maySee ($user_item) {
       if ( $user_item->isRoot()
-          or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
-                and $user_item->isUser() )
-         or $user_item->isGuest() ) {
-            $access = true;
+           or ( $user_item->getContextID() == $this->_environment->getCurrentContextID()
+                and $user_item->isUser()
+              )
+           or $user_item->isGuest()
+         ) {
+         $access = true;
       } else {
          $access = false;
       }

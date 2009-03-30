@@ -1786,9 +1786,10 @@ class cs_page_view extends cs_view {
                ){
                   $private_room_manager = $this->_environment->getPrivateRoomManager();
                   $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
-                  global $c_annonymous_account_array;
+                  global $c_annonymous_account_array, $c_read_account_array;
                   if ( isset($own_room)
                        and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                       and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
                      ) {
                      $current_portal_item = $this->_environment->getCurrentPortalItem();
                      if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
@@ -1868,9 +1869,10 @@ class cs_page_view extends cs_view {
             }
 
             if (!$this->_environment->inServer() ) {
-               global $c_annonymous_account_array;
+               global $c_annonymous_account_array, $c_read_account_array;
                if ( !$this->_current_user->isRoot()
                     and empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                    and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
                   ) {
                   $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
                   $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
@@ -1890,11 +1892,12 @@ class cs_page_view extends cs_view {
                   $html .= '<div>'.LF;
                }
             }
-            // @segment-end 67550
-            // @segment-begin 1467 no-cs_modus/user-status><0:link-become_member-in-room("Teilnahme beantragen")
+
             if ( !$this->_current_user->isRoot() ) {
-               global $c_annonymous_account_array;
-               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()]) ) {
+               global $c_annonymous_account_array, $c_read_account_array;
+               if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                    and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                  ) {
                   if ($this->_environment->inCommunityRoom() and !$this->_current_user->isUser()){
                      $params['cs_modus'] = 'become_member';
                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;

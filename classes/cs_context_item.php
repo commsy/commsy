@@ -692,38 +692,43 @@ class cs_context_item extends cs_item {
     */
    function mayEnterByUserID ($user_id, $auth_source) {
       $retour = false;
-      if ( isset($this->_cache_may_enter[$user_id.'_'.$auth_source]) ) {
-         $retour = $this->_cache_may_enter[$user_id.'_'.$auth_source];
-      } elseif ($user_id == 'root') {
-         $retour = true;
-      } elseif ($this->isLocked()) {
-         $retour = false;
-      } elseif ($this->isOpenForGuests()) {
-         $retour = true;
-      } else {
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->resetLimits();
-         $user_manager->setContextLimit($this->getItemID());
-         $user_manager->setUserIDLimit($user_id);
-         $user_manager->setAuthSourceLimit($auth_source);
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         if ($user_list->getCount() == 1) {
-            $user_in_room = $user_list->getFirst();
-            if ($user_in_room->isUser()) {
-               $retour = true;
-               $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
-            } else {
-               $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
+      global $c_read_account_array;
+      if ( !isset($c_read_account_array)
+           or empty($c_read_account_array[mb_strtolower($user_id, 'UTF-8').'_'.$auth_source])
+         ) {
+         if ( isset($this->_cache_may_enter[$user_id.'_'.$auth_source]) ) {
+            $retour = $this->_cache_may_enter[$user_id.'_'.$auth_source];
+         } elseif ($user_id == 'root') {
+            $retour = true;
+         } elseif ($this->isLocked()) {
+            $retour = false;
+         } elseif ($this->isOpenForGuests()) {
+            $retour = true;
+         } else {
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->resetLimits();
+            $user_manager->setContextLimit($this->getItemID());
+            $user_manager->setUserIDLimit($user_id);
+            $user_manager->setAuthSourceLimit($auth_source);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if ($user_list->getCount() == 1) {
+               $user_in_room = $user_list->getFirst();
+               if ($user_in_room->isUser()) {
+                  $retour = true;
+                  $this->_cache_may_enter[$user_id.'_'.$auth_source] = true;
+               } else {
+                  $this->_cache_may_enter[$user_id.'_'.$auth_source] = false;
+               }
+               unset($user_in_room);
+            } elseif ($user_list->getCount() > 1) {
+               include_once('functions/error_functions.php');
+               trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"',E_USER_WARNING);
             }
             unset($user_in_room);
-         } elseif ($user_list->getCount() > 1) {
-            include_once('functions/error_functions.php');
-            trigger_error('ambiguous user data in database table "user" for user-id "'.$user_id.'"',E_USER_WARNING);
+            unset($user_list);
+            unset($user_manager);
          }
-         unset($user_in_room);
-         unset($user_list);
-         unset($user_manager);
       }
       return $retour;
    }
@@ -4172,19 +4177,24 @@ class cs_context_item extends cs_item {
    function mayEdit ($user) {
       $value = false;
       if ( !empty($user) ) {
-         if ( $user->isRoot()
-              or ( $user->isUser()
-                   and ( $user->getItemID() == $this->getCreatorID()
-                         or $this->isPublic()
-                         or $this->isModeratorByUserID($user->getUserID(),$user->getAuthSource())
-                         or ( $this->_environment->inCommunityRoom()
-                              and $this->isProjectRoom()
-                              and $user->isModerator()
-                            )
-                       )
-                 )
+         global $c_read_account_array;
+         if ( !isset($c_read_account_array)
+              or empty($c_read_account_array[mb_strtolower($user->getUserID(), 'UTF-8').'_'.$user->getAuthSource()])
             ) {
-            $value = true;
+            if ( $user->isRoot()
+                 or ( $user->isUser()
+                      and ( $user->getItemID() == $this->getCreatorID()
+                            or $this->isPublic()
+                            or $this->isModeratorByUserID($user->getUserID(),$user->getAuthSource())
+                            or ( $this->_environment->inCommunityRoom()
+                                 and $this->isProjectRoom()
+                                 and $user->isModerator()
+                               )
+                          )
+                    )
+               ) {
+               $value = true;
+            }
          }
       }
       return $value;
@@ -4193,13 +4203,18 @@ class cs_context_item extends cs_item {
    function mayEditRegular ($user) {
       $value = false;
       if ( !empty($user) ) {
-         if ( $user->isUser()
-              and ( $user->getItemID() == $this->getCreatorID()
-                    or $this->isPublic()
-                    or $this->isModeratorByUserID($user->getUserID(),$user->getAuthSource())
-                  )
+         global $c_read_account_array;
+         if ( !isset($c_read_account_array)
+              or empty($c_read_account_array[mb_strtolower($user->getUserID(), 'UTF-8').'_'.$user->getAuthSource()])
             ) {
-            $value = true;
+            if ( $user->isUser()
+                 and ( $user->getItemID() == $this->getCreatorID()
+                       or $this->isPublic()
+                       or $this->isModeratorByUserID($user->getUserID(),$user->getAuthSource())
+                     )
+               ) {
+               $value = true;
+            }
          }
       }
       return $value;

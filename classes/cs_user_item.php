@@ -1132,25 +1132,36 @@ class cs_user_item extends cs_item {
 
 
    function mayEdit ($user_item) {
-      if ( $user_item->isRoot() or
-            ( $user_item->getContextID() == $this->getContextID()
-              and ( $user_item->isModerator()
-                    or ( $user_item->isUser()
-                         and ( $this->getUserID() == $user_item->getUserID() )
-                         and ( $this->getAuthSource() == $user_item->getAuthSource() )
-                       )
-                  )
-            )
+      $access = false;
+      global $c_read_account_array;
+      if ( !isset($c_read_account_array)
+           or empty($c_read_account_array[mb_strtolower($user_item->getUserID(), 'UTF-8').'_'.$user_item->getAuthSource()])
          ) {
-         $access = true;
-      } else {
-         $access = false;
+         if ( $user_item->isRoot() or
+               ( $user_item->getContextID() == $this->getContextID()
+                 and ( $user_item->isModerator()
+                       or ( $user_item->isUser()
+                            and ( $this->getUserID() == $user_item->getUserID() )
+                            and ( $this->getAuthSource() == $user_item->getAuthSource() )
+                          )
+                     )
+               )
+            ) {
+            $access = true;
+         }
       }
       return $access;
    }
 
    function mayEditRegular ($user_item) {
-      return $this->getUserID() == $user_item->getUserID() and $this->getAuthSource() == $user_item->getAuthSource();
+      $access = false;
+      global $c_read_account_array;
+      if ( !isset($c_read_account_array)
+           or empty($c_read_account_array[mb_strtolower($user_item->getUserID(), 'UTF-8').'_'.$user_item->getAuthSource()])
+         ) {
+         $access = $this->getUserID() == $user_item->getUserID() and $this->getAuthSource() == $user_item->getAuthSource();
+      }
+      return $access;
    }
 
    /**
