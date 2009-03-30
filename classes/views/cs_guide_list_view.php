@@ -613,11 +613,7 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '   <input type="hidden" name="room_id" value="'.$this->_text_as_form($this->_selected_context).'"/>'.LF;
       }
 
-      #if ($show_rooms !='onlycommunityrooms'){
-         $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':'.BRLF;
-      #}else{
-      #   $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_COMMUNITY_ROOM_LIST_ROOMS').':'.BRLF;
-      #}
+      $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':'.BRLF;
       $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
 
       $html .= '      <option value="1"';
@@ -638,7 +634,9 @@ class cs_guide_list_view extends cs_list_view_plain {
 
 
       $current_context = $this->_environment->getCurrentContextItem();
-      if ($show_rooms !='onlycommunityrooms'){
+      if ( $show_rooms !='onlycommunityrooms'
+           and $show_rooms !='onlyprojectrooms'
+         ) {
          $html .= '      <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
          $html .= '      <option value="3"';
          if ( !empty($selroom) and $selroom == 3 ) {
@@ -676,10 +674,12 @@ class cs_guide_list_view extends cs_list_view_plain {
             if ( !empty($selroom) and $selroom == 5 ) {
                $html .= ' selected="selected"';
             }
-            if ($show_rooms !='onlycommunityrooms'){
-               $html .= '>'.$this->_translator->getMessage('PORTAL_MY_ROOMS').'</option>'.LF;
-            }else{
+            if ($show_rooms =='onlycommunityrooms'){
                $html .= '>'.$this->_translator->getMessage('PORTAL_MY_COMMUNITY_ROOMS').'</option>'.LF;
+            }elseif ($show_rooms =='onlyprojectrooms'){
+               $html .= '>'.$this->_translator->getMessage('PORTAL_MY_PROJECT_ROOMS').'</option>'.LF;
+            }else{
+               $html .= '>'.$this->_translator->getMessage('PORTAL_MY_ROOMS').'</option>'.LF;
             }
          }
       }

@@ -132,6 +132,7 @@ $message["CONFIGURATION_NEWSLETTER_TITLE"]["de"] = "E-Mail-Newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["de"] = "Wöchentlicher Newsletter";
 $message["CONFIGURATION_NO_SELECTION"]["de"] = "alle offenen Räume anzeigen (Standard)";
 $message["CONFIGURATION_ONLY_COMMUNITY_ROOMS"]["de"] = "nur %_COMMUNITY_SUB_AKKPL_BIG anzeigen (keine %_PROJECT_SUB_AKKPL_BIG)";
+$message["CONFIGURATION_ONLY_PROJECT_ROOMS"]["de"] = "nur %_PROJECT_SUB_AKKPL_BIG anzeigen (keine %_COMMUNITY_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_OUTOFSERVICE_FORM_TITLE"]["de"] = "Wartungsarbeiten";
 $message["CONFIGURATION_PATH_FORM_TITLE"]["de"] = "Pfade in %_TOPICS_SUB_DATPL_BIG";
 $message["CONFIGURATION_PICTURE_LOGO_DELETE_OPTION"]["de"] = "Aktuelles Portalbild löschen";

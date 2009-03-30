@@ -85,6 +85,8 @@ class cs_guide_room_list_page extends cs_page {
          $show_rooms = $current_context->getShowRoomsOnHome();
          if ($show_rooms == 'onlycommunityrooms'){
             $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
+         } elseif ($show_rooms == 'onlyprojectrooms'){
+            $manager->setRoomTypeLimit(CS_PROJECT_TYPE);
          }
          $count_all = $manager->getCountAll();
          if (empty($sel_archive_room)) {

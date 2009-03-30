@@ -66,21 +66,23 @@ else {
          if ( isset($_POST['announcement']) and !empty($_POST['announcement']) and $_POST['announcement'] == 2 ) {
             $room_item->setShowNoAnnouncementsOnHome();
          } else {
-      $room_item->setShowAnnouncementsOnHome();
-   }
+            $room_item->setShowAnnouncementsOnHome();
+         }
 
          if ( isset($_POST['room_sort']) and !empty($_POST['room_sort']) and $_POST['room_sort'] == 2 ) {
             $room_item->setSortRoomsByTitleOnHome();
          } else {
             $room_item->setSortRoomsByActivityOnHome();
-   }
+         }
          if ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 3 ) {
             $room_item->setShowRoomsOnHome('onlycommunityrooms');
+         } elseif ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 4 ) {
+            $room_item->setShowRoomsOnHome('onlyprojectrooms');
          } elseif ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 2 ) {
             $room_item->setShowRoomsOnHome('preselectcommunityrooms');
          }else {
             $room_item->setShowRoomsOnHome('normal');
-   }
+         }
 
          // Save item
          $room_item->save();
