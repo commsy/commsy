@@ -23,3 +23,6 @@ function callStudyLogSortAlphabetical() {
 function callStudyLogSortDefault() {
    getFlashMovie("study_log").callStudyLogSortDefault();
 }
+function callStudyLogSortByTag(tag) {
+   getFlashMovie("study_log").callStudyLogSortByTag(tag);
+}
