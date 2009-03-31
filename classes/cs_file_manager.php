@@ -499,7 +499,7 @@ class cs_file_manager extends cs_manager {
             $first = true;
             $old_item_id = '';
             foreach ($query_result as $key => $value) {
-               $value = encode(AS_DB,$value);
+               $value = encode(FROM_DB,$value);
                if ( $key == 'files_id' ) {
                   $old_item_id = $value;
                } elseif ($key == 'context_id') {

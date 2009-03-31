@@ -927,7 +927,7 @@ class cs_manager {
             $old_item_id = '';
             $do_it = true;
             foreach ($query_result as $key => $value) {
-               $value = encode(AS_DB,$value);
+               $value = encode(FROM_DB,$value);
                if ($first) {
                   $first = false;
                   $before = ' ';
@@ -1034,7 +1034,7 @@ class cs_manager {
 
                // default
                elseif ( !empty($value) ) {
-                  $insert_query .= $before.$key.'="'.encode(AS_DB,encode(FROM_DB,$value)).'"';
+                  $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
                }
             }
             if (!$do_it) {

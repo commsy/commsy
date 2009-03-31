@@ -120,9 +120,6 @@ class db_mysql_connector {
    }
 
    public function text_php2db ( $text ) {
-      // ------------------
-      // --->UTF8 - OK<----
-      // ------------------
       if ( get_magic_quotes_gpc() ) {
          $text = stripslashes($text);
       }

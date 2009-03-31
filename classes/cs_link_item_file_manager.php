@@ -78,7 +78,7 @@ class cs_link_item_file_manager extends cs_link_father_manager {
                $first = true;
                $do_it = true;
                foreach ($query_result as $key => $value) {
-                  $value = encode(AS_DB,$value);
+                  $value = encode(FROM_DB,$value);
                   if ($first) {
                      $first = false;
                      $before = ' ';

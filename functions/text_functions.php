@@ -62,26 +62,6 @@ function _text_form2php ($text) {
 }
 
 function _text_db2php ($text) {
-//   // dies ist nötig auf grund von mysql_real_escape_string in _text_php2db
-//   $text = str_replace('\n','COMMSYLN',$text);
-//   $text = str_replace('\*','COMMSYSTERN',$text);
-//   $text = str_replace('\_','COMMSYSTRICH',$text);
-//   $text = str_replace('\!','COMMSYAUSRUFEZEICHEN',$text);
-//   $text = str_replace('\-','COMMSYMINUS',$text);
-//   $text = str_replace('\#','COMMSYSCHWEINEGATTER',$text);
-//   $text = str_replace('\(:','COMMSYWIKIBEGIN',$text);
-
-   // ------------
-   // --->UTF8<---
-   // $text kommt als utf8 kodiert aus der Datenbank
-   // nur konvertieren, solange CommSy intern noch nicht
-   // utf8 verwendet wird.
-   //
-   // $text = iconv("UTF-8", "ISO-8859-1", $text);
-   //
-   // --->UTF8<---
-   // ------------
-
    // jsMath for latex math fonts
    // see http://www.math.union.edu/~dpvc/jsMath/
    global $c_jsmath_enable;
@@ -101,7 +81,6 @@ function _text_db2php ($text) {
       }
    }
 
-//   $text = stripslashes($text);
    $text = preg_replace('~\\\(?!\*|_|!|-|#|\(:|n)~u', '', $text);
 
    // jsMath for latex math fonts
@@ -114,24 +93,6 @@ function _text_db2php ($text) {
          $text = str_replace($value_new,$value,$text);
       }
    }
-
-//   $text = str_replace('COMMSYLN',LF,$text);
-//   $text = str_replace('COMMSYSTERN','\*',$text);
-//   $text = str_replace('COMMSYSTRICH','\_',$text);
-//   $text = str_replace('COMMSYAUSRUFEZEICHEN','\!',$text);
-//   $text = str_replace('COMMSYMINUS','\-',$text);
-//   $text = str_replace('COMMSYSCHWEINEGATTER','\#',$text);
-//   $text = str_replace('COMMSYWIKIBEGIN','\(:',$text);
-
-   // ------------
-   // --->UTF8<---
-   // Testweise, um Daten utf-8 kodiert im System zu haben.
-   //
-   //$text = iconv("ISO-8859-1", "UTF-8", $text);
-   //
-   // --->UTF8<---
-   // ------------
-
    return $text;
 }
 
@@ -166,28 +127,6 @@ function _text_php2db ($text) {
       $environment =  $this->_environment;
    }
    $db_connection = $environment->getDBConnector();
-
-   // ------------
-   // --->UTF8<---
-   // $text muss als utf8 kodiert in die Datenbank
-   // nur konvertieren, solange CommSy intern noch nicht
-   // utf8 verwendet wird.
-   //
-   // $text = iconv("ISO-8859-1", "UTF-8", $text);
-   //
-   // --->UTF8<---
-   // ------------
-
-
-   // ------------
-   // --->UTF8<---
-   // Testweise, um Daten utf-8 kodiert im System zu haben.
-   //
-   //$text = iconv("UTF-8", "ISO-8859-1", $text);
-   //
-   // --->UTF8<---
-   // ------------
-
    $text = $db_connection->text_php2db($text);
    return $text;
 }
