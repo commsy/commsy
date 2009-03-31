@@ -246,7 +246,8 @@ if ( isset($_GET['cid']) ) {
                if ( empty($_GET['hid']) and !$item->isVisibleForAll() ) {
                   $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               } elseif ( !empty($_GET['hid']) and !$item->isEmailVisible() ) {
+               }
+               if ( !$item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
             }
