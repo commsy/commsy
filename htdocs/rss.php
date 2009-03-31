@@ -79,7 +79,6 @@ if ( isset($_GET['cid']) ) {
          $owner_user_item = $context_item->getOwnerUserItem();
          $owner_fullname = $owner_user_item->getFullName();
          if ( !empty($owner_fullname) ) {
-            #$title = $translator->getMessage('PRIVATE_ROOM_TITLE');
             if ( !empty($title) ) {
                $title .= ': ';
             }
@@ -125,8 +124,6 @@ if ( isset($_GET['cid']) ) {
       }
       unset($owner_user_item);
       unset($current_portal_item);
-      #$maintitle = $translator->getMessage('PRIVATE_ROOM_TITLE');
-      #$maintitle .= ' '.$user_item->getFullName();
    } else {
       $maintitle = $context_item->getTitle();
    }
@@ -247,9 +244,9 @@ if ( isset($_GET['cid']) ) {
                   $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
-               if ( !$item->isEmailVisible() ) {
-                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               }
+            }
+            if ( !$item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
             }
             if ( $item->getCreationDate() == $item->getModificationDate() ) {
                $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
@@ -260,6 +257,8 @@ if ( isset($_GET['cid']) ) {
             }
             $date = date('r',strtotime($item->getModificationDate()));
             $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             unset($manager);
             unset($item);
@@ -277,7 +276,20 @@ if ( isset($_GET['cid']) ) {
                   $description = chunkText($description,$desc_len);
                }
                $user_item = $item->getModificatorItem();
-               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
                $date = date('r',strtotime($item->getModificationDate()));
             }
@@ -310,7 +322,20 @@ if ( isset($_GET['cid']) ) {
                $title = $translator->getMessage('RSS_NEW_DISCUSSION_TITLE',$item->getTitle());
                $description = $translator->getMessage('RSS_NEW_DISCUSSION_DESCRIPTION',$item->getTitle());
                $user_item = $item->getModificatorItem();
-               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
                $date = date('r',strtotime($item->getModificationDate()));
             }
@@ -330,7 +355,20 @@ if ( isset($_GET['cid']) ) {
                   $description = chunkText($item->getDescription(),$desc_len);
                }
                $user_item = $item->getModificatorItem();
-               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
                $date = date('r',strtotime($item->getModificationDate()));
                unset($manager);
@@ -363,7 +401,20 @@ if ( isset($_GET['cid']) ) {
                   $description = chunkText($description,$desc_len);
                }
                $user_item = $item->getModificatorItem();
-               $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
                $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
                $date = date('r',strtotime($item->getModificationDate()));
             }
@@ -382,7 +433,20 @@ if ( isset($_GET['cid']) ) {
                $description = chunkText($description,$desc_len);
             }
             $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+            $fullname = $user_item->getFullName();
+            $email = $user_item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
+            if ( !$user_item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            }
+            $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
@@ -400,7 +464,20 @@ if ( isset($_GET['cid']) ) {
                $description = chunkText($description,$desc_len);
             }
             $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+            $fullname = $user_item->getFullName();
+            $email = $user_item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
+            if ( !$user_item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            }
+            $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
@@ -420,7 +497,20 @@ if ( isset($_GET['cid']) ) {
                $description = chunkText($description,$desc_len);
             }
             $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+            $fullname = $user_item->getFullName();
+            $email = $user_item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
+            if ( !$user_item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            }
+            $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
@@ -440,7 +530,20 @@ if ( isset($_GET['cid']) ) {
                      $description = chunkText($description,$desc_len);
                   }
                   $user_item = $item->getModificatorItem();
-                  $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
                   $link = $path.'commsy.php?cid='.$cid.'&amp;mod=group&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
                case 'institution':
@@ -451,7 +554,20 @@ if ( isset($_GET['cid']) ) {
                      $description = chunkText($description,$desc_len);
                   }
                   $user_item = $item->getModificatorItem();
-                  $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
                   $link = $path.'commsy.php?cid='.$cid.'&amp;mod=institution&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
                case 'topic':
@@ -462,7 +578,20 @@ if ( isset($_GET['cid']) ) {
                      $description = chunkText($description,$desc_len);
                   }
                   $user_item = $item->getModificatorItem();
-                  $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
                   $link = $path.'commsy.php?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
             }
@@ -482,7 +611,20 @@ if ( isset($_GET['cid']) ) {
                $description = chunkText($description,$desc_len);
             }
             $user_item = $item->getModificatorItem();
-            $author = $user_item->getEmail().' ('.$user_item->getFullName().')';
+            $fullname = $user_item->getFullName();
+            $email = $user_item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
+            if ( !$user_item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            }
+            $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
@@ -523,8 +665,8 @@ if ( isset($_GET['cid']) ) {
            <title>'.encode(AS_RSS,$title).'</title>
            <description>'.encode(AS_RSS,$description).'</description>
            <link>'.$link.'</link>
-           <pubDate>'.encode(AS_RSS,$date).'</pubDate>
-           <author>'.encode(AS_RSS,$author).'</author>'.LF;
+           <pubDate>'.encode(AS_RSS,$date).'</pubDate>'.LF;
+         $rss .= '           <author>'.encode(AS_RSS,trim($author)).'</author>'.LF;
          $rss .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
          $rss .= '         </item>';
          $counter++;
@@ -533,7 +675,7 @@ if ( isset($_GET['cid']) ) {
 
    $rss .=	'
      </channel>
-     </rss>';
+  </rss>';
 
    // debugging
    #pr($rss);
