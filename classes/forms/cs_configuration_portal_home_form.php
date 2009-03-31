@@ -78,6 +78,16 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          $radio_values[1]['value'] = '2';
          $this->_form->addRadioGroup('room_sort',getMessage('CONFIGURATION_SORT_ROOMS'),'',$radio_values,'',true,false);
 
+         $radio_values = array();
+         $radio_values[0]['text'] = 10;
+         $radio_values[0]['value'] = 10;
+         $radio_values[1]['text'] = 20;
+         $radio_values[1]['value'] = 20;
+         $radio_values[2]['text'] = 50;
+         $radio_values[2]['value'] = 50;
+         $radio_values[3]['text'] = getMessage('COMMON_PAGE_ENTRIES_ALL');
+         $radio_values[3]['value'] = 'all';
+         $this->_form->addRadioGroup('number',getMessage('CONFIGURATION_NUMBER'),'',$radio_values,'',true,false);
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -113,6 +123,7 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          }else{
             $this->_values['preselection'] ='1';
          }
+         $this->_values['number'] = $room->getNumberRoomsOnHome();
       }
    }
 

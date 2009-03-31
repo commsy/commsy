@@ -156,8 +156,6 @@ class cs_portal_item extends cs_guide_item {
       $this->_addExtra('AUTHINFO',(array)$value);
    }
 
-
-
    function getShowRoomsOnHome(){
      $retour = 'normal';
      if ($this->_issetExtra('SHOWROOMSONHOME')) {
@@ -170,8 +168,17 @@ class cs_portal_item extends cs_guide_item {
        $this->_addExtra('SHOWROOMSONHOME',$value);
    }
 
+   function getNumberRoomsOnHome(){
+     $retour = 10;
+     if ($this->_issetExtra('NUMBERROOMSONHOME')) {
+        $retour = $this->_getExtra('NUMBERROOMSONHOME');
+     }
+     return $retour;
+   }
 
-
+   function setNumberRoomsOnHome($value){
+       $this->_addExtra('NUMBERROOMSONHOME',$value);
+   }
 
    function setSortRoomsByActivityOnHome(){
        $this->_addExtra('SORTROOMSONHOME','activity');

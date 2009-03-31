@@ -131,6 +131,7 @@ $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["en"] = "Notice";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["en"] = "E-mail newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["en"] = "Weekly newsletter";
 $message["CONFIGURATION_NO_SELECTION"]["en"] = "show all joined workspaces (default)";
+$message["CONFIGURATION_NUMBER"]["en"] = "Number of<br/>rooms";
 $message["CONFIGURATION_ONLY_COMMUNITY_ROOMS"]["en"] = "show %_COMMUNITY_SUB_AKKPL_BIG only  (no %_PROJECT_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_ONLY_PROJECT_ROOMS"]["en"] = "show %_PROJECT_SUB_AKKPL_BIG only  (no %_COMMUNITY_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_OUTOFSERVICE_FORM_TITLE"]["en"] = "Out of service";

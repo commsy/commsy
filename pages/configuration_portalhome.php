@@ -83,6 +83,9 @@ else {
          }else {
             $room_item->setShowRoomsOnHome('normal');
          }
+         if ( isset($_POST['number']) and !empty($_POST['number']) ) {
+            $room_item->setNumberRoomsOnHome($_POST['number']);
+         }
 
          // Save item
          $room_item->save();

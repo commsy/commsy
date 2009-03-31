@@ -131,6 +131,7 @@ $message["CONFIGURATION_NEWSLETTER_NOTE_LABEL"]["de"] = "Hinweis";
 $message["CONFIGURATION_NEWSLETTER_TITLE"]["de"] = "E-Mail-Newsletter";
 $message["CONFIGURATION_NEWSLETTER_WEEKLY"]["de"] = "Wöchentlicher Newsletter";
 $message["CONFIGURATION_NO_SELECTION"]["de"] = "alle offenen Räume anzeigen (Standard)";
+$message["CONFIGURATION_NUMBER"]["de"] = "Anzahl der<br/>Räume";
 $message["CONFIGURATION_ONLY_COMMUNITY_ROOMS"]["de"] = "nur %_COMMUNITY_SUB_AKKPL_BIG anzeigen (keine %_PROJECT_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_ONLY_PROJECT_ROOMS"]["de"] = "nur %_PROJECT_SUB_AKKPL_BIG anzeigen (keine %_COMMUNITY_SUB_AKKPL_BIG)";
 $message["CONFIGURATION_OUTOFSERVICE_FORM_TITLE"]["de"] = "Wartungsarbeiten";
