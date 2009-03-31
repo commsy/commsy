@@ -133,25 +133,6 @@ if ( isset($_GET['cid']) ) {
    $language = $environment->getSelectedLanguage();
    $maintitle = str_replace('&','&amp;',$maintitle);
 
-   //RSS File Header
-//   $rss = '<?xml version="1.0" encoding="utf-8"? >
-//
-//   <rss version="2.0">
-//
-//     <channel>
-//      <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
-//      <link>'.$path.'commsy.php</link>
-//      <ttl>60</ttl>
-//      <description>'.utf8_encode($translator->getMessage('RSS_DESCRIPTION',$maintitle)).'</description>
-//      <language>'.$context_item->getLanguage().'</language>
-//      <copyright>-</copyright>
-//      <pubDate>'.$date.'</pubDate>
-//      <image>
-//        <url>'.$path.'images/commsy_logo_transparent.gif</url>
-//        <title>'.utf8_encode($translator->getMessage('RSS_TITLE',$maintitle)).'</title>
-//        <link>'.$path.'commsy.php</link>
-//      </image>';
-
    $rss = '<?xml version="1.0" encoding="utf-8"?>
 
    <rss version="2.0">
@@ -171,16 +152,34 @@ if ( isset($_GET['cid']) ) {
       </image>';
 
    $type_limit_array = array();
-   $type_limit_array[] = 'user';
-   $type_limit_array[] = 'annotation';
-   $type_limit_array[] = 'discussion';
-   $type_limit_array[] = 'discarticle';
-   $type_limit_array[] = 'material';
-   $type_limit_array[] = 'announcement';
-   $type_limit_array[] = 'section';
-   $type_limit_array[] = 'date';
-   $type_limit_array[] = 'label';
-   $type_limit_array[] = 'todo';
+   if ( $context_item->withRubric(CS_USER_TYPE) ) {
+      $type_limit_array[] = CS_USER_TYPE;
+   }
+   if ( $context_item->withRubric(CS_DISCUSSION_TYPE) ) {
+      $type_limit_array[] = CS_DISCUSSION_TYPE;
+      $type_limit_array[] = CS_DISCARTICLE_TYPE;
+   }
+   if ( $context_item->withRubric(CS_MATERIAL_TYPE) ) {
+      $type_limit_array[] = CS_MATERIAL_TYPE;
+      $type_limit_array[] = CS_SECTION_TYPE;
+   }
+   if ( $context_item->withRubric(CS_ANNOUNCEMENT_TYPE) ) {
+      $type_limit_array[] = CS_ANNOUNCEMENT_TYPE;
+   }
+   if ( $context_item->withRubric(CS_DATE_TYPE) ) {
+      $type_limit_array[] = CS_DATE_TYPE;
+   }
+   if ( $context_item->withRubric(CS_TODO_TYPE) ) {
+      $type_limit_array[] = CS_TODO_TYPE;
+      $type_limit_array[] = CS_STEP_TYPE;
+   }
+   if ( $context_item->withRubric(CS_GROUP_TYPE)
+        or $context_item->withRubric(CS_INSTITUTION_TYPE)
+        or $context_item->withRubric(CS_TOPIC_TYPE)
+      ) {
+      $type_limit_array[] = CS_LABEL_TYPE;
+   }
+   $type_limit_array[] = CS_ANNOTATION_TYPE;
    if ( !$context_item->isPrivateRoom() ) {
       // RSS File Content
       $item_manager->resetLimits();
@@ -241,15 +240,25 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_user_manager.php');
             $manager = new cs_user_manager($environment);
             $item = $manager->getItem($row['item_id']);
+            $fullname = $item->getFullName();
+            $email = $item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               } elseif ( !empty($_GET['hid']) and !$item->isEmailVisible() ) {
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
             if ( $item->getCreationDate() == $item->getModificationDate() ) {
-               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$item->getFullName());
-               $description = $translator->getMessage('RSS_NEW_PERSON_DESCRIPTION',$item->getFullName());
+               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
+               $description = $translator->getMessage('RSS_NEW_PERSON_DESCRIPTION',$fullname);
             } else {
-               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$item->getFullName());
-               $description = $translator->getMessage('RSS_CHANGE_PERSON_DESCRIPTION',$item->getFullName());
+               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
+               $description = $translator->getMessage('RSS_CHANGE_PERSON_DESCRIPTION',$fullname);
             }
             $date = date('r',strtotime($item->getModificationDate()));
-            $author = $item->getEmail().' ('.$item->getFullName().')';
+            $author = $email.' ('.$fullname.')';
             $link = $path.'commsy.php?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             unset($manager);
             unset($item);
