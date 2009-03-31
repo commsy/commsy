@@ -1018,6 +1018,7 @@ class cs_view {
       //$reg_exp_array['(:pdf']      = '/\\(:pdf (.*?)(\\s.*?)?\\s*?:\\)/e';
       $reg_exp_array['(:slideshare']      = '~\\(:slideshare (.*?):\\)~eu';
       $reg_exp_array['[slideshare']      = '~\[slideshare (.*?)\]~eu';
+      $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -1114,6 +1115,9 @@ class cs_view {
                         break;
                      } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
                         $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
+                        break;
+                     } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
+                        $value_new = $this->_format_flickr($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      }
                   }
@@ -2129,31 +2133,73 @@ class cs_view {
       return $retour;
    }
 
-//   function format_flickr($text, $array){  
-//   <!-- Start of Flickr Badge -->
-//<style type="text/css">
-///*
-//Images are wrapped in divs classed "flickr_badge_image" with ids "flickr_badge_imageX" where "X" is an integer specifying ordinal position. Below are some styles to get you started!
-//*/
-//#flickr_badge_uber_wrapper {text-align:center; width:150px;}
-//#flickr_badge_wrapper {padding:10px 0 10px 0;}
-//.flickr_badge_image {margin:0 10px 10px 10px;}
-//.flickr_badge_image img {border: 1px solid black !important;}
-//#flickr_badge_source {text-align:left; margin:0 10px 0 10px;}
-//#flickr_badge_icon {float:left; margin-right:5px;}
-//#flickr_www {display:block; padding:0 10px 0 10px !important; font: 11px Arial, Helvetica, Sans serif !important; color:#3993ff !important;}
-//#flickr_badge_uber_wrapper a:hover,
-//#flickr_badge_uber_wrapper a:link,
-//#flickr_badge_uber_wrapper a:active,
-//#flickr_badge_uber_wrapper a:visited {text-decoration:none !important; background:inherit !important;color:#3993ff;}
-//#flickr_badge_wrapper {border: solid 1px #000000}
-//#flickr_badge_source {padding:0 !important; font: 11px Arial, Helvetica, Sans serif !important; color:#666666 !important;}
-//</style>
-//<div id="flickr_badge_uber_wrapper"><a href="http://www.flickr.com" id="flickr_www">www.<strong style="color:#3993ff">flick<span style="color:#ff1c92">r</span></strong>.com</a><div id="flickr_badge_wrapper">
-//<script type="text/javascript" src="http://www.flickr.com/badge_code_v2.gne?count=10&display=latest&size=t&layout=x&source=user_tag&user=22232211%40N02&tag=commsy"></script>
-//</div></div>
-//<!-- End of Flickr Badge -->
-//   }
+   function _format_flickr($text, $array){
+      $retour = '';
+      if ( !empty($array[1]) ) {
+// Erste Version mit Angabe von Benutzer und Tag/Set
+//         $flickr_array = split(' ', $array[1]);
+//         $flickr_user_array = split('=', $flickr_array[0]);
+//         $flickr_user = $flickr_user_array[1];
+//         $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=4f97257bac19849ee0bcdeb67537b01c&username=' . $flickr_user,"r");
+//         $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);
+//         fclose($flicker_id_stream);
+//         if(mb_stristr($flicker_id_stream_contents, 'stat="ok"')){
+//            $xml_parser = xml_parser_create();
+//            xml_parse_into_struct($xml_parser, $flicker_id_stream_contents, $values, $index);
+//            foreach($values as $value){
+//               if($value['tag'] == 'USER' and $value['type'] == 'open'){
+//                  if(isset($value['attributes']['ID'])){
+//                     $flicker_id = $value['attributes']['ID'];
+//                  }
+//               }
+//            }
+//         } else {
+//            $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=4f97257bac19849ee0bcdeb67537b01c&user_id=' . $flickr_user,"r");
+//            $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);
+//            fclose($flicker_id_stream);
+//            if(mb_stristr($flicker_id_stream_contents, 'stat="ok"')){
+//               $flicker_id = $flickr_user;
+//            }
+//         }
+//         if(isset($flicker_id)){
+//            $flickr_source_array = split('=', $flickr_array[1]);
+//            if($flickr_source_array[0] == 'tag'){
+//               $flickr_tag = $flickr_source_array[1];
+//               //$retour .= '<iframe align="center" src="http://www.flickr.com/slideShow/index.gne?group_id=&user_id=' . $flicker_id . '&set_id=&tags=' . $flickr_tag . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
+//               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&tags=' . $flickr_tag . '" width="500" height="500"> </object>'.LF;
+//            } elseif ($flickr_source_array[0] == 'set'){
+//               $flickr_set = $flickr_source_array[1];
+//               //$retour .= '<iframe align="center" src="http://www.flickr.com/slideShow/index.gne?group_id=&user_id=' . $flicker_id . '&set_id=&set_id=' . $flickr_set . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
+//               //$retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&set_id=' . $flickr_set . '" width="500" height="500"> </object>'.LF;
+//            }
+//         } else {
+//            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+//         }
+         $flickr_link_array = split('/', $array[1]);
+         $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=4f97257bac19849ee0bcdeb67537b01c&username=' . $flickr_link_array[4],"r");
+         $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);
+         fclose($flicker_id_stream);
+         if(mb_stristr($flicker_id_stream_contents, 'stat="ok"')){
+            $xml_parser = xml_parser_create();
+            xml_parse_into_struct($xml_parser, $flicker_id_stream_contents, $values, $index);
+            foreach($values as $value){
+               if($value['tag'] == 'USER' and $value['type'] == 'open'){
+                  if(isset($value['attributes']['ID'])){
+                     $flicker_id = $value['attributes']['ID'];
+                  }
+               }
+            }
+            if($flickr_link_array[5] == 'sets'){
+               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
+            } elseif ($flickr_link_array[5] == 'tags'){
+               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&tags=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
+            }
+         } else {
+            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+         }
+      }
+      return $retour;
+   }
 
    function _getDivNumber() {
       if ( !isset($this->_div_number) ) {
