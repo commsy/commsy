@@ -15,7 +15,7 @@ function getFlashMovie(movieName) {
 }
 
 function callStudyLogSortChronological() {
-   getFlashMovie("study_log").callStudyLogSortChronological();
+   getFlashMovie("study_log").callStudyLogSortChronological("");
 }
 function callStudyLogSortAlphabetical() {
    getFlashMovie("study_log").callStudyLogSortAlphabetical();

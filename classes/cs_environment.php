@@ -1306,6 +1306,10 @@ class cs_environment {
       $this->_selected_language = NULL;
    }
 
+   public function setSelectedLanguage ( $value ) {
+      $this->_selected_language = $value;
+   }
+
    function getUserLanguage () {
       $current_user = $this->getCurrentUserItem();
       if ( $current_user->isUser() ) {

@@ -914,11 +914,20 @@ class cs_index_view extends cs_view {
                   $html .= '<span class="disabled" style="font-size:'.$font_size.'px;">'.LF;
                   $html .= '-';
                   $html .= '</span>'.LF;
-                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                $this->_environment->getCurrentModule(),
-                                $this->_environment->getCurrentFunction(),
-                                $params,
-                                $title,$title,'','','','','','style="color:'.$color.'"').LF;
+                  if ( $this->_environment->inPrivateRoom()
+                       and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                       and $this->_display_mode == 'flash'
+                     ) {
+                     $html .= '<a href="javascript:callStudyLogSortByTag(\''.$current_item->getTitle().'\')">'.$title.'</a>'.LF;
+                     #$html .= '<a href="javascript:callStudyLogSortByTag('.$current_item->getItemID().')">'.$title.'</a>'.LF;
+                  } else {
+                     $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                         $this->_environment->getCurrentModule(),
+                                         $this->_environment->getCurrentFunction(),
+                                         $params,
+                                         $title,
+                                         $title,'','','','','','style="color:'.$color.'"').LF;
+                  }
                }else{
                   $html .= '<span class="disabled" style="font-size:'.$font_size.'px;">'.LF;
                   $html .= '-';
