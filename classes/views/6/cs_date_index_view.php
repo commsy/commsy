@@ -234,7 +234,7 @@ class cs_date_index_view extends cs_room_index_view {
             $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
-            $new_params['selstatus'] = 2;
+            $new_params['selactivatingstatus'] = 1;
             $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
             $html_text .='</div>';
             $html .= $html_text;
