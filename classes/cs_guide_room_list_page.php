@@ -53,7 +53,9 @@ class cs_guide_room_list_page extends cs_page {
      if ( isset($this->_values['interval']) ) {
         $interval = $this->_values['interval'];
      } else {
-        $interval = $current_context->getNumberRoomsOnHome();
+        if ( $current_context->isPortal() ) {
+           $interval = $current_context->getNumberRoomsOnHome();
+        }
         if ( empty($interval) ) {
            $interval = 10;
         } elseif ($interval == 'all') {
