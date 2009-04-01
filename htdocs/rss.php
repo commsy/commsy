@@ -659,7 +659,7 @@ if ( isset($_GET['cid']) ) {
       } else {
          $description = '';
       }
-      if ( !empty($title) ) {
+      if ( !empty($title) and !empty($link) ) {
          $rss .= '
          <item>
            <title>'.encode(AS_RSS,$title).'</title>
@@ -672,6 +672,7 @@ if ( isset($_GET['cid']) ) {
          $counter++;
          unset($title);
          unset($description);
+         unset($link);
          unset($date);
          unset($author);
       }
