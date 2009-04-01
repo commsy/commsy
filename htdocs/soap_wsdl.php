@@ -225,6 +225,12 @@
 <message name='refreshSessionOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='logoutIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='logoutOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -342,6 +348,10 @@
   <operation name='refreshSession'>
     <input message='tns:refreshSessionIN'/>
     <output message='tns:refreshSessionOUT'/>
+  </operation>
+  <operation name='logout'>
+    <input message='tns:logoutIN'/>
+    <output message='tns:logoutOUT'/>
   </operation>
 </portType>
 
@@ -659,6 +669,17 @@
   </operation>
   <operation name='refreshSession'>
     <soap:operation soapAction='urn:xmethodsCommSy#refreshSession'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='logout'>
+    <soap:operation soapAction='urn:xmethodsCommSy#logout'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
