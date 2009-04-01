@@ -41,7 +41,7 @@ var $_item = NULL;
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   public function __CONSTRUCT ($params) {
+   public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_BUZZWORDS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_BUZZWORDS'));
@@ -49,7 +49,7 @@ var $_item = NULL;
    }
 
    function setItem($item){
-   	$this->_item = $item;
+      $this->_item = $item;
    }
 
 
@@ -119,7 +119,7 @@ var $_item = NULL;
          }
       }
       if(empty($checked_buzzword_array)){
-      	$checked_buzzword_array= array();
+         $checked_buzzword_array= array();
       }
       $html = '';
       $list = $this->getList();

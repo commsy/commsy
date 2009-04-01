@@ -46,7 +46,7 @@ class cs_activity_view extends cs_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   public function __CONSTRUCT ( $params ) {
+   public function __construct ( $params ) {
       $this->cs_view($params);
       $this->setViewName('activity');
       // Determine time spread

@@ -55,7 +55,7 @@ class cs_page_xml_view extends cs_page_view {
     *
     * @param array params parameters in an array of this class
     */
-   public function __CONSTRUCT ($params) {
+   public function __construct ($params) {
       $this->cs_page_view($params);
    }
 

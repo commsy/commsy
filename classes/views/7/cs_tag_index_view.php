@@ -43,7 +43,7 @@ var $_count_entries = 0;
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   public function __CONSTRUCT ($params) {
+   public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_TAGS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_TAGS'));
@@ -51,7 +51,7 @@ var $_count_entries = 0;
    }
 
    function setItem($item){
-   	$this->_item = $item;
+      $this->_item = $item;
    }
 
 
@@ -254,7 +254,7 @@ var $_count_entries = 0;
          }
       }
       if(empty($this->_checked_tag_array)){
-      	$this->_checked_tag_array= array();
+         $this->_checked_tag_array= array();
       }
       $html = '';
       $list = $this->getList();

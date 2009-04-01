@@ -40,7 +40,7 @@ class cs_color_configuration_form_view extends cs_configuration_form_view {
     *
     * @param array params parameters in an array of this class
     */
-   public function __CONSTRUCT ($params) {
+   public function __construct ($params) {
       $this->cs_configuration_form_view($params);
    }
 

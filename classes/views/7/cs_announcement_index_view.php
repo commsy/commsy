@@ -43,7 +43,7 @@ class cs_announcement_index_view extends cs_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   public function __CONSTRUCT ($params) {
+   public function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENTS'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENT'));
