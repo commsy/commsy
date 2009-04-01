@@ -670,6 +670,10 @@ if ( isset($_GET['cid']) ) {
          $rss .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
          $rss .= '         </item>';
          $counter++;
+         unset($title);
+         unset($description);
+         unset($date);
+         unset($author);
       }
    }
 
