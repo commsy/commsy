@@ -311,47 +311,47 @@ else {
          elseif ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
             $user_item2 = $user_list->getFirst();
 
-         // email is equal
-         if ($user_item2->getEmail() == $user_item->getEmail()) {
-       unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
-       if ($user_item->getUserID() != $user_id) {
-          $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
-       } else {
-          $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
-       }
-       $go = false;
+            // email is equal
+            if ($user_item2->getEmail() == $user_item->getEmail()) {
+               unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
+               if ($user_item->getUserID() != $user_id) {
+                  $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
+               } else {
+                  $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+               }
+               $go = false;
+            } else {
+               // generate new user id
+               if ($first) {
+                  $first = false;
+                  $user_id .= '1';
+               } else {
+                  $count = $user_id{mb_strlen($user_id)-1};
+                  $count = (int)$count;
+                  $count++;
+                  $user_id = mb_substr($user_id,0,mb_strlen($user_id)-1);
+                  $user_id .= $count;
+               }
+            }
+         } elseif ($user_list->isNotEmpty() and $user_list->getCount() > 1) {
+            include_once('functions/error_functions.php');
+            trigger_error('ERROR: multiple user id '.$user_id.' for one portal',E_USER_WARNING);
+            $go = false;
+            $failure = true;
          } else {
-       // generate new user id
-       if ($first) {
-          $first = false;
-          $user_id .= '1';
-       } else {
-          $count = $user_id{mb_strlen($user_id)-1};
-          $count = (int)$count;
-          $count++;
-          $user_id = mb_substr($user_id,0,mb_strlen($user_id)-1);
-          $user_id .= $count;
-       }
+            // find free user id
+            if ($user_item->getUserID() != $user_id) {
+               $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
+            } else {
+               $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+            }
+            $go = false;
          }
-      } elseif ($user_list->isNotEmpty() and $user_list->getCount() > 1) {
-        include_once('functions/error_functions.php');
-        trigger_error('ERROR: multiple user id '.$user_id.' for one portal',E_USER_WARNING);
-        $go = false;
-        $failure = true;
-      } else {
-         // find free user id
-         if ($user_item->getUserID() != $user_id) {
-       $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
-         } else {
-       $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
-         }
-         $go = false;
       }
-   }
       }
 
       if ($failure) {
-   exit();
+         exit();
       }
 
       // commsy auth source
@@ -468,7 +468,7 @@ else {
    if ($copy_links_between_rooms and $room_item->isProjectRoom()) {
       $temp_array = array();
       $temp_array[] = $item->getItemID();
-            $room_item->setCommunityListByID($temp_array);
+      $room_item->setCommunityListByID($temp_array);
       unset($temp_array);
    }
 
