@@ -122,7 +122,7 @@ class cs_disc_manager {
          include_once('functions/error_functions.php');
          trigger_error('first_id is not set',E_USER_ERROR);
       }
-      $source_file .= $old_room_id.'/'.'cid'.$old_room_id.'_'.$old_file_id.'_'.$filename;
+      $source_file .= $old_room_id.'/'.$old_file_id;
 
       $target_file = $this->_file_path_basic;
       if (!empty($this->_first_id)) {
@@ -131,7 +131,7 @@ class cs_disc_manager {
          include_once('functions/error_functions.php');
          trigger_error('first_id is not set',E_USER_ERROR);
       }
-      $target_file .= $new_room_id.'/'.'cid'.$new_room_id.'_'.$new_file_id.'_'.$filename;
+      $target_file .= $new_room_id.'/'.$new_file_id;
 
       if ( file_exists($source_file) ) {
          $retour = copy($source_file,$target_file);
