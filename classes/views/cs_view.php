@@ -2176,26 +2176,31 @@ class cs_view {
 //            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
 //         }
          $flickr_link_array = split('/', $array[1]);
-         $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=4f97257bac19849ee0bcdeb67537b01c&username=' . $flickr_link_array[4],"r");
-         $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);
-         fclose($flicker_id_stream);
-         if(mb_stristr($flicker_id_stream_contents, 'stat="ok"')){
-            $xml_parser = xml_parser_create();
-            xml_parse_into_struct($xml_parser, $flicker_id_stream_contents, $values, $index);
-            foreach($values as $value){
-               if($value['tag'] == 'USER' and $value['type'] == 'open'){
-                  if(isset($value['attributes']['ID'])){
-                     $flicker_id = $value['attributes']['ID'];
-                  }
-               }
-            }
-            if($flickr_link_array[5] == 'sets'){
-               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
-            } elseif ($flickr_link_array[5] == 'tags'){
-               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&tags=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
-            }
-         } else {
-            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+// Zweite Version - allerdings wird ein API-Key benötigt.
+//         $flicker_id_stream = fopen('http://api.flickr.com/services/rest/?method=flickr.people.findByUsername&api_key=4f97257bac19849ee0bcdeb67537b01c&username=' . $flickr_link_array[4],"r");
+//         $flicker_id_stream_contents = stream_get_contents($flicker_id_stream);
+//         fclose($flicker_id_stream);
+//         pr($flicker_id_stream_contents);
+//         if(mb_stristr($flicker_id_stream_contents, 'stat="ok"')){
+//            $xml_parser = xml_parser_create();
+//            xml_parse_into_struct($xml_parser, $flicker_id_stream_contents, $values, $index);
+//            foreach($values as $value){
+//               if($value['tag'] == 'USER' and $value['type'] == 'open'){
+//                  if(isset($value['attributes']['ID'])){
+//                     $flicker_id = $value['attributes']['ID'];
+//                  }
+//               }
+//            }
+//            if($flickr_link_array[5] == 'sets'){
+//               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
+//            } elseif ($flickr_link_array[5] == 'tags'){
+//               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&tags=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
+//            }
+//         } else {
+//            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+//         }
+         if($flickr_link_array[5] == 'sets'){
+            $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
          }
       }
       return $retour;
