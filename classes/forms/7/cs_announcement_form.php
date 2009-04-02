@@ -426,14 +426,14 @@ class cs_announcement_form extends cs_rubric_form {
             $this->_values['end_date_time'][] = getDateInLang(DateAdd($time,date("Y-m-d"),"Y-m-d"));
             $this->_values['end_date_time'][] = date("H:m");
          }
-      }
-      if ($current_context->withActivatingContent()){
-         if ( !isset($this->_values['private_editing']) ) {
-            $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
-         }
-      }else{
-         if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         if ($current_context->withActivatingContent()){
+            if ( !isset($this->_values['private_editing']) ) {
+               $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
+         }else{
+            if ( !isset($this->_values['public']) ) {
+               $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
          }
       }
    }

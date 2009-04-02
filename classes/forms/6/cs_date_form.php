@@ -702,15 +702,15 @@ class cs_date_form extends cs_rubric_form {
          $temp_array['dayEnd'] = $this->_private_date_ending_date;
          $temp_array['timeEnd'] = $this->_private_date_ending_time;
          $this->_values['end_date_time'] = $temp_array;
-      }
-      $current_context = $this->_environment->getCurrentContextItem();
-      if ($current_context->withActivatingContent()){
-         if ( !isset($this->_values['private_editing']) ) {
-            $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
-         }
-      }else{
-         if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+         $current_context = $this->_environment->getCurrentContextItem();
+         if ($current_context->withActivatingContent()){
+            if ( !isset($this->_values['private_editing']) ) {
+               $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
+         }else{
+            if ( !isset($this->_values['public']) ) {
+               $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
          }
       }
    }

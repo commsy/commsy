@@ -730,14 +730,15 @@ class cs_material_form extends cs_rubric_form {
             }
          }
 
-      }
-      if ($current_context->withActivatingContent()){
-         if ( !isset($this->_values['private_editing']) ) {
-            $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
-         }
-      }else{
-         if ( !isset($this->_values['public']) ) {
-            $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+      } else {
+         if ($current_context->withActivatingContent()){
+            if ( !isset($this->_values['private_editing']) ) {
+               $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
+         }else{
+            if ( !isset($this->_values['public']) ) {
+               $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
+            }
          }
       }
    }
