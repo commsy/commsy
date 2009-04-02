@@ -247,6 +247,8 @@ class cs_project_item extends cs_room_item {
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
+         $new_room_user->setAccountWantMail('yes');
+         $new_room_user->setOpenRoomWantMail('yes');
          $new_room_user->save();
          $new_room_user->setCreatorID2ItemID();
          // save picture in new room

@@ -53,6 +53,10 @@ if ($creator_item->getContextID() == $new_room->getItemID()) {
       trigger_error('can not get creator of new room',E_USER_ERROR);
    }
 }
+$creator_item->setAccountWantMail('yes');
+$creator_item->setOpenRoomWantMail('yes');
+$creator_item->setPublishMaterialWantMail('yes');
+$creator_item->save();
 $new_id_array = array();
 
 // copy room settings
