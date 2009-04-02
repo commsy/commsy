@@ -152,6 +152,11 @@ if ( $old_room->withTags() ) {
 // config of email message tags
 $new_room->setEmailTextArray($old_room->getEmailTextArray());
 
+// design
+if ( $old_room->isDesign7() ) {
+   $new_room->setDesignTo7();
+}
+
 // save new room
 $new_room->save();
 
