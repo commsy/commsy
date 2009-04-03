@@ -63,68 +63,75 @@ var $_config_boxes = false;
         $rubric_array = explode('_', $rubric);
         if ( $rubric_array[1] != 'none' and $rubric_array[0] !='user' and $rubric_array[0] !='contact'
              and !( $rubric_array[0] =='myroom' and $this->_environment->InPrivateRoom() )
-             ) {
+           ) {
            $params = array();
            $params['iid'] = 'NEW';
 
-              $temp = mb_strtoupper($rubric_array[0], 'UTF-8');
-              $tempMessage = "";
-              switch( $temp )
-              {
-                 case 'ANNOUNCEMENT':
-                    $tempMessage = $this->_translator->getMessage('HOME_ANNOUNCEMENT_ENTER_NEW');
+           $temp = mb_strtoupper($rubric_array[0], 'UTF-8');
+           $tempMessage = "";
+           switch( $temp )
+           {
+              case 'ANNOUNCEMENT':
+                 $tempMessage = $this->_translator->getMessage('HOME_ANNOUNCEMENT_ENTER_NEW');
+                 break;
+              case 'DATE':
+                 $tempMessage = $this->_translator->getMessage('HOME_DATE_ENTER_NEW');
+                 break;
+              case 'DISCUSSION':
+                 $tempMessage = $this->_translator->getMessage('HOME_DISCUSSION_ENTER_NEW');
+                 break;
+              case 'GROUP':
+                 $tempMessage = $this->_translator->getMessage('HOME_GROUP_ENTER_NEW');
+                 break;
+              case 'INSTITUTION':
+                 $tempMessage = $this->_translator->getMessage('HOME_INSTITUTION_ENTER_NEW');
+                 break;
+              case 'MATERIAL':
+                 $tempMessage = $this->_translator->getMessage('HOME_MATERIAL_ENTER_NEW');
+                 break;
+              case 'MYROOM':
+                 $tempMessage = $this->_translator->getMessage('HOME_MYROOM_ENTER_NEW');
+                 break;
+              case 'PROJECT':
+                 $tempMessage = $this->_translator->getMessage('HOME_PROJECT_ENTER_NEW');
+                 break;
+              case 'TODO':
+                 $tempMessage = $this->_translator->getMessage('HOME_TODO_ENTER_NEW');
+                 break;
+              case 'TOPIC':
+                 $tempMessage = $this->_translator->getMessage('HOME_TOPIC_ENTER_NEW');
+                 break;
+              default:
+                 global $c_plugin_array;
+                 if ( !empty($c_plugin_array['rubric'])
+                      and in_array(strtolower($temp),$c_plugin_array['rubric'])
+                    ) {
+                    // initiate class
+                    // check if there is an methode "getActionforHomeasHTML"
                     break;
-                 case 'DATE':
-                    $tempMessage = $this->_translator->getMessage('HOME_DATE_ENTER_NEW');
+                 } else {
+                    $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_homepage_action_view('.__LINE__.') ');
                     break;
-                 case 'DISCUSSION':
-                    $tempMessage = $this->_translator->getMessage('HOME_DISCUSSION_ENTER_NEW');
-                    break;
-                 case 'GROUP':
-                    $tempMessage = $this->_translator->getMessage('HOME_GROUP_ENTER_NEW');
-                    break;
-                 case 'INSTITUTION':
-                    $tempMessage = $this->_translator->getMessage('HOME_INSTITUTION_ENTER_NEW');
-                    break;
-                 case 'MATERIAL':
-                    $tempMessage = $this->_translator->getMessage('HOME_MATERIAL_ENTER_NEW');
-                    break;
-                 case 'MYROOM':
-                    $tempMessage = $this->_translator->getMessage('HOME_MYROOM_ENTER_NEW');
-                    break;
-                 case 'PROJECT':
-                    $tempMessage = $this->_translator->getMessage('HOME_PROJECT_ENTER_NEW');
-                    break;
-                 case 'TODO':
-                    $tempMessage = $this->_translator->getMessage('HOME_TODO_ENTER_NEW');
-                    break;
-                 case 'TOPIC':
-                    $tempMessage = $this->_translator->getMessage('HOME_TOPIC_ENTER_NEW');
-                    break;
-                 default:
-                    $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . " cs_homepage_action_view(116) ");
-                    break;
-              }
-
-
-           if ( $current_user->isUser() and $this->_with_modifying_actions ) {
-
-              $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),
-                                       $rubric_array[0],
-                                       'edit',
-                                       $params,
-                                       $tempMessage
-                                      ).BRLF;
-
-      } else {
-
-              $html .= '<span class="disabled">'.'> ';
-              $html .= $tempMessage;
-              $html .= '</span>'.BRLF;
+                 }
            }
+           if ( !empty($tempMessage) ) {
+              if ( $current_user->isUser()
+                   and $this->_with_modifying_actions
+                 ) {
 
+                 $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),
+                                          $rubric_array[0],
+                                          'edit',
+                                          $params,
+                                          $tempMessage
+                                         ).BRLF;
+              } else {
+                 $html .= '<span class="disabled">'.'> ';
+                 $html .= $tempMessage;
+                 $html .= '</span>'.BRLF;
+              }
+           }
            unset($params);
-
         }
      }
      $params = $this->_environment->getCurrentParameterArray();
