@@ -33,7 +33,7 @@ if ( !empty($_GET['iid']) ) {
 } elseif ( !empty($_POST['iid']) ) {
    $current_iid = $_POST['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('item id lost',E_USER_ERROR);
+   $current_iid = $environment->getCurrentContextID();
 }
 
 // hier muss auf den aktuellen Kontext referenziert werden,
@@ -42,13 +42,16 @@ if ( !empty($_GET['iid']) ) {
 $current_context_item = $environment->getCurrentContextItem();
 if ($current_iid == $current_context_item->getItemID()) {
    $item = $current_context_item;
-} else {
+} elseif ( !empty($current_iid) ) {
    if ($environment->inProjectRoom() or $environment->inCommunityRoom()) {
       $room_manager = $environment->getRoomManager();
    } elseif ($environment->inPortal()) {
       $room_manager = $environment->getPortalManager();
    }
    $item = $room_manager->getItem($current_iid);
+} else {
+   include_once('functions/error_functions.php');
+   trigger_error('item id lost',E_USER_ERROR);
 }
 
 // Check access rights
