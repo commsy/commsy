@@ -215,7 +215,7 @@ class cs_configuration_form_view extends cs_form_view {
                break;
             case 'CONFIGURATION_CHAT':
                $image = '<img src="images/commsyicons/32x32/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');                break;
+               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
                break;
             case 'CONFIGURATION_COLOR':
                $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');	// Farbkonfiguration OK
@@ -637,7 +637,7 @@ class cs_configuration_form_view extends cs_form_view {
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'chat',
-                                       '',
+                                       array('iid' => $this->_environment->getCurrentContextID()),
                                        $image,
                                        getMessage('CHAT_CONFIGURATION_LINK')).LF;
         }

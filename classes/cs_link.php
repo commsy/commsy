@@ -115,7 +115,7 @@ class cs_link {
       if ( isset($this->_data['short_title']) and !empty($this->_data['short_title']) ){
          return $this->_getValue('short_title');
       }else{
-      	return $this->getTitle();
+         return $this->getTitle();
       }
    }
 
@@ -142,23 +142,23 @@ class cs_link {
       return $this->_getValue('desc');
    }
 
-	/** sets the path to an icon for the item
-	* @param string Path where the icon can be found
+   /** sets the path to an icon for the item
+   * @param string Path where the icon can be found
       *
       * @author CommSy Development Group
-	*/
-	function setIconPath($icon_path) {
-	   $this->_data['icon_path'] = $icon_path;
-	}
+   */
+   function setIconPath($icon_path) {
+      $this->_data['icon_path'] = $icon_path;
+   }
 
-	/** sets the path to an icon for the item
-	* @param string Path where the icon can be found
+   /** sets the path to an icon for the item
+   * @param string Path where the icon can be found
       *
       * @author CommSy Development Group
-	*/
-	function getIconPath() {
-	   return $this->_getValue('icon_path');
-	}
+   */
+   function getIconPath() {
+      return $this->_getValue('icon_path');
+   }
 
    /** set the context id of the link
     * this method sets the context id of the link
@@ -267,7 +267,7 @@ class cs_link {
       return ahref_curl($this->_getContextID(),$this->_getModule(),$this->_getFunction(),$this->_getParameter(),$this->getShortTitle());
    }
 
-	 /** return the HTML-Hyperlink of the link as an icon
+    /** return the HTML-Hyperlink of the link as an icon
     * this method returns the link as HTML code as an icon
     *
     * @return string HTML-link
