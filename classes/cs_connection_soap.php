@@ -1648,10 +1648,43 @@ class cs_connection_soap {
             $own_room = $user_item->getOwnRoom();
             unset($user_item);
             $list = $own_room->getCustomizedRoomList();
-            unset($own_room);
             if ( isset($list) and $list->isNotEmpty() ) {
                $retour = '<?xml version="1.0" encoding="utf-8"?>'.LF;
                $retour .= '   <list>'.LF;
+
+               // portal
+               $item = $this->_environment->getCurrentPortalItem();
+               $retour .= '      <item>'.LF;
+               $retour .= '         <title><![CDATA['.$item->getTitle().']]></title>'.LF;
+               if ( $item->getItemID() > 99 ) {
+                  $retour .= '         <id><![CDATA['.$item->getItemID().']]></id>'.LF;
+                  global $c_commsy_domain, $c_commsy_url_path;
+                  include_once('functions/curl_functions.php');
+                  $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+               }
+               $retour .= '      </item>'.LF;
+               $retour .= '      <item>'.LF;
+               $retour .= '         <title>-------------------------------</title>'.LF;
+               $retour .= '         <id></id>'.LF;
+               $retour .= '      </item>'.LF;
+
+               // own room
+               $item = $own_room;
+               $retour .= '      <item>'.LF;
+               $translator = $this->_environment->getTranslationObject();
+               $retour .= '         <title><![CDATA['.$translator->getMessage($item->getTitle()).']]></title>'.LF;
+               if ( $item->getItemID() > 99 ) {
+                  $retour .= '         <id><![CDATA['.$item->getItemID().']]></id>'.LF;
+                  global $c_commsy_domain, $c_commsy_url_path;
+                  include_once('functions/curl_functions.php');
+                  $retour .= '         <url><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'._curl(false,$item->getItemID(),'home','index',array()).']]></url>'.LF;
+               }
+               $retour .= '      </item>'.LF;
+               $retour .= '      <item>'.LF;
+               $retour .= '         <title>-------------------------------</title>'.LF;
+               $retour .= '         <id></id>'.LF;
+               $retour .= '      </item>'.LF;
+
                $item = $list->getFirst();
                while ( $item ) {
                   $retour .= '      <item>'.LF;
@@ -1669,8 +1702,9 @@ class cs_connection_soap {
                unset($list);
                $result = $this->_encode_output($retour);
             } else {
-               // bitte customized rooms list
+               // customized rooms list
             }
+            unset($own_room);
             unset($user_item);
          } else {
             $info = 'ERROR: GET ROOM LIST';
