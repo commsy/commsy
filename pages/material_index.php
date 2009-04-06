@@ -438,7 +438,8 @@ if ( !empty($attribute_limit) ) {
 if ( !empty($selbuzzword) ) {
    $material_manager->setBuzzwordLimit($selbuzzword);
 }
-if ( $interval > 0 ) {
+if ( $interval > 0
+     and !$environment->isOutputMode('XML') ) {
    $material_manager->setIntervalLimit($from-1, $interval);
 }
 if ( $context_item->isProjectRoom() ){
