@@ -640,52 +640,54 @@ class cs_detail_view extends cs_view {
          if ($count_items >= $start and $count_items <= $end){
             $item_manager = $this->_environment->getItemManager();
             $tmp_item = $item_manager->getItem($id);
-            $manager = $this->_environment->getManager($tmp_item->getItemType());
-            $item = $manager->getItem($ids[$count_items]);
-            $type = $tmp_item->getItemType();
-            if ($type == 'label'){
-               $label_manager = $this->_environment->getLabelManager();
-               $label_item = $label_manager->getItem($tmp_item->getItemID());
-               $type = $label_item->getLabelType();
-            }
             $text = '';
-            switch ( mb_strtoupper($type, 'UTF-8') ){
-               case 'ANNOUNCEMENT':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                  break;
-               case 'DATE':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                  break;
-               case 'DISCUSSION':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                  break;
-               case 'GROUP':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                  break;
-               case 'INSTITUTION':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                  break;
-               case 'MATERIAL':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                  break;
-               case 'PROJECT':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                  break;
-               case 'TODO':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                  break;
-               case 'TOPIC':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                  break;
-               case 'USER':
-                  $text .= $this->_translator->getMessage('COMMON_ONE_USER');
-                  break;
-               case 'ACCOUNT':
-                  $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
-                  break;
-               default:
-                  $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(665) ';
-                  break;
+            if ( isset($tmp_item) ) {
+               $manager = $this->_environment->getManager($tmp_item->getItemType());
+               $item = $manager->getItem($ids[$count_items]);
+               $type = $tmp_item->getItemType();
+               if ($type == 'label'){
+                  $label_manager = $this->_environment->getLabelManager();
+                  $label_item = $label_manager->getItem($tmp_item->getItemID());
+                  $type = $label_item->getLabelType();
+               }
+               switch ( mb_strtoupper($type, 'UTF-8') ){
+                  case 'ANNOUNCEMENT':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
+                     break;
+                  case 'DATE':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
+                     break;
+                  case 'DISCUSSION':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
+                     break;
+                  case 'GROUP':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
+                     break;
+                  case 'INSTITUTION':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
+                     break;
+                  case 'MATERIAL':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
+                     break;
+                  case 'PROJECT':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
+                     break;
+                  case 'TODO':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
+                     break;
+                  case 'TOPIC':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
+                     break;
+                  case 'USER':
+                     $text .= $this->_translator->getMessage('COMMON_ONE_USER');
+                     break;
+                  case 'ACCOUNT':
+                     $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
+                     break;
+                  default:
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
+                     break;
+               }
             }
 
 
