@@ -151,6 +151,8 @@ class cs_user_manager extends cs_manager {
 
    var $_cache_sql = array();
 
+   private $_only_from_portal = false;
+
    private $_limit_no_membership = NULL;
 
    /** constructor
@@ -196,6 +198,11 @@ class cs_user_manager extends cs_manager {
       $this->_limit_project = NULL;
       $this->_limit_portal_id = NULL;
       $this->_limit_no_membership = NULL;
+      $this->_only_from_portal = false;
+   }
+
+   public function setOnlyUserFromPortal () {
+      $this->_only_from_portal = true;
    }
 
    function setAuthSourceLimit ($value) {
@@ -458,6 +465,9 @@ class cs_user_manager extends cs_manager {
         $query .= ' INNER JOIN room ON ( room.deletion_date IS NULL AND l91.first_item_id=room.item_id ) ';
         $query .= ' INNER JOIN user AS l92 ON ( room.item_id=l92.context_id AND l92.user_id=user.user_id) ';
      }
+     if ( $this->_only_from_portal ) {
+        $query .= ' INNER JOIN user AS user2 ON ( user2.user_id=user.user_id AND user2.auth_source=user.auth_source) ';
+     }
 
      if ( isset($this->_limit_portal_id)
           and ( isset($this->_limit_community)
@@ -478,14 +488,18 @@ class cs_user_manager extends cs_manager {
      if (isset($this->_user_limit)) {
         $query .= ' AND user.user_id = "'.encode(AS_DB,$this->_user_limit).'"';
      }
-
      if ( isset($this->_context_array_limit)
           and !empty($this->_context_array_limit)
           and count($this->_context_array_limit) > 0
           and !empty($this->_context_array_limit[0])
         ) {
         $id_string = implode(',',$this->_context_array_limit);
-        $query .= ' AND user.context_id IN ('.$id_string.')';
+        if ( $this->_only_from_portal ) {
+           $query .= ' AND user2.context_id IN ('.encode(AS_DB,$id_string).')';
+           $query .= ' AND user.context_id = "'.encode(AS_DB,$this->_environment->getCurrentPortalID()).'"';
+        } else {
+           $query .= ' AND user.context_id IN ('.$id_string.')';
+        }
      } elseif (isset($this->_room_limit) and $this->_room_limit != 0) {
         $query .= ' AND user.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
@@ -572,7 +586,7 @@ class cs_user_manager extends cs_manager {
         }
      }
 
-     if(!empty($this->_id_array_limit)) {
+     if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND user.item_id IN ('.implode(", ", $this->_id_array_limit).')';
      }
 
