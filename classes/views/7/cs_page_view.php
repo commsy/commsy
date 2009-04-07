@@ -2225,7 +2225,12 @@ class cs_page_view extends cs_view {
          $cs_mod = '';
       }
       $html  = LF;
-      if ( $server_item->showServerNews() ) {
+      if ( $server_item->showServerNews()
+           and !isset($portal_item)
+           or ( $portal_item->isPortal()
+                and $portal_item->showNewsFromServer()
+              )
+         ) {
          $html .= BR.'<div class="myarea_frame">'.LF;
          $html .= '<div class="myarea_headline">'.LF;
          $html .= '<div class="myarea_headline_title">'.LF;

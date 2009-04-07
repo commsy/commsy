@@ -82,27 +82,40 @@ else {
 
          if ( $form->check() ) {
 
-         if (!empty($_POST['title'])) {
-            $room_item->setServerNewsTitle($_POST['title']);
-         } else {
-            $room_item->setServerNewsTitle('');
-         }
-         if (!empty($_POST['link'])) {
-            $room_item->setServerNewsLink($_POST['link']);
-         } else {
-            $room_item->setServerNewsLink('');
-         }
-         if (!empty($_POST['text'])) {
-            $room_item->setServerNewsText($_POST['text']);
-         } else {
-            $room_item->setServerNewsText('');
-         }
-         if ($_POST['show'] == 1) {
-            $room_item->setShowServerNews();
-         } elseif ($_POST['show'] == -1) {
-            $room_item->setDontShowServerNews();
-         }
+            if (!empty($_POST['title'])) {
+               $room_item->setServerNewsTitle($_POST['title']);
+            } else {
+               $room_item->setServerNewsTitle('');
+            }
+            if (!empty($_POST['link'])) {
+               $room_item->setServerNewsLink($_POST['link']);
+            } else {
+               $room_item->setServerNewsLink('');
+            }
+            if (!empty($_POST['text'])) {
+               $room_item->setServerNewsText($_POST['text']);
+            } else {
+               $room_item->setServerNewsText('');
+            }
+            if ($_POST['show'] == 1) {
+               $room_item->setShowServerNews();
+            } elseif ($_POST['show'] == -1) {
+               $room_item->setDontShowServerNews();
+            }
             $room_item->save();
+            if ( $room_item->isServer() ) {
+               $portal_list = $room_item->getPortalList();
+               if ( isset($portal_list)
+                    and $portal_list->isNotEmpty()
+                  ) {
+                  $portal_item = $portal_list->getFirst();
+                  while ( $portal_item ) {
+                     $portal_item->setShowNewsFromServer();
+                     $portal_item->save();
+                     $portal_item = $portal_list->getNext();
+                  }
+               }
+            }
             $form_view->setItemIsSaved();
             $is_saved = true;
          }
