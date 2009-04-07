@@ -238,7 +238,9 @@ class cs_copy_index_view extends cs_index_view {
             if ( empty($sort_room) ) {
                $community_manager = $this->_environment->getCommunityManager();
                $sort_community = $community_manager->getItem($sort_criteria);
-               $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_community->getTitle().'"'."\n";
+               if ( !empty($sort_community) ) {
+                  $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_community->getTitle().'"'."\n";
+               }
             } elseif( $sort_room->isPrivateRoom() ){
                $user = $this->_environment->getCurrentUserItem();
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'.LF;
