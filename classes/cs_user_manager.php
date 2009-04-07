@@ -155,6 +155,8 @@ class cs_user_manager extends cs_manager {
 
    private $_limit_no_membership = NULL;
 
+   private $_limit_email = NULL;
+
    /** constructor
     * the only available constructor, initial values for internal variables<br />
     * NOTE: the constructor must never be called directly, instead the cs_environment must
@@ -199,6 +201,11 @@ class cs_user_manager extends cs_manager {
       $this->_limit_portal_id = NULL;
       $this->_limit_no_membership = NULL;
       $this->_only_from_portal = false;
+      $this->_limit_email = NULL;
+   }
+
+   public function setEMailLimit ($value) {
+      $this->_limit_email = $value;
    }
 
    public function setOnlyUserFromPortal () {
@@ -483,6 +490,10 @@ class cs_user_manager extends cs_manager {
       }
 
      $query .= ' WHERE 1';
+
+     if ( isset($this->_limit_email) ) {
+        $query .= ' AND user.email = "'.encode(AS_DB,$this->_limit_email).'"';
+     }
 
      // fifth, insert limits into the select statement
      if (isset($this->_user_limit)) {
