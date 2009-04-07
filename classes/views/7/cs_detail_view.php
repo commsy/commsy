@@ -692,9 +692,11 @@ class cs_detail_view extends cs_view {
 
 
             if($this->_environment->getCurrentModule() == CS_USER_TYPE or $this->_environment->getCurrentModule() == 'account'){
-                $link_title = $item->getFullName();
+               $link_title = $item->getFullName();
+            } elseif ( isset($item) ) {
+               $link_title = $item->getTitle();
             } else {
-                $link_title = $item->getTitle();
+               $link_title = '';
             }
             if ($this->_environment->getCurrentModule() == 'account'){
                $type = 'account';
@@ -704,10 +706,11 @@ class cs_detail_view extends cs_view {
             }else{
                 $style='padding:0px 5px 0px 5px;';
             }
-            if ($item->getItemID()== $this->_item->getItemID()){
+            if ( isset($item) and $item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
-            }else{
+               $html .='</li>';
+            } elseif ( isset($item) ) {
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
                $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
@@ -722,6 +725,7 @@ class cs_detail_view extends cs_view {
                                  '',
                                  '',
                                  'class="detail_list"');
+               $html .='</li>';
             }
             $html .='</li>';
             unset($item);
