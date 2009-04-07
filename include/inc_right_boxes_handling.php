@@ -21,6 +21,7 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+
 if ( empty($iid) ) {
    if ( !empty($_GET['iid']) ) {
       $iid = $_GET['iid'];
@@ -33,10 +34,33 @@ if ( empty($iid) ) {
 
 if ( isset($_POST['right_box_option']) ) {
    $right_box_command = $_POST['right_box_option'];
-}elseif ( isset($_GET['right_box_option']) ) {
+} elseif ( isset($_GET['right_box_option']) ) {
    $right_box_command = $_GET['right_box_option'];
 } else {
    $right_box_command = '';
+}
+
+if ( isset($_POST['right_box_option2']) ) {
+   $right_box_command2 = $_POST['right_box_option2'];
+} elseif ( isset($_GET['right_box_option2']) ) {
+   $right_box_command2 = $_GET['right_box_option2'];
+} else {
+   $right_box_command2 = '';
+}
+
+$browse_dir = '';
+if ( strstr($right_box_command2, '_START') ) {
+   $browse_dir = '_start';
+   $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_LEFT') ) {
+   $browse_dir = '_left';
+   $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_RIGHT') ) {
+   $browse_dir = '_right';
+   $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_END') ) {
+   $browse_dir = '_end';
+   $right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
 }
 
 if ( isOption($command, getMessage('COMMON_BUZZWORD_NEW_ATTACH')) ) {
@@ -181,16 +205,26 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
    } else {
       $mode = '';
    }
-   if ( isset($_GET['from']) ) {
+   if ( isset($_POST['from'.$browse_dir]) ) {
+      $from = $_POST['from'.$browse_dir];
+   } elseif ( isset($_GET['from']) ) {
       $from = $_GET['from'];
-   }elseif ( isset($_POST['from']) ) {
+   } elseif ( isset($_POST['from']) ) {
       $from = $_POST['from'];
-   }  else {
+   } else {
+      $from = 1;
+   }
+   if ( isset($_POST['selrubric'])
+        and isset($_POST['selrubric_old'])
+        and $_POST['selrubric'] != $_POST['selrubric_old']
+      ) {
       $from = 1;
    }
    if ( isset($_GET['interval']) ) {
       $interval = $_GET['interval'];
-   }  else {
+   } elseif ( isset($_POST['interval']) ) {
+      $interval = $_POST['interval'];
+   } else {
       $interval = CS_LIST_INTERVAL;
    }
 
@@ -220,7 +254,6 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
 
    if ( isset($_POST['selrubric']) ) {
       $selrubric = $_POST['selrubric'];
-      $from = 1;
    } elseif ( isset($_GET['selrubric']) ) {
       $selrubric = $_GET['selrubric'];
    }  else {
@@ -253,7 +286,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
    if ( isOption($right_box_command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
         isOption($right_box_command, getMessage('COMMON_GROUP_ATTACH')) or
         isOption($right_box_command, getMessage('COMMON_INSTITUTION_ATTACH'))
-   ) {
+      ) {
       $session->setValue('linked_items_post_vars', $_POST);
       $item_list = new cs_list();
       $item_ids = array();

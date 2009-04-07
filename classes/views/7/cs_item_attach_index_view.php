@@ -613,6 +613,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       }
 
       $html .= '   </select>'.BRLF;
+      $html .= '   <input type="hidden" name="selrubric_old" value="'.$selrubric.'"/>'.LF;
 
       # checkbox for only linked items
       $html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
@@ -846,14 +847,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
       }
       // create HTML for browsing icons
       $html = '<div style="float:right;">';
+      $html .= '<input id="right_box_option2" type="hidden" style="font-size:8pt;" name="right_box_option2" value=""/>';
       if ( $browse_start > 0 ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
          if ($edit_page){
-            $html .= '<input type="hidden" name="from" value="'.$browse_start.'"/>';
+            $html .= '<input type="hidden" name="from_start" value="'.$browse_start.'"/>';
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_START'.'\');"">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
@@ -877,10 +879,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
          if ($edit_page){
-            $html .= '<input type="hidden" name="from" value="'.$browse_left.'"/>';
+            $html .= '<input type="hidden" name="from_left" value="'.$browse_left.'"/>';
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_LEFT'.'\');"">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
@@ -904,8 +906,8 @@ class cs_item_attach_index_view extends cs_item_index_view {
          if ($edit_page){
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<input type="hidden" name="from" value="'.$browse_right.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+            $html .= '<input type="hidden" name="from_right" value="'.$browse_right.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_RIGHT'.'\');"">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
@@ -929,10 +931,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
          if ($edit_page){
-            $html .= '<input type="hidden" name="from" value="'.$browse_end.'"/>';
+            $html .= '<input type="hidden" name="from_end" value="'.$browse_end.'"/>';
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH').'\');"">'.$image.'</a>'.LF;
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_END'.'\');"">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
@@ -1179,7 +1181,8 @@ class cs_item_attach_index_view extends cs_item_index_view {
                $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'"';
             }else{
                $title_string .= $additional_text.'"'.$this->_translator->getMessage('COMMON_RESTRICTION_SEARCH').'"';
-            }$desc_string .= $additional_text.'""';
+            }
+            $desc_string .= $additional_text.'""';
             $size_string .= $additional_text.'"10"';
             $parameter_array = $this->_environment->getCurrentParameterArray();
             if (
