@@ -102,6 +102,13 @@ else {
             } elseif ($_POST['show'] == -1) {
                $room_item->setDontShowServerNews();
             }
+            if ( $room_item->isPortal() ) {
+               if ($_POST['show_server'] == 1) {
+                  $room_item->setShowNewsFromServer();
+               } elseif ($_POST['show_server'] == -1) {
+                  $room_item->setDontShowNewsFromServer();
+               }
+            }
             $room_item->save();
             if ( $room_item->isServer() ) {
                $portal_list = $room_item->getPortalList();

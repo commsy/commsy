@@ -78,9 +78,14 @@ class cs_configuration_news_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('iid','');
       $this->_form->addRadioGroup('show',getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
-      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',200,'66',true);
+      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',200,'62',true);
       $this->_form->addTextArea('text','',getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),getMessage('COMMON_CONTENT_DESC',$link));
-      $this->_form->addTextfield('link','',getMessage('SERVER_CONFIGURATION_NEWS_LINK'),getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'66',false);
+      $this->_form->addTextfield('link','',getMessage('SERVER_CONFIGURATION_NEWS_LINK'),getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'62',false);
+
+      if ( $this->_environment->inPortal() ) {
+         $this->_form->addEmptyline();
+         $this->_form->addRadioGroup('show_server',getMessage('PORTAL_CONFIGURATION_NEWS_SHOW_SERVER'),'',$this->_show_array,'',false,true);
+      }
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
@@ -105,6 +110,13 @@ class cs_configuration_news_form extends cs_rubric_form {
             $this->_values['show'] = 1;
          } else {
             $this->_values['show'] = -1;
+         }
+         if ( $this->_item->isPortal() ) {
+            if ($this->_item->showNewsFromServer()) {
+               $this->_values['show_server'] = 1;
+            } else {
+               $this->_values['show_server'] = -1;
+            }
          }
       }
    }

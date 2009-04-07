@@ -3,6 +3,8 @@ $message["PORTAL_ADMINISTRATION_DESC"]["en"] = "of this portal";
 $message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"]["en"] = "from the most active %_COMMUNITY_SUB_NOMPL_LOW";
 $message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["PORTAL_CONFIGURATION_ACTION"]["en"] = "Configure Portal";
+$message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"]["en"] = "Show<br/>
+server news?";
 $message["PORTAL_COUNT_ROOMS"]["en"] = "%1 workspaces, %2 members";
 $message["PORTAL_DELETED_ROOMS"]["en"] = "Deleted workspaces";
 $message["PORTAL_EDIT_ROOM"]["en"] = "Edit workspace";
