@@ -281,68 +281,69 @@ foreach($sel_array as $rubric => $value){
 }
 
 // Get data from database
+global $c_plugin_array;
 foreach ($rubric_array as $rubric) {
-   $rubric_ids = array();
-   $rubric_list = new cs_list();
-   $rubric_manager = $environment->getManager($rubric);
-   /*Vorbereitung der Manager und Abzählen aller Einträge */
-   if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
-      $rubric_manager->setContextLimit($environment->getCurrentContextID());
-   }
-   if ($rubric == CS_DATE_TYPE) {
-      $rubric_manager->setWithoutDateModeLimit();
-   }
-   if ($rubric==CS_USER_TYPE) {
-      $rubric_manager->setUserLimit();
-      $current_user= $environment->getCurrentUser();
-      if ( $current_user->isUser() ) {
-          $rubric_manager->setVisibleToAllAndCommsy();
+   if ( !isset($c_plugin_array)
+        or !in_array(strtolower($rubric),$c_plugin_array['rubric'])
+      ) {
+      $rubric_ids = array();
+      $rubric_list = new cs_list();
+      $rubric_manager = $environment->getManager($rubric);
+      /*Vorbereitung der Manager und Abzählen aller Einträge */
+      if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
+         $rubric_manager->setContextLimit($environment->getCurrentContextID());
+      }
+      if ($rubric == CS_DATE_TYPE) {
+         $rubric_manager->setWithoutDateModeLimit();
+      }
+      if ($rubric==CS_USER_TYPE) {
+         $rubric_manager->setUserLimit();
+         $current_user= $environment->getCurrentUser();
+         if ( $current_user->isUser() ) {
+            $rubric_manager->setVisibleToAllAndCommsy();
+         } else {
+            $rubric_manager->setVisibleToAll();
+         }
+      }
+      $count_all = $count_all + $rubric_manager->getCountAll();
+
+      foreach($sel_array as $rubric => $value){
+         if (!empty($value)){
+            $rubric_manager->setRubricLimit($rubric,$value);
+         }
+      }
+
+      if ( $sel_activating_status != '1') {
+         $rubric_manager->showNoNotActivatedEntries();
+      }
+      $rubric_manager->setSearchLimit($search);
+      $rubric_manager->setAttributeLimit($selrestriction);
+      if ( !empty($selbuzzword) ) {
+         $rubric_manager->setBuzzwordLimit($selbuzzword);
+      }
+      if ( !empty($last_selected_tag) ){
+         $rubric_manager->setTagLimit($last_selected_tag);
+      }
+
+      if ( !empty($selfiles) ) {
+         $rubric_manager->setOnlyFilesLimit();
+      }
+
+      if ( $rubric != CS_MYROOM_TYPE ) {
+         $rubric_manager->selectDistinct();
+         $rubric_list = $rubric_manager->get();
       } else {
-          $rubric_manager->setVisibleToAll();
+         $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
       }
-   }
-   $count_all = $count_all + $rubric_manager->getCountAll();
 
-   foreach($sel_array as $rubric => $value){
-      if (!empty($value)){
-         $rubric_manager->setRubricLimit($rubric,$value);
+      $search_list->addList($rubric_list);
+      $temp_rubric_ids = $rubric_manager->getIDArray();
+      if (!empty($temp_rubric_ids)){
+         $rubric_ids = $temp_rubric_ids;
       }
+      $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
+      $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
    }
-
-
-
-
-   if ( $sel_activating_status != '1') {
-      $rubric_manager->showNoNotActivatedEntries();
-   }
-   $rubric_manager->setSearchLimit($search);
-   $rubric_manager->setAttributeLimit($selrestriction);
-   if ( !empty($selbuzzword) ) {
-      $rubric_manager->setBuzzwordLimit($selbuzzword);
-   }
-   if ( !empty($last_selected_tag) ){
-      $rubric_manager->setTagLimit($last_selected_tag);
-   }
-
-   if ( !empty($selfiles) ) {
-      $rubric_manager->setOnlyFilesLimit();
-   }
-
-   if ( $rubric != CS_MYROOM_TYPE ) {
-      $rubric_manager->selectDistinct();
-      $rubric_list = $rubric_manager->get();
-   } else {
-      $rubric_list = $rubric_manager->getRelatedContextListForUser($current_user->getUserID(),$current_user->getAuthSource(),$environment->getCurrentPortalID());;
-   }
-
-   $search_list->addList($rubric_list);
-   $temp_rubric_ids = $rubric_manager->getIDArray();
-   if (!empty($temp_rubric_ids)){
-      $rubric_ids = $temp_rubric_ids;
-   }
-   $session->setValue('cid'.$environment->getCurrentContextID().'_'.$rubric.'_index_ids', $rubric_ids);
-   $campus_search_ids = array_merge($campus_search_ids, $rubric_ids);
-
 }
 
 // Set data for view
