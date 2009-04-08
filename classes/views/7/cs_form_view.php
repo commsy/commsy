@@ -2025,8 +2025,12 @@ class cs_form_view extends cs_view {
                   $tempMessage = getMessage('COMMON_STEP_EDIT');
                   $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   break;
+               case 'ACCOUNT_EDIT':      //
+                  $tempMessage = getMessage('ACCOUNT_EDIT');
+                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(1819) ";
+                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(".__LINE__.") ";
                   break;
             }
             $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
