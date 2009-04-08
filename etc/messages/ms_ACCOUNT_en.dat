@@ -2,6 +2,7 @@
 $message["ACCOUNT_CHANGE"]["en"] = "Edit user ID";
 $message["ACCOUNT_CHANGE_BUTTON"]["en"] = "Change";
 $message["ACCOUNT_DELETE_BUTTON"]["en"] = "Delete account";
+$message["ACCOUNT_EDIT"]["en"] = "Edit account";
 $message["ACCOUNT_EDIT_ERROR_JUST_DELETED"]["en"] = "The account %2 of %1 has already been deleted.";
 $message["ACCOUNT_EMAIL_MATERIAL"]["en"] = "Send an e-mail when publishing new material.";
 $message["ACCOUNT_EMAIL_MEMBERSHIP"]["en"] = "E-mail when applying for membership";

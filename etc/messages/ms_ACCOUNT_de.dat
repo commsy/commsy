@@ -2,6 +2,7 @@
 $message["ACCOUNT_CHANGE"]["de"] = "Kennung ändern";
 $message["ACCOUNT_CHANGE_BUTTON"]["de"] = "Ändern";
 $message["ACCOUNT_DELETE_BUTTON"]["de"] = "Kennung löschen";
+$message["ACCOUNT_EDIT"]["de"] = "Kennung bearbeiten";
 $message["ACCOUNT_EDIT_ERROR_JUST_DELETED"]["de"] = "Die Kennung von %1 (%2) ist bereits endgültig gelöscht worden.";
 $message["ACCOUNT_EMAIL_MATERIAL"]["de"] = "E-Mail bei Veröffentlichung eines Materials";
 $message["ACCOUNT_EMAIL_MEMBERSHIP"]["de"] = "E-Mails bei Anmeldungen von BenutzerInnen";
