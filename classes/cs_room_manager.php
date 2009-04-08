@@ -216,7 +216,7 @@ class cs_room_manager extends cs_context_manager {
      $query .= ' WHERE 1';
 
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
-        $query .= ' AND user2.deletion_date IS NULL AND user2.is_contact="1"';
+        $query .= ' AND user2.deletion_date IS NULL AND (user2.is_contact="1" OR user2.status="3")';
      }
 
      if ( !empty($this->_id_array_limit) ) {
@@ -336,7 +336,6 @@ class cs_room_manager extends cs_context_manager {
         }
      }
      $this->_last_query = $query;
-     #pr($query);
 
      // perform query
      $result = $this->_db_connector->performQuery($query);

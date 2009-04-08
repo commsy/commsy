@@ -283,11 +283,7 @@ class cs_manager {
       for ($i = 0; $i < count($this->_search_array); $i++) {
          $search_limit_query .= '(';
          for($j = 0; $j < count($field_array); $j++) {
-            $search_limit_query .= '(';
-            $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,$this->_search_array[$i]).'%"';
-            $search_limit_query .= ' OR ';
             $search_limit_query .= 'UPPER('.$field_array[$j].') LIKE BINARY "%'.encode(AS_DB,mb_strtoupper(htmlentities($this->_search_array[$i], ENT_NOQUOTES, 'UTF-8'), 'UTF-8')).'%"';
-            $search_limit_query .= ')';
             if ($j+1 < count($field_array)) {
                $search_limit_query .= ' OR ';
             }
