@@ -36,7 +36,7 @@ $result = select($sql);
 unset($sql);
 $table_array = array();
 while ( $row = mysql_fetch_assoc($result) ) {
-   $table_array[] = $row['Tables_in_commsy'];
+   $table_array[] = $row['Tables_in_'.$db['normal']['database']];
 }
 mysql_free_result($result);
 if ( !in_array('room_privat',$table_array) ) {
@@ -75,10 +75,13 @@ if ( !in_array('room_privat',$table_array) ) {
    $sql = "DELETE  FROM `room` WHERE `type` = 'privateroom';";
    select($sql);
    unset($sql);
+
+   echo('done');
+} else {
+   echo('nothing to do');
 }
 
 $success = true;
-echo('done');
 
 // end of execution time
 echo(getProcessedTimeInHTML($time_start));
