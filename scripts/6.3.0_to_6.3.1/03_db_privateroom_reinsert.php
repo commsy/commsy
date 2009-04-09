@@ -218,7 +218,7 @@ if ( !empty($portal_id_array) ) {
                         }
                      }
                   } else {
-                     $sql = 'UPDATE user SET user_id="'.$user_id.'" WHERE item_id="'.$row4['item_id'].', deletion_date=NULL, deleter_id=NULL";';
+                     $sql = 'UPDATE user SET user_id="'.$user_id.'" WHERE item_id="'.$row4['item_id'].'", deletion_date=NULL, deleter_id=NULL;';
                      $result5 = select($sql);
                      unset($sql);
                   }
