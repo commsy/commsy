@@ -1318,6 +1318,14 @@ class cs_user_manager extends cs_manager {
         }
      }
 
+     # private room
+     $own_room = $old_item->getOwnRoom();
+     if ( isset($own_room) ) {
+        $room_item_ids[] = $own_room->getItemID();
+        unset($own_room);
+     }
+     # private room
+
      $update  = "UPDATE user SET ";
      $update .= " user_id = '".encode(AS_DB,$new)."',";
 
