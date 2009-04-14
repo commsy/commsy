@@ -680,7 +680,12 @@ class cs_index_view extends cs_view {
             $title  = '<span  '.$style_text.'>'.LF;
             $title .= $buzzword->getName().LF;
             $title .= '</span> ';
-            if (!$is_selected){
+            if ( $this->_environment->inPrivateRoom()
+                 and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
+                 and $this->_display_mode == 'flash'
+               ) {
+               $html .= '<a href="javascript:callStudyLogSortByTagId('.$buzzword->getItemID().')">'.$title.'</a>'.LF;
+            } elseif (!$is_selected){
                $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 $this->_environment->getCurrentModule(),
                                 $this->_environment->getCurrentFunction(),
@@ -918,8 +923,7 @@ class cs_index_view extends cs_view {
                        and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                        and $this->_display_mode == 'flash'
                      ) {
-                     $html .= '<a href="javascript:callStudyLogSortByTag(\''.$current_item->getTitle().'\')">'.$title.'</a>'.LF;
-                     #$html .= '<a href="javascript:callStudyLogSortByTag('.$current_item->getItemID().')">'.$title.'</a>'.LF;
+                     $html .= '<a href="javascript:callStudyLogSortByTagId('.$current_item->getItemID().')">'.$title.'</a>'.LF;
                   } else {
                      $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_environment->getCurrentModule(),

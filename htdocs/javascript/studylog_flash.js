@@ -26,3 +26,6 @@ function callStudyLogSortDefault() {
 function callStudyLogSortByTag(tag) {
    getFlashMovie("study_log").callStudyLogSortByTag(tag);
 }
+function callStudyLogSortByTagId(tagId) {
+   getFlashMovie("study_log").callStudyLogSortByTagId(tagId);
+}
