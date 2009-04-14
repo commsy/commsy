@@ -128,7 +128,7 @@ var $_room_type = 'context';
                                     getMessage('COMMON_NEW_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="float:right; vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
@@ -399,11 +399,12 @@ var $_room_type = 'context';
             $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
             $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
          if ($item->isOpen()) {
-                $params['account'] = 'member';
-               $params['iid'] = $this->_item->getItemID();
-               $actionCurl = curl( $this->_environment->getCurrentContextID(),
-                                   CS_PROJECT_TYPE,
-                                   'detail',
+               $params['account'] = 'member';
+#               $params['iid'] = $this->_item->getItemID();
+               $params['room_id'] = $this->_item->getItemID();
+               $actionCurl = curl( $this->_environment->getCurrentPortalID(),
+                                   'home',
+                                   'index',
                                    $params,
                                    '');
             if (!$this->isPrintableView()) {
