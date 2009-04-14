@@ -250,27 +250,39 @@ class cs_page_room_view extends cs_page_view {
          $h_module ='';
       }
       $first = true;
+      $with_icons = false;
       foreach ( $this->_links as $link ) {
+         $link_title = '';
          if ($current_context_item->isPrivateRoom()){
             switch ($link['module']) {
                case 'topic':
-                  $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                  if ( $with_icons ) {
+                     $link_title .= '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                  }
                   $link_title .= $link['title'];
-                   break;
+                  break;
                case 'material':
-                  $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                  if ( $with_icons ) {
+                     $link_title .= '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                  }
                   $link_title .= $link['title'];
                   break;
                case 'date':
-                  $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                  if ( $with_icons ) {
+                     $link_title .= '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                  }
                   $link_title .= $link['title'];
                   break;
                case 'myroom':
-                  $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                  if ( $with_icons ) {
+                     $link_title .= '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                  }
                   $link_title .= $this->_translator->getMessage('PRIVATEROOMS');
                   break;
                case 'todo':
-                  $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                  if ( $with_icons ) {
+                     $link_title .= '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                  }
                   $link_title .= $link['title'];
                   break;
                default:
@@ -278,7 +290,8 @@ class cs_page_room_view extends cs_page_view {
                   $text = '';
                   if ( $this->_environment->isPlugin($link['module']) ) {
                      $plugin_class = $this->_environment->getPluginClass($link['module']);
-                     if ( !empty($plugin_class)
+                     if ( $with_icons
+                          and !empty($plugin_class)
                           and method_exists($plugin_class,'getRubricNavIcon')
                         ) {
                         $text .= '<img src="'.$plugin_class->getRubricNavIcon().'" style="vertical-align:bottom;"/>';
@@ -297,40 +310,41 @@ class cs_page_room_view extends cs_page_view {
                   break;
             }
          } else {
-            $link_title = '';
-            switch ($link['module']) {
-               case 'user':
-                  $link_title = '<img src="images/commsyicons/16x16/user.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'discussion':
-                  $link_title = '<img src="images/commsyicons/16x16/discussion.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'material':
-                  $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'date':
-                  $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'announcement':
-                  $link_title = '<img src="images/commsyicons/16x16/announcement.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'group':
-                  $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'institution':
-                  $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'todo':
-                  $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'topic':
-                  $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
-                  break;
-               case 'project':
-                  $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
-                  break;
-               default:
-                  $link_title = '';
+            if ( $with_icons ) {
+               switch ($link['module']) {
+                  case 'user':
+                     $link_title = '<img src="images/commsyicons/16x16/user.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'discussion':
+                     $link_title = '<img src="images/commsyicons/16x16/discussion.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'material':
+                     $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'date':
+                     $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'announcement':
+                     $link_title = '<img src="images/commsyicons/16x16/announcement.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'group':
+                     $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'institution':
+                     $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'todo':
+                     $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'topic':
+                     $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                     break;
+                  case 'project':
+                     $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                     break;
+                  default:
+                     $link_title = '';
+               }
             }
             $link_title .= $link['title'];
          }
