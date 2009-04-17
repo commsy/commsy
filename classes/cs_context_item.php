@@ -4172,10 +4172,7 @@ class cs_context_item extends cs_item {
    function mayEdit ($user) {
       $value = false;
       if ( !empty($user) ) {
-         global $c_read_account_array;
-         if ( !isset($c_read_account_array)
-              or empty($c_read_account_array[mb_strtolower($user->getUserID(), 'UTF-8').'_'.$user->getAuthSource()])
-            ) {
+         if ( !$user->isOnlyReadUser() ) {
             if ( $user->isRoot()
                  or ( $user->isUser()
                       and ( $user->getItemID() == $this->getCreatorID()
@@ -4198,10 +4195,7 @@ class cs_context_item extends cs_item {
    function mayEditRegular ($user) {
       $value = false;
       if ( !empty($user) ) {
-         global $c_read_account_array;
-         if ( !isset($c_read_account_array)
-              or empty($c_read_account_array[mb_strtolower($user->getUserID(), 'UTF-8').'_'.$user->getAuthSource()])
-            ) {
+         if ( !$user->isOnlyReadUser() ) {
             if ( $user->isUser()
                  and ( $user->getItemID() == $this->getCreatorID()
                        or $this->isPublic()

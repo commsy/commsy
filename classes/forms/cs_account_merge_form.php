@@ -119,10 +119,10 @@ class cs_account_merge_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      global $c_annonymous_account_array, $c_read_account_array;
+      global $c_annonymous_account_array;
       $current_user = $this->_environment->getCurrentUserItem();
       if ( !empty($c_annonymous_account_array[mb_strtolower($current_user->getUserID(), 'UTF-8').'_'.$current_user->getAuthSource()])
-           and !empty($c_read_account_array[mb_strtolower($current_user->getUserID(), 'UTF-8').'_'.$current_user->getAuthSource()])
+           and $current_user->isOnlyReadUser()
          ) {
          $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_MERGE_ERROR_ANNONYMOUS',$current_user->getUserID());
       } elseif ( !empty($c_annonymous_account_array[mb_strtolower($this->_form_post['user_id'], 'UTF-8').'_'.$this->_form_post['auth_source']])

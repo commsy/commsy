@@ -308,10 +308,9 @@ var $_room_type = 'context';
             } else {
                $html .= '<img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/>'.BRLF;
             }
-            global $c_read_account_array;
             $current_user_item_read = $this->_environment->getCurrentUserItem();
             if ( $item->isOpen()
-                 and empty($c_read_account_array[mb_strtolower($current_user_item_read->getUserID(), 'UTF-8').'_'.$current_user_item_read->getAuthSource()])
+                 and !$current_user_item_read->isOnlyReadUser()
                ) {
                $actionCurl = curl( $item->getItemID(),
                                 'home',
@@ -350,10 +349,9 @@ var $_room_type = 'context';
          } else {
             $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
             $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
-            global $c_read_account_array;
             $current_user_item_read = $this->_environment->getCurrentUserItem();
             if ( $item->isOpen()
-                 and empty($c_read_account_array[mb_strtolower($current_user_item_read->getUserID(), 'UTF-8').'_'.$current_user_item_read->getAuthSource()])
+                 and !$current_user_item_read->isOnlyReadUser()
                ) {
                $params['account'] = 'member';
                $params['iid'] = $this->_item->getItemID();

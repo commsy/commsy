@@ -751,9 +751,8 @@ class cs_page_guide_view extends cs_page_view {
                              'index',
                              '');
             $html .= '<div style="padding-top:5px;">'.'> <a href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_ENTER_AS_GUEST').'</a></div>'.LF;
-            global $c_read_account_array;
             if ( $item->isOpen()
-                 and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                 and !$this->_current_user->isOnlyReadUser()
                ) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
@@ -808,9 +807,8 @@ class cs_page_guide_view extends cs_page_view {
          // noch nicht angemeldet als Mitglied im Raum
          } else {
             $html .= '<img src="images/door_closed_large.gif" alt="door closed" style="vertical-align: middle; "/>'.BRLF;
-            global $c_read_account_array;
             if ( $item->isOpen()
-                 and empty($c_read_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                 and !$this->_current_user->isOnlyReadUser()
                ) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();

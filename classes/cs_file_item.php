@@ -587,10 +587,7 @@ class cs_file_item extends cs_item {
 
    public function mayEdit ($user_item) {
       $access = false;
-      global $c_read_account_array;
-      if ( !isset($c_read_account_array)
-           or empty($c_read_account_array[mb_strtolower($user_item->getUserID(), 'UTF-8').'_'.$user_item->getAuthSource()])
-         ) {
+      if ( !$user_item->isOnlyReadUser() ) {
          if ( $user_item->isRoot() or
               ( $user_item->getContextID() == $this->getContextID()
                 and ( $user_item->isModerator()
