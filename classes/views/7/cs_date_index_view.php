@@ -96,25 +96,25 @@ class cs_date_index_view extends cs_room_index_view {
       $html .= $ical_url;
       $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
       $html .= '<a title="'.getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
-     unset($params);
-     if ( $this->_environment->inPrivateRoom() ) {
-       if ( $this->_with_modifying_actions ) {
-           $params['import'] = 'yes';
-           $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                            CS_DATE_TYPE,
-                            'ims_import',
-                            $params,
-                            $image,
-                            $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
-           unset($params);
-       } else {
-         $html .= '> <span class="disabled">'.$this->_translator->getMessage('COMMON_IMPORT_DATES').'</span>'.BRLF;
-       }
-     }
-     return $html;
+      unset($params);
+      if ( $this->_environment->inPrivateRoom() ) {
+         if ( $this->_with_modifying_actions ) {
+            $params['import'] = 'yes';
+            $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                CS_DATE_TYPE,
+                               'ims_import',
+                               $params,
+                               $image,
+                               $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
+            unset($params);
+         } else {
+           $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+           $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         }
+      }
+      return $html;
    }
-
 
    function _getViewActionsAsHTML () {
       $user = $this->_environment->getCurrentUserItem();

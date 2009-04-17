@@ -633,12 +633,9 @@ class cs_private_room_short_view extends cs_view{
             $item = $this->_list->getNext();
          }
          $retour .= '   </style>'."\n";
-         $retour .= '   <!-- END Styles -->'."\n";
+         $retour .= '   <!-- END Styles -->'.LF;
       }
       return $retour;
    }
-
-
-
 }
 ?>

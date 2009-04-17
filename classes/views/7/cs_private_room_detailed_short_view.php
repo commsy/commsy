@@ -139,37 +139,46 @@ class cs_private_room_detailed_short_view extends cs_view{
       $html .= '         </tr>'.LF;
       $html .= '         </table>'.LF;
       $context_user = $this->_environment->getCurrentUserItem();
-      $html .='<div class="listinfoborder">'.LF;
-      $html .='</div>'.LF;
-      $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-      $html .= '         <tr>'.LF;
-      $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
-      $html .= $this->_translator->getMessage('COMMON_PAGETITLE_CONFIGURATION').': ';
-      $html .= '         </td>'.LF;
-      $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-      if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
-         global $c_pmwiki_path_url;
-         $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
-         $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
-         $url_session_id = '';
-         if ( $current_context->withWikiUseCommSyLogin() ) {
-            $session_item = $this->_environment->getSessionItem();
-            $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+      if ( !$context_user->isOnlyReadUser()
+           or ( $current_context->showWikiLink()
+                and $current_context->existWiki()
+                and $current_context->issetWikiHomeLink()
+              )
+         ) {
+         $html .='<div class="listinfoborder">'.LF;
+         $html .='</div>'.LF;
+         $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+         $html .= '         <tr>'.LF;
+         $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
+         $html .= $this->_translator->getMessage('COMMON_PAGETITLE_CONFIGURATION').': ';
+         $html .= '         </td>'.LF;
+         $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+         if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
+            global $c_pmwiki_path_url;
+            $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
+            $url_session_id = '';
+            if ( $current_context->withWikiUseCommSyLogin() ) {
+               $session_item = $this->_environment->getSessionItem();
+               $url_session_id = '?commsy_session_id='.$session_item->getSessionID();
+               unset($session_item);
+            }
+            $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
             unset($session_item);
          }
-         $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
-         unset($session_item);
-      }
-      $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
-      $html .= ahref_curl($this->_environment->getCurrentContextID(),
+         if ( !$context_user->isOnlyReadUser() ) {
+            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',
                                        '',
                                        $image,
                                        getMessage('COMMON_CONFIGURATION')).LF;
-      $html .= '         </td>'.LF;
-      $html .= '         </tr>'.LF;
-      $html .= '         </table>'.LF;
+         }
+         $html .= '         </td>'.LF;
+         $html .= '         </tr>'.LF;
+         $html .= '         </table>'.LF;
+      }
 
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
@@ -726,9 +735,9 @@ class cs_private_room_detailed_short_view extends cs_view{
                      $title .= $rubric_item->getTitle();
                   }
                   if ($rubric_item->getType() == 'label'){
-                  	 $rubric_type = $rubric_item->getItemType();
+                      $rubric_type = $rubric_item->getItemType();
                   }else{
-                  	 $rubric_type = $rubric_item->getType();
+                      $rubric_type = $rubric_item->getType();
                   }
                   $temp_html .= ahref_curl( $item->getItemID(),
                         $rubric_type,

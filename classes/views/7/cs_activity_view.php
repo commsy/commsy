@@ -355,7 +355,9 @@ class cs_activity_view extends cs_view {
       $html .= '         </table>'.LF;
       }
       $context_user = $this->_environment->getCurrentUserItem();
-      if ($context_user->isModerator()){
+      if ( $context_user->isModerator()
+           and !$context_user->isOnlyReadUser()
+         ) {
          $html .='<div class="listinfoborder">'.LF;
          $html .='</div>'.LF;
          $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
