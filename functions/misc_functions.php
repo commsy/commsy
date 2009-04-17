@@ -549,12 +549,7 @@ function pr_xml ($value) {
 function isPlugin ( $mod ) {
    $retour = false;
    global $c_plugin_array;
-   if ( !empty($c_plugin_array['rubric'])
-        and !empty($mod)
-        and in_array($mod,$c_plugin_array['rubric'])
-      ) {
-      $retour = true;
-   }
+   $retour = in_array(mb_strtolower($mod, 'UTF-8'),$c_plugin_array);
    return $retour;
 }
 

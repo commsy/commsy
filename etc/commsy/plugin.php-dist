@@ -26,11 +26,7 @@
 // and activate the plugin here
 // name of the plugin directory = PLUGIN_NAME
 
-$c_plugin_array = array();
-$c_plugin_array['HTML'] = array();
-$c_plugin_array['HTML'][] = 'ads';
-
-// plugin for rubrics
-$c_plugin_array['rubric'] = array();
-$c_plugin_array['rubric'][] = 'mediabird';
+$c_plugin_array   = array();
+$c_plugin_array[] = 'ads';
+#$c_plugin_array[] = 'mediabird';
 ?>

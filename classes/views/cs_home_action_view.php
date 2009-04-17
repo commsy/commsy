@@ -103,8 +103,8 @@ var $_config_boxes = false;
                  break;
               default:
                  global $c_plugin_array;
-                 if ( !empty($c_plugin_array['rubric'])
-                      and in_array(strtolower($temp),$c_plugin_array['rubric'])
+                 if ( !empty($c_plugin_array)
+                      and in_array(strtolower($temp),$c_plugin_array)
                     ) {
                     // initiate class
                     // check if there is an methode "getActionforHomeasHTML"

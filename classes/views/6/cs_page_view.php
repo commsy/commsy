@@ -732,9 +732,9 @@ class cs_page_view extends cs_view {
       $retour .= LF.'<!-- BEGIN COMMSY FOOTER -->'.LF;
 
       global $c_plugin_array;
-      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
          $plugin_text = '';
-         foreach ($c_plugin_array['HTML'] as $plugin) {
+         foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getFooterAsHTML')) {
                $plugin_text .= $plugin_class->getFooterAsHTML();
@@ -2162,8 +2162,8 @@ class cs_page_view extends cs_view {
    function _getPluginInfosAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
-         foreach ($c_plugin_array['HTML'] as $plugin) {
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getLeftMenuAsHTML')) {
                $html = $plugin_class->getLeftMenuAsHTML();
@@ -2179,8 +2179,8 @@ class cs_page_view extends cs_view {
    function _getPluginInfosForBeforeContentAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
-         foreach ($c_plugin_array['HTML'] as $plugin) {
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getBeforeContentAsHTML')) {
                $html = $plugin_class->getBeforeContentAsHTML();
@@ -2196,8 +2196,8 @@ class cs_page_view extends cs_view {
    function _getPluginInfosForAfterContentAsHTML () {
       $retour = '';
       global $c_plugin_array;
-      if (isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML'])) {
-         foreach ($c_plugin_array['HTML'] as $plugin) {
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
             if (method_exists($plugin_class,'getAfterContentAsHTML')) {
                $html = $plugin_class->getAfterContentAsHTML();

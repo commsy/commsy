@@ -262,5 +262,9 @@ class class_ads {
       $retour .= '<!-- ADS: END   AFTER CONTENT -->'.LF.LF;
       return $retour;
    }
+
+   public function isRubricPlugin () {
+      return false;
+   }
 }
 ?>

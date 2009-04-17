@@ -303,7 +303,7 @@ class cs_rubric_form {
          default:
             global $c_plugin_array;
             $plugin = false;
-            foreach ($c_plugin_array['rubric'] as $rubric) {
+            foreach ($c_plugin_array as $rubric) {
                if ( $rubric == $type ) {
                   $plugin = true;
                   break;
@@ -316,7 +316,6 @@ class cs_rubric_form {
             }
       }
    }
-
 
    function _setLinkListForConnectedRubric ($type) {
       $item = $this->_item;

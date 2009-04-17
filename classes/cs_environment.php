@@ -1490,12 +1490,14 @@ class cs_environment {
 
    function getPluginClass ($plugin) {
       $retour = NULL;
-      if (empty($this->_plugin_class_array[$plugin])) {
-         $plugin_class_name = 'class_'.$plugin;
-         include_once('plugins/'.$plugin.'/'.$plugin_class_name.'.php');
-         $this->_plugin_class_array[$plugin] = new $plugin_class_name($this);
+      if ( !is_array($plugin) ) {
+         if ( empty($this->_plugin_class_array[$plugin]) ) {
+            $plugin_class_name = 'class_'.$plugin;
+            include_once('plugins/'.$plugin.'/'.$plugin_class_name.'.php');
+            $this->_plugin_class_array[$plugin] = new $plugin_class_name($this);
+         }
+         $retour = $this->_plugin_class_array[$plugin];
       }
-      $retour = $this->_plugin_class_array[$plugin];
       return $retour;
    }
 
@@ -1505,12 +1507,15 @@ class cs_environment {
          global $c_plugin_array;
          include_once('classes/cs_list.php');
          $this->_rubric_plugin_class_list = new cs_list();
-         if ( isset($c_plugin_array['rubric'])
-              and !empty($c_plugin_array['rubric'])
+         if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
             ) {
-            foreach ($c_plugin_array['rubric'] as $plugin ) {
+            foreach ($c_plugin_array as $plugin ) {
                $plugin_class = $this->getPluginClass($plugin);
-               if ( !empty($plugin_class) ) {
+               if ( !empty($plugin_class)
+                    and method_exists($plugin_class,'isRubricPlugin')
+                    and $plugin_class->isRubricPlugin()
+                  ) {
                   $this->_rubric_plugin_class_list->add($plugin_class);
                }
             }
@@ -1523,16 +1528,7 @@ class cs_environment {
    function isPlugin ( $value ) {
       $retour = false;
       global $c_plugin_array;
-      if ( !empty($c_plugin_array) ) {
-         foreach ( $c_plugin_array as $plugin_context ) {
-            foreach ( $plugin_context as $plugin ) {
-               if ( mb_strtolower($plugin, 'UTF-8') == mb_strtolower($value, 'UTF-8') ) {
-                  $retour = true;
-                  break;
-               }
-            }
-         }
-      }
+      $retour = in_array(mb_strtolower($value, 'UTF-8'),$c_plugin_array);
       return $retour;
    }
 
