@@ -244,7 +244,10 @@ class cs_discussion_detail_view extends cs_detail_view {
             }
             $meg_val = round($val/1048576);
             $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            $html .= '   <input type="file" name="upload" size="12" tabindex="5"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="6" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
+            if ( !$this->_with_modifying_actions ) {
+               $disabled = ' disabled="disabled"';
+            }
+            $html .= '   <input type="file" name="upload" size="12" tabindex="5"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="6" style="width:9.61538461538em; font-size:10pt;"'.$disabled.'/>'.LF;
             $html .= BRLF;
             #$px = '245';
             $px = '331';
@@ -271,7 +274,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                }
             }
             $em = $px/13;
-            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="7" type="submit" style="width: '.$em.'em;"/>'.LF;
+            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="7" type="submit" style="width: '.$em.'em;"'.$disabled.'/>'.LF;
             $html .= BRLF;
             $html .= '<span class="multiupload_discussion_detail">'.getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val).'</span>'.LF;
             $html .= '</td>'.LF;
@@ -282,7 +285,7 @@ class cs_discussion_detail_view extends cs_detail_view {
             $html .= '&nbsp;';
             $html .= '</td>'.LF;
             $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('DISCARTICLE_CHANGE_BUTTON').'" tabindex="8" type="submit"/>';
+            $html .= '<input name="option" value="'.getMessage('DISCARTICLE_CHANGE_BUTTON').'" tabindex="8" type="submit"'.$disabled.'/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;

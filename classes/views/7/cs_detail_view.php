@@ -3119,7 +3119,11 @@ class cs_detail_view extends cs_view {
             $html .= '<td>&nbsp;'.LF;
             $html .= '</td>'.LF;
             $html .= '<td colspan="2" style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"/>';
+            $disabled = '';
+            if ( !$this->_with_modifying_actions ) {
+               $disabled = ' disabled="disabled"';
+            }
+            $html .= '<input name="option" value="'.getMessage('ANNOTATION_ADD_NEW_BUTTON').'" tabindex="8" type="submit"'.$disabled.'/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;

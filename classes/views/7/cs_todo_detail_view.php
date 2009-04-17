@@ -215,7 +215,7 @@ class cs_todo_detail_view extends cs_detail_view {
             }
             $done_time .= '      </div>'.LF;
          }elseif($done_percentage <= 120){
-         	$done_percentage = (100 / $done_percentage) *100;
+            $done_percentage = (100 / $done_percentage) *100;
             $style = ' height: 16px; border: 1px solid #444; background-color: #f2f030; ';
             $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; padding-top:0px; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
@@ -223,7 +223,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $done_time .= '      </div>'.LF;
             $done_time .= '</div>'.LF;
          }else{
-         	$done_percentage = (100 / $done_percentage) *100;
+            $done_percentage = (100 / $done_percentage) *100;
             $style = ' height: 16px; border: 1px solid #444; background-color: #f23030; ';
             $done_time .= '         <div style="width: 300px; font-size: 10pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:16px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
@@ -317,7 +317,7 @@ class cs_todo_detail_view extends cs_detail_view {
     * @author CommSy Development Group
     */
    function _getDetailItemActionsAsHTML ($item) {
-	   $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $mod = $this->_with_modifying_actions;
       $html  = '';
@@ -703,7 +703,10 @@ class cs_todo_detail_view extends cs_detail_view {
             }
             $meg_val = round($val/1048576);
             $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            $html .= '   <input type="file" name="upload" size="12" tabindex="34"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="35" style="width:9.61538461538em; font-size:10pt;"/>'.LF;
+            if ( !$this->_with_modifying_actions ) {
+               $disabled = ' disabled="disabled"';
+            }
+            $html .= '   <input type="file" name="upload" size="12" tabindex="34"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="35" style="width:9.61538461538em; font-size:10pt;"'.$disabled.'/>'.LF;
             $html .= BRLF;
             #$px = '245';
             $px = '331';
@@ -730,7 +733,7 @@ class cs_todo_detail_view extends cs_detail_view {
                }
             }
             $em = $px/13;
-            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="36" type="submit" style="width: '.$em.'em;"/>'.LF;
+            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="36" type="submit" style="width: '.$em.'em;"'.$disabled.'/>'.LF;
             $html .= BRLF;
             $html .= '<span class="multiupload_discussion_detail">'.getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val).'</span>'.LF;
             $html .= '</td>'.LF;
@@ -741,7 +744,7 @@ class cs_todo_detail_view extends cs_detail_view {
             $html .= '&nbsp;';
             $html .= '</td>'.LF;
             $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="37" type="submit"/>';
+            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="37" type="submit"'.$disabled.'/>';
             $current_user = $this->_environment->getCurrentUser();
             if ( $current_user->isAutoSaveOn() ) {
                $html .= '<span class="formcounter">'.LF;
