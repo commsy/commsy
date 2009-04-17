@@ -410,7 +410,7 @@ var $_room_type = 'context';
                              $params,
                              '');
             unset($params);
-            if ($current_user->isUser()){
+            if (!$current_user->isReallyGuest()){
             if (!$this->isPrintableView()) {
                     $html .= '<li>'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
             }

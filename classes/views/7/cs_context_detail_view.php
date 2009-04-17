@@ -398,7 +398,10 @@ var $_room_type = 'context';
          } else {
             $html .= '<img alt="door" src="images/door_closed_large.gif" style="vertical-align: middle text-align:left;"/>'.BRLF;
             $html .= '<div style="xborder: 2px solid '.$color_array['tabs_background'].'; margin-top: 5px; padding:3px; text-align:center;">';
-         if ($item->isOpen()) {
+            $current_user_item_read = $this->_environment->getCurrentUserItem();
+            if ( $item->isOpen()
+                 and !$current_user_item_read->isOnlyReadUser()
+               ) {
                $params['account'] = 'member';
 #               $params['iid'] = $this->_item->getItemID();
                $params['room_id'] = $this->_item->getItemID();
@@ -454,14 +457,14 @@ var $_room_type = 'context';
                              $params,
                              '');
             unset($params);
-            if ($current_user->isUser()){
-            if (!$this->isPrintableView()) {
-                    $html .= '<li>'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
-            }
-            else {
-               $html .= '<li>'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</li>';
-            }
-            }else{
+            if ( !$current_user->isReallyGuest() ) {
+               if (!$this->isPrintableView()) {
+                  $html .= '<li>'.'<a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
+               }
+               else {
+                  $html .= '<li>'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</li>';
+               }
+            } else {
                $html .= '<li>'.'<span class="disabled">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</span></li>';
             }
          } else {

@@ -878,7 +878,7 @@ class cs_page_guide_view extends cs_page_view {
                              $params,
                              '');
          unset($params);
-         if ($current_user->isUser() and $this->_with_modifying_actions ) {
+         if ( $current_user->isUser() ) {
             $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<a href="'.$actionCurl.'">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</a></li>';
          }else{
             $html .= '<li style="font-weight:bold; font-size:8pt;">'.'<span class="disabled">'.$this->_translator->getMessage('EMAIL_CONTACT_MODERATOR').'</span></li>';
