@@ -53,8 +53,6 @@ if ($current_cid == $current_context_item->getItemID()) {
    $item = $room_manager->getItem($current_cid);
 }
 
-
-
 // Check access rights
 if ( isset($item) and !$item->mayEdit($current_user) ) {
    $params = array();

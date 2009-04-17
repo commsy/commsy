@@ -2008,82 +2008,81 @@ class cs_page_guide_view extends cs_page_view {
                                                     '',
                                                     $this->_translator->getMessage('COMMON_MAIL_TO_MODERATOR'));
             }
-             // service link
-           if ( $current_context->showServiceLink()
-               and $current_user->isUser()
-              ) {
-            $color = '#D5D5D5';
-            $server_item = $this->_environment->getServerItem();
-            $link = 'http://www.commsy.net/?n=Software.FAQ&amp;mod=edit';
-            $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
-            $email_to_service .= '<input type="hidden" name="server_name" value="'.$server_item->getTitle().'"/>'.LF;
-            if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
-               $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($_SERVER["SERVER_ADDR"]).'"/>'.LF;
+
+            // service link
+            if ( $current_context->showServiceLink()
+                 and $current_user->isUser()
+               ) {
+               $color = '#D5D5D5';
+               $server_item = $this->_environment->getServerItem();
+               $link = 'http://www.commsy.net/?n=Software.FAQ&amp;mod=edit';
+               $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
+               $email_to_service .= '<input type="hidden" name="server_name" value="'.$server_item->getTitle().'"/>'.LF;
+               if ( isset($_SERVER["SERVER_ADDR"]) and !empty($_SERVER["SERVER_ADDR"])) {
+                  $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($_SERVER["SERVER_ADDR"]).'"/>'.LF;
+               } else {
+                  $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($_SERVER["HTTP_HOST"]).'"/>'.LF;
+               }
+
+               // Hierarchy of service-email: Set email, test if portal tier has one, then server tier
+               $service_email = $current_context->getServiceEmail();
+
+               if ($service_email == '') {
+                  $portal_item = $this->_environment->getCurrentPortalItem();
+                  if (isset($portal_item) and !empty($portal_item)) {
+                     $service_email = $portal_item->getServiceEmail();
+                  }
+                  unset($portal_item);
+               }
+
+               if ($service_email == '') {
+                  $service_email = $server_item->getServiceEmail();
+               }
+               unset($server_item);
+
+               if ($service_email == '') {
+                  $service_email = 'NONE';
+               }
+
+               $email_to_service .= '<input type="hidden" name="context_id" value="'.$this->_text_as_html_short($current_context->getItemID()).'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="context_name" value="'.$this->_text_as_html_short($current_context->getTitle()).'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="context_type" value="'.$this->_text_as_html_short($current_context->getType()).'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="user_name" value="'.$this->_text_as_html_short($current_user->getFullname()).'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="user_email" value="'.$this->_text_as_html_short($current_user->getEmail()).'"/>'.LF;
+               $email_to_service .= '<input type="hidden" name="service_email" value="'.$this->_text_as_html_short($service_email).'"/>'.LF;
+               $email_to_service .= $this->_translator->getMessage('COMMON_MAIL_TO_SERVICE').' <input type="image" src="images/servicelink.jpg" alt="Link to CommSyService" style="vertical-align:text-bottom;" />'.LF;
+               $email_to_service .= '</form>'.LF;
+               $html .= '<table style="margin:0px; padding:0px; border-collapse: collapse; border:0px solid black;" summary="Layout">'.LF;
+               $html .= '  <tr>'.LF;
+               $html .= '     <td style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
+               if ($email_to_moderators != '' ) {
+                  $html .= $email_to_moderators;
+               }
+               if ( $current_context->withAGB() and !isset($this->_agb_view) and $this->_with_agb_link ) {
+                  if ($email_to_moderators != '' ) {
+                     $html .= '&nbsp;-&nbsp;';
+                  }
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
+               }
+               $html .= '     </td>'.LF;
+               $html .= '     <td style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
+               $html .= $email_to_service;
+               $html .= '     </td>'.LF;
+               $html .= '  </tr>'.LF;
+               $html .= '</table>'.LF;
             } else {
-               $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($_SERVER["HTTP_HOST"]).'"/>'.LF;
-            }
-
-            //Hierarchy of service-email: Set email, test if portal tier has one, then server tier
-            $service_email = $current_context->getServiceEmail();
-
-            if ($service_email == '') {
-               $portal_item = $this->_environment->getCurrentPortalItem();
-               if (isset($portal_item) and !empty($portal_item)) {
-                  $service_email = $portal_item->getServiceEmail();
-               }
-               unset($portal_item);
-            }
-
-            if ($service_email == '') {
-               $service_email = $server_item->getServiceEmail();
-            }
-            unset($server_item);
-
-            if ($service_email == '') {
-               $service_email = 'NONE';
-            }
-
-            $email_to_service .= '<input type="hidden" name="context_id" value="'.$this->_text_as_html_short($current_context->getItemID()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="context_name" value="'.$this->_text_as_html_short($current_context->getTitle()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="context_type" value="'.$this->_text_as_html_short($current_context->getType()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="user_name" value="'.$this->_text_as_html_short($current_user->getFullname()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="user_email" value="'.$this->_text_as_html_short($current_user->getEmail()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="service_email" value="'.$this->_text_as_html_short($service_email).'"/>'.LF;
-            $email_to_service .= $this->_translator->getMessage('COMMON_MAIL_TO_SERVICE').' <input type="image" src="images/servicelink.jpg" alt="Link to CommSyService" style="vertical-align:text-bottom;" />'.LF;
-            $email_to_service .= '</form>'.LF;
-            $html .= '<table style="margin:0px; padding:0px; border-collapse: collapse; border:0px solid black;" summary="Layout">'.LF;
-            $html .= '  <tr>'.LF;
-            $html .= '     <td style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
-            if ($email_to_moderators != '' ) {
-               $html .= $email_to_moderators;
-            }
-            if ( $current_context->withAGB() and !isset($this->_agb_view) and $this->_with_agb_link ) {
+               $html .= '<div style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
                if ($email_to_moderators != '' ) {
-                  $html .= '&nbsp;-&nbsp;';
+                  $html .= $email_to_moderators;
                }
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('COMMON_AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"').'&nbsp;-&nbsp;';
-            }
-            $html .= '     </td>'.LF;
-            $html .= '     <td style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
-            $html .= $email_to_service;
-            $html .= '     </td>'.LF;
-            $html .= '  </tr>'.LF;
-            $html .= '</table>'.LF;
-         } else {
-
-            $html .= '<div style="margin:0px; padding:0px; font-size:8pt; vertical-align:text-bottom;">'.LF;
-            if ($email_to_moderators != '' ) {
-               $html .= $email_to_moderators.'&nbsp;-&nbsp;';
-            }
-            if ( $current_context->withAGB() and !isset($this->_agb_view) and $this->_with_agb_link ) {
-               if ($email_to_moderators != '' ) {
-                  $html .= '&nbsp;-&nbsp;';
+               if ( $current_context->withAGB() and !isset($this->_agb_view) and $this->_with_agb_link ) {
+                  if ($email_to_moderators != '' ) {
+                     $html .= '&nbsp;-&nbsp;';
+                  }
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
                }
-               $html .= ahref_curl($this->_environment->getCurrentContextID(),'agb','index','',getMessage('AGB_CONFIRMATION_LINK_INPUT'),'','agb','','',' onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=yes, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
+               $html .= '</div>'.LF;
             }
-
-            $html .= '</div>'.LF;
-         }
             $html .= $this->_getPluginInfosForAfterContentAsHTML();
             $html .= '</div>'.LF;
             $html .= '<div style="padding-left:10px;">'.LF;
