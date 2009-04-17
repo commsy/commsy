@@ -101,7 +101,10 @@ class cs_view {
          $this->_with_modifying_actions = $params['with_modifying_actions'];
       }
       $current_context = $this->_environment->getCurrentContextItem();
-      if ($current_context->isClosed()){
+      $current_user = $this->_environment->getCurrentUserItem();
+      if ( $current_context->isClosed()
+           or $current_user->isOnlyReadUser()
+         ) {
          $this->_with_modifying_actions = false;
       }
       $this->_class_factory = $this->_environment->getClassFactory();

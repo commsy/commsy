@@ -72,15 +72,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
     * @param array params parameters in an array of this class
     */
    function cs_date_calendar_index_view ($params) {
-      $with_modifying_actions = true;
-      if ( isset($params['with_modifying_actions']) ) {
-         $with_modifying_actions = $params['with_modifying_actions'];
-      }
       $this->cs_room_index_view($params);
       $this->setTitle($this->_translator->getMessage('DATES_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_DATES'));
-      $this->_with_modifying_actions = $with_modifying_actions;
-      if ( $with_modifying_actions ) {
+      if ( $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = 'NEW';
          $parameter_array = $this->_environment->getCurrentParameterArray();

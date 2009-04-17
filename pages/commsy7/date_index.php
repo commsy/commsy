@@ -575,7 +575,7 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
       $wday = date("w",$d_time);
       $week_start_day = $real_day - $wday;
       if ($week_start_day < 1){
-      	$week_start_day = 1;
+         $week_start_day = 1;
       }
       $dates_manager->setMonthLimit2($real_month);
       $dates_manager->setDayLimit2($week_start_day);

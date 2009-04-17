@@ -1793,5 +1793,16 @@ class cs_user_item extends cs_item {
    function getDataAsXML(){
         return $this->_getDataAsXML();
    }
+
+   public function isOnlyReadUser () {
+      $retour = false;
+      global $c_read_account_array;
+      if ( isset($c_read_account_array)
+           and !empty($c_read_account_array[mb_strtolower($this->getUserID(), 'UTF-8').'_'.$this->getAuthSource()])
+         ) {
+         $retour = true;
+      }
+      return $retour;
+   }
 }
 ?>
