@@ -160,39 +160,39 @@ class cs_configuration_wiki_form extends cs_rubric_form {
 
 
       $this->_form->addEmptyline();
-      // already available features - added to form
-
+//      // already available features - added to form
+//
       global $c_pmwiki_path_file;
-
-      $features_media_available = array();
-
-      if (file_exists($c_pmwiki_path_file.'/cookbook/swf.php')) {
-        // SWF
-        $features_media_available[] = array('enable_swf',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
-      }
-      if (file_exists($c_pmwiki_path_file.'/cookbook/wmplayer.php')) {
-        // WMPlayer
-        $features_media_available[] = array('enable_wmplayer',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
-      }
-      if (file_exists($c_pmwiki_path_file.'/cookbook/quicktime.php')) {
-        // Quicktime
-        $features_media_available[] = array('enable_quicktime',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
-      }
-      if (file_exists($c_pmwiki_path_file.'/cookbook/swf-sites2.php')) {
-        // Google, Youtube, Vimeo
-        $features_media_available[] = array('enable_youtube_google_vimeo',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
-      }
-
-      for ($index = 0; $index < sizeof($features_media_available); $index++) {
-            $array_element = $features_media_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $this->_translator->getMessage($array_element[3]), $this->_translator->getMessage($array_element[4]), $this->_translator->getMessage($array_element[5]),false,false,'','',true,false);
-            if($index < sizeof($features_media_available)-1){
-                $this->_form->combine();
-            }
-       }
-       if(sizeof($features_media_available) > 0){
-            $this->_form->addEmptyline();
-       }
+//
+//      $features_media_available = array();
+//
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/swf.php')) {
+//        // SWF
+//        $features_media_available[] = array('enable_swf',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+//      }
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/wmplayer.php')) {
+//        // WMPlayer
+//        $features_media_available[] = array('enable_wmplayer',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_WMPLAYER_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+//      }
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/quicktime.php')) {
+//        // Quicktime
+//        $features_media_available[] = array('enable_quicktime',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_QUICKTIME_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+//      }
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/swf-sites2.php')) {
+//        // Google, Youtube, Vimeo
+//        $features_media_available[] = array('enable_youtube_google_vimeo',1,'','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA','COMMON_CONFIGURATION_WIKI_ENABLE_YOUTUBE_GOOGLE_VIMEO_VALUE','COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC');
+//      }
+//
+//      for ($index = 0; $index < sizeof($features_media_available); $index++) {
+//            $array_element = $features_media_available[$index];
+//            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $this->_translator->getMessage($array_element[3]), $this->_translator->getMessage($array_element[4]), $this->_translator->getMessage($array_element[5]),false,false,'','',true,false);
+//            if($index < sizeof($features_media_available)-1){
+//                $this->_form->combine();
+//            }
+//       }
+//       if(sizeof($features_media_available) > 0){
+//            $this->_form->addEmptyline();
+//       }
 
 //      $this->_form->addCheckbox('enable_swf',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_SWF_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC'),false,false,'','',true,false);
 //      $this->_form->combine();
@@ -243,18 +243,18 @@ class cs_configuration_wiki_form extends cs_rubric_form {
         // Gallery
         $features_available[] = array('enable_gallery',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
       }
-      if (file_exists($c_pmwiki_path_file.'/cookbook/postitnotes.php')) {
-        // Notice
-        $features_available[] = array('enable_notice',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
-      }
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/postitnotes.php')) {
+//        // Notice
+//        $features_available[] = array('enable_notice',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+//      }
       if ((file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdf/pmwiki2pdf.php')) && (file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdflink.php'))) {
         // PDF
         $features_available[] = array('enable_pdf',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
       }
-      if (file_exists($c_pmwiki_path_file.'/cookbook/rater.php')) {
-        // Rater
-        $features_available[] = array('enable_rater',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RATER_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
-      }
+//      if (file_exists($c_pmwiki_path_file.'/cookbook/rater.php')) {
+//        // Rater
+//        $features_available[] = array('enable_rater',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RATER_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+//      }
       if (file_exists($c_pmwiki_path_file.'/cookbook/listcategories.php')) {
         // List Categories
         $features_available[] = array('enable_listcategories',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');

@@ -242,12 +242,12 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$SHOW_CALENDAR = "1";'.LF.LF;
       }
 
-      if ( $item->WikiEnableNotice() == "1" ) {
+//      if ( $item->WikiEnableNotice() == "1" ) {
          $str .= '$GUIButtons["stickyNote"] = array(700, "(:note Comment: |", ":)\\n", "$[Text]",'.LF;
          $str .= '"$GUIButtonDirUrlFmt/sticky.gif\"$[Yellow Sticky Note]\"");'.LF;
          $str .= '@include_once("$FarmD/cookbook/postitnotes.php");'.LF;
          $str .= '$SHOW_NOTICE = "1";'.LF.LF;
-      }
+//      }
 
       if ( $item->WikiEnableGallery() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/gallery.php");'.LF;
@@ -260,27 +260,27 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$SHOW_PDF = "1";'.LF.LF;
       }
 
-      if ( $item->WikiEnableSwf() == "1" ) {
+//      if ( $item->WikiEnableSwf() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/swf.php");'.LF;
          $str .= '$ENABLE_SWF = "1";'.LF.LF;
-      }
+//      }
 
-      if ( $item->WikiEnableWmplayer() == "1" ) {
+//      if ( $item->WikiEnableWmplayer() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/wmplayer.php");'.LF;
          $str .= "\$UploadExts['wma'] = 'audio/wma';".LF;
          $str .= "\$UploadExts['wmv'] = 'video/wmv';".LF;
          $str .= '$ENABLE_WMPLAYER = "1";'.LF.LF;
-      }
+//      }
 
-      if ( $item->WikiEnableQuicktime() == "1" ) {
+//      if ( $item->WikiEnableQuicktime() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/quicktime.php");'.LF;
          $str .= '$ENABLE_QUICKTIME = "1";'.LF.LF;
-      }
+//      }
 
-      if ( $item->WikiEnableYoutubeGoogleVimeo() == "1" ) {
+//      if ( $item->WikiEnableYoutubeGoogleVimeo() == "1" ) {
          $str .= '@include_once("$FarmD/cookbook/swf-sites2.php");'.LF;
          $str .= '$ENABLE_YOUTUBEGOOGLEVIMEO = "1";'.LF.LF;
-      }
+//      }
 
       if ( $item->WikiEnableDiscussion() == "1" ) {
          if($item->getWikiDiscussionArray()){
@@ -482,7 +482,7 @@ class cs_wiki_manager extends cs_manager {
         $str .= '$FoxPagePermissions[\'*.*\'] = \'all\';'.LF.LF;
         //$str .= '$EnableCommentPostCaptchaRequired = true;'.LF.LF;
 
-      if ( $item->WikiEnableRater() == "1" ) {
+//      if ( $item->WikiEnableRater() == "1" ) {
          $str .= '# Rater'.LF;
          $str .= '$Rater[\'star_color\'] = "yellow";'.LF;
          $str .= '$Rater[\'reverse_buttons\'] = 0; '.LF;
@@ -505,7 +505,7 @@ class cs_wiki_manager extends cs_manager {
          $str .= '$Rater[\'not_rated\'] = "[Noch nicht bewertet]";'.LF;
          $str .= 'include_once($FarmD.\'/cookbook/rater.php\');'.LF;
          $str .= '$ENABLE_RATER = "1";'.LF.LF;
-      }
+//      }
 
       if ( $item->WikiEnableListCategories() == "1" ) {
          $str .= '# Categories'.LF;
