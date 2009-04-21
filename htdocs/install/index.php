@@ -218,7 +218,7 @@ if(isset($action))
 }
 ?>
 <form name="changelanguage" action="index.php" method="post" style="display:inline;">
-<input type="hidden" name="page" value="<?=$page?>" />
+<input type="hidden" name="page" value="<?php echo($page);?>" />
 <input type="image" name="lang" value="de" src="../images/flags/de.gif" alt="Sprache auf Deutsch umstellen" />
 <input type="image" name="lang" value="en" src="../images/flags/gb.gif" alt="change language to english" />
 </form>
@@ -786,18 +786,21 @@ $schreibe12 = \"".$sec_key."\";
 @include_once('etc/commsy/plugin.php');
 ?>";
    $mysqlfile = "../../etc/cs_config.php";
-   $datei = fopen($mysqlfile,"w");
-   fwrite($datei, $daten);
-   fclose($datei);
+   if (!file_put_contents($mysqlfile,$daten)) {
+      echo('ERROR: can not write config file');
+   }
 
      // DATENBANK INSTALLIEREN
-
-   require_once "../../etc/cs_config.php";
-
-   $mysqli = new mysqli($_SESSION['host'],$_SESSION['dbuser'],$_SESSION['dbpass'],$_SESSION['dbname']);
    $file_content = file_get_contents("../../docs/db_dump_mysql.sql");
+   include_once("../../etc/cs_config.php");
+   /* nicht mysqli verwenden: TBD
+   include_once('../../classes/db_mysql_connector.php');
+   $db_connector = new db_mysql_connector($db["normal"]);
+   $db_connector->performQuery($file_content);
+   unset($db_connector);
+   */
+   $mysqli = new mysqli($_SESSION['host'],$_SESSION['dbuser'],$_SESSION['dbpass'],$_SESSION['dbname']);
    $mysqli->multi_query($file_content);
-
    unset($mysqli);
 
    echo "<div id=\"text\">";
