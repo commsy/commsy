@@ -1928,7 +1928,7 @@ EOD;
          $html .= '    // embed the Flash Content SWF when all tests are passed'.LF;
          $html .= '    AC_FL_RunContent('.LF;
          $html .= '            "src", "flash/study_log",'.LF;
-         $html .= '            "FlashVars", "applicationType=commsy&commsyXml='.$data_url.'",'.LF;
+         $html .= '            "FlashVars", "thickbox=false&thickboxHeight=550&motionSpeed=18&thumbWidth=14&applicationType=commsy&commsyXml='.$data_url.'",'.LF;
          $html .= '            "width", "100%",'.LF;
          $html .= '            "height", "'.$height.'",'.LF;
          $html .= '            "align", "middle",'.LF;
