@@ -4947,8 +4947,10 @@ class cs_context_item extends cs_item {
               or $this->isPrivateRoom()
               or $this->isPortal()
             ) {
-            $context = $this->getContextItem();
-            $retour = $context->isDesign6();
+            if ( isset($context) ) {
+               $context = $this->getContextItem();
+               $retour = $context->isDesign6();
+            }
             unset($context);
          }
       } elseif ( $design != 6 ) {
@@ -4983,8 +4985,10 @@ class cs_context_item extends cs_item {
               or $this->isPortal()
             ) {
             $context = $this->getContextItem();
-            $retour = $context->isDesign7();
-            unset($context);
+            if ( isset($context) ) {
+               $retour = $context->isDesign7();
+               unset($context);
+            }
          }
       } elseif ( $design == 7 ) {
          $retour = true;
