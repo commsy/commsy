@@ -957,7 +957,7 @@ function exportMaterialToWiki($current_item_id){
    if (!$directory_handle_uploads) {
       mkdir($dir_wiki_uploads);
    }
-   $dir_wiki_file = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy';
+   $dir_wiki_file = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main';
    $directory_handle_file = @opendir($dir_wiki_file);
    if (!$directory_handle_file) {
       mkdir($dir_wiki_file);
@@ -989,9 +989,9 @@ function exportMaterialToWiki($current_item_id){
    $description = $wiki_view->formatForWiki($description);
    $description = $this->encodeUmlaute($description);
    $description = $this->encodeUrl($description);
-   $html_wiki_file = 'CommSy.Material' . $current_item_id . '.html';
+   $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.html';
    $old_dir = getcwd();
-   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main');
    file_put_contents($html_wiki_file, $description);
    $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding utf-8 ' . $html_wiki_file);
    $returnwiki = '';
@@ -1007,7 +1007,7 @@ function exportMaterialToWiki($current_item_id){
       $temp_description = '<br />' . "\n" . $temp_description;
       file_put_contents($html_wiki_file, $temp_description);
       $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
-      $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
+      $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
    }
    chdir($old_dir);
 
@@ -1021,9 +1021,9 @@ function exportMaterialToWiki($current_item_id){
       foreach ($file_array as $file) {
          $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
          $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
-         copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
+         copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename);
          $new_link = $this->encodeUrlToHtml($file->getFileName());
-         $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
+         $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
       }
       $file_links = implode('\\\\%0a', $file_link_array);
       $informations .= '(:cellnr:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
@@ -1054,11 +1054,11 @@ function exportMaterialToWiki($current_item_id){
          $description = $wiki_view->formatForWiki($description);
          $description = $this->encodeUmlaute($description);
          $description = $this->encodeUrl($description);
-         $html_wiki_file = 'CommSy.Material' . $current_item_id . '.section.' . $section->getItemID() . '.html';
+         $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.section.' . $section->getItemID() . '.html';
          $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
          $html_wiki_file = $this->encodeUrl($html_wiki_file);
          $old_dir = getcwd();
-         chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy');
+         chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main');
          file_put_contents($html_wiki_file, $description);
          $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding utf-8 ' . $html_wiki_file);
          $htmlwiki = exec($command, $returnwiki, $returnstatus);
@@ -1071,7 +1071,7 @@ function exportMaterialToWiki($current_item_id){
             $temp_description = '<br />' . "\n" . $temp_description;
             file_put_contents($html_wiki_file, $temp_description);
             $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
-            $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $html_wiki_file .':)';
+            $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
          }
          chdir($old_dir);
          $description_section_link = str_replace(' ', '', $section->getTitle());
@@ -1085,9 +1085,9 @@ function exportMaterialToWiki($current_item_id){
             foreach ($file_array as $file) {
                $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
                $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
-               copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename);
+               copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename);
                $new_link = $this->encodeUrlToHtml($file->getFileName());
-               $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $new_filename . '|' . $new_link . ']]';
+               $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
             }
             $file_links = implode('\\\\%0a', $file_link_array);
             $files .= '(:table border=0 style="margin-left:0px;":)%0a';
@@ -1110,20 +1110,20 @@ function exportMaterialToWiki($current_item_id){
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
    // Kurzfassung fuer Wiki vorbereiten
-   copy($c_commsy_path_file.'/etc/pmwiki/Main.Material','wiki.d/CommSy.Material' . $current_item_id);
-   $file_contents = file_get_contents('wiki.d/CommSy.Material' . $current_item_id);
+   copy($c_commsy_path_file.'/etc/pmwiki/Main.Material','wiki.d/Main.CommSyMaterial' . $current_item_id);
+   $file_contents = file_get_contents('wiki.d/Main.CommSyMaterial' . $current_item_id);
    $file_contents_array = explode("\n", $file_contents);
    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
        if(stripos($file_contents_array[$index], 'name=') !== false){
-           $file_contents_array[$index] = 'name=CommSy.Material' . $current_item_id;
+           $file_contents_array[$index] = 'name=Main.CommSyMaterial' . $current_item_id;
        }
        if(stripos($file_contents_array[$index], 'text=') !== false){
           $file_contents_array[$index] = 'text=' . $informations . $section_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
        }
    }
    $file_contents = implode("\n", $file_contents_array);
-   $file_contents =  $file_contents . "\n" . 'title=' . $material_item->getTitle();
-   file_put_contents('wiki.d/CommSy.Material' . $current_item_id, $file_contents);
+   $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $material_item->getTitle() . '"';
+   file_put_contents('wiki.d/Main.CommSyMaterial' . $current_item_id, $file_contents);
 
    chdir($old_dir);
 
@@ -1215,13 +1215,13 @@ function encodeUrlToHtml($html){
 
 function existsMaterialToWiki($current_item_id){
    global $c_pmwiki_path_file;
-   $wiki_file = 'CommSy.Material' . $current_item_id;
+   $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
    return file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file);
 }
 
 function getExportToWikiLink($current_item_id){
    global $c_pmwiki_path_url;
-   $wiki_file = 'CommSy.Material' . $current_item_id;
+   $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
    return '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=' . $wiki_file . '">' . $wiki_file . '</a>';
 }
 
