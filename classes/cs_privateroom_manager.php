@@ -295,6 +295,69 @@ class cs_privateroom_manager extends cs_context_manager {
       }
    }
 
+  /** update a room - internal, do not use -> use method save
+    * this method updates a room
+    *
+    * @param object cs_context_item a commsy room
+    */
+   public function _update ($item) {
+      if ( $this->_update_with_changing_modification_information ) {
+         parent::_update($item);
+      }
+      $query  = 'UPDATE '.$this->_db_table.' SET ';
+      if ( $this->_update_with_changing_modification_information ) {
+         $query .= 'modification_date="'.getCurrentDateTimeInMySQL().'",';
+         $modifier_id = $this->_current_user->getItemID();
+         if ( !empty($modifier_id) ) {
+            $query .= 'modifier_id="'.encode(AS_DB,$modifier_id).'",';
+         }
+      }
+
+      if ($item->isOpenForGuests()) {
+         $open_for_guests = 1;
+      } else {
+         $open_for_guests = 0;
+      }
+      if ( $item->isContinuous() ) {
+         $continuous = 1;
+      } else {
+         $continuous = -1;
+      }
+      if ( $item->isTemplate() ) {
+         $template = 1;
+      } else {
+         $template = -1;
+      }
+
+      if ( $item->getActivityPoints() ) {
+         $activity = $item->getActivityPoints();
+      } else {
+         $activity = '0';
+      }
+
+      if ( $item->getPublic() ) {
+         $public = '1';
+      } else {
+         $public = '0';
+      }
+
+      $query .= 'title="'.encode(AS_DB,$item->getTitle()).'",'.
+                "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
+                "status='".encode(AS_DB,$item->getStatus())."',".
+                "activity='".encode(AS_DB,$activity)."',".
+                "public='".encode(AS_DB,$public)."',".
+                "continuous='".$continuous."',".
+                "template='".$template."',".
+                "is_open_for_guests='".$open_for_guests."'".
+                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
+
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) or !$result ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"',E_USER_WARNING);
+      }
+   }
+
    public function getItemIDOfRelatedOwnRoomForUser ($user_id, $auth_source, $context_id) {
       $retour = '';
 

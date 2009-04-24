@@ -192,17 +192,19 @@ var $_with_template_form_element3 = false;
            $user_array['0']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ALL_USERS');
            $user_array['0']['value'] = '0';
            $current_context = $this->_environment->getCurrentContextItem();
-           if ($current_context->isProjectRoom()){
-              $community_list = $current_context->getCommunityList();
-              if ( $community_list->isNotEmpty() ) {
-                 $user_array['1']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS');
-                 $user_array['1']['value'] = '3';
+           if ( !$current_context->isPrivateRoom() ) {
+              if ($current_context->isProjectRoom()){
+                 $community_list = $current_context->getCommunityList();
+                 if ( $community_list->isNotEmpty() ) {
+                    $user_array['1']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_COMMUNITY_ROOM_USERS');
+                    $user_array['1']['value'] = '3';
+                 }
               }
+              $user_array['2']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS');
+              $user_array['2']['value'] = '1';
+              $user_array['3']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS');
+              $user_array['4']['value'] = '2';
            }
-           $user_array['2']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS');
-           $user_array['2']['value'] = '1';
-           $user_array['3']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS');
-           $user_array['4']['value'] = '2';
            $this->_form->addSelect('template_availability',
                                $user_array,
                                '',

@@ -262,8 +262,6 @@ class cs_room_item extends cs_context_item {
     * this method returns a list of topics which are linked to the project
     *
     * @return object cs_list a list of topics (cs_label_item)
-    *
-    * @author CommSy Development Group
     */
    function getTopicList() {
       $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);

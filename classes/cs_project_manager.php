@@ -628,7 +628,6 @@ class cs_project_manager extends cs_context_manager {
       }
 
       $query .= 'title="'.encode(AS_DB,$item->getTitle()).'",'.
-#                "short_title='".encode(AS_DB,$item->getShortTitle())."',".
                 "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
                 "status='".encode(AS_DB,$item->getStatus())."',".
                 "activity='".encode(AS_DB,$activity)."',".
@@ -640,7 +639,8 @@ class cs_project_manager extends cs_context_manager {
 
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) or !$result ) {
-         include_once('functions/error_functions.php');trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems updating '.$this->_db_table.' item from query: "'.$query.'"',E_USER_WARNING);
       }
    }
 

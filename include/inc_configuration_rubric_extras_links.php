@@ -78,7 +78,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $configuration_rubric_extras_link_list->add($link_item);
    }
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom() and !$environment->inPortal() and !$context_item->isGrouproom()) {
+   if ( !$environment->inServer()
+        #and !$environment->inPrivateRoom()
+        and !$environment->inPortal()
+        and !$context_item->isGrouproom()
+      ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
       $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));

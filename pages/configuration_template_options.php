@@ -63,20 +63,23 @@ else {
    if ( !empty($command)
         and ( isOption($command, getMessage('COMMON_SAVE_BUTTON'))
               or isOption($command, getMessage('PREFERENCES_SAVE_BUTTON'))
-             )
+            )
       ) {
 
       if ( $form->check() ) {
          // template
          if ( isset($_POST['template'])
-            and !empty($_POST['template'])
-         ) {
+              and !empty($_POST['template'])
+            ) {
             if ( $_POST['template'] == 1 ) {
                $room_item->setTemplate();
             } else {
                $room_item->setNotTemplate();
             }
-         } elseif ($room_item->isProjectRoom()  or $room_item->isCommunityRoom() ) {
+         } elseif ( $room_item->isProjectRoom()
+                    or $room_item->isCommunityRoom()
+                    or $room_item->isPrivateRoom()
+                  ) {
             $room_item->setNotTemplate();
          }
          if ( isset($_POST['template_availability'])){
@@ -89,12 +92,13 @@ else {
          if ( isset($_POST['description'])){
             $room_item->setTemplateDescription($_POST['description']);
          }
+
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
-
       }
+
       if ( !isset($_GET['option']) ) {
          $params = array();
          $params['option'] = $_POST['option'];
