@@ -332,12 +332,14 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
 
          // template
+         $template_copy = false;
          if ( $environment->inPrivateRoom()
               and $context_item->isPrivateRoom()
               and !empty($_POST['template_select'])
               and $_POST['template_select'] != $context_item->getTemplateID()
             ) {
             $context_item->setTemplateID($_POST['template_select']);
+            $template_copy = true;
          }
 
          // save room_item
@@ -347,9 +349,16 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
 
          $context_item->generateLayoutImages();
+         if ($template_copy) {
+            if ( $context_item->isPrivateRoom()
+                 and $_POST['template_select'] > 99
+                 // standard room settings ???
+               ) {
+               include_once('include/inc_room_copy_private.php');
+            }
+         }
 
          $environment->setCurrentContextItem($context_item);
-
          $class_params= array();
          $class_params['environment'] = $environment;
          $form = $class_factory->getClass(CONFIGURATION_ROOM_OPTIONS_FORM,$class_params);
@@ -371,7 +380,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
       $page->add($form_view);
    }
 }
-
 function generate_colour_gradient($height, $rgb){
     $image = imagecreate(1, $height);
 

@@ -280,7 +280,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $this->_array_info_text[] = $temp_array;
 
       // template in private rooms
-      if ( $this->_environment->inPrivateRoom() ) {
+      if ( $this->_environment->inPrivateRoom()
+           and !$current_context_item->isTemplate()
+         ) {
          $room_manager = $this->_environment->getPrivateRoomManager();
          $room_manager->setContextLimit($current_portal->getItemID());
          $room_manager->setTemplateLimit();
@@ -804,8 +806,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['color_6'] = $color['hyperlink'];
          $this->_values['color_4'] = $color['content_background'];
          $this->_values['title'] = $context_item->getTitle();
-         if ($context_item->isPrivateRoom() and $context_item->getTitle() == 'PRIVATEROOM' ){
-            $this->_values['title'] = $this->_translator->getMessage('COMMON_PRIVATEROOM');
+         if ( $context_item->isPrivateRoom() ) {
+            if ( $context_item->getTitle() == 'PRIVATEROOM' ) {
+               $this->_values['title'] = $this->_translator->getMessage('COMMON_PRIVATEROOM');
+            } elseif ( $context_item->isTemplate() ) {
+               $this->_values['title'] = $context_item->getTitlePure();
+            }
          }
          if ($context_item->isAssignmentOnlyOpenForRoomMembers()) {
             $this->_values['room_assignment'] = 'closed';
@@ -877,7 +883,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
 
    function getInfoForHeaderAsHTML () {
       $retour  = '';
-      if ( $this->_environment->inPrivateRoom() ) {
+      if ( $this->_environment->inPrivateRoom()
+           and $this->_with_template_form_element
+         ) {
          #$retour .= '      <!--'.LF;
          $retour .= '   var template_array = new Array();'.LF;
          $retour .= '   initToggleTemplate('.$this->_environment->getCurrentContextItem()->getItemID().');'.LF;

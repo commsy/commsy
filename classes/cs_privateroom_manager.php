@@ -356,7 +356,13 @@ class cs_privateroom_manager extends cs_context_manager {
          $public = '0';
       }
 
-      $query .= 'title="'.encode(AS_DB,$item->getTitle()).'",'.
+      if ( $item->isTemplate() ) {
+         $title = $item->getTitlePure();
+      } else {
+         $title = $item->getTitle();
+      }
+
+      $query .= 'title="'.encode(AS_DB,$title).'",'.
                 "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."',".
                 "status='".encode(AS_DB,$item->getStatus())."',".
                 "activity='".encode(AS_DB,$activity)."',".

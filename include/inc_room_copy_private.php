@@ -23,40 +23,18 @@
 //    along with CommSy.
 
 ################################################################
-# copy a room (project rooms only)
-# like a template (copy data but no users)
-# into a new room
+# copy a room (private rooms only)
+# like a template (config and data but no user and rooms)
+# into a new private room or existing room
 ################################################################
 
 // initialisation
 $old_room_id = $_POST['template_select'];
-$room_manager = $environment->getRoomManager();
+$room_manager = $environment->getPrivateRoomManager();
 $old_room = $room_manager->getItem($old_room_id);
-$new_room = $item;
-$user_manager = $environment->getUserManager();
-$creator_item = $user_manager->getItem($new_room->getCreatorID());
-if ($creator_item->getContextID() == $new_room->getItemID()) {
-   $creator_id = $creator_item->getItemID();
-} else {
-   $user_manager->resetLimits();
-   $user_manager->setContextLimit($new_room->getItemID());
-   $user_manager->setUserIDLimit($creator_item->getUserID());
-   $user_manager->setAuthSourceLimit($creator_item->getAuthSource());
-   $user_manager->setModeratorLimit();
-   $user_manager->select();
-   $user_list = $user_manager->get();
-   if ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
-      $creator_item = $user_list->getFirst();
-      $creator_id = $creator_item->getItemID();
-   } else {
-      include_once('functions/error_functions.php');
-      trigger_error('can not get creator of new room',E_USER_ERROR);
-   }
-}
-$creator_item->setAccountWantMail('yes');
-$creator_item->setOpenRoomWantMail('yes');
-$creator_item->setPublishMaterialWantMail('yes');
-$creator_item->save();
+$new_room = $context_item;
+$current_user_item = $environment->getCurrentUserItem();
+$creator_id = $current_user_item->getItemID();
 
 // copy room settings
 include_once('include/inc_room_copy_config.php');

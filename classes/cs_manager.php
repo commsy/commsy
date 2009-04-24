@@ -982,6 +982,14 @@ class cs_manager {
                   $insert_query .= $before.$key.'="'.$id_array[$value].'"';
                }
 
+               // special for STEP
+               elseif ( $key == 'todo_item_id'
+                        and DBTable2Type($this->_db_table) == CS_STEP_TYPE
+                        and isset($id_array[$value])
+                      ) {
+                  $insert_query .= $before.$key.'="'.$id_array[$value].'"';
+               }
+
                // special for LINKS / TAG2TAG
                elseif ( ( $key == 'from_item_id'
                           or $key == 'to_item_id'

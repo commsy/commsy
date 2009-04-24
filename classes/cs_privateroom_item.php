@@ -1197,5 +1197,9 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
+
+   public function getTitlePure () {
+      return parent::getTitle();
+   }
 }
 ?>
