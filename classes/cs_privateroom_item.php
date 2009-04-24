@@ -155,6 +155,27 @@ class cs_privateroom_item extends cs_room_item {
       $this->_addExtra('HOMESTATUS',$value);
    }
 
+   /** get template ID for private room
+    * this method returns the TemplateID of the private room
+    *
+    * @return string the home status
+    */
+   function getTemplateID () {
+      $retour = -1;
+      if ($this->_issetExtra('TEMPLATE_ID')) {
+         $retour = $this->_getExtra('TEMPLATE_ID');
+      }
+      return $retour;
+   }
+
+   /** set template ID for private room
+    * this method sets the template ID of the private room
+    *
+    * @param string value the home status
+    */
+   function setTemplateID ($value) {
+      $this->_addExtra('TEMPLATE_ID',$value);
+   }
 
   /** set projects of a project item by item id and version id
    * this method sets a list of project item_ids and version_ids which are linked to the project

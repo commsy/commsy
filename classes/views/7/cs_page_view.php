@@ -494,10 +494,15 @@ class cs_page_view extends cs_view {
       if (!$this->_environment->inServer() and (!$this->_environment->inPortal() or $this->_environment->getCurrentModule() == 'account')){
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
       }
-      if($this->_environment->inPortal() or
-             ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE and
-               $this->_environment->getCurrentFunction() == 'edit' )
-         ){
+      if ( $this->_environment->inPortal()
+           or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
+                and $this->_environment->getCurrentFunction() == 'edit'
+              )
+           or ( $this->_environment->getCurrentModule() == 'configuration'
+                and $this->_environment->getCurrentFunction() == 'room_options'
+                and $this->_environment->inPrivateRoom()
+              )
+         ) {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTemplateInformation.js"></script>'.LF;
       }
 

@@ -40,6 +40,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
   var $_shown_community_room_array = array();
   var $_session_community_room_array = array();
   var $_with_bg_image = false;
+  private $_with_template_form_element = false;
 
   /** constructor
     * the only available constructor
@@ -278,15 +279,70 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
       $this->_array_info_text[] = $temp_array;
 
+      // template in private rooms
+      if ( $this->_environment->inPrivateRoom() ) {
+         $room_manager = $this->_environment->getPrivateRoomManager();
+         $room_manager->setContextLimit($current_portal->getItemID());
+         $room_manager->setTemplateLimit();
+         $room_manager->select();
+         $room_list = $room_manager->get();
+         #$default_id = $this->_environment->getCurrentPortalItem()->getDefaultPrivateRoomTemplateID();
+         $default_id = -1;
+         if ($room_list->isNotEmpty() or $default_id != '-1' ) {
+            $temp_array = array();
+            $temp_array['text'] = '*'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE_PRIVATEROOM');
+            $temp_array['value'] = -1;
+            $this->_template_array[] = $temp_array;
+            $temp_array = array();
+            $temp_array['text'] = '------------------------';
+            $temp_array['value'] = 'disabled';
+            $this->_template_array[] = $temp_array;
+            $current_user = $this->_environment->getCurrentUser();
+            if ( $default_id != '-1' ) {
+               $default_item = $room_manager->getItem($default_id);
+               if ( isset($default_item) ) {
+                  $template_availability = $default_item->getTemplateAvailability();
+                  if( ($template_availability == '0') and $default_item->isClosed() ){
+                     $temp_array['text'] = '*'.$default_item->getTitle();
+                     $temp_array['value'] = $default_item->getItemID();
+                     $this->_template_array[] = $temp_array;
+                     $temp_array = array();
+                     $temp_array['text'] = '------------------------';
+                     $temp_array['value'] = 'disabled';
+                     $this->_with_template_form_element = true;
+                     $this->_template_array[] = $temp_array;
+                     $this->_javascript_array[$default_item->getItemID()] = $default_item->getTemplateDescription();
+                  }
+               }
+            }
+            $item = $room_list->getFirst();
+            while ($item) {
+               $temp_array = array();
+               $template_availability = $item->getTemplateAvailability();
+
+               if ( $template_availability == '0' ) {
+                  if ( $item->getItemID() != $default_id ) {
+                     $temp_array['text'] = $item->getTitle();
+                     $temp_array['value'] = $item->getItemID();
+                     $this->_with_template_form_element = true;
+                     $this->_template_array[] = $temp_array;
+                     $this->_javascript_array[$item->getItemID()] = $item->getTemplateDescription();
+                  }
+               }
+               $item = $room_list->getNext();
+            }
+         }
+         unset($room_manager);
+      }
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
-    *
-    * @author CommSy Development Group
     */
    function _createForm () {
       $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
+
+      // specials in private room
       if ( $this->_environment->inPrivateRoom() ) {
          $this->_form->combine();
          $this->_form->addCheckbox('title_reset',
@@ -296,7 +352,33 @@ class cs_configuration_room_options_form extends cs_rubric_form {
                                    $this->_translator->getMessage('COMMON_ROOM_NAME_RESET',$this->_translator->getMessage('COMMON_PRIVATEROOM')),
                                    ''
                                   );
+         // select a template
+         if ( $this->_with_template_form_element ) {
+            $this->_form->addSelect('template_select',
+                                    $this->_template_array,
+                                    '',
+                                    $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'),
+                                    '',
+                                    0,
+                                    false,
+                                    false,
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '27',
+                                    false,
+                                    false,
+                                    '10',
+                                    'onChange="cs_toggle_template()"'
+                                   );
+           $this->_form->combine('vertical');
+           $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM'),'',false,'','','left','','id="template_extention"');
+
+         }
       }
+
       /********Sprache*******/
       $languageArray = array();
       $zaehler = 0;
@@ -730,6 +812,12 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          } else {
             $this->_values['room_assignment'] = 'open';
          }
+
+         // templates in private rooms
+         if ( $context_item->isPrivateRoom() ) {
+            $this->_values['template_select'] = $context_item->getTemplateID();
+         }
+
       }
       if ($context_item->getLogoFilename()){
          $this->_values['logo'] = $context_item->getLogoFilename();
@@ -772,7 +860,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_values['description_'.$language] = '';
          }
       }
-
    }
 
    function _checkValues () {
@@ -788,5 +875,36 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
    }
 
+   function getInfoForHeaderAsHTML () {
+      $retour  = '';
+      if ( $this->_environment->inPrivateRoom() ) {
+         #$retour .= '      <!--'.LF;
+         $retour .= '   var template_array = new Array();'.LF;
+         $retour .= '   initToggleTemplate('.$this->_environment->getCurrentContextItem()->getItemID().');'.LF;
+         $retour .= '   template_array['.'-1'.'] = "'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM').'"'.LF;
+         foreach($this->_javascript_array as $key => $value){
+            if ( empty($value) ) {
+               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.getMessage('COMMON_NO_DESCRIPTION').'<\/div>"'.LF;
+            } else {
+               if ( $key > 0 ) {
+                  $room_manager = $this->_environment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($key);
+                  if ( !empty($room_item) ) {
+                     if ( $room_item->withHTMLTextArea() ) {
+                        $value = str_replace(LF,'',$value);
+                     } else {
+                        $value = str_replace(LF,BR,$value);
+                     }
+                  }
+               }
+               $value = str_replace('/','\/',$value);
+               $value = str_replace('"','\"',$value);
+               $retour .= '   template_array['.$key.'] = "<img id=\"toggle'.$this->_environment->getCurrentContextItem()->getItemID().'\" src=\"images\/more.gif\"\/>&nbsp;<span class=\"template_description\">'.getMessage('COMMON_TEMPLATE_DESCRIPTION').'<\/span><div id=\"template_information_box\">'.$value.'<\/div>"'.LF;
+            }
+         }
+         #$retour .= '      -->'.LF;
+      }
+      return $retour;
+   }
 }
 ?>

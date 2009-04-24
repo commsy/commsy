@@ -316,7 +316,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $environment->unsetSelectedLanguage();
             }
          }
-        $redirect = false;
+         $redirect = false;
          if ( !empty($_POST['design']) ) {
             if ( $_POST['design'] == 7 ) {
                if ( $context_item->isDesign6() ) {
@@ -330,6 +330,17 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $context_item->setDesignTo6();
             }
          }
+
+         // template
+         if ( $environment->inPrivateRoom()
+              and $context_item->isPrivateRoom()
+              and !empty($_POST['template_select'])
+              and $_POST['template_select'] != $context_item->getTemplateID()
+            ) {
+            $context_item->setTemplateID($_POST['template_select']);
+         }
+
+         // save room_item
          $context_item->save();
          if ( $redirect ) {
             redirect($environment->getCurrentContextID(),'configuration','index');
@@ -338,8 +349,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
          $context_item->generateLayoutImages();
 
          $environment->setCurrentContextItem($context_item);
-          // save room_item
-   #      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
+
          $class_params= array();
          $class_params['environment'] = $environment;
          $form = $class_factory->getClass(CONFIGURATION_ROOM_OPTIONS_FORM,$class_params);

@@ -60,6 +60,8 @@ class cs_privateroom_manager extends cs_context_manager {
 
   private $_room_home_cache = NULL;
 
+  private $_template_limit = NULL;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -82,6 +84,7 @@ class cs_privateroom_manager extends cs_context_manager {
      $this->_time_limit = NULL;
      $this->_user_id_limit = NULL;
      $this->_room_type = CS_PRIVATEROOM_TYPE;
+     $this->_template_limit = NULL;
   }
 
   /** set interval limit
@@ -131,6 +134,18 @@ class cs_privateroom_manager extends cs_context_manager {
 
   function setAuthSourceLimit ($limit) {
      $this->_auth_source_limit = (int)$limit;
+  }
+
+  function setTemplateLimit () {
+    $this->_template_limit = 1;
+  }
+
+  function setNotTemplateLimit () {
+    $this->_template_limit = -1;
+  }
+
+  function unsetTemplateLimit () {
+    $this->_template_limit = NULL;
   }
 
   /** select privatrooms limited by limits

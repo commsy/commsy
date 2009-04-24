@@ -370,7 +370,8 @@ class cs_project_manager extends cs_context_manager {
      // perform query
      $result = $this->_db_connector->performQuery($query);
      if (!isset($result)) {
-        include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
      } else {
         return $result;
      }
@@ -384,7 +385,8 @@ class cs_project_manager extends cs_context_manager {
          $query .= " ORDER BY ".encode(AS_DB,$sortBy);
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of '.$this->_room_type.' items from query: "'.$query.'"',E_USER_WARNING);
          } else {
             $list = new cs_list();
             // filter items with highest version_id, doing this in MySQL would be too expensive
