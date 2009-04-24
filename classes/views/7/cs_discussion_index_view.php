@@ -106,7 +106,7 @@ class cs_discussion_index_view extends cs_room_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -122,7 +122,7 @@ class cs_discussion_index_view extends cs_room_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('DISCUSSION_ARTICLES'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('DISCUSSION_ARTICLES'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -138,7 +138,7 @@ class cs_discussion_index_view extends cs_room_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_EDIT_AT'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_EDIT_AT'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
@@ -216,20 +216,24 @@ class cs_discussion_index_view extends cs_room_index_view {
          if ( $sort_criteria != $this->_last_sort_criteria ) {
             $this->_last_sort_criteria = $sort_criteria;
             $this->_count_headlines ++;
-            $room_manager = $this->_environment->getProjectManager();
+            $room_manager = $this->_environment->getRoomManager();
             $sort_room = $room_manager->getItem($sort_criteria);
-            $html .= '                     <tr class="list"><td '.$style.' width="100%" style="font-weight:bold;" colspan="5">'."\n";
             if ( empty($sort_room) ) {
-               $community_manager = $this->_environment->getCommunityManager();
-               $sort_community = $community_manager->getItem($sort_criteria);
-               $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_community->getTitle().'"'."\n";
-            } elseif( $sort_room->isPrivateRoom() ){
-               $user = $this->_environment->getCurrentUserItem();
-               $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'."\n";
-            }elseif( $sort_room->isGroupRoom() ){
-              $html .= '                        '.$this->_translator->getMessage('COPY_FROM_GROUPROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
-            }else {
-               $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PROJECTROOM').'&nbsp;"'.$sort_room->getTitle().'"'."\n";
+               $room_manager = $this->_environment->getPrivateRoomManager();
+               $sort_room = $room_manager->getItem($sort_criteria);
+            }
+            $html .= '                     <tr class="list"><td '.$style.' width="100%" style="font-weight:bold;" colspan="5">'.LF;
+            if ( !empty($sort_room) ) {
+               if ( $sort_room->isCommunityRoom() ) {
+                  $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
+               } elseif( $sort_room->isPrivateRoom() ){
+                  $user = $this->_environment->getCurrentUserItem();
+                  $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'."\n";
+               }elseif( $sort_room->isGroupRoom() ){
+                 $html .= '                        '.$this->_translator->getMessage('COPY_FROM_GROUPROOM').'&nbsp;"'.$sort_room->getTitle().'"'.LF;
+               }else {
+                  $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PROJECTROOM').'&nbsp;"'.$sort_room->getTitle().'"'."\n";
+               }
             }
             $html .= '                     </td></tr>'."\n";
             if ( $style=='class="odd"' ){
@@ -336,9 +340,9 @@ class cs_discussion_index_view extends cs_room_index_view {
       if ($item->isClosed()) {
          $title .= ' <span class="closed">('.$this->_translator->getMessage('DISCUSSION_IS_CLOSED').')</span>';
       }
-	  if ($this->_environment->inProjectRoom()) {
+     if ($this->_environment->inProjectRoom()) {
          $title .= $this->_getItemChangeStatus($item);
-	  }
+     }
       return $title;
    }
 
@@ -400,17 +404,17 @@ class cs_discussion_index_view extends cs_room_index_view {
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-	           if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-	               ) {
+              if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                  ) {
                       $this->_with_slimbox = true;
-	                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-	               }else{
-	                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
-	               }
-	           }
+                      $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  }else{
+                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                  }
+              }
          } else {
             $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
          }

@@ -46,16 +46,18 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_rubrics_array[2] = CS_DATE_TYPE;
       $this->_default_rubrics_array[3] = CS_TOPIC_TYPE;
       $this->_default_rubrics_array[4] = CS_USER_TYPE;
-      $this->_default_rubrics_array[5] = CS_TODO_TYPE;
-      $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
+      $this->_default_rubrics_array[5] = CS_DISCUSSION_TYPE;
+      $this->_default_rubrics_array[6] = CS_TODO_TYPE;
       $this->_default_home_conf_array[CS_MYROOM_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'tiny';
-      $this->_default_home_conf_array[CS_USER_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
+      $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
 
       // rubric plugins
-      $i = 5;
+      $i = count($this->_default_rubrics_array)-1;
       $plugin_list = $this->_environment->getRubrikPluginClassList();
       if ( $plugin_list->isNotEmpty() ) {
          $plugin = $plugin_list->getFirst();
@@ -896,11 +898,17 @@ class cs_privateroom_item extends cs_room_item {
             case 'TAG_EDIT':            // getestet: pers. Raum, "Themen" / Bearbeiten
                $tempMessage = getMessage('USAGE_INFO_TEXT_ROOM_TAG_EDIT_FORM',$link);
                break;
+            case 'DISCUSSION_DETAIL':      //
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_DETAIL_FORM');
+               break;
+            case 'DISCARTICLE_EDIT':      //
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCARTICLE_EDIT_FORM');
+               break;
             case 'LANGUAGE_UNUSED':      //
                $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . " cs_privateroom_item(825) ");
+               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . " cs_privateroom_item(".__LINE__.") ");
                break;
          }
          $retour = $tempMessage;

@@ -45,73 +45,87 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
 
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example groups
-    *
-    * @author CommSy Development Group
     */
    function _initForm () {
-       $this->_headline = getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
+       $this->_headline = $this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
        $this->setHeadline($this->_headline);
-       $current_user = $this->_environment->getCurrentUser();
-       $fullname = $current_user->getFullname();
    }
-
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
-    *
-    * @author CommSy Development Group
     */
    function _createForm () {
+     $output = false;
+     $current_context = $this->_environment->getCurrentContextItem();
 
-     //Terminoptionen
-     $radio_values = array();
-     $desc = getMessage('CONFIGURATION_DATES_DESC');
-     $radio_values[0]['text'] = '<img src="images/dates_presentation_normal.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[0]['value'] = 'normal';
-     $radio_values[1]['text'] = '<img src="images/dates_presentation_calendar.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[1]['value'] = 'calendar';
-     $this->_form->addRadioGroup('dates_status',getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
-     $this->_form->combine();
-     $this->_form->addExplanation('dates',getMessage('CONFIGURATION_DATES_DESC'));
+     if ( $current_context->withRubric(CS_DATE_TYPE) ) {
+        // Terminoptionen
+        $radio_values = array();
+        $desc = getMessage('CONFIGURATION_DATES_DESC');
+        $radio_values[0]['text'] = '<img src="images/dates_presentation_normal.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[0]['value'] = 'normal';
+        $radio_values[1]['text'] = '<img src="images/dates_presentation_calendar.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[1]['value'] = 'calendar';
+        $this->_form->addRadioGroup('dates_status',$this->_translator->getMessage('DATES_INDEX'),$desc,$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
+        $this->_form->combine();
+        $this->_form->addExplanation('dates',$this->_translator->getMessage('CONFIGURATION_DATES_DESC'));
+        $output = true;
+     }
 
-     if ( !$this->_environment->inPrivateRoom() ) {
-        $this->_form->addEmptyline();
-        // Diskussionsoptionen
+     if ( $current_context->withRubric(CS_DISCUSSION_TYPE) ) {
+        if ( $output ) {
+           $this->_form->addEmptyline();
+        } else {
+           $output = true;
+        }
+        // discussion otions
         $radio_values = array();
         $radio_values[0]['text'] = '<img src="images/configuration_discussion_not_threaded.gif" alt="picture_simple" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
         $radio_values[0]['value'] = '1';
         $radio_values[1]['text'] = '<img src="images/configuration_discussion_threaded.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
         $radio_values[1]['value'] = '2';
-        $radio_values[2]['text'] = '<span style="vertical-align: top;">'.getMessage('CONFIGURATION_DISCUSSION_DESC_3').'</span>';
+        $radio_values[2]['text'] = '<span style="vertical-align: top;">'.$this->_translator->getMessage('CONFIGURATION_DISCUSSION_DESC_3').'</span>';
         $radio_values[2]['value'] = '3';
-        $this->_form->addRadioGroup('discussion_status',getMessage('DISCUSSION_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
+        $this->_form->addRadioGroup('discussion_status',$this->_translator->getMessage('DISCUSSION_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
         $this->_form->combine();
-        $this->_form->addExplanation('discussions',getMessage('CONFIGURATION_DISCUSSION_WARNING'));
+        $this->_form->addExplanation('discussions',$this->_translator->getMessage('CONFIGURATION_DISCUSSION_WARNING'));
      }
 
 
-     $this->_form->addEmptyline();
-     //Todooption
-     $radio_values = array();
-     $radio_values[0]['text'] = '<img src="images/configuration_todo_no_management.gif" alt="picture_todo_no_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[0]['value'] = '1';
-     $radio_values[1]['text'] = '<img src="images/configuration_todo_management.gif" alt="picture_todo_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-     $radio_values[1]['value'] = '2';
-     $this->_form->addRadioGroup('todo_management',getMessage('TODO_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
-     $this->_form->combine();
-     $this->_form->addExplanation('todos',getMessage('CONFIGURATION_TDOD_MANAGEMENT_DESC'));
+     if ( $current_context->withRubric(CS_TODO_TYPE) ) {
+        if ( $output ) {
+           $this->_form->addEmptyline();
+        } else {
+           $output = true;
+        }
+        //Todooption
+        $radio_values = array();
+        $radio_values[0]['text'] = '<img src="images/configuration_todo_no_management.gif" alt="picture_todo_no_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[0]['value'] = '1';
+        $radio_values[1]['text'] = '<img src="images/configuration_todo_management.gif" alt="picture_todo_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
+        $radio_values[1]['value'] = '2';
+        $this->_form->addRadioGroup('todo_management',$this->_translator->getMessage('TODO_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
+        $this->_form->combine();
+        $this->_form->addExplanation('todos',$this->_translator->getMessage('CONFIGURATION_TDOD_MANAGEMENT_DESC'));
+     }
 
-     if ($this->_environment->inProjectRoom()){
-        $this->_form->addEmptyline();
+     if ( $current_context->withRubric(CS_GROUP_TYPE)
+          and $current_context->showGrouproomConfig()
+        ) {
+        if ( $output ) {
+           $this->_form->addEmptyline();
+        } else {
+           $output = true;
+        }
         //Gruppenoptionen
         $picture = '<img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
-        $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUP_INDEX'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
+        $this->_form->addCheckbox('grouproom',1,'',$this->_translator->getMessage('GROUP_INDEX'),$this->_translator->getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
         $this->_form->combine();
-        $this->_form->addExplanation('groups',getMessage('GROUPROOM_EXPLANATION_VALUE'));
+        $this->_form->addExplanation('groups',$this->_translator->getMessage('GROUPROOM_EXPLANATION_VALUE'));
      }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

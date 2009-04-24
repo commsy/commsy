@@ -65,14 +65,12 @@ class cs_configuration_rubric_form extends cs_rubric_form {
      '<img src="images/configuration_rubric.jpg" width="400px;" style=" border:1px solid black; vertical-align: middle;"/>'.
      '</td></tr></table>';
 
-        $count =8;
+     $count = 8;
      if ( $this->_environment->inCommunityRoom()
           or $this->_environment->inGroupRoom()
         ) {
-         $count =7;
-         }elseif($this->_environment->inPrivateRoom()){
-            $count =5;
-         }
+        $count = 7;
+     }
      for ( $i = 0; $i < $count; $i++ ) {
         $nameArray[0] = 'module['.$i.']';
         $nameArray[1] = 'view['.$i.']';
@@ -209,8 +207,6 @@ class cs_configuration_rubric_form extends cs_rubric_form {
            or $this->_environment->inGroupRoom()
          ) {
          $count =7;
-      } elseif ($this->_environment->inPrivateRoom()){
-         $count =5;
       }
     if (isset ($_POST['rubric_0'])){
          $post_array=array();

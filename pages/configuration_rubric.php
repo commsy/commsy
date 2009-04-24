@@ -89,8 +89,6 @@ else {
            or $room_item->isGroupRoom()
          ) {
          $count = 7;
-      } elseif ($room_item->isPrivateRoom()) {
-         $count = 5;
       }
       for ($i=0; $i<$count; $i++){
          $rubric = '';
