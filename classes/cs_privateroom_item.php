@@ -1155,5 +1155,26 @@ class cs_privateroom_item extends cs_room_item {
       }
       return $retour;
    }
+
+   public function getTitle () {
+      $retour = '';
+      $title = parent::getTitle();
+      if ( $title == 'PRIVATE_ROOM'
+           or $title == 'PRIVATEROOM'
+         ) {
+         $translator = $this->_environment->getTranslationObject();
+         $retour = $translator->getMessage('COMMON_PRIVATEROOM');
+      } else {
+         $retour = $title;
+         if ( stristr($retour,'%1') ) {
+            $user = $this->getOwnerUserItem();
+            if ( isset($user) ) {
+               $retour = str_replace('%1',$user->getFullname(),$retour);
+            }
+            unset($user);
+         }
+      }
+      return $retour;
+   }
 }
 ?>
