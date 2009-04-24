@@ -1,5 +1,6 @@
 <?php
 $message["ITEM_DOES_NOT_EXIST"]["en"] = "You tried to access nonexistent information.";
+$message["ITEM_EXPORT_TO_WIKI"]["en"] = "Show in wiki";
 $message["ITEM_NOT_AVAILABLE"]["en"] = "You tried to access an item that has been deleted.";
 $message["ITEM_TITLE_SHORT"]["en"] = "New items";
 ?>

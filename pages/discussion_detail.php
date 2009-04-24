@@ -75,6 +75,14 @@ if ($type != CS_DISCUSSION_TYPE) {
       $page->add($errorbox);
    } else {
 
+      if(isset($_GET['export_to_wiki'])){
+         $wiki_manager = $environment->getWikiManager();
+         $wiki_manager->exportItemToWiki($current_item_iid,CS_DISCUSSION_TYPE);
+         $params = $environment->getCurrentParameterArray();
+         unset($params['export_to_wiki']);
+         redirect($environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
+      }
+
       // Get clipboard
       if ( $session->issetValue('discussion_clipboard') ) {
          $clipboard_id_array = $session->getValue('discussion_clipboard');

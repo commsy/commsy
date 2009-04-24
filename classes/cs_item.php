@@ -1859,6 +1859,32 @@ class cs_item {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);
    }
 
+   //------------------------------------------
+   //------------- Wikiexport -------------
+   function setExportToWiki($value) {
+      $this->_addExtra('EXPORT_TO_WIKI', (string)$value);
+   }
+   function getExportToWiki() {
+      return (string) $this->_getExtra('EXPORT_TO_WIKI');
+   }
+   function isExportToWiki() {
+      if($this->getExportToWiki() == '1'){
+         $wiki_manager = $this->_environment->getWikiManager();
+         return $wiki_manager->existsItemToWiki($this->getItemID());
+      } else {
+         return false;
+      }
+   }
+   function getExportToWikiLink(){
+      $wiki_manager = $this->_environment->getWikiManager();
+      return $wiki_manager->getExportToWikiLink($this->getItemID());
+   }
+   //------------- Wikiexport -------------
+   //------------------------------------------
+
+
+
+
    public function getDataAsXMLForFlash () {
       $type = $this->getType();
       if ( $type == CS_LABEL_TYPE ) {

@@ -1503,28 +1503,6 @@ function _copySectionList ($copy_id) {
       return $file_list;
    }
 
-   //------------------------------------------
-   //------------- Materialexport -------------
-   function setExportToWiki($value) {
-      $this->_addExtra('EXPORT_TO_WIKI', (string)$value);
-   }
-   function getExportToWiki() {
-      return (string) $this->_getExtra('EXPORT_TO_WIKI');
-   }
-   function isExportToWiki() {
-      if($this->getExportToWiki() == '1'){
-         $wiki_manager = $this->_environment->getWikiManager();
-         return $wiki_manager->existsMaterialToWiki($this->getItemID());
-      } else {
-         return false;
-      }
-   }
-   function getExportToWikiLink(){
-      $wiki_manager = $this->_environment->getWikiManager();
-      return $wiki_manager->getExportToWikiLink($this->getItemID());
-   }
-   //------------- Materialexport -------------
-   //------------------------------------------
 
    //------------------------------------------
    //------------- study.log ------------------

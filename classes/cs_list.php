@@ -287,6 +287,11 @@ class cs_list {
       return $return_item;
    }
 
+   function get($pos) {
+      return $this->_data[$pos];
+   }
+
+
    function inList ($item) {
       $boolean = false;
       if ( isset($item)

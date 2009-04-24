@@ -71,6 +71,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          $html = '<!-- BEGIN OF DISCARTICLE FORM VIEW -->'.LF.LF;
          $item = $this->getItem();
          $discussion_type = $item->getDiscussionType();
+         $disabled = '';
          if ( $discussion_type == 'simple') {
             $html .='</div>'.LF;
             $html .='</div>'.LF;
@@ -593,6 +594,30 @@ class cs_discussion_detail_view extends cs_detail_view {
       }
       return $html.'&nbsp;&nbsp;&nbsp;';
 
+   }
+
+   function _getAdditionalActionsAsHTML ($item) {
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html  = '';
+
+      if ( $item->mayEdit($current_user) and $current_context->isWikiActive()  and $this->_with_modifying_actions and $item->getDiscussionType() == 'simple') {
+         $params = array();
+         $params['iid'] = $item->getItemID();
+         $params['export_to_wiki'] = 'true';
+         $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                   CS_DISCUSSION_TYPE,
+                                   'detail',
+                                   $params,
+                                   $image,
+                                   $this->_translator->getMessage('ITEM_EXPORT_TO_WIKI')).LF;
+         unset($params);
+      } elseif($current_context->isWikiActive()) {
+         $image = '<img src="images/commsyicons/22x22/export_wiki_grey.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+      }
+      return $html;
    }
 
 

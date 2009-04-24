@@ -95,7 +95,7 @@ if ($type != CS_MATERIAL_TYPE) {
    } else {
       if(isset($_GET['export_to_wiki'])){
          $wiki_manager = $environment->getWikiManager();
-         $wiki_manager->exportMaterialToWiki($current_item_iid);
+         $wiki_manager->exportItemToWiki($current_item_iid,CS_MATERIAL_TYPE);
          $params = $environment->getCurrentParameterArray();
          unset($params['export_to_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
