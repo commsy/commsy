@@ -1141,8 +1141,8 @@ function exportItemToWiki($current_item_id,$rubric){
           }
 
           if ($rubric == CS_MATERIAL_TYPE){
-             $informations .= '(:cellnr:)\'\'\''.$this->_translator->getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
              $sub_item_links = implode('\\\\%0a', $sub_item_link_array);
+             $informations .= '(:cellnr:)\'\'\''.getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
           }elseif ($rubric == CS_DISCUSSION_TYPE){
              $sub_item_links = implode('', $sub_item_link_array);
              $informations .= '(:cellnr:)%0a(:cell:)%0a';
@@ -1152,6 +1152,40 @@ function exportItemToWiki($current_item_id,$rubric){
           }
           $informations .= '(:tableend:) %0a';
           $sub_item_descriptions = implode('\\\\%0a', $sub_item_description_array);
+       }
+       $buzzword_text = '';
+       $buzzword_list = $item->getBuzzwordList();
+       $buzzword = $buzzword_list->getFirst();
+       $buzzword_file_text = '';
+       $commentbox_text = '';
+       while ($buzzword){
+          if (!empty ($buzzword_text)){
+             $buzzword_text .= ', ';
+          }
+          if (!empty ($buzzword_file_text)){
+             $buzzword_file_text .= ',';
+          }
+          $buzzword_title = cs_ucfirst(str_replace('.','',str_replace(' ','',$buzzword->getTitle())));
+          $buzzword_text .= '[[!'.$buzzword_title.']]';
+          if(!file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . 'Category.'.$buzzword_title)){
+             copy($c_commsy_path_file.'/etc/pmwiki/Category.Keyword',$c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . 'Category.'.$buzzword_title);
+             $file_buzzword_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Category.Keyword',$c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . 'Category.'.$buzzword_title);
+             $file_buzzword_contents = str_replace('CS_KEYWORD',$buzzword_title,$file_buzzword_contents);
+             file_put_contents($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . 'Category.'.$buzzword_title, $file_buzzword_contents);
+          }
+          $buzzword_file_text .= 'Category.'.$buzzword_title;
+          $buzzword = $buzzword_list->getNext();
+       }
+       if (!empty ($buzzword_text)){
+          $buzzword_text = '%0a\\\\%0a'.getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
+       }
+       if ($item->getItemType() == CS_MATERIAL_TYPE){
+          $wiki_file = 'Main.CommSyMaterial' . $current_item_id.'-Comments';
+       }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
+          $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
+       }
+       if(file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file)){
+          $commentbox_text ='%0a%0a----%0a\\\\%0a'.'(:include Site.FoxCommentBox:)';
        }
 
        // Link zurueck ins CommSy
@@ -1164,7 +1198,6 @@ function exportItemToWiki($current_item_id,$rubric){
           copy($c_commsy_path_file.'/etc/pmwiki/Main.Material','wiki.d/Main.CommSyMaterial' . $current_item_id);
           $file_contents = file_get_contents('wiki.d/Main.CommSyMaterial' . $current_item_id);
        }elseif($rubric == CS_DISCUSSION_TYPE){
-#          pr($c_commsy_path_file.'/etc/pmwiki/Main.Discussion');
           copy($c_commsy_path_file.'/etc/pmwiki/Main.'.getMessage('COMMON_DISCUSSION'),'wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id);
           $file_contents = file_get_contents('wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id);
        }
@@ -1178,10 +1211,16 @@ function exportItemToWiki($current_item_id,$rubric){
                }
            }
            if(stripos($file_contents_array[$index], 'text=') !== false){
-              $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $link;
+              $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text;
+           }
+           if(stripos($file_contents_array[$index], 'targets=') !== false and !empty($buzzword_file_text)){
+              $file_contents_array[$index] = 'targets='.$buzzword_file_text;
            }
        }
        $file_contents = implode("\n", $file_contents_array);
+       if(!strstr($file_contents,'targets=') and !empty($buzzword_file_text)){
+          $file_contents .='"\n"'.'targets='.$buzzword_file_text;
+       }
        if ($rubric == CS_MATERIAL_TYPE){
            $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $item->getTitle() . '"';
            file_put_contents('wiki.d/Main.CommSyMaterial' . $current_item_id, $file_contents);
