@@ -133,7 +133,13 @@ if ($command != 'error') { // only if user is allowed to edit colors
       $correct = $form->check();
       if ($correct){
          if ( isset($_POST['title']) ) {
-            $context_item->setTitle($_POST['title']);
+            $title = $_POST['title'];
+            if ( $title == $translator->getMessage('COMMON_PRIVATROOM')
+                 or !empty($_POST['title_reset'])
+               ) {
+               $title = 'PRIVATEROOM';
+            }
+            $context_item->setTitle($title);
          }
          $color = $context_item->getColorArray();
          if ( isset($_POST['color_choice'])) {
@@ -278,7 +284,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
 
 
          if ($context_item->isProjectRoom()){
-         	$community_room_array = array();
+            $community_room_array = array();
             if ( isset($_POST['communityroomlist']) ) {
                $community_room_array = $_POST['communityroomlist'];
             }

@@ -1206,7 +1206,8 @@ class cs_page_view extends cs_view {
                unset($current_portal);
             }
          } elseif ( $context_item->isPrivateRoom() and !$current_user->isGuest() ) {
-            $html_text = getMessage('COMMON_PRIVATEROOM');
+            $html_text = $this->_text_as_html_short($context_item->getTitle());
+            $length = mb_strlen($html_text);
          }
       } else {
          $html_text = '&nbsp;';

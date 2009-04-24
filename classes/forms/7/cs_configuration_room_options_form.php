@@ -286,8 +286,16 @@ class cs_configuration_room_options_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      if (!$this->_environment->inPrivateRoom()){
-         $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
+      $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
+      if ( $this->_environment->inPrivateRoom() ) {
+         $this->_form->combine();
+         $this->_form->addCheckbox('title_reset',
+                                   'value',
+                                   false,
+                                   '',
+                                   $this->_translator->getMessage('COMMON_ROOM_NAME_RESET',$this->_translator->getMessage('COMMON_PRIVATEROOM')),
+                                   ''
+                                  );
       }
       /********Sprache*******/
       $languageArray = array();

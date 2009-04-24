@@ -539,12 +539,7 @@ class cs_page_room_view extends cs_page_view {
          $size = 'style="font-size:12pt"';
          $title = chunkText($title,50);
       }
-      if ($this->_environment->inPrivateRoom()){
-         $html .= '<h1 '.$size.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</h1>'.LF;
-      }else{
-         $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
-
-      }
+      $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
       $breadcrump = '';
       $params = array();
       if ($current_user->isRoot()){
@@ -575,11 +570,7 @@ class cs_page_room_view extends cs_page_view {
          $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
          $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
       }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
-         if ($this->_environment->inPrivateRoom()){
-            $breadcrump.= ' &gt; '.$this->_translator->getMessage('COMMON_PRIVATEROOM');
-         }else{
-            $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
-         }
+         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
       }
       $html .= '<span style="font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
       $html .= '</td>';
@@ -885,8 +876,6 @@ class cs_page_room_view extends cs_page_view {
       $this->_delete_box_mode = $mode;
       $this->_delete_box_ids = $selected_ids;
    }
-
-
 
    function asHTML () {
       $html = '';

@@ -1195,9 +1195,10 @@ class cs_page_view extends cs_view {
       return $retour;
    }
 
-   // @segment-begin 78866  _getHeaderAsHTML_()
    /** get the header as HTML
     * this method returns the commsy header as HTML - internal, do not use
+    *
+    * WIRD DIE ÜBERHAUPT VERWENDET
     *
     * @return string header as HTML
     */
@@ -1210,8 +1211,8 @@ class cs_page_view extends cs_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = LF.'<!-- BEGIN HEADER -->'.LF;
       $html .= '<a name="top"></a>'.LF;
-      $html .='<table style="width:100%; padding-top:0px; margin:0px;" summary="Layout">'.LF;
-      $html .='<tr>'.LF;
+      $html .= '<table style="width:100%; padding-top:0px; margin:0px;" summary="Layout">'.LF;
+      $html .= '<tr>'.LF;
       $length = 0;
       // title
       if ($context_item->showTitle() and !$this->_environment->inPortal()) {
@@ -1225,7 +1226,8 @@ class cs_page_view extends cs_view {
                unset($current_portal);
             }
          } elseif ( $context_item->isPrivateRoom() and !$current_user->isGuest() ) {
-            $html_text = $this->_translator->getMessage('COMMON_PRIVATEROOM');
+            $html_text = $this->_text_as_html_short($context_item->getTitle());
+            $length = mb_strlen($html_text);
          }
       } else {
          $html_text = '&nbsp;';

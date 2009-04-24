@@ -570,6 +570,7 @@ $message["COMMON_ROOM_INFORMATION"]["en"] = "Workspace information";
 $message["COMMON_ROOM_META"]["en"] = "Administer workspace basics";
 $message["COMMON_ROOM_META_DESC"]["en"] = "Basic configuration for this workspace (e.g. title, logo, language, approval policy).";
 $message["COMMON_ROOM_NAME"]["en"] = "Workspace title";
+$message["COMMON_ROOM_NAME_RESET"]["en"] = "set Title back to &quot;%1&quot;";
 $message["COMMON_ROOM_OVERVIEW"]["en"] = "My joined workspaces";
 $message["COMMON_ROOM_SEARCH"]["en"] = "Search for workspace";
 $message["COMMON_ROOM_SEARCH_DESCRIPTION"]["en"] = "Search in the list of all workspaces";

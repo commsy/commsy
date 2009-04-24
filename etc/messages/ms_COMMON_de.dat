@@ -570,6 +570,7 @@ $message["COMMON_ROOM_INFORMATION"]["de"] = "Rauminformationen";
 $message["COMMON_ROOM_META"]["de"] = "Allgemeine Raumeinstellungen";
 $message["COMMON_ROOM_META_DESC"]["de"] = "Grundlegende Einstellungen des Raums wie Titel, Logo oder Sprache.";
 $message["COMMON_ROOM_NAME"]["de"] = "Raumname";
+$message["COMMON_ROOM_NAME_RESET"]["de"] = "Titel zurücksetzen auf &quot;%1&quot;";
 $message["COMMON_ROOM_OVERVIEW"]["de"] = "Meine aktuellen Räume";
 $message["COMMON_ROOM_SEARCH"]["de"] = "Raum suchen";
 $message["COMMON_ROOM_SEARCH_DESCRIPTION"]["de"] = "Suche in der Raumliste des Portals";
