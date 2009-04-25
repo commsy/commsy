@@ -625,7 +625,7 @@ class cs_wiki_manager extends cs_manager {
    }
 
 
-  function moveWiki($item,$old_context_id){
+   public function moveWiki($item, $old_context_id ) {
       $old_dir = getcwd();
       global $c_pmwiki_path_file,$c_pmwiki_absolute_path_file;
       global $c_commsy_path_file;
@@ -651,11 +651,204 @@ class cs_wiki_manager extends cs_manager {
       } else {
          closedir($directory_handle);
       }
-      $this->_rcopy_rf($c_pmwiki_absolute_path_file.'/wikis/'.$old_context_id.'/'.$item->getItemID(),$c_pmwiki_absolute_path_file.'/wikis/'.$item->getContextID().'/'.$item->getItemID());
+      $this->_rmove_rf($c_pmwiki_absolute_path_file.'/wikis/'.$old_context_id.'/'.$item->getItemID(),$c_pmwiki_absolute_path_file.'/wikis/'.$item->getContextID().'/'.$item->getItemID());
       $this->_rmdir_rf($c_pmwiki_absolute_path_file.'/wikis/'.$old_context_id.'/'.$item->getItemID());
       chdir($old_dir);
-  }
+   }
 
+   public function copyWiki ($old_item, $new_item) {
+      $this->_copyWikiConfig($old_item, $new_item);
+      $this->_copyWikiData($old_item, $new_item);
+      $this->createWiki($new_item);
+   }
+
+   private function _copyWikiConfig ($old_room, $new_room) {
+      $new_room->setWikiExists();
+      if ( $old_room->issetWikiHomeLink() ) {
+         $new_room->setWikiHomeLink();
+      } else {
+         $new_room->unsetWikiHomeLink();
+      }
+      if ( $old_room->issetWikiPortalLink() ) {
+         $new_room->setWikiPortalLink();
+      } else {
+         $new_room->unsetWikiPortalLink();
+      }
+      $new_room->setWikiSkin($old_room->getWikiSkin());
+      $new_room->setWikiTitle($old_room->getWikiTitle());
+      $new_room->setWikiAdminPW($old_room->getWikiAdminPW());
+      $new_room->setWikiEditPW($old_room->getWikiEditPW());
+      $new_room->setWikiReadPW($old_room->getWikiReadPW());
+      if ( $old_room->WikiShowCommSyLogin() != -1 ) {
+         $new_room->setWikiShowCommSyLogin();
+      } else {
+         $new_room->unsetWikiShowCommSyLogin();
+      }
+      if ( $old_room->WikiEnableFCKEditor() != -1 ) {
+         $new_room->setWikiEnableFCKEditor();
+      } else {
+         $new_room->unsetWikiEnableFCKEditor();
+      }
+      if ( $old_room->WikiEnableSitemap() != -1 ) {
+         $new_room->setWikiEnableSitemap();
+      } else {
+         $new_room->unsetWikiEnableSitemap();
+      }
+      if ( $old_room->WikiEnableStatistic() != -1 ) {
+         $new_room->setWikiEnableStatistic();
+      } else {
+         $new_room->unsetWikiEnableStatistic();
+      }
+      if ( $old_room->WikiEnableSearch() != -1 ) {
+         $new_room->setWikiEnableSearch();
+      } else {
+         $new_room->unsetWikiEnableSearch();
+      }
+      if ( $old_room->WikiEnableRss() != -1 ) {
+         $new_room->setWikiEnableRss();
+      } else {
+         $new_room->unsetWikiEnableRss();
+      }
+      if ( $old_room->WikiEnableCalendar() != -1 ) {
+         $new_room->setWikiEnableCalendar();
+      } else {
+         $new_room->unsetWikiEnableCalendar();
+      }
+      if ( $old_room->WikiEnableGallery() != -1 ) {
+         $new_room->setWikiEnableGallery();
+      } else {
+         $new_room->unsetWikiEnableGallery();
+      }
+      if ( $old_room->WikiEnableNotice() != -1 ) {
+         $new_room->setWikiEnableNotice();
+      } else {
+         $new_room->unsetWikiEnableNotice();
+      }
+      if ( $old_room->WikiEnablePdf() != -1 ) {
+         $new_room->setWikiEnablePdf();
+      } else {
+         $new_room->unsetWikiEnablePdf();
+      }
+      if ( $old_room->WikiEnableRater() != -1 ) {
+         $new_room->setWikiEnableRater();
+      } else {
+         $new_room->unsetWikiEnableRater();
+      }
+      if ( $old_room->WikiEnableListCategories() != -1 ) {
+         $new_room->setWikiEnableListCategories();
+      } else {
+         $new_room->unsetWikiEnableListCategories();
+      }
+      if ( $old_room->WikiNewPageTemplate() != -1 ) {
+         $new_room->setWikiNewPageTemplate();
+      } else {
+         $new_room->unsetWikiNewPageTemplate();
+      }
+      if ( $old_room->WikiEnableSwf() != -1 ) {
+         $new_room->setWikiEnableSwf();
+      } else {
+         $new_room->unsetWikiEnableSwf();
+      }
+      if ( $old_room->WikiEnableWmplayer() != -1 ) {
+         $new_room->setWikiEnableWmplayer();
+      } else {
+         $new_room->unsetWikiEnableWmplayer();
+      }
+      if ( $old_room->WikiEnableQuicktime() != -1 ) {
+         $new_room->setWikiEnableQuicktime();
+      } else {
+         $new_room->unsetWikiEnableQuicktime();
+      }
+      if ( $old_room->WikiEnableYoutubeGoogleVimeo() != -1 ) {
+         $new_room->setWikiEnableYoutubeGoogleVimeo();
+      } else {
+         $new_room->unsetWikiEnableYoutubeGoogleVimeo();
+      }
+      if ( $old_room->wikiWithSectionEdit() ) {
+         $new_room->setWikiWithSectionEdit();
+      } else {
+         $new_room->setWikiWithoutSectionEdit();
+      }
+      if ( $old_room->wikiWithHeaderForSectionEdit() ) {
+         $new_room->setWikiWithHeaderForSectionEdit();
+      } else {
+         $new_room->setWikiWithoutHeaderForSectionEdit();
+      }
+      if ( $old_room->WikiEnableDiscussion() != -1 ) {
+         $new_room->setWikiEnableDiscussion();
+      } else {
+         $new_room->unsetWikiEnableDiscussion();
+      }
+      if ( $old_room->WikiEnableDiscussionNotification() != -1 ) {
+         $new_room->setWikiEnableDiscussionNotification();
+      } else {
+         $new_room->unsetWikiEnableDiscussionNotification();
+      }
+      if ( $old_room->WikiEnableDiscussionNotificationGroups() != -1 ) {
+         $new_room->setWikiEnableDiscussionNotificationGroups();
+      } else {
+         $new_room->unsetWikiEnableDiscussionNotificationGroups();
+      }
+      $discussion_array = $old_room->getWikiDiscussionArray();
+      if ( !empty($discussion_array)
+           and $discussion_array
+           and is_array($discussion_array)
+           and count($discussion_array) > 0
+         ) {
+         foreach ( $discussion_array as $discussion ) {
+            $new_room->WikiSetNewDiscussion($discussion);
+         }
+      }
+      if ( $old_room->withWikiUseCommSyLogin() ) {
+         $new_room->setWikiUseCommSyLogin();
+      } else {
+         $new_room->unsetWikiUseCommSyLogin();
+      }
+      if ( $old_room->WikiCommunityReadAccess() != -1 ) {
+         $new_room->setWikiCommunityReadAccess();
+      } else {
+         $new_room->unsetWikiCommunityReadAccess();
+      }
+      if ( $old_room->WikiCommunityWriteAccess() != -1 ) {
+         $new_room->setWikiCommunityWriteAccess();
+      } else {
+         $new_room->unsetWikiCommunityWriteAccess();
+      }
+      if ( $old_room->WikiPortalReadAccess() != -1 ) {
+         $new_room->setWikiPortalReadAccess();
+      } else {
+         $new_room->unsetWikiPortalReadAccess();
+      }
+   }
+
+   private function _copyWikiData ($old_item, $new_item) {
+      $old_dir = getcwd();
+      global $c_pmwiki_path_file,$c_pmwiki_absolute_path_file;
+      chdir($c_pmwiki_path_file);
+
+      $directory_handle = @opendir('wikis');
+      if (!$directory_handle) {
+         mkdir('wikis');
+      }
+      chdir('wikis');
+
+      $directory_handle = @opendir($new_item->getContextID());
+      if (!$directory_handle) {
+         mkdir($new_item->getContextID());
+      } else {
+         closedir($directory_handle);
+      }
+
+      chdir($new_item->getContextID());
+      $directory_handle = @opendir($new_item->getItemID());
+      if (!$directory_handle) {
+         mkdir($new_item->getItemID());
+      } else {
+         closedir($directory_handle);
+      }
+      $this->_rcopy_rf($c_pmwiki_absolute_path_file.'/wikis/'.$old_item->getContextID().'/'.$old_item->getItemID(),$c_pmwiki_absolute_path_file.'/wikis/'.$new_item->getContextID().'/'.$new_item->getItemID());
+      chdir($old_dir);
+   }
 
 function _rmdir_rf($dirname) {
     if ($dirHandle = opendir($dirname)) {
@@ -677,8 +870,30 @@ function _rcopy_rf($quelle, $ziel) {
         while ($file = readdir($dirHandle)) {
             if ($file == '.' || $file == '..') continue;
             if (is_dir($file)){
-                mkdir($ziel.'/'.$file);
+                if ( !file_exists($ziel.'/'.$file) ) {
+                   mkdir($ziel.'/'.$file);
+                }
                 $this->_rcopy_rf($quelle.'/'.$file,$ziel.'/'.$file);
+            }
+            else{
+               $this->_file_copy($quelle.'/'.$file,$ziel.'/'.$file);
+            }
+        }
+        chdir('..');
+        closedir($dirHandle);
+    }
+}
+
+function _rmove_rf($quelle, $ziel) {
+    if ($dirHandle = opendir($quelle)) {
+        chdir($quelle);
+        while ($file = readdir($dirHandle)) {
+            if ($file == '.' || $file == '..') continue;
+            if (is_dir($file)){
+                if ( !file_exists($ziel.'/'.$file) ) {
+                   mkdir($ziel.'/'.$file);
+                }
+                $this->_rmove_rf($quelle.'/'.$file,$ziel.'/'.$file);
             }
             else{
                $this->_file_move($quelle.'/'.$file,$ziel.'/'.$file);
@@ -688,7 +903,6 @@ function _rcopy_rf($quelle, $ziel) {
         closedir($dirHandle);
     }
 }
-
 
 function _file_move ($quelle, $ziel)
 {
@@ -716,6 +930,26 @@ function _file_move ($quelle, $ziel)
     // 3 = ziel existiert bereits,
     // 4 = quelle nicht gefunden
 }// ende file_move
+
+   private function _file_copy ($quelle, $ziel) {
+      // kopiert datei
+      $fertigverschoben = 3;
+      if ( file_exists($quelle) ) {
+         $fertigverschoben--;
+         if ( !file_exists($ziel) ) {
+            $fertigverschoben--;
+            if ( copy($quelle, $ziel) ) {
+                $fertigverschoben--;
+            }
+        }
+    }
+    return $fertigverschoben;
+    // gibt errorcode zurueck,
+    // 0 = alles okay,
+    // 1 = konnte ziel nicht erstellen (copy),
+    // 2 = ziel existiert bereits,
+    // 3 = quelle nicht gefunden
+}// ende file_copy
 
 // Updates the Profiles.-File for the $user
 function updateWikiProfileFile($user){
