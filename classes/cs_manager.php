@@ -904,14 +904,72 @@ class cs_manager {
          $query .= ' AND title != "CS_TAG_ROOT"';
       }
 
-
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
          trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
       } else {
+         $current_data_array = array();
+         if ( DBTable2Type($this->_db_table) == CS_LABEL_TYPE
+              or DBTable2Type($this->_db_table) == CS_TAG_TYPE
+            ) {
+            $title_field = 'title';
+            $type_field = '';
+            if ( DBTable2Type($this->_db_table) == CS_LABEL_TYPE ) {
+               $title_field = 'name';
+               $type_field = 'type';
+            }
+            $type_sql_statement = '';
+            if ( !empty($type_field) ) {
+               $type_sql_statement = ', '.$type_field;
+            }
+            $sql = 'SELECT item_id,'.$title_field.$type_sql_statement.' FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  if ( empty($type_field) ) {
+                     $current_data_array[$sql_row[$title_field]] = $sql_row['item_id'];
+                  } else {
+                     $current_data_array[$sql_row[$type_field]][$sql_row[$title_field]] = $sql_row['item_id'];
+                  }
+               }
+            }
+         } elseif ( DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE ) {
+            $sql = 'SELECT to_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'" AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  $current_data_array[] = $sql_row['to_item_id'];
+               }
+            }
+         }
          foreach ($result as $query_result) {
-            if ( DBTable2Type($this->_db_table) != CS_LINKITEMFILE_TYPE
+            $do_it = true;
+
+            if ( DBTable2Type($this->_db_table) == CS_LABEL_TYPE
+                 and array_key_exists($query_result[$title_field],$current_data_array[$query_result[$type_field]])
+               ) {
+               $retour[$query_result['item_id']] = $current_data_array[$query_result[$type_field]][$query_result[$title_field]];
+               $do_it = false;
+            } elseif ( DBTable2Type($this->_db_table) == CS_TAG_TYPE
+                       and array_key_exists($query_result[$title_field],$current_data_array)
+                     ) {
+               $retour[$query_result['item_id']] = $current_data_array[$query_result[$title_field]];
+               $do_it = false;
+            } elseif ( DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
+                       and in_array($id_array[$query_result['to_item_id']],$current_data_array)
+                     ) {
+               $do_it = false;
+            }
+
+            if ( $do_it
+                 and DBTable2Type($this->_db_table) != CS_LINKITEMFILE_TYPE
                  and DBTable2Type($this->_db_table) != CS_LINK_TYPE
                  and DBTable2Type($this->_db_table) != CS_TAG2TAG_TYPE
                  and isset($query_result['item_id'])
@@ -919,128 +977,129 @@ class cs_manager {
                ) {
                $new_item_id = $this->_createItemInItemTable($new_id,DBTable2Type($this->_db_table),$current_date);
             }
-            $insert_query  = '';
-            $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
-            $first = true;
-            $old_item_id = '';
-            $do_it = true;
-            foreach ($query_result as $key => $value) {
-               $value = encode(FROM_DB,$value);
-               if ($first) {
-                  $first = false;
-                  $before = ' ';
-               } else {
-                  $before = ',';
-               }
-               if ( $key == 'item_id' ) {
-                  $old_item_id = $value;
-                  if (!empty($retour[$value])) {
-                     $insert_query .= $before.$key.'="'.$retour[$value].'"';
-                  } elseif (!empty($new_item_id)) {
-                     $insert_query .= $before.$key.'="'.encode(AS_DB,$new_item_id).'"';
+            if ($do_it) {
+               $insert_query  = '';
+               $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+               $first = true;
+               $old_item_id = '';
+               foreach ($query_result as $key => $value) {
+                  $value = encode(FROM_DB,$value);
+                  if ($first) {
+                     $first = false;
+                     $before = ' ';
                   } else {
-                     $do_it = false;
+                     $before = ',';
                   }
-               } elseif ($key == 'context_id') {
-                  $insert_query .= $before.$key.'="'.encode(AS_DB,$new_id).'"';
-               } elseif ( $key == 'modification_date'
-                          or $key == 'creation_date'
-                        ) {
-                  $insert_query .= $before.$key.'="'.$current_date.'"';
-               } elseif ( !empty($user_id)
-                          and ( $key == 'creator_id'
-                                or $key == 'modifier_id' )
-                        ) {
-                  $insert_query .= $before.$key.'="'.encode(AS_DB,$user_id).'"';
-               } elseif ( $key == 'deletion_date'
-                          or $key == 'deleter_id'
-                        ) {
-                  // do nothing
-               }
+                  if ( $key == 'item_id' ) {
+                     $old_item_id = $value;
+                     if (!empty($retour[$value])) {
+                        $insert_query .= $before.$key.'="'.$retour[$value].'"';
+                     } elseif (!empty($new_item_id)) {
+                        $insert_query .= $before.$key.'="'.encode(AS_DB,$new_item_id).'"';
+                     } else {
+                        $do_it = false;
+                     }
+                  } elseif ($key == 'context_id') {
+                     $insert_query .= $before.$key.'="'.encode(AS_DB,$new_id).'"';
+                  } elseif ( $key == 'modification_date'
+                             or $key == 'creation_date'
+                           ) {
+                     $insert_query .= $before.$key.'="'.$current_date.'"';
+                  } elseif ( !empty($user_id)
+                             and ( $key == 'creator_id'
+                                   or $key == 'modifier_id' )
+                           ) {
+                     $insert_query .= $before.$key.'="'.encode(AS_DB,$user_id).'"';
+                  } elseif ( $key == 'deletion_date'
+                             or $key == 'deleter_id'
+                           ) {
+                     // do nothing
+                  }
 
-               // special for ANNOTATION
-               elseif ( $key == 'linked_item_id'
-                        and DBTable2Type($this->_db_table) == CS_ANNOTATION_TYPE
-                        and isset($id_array[$value])
-                      ) {
-                  $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-               }
-
-               // special for DISCUSSIONARTICLE
-               elseif ( $key == 'discussion_id'
-                        and DBTable2Type($this->_db_table) == CS_DISCARTICLE_TYPE
-                        and isset($id_array[$value])
-                      ) {
-                  $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-               }
-
-               // special for SECTION
-               elseif ( $key == 'material_item_id'
-                        and DBTable2Type($this->_db_table) == CS_SECTION_TYPE
-                        and isset($id_array[$value])
-                      ) {
-                  $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-               }
-
-               // special for STEP
-               elseif ( $key == 'todo_item_id'
-                        and DBTable2Type($this->_db_table) == CS_STEP_TYPE
-                        and isset($id_array[$value])
-                      ) {
-                  $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-               }
-
-               // special for LINKS / TAG2TAG
-               elseif ( ( $key == 'from_item_id'
-                          or $key == 'to_item_id'
-                        ) and ( DBTable2Type($this->_db_table) == CS_LINK_TYPE
-                                or DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
-                              )
-                      ) {
-                  if ( isset($id_array[$value]) ) {
+                  // special for ANNOTATION
+                  elseif ( $key == 'linked_item_id'
+                           and DBTable2Type($this->_db_table) == CS_ANNOTATION_TYPE
+                           and isset($id_array[$value])
+                         ) {
                      $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-                  } else {
-                     $do_it = false;
                   }
-               }
 
-               // special for TAG2TAG
-               elseif ( $key == 'link_id'
-                        and DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
-                      ) {
-                  // link_id is primary key so don't insert it
-               }
-
-               // special for LINK_ITEM
-               elseif ( ( $key == 'first_item_id' or $key == 'second_item_id' )
-                          and DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE
-                      ) {
-                  if ( isset($id_array[$value]) ) {
+                  // special for DISCUSSIONARTICLE
+                  elseif ( $key == 'discussion_id'
+                           and DBTable2Type($this->_db_table) == CS_DISCARTICLE_TYPE
+                           and isset($id_array[$value])
+                         ) {
                      $insert_query .= $before.$key.'="'.$id_array[$value].'"';
-                  } else {
-                     $do_it = false;
                   }
-               }
 
-               // special for MATERIAL
-               elseif ( $key == 'copy_of'
-                        and empty($value)
-                        and DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
-                      ) {
-                  $insert_query .= $before.$key.'=NULL';
-               }
+                  // special for SECTION
+                  elseif ( $key == 'material_item_id'
+                           and DBTable2Type($this->_db_table) == CS_SECTION_TYPE
+                           and isset($id_array[$value])
+                         ) {
+                     $insert_query .= $before.$key.'="'.$id_array[$value].'"';
+                  }
 
-               // special for labels
-               elseif ( $key == 'name'
-                        and empty($value)
-                        and DBTable2Type($this->_db_table) == CS_LABEL_TYPE
-                      ) {
-                  $insert_query .= $before.$key.'=" "';
-               }
+                  // special for STEP
+                  elseif ( $key == 'todo_item_id'
+                           and DBTable2Type($this->_db_table) == CS_STEP_TYPE
+                           and isset($id_array[$value])
+                         ) {
+                     $insert_query .= $before.$key.'="'.$id_array[$value].'"';
+                  }
 
-               // default
-               elseif ( !empty($value) ) {
-                  $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
+                  // special for LINKS / TAG2TAG
+                  elseif ( ( $key == 'from_item_id'
+                             or $key == 'to_item_id'
+                           ) and ( DBTable2Type($this->_db_table) == CS_LINK_TYPE
+                                   or DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
+                                 )
+                         ) {
+                     if ( isset($id_array[$value]) ) {
+                        $insert_query .= $before.$key.'="'.$id_array[$value].'"';
+                     } else {
+                        $do_it = false;
+                     }
+                  }
+
+                  // special for TAG2TAG
+                  elseif ( $key == 'link_id'
+                           and DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
+                         ) {
+                     // link_id is primary key so don't insert it
+                  }
+
+                  // special for LINK_ITEM
+                  elseif ( ( $key == 'first_item_id' or $key == 'second_item_id' )
+                             and DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE
+                         ) {
+                     if ( isset($id_array[$value]) ) {
+                        $insert_query .= $before.$key.'="'.$id_array[$value].'"';
+                     } else {
+                        $do_it = false;
+                     }
+                  }
+
+                  // special for MATERIAL
+                  elseif ( $key == 'copy_of'
+                           and empty($value)
+                           and DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
+                         ) {
+                     $insert_query .= $before.$key.'=NULL';
+                  }
+
+                  // special for labels
+                  elseif ( $key == 'name'
+                           and empty($value)
+                           and DBTable2Type($this->_db_table) == CS_LABEL_TYPE
+                         ) {
+                     $insert_query .= $before.$key.'=" "';
+                  }
+
+                  // default
+                  elseif ( !empty($value) ) {
+                     $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
+                  }
                }
             }
             if (!$do_it) {
@@ -1093,6 +1152,17 @@ class cs_manager {
                   $id = mb_substr($id,0,mb_strlen($id)-1);
                   if ( isset($id_array[$id]) ) {
                      $desc = str_replace('['.$id.$last_char,'['.$id_array[$id].$last_char,$desc);
+                  }
+               }
+            }
+            preg_match_all('~\(:item ([0-9]*) ~u', $query_result['description'], $matches);
+            if ( isset($matches[1])
+                 and !empty($matches[1])
+               ) {
+               foreach ($matches[1] as $match) {
+                  $id = $match;
+                  if ( isset($id_array[$id]) ) {
+                     $desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
                   }
                }
             }

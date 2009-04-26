@@ -284,7 +284,7 @@ foreach($sel_array as $rubric => $value){
 global $c_plugin_array;
 foreach ($rubric_array as $rubric) {
    if ( !isset($c_plugin_array)
-        or !in_array(strtolower($rubric),$c_plugin_array['rubric'])
+        or !in_array(strtolower($rubric),$c_plugin_array)
       ) {
       $rubric_ids = array();
       $rubric_list = new cs_list();
