@@ -910,6 +910,8 @@ class cs_manager {
          trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
       } else {
          $current_data_array = array();
+         $current_copy_date_array = array();
+         $current_mod_date_array = array();
          if ( DBTable2Type($this->_db_table) == CS_LABEL_TYPE
               or DBTable2Type($this->_db_table) == CS_TAG_TYPE
             ) {
@@ -948,6 +950,39 @@ class cs_manager {
                   $current_data_array[] = $sql_row['to_item_id'];
                }
             }
+         } elseif ( DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
+                    or DBTable2Type($this->_db_table) == CS_SECTION_TYPE
+                  ) {
+            $item_id = 'item_id';
+            $modification_date = 'modification_date';
+            $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql .= ' AND extras LIKE "%s:4:\"COPY\";a:2:{s:7:\"ITEM_ID\";%"';
+            $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  include_once('functions/text_functions.php');
+                  $extra_array = mb_unserialize($sql_row['extras']);
+                  $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
+                  #$current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
+                  #$current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
+               }
+            }
+         } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE ) {
+            $sql  = 'SELECT from_item_id,to_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  $current_data_array[] = array($sql_row['from_item_id'],$sql_row['to_item_id']);
+               }
+            }
          }
          foreach ($result as $query_result) {
             $do_it = true;
@@ -964,6 +999,16 @@ class cs_manager {
                $do_it = false;
             } elseif ( DBTable2Type($this->_db_table) == CS_TAG2TAG_TYPE
                        and in_array($id_array[$query_result['to_item_id']],$current_data_array)
+                     ) {
+               $do_it = false;
+            } elseif ( ( DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
+                         or DBTable2Type($this->_db_table) == CS_SECTION_TYPE
+                       )
+                       and array_key_exists($query_result['item_id'],$current_data_array)) {
+               $retour[$query_result['item_id']] = $current_data_array[$query_result['item_id']];
+               $do_it = false;
+            } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE
+                       and in_array(array($id_array[$query_result['from_item_id']],$id_array[$query_result['to_item_id']]),$current_data_array)
                      ) {
                $do_it = false;
             }
@@ -1094,6 +1139,18 @@ class cs_manager {
                            and DBTable2Type($this->_db_table) == CS_LABEL_TYPE
                          ) {
                      $insert_query .= $before.$key.'=" "';
+                  }
+
+                  // extra
+                  elseif ( $key == 'extras'
+                           and !empty($old_item_id)
+                         ) {
+                     include_once('functions/text_functions.php');
+                     $extra_array = mb_unserialize($value);
+                     $extra_array['COPY']['ITEM_ID'] = $old_item_id;
+                     $extra_array['COPY']['COPYING_DATE'] = $current_date;
+                     $value = serialize($extra_array);
+                     $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
                   }
 
                   // default

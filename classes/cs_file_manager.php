@@ -486,6 +486,7 @@ class cs_file_manager extends cs_manager {
    function copyDataFromRoomToRoom ($old_id, $new_id, $user_id='') {
       $retour = array();
       $current_date = getCurrentDateTimeInMySQL();
+      $current_data_array = array();
 
       $query  = '';
       $query .= 'SELECT * FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$old_id).'" AND deleter_id IS NULL AND deletion_date IS NULL';
@@ -494,66 +495,125 @@ class cs_file_manager extends cs_manager {
          include_once('functions/error_functions.php');
          trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"',E_USER_WARNING);
       } else {
-         foreach ($result as $query_result) {
-            $insert_query  = '';
-            $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
-            $first = true;
-            $old_item_id = '';
-            foreach ($query_result as $key => $value) {
-               $value = encode(FROM_DB,$value);
-               if ( $key == 'files_id' ) {
-                  $old_item_id = $value;
-               } elseif ($key == 'context_id') {
-                  $after = $key.'="'.$new_id.'"';
-               } elseif ( $key == 'modification_date'
-                          or $key == 'creation_date'
-                        ) {
-                  $after = $key.'="'.$current_date.'"';
-               } elseif ( !empty($user_id)
-                          and ( $key == 'creator_id'
-                                or $key == 'modifier_id' )
-                        ) {
-                  $after = $key.'="'.$user_id.'"';
-               } elseif ( $key == 'deletion_date'
-                          or $key == 'deleter_id'
-                          or $key == 'material_id'
-                          or $key == 'material_vid'
-                        ) {
-                  // do nothing
-               } elseif ( $key == 'has_html'
-                          and empty($value)
-                        ) {
-                  // do nothing
-               } else {
-                  $after = $key.'="'.encode(AS_DB,$value).'"';
-               }
-
-               if (!empty($after)) {
-                  if ($first) {
-                     $first = false;
-                     $before = ' ';
-                  } else {
-                     $before = ',';
-                  }
-                  $insert_query .= $before.$after;
-                  unset($after);
-               }
+         $item_id = 'files_id';
+         $modification_date = 'creation_date';
+         $sql  = 'SELECT '.$item_id.','.$modification_date.',extras FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+         $sql .= ' AND extras LIKE "%s:4:\"COPY\";a:2:{s:7:\"ITEM_ID\";%"';
+         $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
+         $sql_result = $this->_db_connector->performQuery($sql);
+         if ( !isset($sql_result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+         } else {
+            foreach ( $sql_result as $sql_row ) {
+               include_once('functions/text_functions.php');
+               $extra_array = mb_unserialize($sql_row['extras']);
+               $current_data_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$item_id];
+               #$current_copy_date_array[$extra_array['COPY']['ITEM_ID']] = $extra_array['COPY']['DATETIME'];
+               #$current_mod_date_array[$extra_array['COPY']['ITEM_ID']] = $sql_row[$modification_date];
             }
-            $result_insert = $this->_db_connector->performQuery($insert_query);
-            if ( !isset($result_insert) ) {
-               include_once('functions/error_functions.php');
-               trigger_error( 'Problem creating item from query: "'.$insert_query.'"',E_USER_ERROR);
-            } else {
-               $new_item_id = $result_insert;
-               if (!empty($old_item_id)) {
-                  $retour[CS_FILE_TYPE.$old_item_id] = $new_item_id;
-               } else {
+         }
+         foreach ($result as $query_result) {
+            $do_it = true;
+
+            if ( array_key_exists($query_result['files_id'],$current_data_array)) {
+               $retour[CS_FILE_TYPE.$query_result['files_id']] = $current_data_array[$query_result['files_id']];
+               $do_it = false;
+            }
+
+            if ( $do_it ) {
+               $insert_query  = '';
+               $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+               $first = true;
+               $old_item_id = '';
+               foreach ($query_result as $key => $value) {
+                  $value = encode(FROM_DB,$value);
+                  if ( $key == 'files_id' ) {
+                     $old_item_id = $value;
+                  } elseif ($key == 'context_id') {
+                     $after = $key.'="'.$new_id.'"';
+                  } elseif ( $key == 'modification_date'
+                             or $key == 'creation_date'
+                           ) {
+                     $after = $key.'="'.$current_date.'"';
+                  } elseif ( !empty($user_id)
+                             and ( $key == 'creator_id'
+                                   or $key == 'modifier_id' )
+                           ) {
+                     $after = $key.'="'.$user_id.'"';
+                  } elseif ( $key == 'deletion_date'
+                             or $key == 'deleter_id'
+                             or $key == 'material_id'
+                             or $key == 'material_vid'
+                           ) {
+                     // do nothing
+                  } elseif ( $key == 'has_html'
+                             and empty($value)
+                           ) {
+                     // do nothing
+                  }
+
+               // extra
+                  elseif ( $key == 'extras'
+                           and !empty($old_item_id)
+                         ) {
+                     include_once('functions/text_functions.php');
+                     $extra_array = mb_unserialize($value);
+                     $extra_array['COPY']['ITEM_ID'] = $old_item_id;
+                     $extra_array['COPY']['COPYING_DATE'] = $current_date;
+                     $value = serialize($extra_array);
+                     $after = $key.'="'.encode(AS_DB,$value).'"';
+                  }
+
+                  else {
+                     $after = $key.'="'.encode(AS_DB,$value).'"';
+                  }
+
+                  if (!empty($after)) {
+                     if ($first) {
+                        $first = false;
+                        $before = ' ';
+                     } else {
+                        $before = ',';
+                     }
+                     $insert_query .= $before.$after;
+                     unset($after);
+                  }
+               }
+               $result_insert = $this->_db_connector->performQuery($insert_query);
+               if ( !isset($result_insert) ) {
                   include_once('functions/error_functions.php');
-                  trigger_error('lost old item id at copying data',E_USER_ERROR);
+                  trigger_error( 'Problem creating item from query: "'.$insert_query.'"',E_USER_ERROR);
+               } else {
+                  $new_item_id = $result_insert;
+                  if (!empty($old_item_id)) {
+                     $retour[CS_FILE_TYPE.$old_item_id] = $new_item_id;
+
+                     // copy file
+                     $disc_manager = $this->_environment->getDiscManager();
+                     $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
+                     $file_item = $this->getItem($old_item_id);
+                     if (!empty($file_item)) {
+                        $result = $disc_manager->copyFileFromRoomToRoom($old_id,$old_item_id,$file_item->getFileName(),$new_id,$new_item_id);
+                        if (!$result) {
+                           //include_once('functions/error_functions.php');
+                           //trigger_error('can not copy file on disc',E_USER_ERROR);
+                        }
+                     } else {
+                        include_once('functions/error_functions.php');
+                        trigger_error('can not get old file item',E_USER_ERROR);
+                     }
+                     unset($file_item);
+                     unset($disc_manager);
+                  } else {
+                     include_once('functions/error_functions.php');
+                     trigger_error('lost old item id at copying data',E_USER_ERROR);
+                  }
                }
             }
          }
       }
+      /*
       $disc_manager = $this->_environment->getDiscManager();
       $disc_manager->setPortalID($this->_environment->getCurrentPortalID());
 
@@ -573,6 +633,7 @@ class cs_file_manager extends cs_manager {
          }
       }
       unset($disc_manager);
+      */
       return $retour;
    }
 

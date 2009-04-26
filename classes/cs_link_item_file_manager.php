@@ -56,10 +56,12 @@ class cs_link_item_file_manager extends cs_link_father_manager {
       $current_date = getCurrentDateTimeInMySQL();
 
       $file_id_array = array();
+      $file_id_array2 = array();
       foreach ($id_array as $key => $value) {
          if (mb_stristr($key,CS_FILE_TYPE)) {
             $real_file_id = str_replace(CS_FILE_TYPE,'',$key);
             $file_id_array[] = $real_file_id;
+            $file_id_array2[] = $value;
          }
       }
 
@@ -72,40 +74,61 @@ class cs_link_item_file_manager extends cs_link_father_manager {
             include_once('functions/error_functions.php');
             trigger_error('Problems getting data "'.$this->_db_table.'" from query: "'.$query.'"',E_USER_WARNING);
          } else {
-            foreach ($result as $query_result) {
-               $insert_query  = '';
-               $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
-               $first = true;
-               $do_it = true;
-               foreach ($query_result as $key => $value) {
-                  $value = encode(FROM_DB,$value);
-                  if ($first) {
-                     $first = false;
-                     $before = ' ';
-                  } else {
-                     $before = ',';
-                  }
-                  if ( $key == 'deletion_date'
-                       or $key == 'deleter_id'
-                     ) {
-                     // do nothing
-                  } elseif ( $key == 'item_iid' ) {
-                     if ( isset($id_array[$value]) ) {
-                        $insert_query .= $before.$key.'="'.encode(AS_DB,$id_array[$value]).'"';
-                     } else {
-                        $do_it = false;
-                     }
-                  } elseif ($key == 'file_id' ) {
-                     if ( isset($id_array[CS_FILE_TYPE.$value]) ) {
-                        $insert_query .= $before.$key.'="'.encode(AS_DB,$id_array[CS_FILE_TYPE.$value]).'"';
-                     } else {
-                        $do_it = false;
-                     }
-                  }
+            $current_data_array = array();
 
-                  // default
-                  else {
-                     $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
+            $sql  = 'SELECT item_iid,file_id FROM '.$this->_db_table.' WHERE 1';
+            $sql .= ' AND file_id IN ('.implode(',',encode(AS_DB,$file_id_array2)).')';
+            $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  $current_data_array[] = array($sql_row['item_iid'],$sql_row['file_id']);
+               }
+            }
+
+            foreach ($result as $query_result) {
+               $do_it = true;
+               if ( in_array(array($id_array[$query_result['item_iid']],$id_array[CS_FILE_TYPE.$query_result['file_id']]),$current_data_array) ) {
+                  $do_it = false;
+               }
+
+               if ( $do_it ) {
+                  $insert_query  = '';
+                  $insert_query .= 'INSERT INTO '.$this->_db_table.' SET';
+                  $first = true;
+                  foreach ($query_result as $key => $value) {
+                     $value = encode(FROM_DB,$value);
+                     if ($first) {
+                        $first = false;
+                        $before = ' ';
+                     } else {
+                        $before = ',';
+                     }
+                     if ( $key == 'deletion_date'
+                          or $key == 'deleter_id'
+                        ) {
+                        // do nothing
+                     } elseif ( $key == 'item_iid' ) {
+                        if ( isset($id_array[$value]) ) {
+                           $insert_query .= $before.$key.'="'.encode(AS_DB,$id_array[$value]).'"';
+                        } else {
+                           $do_it = false;
+                        }
+                     } elseif ($key == 'file_id' ) {
+                        if ( isset($id_array[CS_FILE_TYPE.$value]) ) {
+                           $insert_query .= $before.$key.'="'.encode(AS_DB,$id_array[CS_FILE_TYPE.$value]).'"';
+                        } else {
+                           $do_it = false;
+                        }
+                     }
+
+                     // default
+                     else {
+                        $insert_query .= $before.$key.'="'.encode(AS_DB,$value).'"';
+                     }
                   }
                }
                if (!$do_it) {
