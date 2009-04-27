@@ -40,7 +40,14 @@ if ( $old_room_id > 99 ) {
    include_once('functions/error_functions.php');
    trigger_error('template room id is not valid',E_USER_ERROR);
 }
-$new_room = $context_item;
+if ( isset($context_item) ) {
+   $new_room = $context_item;
+} elseif ( isset($item) ) {
+   $new_room = $item;
+} else {
+   include_once('functions/error_functions.php');
+   trigger_error('current room is not valid',E_USER_ERROR);
+}
 $current_user_item = $environment->getCurrentUserItem();
 $creator_id = $current_user_item->getItemID();
 

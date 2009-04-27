@@ -935,6 +935,17 @@ if ($current_user->isGuest()) {
           }
        }
 
+         // template (private room)
+         $template_copy = false;
+         if ( $environment->inPrivateRoom()
+              and $item->isPrivateRoom()
+              and !empty($_POST['template_select'])
+              and $_POST['template_select'] != $item->getTemplateID()
+            ) {
+            $item->setTemplateID($_POST['template_select']);
+            $template_copy = true;
+         }
+
                   //******************************************//
 
                   // Save item
@@ -964,11 +975,24 @@ if ($current_user->isGuest()) {
        if ( isset($_POST['template_select'])
           and $_POST['template_select'] > 99
           and $_POST['template_select'] != 'disabled'
-          and ($item->isProjectRoom() or $item->isCommunityRoom() )
+          and ( $item->isProjectRoom()
+                or $item->isCommunityRoom()
+              )
           and $new_flag
        ) {
           // copy all entries from the template into the new room
           include_once('include/inc_room_copy.php');
+       }
+
+       // template select (private room)
+       elseif ($template_copy) {
+          if ( $item->isPrivateRoom()
+               and ( $_POST['template_select'] > 99
+                     or $_POST['template_select'] == -1
+                   )
+             ) {
+             include_once('include/inc_room_copy_private.php');
+          }
        }
 
                if ( !isset($_GET['option'])
