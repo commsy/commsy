@@ -32,7 +32,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $room_link_list = new cs_list();
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('COMMON_ROOM_META')); //COMMON_CAMPUS_META
+   $link_item->setTitle(getMessage('COMMON_ROOM_META'));
    $current_context = $environment->getCurrentContextItem();
    $link_item->setIconPath('images/cs_config/COMMON_ROOM_META.gif');
    $link_item->setDescription(getMessage('COMMON_ROOM_META_DESC'));

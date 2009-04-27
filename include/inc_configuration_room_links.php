@@ -32,7 +32,7 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $room_link_list = new cs_list();
 
    $link_item = new cs_link();
-   $link_item->setTitle(getMessage('COMMON_ROOM_META')); //COMMON_CAMPUS_META
+   $link_item->setTitle(getMessage('COMMON_ROOM_META'));
    $current_context = $environment->getCurrentContextItem();
    $link_item->setIconPath('images/cs_config/COMMON_ROOM_META.gif');
    $link_item->setDescription(getMessage('COMMON_ROOM_META_DESC'));
@@ -72,28 +72,25 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setParameter(array());
       $room_link_list->add($link_item);
 
-                 $link_item = new cs_link();
-                 $link_item->setTitle(getMessage('PREFERENCES_TAGS_CONFIGURATIONS'));
-                 $link_item->setDescription(getMessage('PREFERENCES_TAGS_CONFIGURATIONS_DESC'));
-                 $link_item->setIconPath('images/cs_config/CONFIGURATION_TAGS.gif');
-                 $link_item->setContextID($environment->getCurrentContextID());
-                 $link_item->setModule('configuration');
-                 $link_item->setFunction('tags');
-                 $link_item->setParameter('');
-                 $room_link_list->add($link_item);
+      $link_item = new cs_link();
+      $link_item->setTitle(getMessage('PREFERENCES_TAGS_CONFIGURATIONS'));
+      $link_item->setDescription(getMessage('PREFERENCES_TAGS_CONFIGURATIONS_DESC'));
+      $link_item->setIconPath('images/cs_config/CONFIGURATION_TAGS.gif');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('tags');
+      $link_item->setParameter('');
+      $room_link_list->add($link_item);
 
-
-                 $link_item = new cs_link();
-                 $link_item->setTitle(getMessage('PREFERENCES_LISTVIEWS_CONFIGURATION'));
-                 $link_item->setDescription(getMessage('PREFERENCES_LISTVIEWS_CONFIGURATION_DESC'));
-                 $link_item->setIconPath('images/cs_config/PREFERENCES_LISTVIEWS_CONFIGURATION.gif');
-                 $link_item->setContextID($environment->getCurrentContextID());
-                 $link_item->setModule('configuration');
-                 $link_item->setFunction('listviews');
-                 $link_item->setParameter('');
-                 $room_link_list->add($link_item);
-
-
+      $link_item = new cs_link();
+      $link_item->setTitle(getMessage('PREFERENCES_LISTVIEWS_CONFIGURATION'));
+      $link_item->setDescription(getMessage('PREFERENCES_LISTVIEWS_CONFIGURATION_DESC'));
+      $link_item->setIconPath('images/cs_config/PREFERENCES_LISTVIEWS_CONFIGURATION.gif');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('listviews');
+      $link_item->setParameter('');
+      $room_link_list->add($link_item);
    }
 
    if ( $environment->inProjectRoom()
@@ -104,24 +101,23 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_ROOM_HOME'));
       if ( $environment->inPrivateRoom() ) {
-          $link_item->setDescription(getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC'));
-      $link_item->setIconPath('images/cs_config/CONFIGURATION_ROOM_HOME.gif');
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('home');
-      $link_item->setParameter(array());
-      $room_link_list->add($link_item);
+         $link_item->setDescription(getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC'));
+         $link_item->setIconPath('images/cs_config/CONFIGURATION_ROOM_HOME.gif');
+         $link_item->setContextID($environment->getCurrentContextID());
+         $link_item->setModule('configuration');
+         $link_item->setFunction('home');
+         $link_item->setParameter(array());
+         $room_link_list->add($link_item);
       } else {
          $link_item->setDescription(getMessage('CONFIGURATION_ROOM_HOME_DESC'));
-      $link_item->setIconPath('images/cs_config/CONFIGURATION_ROOM_HOME.gif');
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('home');
-      $link_item->setParameter(array());
-      $room_link_list->add($link_item);
+         $link_item->setIconPath('images/cs_config/CONFIGURATION_ROOM_HOME.gif');
+         $link_item->setContextID($environment->getCurrentContextID());
+         $link_item->setModule('configuration');
+         $link_item->setFunction('home');
+         $link_item->setParameter(array());
+         $room_link_list->add($link_item);
       }
    }
-
 
    $link_item = new cs_link();
    $link_item->setTitle(getMessage('PREFERENCES_HEXACOLOR'));
@@ -132,8 +128,6 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setFunction('color');
    $link_item->setParameter(array());
    $room_link_list->add($link_item);
-
-
 
    if ( $environment->inPortal() ) {
       $link_item = new cs_link();

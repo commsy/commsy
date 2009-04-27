@@ -341,6 +341,14 @@ if ( $context_item->isLocked() ) {
       $file_manager->setIDArrayLimit($file_id_array);
       $file_manager->select();
    } else {
+      if ($context_item->withInformationBox()){
+         $params = array();
+         $params['environment'] = $environment;
+         $params['with_modifying_actions'] = $context_item->isOpen();
+         $information_view = $class_factory->getClass(HOME_INFORMATIONBOX_VIEW,$params);
+         unset($params);
+         $page->addLeft($information_view);
+      }
       include('pages/private_room_short.php');
    }
 

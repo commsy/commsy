@@ -918,7 +918,7 @@ class cs_page_room_view extends cs_page_view {
 
          $html .= LF.'<div id="main">'.LF;
 
-          $html .= $this->_getPluginInfosForBeforeContentAsHTML();
+         $html .= $this->_getPluginInfosForBeforeContentAsHTML();
 
          if ($show_agb_again) {
             $html .='&nbsp;';
@@ -938,8 +938,7 @@ class cs_page_room_view extends cs_page_view {
          if ($this->_environment->getCurrentModule()!='home' or isset($view->_title) or $show_agb_again){
             $html .='</div>';
          }
-         // @segment-end 64067
-         // @segment-begin 45532 asHTML():display-left_views/right_views-if-any()e.g.-if-mod=home
+
          // Left views
          if ( !empty($this->_views_right) ) {
             if ($this->_environment->getCurrentModule()=='home'){
@@ -953,8 +952,17 @@ class cs_page_room_view extends cs_page_view {
                $html .= '<div id="commsy_panels" style="width:100%;">'.LF;
                $html .='<div style="float:right; width:28%; padding-top:5px; padding-left:0px; vertical-align:top; text-align:left;">'.LF;
                $html .='<div style="width:250px;">'.LF;
-               if ( $this->_environment->inPrivateRoom() ){
-                  $html .= $this->_views_left[0]->_getListInfosAsHTML().LF;
+               if ( $this->_environment->inPrivateRoom() ) {
+                  $list_infos = '';
+                  foreach ( $this->_views_left as $view ) {
+                     if ( method_exists($view,'_getListInfosAsHTML') ) {
+                        $list_infos = $view->_getListInfosAsHTML();
+                        break;
+                     }
+                  }
+                  $html .= $list_infos.LF;
+                  unset($list_infos);
+                  unset($view);
                }
                $first = true;
                $count = 1;
@@ -1103,11 +1111,19 @@ class cs_page_room_view extends cs_page_view {
                      $html .= '<noscript>';
                      $html .= '<div class="homeheader">'.$noscript_title.' '.$desc.'</div>';
                      $html .= '</noscript>';
+                  } else {
+                     if ($view->getViewName() == $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
+                        $html .= '<div id="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
+                     }
                   }
                   $html .= $view->asHTML();
                   if (!$this->_environment->inPrivateRoom()){
-                     $html .= '</div>';
-                     $html .= '</div>';
+                     $html .= '</div>'.LF;
+                     $html .= '</div>'.LF;
+                  } else {
+                     if ($view->getViewName() == $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
+                        $html .= '</div>'.LF;
+                     }
                   }
                   $last_view = $view;
                }

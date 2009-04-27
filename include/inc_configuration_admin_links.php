@@ -68,7 +68,10 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $admin_link_list->add($link_item);
    }
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom() and !$environment->inPortal()) {
+   if ( !$environment->inServer()
+        and !$environment->inPrivateRoom()
+        and !$environment->inPortal()
+      ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
       $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
