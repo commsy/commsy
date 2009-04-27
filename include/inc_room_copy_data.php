@@ -160,6 +160,14 @@ foreach ( $array as $key => $value ) {
 }
 $new_room->setUsageInfoFormTextArray($new_array);
 
+// information box
+if ( $old_room->withInformationBox()
+     and isset($new_id_array)
+     and !empty($new_id_array[$old_room->getInformationBoxEntryID()])
+   ) {
+   $new_room->setInformationBoxEntryID($new_id_array[$old_room->getInformationBoxEntryID()]);
+}
+
 $new_room->save();
 
 ############################################

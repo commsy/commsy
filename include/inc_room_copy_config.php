@@ -139,4 +139,9 @@ if ( $old_room->existWiki() ) {
    $wiki_manager->copyWiki($old_room,$new_room);
    unset($wiki_manager);
 }
+
+// information box
+if ( $old_room->withInformationBox() ) {
+   $new_room->setwithInformationBox('yes');
+}
 ?>
