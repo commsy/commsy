@@ -932,10 +932,12 @@ class cs_manager {
                trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
             } else {
                foreach ( $sql_result as $sql_row ) {
-                  if ( empty($type_field) ) {
-                     $current_data_array[$sql_row[$title_field]] = $sql_row['item_id'];
-                  } else {
-                     $current_data_array[$sql_row[$type_field]][$sql_row[$title_field]] = $sql_row['item_id'];
+                  if ( !empty($sql_row[$title_field]) ) {
+                     if ( empty($type_field) ) {
+                        $current_data_array[$sql_row[$title_field]] = $sql_row['item_id'];
+                     } else {
+                        $current_data_array[$sql_row[$type_field]][$sql_row[$title_field]] = $sql_row['item_id'];
+                     }
                   }
                }
             }
@@ -952,6 +954,13 @@ class cs_manager {
             }
          } elseif ( DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
                     or DBTable2Type($this->_db_table) == CS_SECTION_TYPE
+                    or DBTable2Type($this->_db_table) == CS_ANNOUNCEMENT_TYPE
+                    or DBTable2Type($this->_db_table) == CS_DATE_TYPE
+                    or DBTable2Type($this->_db_table) == CS_DISCUSSION_TYPE
+                    or DBTable2Type($this->_db_table) == CS_TODO_TYPE
+                    or DBTable2Type($this->_db_table) == CS_ANNOTATION_TYPE
+                    or DBTable2Type($this->_db_table) == CS_DISCARTICLE_TYPE
+                    or DBTable2Type($this->_db_table) == CS_STEP_TYPE
                   ) {
             $item_id = 'item_id';
             $modification_date = 'modification_date';
@@ -983,11 +992,26 @@ class cs_manager {
                   $current_data_array[] = array($sql_row['from_item_id'],$sql_row['to_item_id']);
                }
             }
+         } elseif ( DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE ) {
+            $sql  = 'SELECT first_item_id,second_item_id FROM '.$this->_db_table.' WHERE context_id="'.encode(AS_DB,$new_id).'"';
+            $sql .= ' AND deleter_id IS NULL AND deletion_date IS NULL;';
+            $sql_result = $this->_db_connector->performQuery($sql);
+            if ( !isset($sql_result) ) {
+               include_once('functions/error_functions.php');
+               trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
+            } else {
+               foreach ( $sql_result as $sql_row ) {
+                  $current_data_array[] = array($sql_row['first_item_id'],$sql_row['second_item_id']);
+               }
+            }
          }
          foreach ($result as $query_result) {
             $do_it = true;
 
             if ( DBTable2Type($this->_db_table) == CS_LABEL_TYPE
+                 and !empty($current_data_array)
+                 and !empty($current_data_array[$query_result[$type_field]])
+                 and is_array($current_data_array[$query_result[$type_field]])
                  and array_key_exists($query_result[$title_field],$current_data_array[$query_result[$type_field]])
                ) {
                $retour[$query_result['item_id']] = $current_data_array[$query_result[$type_field]][$query_result[$title_field]];
@@ -1003,12 +1027,25 @@ class cs_manager {
                $do_it = false;
             } elseif ( ( DBTable2Type($this->_db_table) == CS_MATERIAL_TYPE
                          or DBTable2Type($this->_db_table) == CS_SECTION_TYPE
+                         or DBTable2Type($this->_db_table) == CS_ANNOUNCEMENT_TYPE
+                         or DBTable2Type($this->_db_table) == CS_DATE_TYPE
+                         or DBTable2Type($this->_db_table) == CS_DISCUSSION_TYPE
+                         or DBTable2Type($this->_db_table) == CS_TODO_TYPE
+                         or DBTable2Type($this->_db_table) == CS_ANNOTATION_TYPE
+                         or DBTable2Type($this->_db_table) == CS_DISCARTICLE_TYPE
+                         or DBTable2Type($this->_db_table) == CS_STEP_TYPE
                        )
                        and array_key_exists($query_result['item_id'],$current_data_array)) {
                $retour[$query_result['item_id']] = $current_data_array[$query_result['item_id']];
                $do_it = false;
             } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE
                        and in_array(array($id_array[$query_result['from_item_id']],$id_array[$query_result['to_item_id']]),$current_data_array)
+                     ) {
+               $do_it = false;
+            } elseif ( DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE
+                       and ( in_array(array($id_array[$query_result['first_item_id']],$id_array[$query_result['second_item_id']]),$current_data_array)
+                             or in_array(array($id_array[$query_result['second_item_id']],$id_array[$query_result['first_item_id']]),$current_data_array)
+                           )
                      ) {
                $do_it = false;
             }

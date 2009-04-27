@@ -31,6 +31,13 @@ $time_start = getmicrotime();
 
 $table_array = array();
 $table_array[] = 'section';
+$table_array[] = 'announcement';
+$table_array[] = 'dates';
+$table_array[] = 'discussions';
+$table_array[] = 'todos';
+$table_array[] = 'discussionarticles';
+$table_array[] = 'step';
+$table_array[] = 'annotations';
 
 echo ('add extras.'.LINEBREAK);
 $success = true;
