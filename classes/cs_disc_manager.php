@@ -57,12 +57,14 @@ class cs_disc_manager {
       if (!empty($this->_first_id)) {
          $retour .= $this->_first_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('first_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('first_id is not set',E_USER_ERROR);
       }
       if (!empty($this->_second_id)) {
          $retour .= $this->_second_id.'/';
       } else {
-         include_once('functions/error_functions.php');trigger_error('second_id is not set',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('second_id is not set',E_USER_ERROR);
       }
       return $retour;
    }
@@ -73,7 +75,9 @@ class cs_disc_manager {
 
    function existsFile ($filename) {
       $retour = false;
-      if (file_exists($this->_getFilePath().$filename)) {
+      if ( !empty($filename)
+           and file_exists($this->_getFilePath().$filename)
+         ) {
          $retour = true;
       }
       return $retour;
@@ -81,7 +85,9 @@ class cs_disc_manager {
 
    function unlinkFile ($filename) {
       $retour = false;
-      if ($this->existsFile($filename)) {
+      if (!empty($filename)
+           and $this->existsFile($filename)
+         ) {
          $retour = unlink($this->_getFilePath().$filename);
       }
       return $retour;

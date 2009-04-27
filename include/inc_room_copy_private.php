@@ -31,7 +31,15 @@
 // initialisation
 $old_room_id = $_POST['template_select'];
 $room_manager = $environment->getPrivateRoomManager();
-$old_room = $room_manager->getItem($old_room_id);
+if ( $old_room_id > 99 ) {
+   $old_room = $room_manager->getItem($old_room_id);
+} elseif ( $old_room_id == -1 ) {
+   $old_room = $room_manager->getNewItem();
+   $old_room->setItemID(-1);
+} else {
+   include_once('functions/error_functions.php');
+   trigger_error('template room id is not valid',E_USER_ERROR);
+}
 $new_room = $context_item;
 $current_user_item = $environment->getCurrentUserItem();
 $creator_id = $current_user_item->getItemID();
@@ -43,5 +51,7 @@ include_once('include/inc_room_copy_config.php');
 $new_room->save();
 
 // copy data
-include_once('include/inc_room_copy_data.php');
+if ( $old_room->getItemID() > 99 ) {
+   include_once('include/inc_room_copy_data.php');
+}
 ?>

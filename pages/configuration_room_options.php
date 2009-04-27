@@ -351,8 +351,9 @@ if ($command != 'error') { // only if user is allowed to edit colors
          $context_item->generateLayoutImages();
          if ($template_copy) {
             if ( $context_item->isPrivateRoom()
-                 and $_POST['template_select'] > 99
-                 // standard room settings ???
+                 and ( $_POST['template_select'] > 99
+                       or $_POST['template_select'] == -1
+                     )
                ) {
                include_once('include/inc_room_copy_private.php');
             }

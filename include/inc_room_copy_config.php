@@ -116,20 +116,29 @@ $new_room->setEmailTextArray($old_room->getEmailTextArray());
 // design
 if ( $old_room->isDesign7() ) {
    $new_room->setDesignTo7();
+} elseif( $old_room->isDesign6() ) {
+   $new_room->setDesignTo6();
 }
 
 // title and logo
 if ( $old_room->isPrivateRoom() ) {
    $title = $old_room->getTitlePure();
-   if ( $title == $translator->getMessage('COMMON_PRIVATEROOM') ) {
+   if ( empty($title)
+        or $title == $translator->getMessage('COMMON_PRIVATEROOM')
+      ) {
       $title = 'PRIVATEROOM';
    }
    $new_room->setTitle($title);
 
    $disc_manager = $environment->getDiscManager();
-   if ( $disc_manager->copyImageFromRoomToRoom($old_room->getLogoFilename(),$new_room->getItemID()) ) {
-      $logo_file_name_new = str_replace($old_room->getItemID(),$new_room->getItemID(),$old_room->getLogoFilename());
-      $new_room->setLogoFilename($logo_file_name_new);
+   if ( $old_room->getItemID() > 99 ) {
+      if ( $disc_manager->copyImageFromRoomToRoom($old_room->getLogoFilename(),$new_room->getItemID()) ) {
+         $logo_file_name_new = str_replace($old_room->getItemID(),$new_room->getItemID(),$old_room->getLogoFilename());
+         $new_room->setLogoFilename($logo_file_name_new);
+      }
+   } else {
+      $new_room->setLogoFilename('');
+      $disc_manager->unlinkFile($new_room->getLogoFilename());
    }
 }
 
@@ -138,10 +147,15 @@ if ( $old_room->existWiki() ) {
    $wiki_manager = $environment->getWikiManager();
    $wiki_manager->copyWiki($old_room,$new_room);
    unset($wiki_manager);
+} else {
+   $new_room->unsetWikiExists();
+   // wiki config and wiki data will not be deleted
 }
 
 // information box
 if ( $old_room->withInformationBox() ) {
    $new_room->setwithInformationBox('yes');
+} else {
+   $new_room->setwithInformationBox('no');
 }
 ?>
