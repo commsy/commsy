@@ -194,6 +194,9 @@ class cs_wiki_manager extends cs_manager {
 
       // date time format
       $str .= '@include_once("$FarmD/cookbook/EZDate.php");'.LF;
+      $str .= 'if (function_exists(\'EZDate\')) {'.LF;
+      $str .= '   $WITH_EZDATE = true;'.LF;
+      $str .= '}'.LF;
 
       // section edit
       if ( $item->wikiWithSectionEdit() ) {
