@@ -578,6 +578,12 @@ class cs_connection_soap {
          $auth_source = $session->getValue('auth_source');
          $room_manager = $this->_environment->getRoomManager();
          $room_item = $room_manager->getItem($context_id);
+         if ( !isset($room_item)
+              or empty($room_item)
+            ) {
+            $room_manager = $this->_enviroment->getPrivateRoomManager() ;
+            $room_item = $room_manager->getItem( $context_id) ;
+         }
          $room_context_id = $room_item->getContextID();
          if ( $room_context_id != $portal_id ) {
             $info = 'ERROR: GET MATERIAL LIST';
@@ -682,6 +688,12 @@ class cs_connection_soap {
                $this->_environment->setCurrentContextID($context_id);
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem( $context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      $real_manager = $this->_environment->getManager($commsy_item->getItemType());
@@ -758,6 +770,12 @@ class cs_connection_soap {
                $this->_environment->setCurrentContextID($context_id);
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      $result  = '<section_list>';
@@ -816,6 +834,12 @@ class cs_connection_soap {
             if ( !empty($context_id) ) {
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      $file_item->setPortalID($portal_id);
@@ -866,6 +890,12 @@ class cs_connection_soap {
             if ( !empty($context_id) ) {
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      if ( $file_item->mayEditByUserID($user_id,$auth_source) ) {
@@ -1111,6 +1141,12 @@ class cs_connection_soap {
             if ( !empty($context_id) ) {
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      $file_xml_object = simplexml_load_string($file_item_xml);
@@ -1184,6 +1220,12 @@ class cs_connection_soap {
             if ( !empty($context_id) ) {
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($context_id);
+               if ( !isset($room_item)
+                    or empty($room_item)
+                  ) {
+                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_item = $room_manager->getItem($context_id);
+               }
                if ( isset($room_item) and !empty($room_item) ) {
                   if ( $room_item->mayEnterByUserID($user_id,$auth_source) ) {
                      $file_manager = $this->_environment->getFileManager();
@@ -1471,6 +1513,12 @@ class cs_connection_soap {
       $auth_source = $session->getValue('auth_source');
       $room_manager = $this->_environment->getRoomManager();
       $room_item = $room_manager->getItem($context_id);
+      if ( !isset($room_item)
+           or empty($room_item)
+         ) {
+         $room_manager = $this->_enviroment->getPrivateRoomManager();
+         $room_item = $room_manager->getItem($context_id);
+      }
       $room_context_id = $room_item->getContextID();
       if ( $room_context_id != $portal_id ) {
         $result = false;
