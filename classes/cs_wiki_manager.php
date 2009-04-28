@@ -189,6 +189,12 @@ class cs_wiki_manager extends cs_manager {
          $str .= '@require_once("$FarmD/cookbook/phpinc-markup.php");'.LF;
       }
 
+      // mail send mechanism (change to wiki config)
+      $str .= '@include_once("$FarmD/cookbook/sendmail/sendmail.php");'.LF;
+
+      // date time format
+      $str .= '@include_once("$FarmD/cookbook/EZDate.php");'.LF;
+
       // section edit
       if ( $item->wikiWithSectionEdit() ) {
          $str .= '$group_temp = PageVar($pagename, \'$Group\');'.LF;
