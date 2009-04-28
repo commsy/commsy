@@ -84,9 +84,15 @@ if ( !isset($environment) and isset($this->_environment) ) {
         and !$context_item->isGrouproom()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
-      $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
-      $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'));
+      if ( $environment->inPrivateRoom() ) {
+         $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
+         $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'));
+         $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE2'));
+      } else {
+         $link_item->setTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
+         $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
+         $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'));
+      }
       $link_item->setIconPath('images/commsyicons/48x48/config/template_options.png');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');

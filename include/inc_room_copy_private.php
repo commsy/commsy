@@ -44,6 +44,8 @@ if ( isset($context_item) ) {
    $new_room = $context_item;
 } elseif ( isset($item) ) {
    $new_room = $item;
+} elseif ( isset($room_item) ) {
+   $new_room = $room_item;
 } else {
    include_once('functions/error_functions.php');
    trigger_error('current room is not valid',E_USER_ERROR);

@@ -1458,11 +1458,12 @@ class cs_form_view extends cs_view {
                }
             }
          } elseif ( isset($form_element_array[0]['type'])
-                    and (
-                    ($form_element_array[0]['type'] == 'textarea' and $form_element_array[0]['full_width'])
-
-                  )
-               ) {
+                    and ( ( $form_element_array[0]['type'] == 'textarea'
+                            and $form_element_array[0]['full_width']
+                          )
+                          or ( $form_element_array[0]['type'] == 'subheadline' )
+                        )
+                  ) {
                   $html .= '      <td class="key" colspan="2" style="width: 100%; ">';
          } elseif (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'explanation'){
                   $html .= '      <td colspan="2" style="width: 100%; padding-top:10px; padding-bottom:10px;">';
@@ -1470,7 +1471,9 @@ class cs_form_view extends cs_view {
                   $html .= '      <td class="key" colspan="2" style="width: 100%; "><div id ="form_title">';
          } elseif (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titletext'){
                   $html .= '      <td class="infoborder" class="key" colspan="2" style="width: 100%; "><div>';
-         } elseif (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline'){
+         } elseif ( isset($form_element_array[0]['type'])
+                      and $form_element_array[0]['type'] == 'emptyline'
+                  ) {
                   $html .= '      <td class="infoborder" colspan="2" style="width: 100%; ">';
          } else {
             if (!$this->_display_plain) {
@@ -1513,6 +1516,7 @@ class cs_form_view extends cs_view {
       if (!(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titlefield')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titletext')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline')
+          and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'subheadline')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'explanation')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'textarea' and $form_element_array[0]['full_width']) ){
           if ( $this->_with_description  ) {
@@ -1527,8 +1531,8 @@ class cs_form_view extends cs_view {
                if ($this->_special_color) {
                   $html .= '      <td class="room_window_formfield" >'."\n";
                } else {
-                   if (isset($form_element_array[0]['without_line']) AND $form_element_array[0]['without_line']) {
-          $html .= '      <td class="formfield" style="border-bottom: none;">';
+                  if (isset($form_element_array[0]['without_line']) AND $form_element_array[0]['without_line']) {
+                     $html .= '      <td class="formfield" style="border-bottom: none;">';
                   } else {
                      $html .= '      <td class="formfield">';
                   }
@@ -2251,16 +2255,16 @@ class cs_form_view extends cs_view {
                } elseif ( isset($form_element['type']) and $form_element['type'] == 'checkboxgroup' ) {
                   $text = '   <tr class="checkboxgroup">'.LF;
                } else {
-                  $text = '   <tr>'."\n";
+                  $text = '   <tr>'.LF;
                }
             }
             if ( !(isset($form_element['type']) and $form_element['type'] == 'netnavigation')
-               and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzwordlist')
-               and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzword')
-               and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'taglist')
-               and (!isset($form_element['type']) or $form_element['type'] != 'titlefield')
-               and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'tag')
-            ) {
+                 and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzwordlist')
+                 and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzword')
+                 and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'taglist')
+                 and (!isset($form_element['type']) or $form_element['type'] != 'titlefield')
+                 and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'tag')
+               ) {
                $html .= $text.$this->_getFormElementAsHTML($form_element).'   </tr>'.LF;
             }
          }

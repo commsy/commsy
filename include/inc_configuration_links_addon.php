@@ -119,8 +119,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
    }
 
    global $c_plugin_array;
-   if ( isset($c_plugin_array['HTML']) and !empty($c_plugin_array['HTML']) ) {
-      foreach ($c_plugin_array['HTML'] as $plugin) {
+   if ( isset($c_plugin_array) and !empty($c_plugin_array) ) {
+      foreach ($c_plugin_array as $plugin) {
          $plugin_class = $environment->getPluginClass($plugin);
          if ( method_exists($plugin_class,'getLinkItemForConfigurationIndex') ) {
             $link_item = $plugin_class->getLinkItemForConfigurationIndex();

@@ -26,11 +26,11 @@ $this->includeClass(RUBRIC_FORM);
 
 class cs_configuration_template_options_form extends cs_rubric_form {
 
-var $_with_template_form_element = false;
+   var $_with_template_form_element = false;
 
-var $_with_template_form_element2 = false;
+   var $_with_template_form_element2 = false;
 
-var $_with_template_form_element3 = false;
+   var $_with_template_form_element3 = false;
 
    function cs_configuration_template_options_form ($environment) {
       $this->cs_rubric_form($environment);
@@ -41,6 +41,7 @@ var $_with_template_form_element3 = false;
       // room templates
       $current_context = $this->_environment->getCurrentContextItem();
       $this->_with_template_form_element = true;
+      $this->_with_template_form_element_select = false;
 
       // disable template checkbox
       $this->_disable_template_form_element = $current_context->isOpen();
@@ -171,11 +172,100 @@ var $_with_template_form_element3 = false;
             unset($current_user);
          }
       }
+
+      // template in private rooms
+      if ( $this->_environment->inPrivateRoom()
+           and !$current_context->isTemplate()
+         ) {
+         $room_manager = $this->_environment->getPrivateRoomManager();
+         $room_manager->setContextLimit($current_portal->getItemID());
+         $room_manager->setTemplateLimit();
+         $room_manager->select();
+         $room_list = $room_manager->get();
+         #$default_id = $this->_environment->getCurrentPortalItem()->getDefaultPrivateRoomTemplateID();
+         $default_id = -1;
+         if ($room_list->isNotEmpty() or $default_id != '-1' ) {
+            $temp_array = array();
+            $temp_array['text'] = '*'.$this->_translator->getMessage('CONFIGURATION_TEMPLATE_NO_CHOICE_PRIVATEROOM');
+            $temp_array['value'] = -1;
+            $this->_template_array[] = $temp_array;
+            $temp_array = array();
+            $temp_array['text'] = '------------------------';
+            $temp_array['value'] = 'disabled';
+            $this->_template_array[] = $temp_array;
+            $current_user = $this->_environment->getCurrentUser();
+            if ( $default_id != '-1' ) {
+               $default_item = $room_manager->getItem($default_id);
+               if ( isset($default_item) ) {
+                  $template_availability = $default_item->getTemplateAvailability();
+                  if( ($template_availability == '0') and $default_item->isClosed() ){
+                     $temp_array['text'] = '*'.$default_item->getTitle();
+                     $temp_array['value'] = $default_item->getItemID();
+                     $this->_template_array[] = $temp_array;
+                     $temp_array = array();
+                     $temp_array['text'] = '------------------------';
+                     $temp_array['value'] = 'disabled';
+                     $this->_with_template_form_element_select = true;
+                     $this->_template_array[] = $temp_array;
+                     $this->_javascript_array[$default_item->getItemID()] = $default_item->getTemplateDescription();
+                  }
+               }
+            }
+            $item = $room_list->getFirst();
+            while ($item) {
+               $temp_array = array();
+               $template_availability = $item->getTemplateAvailability();
+
+               if ( $template_availability == '0' ) {
+                  if ( $item->getItemID() != $default_id
+                       and $item->getItemID() != $current_context->getItemID()
+                     ) {
+                     $temp_array['text'] = $item->getTitle();
+                     $temp_array['value'] = $item->getItemID();
+                     $this->_with_template_form_element_select = true;
+                     $this->_template_array[] = $temp_array;
+                     $this->_javascript_array[$item->getItemID()] = $item->getTemplateDescription();
+                  }
+               }
+               $item = $room_list->getNext();
+            }
+         }
+         unset($room_manager);
+      }
    }
 
 
    function _createForm () {
-
+      // specials in private room
+      if ( $this->_environment->inPrivateRoom() ) {
+         // select a template
+         if ( $this->_with_template_form_element_select ) {
+            $this->_form->addSubHeadline('header_template_select',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_TITLE_SELECT'));
+            $this->_form->addSelect('template_select',
+                                    $this->_template_array,
+                                    '',
+                                    $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE'),
+                                    '',
+                                    0,
+                                    false,
+                                    false,
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '',
+                                    '27',
+                                    false,
+                                    false,
+                                    '10',
+                                    'onChange="cs_toggle_template()"'
+                                   );
+            $this->_form->combine('vertical');
+            $this->_form->addText('template_select_text','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC_PRIVATEROOM'),'',false,'','','left','','id="template_extention"');
+            $this->_form->addEmptyline();
+            $this->_form->addSubHeadline('header_template_make',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_TITLE_MAKE'));
+         }
+      }
 
         // template functions
         if ($this->_with_template_form_element) {
@@ -236,9 +326,12 @@ var $_with_template_form_element3 = false;
          }else{
             $this->_values['description'] = $description;
          }
+
+         // templates in private rooms
+         if ( $current_context->isPrivateRoom() ) {
+            $this->_values['template_select'] = $current_context->getTemplateID();
+         }
       }
    }
-
-
 }
 ?>

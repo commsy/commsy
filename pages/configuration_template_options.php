@@ -93,10 +93,32 @@ else {
             $room_item->setTemplateDescription($_POST['description']);
          }
 
+         // template
+         $template_copy = false;
+         if ( $environment->inPrivateRoom()
+              and $room_item->isPrivateRoom()
+              and !empty($_POST['template_select'])
+              and $_POST['template_select'] != $room_item->getTemplateID()
+            ) {
+            $room_item->setTemplateID($_POST['template_select']);
+            $template_copy = true;
+         }
+
          // Save item
          $room_item->save();
          $form_view->setItemIsSaved();
          $is_saved = true;
+
+         // template 2
+         if ($template_copy) {
+            if ( $room_item->isPrivateRoom()
+                 and ( $_POST['template_select'] > 99
+                       or $_POST['template_select'] == -1
+                     )
+               ) {
+               include_once('include/inc_room_copy_private.php');
+            }
+         }
       }
 
       if ( !isset($_GET['option']) ) {

@@ -336,7 +336,11 @@ class cs_configuration_form_view extends cs_form_view {
                break;
             case 'CONFIGURATION_TEMPLATE_OPTIONS':
                $image = '<img src="images/commsyicons/32x32/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
+               if ( $this->_environment->inPrivateRoom() ) {
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE');
+               } else {
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
+               }
                break;
             default:
                $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view";	// "Bitte Messagetag-Fehler melden"
@@ -645,12 +649,16 @@ class cs_configuration_form_view extends cs_form_view {
              #and !$context_item->isPrivateRoom()
            ) {
            $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+           $alt = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
+           if ( $context_item->isPrivateRoom() ) {
+              $alt = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE');
+           }
            $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'template_options',
                                        '',
                                        $image,
-                                       getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE')).LF;
+                                       $alt).LF;
         }
         $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
         $html .= ahref_curl($this->_environment->getCurrentContextID(),
