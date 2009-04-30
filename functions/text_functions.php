@@ -32,7 +32,7 @@ function _text_get2php ($text) {
 
 function _text_form2php ($text) {
    // Fix up line feed characters from different clients (Windows, Mac => Unix)
-   $text = preg_replace('~\r\n?~u', "\n", $text);
+   $text = mb_ereg_replace('~\r\n?~u', "\n", $text);
    $text = trim($text);
 
    // security out of fckeditor
@@ -891,6 +891,36 @@ function toggleUmlaut($value) {
    $retour = str_replace('Ü','Ue',$retour);
    $retour = str_replace('ü','ue',$retour);
    $retour = str_replace('ß','ss',$retour);
+   return $retour;
+}
+
+function toggleUmlautTemp($value) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   $retour = $value;
+   $retour = str_replace('Ä','AAAEEE',$retour);
+   $retour = str_replace('ä','aaaeee',$retour);
+   $retour = str_replace('Ö','OOOEEE',$retour);
+   $retour = str_replace('ö','oooeee',$retour);
+   $retour = str_replace('Ü','UUUEEE',$retour);
+   $retour = str_replace('ü','uuueee',$retour);
+   $retour = str_replace('ß','SsSsSs',$retour);
+   return $retour;
+}
+
+function toggleUmlautTempBack($value) {
+   // ------------------
+   // --->UTF8 - OK<----
+   // ------------------
+   $retour = $value;
+   $retour = str_replace('AAAEEE','Ä',$retour);
+   $retour = str_replace('aaaeee','ä',$retour);
+   $retour = str_replace('OOOEEE','Ö',$retour);
+   $retour = str_replace('oooeee','ö',$retour);
+   $retour = str_replace('UUUEEE','Ü',$retour);
+   $retour = str_replace('uuueee','ü',$retour);
+   $retour = str_replace('SsSsSs','ß',$retour);
    return $retour;
 }
 
