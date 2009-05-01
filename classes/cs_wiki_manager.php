@@ -673,6 +673,11 @@ class cs_wiki_manager extends cs_manager {
 
    private function _copyWikiConfig ($old_room, $new_room) {
       $new_room->setWikiExists();
+      if ( $old_room->isWikiActive() ) {
+         $new_room->setWikiActive();
+      } else {
+         $new_room->setWikiInactive();
+      }
       if ( $old_room->issetWikiHomeLink() ) {
          $new_room->setWikiHomeLink();
       } else {
