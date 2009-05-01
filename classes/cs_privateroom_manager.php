@@ -188,6 +188,9 @@ class cs_privateroom_manager extends cs_context_manager {
      if (isset($this->_room_type)) {
         $query .= ' AND '.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'"';
      }
+     if (isset($this->_template_limit)) {
+        $query .= ' AND '.$this->_db_table.'.template = "1"';
+     }
 
      if (isset($this->_order)) {
         if ($this->_order == 'date') {
