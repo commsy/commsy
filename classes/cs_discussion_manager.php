@@ -144,6 +144,13 @@ class cs_discussion_manager extends cs_manager {
       return $this->getIDArray();
    }
 
+
+   function _buildItem($db_array) {
+      include_once('functions/text_functions.php');
+      $db_array['extras'] = mb_unserialize($db_array['extras']);
+      return parent::_buildItem($db_array);
+   }
+
    function _performQuery($mode = 'select') {
      if ($mode == 'count') {
         $query = 'SELECT count(DISTINCT discussions.item_id) AS count';
@@ -426,6 +433,7 @@ class cs_discussion_manager extends cs_manager {
                'modifier_id="'.encode(AS_DB,$modificator->getItemID()).'",'.
                'modification_date="'.$modification_date.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
+               'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'public="'.encode(AS_DB,$public).'"';
       $article_id = $item->getLatestArticleID();
       if (!empty($article_id)) {

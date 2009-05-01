@@ -358,6 +358,16 @@ class cs_discussion_detail_view extends cs_detail_view {
 
       $html  = LF.'<!-- BEGIN OF DISCUSSION ITEM DETAIL -->'.LF;
 
+      if ($item->isExportToWiki()) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
+         $temp_array[] = $item->getExportToWikiLink();
+         $formal_data1[] = $temp_array;
+      }
+      if ( !empty($formal_data1) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data1);
+      }
+
       // Index
       if ( isset($subitems) ) {
          $id_array = array();

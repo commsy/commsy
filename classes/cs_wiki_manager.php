@@ -1243,7 +1243,6 @@ function exportItemToWiki($current_item_id,$rubric){
        $params = array();
        $params['environment'] = $this->_environment;
        $wiki_view = $class_factory->getClass(WIKI_VIEW,$params);
-
        $wiki_view->setItem($item);
        $description = $wiki_view->formatForWiki($description);
        $description = $this->encodeUmlaute($description);
