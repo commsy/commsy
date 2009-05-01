@@ -1284,6 +1284,7 @@ function exportItemToWiki($current_item_id,$rubric){
           foreach ($file_array as $file) {
              $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
              $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
+             $new_filename = $new_filename.'.'.$file->getExtension();
              copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename);
              $new_link = $this->encodeUrlToHtml($file->getFileName());
              $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
@@ -1374,6 +1375,7 @@ function exportItemToWiki($current_item_id,$rubric){
                 foreach ($file_array as $file) {
                    $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
                    $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
+                   $new_filename = $new_filename.'.'.$file->getExtension();
                    copy($c_commsy_path_file . '/' . $file->getDiskFileName(),$c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename);
                    $new_link = $this->encodeUrlToHtml($file->getFileName());
                    $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
