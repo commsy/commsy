@@ -90,7 +90,7 @@ class cs_wiki_view extends cs_view {
                  or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
                  or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                ) {
-               $source = $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder();
+               $source = $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $file->getDiskFileNameWithoutFolder().'.'.$file->getExtension();
             }
          }
       } else {
@@ -196,7 +196,7 @@ class cs_wiki_view extends cs_view {
           $material_version_list = $material_manager->getVersionList($array[1]);
           $material_item = $material_version_list->getFirst();
           if(!empty($material_item) && $material_item->isExportToWiki()){
-            $link_text = '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=CommSy.Material' . $array[1] . '">' . $word . '</a>';
+            $link_text = '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=Main.Material' . $array[1] . '">' . $word . '</a>';
           } else {
             $link_text = '<a href="' . $c_commsy_domain . $c_commsy_url_path . '/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=content&fct=detail&iid=' . $array[1] . '">' . $word . '</a>';
           }
@@ -258,7 +258,7 @@ class cs_wiki_view extends cs_view {
                $target = '';
             }
             //$source = $file->getUrl();
-            $source = $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/CommSy/' . $file->getDiskFileNameWithoutFolder();
+            $source = $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $file->getDiskFileNameWithoutFolder().'.'.$file->getExtension();
             $link_text = '<a href="'.$source.'"'.$target.'>'.$name.'</a>'.$kb;
          }
       }
