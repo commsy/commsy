@@ -581,7 +581,7 @@ class cs_connection_soap {
          if ( !isset($room_item)
               or empty($room_item)
             ) {
-            $room_manager = $this->_enviroment->getPrivateRoomManager() ;
+            $room_manager = $this->_environment->getPrivateRoomManager() ;
             $room_item = $room_manager->getItem( $context_id) ;
          }
          $room_context_id = $room_item->getContextID();
@@ -691,7 +691,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem( $context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -773,7 +773,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem($context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -837,7 +837,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem($context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -893,7 +893,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem($context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -1144,7 +1144,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem($context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -1223,7 +1223,7 @@ class cs_connection_soap {
                if ( !isset($room_item)
                     or empty($room_item)
                   ) {
-                  $room_manager = $this->_enviroment->getPrivateRoomManager();
+                  $room_manager = $this->_environment->getPrivateRoomManager();
                   $room_item = $room_manager->getItem($context_id);
                }
                if ( isset($room_item) and !empty($room_item) ) {
@@ -1516,7 +1516,7 @@ class cs_connection_soap {
       if ( !isset($room_item)
            or empty($room_item)
          ) {
-         $room_manager = $this->_enviroment->getPrivateRoomManager();
+         $room_manager = $this->_environment->getPrivateRoomManager();
          $room_item = $room_manager->getItem($context_id);
       }
       $room_context_id = $room_item->getContextID();
