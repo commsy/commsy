@@ -384,6 +384,7 @@ class cs_view {
 
    function _text_as_form1 ($text) {
       $text = $this->_cs_htmlspecialchars1($text);
+      $text = str_replace('"','&quot;',$text);
       return $text;
    }
 
