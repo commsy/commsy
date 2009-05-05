@@ -462,61 +462,6 @@ class cs_authentication {
 
       $allowed = $this->checkAccount($uid, $password, $auth_source);
 
-      // verify password to user id
-      /*
-      $allowed = false;
-      if ( $uid == 'root' or $uid == 'IMS_USER' ) { // if root or ims_user use default auth manager
-         if ( !isset($this->_commsy_auth_manager) ) {
-            $portal_item = $this->_environment->getCurrentPortalItem();
-            if ( !isset( $portal_item ) ) {
-               $portal_item = $this->_environment->getServerItem();
-            }
-            $auth_source_list = $portal_item->getAuthSourceList();
-            if ( isset($auth_source_list) and !empty($auth_source_list) ) {
-               $auth_source_item = $auth_source_list->getFirst();
-               $found = false;
-               while ( $auth_source_item and !$found ) {
-                  if ( $auth_source_item->isCommSyDefault() ) {
-                     $found = true;
-                  } else {
-                     $auth_source_item = $auth_source_list->getNext();
-                  }
-               }
-               $auth_manager = $this->getAuthManager($auth_source_item->getItemID());
-               $auth_manager->setContextLimit($this->_environment->getServerID());
-            }
-         }
-         $allowed = $auth_manager->checkAccount($uid,$password);
-         $this->_used_auth_manager = $this->_commsy_auth_manager;
-         $this->_ask_for_root = true;
-      } elseif ( !empty($auth_source) ) {
-         $auth_manager = $this->getAuthManager($auth_source);
-         $allowed = $auth_manager->checkAccount($uid,$password);
-         $this->_used_auth_manager = $auth_manager;
-      } elseif ( isset($this->_auth_source_list) and !$this->_auth_source_list->isEmpty() ) {
-         $auth_source_item = $this->_auth_source_list->getFirst();
-         $allowed = false;
-         while ( $auth_source_item and !$allowed ) {
-            if ( $auth_source_item->show() ) {
-               $auth_manager = $this->getAuthManager($auth_source_item->getItemID());
-               $allowed = $auth_manager->checkAccount($uid,$password);
-               if ( !$allowed ) {
-                  $auth_source_item = $this->_auth_source_list->getNext();
-               } else {
-                  $auth_source = $auth_source_item->getItemID();
-                  $this->_used_auth_manager = $auth_manager;
-                  $this->_auth_source_granted = $auth_source;
-               }
-            } else {
-               $auth_source_item = $this->_auth_source_list->getNext();
-            }
-         }
-      } else {
-         include_once('functions/error_functions.php');
-         trigger_error('need auth source to check account '.$uid,E_USER_ERROR);
-      }
-      */
-
       if ($allowed and !$this->_ask_for_root) {
          $user_item = $this->_getPortalUserItem($uid,$this->_auth_source_granted);
          if ( isset($user_item) and $user_item->getItemID() > 0) {
