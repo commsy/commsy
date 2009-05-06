@@ -101,6 +101,7 @@ else {
               and $_POST['template_select'] != $room_item->getTemplateID()
             ) {
             $room_item->setTemplateID($_POST['template_select']);
+            $room_item->setNotTemplate();
             $template_copy = true;
          }
 
