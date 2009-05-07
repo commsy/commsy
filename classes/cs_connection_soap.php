@@ -493,7 +493,7 @@ class cs_connection_soap {
          $this->_updateSessionCreationDate($session_id);
          $session_manager = $this->_environment->getSessionManager();
          $session_item = $session_manager->get($session_id);
-         return $session_item.getValue('user_id');
+         return $session_item->getValue('user_id');
       } else {
          return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
       }
