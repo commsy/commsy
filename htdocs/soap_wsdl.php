@@ -231,6 +231,12 @@
 <message name='logoutOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='authenticateViaSessioniIN'>
+  <part name='session_id' type='xsd:string'/>
+</message>
+<message name='authenticateViaSessionOUT'>
+  <part name='user_id' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -352,6 +358,10 @@
   <operation name='logout'>
     <input message='tns:logoutIN'/>
     <output message='tns:logoutOUT'/>
+  </operation>
+  <operation name='authenticateViaSession'>
+    <input message='tns:authenticateViaSessionIN'/>
+    <output message='tns:authenticateViaSessionOUT'/>
   </operation>
 </portType>
 
@@ -680,6 +690,17 @@
   </operation>
   <operation name='logout'>
     <soap:operation soapAction='urn:xmethodsCommSy#logout'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='authenticateViaSession'>
+    <soap:operation soapAction='urn:xmethodsCommSy#authenticateViaSession'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

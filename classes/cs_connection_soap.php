@@ -487,6 +487,18 @@ class cs_connection_soap {
       return $result;
    }
 
+   public function authenticateViaSession($session_id) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_updateSessionCreationDate($session_id);
+         $session_manager = $this->_environment->getSessionManager();
+         $session_item = $session_manager.get($session_id);
+         return $session_item.getValue('user_id');
+      } else {
+         return new SoapFault('ERROR','Session ('.$session_id.') not valid!');
+      }
+   }
+
    private function _isSessionActive ($user_id, $portal_id) {
       $retour = false;
       if ( !empty($this->_session_id_array[$portal_id][$user_id]) ) {
@@ -1911,6 +1923,54 @@ class cs_connection_soap {
          $result = new SoapFault($info,$info_text);
       }
       return $result;
+   }
+   
+   public function deleteWiki ($session_id, $context_id) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $room_manager = $this->_environment->getRoomManager();
+         $room_item = $room_manager->getItem($context_id);
+         $wiki_manager = $this->_environment->getWikiManager();
+         $wiki_manager->deleteWiki($room_item);
+      }
+   }
+   
+   public function createWiki ($session_id, $context_id, $settings) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $room_manager = $this->_environment->getRoomManager();
+         $room_item = $room_manager->getItem($context_id);
+         
+         $item->setWikiSkin();
+         $item->setWikiEditPW();
+         $item->setWikiAdminPW();
+         $item->setWikiEditPW();
+         $item->setWikiReadPW();
+         $item->setWikiTitle();
+         $item->setWikiShowCommSyLogin();
+         $item->setWikiWithSectionEdit();
+         $item->setWikiWithHeaderForSectionEdit();
+         $item->setWikiEnableFCKEditor();
+         $item->setWikiEnableSearch();
+         $item->setWikiEnableSitemap();
+         $item->setWikiEnableStatistic();
+         $item->setWikiEnableRss();
+         $item->setWikiEnableCalendar();
+         $item->setWikiEnableNotice();
+         $item->setWikiEnableGallery();
+         $item->setWikiEnablePdf();
+         $item->setWikiEnableSwf();
+         $item->setWikiEnableWmplayer();
+         $item->setWikiEnableQuicktime();
+         $item->setWikiEnableYoutubeGoogleVimeo();
+         $item->setWikiEnableDiscussion();
+         //$item->setWikiDiscussionArray();
+         $item->setWikiEnableDiscussionNotification();
+         $item->setWikiEnableDiscussionNotificationGroups();
+      
+         $wiki_manager = $this->_environment->getWikiManager();
+         $wiki_manager->deleteWiki($room_item);
+      }
    }
 }
 ?>
