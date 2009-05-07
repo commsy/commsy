@@ -1238,7 +1238,6 @@ function exportItemToWiki($current_item_id,$rubric){
       $informations = '!' . $item->getTitle() . '%0a%0a';
    }
    if ($rubric == CS_MATERIAL_TYPE or $rubric == CS_DISCUSSION_TYPE){
-
        global $class_factory;
        $params = array();
        $params['environment'] = $this->_environment;
@@ -1259,18 +1258,18 @@ function exportItemToWiki($current_item_id,$rubric){
        $returnwiki = '';
        $returnstatus = '';
        $htmlwiki = exec($command, $returnwiki, $returnstatus);
-       if($returnstatus == 0){
-          // Mit Perl
-          $returnwiki = implode('%0a', $returnwiki);
-       } else {
-          // Ohne Perl
+//       if($returnstatus == 0){
+//          // Mit Perl
+//          $returnwiki = implode('%0a', $returnwiki);
+//       } else {
+//          // Ohne Perl
           // es muss eine zusätzliche Leerzeile am Anfang eingefügt werden:
           $temp_description = file_get_contents($html_wiki_file);
           $temp_description = '<br />' . "\n" . $temp_description;
           file_put_contents($html_wiki_file, $temp_description);
           $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
           $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
-       }
+//       }
        chdir($old_dir);
        if ($rubric == CS_MATERIAL_TYPE){
           $informations .= '(:cellnr:)\'\'\'Kurzfassung:\'\'\' %0a(:cell:)' . $returnwiki . ' %0a';
@@ -1351,17 +1350,17 @@ function exportItemToWiki($current_item_id,$rubric){
              file_put_contents($html_wiki_file, $description);
              $command = escapeshellcmd('html2wiki --dialect PmWiki --encoding utf-8 ' . $html_wiki_file);
              $htmlwiki = exec($command, $returnwiki, $returnstatus);
-             if($returnstatus == 0){
-                // Mit Perl
-                $returnwiki = implode('%0a', $returnwiki);
-             } else {
-                // Ohne Perl
+//             if($returnstatus == 0){
+//                // Mit Perl
+//                $returnwiki = implode('%0a', $returnwiki);
+//             } else {
+//                // Ohne Perl
                 $temp_description = file_get_contents($html_wiki_file);
                 $temp_description = '<br />' . "\n" . $temp_description;
                 file_put_contents($html_wiki_file, $temp_description);
                 $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
                 $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
-             }
+//             }
              chdir($old_dir);
              $description_sub_item_link = str_replace(' ', '', $sub_item->getTitle());
 

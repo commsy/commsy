@@ -338,6 +338,7 @@ class cs_wiki_view extends cs_view {
    function formatForWiki($text){
       $reg_exp_father_array = array();
       $reg_exp_father_array[]       = '~\\(:(.*?):\\)~eu';
+      $reg_exp_father_array[]       = '~\[(.*?)\]~eu';
 
       $reg_exp_array = array();
       $reg_exp_array['(:flash']       = '~\\(:flash (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
@@ -353,8 +354,11 @@ class cs_wiki_view extends cs_view {
       $reg_exp_array['(:vimeo']       = '~\\(:vimeo (.*?)(\\s.*?)?\\s*?:\\)~eu';
       $reg_exp_array['(:mp3']         = '~\\(:mp3 (.*?:){0,1}(.*?)(\\s.*?)?\\s*?:\\)~eu';
       if($this->_environment->isScribdAvailable()){
-        $reg_exp_array['(:office']      = '~\\(:office (.*?)(\\s.*?)?\\s*?:\\)~eu';
+        $reg_exp_array['(:office']    = '~\\(:office (.*?)(\\s.*?)?\\s*?:\\)~eu';
       }
+      $reg_exp_array['(:slideshare']  = '~\\(:slideshare (.*?):\\)~eu';
+      $reg_exp_array['[slideshare']   = '~\[slideshare (.*?)\]~eu';
+      $reg_exp_array['(:flickr']      = '~\\(:flickr (.*?):\\)~eu';
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/
@@ -442,6 +446,15 @@ class cs_wiki_view extends cs_view {
                      break;
                   } elseif ( $key == '{$$' and mb_stristr($value_new,'{$$') ) {
                      $value_new = $this->_format_math2($value_new,$this->_getArgs($value_new,$reg_exp));
+                     break;
+                  } elseif ( $key == '(:slideshare' and mb_stristr($value_new,'(:slideshare') ) {
+                     $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
+                     break;
+                  } elseif ( $key == '[slideshare' and mb_stristr($value_new,'[slideshare') ) {
+                     $value_new = $this->_format_slideshare($value_new,$this->_getArgs($value_new,$reg_exp));
+                     break;
+                  } elseif ( $key == '(:flickr' and mb_stristr($value_new,'(:flickr') ) {
+                     $value_new = $this->_format_flickr($value_new,$this->_getArgs($value_new,$reg_exp));
                      break;
                   }
                }
