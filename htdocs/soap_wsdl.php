@@ -231,7 +231,7 @@
 <message name='logoutOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
-<message name='authenticateViaSessioniIN'>
+<message name='authenticateViaSessionIN'>
   <part name='session_id' type='xsd:string'/>
 </message>
 <message name='authenticateViaSessionOUT'>
