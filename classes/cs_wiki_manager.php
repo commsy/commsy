@@ -1460,7 +1460,12 @@ function exportItemToWiki($current_item_id,$rubric){
                }
            }
            if(stripos($file_contents_array[$index], 'text=') !== false){
-              $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text;
+              if ($rubric == CS_MATERIAL_TYPE){
+                 $title_text = '(:title CommSy-Material "' . $item->getTitle() . '":)';
+              }elseif($rubric == CS_DISCUSSION_TYPE){
+                 $title_text = '(:title CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
+              }
+              $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text . '%0a%0a' . $title_text;
            }
            if(stripos($file_contents_array[$index], 'targets=') !== false and !empty($buzzword_file_text)){
               $file_contents_array[$index] = 'targets='.$buzzword_file_text;
@@ -1470,11 +1475,12 @@ function exportItemToWiki($current_item_id,$rubric){
        if(!strstr($file_contents,'targets=') and !empty($buzzword_file_text)){
           $file_contents .='"\n"'.'targets='.$buzzword_file_text;
        }
+
        if ($rubric == CS_MATERIAL_TYPE){
            $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $item->getTitle() . '"';
            file_put_contents('wiki.d/Main.CommSyMaterial' . $current_item_id, $file_contents);
        }elseif($rubric == CS_DISCUSSION_TYPE){
-           $file_contents =  $file_contents . "\n" . 'title=CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
+           $file_contents =  $file_contents . 'title=CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
            file_put_contents('wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents);
        }
 
@@ -1532,6 +1538,87 @@ function exportItemToWiki($current_item_id,$rubric){
           }
        }
    }
+   $this->updateExportLists($rubric);
+}
+
+function updateExportLists($rubric){
+   global $c_pmwiki_path_file;
+   global $c_commsy_path_file;
+   
+   $old_dir = getcwd();
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');    
+   if ($rubric == CS_DISCUSSION_TYPE){
+      if(file_exists('Main.CommSyDiskussionen')){
+         unlink('Main.CommSyDiskussionen');
+      }
+      if(!file_exists('Main.CommSyDiskussionenNavi')){
+         copy($c_commsy_path_file.'/etc/pmwiki/Main.CommSyDiskussionenNavi','Main.CommSyDiskussionenNavi');
+      }
+      copy($c_commsy_path_file.'/etc/pmwiki/Main.CommSyDiskussionen','Main.CommSyDiskussionen');
+      $exported_discussions = array();
+      $directory_handle = @opendir('.');
+      if ($directory_handle) {
+         if($dir=opendir(getcwd())){
+            while($file=readdir($dir)) {
+               if (!is_dir($file) && $file != "." && $file != ".." && $file != 'Main.CommSyDiskussionenNavi' && $file != 'Main.CommSyDiskussionen'){
+                  if((stripos($file, 'Main.CommSy'.getMessage('COMMON_DISCUSSION')) !== false)
+                      and (stripos($file, '.count') === false)){
+                      $exported_discussions[] = $file;
+                  }
+               }
+            }   
+         }
+      }
+      $file_contents = file_get_contents('Main.CommSyDiskussionen');
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], 'text=') !== false){
+            $text = '';
+            foreach($exported_discussions as $exported_discussion){
+               $text .= '%0a* [[' . $exported_discussion . '|+]]';
+            }
+            $file_contents_array[$index] = 'text=' . $text;
+         }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      file_put_contents('Main.CommSyDiskussionen', $file_contents);
+   }elseif($rubric == CS_MATERIAL_TYPE){
+      if(file_exists('Main.CommSyMaterialien')){
+         unlink('Main.CommSyMaterialien');
+      }
+      if(!file_exists('Main.CommSyMaterialienNavi')){
+         copy($c_commsy_path_file.'/etc/pmwiki/Main.CommSyMaterialienNavi','Main.CommSyMaterialienNavi');
+      }
+      copy($c_commsy_path_file.'/etc/pmwiki/Main.CommSyMaterialien','Main.CommSyMaterialien');
+      $exported_discussions = array();
+      $directory_handle = @opendir('.');
+      if ($directory_handle) {
+         if($dir=opendir(getcwd())){
+            while($file=readdir($dir)) {
+               if (!is_dir($file) && $file != "." && $file != ".." && $file != 'Main.CommSyMaterialienNavi' && $file != 'Main.CommSyMaterialien'){
+                  if((stripos($file, 'Main.CommSyMaterial') !== false)
+                      and (stripos($file, '.count') === false)){
+                      $exported_discussions[] = $file;
+                  }
+               }
+            }   
+         }
+      }
+      $file_contents = file_get_contents('Main.CommSyMaterialien');
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], 'text=') !== false){
+            $text = '';
+            foreach($exported_discussions as $exported_discussion){
+               $text .= '%0a* [[' . $exported_discussion . '|+]]';
+            }
+            $file_contents_array[$index] = 'text=' . $text;
+         }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      file_put_contents('Main.CommSyMaterialien', $file_contents);
+   }
+   chdir($old_dir);
 }
 
 function encodeUmlaute($html){
