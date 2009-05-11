@@ -46,19 +46,31 @@ else {
    $javascript = '';
 }
 
-if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
+// user_id and password
+$user_id = '';
+if ( !empty($_POST['user_id']) ) {
+   $user_id = $_POST['user_id'];
+} elseif ( !empty($_GET['user_id']) ) {
+   $user_id = $_GET['user_id'];
+}
+
+$password = '';
+if ( !empty($_POST['password']) ) {
+   $password = $_POST['password'];
+} elseif ( !empty($_GET['password']) ) {
+   $password = $_GET['password'];
+}
+
+if (!empty($user_id) and !empty($password) ) {
    $authentication = $environment->getAuthenticationObject();
    if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
       $auth_source = $_POST['auth_source'];
    } else {
       $auth_source = '';
    }
-   if ($authentication->isAccountGranted($_POST['user_id'],$_POST['password'],$auth_source)) {
+   if ($authentication->isAccountGranted($user_id,$password,$auth_source)) {
       $session = new cs_session_item();
-      $session->createSessionID($_POST['user_id']);
-      #if ( !empty($_SERVER['SERVER_ADDR']) ) {
-      #   $session->setValue('IP',$_SERVER['SERVER_ADDR']);
-      #}
+      $session->createSessionID($user_id);
       if ( $cookie == '1' ) {
          $session->setValue('cookie',2);
       } elseif ( empty($cookie) ) {
@@ -99,13 +111,13 @@ if (!empty($_POST['user_id']) and !empty($_POST['password']) ) {
       }
       $session->setValue('error_array',$error_array);
    }
-} elseif ( empty($_POST['user_id']) or empty($_POST['password']) ) {
+} elseif ( empty($user_id) or empty($password) ) {
    $translator = $environment->getTranslationObject();
    $error_array = array();
-   if ( empty($_POST['user_id']) ) {
+   if ( empty($user_id) ) {
       $error_array[] = $translator->getMessage('COMMON_ERROR_FIELD',$translator->getMessage('COMMON_ACCOUNT'));
    }
-   if ( empty($_POST['password']) ) {
+   if ( empty($password) ) {
       $error_array[] = $translator->getMessage('COMMON_ERROR_FIELD',$translator->getMessage('COMMON_PASSWORD'));
    }
    if ( !isset($session) ) {
