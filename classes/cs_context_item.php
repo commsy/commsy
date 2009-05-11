@@ -4295,17 +4295,15 @@ class cs_context_item extends cs_item {
    }
 
 
-      /** asks if item is editable by everybody or just creator
+   /** asks if item is editable by everybody or just creator
     *
     * @param value
-    *
-    * @author CommSy Development Group
     */
-   function isPublic() {
+   function isPublic () {
       if ($this->_getValue('public')== 1) {
          return true;
       } else {
-        return false;
+         return false;
       }
    }
 

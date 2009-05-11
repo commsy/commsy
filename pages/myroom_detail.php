@@ -75,7 +75,8 @@ if (!empty($_GET['iid'])) {
       }
    }
 } else {
-   include_once('functions/error_functions.php');trigger_error('An item id must be given.', E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('An item id must be given.', E_USER_ERROR);
 }
 
 if (isset($_POST['option'])){
@@ -304,8 +305,8 @@ if ( !isset($item) ) {
    }
 
 
-       $annotations = $item->getAnnotationList();
-      $detail_view->setAnnotationList($item->getAnnotationList());
-      $page->add($detail_view);
+   $annotations = $item->getAnnotationList();
+   $detail_view->setAnnotationList($item->getAnnotationList());
+   $page->add($detail_view);
 }
 ?>

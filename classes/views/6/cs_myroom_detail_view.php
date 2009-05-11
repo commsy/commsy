@@ -39,7 +39,6 @@ class cs_myroom_detail_view extends cs_context_detail_view {
       $this->cs_context_detail_view($params);
    }
 
-
    function _getForwardBoxAsHTML () {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
@@ -52,13 +51,5 @@ class cs_myroom_detail_view extends cs_context_detail_view {
 
      return $html;
    }
-
-
-
 }
-
-
-
-
-
 ?>

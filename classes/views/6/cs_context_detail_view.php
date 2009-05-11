@@ -47,7 +47,7 @@ var $_room_type = 'context';
       $this->_account_mode = $mode;
    }
 
-     function getAccountMode(){
+   function getAccountMode(){
       return $this->_account_mode;
    }
 
