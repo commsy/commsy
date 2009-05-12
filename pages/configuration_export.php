@@ -149,6 +149,9 @@ else {
                $manager = $environment->getManager($type);
                $manager->setContextLimit($_POST['iid']);
                $manager->setOutputLimitToXML();
+               if ( $type == CS_DATE_TYPE ) {
+                  $manager->setWithoutDateModeLimit();
+               }
                $manager->select();
                fputs($xmlfile, $manager->get());
             }
