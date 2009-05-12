@@ -898,11 +898,26 @@ class cs_links_manager extends cs_manager {
             }
          }
 
-         if ( !isset($data_array['deleter_id']) or empty($data_array['deleter_id']) ) {
+         if ( !isset($data_array['deleter_id'])
+              or ( empty($data_array['deleter_id'])
+                   and !strstr($query,'deleter_id')
+                 )
+            ) {
             $query .= ',deleter_id=NULL';
          }
-         if ( !isset($data_array['deletion_date']) or empty($data_array['deletion_date']) ) {
+         if ( !isset($data_array['deletion_date'])
+              or ( empty($data_array['deletion_date'])
+                   and !strstr($query,'deletion_date')
+                 )
+            ) {
             $query .= ',deletion_date=NULL';
+         }
+
+         if ( strstr($query,'deletion_date="0"') ) {
+            $query = str_replace('deletion_date="0"','deletion_date=NULL',$query);
+         }
+         if ( strstr($query,'deleter_id="0"') ) {
+            $query = str_replace('deleter_id="0"','deleter_id=NULL',$query);
          }
 
          if ( !empty($query_result) ) {
