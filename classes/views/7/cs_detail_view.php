@@ -2370,7 +2370,7 @@ class cs_detail_view extends cs_view {
          $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
       }
       if ( $environment->inProjectRoom() ) {
-         if ( isset($modificator) and $modificator->isUser() and !$modificator->isDeleted() ){
+         if ( isset($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
             $params = array();
             $params['iid'] = $modificator->getItemID();
             $temp_html = ahref_curl($this->_environment->getCurrentContextID(),
@@ -2389,7 +2389,7 @@ class cs_detail_view extends cs_view {
                  || ( isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {
          $params = array();
          $params['iid'] = $modificator->getItemID();
-         if( !$modificator->isDeleted() ){
+         if( !$modificator->isDeleted() and $modificator->maySee($user) ){
             if ( !$this->_environment->inPortal() ){
                $temp_html = ahref_curl($this->_environment->getCurrentContextID(),
                                      'user',
@@ -2406,7 +2406,7 @@ class cs_detail_view extends cs_view {
       } else {
          if(isset($modificator) and !$modificator->isDeleted()){
             $current_user_item = $this->_environment->getCurrentUserItem();
-            if ( $current_user_item->isGuest() ) {
+            if ( $current_user_item->isGuest() or  !$modificator->maySee($user) ) {
                $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
             } else {
                $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
@@ -2453,7 +2453,7 @@ class cs_detail_view extends cs_view {
       // Creator
       $creator = $item->getCreatorItem();
       if ( $environment->inProjectRoom() ) {
-         if ( isset($creator) and $creator->isUser() and !$creator->isDeleted()){
+         if ( isset($creator) and $creator->isUser() and !$creator->isDeleted()  and $creator->maySee($user)){
             $params = array();
             $params['iid'] = $creator->getItemID();
             $temp_html = ahref_curl($this->_environment->getCurrentContextID(),
@@ -2466,7 +2466,7 @@ class cs_detail_view extends cs_view {
          } else {
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
-      } elseif ( $user->isUser() and isset($creator) and ($creator->isVisibleForLoggedIn())
+      } elseif ( $user->isUser() and isset($creator)  and $creator->maySee($user) and ($creator->isVisibleForLoggedIn())
                     || (!$user->isUser() and $creator->isVisibleForAll()) ) {
          $params = array();
          $params['iid'] = $creator->getItemID();
@@ -2517,7 +2517,7 @@ class cs_detail_view extends cs_view {
          //Links only at accessible contact pages
          if ( $environment->inProjectRoom() ) {
             $params = array();
-            if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted()){
+            if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
                $params['iid'] = $modificator->getItemID();
                $temp_text = ahref_curl($this->_environment->getCurrentContextID(),
                                   'user',
@@ -2535,7 +2535,7 @@ class cs_detail_view extends cs_view {
                        || (isset($modificator) and $environment->getCurrentUserID() == $modificator->getItemID()) ) {
             $params = array();
             $params['iid'] = $modificator->getItemID();
-            if(!$modificator->isDeleted()){
+            if(!$modificator->isDeleted() and $modificator->maySee($user)){
                if ( !$this->_environment->inPortal() ){
                   $modifier_array[] = ahref_curl($this->_environment->getCurrentContextID(),
                                      'user',

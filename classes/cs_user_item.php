@@ -1125,6 +1125,14 @@ class cs_user_item extends cs_item {
          }
       } else {    // Project room
          $access = parent::maySee($user_item);
+         if ($access){
+         	$room = $this->_environment->getCurrentContextItem();
+            if ($room->withRubric(CS_USER_TYPE)){
+            	$access = true;
+            }else{
+            	$access = false;
+            }
+         }
       }
       return $access;
    }
