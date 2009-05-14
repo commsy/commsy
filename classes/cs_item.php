@@ -1370,7 +1370,8 @@ class cs_item {
          $rubric_array = explode('_', $rubric);
          if ( ($rubric_array[1] != 'none' and $rubric_array[0] != CS_USER_TYPE) or
               ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_DATE_TYPE) or
-              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE)
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_TODO_TYPE) or
+              ($rubric_array[0] == CS_USER_TYPE and $this->_environment->getCurrentModule() == CS_GROUP_TYPE)
          ) {
             $type_array[] = $rubric_array[0];
          }
@@ -1504,7 +1505,8 @@ class cs_item {
       foreach($rubric_array as $rubric){
          if ($rubric !=CS_USER_TYPE  or
                ($this->_environment->getCurrentModule() == CS_DATE_TYPE or
-                 $this->_environment->getCurrentModule() == CS_TODO_TYPE
+                 $this->_environment->getCurrentModule() == CS_TODO_TYPE or
+                 $this->_environment->getCurrentModule() == CS_GROUP_TYPE
                )
             ){
             if (isset($rubric_sorted_array[$rubric])){

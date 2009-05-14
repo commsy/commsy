@@ -363,19 +363,128 @@ var $_sel_rubric = '';
     * @author CommSy Development Group
     */
    function _getStatus($item){
-      $status = $item->getStatus();
-      $status = $this->_compareWithSearchText($status);
+      $user = $this->_environment->getCurrentUser();
+      $context = $this->_environment->getCurrentContextItem();
+      if ($context->withTodoManagment()){
+         $step_html = '';
+         $step_minutes = 0;
+         $step_item_list = $item->getStepItemList();
+         if ( $step_item_list->isEmpty() ) {
+            $status = $item->getStatus();
+         } else {
+            $step = $step_item_list->getFirst();
+            $count = $step_item_list->getCount();
+            $counter = 0;
+            while ($step) {
+               $counter++;
+               $step_minutes = $step_minutes + $step->getMinutes();
+               $step = $step_item_list->getNext();
+            }
+         }
+         $done_time = '';
+
+         $done_percentage = 100;
+         if ($item->getPlannedTime() > 0){
+            $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
+         }
+
+         if($done_percentage <= 100){
+            $style = ' height: 8px; background-color: #75ab05; ';
+            $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 8px; width: 70px;">'.LF;
+            if ( $done_percentage >= 30 ) {
+               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+            } else {
+               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+            }
+            $done_time .= '      </div>'.LF;
+         }elseif($done_percentage <= 120){
+            $done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
+            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
+         }else{
+            $done_percentage = (100 / $done_percentage) *100;
+            $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
+            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+            $done_time .= '      </div>'.LF;
+            $done_time .= '</div>'.LF;
+         }
+
+         if ($done_percentage > 200){
+            $done_percentage = 200;
+         }
+
+          if ($step_minutes >0 ){
+            $status = $done_time;
+         }else{
+            $status = $item->getStatus();
+         }
+      }else{
+         $status = $item->getStatus();
+      }
       return $status;
    }
 
    function _getToDoItemAsLongHTML($item,$style) {
       $html  = '   <tr>'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getDateInLang($item).LF;
-      $html .='</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getStatus($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width: 35%;">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 15%;">'.$this->_getStatus($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 20%;">'.$this->_getDateInLang($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width: 30%;">'.$this->_getProcessors($item).'</td>'.LF;
       return $html;
    }
+
+   function _getProcessors($item){
+     $user = $this->_environment->getCurrentUser();
+     $html ='';
+     $members = $item->getProcessorItemList();
+      if ( $members->isEmpty() ) {
+         $html .= '   <span class="disabled">'.$this->_translator->getMessage('TODO_NO_PROCESSOR').'</span>'.LF;
+      } else {
+         $member = $members->getFirst();
+         if ( $member->isUser() ){
+            $linktext = $member->getFullname();
+            $params = array();
+            $params['iid'] = $member->getItemID();
+            if ( $this->_environment->inProjectRoom() and $member->maySee($user) ) {
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             'user',
+                             'detail',
+                             $params,
+                             $linktext);
+            } else {
+               $html .= '<span class="disabled">'.$linktext.'</span>';
+            }
+            unset($params);
+         }
+         $member = $members->getNext();
+         while ($member) {
+            if ( $member->isUser() ){
+               $linktext = ', '.$member->getFullname();
+               $member_title = $member->getTitle();
+               $params = array();
+               $params['iid'] = $member->getItemID();
+               if ( $this->_environment->inProjectRoom() and $member->maySee($user) ) {
+                  $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                'user',
+                                'detail',
+                                $params,
+                                $linktext);
+               } else {
+                  $html .= '<span class="disabled">'.$linktext.'</span>';
+               }
+               unset($params);
+            }
+            $member = $members->getNext();
+         }
+      }
+      return $html;
+
+   }
+
 
    /** get article count of a discussion
     * Returns the total and unread number of articles
