@@ -1742,7 +1742,7 @@ class cs_context_item extends cs_item {
 
    function showGrouproomConfig () {
       $retour = false;
-      if ($this->withGrouproomFunctions()) {
+      if ($this->withGrouproomFunctions() or $this->isDesign7()) {
          $retour = true;
       } elseif ( $this->isProjectRoom()
                  or $this->isCommunityRoom()
