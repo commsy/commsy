@@ -1068,9 +1068,16 @@ class cs_page_room_view extends cs_page_view {
                $service_email = 'NONE';
             }
 
+            $ip = 'unknown';
+            if ( !empty($_SERVER["SERVER_ADDR"]) ) {
+               $ip = $_SERVER["SERVER_ADDR"];
+            } elseif ( !empty($_SERVER["HTTP_HOST"]) ) {
+               $ip = $_SERVER["HTTP_HOST"];
+            }
+
             $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
             $email_to_service .= '<input type="hidden" name="server_name" value="'.$this->_text_as_html_short($server_item->getTitle()).'"/>'.LF;
-            $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($_SERVER["SERVER_ADDR"]).'"/>'.LF;
+            $email_to_service .= '<input type="hidden" name="server_ip" value="'.$this->_text_as_html_short($ip).'"/>'.LF;
             $email_to_service .= '<input type="hidden" name="context_id" value="'.$this->_text_as_html_short($current_context->getItemID()).'"/>'.LF;
             $email_to_service .= '<input type="hidden" name="context_name" value="'.$this->_text_as_html_short($current_context->getTitle()).'"/>'.LF;
             $email_to_service .= '<input type="hidden" name="context_type" value="'.$this->_text_as_html_short($current_context->getType()).'"/>'.LF;
