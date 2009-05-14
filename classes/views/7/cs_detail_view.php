@@ -1871,19 +1871,37 @@ class cs_detail_view extends cs_view {
                $params['link_item_path'] = $this->getItem()->getItemID();
                $module = Type2Module($type);
                $user = $this->_environment->getCurrentUser();
-               if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-                   $activating_date = $linked_item->getActivatingDate();
-                   if (strstr($activating_date,'9999-00-00')){
-                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
-                   }else{
-                      $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
-                   }
-                   if ($module == CS_USER_TYPE){
-                       $link_title = chunkText($linked_item->getFullName(),35);
-                   }else{
-                       $link_title = chunkText($linked_item->getTitle(),35);
-                   }
+               if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
+                   $link_title = chunkText($linked_item->getFullName(),35);
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       $link_title,
+                                       $this->_translator->getMessage('USER_STATUS_REJECTED'),
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
+               }else{
+                  if ($linked_item->isNotActivated() and !($linked_item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
+                      $activating_date = $linked_item->getActivatingDate();
+                      if (strstr($activating_date,'9999-00-00')){
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_NOT_ACTIVATED').')';
+                      }else{
+                         $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
+                      }
+                      if ($module == CS_USER_TYPE){
+                          $link_title = chunkText($linked_item->getFullName(),35);
+                      }else{
+                          $link_title = chunkText($linked_item->getTitle(),35);
+                      }
+                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,
@@ -1898,14 +1916,14 @@ class cs_detail_view extends cs_view {
                                        '',
                                        '',
                                        true);
-                  unset($params);
-               }else{
-                   if ($module == CS_USER_TYPE){
-                       $link_title = chunkText($linked_item->getFullName(),35);
-                   }else{
-                       $link_title = chunkText($linked_item->getTitle(),35);
-                   }
-                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                     unset($params);
+                  }else{
+                      if ($module == CS_USER_TYPE){
+                          $link_title = chunkText($linked_item->getFullName(),35);
+                      }else{
+                          $link_title = chunkText($linked_item->getTitle(),35);
+                      }
+                     $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,
@@ -1913,9 +1931,9 @@ class cs_detail_view extends cs_view {
                                        $link_creator_text,
                                        '_self',
                                        $fragment);
-                  unset($params);
+                     unset($params);
+                  }
                }
-
 
                $html .= '</li>'.LF;
             }

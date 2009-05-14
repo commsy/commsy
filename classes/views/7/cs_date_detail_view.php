@@ -317,6 +317,26 @@ var $_clipboard_id_array=array();
                if ( $counter != $count) {
                   $member_html .= ', ';
                }
+            }else{
+               $link_title = chunkText($member->getFullName(),35);
+               $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                   $this->_environment->getCurrentModule(),
+                                   $this->_environment->getCurrentFunction(),
+                                   array(),
+                                   $link_title,
+                                   $this->_translator->getMessage('USER_STATUS_REJECTED'),
+                                   '_self',
+                                   '',
+                                   '',
+                                   '',
+                                   '',
+                                   'class="disabled"',
+                                   '',
+                                   '',
+                                   true);
+               if ( $counter != $count) {
+                  $member_html .= ', ';
+               }
             }
             $member = $members->getNext();
          }

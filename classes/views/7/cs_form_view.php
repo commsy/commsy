@@ -1461,7 +1461,7 @@ class cs_form_view extends cs_view {
                     and ( ( $form_element_array[0]['type'] == 'textarea'
                             and $form_element_array[0]['full_width']
                           )
-                          or ( $form_element_array[0]['type'] == 'subheadline' )
+#                          or ( $form_element_array[0]['type'] == 'subheadline' )
                         )
                   ) {
                   $html .= '      <td class="key" colspan="2" style="width: 100%; ">';
@@ -1516,7 +1516,7 @@ class cs_form_view extends cs_view {
       if (!(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titlefield')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'titletext')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline')
-          and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'subheadline')
+#          and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'subheadline')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'explanation')
           and !(isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'textarea' and $form_element_array[0]['full_width']) ){
           if ( $this->_with_description  ) {
@@ -2301,7 +2301,9 @@ class cs_form_view extends cs_view {
          $html .= '</tr>'.LF;
          $html .= '</table>'.LF;
       }
-      $html .= '</div>'.LF;
+      if ($this->_environment->getCurrentModule() != 'tag' and $this->_environment->getCurrentModule() != 'buzzwords' ){
+         $html .= '</div>'.LF;
+      }
       $html .= '</form>'.BRLF;
       $html .='</div>'.LF;
       $html .='<div style="clear:both; width:100%;">&nbsp;'.LF;
