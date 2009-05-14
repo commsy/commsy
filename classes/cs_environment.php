@@ -1528,7 +1528,11 @@ class cs_environment {
    function isPlugin ( $value ) {
       $retour = false;
       global $c_plugin_array;
-      $retour = in_array(mb_strtolower($value, 'UTF-8'),$c_plugin_array);
+      if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
+            ) {
+         $retour = in_array(mb_strtolower($value, 'UTF-8'),$c_plugin_array);
+      }
       return $retour;
    }
 
