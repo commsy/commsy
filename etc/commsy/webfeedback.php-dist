@@ -25,6 +25,7 @@ $use_web_feedback_system = false;
 
 //URL FOR Files of WebFeedbackSystem
 $web_feedback_url ='http://URL/TO/FEEDBACK/SYSTEM';
+$web_feedback_server_url ='http://URL/TO/FEEDBACK_SERVER/SYSTEM';
 
 //Rooms, where the feedbacksystem is used
 $web_feedback_room_id_array = array();
