@@ -407,6 +407,29 @@ class cs_user_item extends cs_item {
       return $retour;
    }
 
+   function setOrganisation ($value) {
+      $this->_addExtra('USERORGANISATION',(string)$value);
+   }
+
+   function getOrganisation () {
+      $retour = '';
+      if ($this->_issetExtra('USERORGANISATION')) {
+         $retour = $this->_getExtra('USERORGANISATION');
+      }
+      return $retour;
+   }
+
+   function setPosition ($value) {
+      $this->_addExtra('USERPOSITION',(string)$value);
+   }
+
+   function getPosition () {
+      $retour = '';
+      if ($this->_issetExtra('USERPOSITION')) {
+         $retour = $this->_getExtra('USERPOSITION');
+      }
+      return $retour;
+   }
 
    /** set street of the user
     * this method sets the street of the user
@@ -1216,6 +1239,20 @@ class cs_user_item extends cs_item {
                   $value = '';
                }
                $user_item->setHomepage($value);
+            }
+            $value = $dummy_item->getOrganisation();
+            if (!empty($value)) {
+               if ($value == -1) {
+                  $value = '';
+               }
+               $user_item->setOrganisation($value);
+            }
+            $value = $dummy_item->getPosition();
+            if (!empty($value)) {
+               if ($value == -1) {
+                  $value = '';
+               }
+               $user_item->setPosition($value);
             }
             $value = $dummy_item->getStreet();
             if (!empty($value)) {

@@ -89,6 +89,51 @@ class cs_user_detail_view extends cs_detail_view {
          $temp_array[] = $this->_text_as_html_short($birthday);
          $formal_data[] = $temp_array;
       }
+      if ( !empty($formal_data) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data).LF;
+      }
+      $formal_data = array();
+
+      $email = $item->getEmail();
+      $email_text = $this->_text_as_html_short($email);
+      $email_short = chunkText($email_text,45);
+      if ( !empty($email) and ( $item->isEmailVisible() or $this->_display_mod == 'admin') ) {
+         if (isset($_GET['mode']) and $_GET['mode']=='print'){
+            $emailDisplay = $email_short;
+         }else{
+            $emailDisplay = '<a title="'.$email_text.'" href="mailto:'.$email.'">'.$email_short.'</a>';
+         }
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_EMAIL');
+         $temp_array[] = $emailDisplay;
+         $formal_data[] = $temp_array;
+      } elseif (!$item->isEmailVisible()) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_EMAIL');
+         $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('USER_EMAIL_HIDDEN').'</span>';
+         $formal_data[] = $temp_array;
+      }
+
+      $telephone = $item->getTelephone();
+      if ( !empty($telephone) ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_TELEPHONE');
+         $temp_array[] = $this->_text_as_html_short($telephone);
+         $formal_data[] = $temp_array;
+      }
+
+      $cellularphone = $item->getCellularphone();
+      if ( !empty($cellularphone) ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_CELLULARPHONE');
+         $temp_array[] = $this->_text_as_html_short($cellularphone);
+         $formal_data[] = $temp_array;
+      }
+      if ( !empty($formal_data) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data).LF;
+      }
+      $formal_data = array();
+
 
       $street = $item->getStreet();
       if ( !empty($street) ) {
@@ -116,49 +161,32 @@ class cs_user_detail_view extends cs_detail_view {
          $formal_data[] = $temp_array;
       }
 
-      $temp_array = array();
-      $temp_array[] = '';
-      $temp_array[] = '';
-      $formal_data[] = $temp_array;
-
-      $telephone = $item->getTelephone();
-      if ( !empty($telephone) ) {
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_TELEPHONE');
-         $temp_array[] = $this->_text_as_html_short($telephone);
-         $formal_data[] = $temp_array;
-      }
-
-      $cellularphone = $item->getCellularphone();
-      if ( !empty($cellularphone) ) {
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_CELLULARPHONE');
-         $temp_array[] = $this->_text_as_html_short($cellularphone);
-         $formal_data[] = $temp_array;
-      }
-
-      $email = $item->getEmail();
-      $email_text = $this->_text_as_html_short($email);
-      $email_short = chunkText($email_text,45);
-      if ( !empty($email) and ( $item->isEmailVisible() or $this->_display_mod == 'admin') ) {
-         if (isset($_GET['mode']) and $_GET['mode']=='print'){
-            $emailDisplay = $email_short;
-         }else{
-            $emailDisplay = '<a title="'.$email_text.'" href="mailto:'.$email.'">'.$email_short.'</a>';
-         }
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_EMAIL');
-         $temp_array[] = $emailDisplay;
-         $formal_data[] = $temp_array;
-      } elseif (!$item->isEmailVisible()) {
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('USER_EMAIL');
-         $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('USER_EMAIL_HIDDEN').'</span>';
-         $formal_data[] = $temp_array;
-      }
       if ( !empty($formal_data) ) {
          $html .= $this->_getFormalDataAsHTML($formal_data).LF;
       }
+      $formal_data = array();
+
+      $organisation = $item->getOrganisation();
+      if ( !empty($organisation) ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_ORGANISATION');
+         $temp_array[] = $this->_text_as_html_short($organisation);
+         $formal_data[] = $temp_array;
+      }
+
+      $position = $item->getPosition();
+      if ( !empty($position) ) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('USER_POSITION');
+         $temp_array[] = $this->_text_as_html_short($position);
+         $formal_data[] = $temp_array;
+      }
+
+      if ( !empty($formal_data) ) {
+         $html .= $this->_getFormalDataAsHTML($formal_data).LF;
+      }
+      $formal_data = array();
+
       $html .='</td>'.LF;
       $picture = $item->getPicture();
       if ( !empty($picture) ) {

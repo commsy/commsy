@@ -283,6 +283,18 @@ if ($command != 'error') { // only if user is allowed to edit user
                       $portal_user_item->setHomepage($_POST['homepage']);
                    }
                 }
+                if (isset($_POST['organisation'])) {
+                    $user_item->setOrganisation($_POST['organisation']);
+                    if ( isset($portal_user_item) ) {
+                      $portal_user_item->setOrganisation($_POST['organisation']);
+                   }
+                }
+                if (isset($_POST['position'])) {
+                   $user_item->setPosition($_POST['position']);
+                   if ( isset($portal_user_item) ) {
+                      $portal_user_item->setPosition($_POST['position']);
+                   }
+                }
                 if (isset($_POST['icq'])) {
                    $user_item->setICQ($_POST['icq']);
                    if ( isset($portal_user_item) ) {
@@ -419,6 +431,8 @@ if ($command != 'error') { // only if user is allowed to edit user
                      or isset($_POST['birthday_change_all'])
                      or isset($_POST['cellularphone_change_all'])
                      or isset($_POST['homepage_change_all'])
+                     or isset($_POST['organisation_change_all'])
+                     or isset($_POST['position_change_all'])
                      or isset($_POST['email_change_all'])
                      or isset($_POST['messenger_change_all'])
                      or isset($_POST['description_change_all'])
@@ -488,6 +502,20 @@ if ($command != 'error') { // only if user is allowed to edit user
                          $value = -1;
                       }
                       $dummy_user->setHomepage($value);
+                   }
+                   if (isset($_POST['organisation_change_all'])) {
+                      $value = $user_item->getOrganisation();
+                      if (empty($value)) {
+                         $value = -1;
+                      }
+                      $dummy_user->setOrganisation($value);
+                   }
+                   if (isset($_POST['position_change_all'])) {
+                      $value = $user_item->getPosition();
+                      if (empty($value)) {
+                         $value = -1;
+                      }
+                      $dummy_user->setPostion($value);
                    }
                    if (isset($_POST['messenger_change_all'])) {
                       $value = $user_item->getICQ();
