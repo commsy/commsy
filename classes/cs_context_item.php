@@ -4945,6 +4945,7 @@ class cs_context_item extends cs_item {
               or $this->isPrivateRoom()
               or $this->isPortal()
             ) {
+            $context = $this->getContextItem();
             if ( isset($context) ) {
                $context = $this->getContextItem();
                $retour = $context->isDesign6();

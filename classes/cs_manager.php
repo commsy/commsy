@@ -1043,6 +1043,8 @@ class cs_manager {
                      ) {
                $do_it = false;
             } elseif ( DBTable2Type($this->_db_table) == CS_LINKITEM_TYPE
+                       and !empty($id_array[$query_result['first_item_id']])
+                       and !empty($id_array[$query_result['second_item_id']])
                        and ( in_array(array($id_array[$query_result['first_item_id']],$id_array[$query_result['second_item_id']]),$current_data_array)
                              or in_array(array($id_array[$query_result['second_item_id']],$id_array[$query_result['first_item_id']]),$current_data_array)
                            )
