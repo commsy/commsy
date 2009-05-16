@@ -862,7 +862,7 @@ class cs_view {
                   $image_text .= '      <param name="scale" value="exactfit" />'.LF;
                   $image_text .= '      <param name="menu" value="true" />'.LF;
                   $image_text .= '      <param name="bgcolor" value="#000000" />'.LF;
-                  $image_text .= '      <param name="wmode" value="transparent" />'.LF;
+                  $image_text .= '      <param name="wmode" value="opaque" />'.LF;
                   $image_text .= '      <param name="play" value="false" />'.LF;
                   $image_text .= '      <param name="loop" value="false" />'.LF;
                   $image_text .= '      <param name="devicefont" value="true" />'.LF;
@@ -870,7 +870,7 @@ class cs_view {
                                                   scale="exactfit"
                                                   menu="true"
                                                   bgcolor="#000000"
-                                                  wmode="transparent"
+                                                  wmode="opaque"
                                                   play="false"
                                                   loop="false"
                                                   devicefont="true"
@@ -1229,7 +1229,7 @@ class cs_view {
          $image_text .= '&amp;server=vimeo.com&amp;fullscreen=1&amp;show_title=1'.LF;
          $image_text .= '&amp;show_byline=1&amp;show_portrait=1&amp;color=00ADEF">'.LF;
          $image_text .= '>'.LF;
-         $image_text .= "   <param name='wmode' value='transparent' />".LF;
+         $image_text .= "   <param name='wmode' value='opaque' />".LF;
          $image_text .= "   <param name='quality' value='best' />".LF;
          $image_text .= "   <param name='allowfullscreen' value='true' />".LF;
          $image_text .= "   <param name='scale' value='showAll' />".LF;
@@ -1272,7 +1272,7 @@ class cs_view {
          $image_text .= LF.'<div style="'.$float.' padding:10px;">'.LF;
          $image_text .= '<embed type="application/x-shockwave-flash"'.LF;
          $image_text .= '   src="http://video.google.com/googleplayer.swf?docId='.$source.'&hl=en"'.LF;
-         $image_text .= '   wmode="transparent"'.LF;
+         $image_text .= '   wmode="opaque"'.LF;
          $image_text .= '   id="VideoPlayback"'.LF;
          $image_text .= '   flashvars=""'.LF;
          if ( !empty($args['width']) ) {
@@ -1330,10 +1330,10 @@ class cs_view {
          }
          $image_text .= '>'.LF;
          $image_text .= '<param name="movie" value="http://www.youtube.com/v/'.$source.'" />'.LF;
-         $image_text .= '<param name="wmode" value="transparent" />'.LF;
+         $image_text .= '<param name="wmode" value="opaque" />'.LF;
          $image_text .= '<embed type="application/x-shockwave-flash"'.LF;
          $image_text .= '   src="http://www.youtube.com/v/'.$source.'"'.LF;
-         $image_text .= '   wmode="transparent"'.LF;
+         $image_text .= '   wmode="opaque"'.LF;
          if ( !empty($args['width']) ) {
             $image_text .= '   width="'.$args['width'].'"'.LF;
          }
@@ -1409,12 +1409,12 @@ class cs_view {
          $image_text .= '<param name="autoStart" value="'.$play.'" />'.LF;
          $image_text .= '<param name="showControls" value="true" />'.LF;
          $image_text .= '<param name="showStatusBar" value="true" />'.LF;
-         $image_text .= '<param name="wmode" value="transparent" />'.LF;
+         $image_text .= '<param name="wmode" value="opaque" />'.LF;
          $image_text .= '<embed type="application/x-mplayer2"'.LF;
          $image_text .= '   pluginspage="http://www.microsoft.com/Windows/MediaPlayer/"'.LF;
          $image_text .= '   src="'.$source.'"'.LF;
          $image_text .= '   name="MediaPlayer18"'.LF;
-         $image_text .= '   wmode="transparent"'.LF;
+         $image_text .= '   wmode="opaque"'.LF;
          $image_text .= '   autostart='.$play.''.LF;
          $image_text .= '   showcontrols=1'.LF;
          $image_text .= '   showStatusBar=1'.LF;
@@ -1497,7 +1497,7 @@ class cs_view {
          $image_text .= '<param name="quality" value="high" />'.LF;
          $image_text .= '<param name="scale" value="tofit" />'.LF;
          $image_text .= '<param name="bgcolor" value="#000000" />'.LF;
-         $image_text .= '<param name="wmode" value="transparent" />'.LF;
+         $image_text .= '<param name="wmode" value="opaque" />'.LF;
          $image_text .= '<param name="autoplay" value="'.$play.'" />'.LF;
          $image_text .= '<param name="loop" value="false" />'.LF;
          $image_text .= '<param name="devicefont" value="true" />'.LF;
@@ -1507,7 +1507,7 @@ class cs_view {
          $image_text .= '   scale="tofit"'.LF;
          $image_text .= '   controller=true'.LF;
          $image_text .= '   bgcolor="#000000"'.LF;
-         $image_text .= '   wmode="transparent"'.LF;
+         $image_text .= '   wmode="opaque"'.LF;
          $image_text .= '   autoplay="'.$play.'"'.LF;
          $image_text .= '   loop=false'.LF;
          $image_text .= '   devicefont=true'.LF;
@@ -1605,7 +1605,7 @@ class cs_view {
             $image_text .= '      <param name="scale" value="exactfit" />'.LF;
             $image_text .= '      <param name="menu" value="true" />'.LF;
             $image_text .= '      <param name="bgcolor" value="#000000" />'.LF;
-            $image_text .= '      <param name="wmode" value="transparent" />'.LF;
+            $image_text .= '      <param name="wmode" value="opaque" />'.LF;
             $image_text .= '      <param name="play" value="'.$play.'" />'.LF;
             $image_text .= '      <param name="loop" value="false" />'.LF;
             $image_text .= '      <param name="devicefont" value="true" />'.LF;
@@ -1613,7 +1613,7 @@ class cs_view {
             $image_text .= '             scale="exactfit"'.LF;
             $image_text .= '             menu="true"'.LF;
             $image_text .= '             bgcolor="#000000"'.LF;
-            $image_text .= '             wmode="transparent"'.LF;
+            $image_text .= '             wmode="opaque"'.LF;
             $image_text .= '             play="'.$play.'"'.LF;
             $image_text .= '             loop="false"'.LF;
             $image_text .= '             devicefont="true"'.LF;
@@ -1668,7 +1668,7 @@ class cs_view {
                $image_text .= '  width="'.$args['width'].'"'.LF;
                $image_text .= '  height="'.$args['height'].'"'.LF;
                $image_text .= '  allowfullscreen="true"'.LF;
-               $image_text .= '  wmode="transparent"'.LF;
+               $image_text .= '  wmode="opaque"'.LF;
                $image_text .= '  flashvars="file='.$source.'&autostart='.$play.'&type='.$ext;
                if ( !$extern ) {
                   $image_text .= '&showdigits=true';
@@ -1687,7 +1687,7 @@ class cs_view {
                $image_text .= '<script type="text/javascript">'.LF;
                $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
                $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
-               $image_text .= '  so.addParam(\'wmode\',\'transparent\');'.LF;
+               $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
                $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
                $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
                $image_text .= '  so.addVariable(\'overstretch\',\'fit\');'.LF;
@@ -1778,7 +1778,7 @@ class cs_view {
          $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
          $image_text .= '<script type="text/javascript">'.LF;
          $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
-         $image_text .= '  so.addParam(\'wmode\',\'transparent\');'.LF;
+         $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
          $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
          $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
          $image_text .= '  so.addVariable(\'showstop\',\'true\');'.LF;
@@ -1876,6 +1876,7 @@ class cs_view {
             $image_text .= 'function insertFile(serv,file){'.LF;
             $image_text .= '    flashembed("id'.$div_number.'",'.LF;
             $image_text .= '                {'.LF;
+            $image_text .= '                    wmode: "opaque",'.LF;
             $image_text .= '                    src:"http://lecture2go.rrz.uni-hamburg.de/flowplayer/FlowPlayerDark.swf",'.LF;
             // breite und hoehe definieren
             $image_text .= '                    width: '.$width.','.LF;
@@ -1932,7 +1933,7 @@ class cs_view {
             $image_text .= '   <param name="movie" value="http://lecture2go.rrz.uni-hamburg.de/flowplayer/FlowPlayerDark.swf" />'.LF;
             $image_text .= '   <param name="quality" value="high" />'.LF;
             $image_text .= '   <param name="bgcolor" value="#ffffff" />'.LF;
-            $image_text .= '   <param name="wmode" value="transparent" />'.LF;
+            $image_text .= '   <param name="wmode" value="opaque" />'.LF;
             $image_text .= '   <param name="allowfullscreen" value="true" />'.LF;
             $image_text .= '   <param name="allowscriptaccess" value="always" />'.LF;
             $image_text .= '   <param name="type" value="application/x-shockwave-flash" />'.LF;
@@ -2038,7 +2039,7 @@ class cs_view {
 //            $office_text .= '<param name="wmode" value="opaque">'.LF;
 
 //            original: opaque, aber da div layer probleme, lieber transparent -> prüfen
-//            $office_text .= '<param name="wmode" value="transparent">'.LF;
+//            $office_text .= '<param name="wmode" value="opaque">'.LF;
 
 //            $office_text .= '<param name="devicefont" value="false">'.LF;
 //            $office_text .= '<param name="bgcolor" value="#ffffff">'.LF;
