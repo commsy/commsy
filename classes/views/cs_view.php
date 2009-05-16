@@ -2130,7 +2130,7 @@ class cs_view {
          $retour .= '<param name="movie" value="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0&stripped_title=building-a-better-debt-lead" />';
          $retour .= '<param name="allowFullScreen" value="true"/>';
          $retour .= '<param name="allowScriptAccess" value="always"/>';
-         $retour .= '<embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355">';
+         $retour .= '<embed src="http://static.slideshare.net/swf/ssplayer2.swf?doc=' . $slideshare_doc[0] . '&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355" wmode="opaque">';
          $retour .= '</embed>';
          $retour .= '</object>';
          $retour .= '</div>';
