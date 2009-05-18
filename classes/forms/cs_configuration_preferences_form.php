@@ -412,7 +412,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                $default_item = $room_manager->getItem($default_id);
                if ( isset($default_item) ) {
                   $template_availability = $default_item->getTemplateAvailability();
-                  if( ($template_availability == '0') and $default_item->isClosed() ){
+                  if( ($template_availability == '0') and ($default_item->isClosed() or $default_item->isDesign7())){
                      $temp_array['text'] = '*'.$default_item->getTitle();
                      $temp_array['value'] = $default_item->getItemID();
                      $this->_template_array[] = $temp_array;
