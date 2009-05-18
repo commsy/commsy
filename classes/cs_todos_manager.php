@@ -130,11 +130,15 @@ class cs_todos_manager extends cs_manager {
       }
       $query .= ' FROM todos';
 
-      if ( !empty($this->_search_array) ||
+     if ( ( isset($this->_search_array) AND !empty($this->_search_array) )
+        ) {
+        $query .= ' LEFT JOIN step ON (step.todo_item_id = todos.item_id AND step.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+     }
+     if ( !empty($this->_search_array) ||
            (isset($this->_sort_order) and
            ($this->_sort_order == 'modificator' || $this->_sort_order == 'modificator_rev')) ) {
          $query .= ' LEFT JOIN user AS people ON (people.item_id=todos.creator_id )'; // modificator_id (TBD)
-      }
+     }
      if ( isset($this->_topic_limit) ) {
         $query .= ' LEFT JOIN link_items AS l21 ON ( l21.deletion_date IS NULL AND ((l21.first_item_id=todos.item_id AND l21.second_item_type="'.CS_TOPIC_TYPE.'"))) ';
         $query .= ' LEFT JOIN link_items AS l22 ON ( l22.deletion_date IS NULL AND ((l22.second_item_id=todos.item_id AND l22.first_item_type="'.CS_TOPIC_TYPE.'"))) ';
@@ -257,13 +261,13 @@ class cs_todos_manager extends cs_manager {
 
       // restrict sql-statement by search limit, create wheres
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
+         $query .= ' AND step.deletion_date IS NULL';
          $query .= ' AND (';
-         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','todos.description','todos.title');
+         $field_array = array('TRIM(CONCAT(people.firstname," ",people.lastname))','todos.description','todos.title','step.title','step.description');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';
       }
-
       // init and perform ft search action
       if (!empty($this->_search_array)) {
          $query .= $this->initFTSearch();
