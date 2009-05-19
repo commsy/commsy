@@ -38,6 +38,8 @@ class cs_user_item extends cs_item {
    var $_picture_delete = false;
 
    var $_old_status = NULL;
+   
+   var $_changed_values = array();
 
    /** constructor: cs_user_item
     * the only available constructor, initial values for internal variables
@@ -241,6 +243,7 @@ class cs_user_item extends cs_item {
     */
    function setFirstname ($value) {
       $this->_setValue("firstname", $value);
+      $this->_changed_values[] = 'firstname';
    }
 
    /** get lastname of the user
@@ -259,6 +262,7 @@ class cs_user_item extends cs_item {
     */
    function setLastname ($value) {
       $this->_setValue("lastname", $value);
+      $this->_changed_values[] = 'lastname';
    }
 
    function makeContactPerson(){
@@ -576,6 +580,7 @@ class cs_user_item extends cs_item {
     */
    function setEmail ($value) {
       $this->_setValue('email', (string)$value);
+      $this->_changed_values[] = 'email';
    }
 
    /** get creator - do not use
@@ -1054,6 +1059,16 @@ class cs_user_item extends cs_item {
       $item_id = $this->getItemID();
       if ( empty( $item_id ) ) {
          $this->setItemID($user_mananger->getCreateID());
+      }
+
+      global $c_plugin_array;
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         foreach ($c_plugin_array as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if (method_exists($plugin_class,'user_save')) {
+               $plugin_class->user_save($this);
+            }
+         }
       }
 
       // set old status to current status
@@ -1842,6 +1857,17 @@ class cs_user_item extends cs_item {
          $retour = true;
       }
       return $retour;
+   }
+   
+   public function hasChanged($value){
+      $result = false;
+      foreach($this->_changed_values as $changed_value){
+         if($changed_value == $value){
+            $result = true;
+            break;
+         }
+      }
+      return $result;
    }
 }
 ?>

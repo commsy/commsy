@@ -33,5 +33,27 @@ class class_life {
 //      curl_close($cURL);
       // -------------------------------------
    }
+   
+   public function user_save($user_item){
+      $changed = false;
+      if($user_item->hasChanged('email') or 
+         $user_item->hasChanged('firstname') or
+         $user_item->hasChanged('lastname')){
+            $email = $user_item->getEmail();
+            $firstname = $user_item->getFirstname();
+            $lastname = $user_item->getLastname();
+            $changed = true;
+      }
+      if($changed){
+      // -------------------------------------
+      // ToDo: url an life anpassen
+//      $cURL = curl_init();
+//      curl_setopt($cURL, CURLOPT_URL, "www.life-url.de/?session_id=" . $seesion_id);
+//      curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+//      $output = curl_exec($cURL);
+//      curl_close($cURL);
+      // -------------------------------------
+      }
+   }
 }
 ?>
