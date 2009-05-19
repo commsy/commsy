@@ -486,33 +486,48 @@ class cs_authentication {
                }
             }
          } else {
+            $new_account_data = $this->_used_auth_manager->get_data_for_new_account($uid, $password);
+            if(!empty($new_account_data)){
+               $user_item = $user_manager->getNewItem();
+               $user_item->setUserID($uid);
+               $user_item->setFirstname($new_account_data['firstname']);
+               $user_item->setLastname($new_account_data['lastname']);
+               $user_item->setEmail($new_account_data['email']);
+               $user_item->setAuthSource($this->_used_auth_manager->getAuthSourceItemID());
+               $user_item->setStatus(2);
+               $user_item->save();
+               $this->_environment->setCurrentUser($user_item);
+               $granted = true;
+            }
 
-            $session_item = $this->_environment->getSessionItem();
-            $params = array();
-            $params = $this->_environment->getCurrentParameterArray();
-            $params['user_id'] = $uid;
-            $params['auth_source'] = $auth_source;
-            $params['cs_modus'] = 'portalmember2';
-            if ( empty($params['cid']) ) {
-               $portal_item = $this->_environment->getCurrentPortalItem();
-               $params['cid'] = $portal_item->getItemID();
+            if(!$granted){
+               $session_item = $this->_environment->getSessionItem();
+               $params = array();
+               $params = $this->_environment->getCurrentParameterArray();
+               $params['user_id'] = $uid;
+               $params['auth_source'] = $auth_source;
+               $params['cs_modus'] = 'portalmember2';
+               if ( empty($params['cid']) ) {
+                  $portal_item = $this->_environment->getCurrentPortalItem();
+                  $params['cid'] = $portal_item->getItemID();
+               }
+               if ( isset($session_item) ) {
+                  $history = $session_item->getValue('history');
+                  $module = $history[0]['module'];
+                  $funct = $history[0]['function'];
+                  unset($session_item);
+               } else {
+                  $module = $this->_environment->getCurrentModule();
+                  $funct = $this->_environment->getCurrentFunction();
+               }
+               redirect( $this->_environment->getCurrentContextID(),
+                         $module,
+                         $funct,
+                         $params
+                       );
+               unset($params);
+               exit();
             }
-            if ( isset($session_item) ) {
-               $history = $session_item->getValue('history');
-               $module = $history[0]['module'];
-               $funct = $history[0]['function'];
-               unset($session_item);
-            } else {
-               $module = $this->_environment->getCurrentModule();
-               $funct = $this->_environment->getCurrentFunction();
-            }
-            redirect( $this->_environment->getCurrentContextID(),
-                      $module,
-                      $funct,
-                      $params
-                    );
-            unset($params);
-            exit();
          }
       } elseif ($allowed and $this->_ask_for_root) {
          $granted = true;
