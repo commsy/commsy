@@ -20,5 +20,18 @@ class class_life {
    public function isRubricPlugin () {
       return false;
    }
+   
+   public function logout(){
+      $session = $this->_environment->getSessionItem();
+      $seesion_id = $session->getSessionID();
+      // -------------------------------------
+      // ToDo: url an life anpassen
+//      $cURL = curl_init();
+//      curl_setopt($cURL, CURLOPT_URL, "www.life-url.de/?session_id=" . $seesion_id);
+//      curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+//      $output = curl_exec($cURL);
+//      curl_close($cURL);
+      // -------------------------------------
+   }
 }
 ?>
