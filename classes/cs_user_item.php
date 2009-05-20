@@ -1061,15 +1061,16 @@ class cs_user_item extends cs_item {
          $this->setItemID($user_mananger->getCreateID());
       }
 
-      global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($plugin);
-            if (method_exists($plugin_class,'user_save')) {
-               $plugin_class->user_save($this);
-            }
-         }
-      }
+//      global $c_plugin_array;
+//      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+//         foreach ($c_plugin_array as $plugin) {
+//            $plugin_class = $this->_environment->getPluginClass($plugin);
+//            if (method_exists($plugin_class,'user_save')) {
+//               $plugin_class->user_save($this);
+//            }
+//         }
+//      }
+      plugin_hook('user_save', $this);
 
       // set old status to current status
       $this->_old_status = $this->getStatus();

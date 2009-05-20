@@ -723,6 +723,7 @@ function isURLValid () {
          $funct != 'path' and
          $funct != 'tags' and
          $funct != 'ims_import' and
+         $funct != 'ical_import' and
 
          // module == account
          $funct != 'accountmerge' and
@@ -925,5 +926,19 @@ function mayEditRegular($user, $item) {
         }
     }
     return $value;
+}
+
+function plugin_hook($hook_function, $params = null){
+   global $environment;
+   global $c_plugin_array;
+   
+   if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+      foreach ($c_plugin_array as $plugin) {
+         $plugin_class = $environment->getPluginClass($plugin);
+         if (method_exists($plugin_class,$hook_function)) {
+            $plugin_class->$hook_function($params);
+         }
+      }
+   }
 }
 ?>

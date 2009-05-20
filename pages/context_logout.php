@@ -23,15 +23,17 @@
 //    along with CommSy.
 
 // CommSy-Plugin logout-hook
-global $c_plugin_array;
-if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-   foreach ($c_plugin_array as $plugin) {
-      $plugin_class = $environment->getPluginClass($plugin);
-      if (method_exists($plugin_class,'logout')) {
-         $plugin_class->logout();
-      }
-   }
-}
+
+//global $c_plugin_array;
+//if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+//   foreach ($c_plugin_array as $plugin) {
+//      $plugin_class = $environment->getPluginClass($plugin);
+//      if (method_exists($plugin_class,'logout')) {
+//         $plugin_class->logout();
+//      }
+//   }
+//}
+plugin_hook('logout');
 
 // delete session
 $session = $environment->getSessionItem();
