@@ -455,7 +455,7 @@ if ( !empty($SID) ) {
                  and $plugin_module == $plugin
                ) {
                $plugin_class = $environment->getPluginClass($plugin);
-               if ( method_exists($plugin_class,'accessPageWithoutCheck') ) {
+               if ( method_exists($plugin_class,'accessPageWithCheck') ) {
                   $plugin_boolean_with_check = $plugin_class->accessPageWithCheck($plugin_function);
                }
             }
@@ -465,7 +465,7 @@ if ( !empty($SID) ) {
       if ( !$authentication->check($session->getValue('user_id'),$session->getValue('auth_source'))
            and $environment->getCurrentFunction() != 'logout'
            and $environment->getCurrentFunction() != 'change'
-           and $plugin_boolean_without_check
+           and $plugin_boolean_with_check
          ) {
          ###############################################
          # show error box in room
