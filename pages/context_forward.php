@@ -82,7 +82,7 @@ if ( $external_tool == 'homepage' ) {
    $url .= $_SERVER['HTTP_HOST'];
    $pos = mb_strpos($_SERVER['PHP_SELF'],'?');
    if (!$pos) {
-      $url .= str_replace('commsy.php','homepage.php',$_SERVER['PHP_SELF']);
+      $url .= str_replace($c_single_entry_point,'homepage.php',$_SERVER['PHP_SELF']);
    } else {
       $url .= mb_substr($_SERVER['PHP_SELF'],0,$pos-1);
    }
@@ -127,7 +127,7 @@ if ( $external_tool == 'homepage' ) {
    $url .= $_SERVER['HTTP_HOST'];
    $pos = mb_strpos($_SERVER['PHP_SELF'],'?');
    if (!$pos) {
-      $url .= str_replace('homepage.php','commsy.php',$_SERVER['PHP_SELF']);
+      $url .= str_replace('homepage.php',$c_single_entry_point,$_SERVER['PHP_SELF']);
    } else {
       $url .= mb_substr($_SERVER['PHP_SELF'],0,$pos-1);
    }

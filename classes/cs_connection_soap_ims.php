@@ -202,7 +202,8 @@ class cs_connection_soap_ims {
                         $mail->set_reply_to_email($contact->getEmail());
                         $mail->set_subject(getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
                         $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-                        $link = str_replace ( 'soap.php', 'commsy.php?cid='.$portal_item->getItemId(), $link);
+                        global $c_single_entry_point;
+                        $link = str_replace ( 'soap.php', $c_single_entry_point.'?cid='.$portal_item->getItemId(), $link);
 
                         $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
                         $body .= LF.LF;
@@ -340,7 +341,8 @@ class cs_connection_soap_ims {
          $mail->set_reply_to_name($contact->getFullname());
          $mail->set_reply_to_email($contact->getEmail());
          $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-         $link = str_replace ( 'soap.php', 'commsy.php?cid='.$portal_item->getItemId(), $link);
+         global $c_single_entry_point;
+         $link = str_replace ( 'soap.php', $c_single_entry_point.'?cid='.$portal_item->getItemId(), $link);
          $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_DELETE',$portal_item->getTitle()));
 
          $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
@@ -786,7 +788,8 @@ class cs_connection_soap_ims {
                   $mail->set_reply_to_name($contact_room->getFullname());
                   $mail->set_reply_to_email($contact_room->getEmail());
                   $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-                  $link = str_replace ( 'soap.php', 'commsy.php?cid='.$room_item->getItemId(), $link);
+                  global $c_single_entry_point;
+                  $link = str_replace ( 'soap.php', $c_single_entry_point.'?cid='.$room_item->getItemId(), $link);
                   $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle()));
 
                   $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
@@ -994,7 +997,8 @@ class cs_connection_soap_ims {
             $mail->set_reply_to_name($contact->getFullname());
             $mail->set_reply_to_email($contact->getEmail());
             $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
-            $link = str_replace ( 'soap.php', 'commsy.php?cid='.$room_item->getItemId(), $link);
+            global $c_single_entry_point;
+            $link = str_replace ( 'soap.php', $c_single_entry_point.'?cid='.$room_item->getItemId(), $link);
             $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_MEMBERSHIP_DELETE',$room_item->getTitle()));
 
             $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));

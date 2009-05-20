@@ -53,8 +53,8 @@ if ( isset($_GET['cid']) ) {
          }
       }
       if($validated) {
-		include_once('classes/external_classes/ical/iCal.php');
-		$iCal = new iCal('', 0); // (ProgrammID, Method [1 = Publish | 0 = Request])
+      include_once('classes/external_classes/ical/iCal.php');
+      $iCal = new iCal('', 0); // (ProgrammID, Method [1 = Publish | 0 = Request])
                  if ( isset($_GET['mod'])){
                     $current_module = $_GET['mod'];
                  }else{
@@ -62,45 +62,45 @@ if ( isset($_GET['cid']) ) {
                  }
                  if ($current_module==CS_DATE_TYPE){
                     $dates_manager = $environment->getDatesManager();
-		   $dates_manager->setContextLimit($context_item->getItemID());
-		   //$dates_manager->setFutureLimit();
-		   $dates_manager->setWithoutDateModeLimit();
-		   $dates_manager->select();
-		   $item_list = $dates_manager->get();
+         $dates_manager->setContextLimit($context_item->getItemID());
+         //$dates_manager->setFutureLimit();
+         $dates_manager->setWithoutDateModeLimit();
+         $dates_manager->select();
+         $item_list = $dates_manager->get();
            }else{
               $todo_manager = $environment->getToDoManager();
-		      $todo_manager->setContextLimit($context_item->getItemID());
-		      $todo_manager->select();
-		      $item_list = $todo_manager->get();
+            $todo_manager->setContextLimit($context_item->getItemID());
+            $todo_manager->select();
+            $item_list = $todo_manager->get();
            }
-		$item = $item_list->getFirst();
+      $item = $item_list->getFirst();
 
         while($item)
         {
-        	$fullname = $item->getCreatorItem()->getFullName();
-        	$email = $item->getCreatorItem()->getEmail();
-        	if(empty($fullname) or empty($email))
-        	{
-        		$organizer = array();
-        	} else {
-	       $organizer = (array) array($item->getCreatorItem()->getFullName(), $item->getCreatorItem()->getEmail());
-        	}
+           $fullname = $item->getCreatorItem()->getFullName();
+           $email = $item->getCreatorItem()->getEmail();
+           if(empty($fullname) or empty($email))
+           {
+              $organizer = array();
+           } else {
+          $organizer = (array) array($item->getCreatorItem()->getFullName(), $item->getCreatorItem()->getEmail());
+           }
                  if ($current_module==CS_TODO_TYPE){
-		   $categories = array('CommSy .'.getMessage('COMMON_TODOS'));
-		  $attendees = $item->getProcessorItemList();
-		  $attendee = $attendees->getFirst();
-		  $temp_array = array();
-		  $attendee_array = array();
-		  while($attendee)
-		  {
-		  	$temp_array['name'] = $attendee->getFullName();
-		  	$temp_array['email'] = $attendee->getEmail();
-		  	$temp_array['role'] = '0';
-		  	$attendee_array[] = $temp_array;
-		  	$attendee = $attendees->getNext();
-		  }
+         $categories = array('CommSy .'.getMessage('COMMON_TODOS'));
+        $attendees = $item->getProcessorItemList();
+        $attendee = $attendees->getFirst();
+        $temp_array = array();
+        $attendee_array = array();
+        while($attendee)
+        {
+           $temp_array['name'] = $attendee->getFullName();
+           $temp_array['email'] = $attendee->getEmail();
+           $temp_array['role'] = '0';
+           $attendee_array[] = $temp_array;
+           $attendee = $attendees->getNext();
+        }
 
-		  $alarm = array();
+        $alarm = array();
 //			$alarm = (array) array(
 //								  0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
 //								  30,  // Trigger: alarm before the event in minutes
@@ -110,11 +110,11 @@ if ( isset($_GET['cid']) ) {
 //								  5, // Duration between the alarms in minutes
 //								  3  // How often should the alarm be repeated
 //								  );
-			$enddate = '';
-			$recurrency_end = strtotime($item->getDate());
-			$language = $environment->getSelectedLanguage();
-			$translator = $environment->getTranslationObject();
-			$title = $item->getTitle();
+         $enddate = '';
+         $recurrency_end = strtotime($item->getDate());
+         $language = $environment->getSelectedLanguage();
+         $translator = $environment->getTranslationObject();
+         $title = $item->getTitle();
                          $status = 1;
                          $item_status = $item->getStatus();
                          if($item_status == $translator->getMessage('TODO_IN_POGRESS')){
@@ -129,9 +129,9 @@ if ( isset($_GET['cid']) ) {
                             $percent = 0;
                          }
 
-			if($enddate != '-1')
-			{
-	                $iCal->addToDo($title, //Title for the event
+         if($enddate != '-1')
+         {
+                   $iCal->addToDo($title, //Title for the event
                                         html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'), //Description
                                         '', // location
                                         strtotime($item->getCreationDate()), //Start time for the event (timestamp)
@@ -156,15 +156,15 @@ if ( isset($_GET['cid']) ) {
                                         array(), //Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
                                         1, // Startday of the Week ( 0 = Sunday  6 = Saturday)
                                         '', //exeption dates: Array with timestamps of dates that should not be includes in the recurring event
-                                        $path.'commsy.php?cid='.$_GET['cid'].'&mod=todo&fct=detail&iid='.$item->getItemID(), // optional URL for that event
-				       $language, // Language of the Strings
-				       $item->getItemID(), // Optional UID for this event
-				       strtotime($item->getDate())
-			);
+                                        $path.$c_single_entry_point.'?cid='.$_GET['cid'].'&mod=todo&fct=detail&iid='.$item->getItemID(), // optional URL for that event
+                   $language, // Language of the Strings
+                   $item->getItemID(), // Optional UID for this event
+                   strtotime($item->getDate())
+         );
                     }
 
                  }else{
-		   $categories = array('CommSy .'.getMessage('COMMON_DATES'));
+         $categories = array('CommSy .'.getMessage('COMMON_DATES'));
            $attendees = $item->getParticipantsItemList();
            $attendee = $attendees->getFirst();
            $temp_array = array();
@@ -177,7 +177,7 @@ if ( isset($_GET['cid']) ) {
              $attendee_array[] = $temp_array;
              $attendee = $attendees->getNext();
            }
-		   $alarm = array();
+         $alarm = array();
 //			$alarm = (array) array(
 //								  0, // Action: 0 = DISPLAY, 1 = EMAIL, (not supported: 2 = AUDIO, 3 = PROCEDURE)
 //								  30,  // Trigger: alarm before the event in minutes
@@ -188,69 +188,69 @@ if ( isset($_GET['cid']) ) {
 //								  3  // How often should the alarm be repeated
 //								  );
 
-			$starttime = strtotime($item->getDateTime_start());
-			$endtime = strtotime($item->getDateTime_end());
+         $starttime = strtotime($item->getDateTime_start());
+         $endtime = strtotime($item->getDateTime_end());
 
-			if($starttime >= $endtime)
-			{
-				$endtime = $starttime+3600;
-			}
-			$language = $environment->getSelectedLanguage();
-			$translator = $environment->getTranslationObject();
-			$title = '';
-			if(!$item->issetPrivatDate())
-			{
-				$title = $item->getTitle();
-			} else {
-				$title = $item->getTitle().' ['.$translator->getMessage('DATE_PRIVATE_ENTRY').']';
-			}
-			if(!empty($item->getPlace)) {
-				$place = $item->getPlace();
-			} else {
-				$place = '';
-			}
-			if($item->getDateTime_start() == $item->getDateTime_end())
-			{
-				$starttime = $starttime + (24*3600);
-				$endtime = 'allday';
-			} elseif(strstr($item->getDateTime_start(),"00:00:00") and strstr($item->getDateTime_end(),"00:00:00"))
-			{
-				$starttime = $starttime + (24*3600);
-				$endtime = $endtime + (24*3600);
-			}
-			if($starttime != '-1' and $endtime != '-1')
-			{
-				$iCal->addEvent(
-								$organizer, // Organizer
-								$starttime, // Start Time (timestamp; for an allday event the startdate has to start at YYYY-mm-dd 00:00:00)
-								$endtime, // End Time (write 'allday' for an allday event instead of a timestamp)
-								$item->getPlace(), // Location
-								1, // Transparancy (0 = OPAQUE | 1 = TRANSPARENT)
-								$categories, // Array with Strings
-								html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'), // Description
-								$title, // Title
-								1, // Class (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
-								$attendee_array, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
-								5, // Priority = 0-9
-								0, // frequency: 0 = once, secoundly - yearly = 1-7
-								0, // recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
-								0, // Interval for frequency (every 2,3,4 weeks...)
-								array(), // Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
-								1, // Startday of the Week ( 0 = Sunday - 6 = Saturday)
-								'', // exeption dates: Array with timestamps of dates that should not be includes in the recurring event
-								$alarm,  // Sets the time in minutes an alarm appears before the event in the programm. no alarm if empty string or 0
-								1, // Status of the event (0 = TENTATIVE, 1 = CONFIRMED, 2 = CANCELLED)
-								$path.'commsy.php?cid='.$_GET['cid'].'&mod=date&fct=detail&iid='.$item->getItemID(), // optional URL for that event
-								$language, // Language of the Strings
-				                $item->getItemID() // Optional UID for this event
-							   );
-			}
+         if($starttime >= $endtime)
+         {
+            $endtime = $starttime+3600;
+         }
+         $language = $environment->getSelectedLanguage();
+         $translator = $environment->getTranslationObject();
+         $title = '';
+         if(!$item->issetPrivatDate())
+         {
+            $title = $item->getTitle();
+         } else {
+            $title = $item->getTitle().' ['.$translator->getMessage('DATE_PRIVATE_ENTRY').']';
+         }
+         if(!empty($item->getPlace)) {
+            $place = $item->getPlace();
+         } else {
+            $place = '';
+         }
+         if($item->getDateTime_start() == $item->getDateTime_end())
+         {
+            $starttime = $starttime + (24*3600);
+            $endtime = 'allday';
+         } elseif(strstr($item->getDateTime_start(),"00:00:00") and strstr($item->getDateTime_end(),"00:00:00"))
+         {
+            $starttime = $starttime + (24*3600);
+            $endtime = $endtime + (24*3600);
+         }
+         if($starttime != '-1' and $endtime != '-1')
+         {
+            $iCal->addEvent(
+                        $organizer, // Organizer
+                        $starttime, // Start Time (timestamp; for an allday event the startdate has to start at YYYY-mm-dd 00:00:00)
+                        $endtime, // End Time (write 'allday' for an allday event instead of a timestamp)
+                        $item->getPlace(), // Location
+                        1, // Transparancy (0 = OPAQUE | 1 = TRANSPARENT)
+                        $categories, // Array with Strings
+                        html_entity_decode(strip_tags($item->getDescription()), ENT_NOQUOTES, 'UTF-8'), // Description
+                        $title, // Title
+                        1, // Class (0 = PRIVATE | 1 = PUBLIC | 2 = CONFIDENTIAL)
+                        $attendee_array, // Array (key = attendee name, value = e-mail, second value = role of the attendee [0 = CHAIR | 1 = REQ | 2 = OPT | 3 =NON])
+                        5, // Priority = 0-9
+                        0, // frequency: 0 = once, secoundly - yearly = 1-7
+                        0, // recurrency end: ('' = forever | integer = number of times | timestring = explicit date)
+                        0, // Interval for frequency (every 2,3,4 weeks...)
+                        array(), // Array with the number of the days the event accures (example: array(0,1,5) = Sunday, Monday, Friday
+                        1, // Startday of the Week ( 0 = Sunday - 6 = Saturday)
+                        '', // exeption dates: Array with timestamps of dates that should not be includes in the recurring event
+                        $alarm,  // Sets the time in minutes an alarm appears before the event in the programm. no alarm if empty string or 0
+                        1, // Status of the event (0 = TENTATIVE, 1 = CONFIRMED, 2 = CANCELLED)
+                        $path.$c_single_entry_point.'?cid='.$_GET['cid'].'&mod=date&fct=detail&iid='.$item->getItemID(), // optional URL for that event
+                        $language, // Language of the Strings
+                            $item->getItemID() // Optional UID for this event
+                        );
+         }
                      }
-		   $item = $item_list->getNext();
+         $item = $item_list->getNext();
    }
     $dateiname = 'dates_'.$_GET['cid'];
-	#echo $iCal->getOutput();
-	$iCal->outputFile($dateiname);
+   #echo $iCal->getOutput();
+   $iCal->outputFile($dateiname);
   } else {
    include_once('etc/cs_constants.php');
    include_once('etc/cs_config.php');
@@ -258,7 +258,7 @@ if ( isset($_GET['cid']) ) {
    $environment = new cs_environment();
    $environment->setCurrentContextID($_GET['cid']);
    $translator = $environment->getTranslationObject();
-  	die($translator->getMessage('RSS_NOT_ALLOWED'));
+     die($translator->getMessage('RSS_NOT_ALLOWED'));
   }
 } else {
    chdir('..');

@@ -28,9 +28,9 @@ $filename = '../../etc/cs_config.php';
 
 if (file_exists($filename)) {
 
-    // Wenn CommSy schon installiert wurde -->
-
-   header("Location: ../commsy.php");
+   // Wenn CommSy schon installiert wurde -->
+   include_once($filename);
+   header("Location: ../".$c_single_entry_point);
    header('HTTP/1.0 302 Found');
    exit;
 
@@ -808,7 +808,7 @@ $schreibe12 = \"".$sec_key."\";
    echo "<h1>".$language[$lang]['done']."</h1>";
    echo "<p>".$language[$lang]['donetext']."</p>";
    echo "<br />";
-   echo '&raquo;&nbsp;<a href="../commsy.php">'.$language[$lang]['toportal'].'</a><br />';
+   echo '&raquo;&nbsp;<a href="../'.$c_single_entry_point.'">'.$language[$lang]['toportal'].'</a><br />';
 
    echo "</div>";
 

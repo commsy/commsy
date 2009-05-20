@@ -98,9 +98,9 @@
      $i = 0;
      foreach($imgatt_array[1] as $img)
      {
-       $img = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
-       $img = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
-       #$img = str_replace('commsy.php/','',$img);
+       $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
+       $img = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
+       #$img = str_replace($c_single_entry_point.'/','',$img);
        #$img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
        #$img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
        $imgatt_array[1][$i] = str_replace('_thumb.png','',$img);
@@ -153,7 +153,7 @@
      foreach($imgatt_array[2] as $img)
      {
        $img_old = $img;
-       $img = str_replace('commsy.php/','',$img);
+       $img = str_replace($c_single_entry_point.'/','',$img);
        $img = str_replace('?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$img);
        $img = str_replace('?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$img);
        $img = mb_substr($img,0,mb_strlen($img)/2);
@@ -161,8 +161,8 @@
        $output = str_replace($img_old,$img,$output);
      }
 
-     $output = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
-     $output = str_replace('commsy.php/commsy.php?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
+     $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
+     $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
      $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output);
      //write string into file
      fwrite($handle, $output);

@@ -899,6 +899,7 @@ class cs_view {
                   $thumb_name = $this->_create_thumb_name_from_image_name($file->getDiskFileNameWithoutFolder());
                   //if there is a thumb file, use it instead
                   $disc_manager = $this->_environment->getDiscManager();
+                  global $c_single_entry_point;
                   if ( $disc_manager->existsFile($thumb_name) ) {
                      $params = array();
                      $params['picture'] = $thumb_name;
@@ -908,7 +909,7 @@ class cs_view {
                                  $params,
                                  '',
                                  ''.
-                                 'commsy.php' );
+                                 $c_single_entry_point );
                      unset($params);
                      $image_text = '<img src="'.$thumb_url.'" alt="'.$name.'"/>';
                      $width_string ='';
@@ -964,9 +965,10 @@ class cs_view {
                         include_once('pages/html_upload.php');
                      }
                             if($file->getHasHTML() == '2') {
+                              global $c_single_entry_point;
 
                                            $paragraph = str_replace(
-                           '['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').'|html]','<a href="commsy.php?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>',$paragraph);
+                           '['.htmlentities($name, ENT_NOQUOTES, 'UTF-8').'|html]','<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>',$paragraph);
                             }
                             if(($file->getHasHTML() == '1')) {
                             $paragraph = str_replace(
@@ -2094,7 +2096,8 @@ class cs_view {
                 $file->saveExtras();
             }
 
-            $embed = 'commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=fdviewer&fct=getfile&file=' . $file->getFdViewerFile();
+            global $c_single_entry_point;
+            $embed = $c_single_entry_point.'?cid=' . $this->_environment->getCurrentContextID() . '&mod=fdviewer&fct=getfile&file=' . $file->getFdViewerFile();
             $retour .= '<object width="600" height="500">';
             $retour .= '<param name="movie" value="' . $embed . '">';
             $retour .= '<embed src="' . $embed . '" width="600" height="500">';
@@ -2243,13 +2246,14 @@ class cs_view {
                if ( $disc_manager->existsFile($thumb_name) ) {
                   $params = array();
                   $params['picture'] = $thumb_name;
+                  global $c_single_entry_point;
                   $thumb_source = curl( $this->_environment->getCurrentContextID(),
                                         'picture',
                                         'getfile',
                                         $params,
                                         '',
                                         $thumb_name, // ''. ???
-                                        'commsy.php' );
+                                        $c_single_entry_point );
                   unset($params);
                } else {
                   $width_auto = 200;
@@ -2518,7 +2522,8 @@ class cs_view {
                }
 
                $source = $file->getUrl();
-               $image_text = '<a href="commsy.php?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>';
+               global $c_single_entry_point;
+               $image_text = '<a href="'.$c_single_entry_point.'?cid='.$this->_environment->getCurrentContextID().'&amp;mod=material&amp;fct=showzip&amp;iid='.$file->getFileID().'" target="help" onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=800, height=600\');">'.$name.'</a>';
             }
          }
       }

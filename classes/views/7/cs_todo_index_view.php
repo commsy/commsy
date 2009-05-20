@@ -95,7 +95,8 @@ class cs_todo_index_view extends cs_room_index_view {
       $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
       $ical_url = '<a title="'.getMessage('TODO_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
-      $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+      global $c_single_entry_point;
+      $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
       $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
@@ -123,7 +124,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -155,7 +156,7 @@ class cs_todo_index_view extends cs_room_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('TODO_DATE'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('TODO_DATE'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -340,7 +341,7 @@ class cs_todo_index_view extends cs_room_index_view {
                            $params,
                            $this->_text_as_html_short($title),
                            '','', '', '', '', '', '', '',
-			   CS_TODO_TYPE.$item->getItemID());
+            CS_TODO_TYPE.$item->getItemID());
 
       unset($params);
       $title .= $this->_getItemChangeStatus($item);
@@ -410,14 +411,14 @@ class cs_todo_index_view extends cs_room_index_view {
             }
             $done_time .= '      </div>'.LF;
          }elseif($done_percentage <= 120){
-         	$done_percentage = (100 / $done_percentage) *100;
+            $done_percentage = (100 / $done_percentage) *100;
             $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
             $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
             $done_time .= '      </div>'.LF;
             $done_time .= '</div>'.LF;
          }else{
-         	$done_percentage = (100 / $done_percentage) *100;
+            $done_percentage = (100 / $done_percentage) *100;
             $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
             $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
             $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
@@ -624,7 +625,7 @@ class cs_todo_index_view extends cs_room_index_view {
 
 
 
-	function _getPrintableTableHeadAsHTML() {
+   function _getPrintableTableHeadAsHTML() {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
 
@@ -692,7 +693,7 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= '   </tr>'.LF;
 
       return $html;
-	}
+   }
 
    function _getItemFiles($item, $with_links=true){
       $retour = '';
@@ -710,17 +711,17 @@ class cs_todo_index_view extends cs_room_index_view {
             if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-	           if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-	                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-	               ) {
+              if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                    or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                  ) {
                       $this->_with_slimbox = true;
-	                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-	               }else{
-	                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
-	               }
-	           }
+                      $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  }else{
+                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                  }
+              }
          } else {
             $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
          }

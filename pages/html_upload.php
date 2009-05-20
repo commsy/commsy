@@ -82,7 +82,8 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
       preg_match_all($pattern, $filecontent, $current_treffer);
       foreach ( $current_treffer[0] as $treffer ) {
          $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
-         $replacement = 'commsy.php?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
+         global $c_single_entry_point;
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
 
          if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);

@@ -50,7 +50,8 @@ function attach_redirect ($rubric_type, $current_iid) {
    $params = array();
    $params['ref_iid'] = $current_iid;
    $params['mode'] = 'formattach';
-   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params,'','','commsy.php');
+   global $c_single_entry_point;
+   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params,'','',$c_single_entry_point);
 }
 
 function attach_return ($rubric_type, $current_iid) {

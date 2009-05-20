@@ -684,10 +684,11 @@ class cs_group_detail_view extends cs_detail_view {
       $style = ' color: '.$color_array['page_title'].';';
          if ($color_array['schema']=='SCHEMA_OWN'){
             if ($item->getBGImageFilename()){
+               global $c_single_entry_point;
                if ($item->issetBGImageRepeat()){
-                  $style .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
+                  $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
                }else{
-                  $style .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
+                  $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
                }
             }
          }else{

@@ -659,7 +659,8 @@ class cs_form_view extends cs_view {
          $backgroundcolor = hexdec($color_array['boxes_background']);
          $url = 'http://';
          $url .= $_SERVER['HTTP_HOST'];
-         $url .= str_replace('commsy.php','',$_SERVER['PHP_SELF']);
+         global $c_single_entry_point;
+         $url .= str_replace($c_single_entry_point,'',$_SERVER['PHP_SELF']);
          $curl_upload = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'upload',array('SID' => $session_id));
          $curl_end = $url.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
          $html .= '<div style="background: #F0F0F0; border: 1px dashed #B0B0B0; width: 600px">'.LF;

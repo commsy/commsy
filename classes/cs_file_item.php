@@ -300,7 +300,8 @@ class cs_file_item extends cs_item {
    function getUrl () {
       $params = array();
       $params['iid'] = $this->_data['files_id'];
-      return curl($this->getContextID(),'material', 'getfile', $params,'',$this->_data['filename'],'commsy.php');
+      global $c_single_entry_point;
+      return curl($this->getContextID(),'material', 'getfile', $params,'',$this->_data['filename'],$c_single_entry_point);
    }
 
    function getFileSize() {
@@ -452,7 +453,8 @@ class cs_file_item extends cs_item {
          global $c_commsy_domain,$c_commsy_url_path;
          include_once('functions/curl_functions.php');
          $url = _curl(false,$this->getContextID(),'material','getfile',$params);
-         $url = str_replace('soap.php','commsy.php',$url);
+         global $c_single_entry_point;
+         $url = str_replace('soap.php',$c_single_entry_point,$url);
          $retour .= '<resource_link><![CDATA['.$c_commsy_domain.$c_commsy_url_path.'/'.$url.']]></resource_link>'.LF;
       }
       $retour .= '</file_item>'.LF;

@@ -1437,7 +1437,8 @@ function exportItemToWiki($current_item_id,$rubric){
        }
 
        // Link zurueck ins CommSy
-       $link = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod='.$rubric.'&fct=detail&iid=' . $current_item_id . '|"' . $item->getTitle() . '" im CommSy]]';
+       global $c_single_entry_point;
+       $link = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/'.$c_single_entry_point.'?cid=' . $this->_environment->getCurrentContextID() . '&mod='.$rubric.'&fct=detail&iid=' . $current_item_id . '|"' . $item->getTitle() . '" im CommSy]]';
 
        $old_dir = getcwd();
        chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
@@ -1543,9 +1544,9 @@ function exportItemToWiki($current_item_id,$rubric){
 function updateExportLists($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
-   
+
    $old_dir = getcwd();
-   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');    
+   chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
    if ($rubric == CS_DISCUSSION_TYPE){
       if(file_exists('Main.CommSyDiskussionen')){
          unlink('Main.CommSyDiskussionen');
@@ -1565,7 +1566,7 @@ function updateExportLists($rubric){
                       $exported_discussions[] = $file;
                   }
                }
-            }   
+            }
          }
       }
       $file_contents = file_get_contents('Main.CommSyDiskussionen');
@@ -1600,7 +1601,7 @@ function updateExportLists($rubric){
                       $exported_discussions[] = $file;
                   }
                }
-            }   
+            }
          }
       }
       $file_contents = file_get_contents('Main.CommSyMaterialien');

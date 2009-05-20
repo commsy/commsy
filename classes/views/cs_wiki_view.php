@@ -198,7 +198,8 @@ class cs_wiki_view extends cs_view {
           if(!empty($material_item) && $material_item->isExportToWiki()){
             $link_text = '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=Main.Material' . $array[1] . '">' . $word . '</a>';
           } else {
-            $link_text = '<a href="' . $c_commsy_domain . $c_commsy_url_path . '/commsy.php?cid=' . $this->_environment->getCurrentContextID() . '&mod=content&fct=detail&iid=' . $array[1] . '">' . $word . '</a>';
+            global $c_single_entry_point;
+            $link_text = '<a href="' . $c_commsy_domain . $c_commsy_url_path . '/'.$c_single_entry_point.'?cid=' . $this->_environment->getCurrentContextID() . '&mod=content&fct=detail&iid=' . $array[1] . '">' . $word . '</a>';
           }
       }
       if ( !empty($link_text) ) {

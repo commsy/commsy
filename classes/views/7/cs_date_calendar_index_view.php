@@ -241,7 +241,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
       $ical_url = '<a title="'.getMessage('DATES_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
-      $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+      global $c_single_entry_point;
+      $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
       $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';

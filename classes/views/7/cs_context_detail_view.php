@@ -712,10 +712,11 @@ var $_room_type = 'context';
          $retour .= ' color: '.$color_array['page_title'].';';
          if ($color_array['schema']=='SCHEMA_OWN'){
             if ($this->_item->getBGImageFilename()){
+               global $c_single_entry_point;
                if ($this->_item->issetBGImageRepeat()){
-                  $retour .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') repeat; ';
+                  $retour .= 'background: url('.$c_single_entry_point.'?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') repeat; ';
                }else{
-                  $retour .= 'background: url(commsy.php?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
+                  $retour .= 'background: url('.$c_single_entry_point.'?cid='.$this->_item->getItemID().'&mod=picture&fct=getfile&picture='.$this->_item->getBGImageFilename().') no-repeat; ';
                }
             }
          }else{

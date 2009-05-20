@@ -1583,7 +1583,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $hash_manager = $this->_environment->getHashManager();
       $ical_url = '<a href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
-      $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+      global $c_single_entry_point;
+      $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user_item->getItemID()).'" style="color:#fff;">'.getMessage('DATES_ABBO').'</a>'.LF;
       $html .= '   <tr class="calendar_head" style="height: 20px;">'.LF;
       $html .= '      <td  colspan="5" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</td>'.LF;

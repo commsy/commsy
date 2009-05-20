@@ -514,10 +514,11 @@ class cs_myroom_index_view extends cs_context_index_view {
             $retour .= '    table.room_window'.$item->getItemID().' {width: 17em; border:1px solid  '.$cs_color['tableheader'].'; margin:0px; padding:5px 10px 5px 10px; ';
             if ($color_array['schema']=='SCHEMA_OWN'){
                if ($item->getBGImageFilename()){
+                  global $c_single_entry_point;
                   if ($item->issetBGImageRepeat()){
-                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
+                     $retour .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
                   }else{
-                     $retour .= 'background: url(commsy.php?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
+                     $retour .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
                   }
                }
             }else{

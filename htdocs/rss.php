@@ -136,7 +136,7 @@ if ( isset($_GET['cid']) ) {
 
      <channel>
       <title>'.$translator->getMessage('RSS_TITLE',$maintitle).'</title>
-      <link>'.$path.'commsy.php</link>
+      <link>'.$path.$c_single_entry_point.'</link>
       <ttl>60</ttl>
       <description>'.$translator->getMessage('RSS_DESCRIPTION',$maintitle).'</description>
       <language>'.$context_item->getLanguage().'</language>
@@ -145,7 +145,7 @@ if ( isset($_GET['cid']) ) {
       <image>
         <url>'.$path.'images/commsy_logo_transparent.gif</url>
         <title>'.$translator->getMessage('RSS_TITLE',$maintitle).'</title>
-        <link>'.$path.'commsy.php</link>
+        <link>'.$path.$c_single_entry_point.'</link>
       </image>';
 
    $type_limit_array = array();
@@ -259,7 +259,7 @@ if ( isset($_GET['cid']) ) {
             $author = $email.' ('.$fullname.')';
             unset($email);
             unset($fullname);
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             unset($manager);
             unset($item);
             break;
@@ -290,7 +290,7 @@ if ( isset($_GET['cid']) ) {
                $author = $email.' ('.$fullname.')';
                unset($email);
                unset($fullname);
-               $link = $path.'commsy.php?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
                $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
@@ -336,7 +336,7 @@ if ( isset($_GET['cid']) ) {
                $author = $email.' ('.$fullname.')';
                unset($email);
                unset($fullname);
-               $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
                $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
@@ -369,7 +369,7 @@ if ( isset($_GET['cid']) ) {
                $author = $email.' ('.$fullname.')';
                unset($email);
                unset($fullname);
-               $link = $path.'commsy.php?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
                $date = date('r',strtotime($item->getModificationDate()));
                unset($manager);
                $last_discarticle_item = $item;
@@ -415,7 +415,7 @@ if ( isset($_GET['cid']) ) {
                $author = $email.' ('.$fullname.')';
                unset($email);
                unset($fullname);
-               $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
                $date = date('r',strtotime($item->getModificationDate()));
             }
             unset($manager);
@@ -447,7 +447,7 @@ if ( isset($_GET['cid']) ) {
             $author = $email.' ('.$fullname.')';
             unset($email);
             unset($fullname);
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
@@ -478,7 +478,7 @@ if ( isset($_GET['cid']) ) {
             $author = $email.' ('.$fullname.')';
             unset($email);
             unset($fullname);
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             $last_section_item = $item;
@@ -511,7 +511,7 @@ if ( isset($_GET['cid']) ) {
             $author = $email.' ('.$fullname.')';
             unset($email);
             unset($fullname);
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
@@ -544,7 +544,7 @@ if ( isset($_GET['cid']) ) {
                   $author = $email.' ('.$fullname.')';
                   unset($email);
                   unset($fullname);
-                  $link = $path.'commsy.php?cid='.$cid.'&amp;mod=group&amp;fct=detail&amp;iid='.$row['item_id'];
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=group&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
                case 'institution':
                   $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
@@ -568,7 +568,7 @@ if ( isset($_GET['cid']) ) {
                   $author = $email.' ('.$fullname.')';
                   unset($email);
                   unset($fullname);
-                  $link = $path.'commsy.php?cid='.$cid.'&amp;mod=institution&amp;fct=detail&amp;iid='.$row['item_id'];
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=institution&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
                case 'topic':
                   $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
@@ -592,7 +592,7 @@ if ( isset($_GET['cid']) ) {
                   $author = $email.' ('.$fullname.')';
                   unset($email);
                   unset($fullname);
-                  $link = $path.'commsy.php?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
                break;
             }
             $date = date('r',strtotime($item->getModificationDate()));
@@ -625,7 +625,7 @@ if ( isset($_GET['cid']) ) {
             $author = $email.' ('.$fullname.')';
             unset($email);
             unset($fullname);
-            $link = $path.'commsy.php?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
             $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);

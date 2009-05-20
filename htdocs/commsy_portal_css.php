@@ -125,7 +125,7 @@ div.portal_tabs_frame {
    margin:2px 5px 5px 6px;
    padding:0px;
    <?php
-   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
 }
@@ -281,7 +281,7 @@ div.search_link a{
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
     <?php
-    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+    echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
     ?>
     background-color: <?php echo($color['tabs_background'])?>;
 }
@@ -297,7 +297,7 @@ div.search_link a{
     white-space:nowrap;
     color: <?php echo($color['headline_text'])?>;
     <?php
-    echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+    echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
     ?>
     background-color: <?php echo($color['tabs_background'])?>;
 }
@@ -419,7 +419,7 @@ span.template_description{
 div.tabs_frame {
    position:relative;
    <?php
-   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
    ?>
    background-color: <?php echo($color['tabs_background'])?>;
    padding:0px;
@@ -457,7 +457,7 @@ a.navlist_current{
    border-right:1px solid <?php echo($color['headline_text'])?>;
    text-decoration:none;
    <?php
-   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
+   echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }
@@ -467,7 +467,7 @@ a.navlist_current:hover, a.navlist_current:active, a.navlist:hover{
    padding:4px 6px 3px 6px;
    text-decoration:none;
    <?php
-   echo('background: url(commsy.php?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
+   echo('background: url('.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24_focus.png) repeat-x;');
    ?>
    background-color:<?php echo($color['tabs_focus'])?>;
 }

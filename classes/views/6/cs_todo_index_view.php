@@ -108,7 +108,8 @@ class cs_todo_index_view extends cs_room_index_view {
      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),CS_TODO_TYPE,'index',$params,$this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).BRLF;
      $ical_url = '> <a href="webcal://';
      $ical_url .= $_SERVER['HTTP_HOST'];
-     $ical_url .= str_replace('commsy.php','ical.php',$_SERVER['PHP_SELF']);
+     global $c_single_entry_point;
+     $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
      $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.getMessage('TODO_ABBO').'</a>'.BRLF;
      $html .= $ical_url;
      $html .= '> <a href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.getMessage('TODO_EXPORT').'</a>'.BRLF;

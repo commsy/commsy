@@ -313,7 +313,8 @@ class cs_connection_soap {
                                  $body .= LF;
 
                                  $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$portal_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
-                                 $body .= str_replace('soap.php','commsy.php',$url);
+                                 global $c_single_entry_point;
+                                 $body .= str_replace('soap.php',$c_single_entry_point,$url);
                                  $mail->set_message($body);
                                  $mail->send();
                               }
@@ -389,7 +390,8 @@ class cs_connection_soap {
                                  $body .= LF.LF;
                               }
                               $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$this->_environment->getCurrentContextID();
-                              $body .= str_replace('soap.php','commsy.php',$url);
+                              global $c_single_entry_point;
+                              $body .= str_replace('soap.php',$c_single_entry_point,$url);
                               $mail->set_message($body);
                               $mail->send();
                            }
@@ -1924,7 +1926,7 @@ class cs_connection_soap {
       }
       return $result;
    }
-   
+
    public function deleteWiki ($session_id, $context_id) {
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
@@ -1934,13 +1936,13 @@ class cs_connection_soap {
          $wiki_manager->deleteWiki($room_item);
       }
    }
-   
+
    public function createWiki ($session_id, $context_id, $settings) {
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
          $room_manager = $this->_environment->getRoomManager();
          $room_item = $room_manager->getItem($context_id);
-         
+
          $item->setWikiSkin();
          $item->setWikiEditPW();
          $item->setWikiAdminPW();
@@ -1967,7 +1969,7 @@ class cs_connection_soap {
          //$item->setWikiDiscussionArray();
          $item->setWikiEnableDiscussionNotification();
          $item->setWikiEnableDiscussionNotificationGroups();
-      
+
          $wiki_manager = $this->_environment->getWikiManager();
          $wiki_manager->deleteWiki($room_item);
       }

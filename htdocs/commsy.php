@@ -960,7 +960,7 @@ if ( $environment->isOutputModeNot('XML') ) {
                   if ( !empty($text) ) {
                      $tempMessage = $text;
                   } else {
-                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' commsy.php('.__LINE__.') ');
+                     $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.' ('.__LINE__.') ');
                   }
                   break;
             }
