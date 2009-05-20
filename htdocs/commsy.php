@@ -446,9 +446,26 @@ if ( !empty($SID) ) {
 
       // check, if user is allowed here in this context (no password uid evaluation)
       // and set current user
+
+      $plugin_boolean_with_check = true;
+      global $c_plugin_array;
+      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         foreach ($c_plugin_array as $plugin) {
+            if ( !empty($plugin_module)
+                 and $plugin_module == $plugin
+               ) {
+               $plugin_class = $environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'accessPageWithoutCheck') ) {
+                  $plugin_boolean_with_check = $plugin_class->accessPageWithCheck($plugin_function);
+               }
+            }
+         }
+      }
+
       if ( !$authentication->check($session->getValue('user_id'),$session->getValue('auth_source'))
            and $environment->getCurrentFunction() != 'logout'
            and $environment->getCurrentFunction() != 'change'
+           and $plugin_boolean_without_check
          ) {
          ###############################################
          # show error box in room
