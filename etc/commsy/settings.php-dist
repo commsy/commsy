@@ -20,6 +20,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// single entry point
+$c_single_entry_point = 'commsy.php';
+
 // export of Contents
 // where to store the temporary files
 $export_temp_folder = 'var/temp/zip_export';

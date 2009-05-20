@@ -720,29 +720,6 @@ function parseText2Id ($text) {
       $text = $result;
    }
 
-   // commsy urls - experimental
-   /*
-   preg_match_all('/\[(commsy.php\?[\S]*)\|([A-z0-9'.UC_CHARS.LC_CHARS.' -]*)\|([A-z]*)\]/', $text, $matches_with_commsy_urls); //A-z0-9'.UC_CHARS.LC_CHARS.'&#=
-   if (count($matches_with_commsy_urls[0]) > 0) {
-      $result = $text;
-      $http_part = $matches_with_commsy_urls[1];
-      $word_part = $matches_with_commsy_urls[2];
-      $flag_part = $matches_with_commsy_urls[3];
-      for ($i = 0; $i < count($http_part); $i++) {
-         $http = $http_part[$i];
-         $word = $word_part[$i];
-         $flag = $flag_part[$i];
-         if (!empty($word) and !empty($http) and !empty($flag)) {
-            if ($flag == 'internal') {
-               $result = preg_replace('%\['.$http.'\|'.$word.'\|'.$flag.'\]%', '<a href="'.$http.'">'.$word.'</a>', $result);
-            } else {
-               $result = preg_replace('%\['.$http.'\|'.$word.'\|'.$flag.'\]%', '<a href="'.$http.'" target="_blank">'.$word.'</a>', $result);
-            }
-         }
-      }
-      $text = $result;
-   }*/
-
    // ids without text: [<number>] becomes a link under [<number>] to the commsy-object with id <number>
    preg_match_all('~\[(\d+)\]~u', $text, $matches_stand_alone);//(^| |\n|>|\t)\[(\d+)\][.:,;-?!]*(<| |$)
    $matches_stand_alone = array_unique($matches_stand_alone[1]);

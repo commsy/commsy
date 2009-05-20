@@ -544,9 +544,6 @@ CREATE TABLE `log` (
 -- Daten für Tabelle `log`
 --
 
-INSERT INTO `log` (`id`, `ip`, `agent`, `timestamp`, `request`, `post_content`, `method`, `uid`, `ulogin`, `cid`, `module`, `fct`, `param`, `iid`) VALUES
-(2, '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7 (.NET CLR 3.5.30729)', '2009-03-06 12:10:32', '/jackewit/commsy7/htdocs/commsy.php?', 'NULL', 'GET', 0, '', 99, 'home', 'index', '', 0),
-(3, '127.0.0.1', 'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.7) Gecko/2009021910 Firefox/3.0.7 (.NET CLR 3.5.30729)', '2009-03-06 12:10:34', '/jackewit/commsy7/htdocs/commsy.php?cid=99&mod=home&fct=index&jscheck=1&isJS=1&SID=be38654c2982c7c9955ec8a5a7511837', 'NULL', 'GET', 0, 'guest', 99, 'home', 'index', 'jscheck=1&isJS=1', 0);
 
 -- --------------------------------------------------------
 
@@ -627,9 +624,6 @@ CREATE TABLE `log_error` (
 -- Daten für Tabelle `log_error`
 --
 
-INSERT INTO `log_error` (`id`, `datetime`, `number`, `type`, `message`, `url`, `referer`, `file`, `line`, `context`, `module`, `function`, `user`) VALUES
-(1, '2008-01-14 08:54:23', 512, 'User Warning', 'Problems selecting an item from query: "SELECT * FROM items WHERE item_id="101""', 'localhost/jackewit/CommSy/commsy/htdocs/commsy.php?cid=101&mod=home&fct=index&jscheck=1&isJS=1&SID=4d3c80c008ce27b28ec37919032ab547', 'http://localhost/jackewit/CommSy/commsy/htdocs/commsy.php', 'C:\\Users\\jackewit\\HTML\\CommSy\\commsy\\classes\\cs_item_manager.php', 400, 101, 'home', 'index', 'unknown');
-
 -- --------------------------------------------------------
 
 --
@@ -649,8 +643,6 @@ CREATE TABLE `log_message_tag` (
 -- Daten für Tabelle `log_message_tag`
 --
 
-INSERT INTO `log_message_tag` (`id`, `tag`, `version`, `datetime`, `language`) VALUES
-(1, 'GUEST', '5.8.0 beta', '2008-01-14 08:55:00', 'de');
 
 -- --------------------------------------------------------
 
