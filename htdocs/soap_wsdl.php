@@ -237,6 +237,27 @@
 <message name='authenticateViaSessionOUT'>
   <part name='user_id' type='xsd:string'/>
 </message>
+<message name='changeUserEmailIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='email' type='xsd:string'/>
+</message>
+<message name='changeUserEmailOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
+<message name='changeUserEmailAllIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='email' type='xsd:string'/>
+</message>
+<message name='changeUserEmailAllOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
+<message name='changeUserIdIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='user_id' type='xsd:string'/>
+</message>
+<message name='changeUserIdOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -362,6 +383,18 @@
   <operation name='authenticateViaSession'>
     <input message='tns:authenticateViaSessionIN'/>
     <output message='tns:authenticateViaSessionOUT'/>
+  </operation>
+  <operation name='changeUserEmail'>
+    <input message='tns:changeUserEmailIN'/>
+    <output message='tns:changeUserEmailOUT'/>
+  </operation>
+  <operation name='changeUserEmailAll'>
+    <input message='tns:changeUserEmailAllIN'/>
+    <output message='tns:changeUserEmailAllOUT'/>
+  </operation>
+  <operation name='changeUserId'>
+    <input message='tns:changeUserIdIN'/>
+    <output message='tns:changeUserIdOUT'/>
   </operation>
 </portType>
 
@@ -701,6 +734,39 @@
   </operation>
   <operation name='authenticateViaSession'>
     <soap:operation soapAction='urn:xmethodsCommSy#authenticateViaSession'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='changeUserEmail'>
+    <soap:operation soapAction='urn:xmethodsCommSy#changeUserEmail'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='changeUserEmailAll'>
+    <soap:operation soapAction='urn:xmethodsCommSy#changeUserEmailAll'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation> 
+  <operation name='changeUserId'>
+    <soap:operation soapAction='urn:xmethodsCommSy#changeUserId'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
