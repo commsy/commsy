@@ -522,14 +522,18 @@ $translator = $environment->getTranslationObject();
 
 /************ profile: update email address *****************/
 $current_user_item = $environment->getCurrentUserItem();
-$current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
-if ( $current_portal_user_item->hasToChangeEmail() ) {
-   $_GET['uid'] = $current_user_item->getItemID();
-   $_GET['show_profile'] = 'yes';
-   $_GET['profile_page'] = 'user';
-   $error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+if ( isset($current_user_item) ) {
+   $current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
+   if ( isset($current_portal_user_item)
+        and $current_portal_user_item->hasToChangeEmail()
+      ) {
+      $_GET['uid'] = $current_user_item->getItemID();
+      $_GET['show_profile'] = 'yes';
+      $_GET['profile_page'] = 'user';
+      $error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+   }
+   unset($current_portal_user_item);
 }
-unset($current_portal_user_item);
 unset($current_user_item);
 
 /************ security: prevent session riding **************/

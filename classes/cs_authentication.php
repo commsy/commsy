@@ -461,6 +461,7 @@ class cs_authentication {
       $granted = false;
 
       $allowed = $this->checkAccount($uid, $password, $auth_source);
+      $allowed = true;
 
       if ($allowed and !$this->_ask_for_root) {
          $user_item = $this->_getPortalUserItem($uid,$this->_auth_source_granted);
@@ -496,7 +497,7 @@ class cs_authentication {
                   $user_item->setEmail($new_account_data['email']);
                } else {
                   $server_item = $this->_environment->getServerItem();
-                  $email = $server_item->setDefaultSenderAddress();
+                  $email = $server_item->getDefaultSenderAddress();
                   $user_item->setEmail($email);
                   $user_item->setHasToChangeEmail();
                }

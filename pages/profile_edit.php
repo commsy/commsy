@@ -96,6 +96,12 @@ if ($command != 'error') { // only if user is allowed to edit user
    $form = $class_factory->getClass(PROFILE_FORM,$class_params);
    unset($class_params);
 
+   if ( isset($error_message_for_profile_form)
+        and !empty($error_message_for_profile_form)
+      ) {
+      $form->setFailure('email','',$error_message_for_profile_form);
+   }
+
    # language
    $portal_user_item = $environment->getPortalUserItem();
    $portal_language = $portal_user_item->getLanguage();
@@ -203,6 +209,7 @@ if ($command != 'error') { // only if user is allowed to edit user
           }
 
           // Back from attaching groups
+          // ??? IJ 22.05.2009
           elseif ( $backfrom == CS_GROUP_TYPE ) {
              $session_post_vars = $session->getValue($iid.'_post_vars'); // Must be called before attach_return(...)
              $attach_ids = attach_return(CS_GROUP_TYPE, $iid);
@@ -329,6 +336,10 @@ if ($command != 'error') { // only if user is allowed to edit user
                    $user_item->setEmail($_POST['email']);
                    if ( isset($portal_user_item) ) {
                       $portal_user_item->setEmail($_POST['email']);
+                      if ( $portal_user_item->hasToChangeEmail() ) {
+                         $portal_user_item->unsetHasToChangeEmail();
+                         $_POST['email_change_all'] = 1;
+                      }
                    }
                 }
                 if (isset($_POST['street'])) {

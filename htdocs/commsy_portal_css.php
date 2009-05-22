@@ -483,3 +483,53 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
    padding:4px 6px 3px 3px;
    text-decoration:none;
 }
+
+/* Profile Tab Style */
+
+#profile_tabs_frame {
+   position:relative;
+   padding:3px 10px;
+   margin:0px 0px 0px 0px;
+   background-color: #EEEEEE;
+   border-bottom:1px solid <?php echo($color['tabs_background'])?>;
+}
+
+#profile_tablist{
+    margin:0px;
+    white-space:nowrap;
+    display:inline;
+}
+
+.profile_tab{
+    border-right:1px solid <?php echo($color['tabs_background'])?>;
+    padding:3px 10px;
+    display:inline;
+}
+
+.profile_tab_current{
+    border-right:1px solid <?php echo($color['tabs_background'])?>;
+    padding:3px 10px;
+    display:inline;
+    font-weight:bold;
+}
+
+#profile_title, .profile_title{
+   background:url(images/detail_fader_<?php echo($color['schema'])?>.gif) center repeat-x;
+   background-color:<?php echo($color['tabs_background'])?>;
+   color:<?php echo($color['headline_text'])?>;
+   vertical-align:top;
+   margin:0px;
+   padding:5px 10px;
+   font-size: 14pt;
+}
+
+#profile_content{
+   margin-bottom:20px;
+   padding:0px
+   background-color: #FFFFFF;
+   border: 2px solid <?php echo($color['tabs_background'])?>;
+}
+
+a.titlelink{
+   color:<?php echo($color['headline_text'])?>;
+}
