@@ -1975,7 +1975,7 @@ class cs_connection_soap {
       }
    }
    
-   function changeUserEmail($session_id, $email){
+   public function changeUserEmail($session_id, $email){
       $result = true;
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
@@ -2004,7 +2004,7 @@ class cs_connection_soap {
       return $result;
    }
    
-   function changeUserEmailAll($session_id, $email){
+   public function changeUserEmailAll($session_id, $email){
       $result = true;
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
@@ -2034,7 +2034,7 @@ class cs_connection_soap {
       return $result;
    }
    
-   function changeUserId($session_id, $user_id){
+   public function changeUserId($session_id, $user_id){
       $result = true;
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
