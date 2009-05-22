@@ -87,6 +87,9 @@ class cs_auth_ldap extends cs_auth_manager {
    */
    var $_error_array = array();
 
+   private $_user_dn   = NULL;
+   private $_user_data = NULL;
+
    /** constructor: cs_auth_ldap
     * the only available constructor, initial values for internal variables
     *
@@ -147,7 +150,7 @@ class cs_auth_ldap extends cs_auth_manager {
 
       $granted = false;
       /** check if password is correct */
-      if ( empty($password) || mb_strlen($password) == 0 ) {
+      if ( empty($password) or mb_strlen($password) == 0 ) {
          $password = microtime();
       }
       $access = $this->_field_userid.'='.$uid.','.$this->_baseuser;
@@ -161,6 +164,7 @@ class cs_auth_ldap extends cs_auth_manager {
          $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
          if ( $bind ) {
             $granted = true;
+            $this->_user_dn = $access;
          } elseif ( !empty($this->_rootuser)
                     and !empty($this->_rootuser_password)
                   ) {
@@ -183,6 +187,7 @@ class cs_auth_ldap extends cs_auth_manager {
                      $search = @ldap_search($connect,$baseuser,$suchfilter);
                      $result = ldap_get_entries($connect,$search);
                      if ( $result['count'] != 0 ) {
+                        $this->_user_data = $result[0];
                         $access = $result[0]['dn'];
                         break;
                      }
@@ -194,6 +199,7 @@ class cs_auth_ldap extends cs_auth_manager {
                   $bind = @ldap_bind( $connect, $access, $this->encryptPassword($password) );
                   if ( $bind ) {
                      $granted = true;
+                     $this->_user_dn = $access;
                   } else {
                      $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                   }
@@ -306,6 +312,61 @@ class cs_auth_ldap extends cs_auth_manager {
       #return $this->_item;
       include_once('functions/error_functions.php');
       trigger_error('The methode getItem [LDAP] is not implemented!',E_USER_ERROR);
+   }
+
+   /** get user information out of the auth source
+    * this method returns an array of informations form the user
+    * in the auth source
+    *
+    * @return array data of the user
+    */
+   public function get_data_for_new_account ($uid, $password) {
+      $user_data_array = array();
+      $retour = array( 'firstname' => '',
+                       'lastname' => '',
+                       'email' => '');
+      if ( empty($this->_user_data) ) {
+         _fillUserData($uid,$password);
+      }
+      if ( !empty($this->_user_data) ) {
+         $user_data_array = $this->_user_data;
+      }
+      if ( !empty($user_data_array['givenname']) ) {
+         $retour['firstname'] = $user_data_array['givenname'];
+      }
+      if ( !empty($user_data_array['sn']) ) {
+         $retour['lastname'] = $user_data_array['sn'];
+      }
+      if ( !empty($user_data_array['mail']) ) {
+         $retour['email'] = $user_data_array['mail'];
+      }
+      return $retour;
+   }
+
+   private function _fillUserData ($uid, $password) {
+      $user_dn = '';
+      if ( empty($this->_user_dn) ) {
+         if ( !$this->checkAccount($uid,$password) ) {
+            return;
+         }
+      }
+      if ( !empty($this->_user_dn) ) {
+         $user_dn = $this->_user_dn;
+      }
+      if ( !empty($user_dn) ) {
+         $connect = @ldap_connect($this->_server,$this->_server_port);
+         @ldap_set_option($connect,LDAP_OPT_PROTOCOL_VERSION,3);
+         @ldap_set_option($connect,LDAP_OPT_REFERRALS,0);
+         $bind = @ldap_bind( $connect, $user_dn, $this->encryptPassword($password) );
+         if ( $bind ) {
+            $suchfilter = "(".$this->_field_userid."=".$uid.")";
+            $search = @ldap_search($connect,$user_dn,$suchfilter);
+            $result = ldap_get_entries($connect,$search);
+            if ( $result['count'] != 0 ) {
+               $this->_user_data = $result[0];
+            }
+         }
+      }
    }
 }
 ?>

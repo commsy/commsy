@@ -221,13 +221,10 @@ class cs_auth_manager {
       return $retour;
    }
 
-   // -------------------------------------
-   // ToDo: Daten von Stine-Server holen...
-   function get_data_for_new_account($uid, $password){
-      return array('firstname' => 'Vorname',
-                   'lastname' => 'Nachname',
-                   'email' => 'vorname@nachname.de');
+   public function get_data_for_new_account($uid, $password){
+      return array('firstname' => '',
+                   'lastname' => '',
+                   'email' => '');
    }
-   // -------------------------------------
 }
 ?>
