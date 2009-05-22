@@ -38,7 +38,7 @@ class cs_user_item extends cs_item {
    var $_picture_delete = false;
 
    var $_old_status = NULL;
-   
+
    var $_changed_values = array();
 
    /** constructor: cs_user_item
@@ -1166,11 +1166,11 @@ class cs_user_item extends cs_item {
       } else {    // Project room
          $access = parent::maySee($user_item);
          if ($access){
-         	$room = $this->_environment->getCurrentContextItem();
+            $room = $this->_environment->getCurrentContextItem();
             if ($room->withRubric(CS_USER_TYPE)){
-            	$access = true;
+               $access = true;
             }else{
-            	$access = false;
+               $access = false;
             }
          }
       }
@@ -1860,7 +1860,7 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
-   
+
    public function hasChanged($value){
       $result = false;
       foreach($this->_changed_values as $changed_value){
@@ -1871,15 +1871,34 @@ class cs_user_item extends cs_item {
       }
       return $result;
    }
-   
-   function setHasToChangeEmail ($value) {
-      $this->_addExtra('HASTOCHANGEEMAIL',(string)$value);
+
+   private function _setHasToChangeEmail ($value) {
+      $this->_addExtra('HASTOCHANGEEMAIL',(int)$value);
    }
 
-   function getHasToChangeEmail () {
+   public function setHasToChangeEmail () {
+      $this->_setHasToChangeEmail(1);
+   }
+
+   public function unsetHasToChangeEmail () {
+      $this->_setHasToChangeEmail(-1);
+   }
+
+   private function _getHasToChangeEmail () {
       $retour = '';
       if ($this->_issetExtra('HASTOCHANGEEMAIL')) {
          $retour = $this->_getExtra('HASTOCHANGEEMAIL');
+      }
+      return $retour;
+   }
+
+   public function hasToChangeEmail () {
+      $retour = false;
+      $temp = $this->_getHasToChangeEmail();
+      if ( !empty($temp)
+           and $temp == 1
+         ) {
+         $retour = true;
       }
       return $retour;
    }

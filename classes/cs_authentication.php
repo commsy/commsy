@@ -498,7 +498,7 @@ class cs_authentication {
                   $server_item = $this->_environment->getServerItem();
                   $email = $server_item->setDefaultSenderAddress();
                   $user_item->setEmail($email);
-                  $user_item->setHasToChangeEmail('1');
+                  $user_item->setHasToChangeEmail();
                }
                $user_item->setAuthSource($this->_used_auth_manager->getAuthSourceItemID());
                $user_item->makeUser();

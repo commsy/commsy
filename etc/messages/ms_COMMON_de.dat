@@ -325,6 +325,7 @@ $message["COMMON_ERROR_BUZZWORD_ENTRY"]["de"] = "Bitte wählen Sie ein existiere
 $message["COMMON_ERROR_COMMUNITY_ROOM_ENTRY"]["de"] = "Bitte füllen Sie das Feld <b>Zuordnung</b> aus.";
 $message["COMMON_ERROR_DATABASE"]["de"] = "Ein Datenbankproblem ist aufgetreten. Leider konnten Ihre Informationen nicht gespeichert werden.";
 $message["COMMON_ERROR_FIELD"]["de"] = "Bitte füllen Sie das Feld <span style=&quot;font-weight:bold;&quot;>%1</span> aus.";
+$message["COMMON_ERROR_FIELD_CORRECT"]["de"] = "Bitte korrigieren Sie das Feld <span style=&quot;font-weight:bold;&quot;>%1</span>.";
 $message["COMMON_ERROR_FIELD_DATE_INVALID"]["de"] = "Bitte geben Sie ein gültiges Datum in der Form TT.MM.JJJJ an.";
 $message["COMMON_ERROR_INFORMATION_BOX_ID_ENTRY"]["de"] = "Bitte geben Sie die Referenznummer eines existierenden, ungelöschten Eintrags ein. Die Referenznummer finden Sie unterhalb eines Eintrags bei den Informationen zum Bearbeitungsstatus (auf das +-Zeichen klicken).";
 $message["COMMON_ERROR_MANIPULATION"]["de"] = "Manipulation der Daten bei: <span class=&quot;bold&quot;>%1</span>";

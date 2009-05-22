@@ -520,6 +520,18 @@ if ( !empty($SID) ) {
 
 $translator = $environment->getTranslationObject();
 
+/************ profile: update email address *****************/
+$current_user_item = $environment->getCurrentUserItem();
+$current_portal_user_item = $current_user_item->getRelatedCommSyUserItem();
+if ( $current_portal_user_item->hasToChangeEmail() ) {
+   $_GET['uid'] = $current_user_item->getItemID();
+   $_GET['show_profile'] = 'yes';
+   $_GET['profile_page'] = 'user';
+   $error_message_for_profile_form = $translator->getMessage('COMMON_ERROR_FIELD_CORRECT',$translator->getMessage('USER_EMAIL'));
+}
+unset($current_portal_user_item);
+unset($current_user_item);
+
 /************ security: prevent session riding **************/
 if ( !empty($_SERVER['SERVER_ADDR'])
      and isset($session)
