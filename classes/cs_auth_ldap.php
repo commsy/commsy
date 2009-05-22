@@ -187,7 +187,7 @@ class cs_auth_ldap extends cs_auth_manager {
                      $search = @ldap_search($connect,$baseuser,$suchfilter);
                      $result = ldap_get_entries($connect,$search);
                      if ( $result['count'] != 0 ) {
-                        $this->_user_data = $result[0];
+                        $this->_user_data = $this->_cleanLDAPArray($result[0]);
                         $access = $result[0]['dn'];
                         break;
                      }
@@ -326,7 +326,7 @@ class cs_auth_ldap extends cs_auth_manager {
                        'lastname' => '',
                        'email' => '');
       if ( empty($this->_user_data) ) {
-         _fillUserData($uid,$password);
+         $this->_fillUserData($uid,$password);
       }
       if ( !empty($this->_user_data) ) {
          $user_data_array = $this->_user_data;
@@ -363,10 +363,65 @@ class cs_auth_ldap extends cs_auth_manager {
             $search = @ldap_search($connect,$user_dn,$suchfilter);
             $result = ldap_get_entries($connect,$search);
             if ( $result['count'] != 0 ) {
-               $this->_user_data = $result[0];
+               $this->_user_data = $this->_cleanLDAPArray($result[0]);
             }
          }
       }
+   }
+
+   private function _cleanLDAPArray ( $value ) {
+      $retour = $value;
+      if ( !empty($retour) ) {
+         $retour2 = array();
+         foreach ( $retour as $key => $value ) {
+            if ( !is_numeric($key) ) {
+               if ( is_array($value) ) {
+                  array_shift($value);
+                  if ( count($value) == 1 ) {
+                     $value = $value[0];
+                  }
+               }
+               $retour2[$key] = $value;
+            }
+         }
+         $retour = $retour2;
+      }
+      unset($retour['dscorepropagationdata']);
+      unset($retour['usncreated']);
+      unset($retour['usnchanged']);
+      unset($retour['objectguid']);
+      unset($retour['codepage']);
+      unset($retour['countrycode']);
+      unset($retour['objectsid']);
+      unset($retour['objectcategory']);
+      unset($retour['samaccounttype']);
+      $retour['whencreated'] = $this->_OZ2Time($retour['whencreated']);
+      $retour['whenchanged'] = $this->_OZ2Time($retour['whenchanged']);
+      $retour['badpasswordtime'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['badpasswordtime']));
+      $retour['lastlogon'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogon']));
+      $retour['pwdlastset'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['pwdlastset']));
+      $retour['lastlogontimestamp'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogontimestamp']));
+      $retour['accountexpires'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['accountexpires']));
+      ksort($retour);
+      return $retour;
+   }
+
+   private function _OZ2Time ( $value ) {
+      $retour = '';
+      $tag = $value[6].$value[7];
+      $monat = $value[4].$value[5];
+      $jahr = $value[0].$value[1].$value[2].$value[3];
+      $stunde = $value[8].$value[9];
+      $minute = $value[10].$value[11];
+      $sekunde = $value[12].$value[13];
+      $retour = $tag.'.'.$monat.'.'.$jahr.' '.$stunde.':'.$minute.':'.$sekunde;
+      return $retour;
+   }
+
+   private function _win_filetime_to_timestamp ( $filetime ) {
+      $win_sec = substr($filetime,0,strlen($filetime)-7); // divide by 10 000 000 to get seconds
+      $unix_timestamp = ($win_sec - 11644473600); // 1.1.1600 -> 1.1.1970 difference in seconds
+      return $unix_timestamp;
    }
 }
 ?>
