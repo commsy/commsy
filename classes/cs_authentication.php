@@ -492,9 +492,16 @@ class cs_authentication {
                $user_item->setUserID($uid);
                $user_item->setFirstname($new_account_data['firstname']);
                $user_item->setLastname($new_account_data['lastname']);
-               $user_item->setEmail($new_account_data['email']);
+               if(!empty($new_account_data['email'])){
+                  $user_item->setEmail($new_account_data['email']);
+               } else {
+                  $server_item = $this->_environment->getServerItem();
+                  $email = $server_item->setDefaultSenderAddress();
+                  $user_item->setEmail($email);
+                  $user_item->setHasToChangeEmail('1');
+               }
                $user_item->setAuthSource($this->_used_auth_manager->getAuthSourceItemID());
-               $user_item->setStatus(2);
+               $user_item->makeUser();
                $user_item->save();
                $this->_environment->setCurrentUser($user_item);
                $granted = true;

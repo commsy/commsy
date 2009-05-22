@@ -77,6 +77,7 @@ class cs_user_item extends cs_item {
     */
    function setUserID ($value) {
       $this->_setValue('user_id', $value);
+      $this->_changed_values[] = 'user_id';
    }
 
    function getAuthSource () {
@@ -1869,6 +1870,18 @@ class cs_user_item extends cs_item {
          }
       }
       return $result;
+   }
+   
+   function setHasToChangeEmail ($value) {
+      $this->_addExtra('HASTOCHANGEEMAIL',(string)$value);
+   }
+
+   function getHasToChangeEmail () {
+      $retour = '';
+      if ($this->_issetExtra('HASTOCHANGEEMAIL')) {
+         $retour = $this->_getExtra('HASTOCHANGEEMAIL');
+      }
+      return $retour;
    }
 }
 ?>
