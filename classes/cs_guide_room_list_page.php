@@ -50,19 +50,18 @@ class cs_guide_room_list_page extends cs_page {
      }
 
      // Find current browsing interval
-/*     if ( isset($this->_values['interval']) ) {
+     if ( isset($this->_values['interval']) ) {
         $interval = $this->_values['interval'];
      } else {
         if ( $current_context->isPortal() ) {
            $interval = $current_context->getNumberRoomsOnHome();
         }
         if ( empty($interval) ) {
-           $interval = 10;
+           $interval = 20;
         } elseif ($interval == 'all') {
            $interval = '';
         }
-     }*/
-     $interval = 20;
+     }
 
       if ($this->_environment->inPortal()) {
          if (!empty($this->_values['selroom'])) {

@@ -1018,19 +1018,20 @@ class cs_guide_list_view extends cs_list_view_plain {
          $html .= '<span class="portal_section_title">'.getMessage('PORTAL_ROOM_OVERVIEW').'</span>'.LF;
       }
       if (!$this->_environment->inServer()) {
-         $html .= '&nbsp;&nbsp;<span class="portal_forward_links">'.$this->_getForwardLinkAsHTML().'</span>'.BRLF;
-         $html .= $this->_getDescriptionAsHTML().LF;
+         $html .= BR.$this->_getDescriptionAsHTML().LF;
       }
       $html .='</div>'.LF;
       $html .='</div>'.LF;
       $html .='</td>'.LF;
-      $html .='<td class="room_list_head" style="width:15%; padding-top:5px; vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
-      if (!$this->_environment->inServer()) {
+      $html .='<td class="room_list_head" style="width:15%; padding-top:5px; vertical-align:top; text-align:right; white-space:nowrap;">'.LF;
+ #     if (!$this->_environment->inServer()) {
          $html .='<div style="float:right;text-align:right;">'.LF;
-         $html .= '<span class="portal_description">'.$this->_getIntervalLinksFirstLineAsHTML().'</span>'.BRLF;
-         $html .= '<span class="portal_description">'.$this->_getIntervalLinksSecondLineAsHTML().'</span>'.LF;
+ #        $html .= '<span class="portal_description">'.$this->_getIntervalLinksFirstLineAsHTML().'</span>'.BRLF;
+ #        $html .= '<span class="portal_description">'.$this->_getIntervalLinksSecondLineAsHTML().'</span>'.LF;
+         $html .= '&nbsp;&nbsp;<span class="portal_forward_links">'.$this->_getForwardLinkAsHTML().'</span>'.BRLF;
+
          $html .='</div>'.LF;
-      }
+ #     }
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .='<tr>'.LF;
