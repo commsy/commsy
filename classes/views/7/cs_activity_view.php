@@ -283,6 +283,74 @@ class cs_activity_view extends cs_view {
       $html .= '         </table>'.LF;
 
 
+      $conf = $context->getHomeConf();
+      if ( !empty($conf) ) {
+         $rubrics = explode(',', $conf);
+      } else {
+         $rubrics = array();
+      }
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html .='<div class="listinfoborder">'.LF;
+      $html .='</div>'.LF;
+      $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+      $html .= '         <tr>'.LF;
+      $html .= '         <td style="font-size:10pt;" class="infocolor">'.LF;
+      $html .= $this->_translator->getMessage('HOME_NEW_ENTRY').': ';
+      $html .= '         </td>'.LF;
+      $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+      foreach ( $rubrics as $rubric ) {
+         $rubric_array = explode('_', $rubric);
+         if ($rubric_array[1] != 'none'){
+            $action_params = array();
+            $action_params['id'] = 'NEW';
+            $image_text = $this->_translator->getMessage('COMMON_ENTRY_NEW');
+            switch ($rubric_array[0]){
+         	   case CS_DATE_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_DATE');
+            	  break;
+           	   case CS_ANNOUNCEMENT_TYPE:
+         	   	  $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_ANNOUNCEMENT');
+         	      break;
+         	   case CS_MATERIAL_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_MATERIAL');
+         	      break;
+         	   case CS_TODO_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_TODO');
+         	      break;
+         	   case CS_DISCUSSION_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_DISCUSSION');
+         	      break;
+         	   case CS_TOPIC_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_TOPIC');
+         	      break;
+         	   case CS_GROUP_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_GROUP');
+         	      break;
+         	   case CS_INSTITUTION_TYPE:
+         	      $image_text = $this->_translator->getMessage('COMMON_ENTER_NEW_INSTITUTION');
+         	      break;
+
+            }
+            if ($rubric_array[0] != CS_USER_TYPE and $rubric_array[0] != CS_PROJECT_TYPE and $current_user->isUser()){
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                                $image_text,
+                                                 'edit',
+                                                 $action_params,
+                                                 '<img src="images/commsyicons/22x22/'.$rubric_array[0].'.png" style="vertical-align:bottom; padding-right:3px;" alt="'.$image_text.'"/>',
+                                                 $image_text);
+
+            }elseif($rubric_array[0] != CS_USER_TYPE and $rubric_array[0] != CS_PROJECT_TYPE){
+               $image = '<img title="'.getMessage('COMMON_NO_ACTION').'" src="images/commsyicons/22x22/'.$rubric_array[0].'_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+               $html .= ' '.$image;
+            }
+
+         }
+      }
+      $html .= '         </td>'.LF;
+      $html .= '         </tr>'.LF;
+      $html .= '         </table>'.LF;
+
+
 
      if (
          ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
