@@ -735,6 +735,138 @@ class cs_page_room_view extends cs_page_view {
    }
 
 
+   function _getCustomizedRoomListForCurrentUser(){
+      $retour = array();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $current_context_id = $this->_environment->getCurrentContextID();
+      $own_room_item = $current_user->getOwnRoom();
+      $temp_array = array();
+      $temp_array['title'] = '----------------------------';
+      $temp_array['item_id'] = '-1';
+      $retour[] = $temp_array;
+      $customized_room_list = $own_room_item->getCustomizedRoomList();
+      if ( isset($customized_room_list) ) {
+         $room_item = $customized_room_list->getFirst();
+         while ($room_item) {
+            $temp_array = array();
+            if ( $room_item->isGrouproom() ) {
+               $temp_array['title'] = '- '.$room_item->getTitle();
+            } else {
+               $temp_array['title'] = $room_item->getTitle();
+            }
+#            if ( mb_strlen($temp_array['title']) > 40 ) {
+#               $temp_array['title'] = mb_substr($temp_array['title'],0,40);
+#               $temp_array['title'] .= '...';
+#            }
+            $temp_array['item_id'] = $room_item->getItemID();
+            if ($current_context_id == $temp_array['item_id']){
+               $temp_array['selected'] = true;
+            }
+            $retour[] = $temp_array;
+            $room_item = $customized_room_list->getNext();
+         }
+      }
+      return $retour;
+   }
+
+
+   function _getUserPersonalAreaAsHTML () {
+      $retour  = '';
+      $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
+      $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $context_array = array();
+      $context_array = $this->_getAllOpenContextsForCurrentUser();
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      if ( !$this->_environment->inServer() ) {
+         $title = $this->_environment->getCurrentPortalItem()->getTitle();
+         $title .= ' ('.$this->_translator->getMessage('COMMON_PORTAL').')';
+         $additional = '';
+         if ($this->_environment->inPortal()){
+            $additional = 'selected="selected"';
+         }
+         $retour .= '            <option value="'.$this->_environment->getCurrentPortalID().'" '.$additional.'>'.$title.'</option>'.LF;
+
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
+            $link_active = true;
+         } else {
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( $current_user_item->isRoomMember() ) {
+               $link_active = true;
+            } else {
+               $link_active = false;
+            }
+            unset($current_user_item);
+         }
+         unset($current_portal_item);
+
+         if ( $link_active ) {
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">------------------------------------</option>'.LF;
+            $additional = '';
+            $user = $this->_environment->getCurrentUser();
+            $private_room_manager = $this->_environment->getPrivateRoomManager();
+            $own_room = $private_room_manager->getRelatedOwnRoomForUser($user,$this->_environment->getCurrentPortalID());
+            if ( isset($own_room) ) {
+               $own_cid = $own_room->getItemID();
+               $additional = '';
+               if ($own_room->getItemID() == $this->_environment->getCurrentContextID()) {
+                  $additional = ' selected="selected"';
+               }
+               $retour .= '            <option value="'.$own_cid.'"'.$additional.'>'.$this->_translator->getMessage('COMMON_PRIVATEROOM').'</option>'.LF;
+            }
+            unset($own_room);
+            unset($private_room_manager);
+         }
+      }
+
+      $first_time = true;
+      foreach ($context_array as $con) {
+         $title = $this->_text_as_html_short($con['title']);
+         $additional = '';
+         if (isset($con['selected']) and $con['selected']) {
+            $additional = ' selected="selected"';
+         }
+         if ($con['item_id'] == -1) {
+            $additional = ' class="disabled" disabled="disabled"';
+            if (!empty($con['title'])) {
+               $title = '----'.$this->_text_as_html_short($con['title']).'----';
+            } else {
+               $title = '&nbsp;';
+            }
+         }
+         if ($con['item_id'] == -2) {
+            $additional = ' class="disabled" disabled="disabled" style="font-style:italic;"';
+            if (!empty($con['title'])) {
+               $title = $this->_text_as_html_short($con['title']);
+            } else {
+               $title = '&nbsp;';
+            }
+            $con['item_id'] = -1;
+            if ($first_time) {
+               $first_time = false;
+            } else {
+               $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>&nbsp;</option>'.LF;
+            }
+         }
+         $retour .= '            <option value="'.$con['item_id'].'"'.$additional.'>'.$title.'</option>'.LF;
+      }
+
+      if (!$this->_current_user->isUser() and $this->_current_user->getUserID() != "guest") {
+         $context = $this->_environment->getCurrentContextItem();
+         if (!empty($context_array)) {
+            $retour .= '            <option value="-1" class="disabled" disabled="disabled">&nbsp;</option>'.LF;
+         }
+         $retour .= '            <option value="-1" class="disabled" disabled="disabled">----'.$this->_translator->getMessage('MYAREA_CONTEXT_GUEST_IN').'----</option>'.LF;
+         $retour .= '            <option value="'.$context->getItemID().'" selected="selected">'.$context->getTitle().'</option>'."\n";
+      }
+      $retour .= '         </select>'.LF;
+      $retour .= '         <noscript><input type="submit" style="margin-top:3px; font-size:10pt; width:12.6em;" name="room_change" value="'.$this->_translator->getMessage('COMMON_GO_BUTTON').'"/></noscript>'.LF;
+      $retour .= '   </form>'.LF;
+      unset($context_array);
+      return $retour;
+   }
+
+
    function asHTMLSecondPart () {
       $html = '';
       if ( !$this->_send_first_html_part ) {
