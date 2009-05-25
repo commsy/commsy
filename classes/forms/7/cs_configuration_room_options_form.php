@@ -285,6 +285,8 @@ class cs_configuration_room_options_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addTextField('title','',$this->_translator->getMessage('COMMON_ROOM_NAME'),'',60,48,true);
+      $this->_form->combine('vertical');
+      $this->_form->addCheckbox('show_title','yes','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('PREFERENCES_SHOW_TITLE_OPTION'),'');
 
       // specials in private room
       if ( $this->_environment->inPrivateRoom() ) {
@@ -723,6 +725,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['color_6'] = $color['hyperlink'];
          $this->_values['color_4'] = $color['content_background'];
          $this->_values['title'] = $context_item->getTitle();
+         $this->_values['show_title'] = $context_item->showTitle();
          if ( $context_item->isPrivateRoom() ) {
             if ( $context_item->getTitle() == 'PRIVATEROOM' ) {
                $this->_values['title'] = $this->_translator->getMessage('COMMON_PRIVATEROOM');

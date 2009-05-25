@@ -141,6 +141,11 @@ if ($command != 'error') { // only if user is allowed to edit colors
             }
             $context_item->setTitle($title);
          }
+         if ( (isset($_POST['show_title']) and !empty($_POST['show_title'])) ) {
+            $context_item->setShowTitle();
+         } else {
+            $context_item->setNotShowTitle();
+         }
          $color = $context_item->getColorArray();
          if ( isset($_POST['color_choice'])) {
             global $cs_color;

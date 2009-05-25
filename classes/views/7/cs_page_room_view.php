@@ -502,7 +502,7 @@ class cs_page_room_view extends cs_page_view {
       $logo_filename = '';
       $context_item = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
-      $html .='<table summary="layout" style="height:55px;">';
+      $html .='<table summary="layout" style="padding:0px; border-collapse:collapse;">';
       $html .= '<tr>';
       if ( $this->_environment->inCommunityRoom()
            or $this->_environment->inProjectRoom()
@@ -515,31 +515,54 @@ class cs_page_room_view extends cs_page_view {
             $params['picture'] = $context_item->getLogoFilename();
             $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
             unset($params);
-            $html .= '<td>';
-            $html .= '<div class="logo" style="vertical-align:top;padding-top:5px;">'.LF;
-            $html .= '     <img style="height:55px; padding-top:0px; padding-bottom:0px; padding-left:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= '<td style="padding:0px; height:45px;">';
+            $html .= '<div class="logo" style="vertical-align:top; padding:5px 5px 0px 0px; margin:0px;">'.LF;
+            $html .= '     <img style="height:40px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= '</div>'.LF;
             $html .= '</td>';
+            $html .= '<td style="vertical-align:middle; padding: 5px 0px 0px 0px;">';
+         }else{
+            $html .= '<td colspan="2" style="vertical-align:middle; padding:0px;">';
+
          }
+      }else{
+         $html .= '<td colspan="2" style="height:45px; vertical-align:bottom; padding:5px 0px 0px 0px;">';
+
       }
-      $html .= '<td style="verticale-align:middle; padding-top:5px;">';
       $length = mb_strlen($context_item->getTitle());
       $title = $context_item->getTitle();
       if ($length < 25){
-        $size = '';
+        $size = 'style="font-size:24pt; vertical-align:bottom; padding:5px 0px 0px 0px; margin:0px;"';
       }elseif($length < 30){
-        $size = 'style="font-size:20pt"';
+        $size = 'style="font-size:20pt;"';
       }elseif($length < 35){
-        $size = 'style="font-size:18pt"';
+        $size = 'style=" font-size:18pt;"';
       }elseif($length < 40){
-        $size = 'style="font-size:16pt"';
+        $size = 'style="font-size:16pt;"';
       }elseif($length < 50){
-        $size = 'style="font-size:12pt"';
+        $size = 'style="font-size:12pt;"';
       }else{
-         $size = 'style="font-size:12pt"';
+         $size = 'style="font-size:12pt;"';
          $title = chunkText($title,50);
       }
-      $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
+      if ($context_item->showTitle()){
+         $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
+         $html .= '</td>';
+         $html .= '</tr>';
+         $html .= '<tr>';
+         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:top;">';
+      }else{
+         $html .= '<h1 '.$size.'>'.'&nbsp;'.'</h1>'.LF;
+         $html .= '</td>';
+         $html .= '</tr>';
+         $html .= '<tr>';
+         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">';
+      }
+      $html .= '</td>';
+      $html .= '</tr>';
+      $html .= '<tr>';
+      $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:top;">';
+
       $breadcrump = '';
       $params = array();
       if ($current_user->isRoot()){
@@ -572,7 +595,7 @@ class cs_page_room_view extends cs_page_view {
       }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
          $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
       }
-      $html .= '<span style="font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
+      $html .= '<span style="height: 20px;font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
       $html .= '</td>';
       $html .= '</tr>';
       $html .= '</table>';
