@@ -166,19 +166,16 @@ div.page_header_border{
 #page_header{
    clear:both;
    padding:0px 10px 0px 10px;
-   height: 70px;
    background-color: white;
    font-size:8pt;
 }
 
 #page_header_logo{
    font-size:10pt;
-   height: 70px;
    vertical-align:bottom;
 }
 
 #page_header_logo table{
-   height:70px;
 }
 
 #page_header_logo td{

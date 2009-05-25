@@ -702,7 +702,11 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<div style="clear:both;">';
       $html .= '</div>';
       $browser = $this->_environment->getCurrentBrowser();
-      if ($browser == 'MSIE') {
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $html .='<div style="float:right; padding-top:18px; white-space:nowrap;">';
+      }elseif ($browser == 'msie') {
          $html .='<div style="float:right; padding-top:20px; white-space:nowrap;">';
       }else{
          $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
