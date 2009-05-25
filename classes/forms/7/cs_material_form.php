@@ -209,7 +209,6 @@ class cs_material_form extends cs_rubric_form {
       $this->_form->addHidden('modification_date','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,58,true);
 #      if ( $this->_bib_kind=='common' ) {
-#         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,true);
 #      }
 #      elseif ( $this->_bib_kind=='none' ) {
 #         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
@@ -359,6 +358,8 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->addTextField('url_date','',getMessage('MATERIAL_URL_DATE'),'',10,20);
             break;
             case 'common':
+                  $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
+                  $this->_form->addTextField('publishing_date','',getMessage('MATERIAL_YEAR'),getMessage('MATERIAL_YEAR'),4,4,false);
                   $this->_form->addTextArea('common','',getMessage('MATERIAL_BIBLIOGRAPHIC'),getMessage('MATERIAL_BIBLIOGRAPHIC_DESC'),'',3,'virtual',false,false,true,1,true,false);
                break;
             case 'none':

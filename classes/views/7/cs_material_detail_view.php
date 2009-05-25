@@ -356,9 +356,26 @@ class cs_material_detail_view extends cs_detail_view {
       }else
       */
       if($bib_kind =='common'){
-#         $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
-#         $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
-#         $formal_data1[] = $temp_array;
+         $author = $item->getAuthor();
+         $formal_data1 = array();
+         if (!empty($author)){
+            $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
+            $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
+            $formal_data1[] = $temp_array;
+         }
+         $pub_date = $item->getPublishingDate();
+         if (!empty($pub_date)){
+            $temp_array[0]  = $this->_translator->getMessage('MATERIAL_PUBLISHING_DATE');
+            $temp_array[1]  = $this->_text_as_html_long($item->getPublishingDate());
+            $formal_data1[] = $temp_array;
+         }
+         if ( !empty($formal_data1) ) {
+            $html .= $this->_getFormalDataAsHTML($formal_data1);
+            if ( isset($html_script) and !empty($html_script) ) {
+               $html .= $html_script;
+            }
+         }
+         $formal_data1 = array();
          $temp_array = array();
          $biblio = $item->getBibliographicValues();
       }elseif($bib_kind =='website'){
