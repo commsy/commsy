@@ -40,6 +40,9 @@ class cs_configuration_room_options_form extends cs_rubric_form {
   var $_shown_community_room_array = array();
   var $_session_community_room_array = array();
   var $_with_bg_image = false;
+  var $_time_array2 = array();
+  var $_with_time_array2 = false;
+
   private $_with_template_form_element = false;
 
   /** constructor
@@ -154,6 +157,70 @@ class cs_configuration_room_options_form extends cs_rubric_form {
             $this->_description_text = 'de';
          }
       }
+
+
+      /****Zeittakte*****/
+      // time pulses
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_portal  = $this->_environment->getCurrentPortalItem();
+      if (
+            ( $current_context->isProjectRoom() and $this->_environment->inProjectRoom() )
+            or ( $current_context->isProjectRoom()
+                 and $this->_environment->inCommunityRoom()
+                 and $current_context->showTime()
+               )
+            or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
+                 and ( $this->_environment->inCommunityRoom() or $this->_environment->inPortal() )
+                 and $current_context->showTime()
+               )
+            or ( $this->_environment->inGroupRoom()
+                 and $current_portal->showTime()
+               )
+         ) {
+         if ( $this->_environment->inPortal() ) {
+            $portal_item = $current_context;
+         } else {
+            $portal_item = $current_context->getContextItem();
+         }
+         if ($portal_item->showTime()) {
+                     $current_time_title = $portal_item->getTitleOfCurrentTime();
+                     if (isset($this->_item)) {
+                            $time_list = $this->_item->getTimeList();
+                            if ($time_list->isNotEmpty()) {
+                               $time_item = $time_list->getFirst();
+                               $linked_time_title = $time_item->getTitle();
+                            }
+                     }
+                     if ( !empty($linked_time_title)
+                          and $linked_time_title < $current_time_title
+                            ) {
+                             $start_time_title = $linked_time_title;
+                     } else {
+                             $start_time_title = $current_time_title;
+                     }
+                     $time_list = $portal_item->getTimeList();
+                     if ($time_list->isNotEmpty()) {
+                             $time_item = $time_list->getFirst();
+                             while ($time_item) {
+                                     if ($time_item->getTitle() >= $start_time_title) {
+                                             $temp_array = array();
+                                             $temp_array['text'] = $this->_translator->getTimeMessage($time_item->getTitle());
+                                             $temp_array['value'] = $time_item->getItemID();
+                                             $this->_time_array2[] = $temp_array;
+                                     }
+                                     $time_item = $time_list->getNext();
+                             }
+                     }
+
+                         // continuous
+                     $temp_array = array();
+                     $temp_array['text'] = $this->_translator->getMessage('COMMON_CONTINUOUS');
+                     $temp_array['value'] = 'cont';
+                     $this->_time_array2[] = $temp_array;
+
+                     $this->_with_time_array2 = true;
+                  }
+          }
 
       /*******Farben********/
       $temp_array = array();
@@ -354,6 +421,25 @@ class cs_configuration_room_options_form extends cs_rubric_form {
                              );
       $this->_form->addHidden('logo_hidden','');
       $this->_form->addHidden('with_logo',$this->_with_logo);
+
+      /**********Zeittakte**************/
+     if (isset($this->_with_time_array2) and $this->_with_time_array2) {
+        $this->translatorChangeToPortal();
+        $form_element_title = $this->_translator->getMessage('COMMON_TIME_NAME');
+        $this->_form->addCheckboxGroup('time2',
+                                       $this->_time_array2,
+                                       '',
+                                       $form_element_title,
+                                       '',
+                                       '',
+                                       true,
+                                       2
+                                      );
+        $this->translatorChangeToCurrentContext();
+     }
+
+
+
 
       /**********Zuordnung**************/
       if ($this->_environment->inProjectRoom()){
@@ -749,6 +835,31 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          $this->_values['bg_image_repeat'] = '1';
       }
       $this->_values['language'] = $context_item->getLanguage();
+
+      if (
+            ( $context_item->isA(CS_PROJECT_TYPE) and $this->_environment->inProjectRoom() )
+            or ( $context_item->isA(CS_PROJECT_TYPE) and $this->_environment->inCommunityRoom() )
+            or ( $context_item->isA(CS_GROUPROOM_TYPE) and $this->_environment->inGroupRoom() )
+         ) {
+         $portal_item = $this->_environment->getCurrentPortalItem();
+         if ( $portal_item->showTime() ) {
+            $time_list = $context_item->getTimeList();
+            $mark_array = array();
+            if ( $time_list->isNotEmpty() ) {
+               $time_item = $time_list->getFirst();
+               while ($time_item) {
+                  $mark_array[] = $time_item->getItemID();
+                  $time_item = $time_list->getNext();
+               }
+               if ($context_item->isContinuous()) {
+                  $mark_array[] = 'cont';
+               }
+               $this->_values['time2'] = $mark_array;
+               unset($mark_array);
+            }
+         }
+      }
+
       if ($this->_environment->inProjectRoom()){
          $community_room_array = array();
          if (!empty($this->_session_community_room_array)) {

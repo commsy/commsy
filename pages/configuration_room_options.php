@@ -146,6 +146,17 @@ if ($command != 'error') { // only if user is allowed to edit colors
          } else {
             $context_item->setNotShowTitle();
          }
+         if (isset($_POST['time2']) and !empty($_POST['time2'])){
+            if (in_array('cont',$_POST['time2'])) {
+               $context_item->setContinuous();
+            } else {
+               $context_item->setTimeListByID($_POST['time2']);
+               $context_item->setNotContinuous();
+            }
+         } elseif ($context_item->isProjectRoom()) {
+            $context_item->setTimeListByID(array());
+            $context_item->setNotContinuous();
+         }
          $color = $context_item->getColorArray();
          if ( isset($_POST['color_choice'])) {
             global $cs_color;
