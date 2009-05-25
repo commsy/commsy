@@ -294,7 +294,10 @@ class cs_file_item extends cs_item {
    }
 
    function getExtension () {
-      return cs_strtolower(mb_substr(strrchr($this->getDisplayName(),'.'),1));
+      $display_name = $this->getDisplayName();
+      if ( !empty($display_name) ) {
+         return cs_strtolower(mb_substr(strrchr($display_name,'.'),1));
+      }
    }
 
    function getUrl () {
@@ -380,7 +383,7 @@ class cs_file_item extends cs_item {
             unset($context_item);
          }
       }
-      $retour = $disc_manager->getFilePath().$disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName());
+      $retour = $disc_manager->getFilePath().$disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName(), $this->getExtension());
       $disc_manager->setContextID($this->_environment->getCurrentContextID());
       return $retour;
    }
@@ -402,7 +405,7 @@ class cs_file_item extends cs_item {
             unset($context_item);
          }
       }
-      $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName());
+      $retour = $disc_manager->getCurrentFileName($this->getContextID(), $this->getFileID(), $this->getFileName(), $this->getExtension());
       $disc_manager->setContextID($this->_environment->getCurrentContextID());
       return $retour;
    }
