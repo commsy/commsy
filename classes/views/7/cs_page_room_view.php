@@ -710,7 +710,7 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<div style="float:right; vertical-align:bottom;">';
       $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .= '<tr>';
-      $html .= '<td style="vertical-align:bottom;">';
+      $html .= '<td style="vertical-align:middle;">';
       $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
       $html .= '</td>';
       $html .= '<td>';
