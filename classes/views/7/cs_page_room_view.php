@@ -517,7 +517,7 @@ class cs_page_room_view extends cs_page_view {
             unset($params);
             $html .= '<td style="padding:0px; height:50px;">';
             $html .= '<div class="logo" style="vertical-align:top; padding:5px 5px 0px 0px; margin:0px;">'.LF;
-            $html .= '     <img style="height:40px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= '     <img style="height:45px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= '</div>'.LF;
             $html .= '</td>';
             $html .= '<td style="vertical-align:middle; padding: 5px 0px 0px 0px;">';
