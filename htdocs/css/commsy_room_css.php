@@ -190,6 +190,7 @@ div.page_header_border{
 
 div.page_header_personal_area{
    float:right;
+   height:70px;
    width: 40%;
    padding:5px 0px 0px 0px;
 }
