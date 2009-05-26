@@ -147,7 +147,7 @@
       }
       var img = document.getElementById('showHideButton' + numericId);
       var obj = document.getElementById('paneContent' + numericId);
-      	
+
       xpPanel_slideSpeed = speedArray[numericId];
 
       if(inputObj.id.toLowerCase().indexOf('up')>=0){
@@ -280,15 +280,15 @@
 
             outerContentDiv.id = 'paneContent' + commsy_panel_index;
             outerContentDiv.className = 'panelContent';
-            
+
             var topBar = document.createElement('DIV');
             topBar.id = 'topBar' + commsy_panel_index;
             topBar.onselectstart = cancelXpWidgetEvent;
-            
+
             var info = document.createElement('DIV');
             info.id = 'info' + commsy_panel_index;
             info.style.cssFloat = 'left';
-            
+
             var span = document.createElement('SPAN');
             span.id = 'span' + commsy_panel_index;
             span.innerHTML = panelTitles[commsy_panel_index].replace(/&COMMSYDHTMLTAG&/g,'</');
@@ -302,24 +302,26 @@
             	span2.innerHTML = panelDesc[commsy_panel_index];
             }
             span2.className = 'small';
+            span2.style.lineHeight = '20px';
+            span2.style.verticalAlign = 'bottom';
             info.appendChild(span2);
 
             topBar.style.position = 'relative';
 
 				topBar.appendChild(info);
-				
+
 				var klick = document.createElement('DIV');
 				klick.id = 'klick' + commsy_panel_index;
 				klick.style.height = '100%';
-				
+
 				var img = document.createElement('IMG');
             img.id = 'showHideButton' + commsy_panel_index;
             img.src = 'images/arrow_up.gif';
             img.style.cssFloat = 'right';
             klick.appendChild(img);
-				
+
             topBar.appendChild(klick);
-            
+
             if(cookieArray[commsy_panel_index]){
                cookieValue = Get_Cookie(cookieArray[commsy_panel_index]);
                if(cookieValue ==1){
@@ -375,7 +377,7 @@
          }
       }
    }
-   
+
    function mouseoverTopbarBar(){
 		var numericId = this.id.replace(/[^0-9]/g,'');
       var img = document.getElementById('showHideButton' + numericId);

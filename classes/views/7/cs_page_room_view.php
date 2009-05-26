@@ -709,7 +709,7 @@ class cs_page_room_view extends cs_page_view {
       }elseif ($browser == 'msie') {
          $html .='<div style="float:right; padding-top:20px; white-space:nowrap;">';
       }else{
-         $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
+         $html .='<div style="float:right; padding-top:24px; white-space:nowrap;">';
       }
       $html .= '<div style="float:right; vertical-align:bottom;">';
       $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
