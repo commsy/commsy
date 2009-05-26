@@ -1339,6 +1339,9 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_HTMLTEXTAREA':    // getestet Einstellungen Raum-Wiki
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_HTMLTEXTAREA_FORM',$link);
                   break;
+               case 'CONFIGURATION_PLUGINS':    // getestet Einstellungen Plugins
+                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGINS_FORM',$link);
+                  break;
                default:
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
@@ -1678,5 +1681,96 @@ class cs_portal_item extends cs_guide_item {
    private function _getNewsFromServerShow () {
       return $this->_getServerNews('show_news_form_server');
    }
+
+   ##########################################
+   # plugins configuration
+   ############## BEGIN #####################
+
+   /** get part of the plugin config array, INTERNAL
+    *
+    * @param string part: identifier of the plugin
+    *                     whole for the whole array
+    *
+    * @return int 1 = true / -1 = false
+    */
+   function _getPluginConfig ($identifier) {
+      if ( $identifier == 'whole' ) {
+         $retour = array();
+      } else {
+         $retour = '';
+      }
+      if ( $this->_issetExtra('PLUGIN_CONFIG') ) {
+         $plugin_config_array = $this->_getExtra('PLUGIN_CONFIG');
+         if ( $identifier == 'whole' ) {
+            $retour = $plugin_config_array;
+         } elseif ( isset($plugin_config_array[mb_strtoupper($identifier, 'UTF-8')]) ) {
+            $retour = $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')];
+         }
+      }
+      return $retour;
+   }
+
+   /** set part of the plugin config array, INTERNAL
+    *
+    * @param string part: identifier of the plugin
+    *                     whole for the whole array
+    * @param array
+    */
+   function _setPluginConfig ($identifier, $value) {
+      if ($identifier == 'whole') {
+         $this->_addExtra('PLUGIN_CONFIG',$value);
+      } else {
+         $plugin_config_array = $this->_getPluginConfig('whole');
+         $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')] = (int)$value;
+         $this->_setPluginConfig('whole',$plugin_config_array);
+      }
+   }
+
+   function getPluginConfig () {
+      return $this->_getPluginConfig('whole');
+   }
+
+   function setPluginConfig ($value) {
+      $this->_setPluginConfig('whole',$value);
+   }
+
+   /** is Plugin on / active
+    *
+    * @param string identifier of the plugin
+    *
+    * @return boolean true or false
+    */
+   function isPluginOn ($identifier) {
+      $retour = false;
+      $plugin_config = $this->_getPluginConfig($identifier);
+      if ($plugin_config == 1) {
+         $retour = true;
+         global $c_plugin_array;
+         if ( !in_array($identifier,$c_plugin_array) ) {
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+   /** set Plugin on
+    *
+    * @param string identifier of the plugin
+    */
+   function setPluginOn ($identifier) {
+      $this->_setPluginConfig($identifier,1);
+   }
+
+   /** set Plugin off
+    *
+    * @param string identifier of the plugin
+    */
+   function setPluginOff ($identifier) {
+      $this->_setPluginConfig($identifier,-1);
+   }
+
+   ############### END ######################
+   # plugins configuration
+   ##########################################
 }
 ?>

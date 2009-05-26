@@ -345,19 +345,7 @@ class cs_detail_view extends cs_view {
       }
 
       // actions from rubric plugins
-      global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            $plugin_class = $this->_environment->getPluginClass($plugin);
-            if (method_exists($plugin_class,'getDetailActionAsHTML')) {
-               $retour = $plugin_class->getDetailActionAsHTML();
-               if (isset($retour)) {
-                  $html .= $retour;
-               }
-            }
-         }
-      }
-
+      $html .= plugin_hook_output_all('getDetailActionAsHTML',NULL,LF);
 
       if ( $current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();

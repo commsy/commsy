@@ -47,7 +47,6 @@ if ( !isset($environment) and isset($this->_environment) ) {
    #########################################
    # Wiki - Raum-Wiki
    #########################################
-
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
@@ -64,7 +63,6 @@ if ( !isset($environment) and isset($this->_environment) ) {
    ############################################
    # Chat
    ############################################
-
    $context_item = $environment->getCurrentContextItem();
    if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() and !$context_item->isGrouproom()) {
       $link_item = new cs_link();
@@ -111,5 +109,4 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item->setFunction('rubric_extras');
    $link_item->setParameter(array());
    $configuration_rubric_extras_link_list->add($link_item);
-
 ?>

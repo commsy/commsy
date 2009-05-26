@@ -136,12 +136,7 @@ class cs_configuration_rubric_form extends cs_rubric_form {
                     default:
                        $text = '';
                        if ( $this->_environment->isPlugin($rubric) ) {
-                          $plugin_class = $this->_environment->getPluginClass($rubric);
-                          if ( !empty($plugin_class)
-                               and method_exists($plugin_class,'getDisplayName')
-                             ) {
-                             $text = $plugin_class->getDisplayName();
-                          }
+                          $text = plugin_hook_output($rubric,'getDisplayName');
                        }
                        if ( !empty($text) ) {
                           $select_array[$i]['text'] = $text;

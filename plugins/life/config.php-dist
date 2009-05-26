@@ -1,0 +1,3 @@
+<?php
+   $life_url_to_life = 'http://life.epb.uni-hamburg.de';
+?>

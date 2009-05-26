@@ -45,6 +45,7 @@ class cs_context_item extends cs_item {
    private $_user_list = NULL;
 
    var $_default_rubrics_array = array();
+   var $_plugin_rubrics_array = array();
 
    var $_default_home_conf_array = array();
 
@@ -1286,6 +1287,7 @@ class cs_context_item extends cs_item {
          $retour = $this->clearUnallowedRubrics($this->_getExtra('HOMECONF'));
       }
       $retour = $this->_changeContactInUser($retour);
+      $retour = $this->_disablePlugins($retour);
       if ( empty($retour) ) {
          $retour = $this->getDefaultHomeConf();
          $this->setHomeConf($retour);
@@ -1293,6 +1295,31 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   function _disablePlugins ( $home_conf ) {
+      $home_conf_array = explode(',',$home_conf);
+      $current_portal_item = $this->_environment->getCurrentPortalItem();
+      if ( !empty($current_portal_item) ) {
+         global $c_plugin_array;
+         $unset_key_array = array();
+         foreach ( $home_conf_array as $key => $rubric_conf ) {
+            $plugin = substr($rubric_conf,0,strpos($rubric_conf,'_'));
+            if (in_array($plugin,$this->_plugin_rubrics_array)) {
+               if ( !in_array($plugin,$c_plugin_array)
+                    or !$current_portal_item->isPluginOn($plugin)
+                  ) {
+                  $unset_key_array[] = $key;
+               }
+            }
+         }
+         if ( !empty($unset_key_array) ) {
+            foreach ( $unset_key_array as $key ) {
+               unset($home_conf_array[$key]);
+            }
+            $home_conf = implode(',',$home_conf_array);
+         }
+      }
+      return $home_conf;
+   }
 
    function _changeContactInUser($rubricsString){
       $change_needed = false;

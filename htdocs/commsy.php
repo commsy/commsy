@@ -966,12 +966,7 @@ if ( $environment->isOutputModeNot('XML') ) {
                default:
                   $text = '';
                   if ( $environment->isPlugin($link_name[0]) ) {
-                     $plugin_class = $environment->getPluginClass($link_name[0]);
-                     if ( !empty($plugin_class)
-                          and method_exists($plugin_class,'getDisplayName')
-                        ) {
-                        $text = $plugin_class->getDisplayName();
-                     }
+                     $text = plugin_hook_output($link_name[0],'getDisplayName');
                   }
                   if ( !empty($text) ) {
                      $tempMessage = $text;

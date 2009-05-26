@@ -28,7 +28,9 @@ include_once('classes/cs_list.php');
 if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
-
+if ( !isset($translator) and isset($this->_translator) ) {
+   $translator = $this->_translator;
+}
    $addon_link_list = new cs_list();
 
    global $c_html_textarea;
@@ -118,6 +120,28 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $addon_link_list->add($link_item);
    }
 
+   #############################################
+   # plugins - active and deactivate pluguins
+   #############################################
+   $context_item = $environment->getCurrentContextItem();
+   global $c_plugin_array;
+   if ( !empty($c_plugin_array)
+        and $context_item->isPortal()
+      ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_PLUGIN_LINK'));
+      $link_item->setIconPath('images/cs_config/CONFIGURATION_EXTRA_FORM.gif');
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_PLUGIN_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('plugins');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $addon_link_list->add($link_item);
+   }
+
+   ################################################
+   # plugins - special configuration of one plugin
+   ################################################
    global $c_plugin_array;
    if ( isset($c_plugin_array) and !empty($c_plugin_array) ) {
       foreach ($c_plugin_array as $plugin) {

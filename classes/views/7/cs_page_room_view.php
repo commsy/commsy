@@ -289,18 +289,13 @@ class cs_page_room_view extends cs_page_view {
                   $link_title = '';
                   $text = '';
                   if ( $this->_environment->isPlugin($link['module']) ) {
-                     $plugin_class = $this->_environment->getPluginClass($link['module']);
-                     if ( $with_icons
-                          and !empty($plugin_class)
-                          and method_exists($plugin_class,'getRubricNavIcon')
-                        ) {
-                        $text .= '<img src="'.$plugin_class->getRubricNavIcon().'" style="vertical-align:bottom;"/>';
+                     if ( $with_icons ) {
+                        $icon_plugin = plugin_hook_output($link['module'],'getRubricNavIcon');
+                        if ( !empty($icon_plugin) ) {
+                           $text .= '<img src="'.$icon_plugin.'" style="vertical-align:bottom;"/>';
+                        }
                      }
-                     if ( !empty($plugin_class)
-                          and method_exists($plugin_class,'getDisplayName')
-                        ) {
-                        $text .= $plugin_class->getDisplayName();
-                     }
+                     $text .= plugin_hook_output($link['module'],'getDisplayName');
                   }
                   if ( !empty($text) ) {
                      $link_title .= $text;

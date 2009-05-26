@@ -244,10 +244,10 @@ class cs_environment {
       return $this->_server_id;
    }
 
-  /** get server object
-   * returns the server object.
+  /** get portal object
+   * returns the portal object.
    *
-   * @return object server item
+   * @return object portal item
    */
    function getCurrentPortalItem () {
       if (!isset($this->_current_portal)) {

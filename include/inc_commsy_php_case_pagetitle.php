@@ -111,12 +111,7 @@
               and !empty($plugin_module)
               and $environment->isPlugin($plugin_module)
             ) {
-            $plugin_class = $environment->getPluginClass($plugin_module);
-            if ( !empty($plugin_class)
-                 and method_exists($plugin_class,'getDisplayName')
-               ) {
-               $text = $plugin_class->getDisplayName();
-            }
+            $text = plugin_hook_output($plugin_module,'getDisplayName');
          }
          if ( !empty($text) ) {
             $tempMessage .= $text;

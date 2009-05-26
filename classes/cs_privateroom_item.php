@@ -64,6 +64,7 @@ class cs_privateroom_item extends cs_room_item {
          while ( $plugin ) {
             if ( $plugin->inPrivateRoom() ) {
                $i++;
+               $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
                $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
                $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
             }

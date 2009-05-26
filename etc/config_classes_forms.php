@@ -645,4 +645,11 @@ $class_config[$class_name]['name']       = $class_name;
 $class_config[$class_name]['filename']   = $class_name.'.php';
 $class_config[$class_name]['folder']     = $main_folder.$form_folder;
 $class_config[$class_name]['switchable'] = false;
+
+$class_name = 'cs_configuration_plugins_form';
+define('CONFIGURATION_PLUGINS_FORM',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$form_folder;
+$class_config[$class_name]['switchable'] = false;
 ?>

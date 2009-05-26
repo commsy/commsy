@@ -23,11 +23,12 @@
 //    along with CommSy.
 
 if (!empty($_GET['pluginname'])) {
-	$plugin_name = $_GET['pluginname'];
+   $plugin_name = $_GET['pluginname'];
 } elseif (!empty($_POST['pluginname'])) {
-	$plugin_name = $_POST['pluginname'];	
+   $plugin_name = $_POST['pluginname'];
 } else {
-	include_once('functions/error_functions.php');trigger_error('lost plugin name',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('lost plugin name',E_USER_ERROR);
 }
 include_once('plugins/'.$plugin_name.'/page_configuration_plugin.php');
 ?>

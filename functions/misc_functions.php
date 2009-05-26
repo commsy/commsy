@@ -740,7 +740,6 @@ function isURLValid () {
          $funct != 'service' and
          $funct != 'privateroom_newsletter' and
          $funct != 'dates' and
-         $funct != 'plugin' and
          $funct != 'authentication' and
          $funct != 'export' and
          $funct != 'backup' and
@@ -801,6 +800,8 @@ function isURLValid () {
          $funct != 'test' and
 
          // plugins
+         $funct != 'plugin' and
+         $funct != 'plugins' and
          $funct != 'ads' and
 
          // upload file for external tools
@@ -928,17 +929,67 @@ function mayEditRegular($user, $item) {
     return $value;
 }
 
-function plugin_hook($hook_function, $params = null){
+function plugin_hook ($hook_function, $params = null) {
    global $environment;
    global $c_plugin_array;
-   
-   if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+
+   if ( isset($c_plugin_array)
+        and !empty($c_plugin_array)
+      ) {
+      $current_context_item = $environment->getCurrentPortalItem();
       foreach ($c_plugin_array as $plugin) {
-         $plugin_class = $environment->getPluginClass($plugin);
-         if (method_exists($plugin_class,$hook_function)) {
-            $plugin_class->$hook_function($params);
+         if ( isset($current_context_item)
+              and $current_context_item->isPluginOn($plugin)
+            ) {
+            $plugin_class = $environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,$hook_function) ) {
+               $plugin_class->$hook_function($params);
+            }
          }
       }
    }
+}
+
+function plugin_hook_output_all ($hook_function, $params = null, $separator = '') {
+   $retour = '';
+   global $environment;
+   global $c_plugin_array;
+
+   if ( isset($c_plugin_array)
+        and !empty($c_plugin_array)
+      ) {
+      $first = true;
+      foreach ($c_plugin_array as $plugin) {
+         $output = plugin_hook_output($plugin,$hook_function,$params);
+         if ( !empty($output) ) {
+            if ( $first ) {
+               $first = false;
+            } else {
+               $retour .= $separator;
+            }
+            $retour .= $output;
+         }
+      }
+   }
+   return $retour;
+}
+
+function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
+   $retour = '';
+   global $environment;
+   global $c_plugin_array;
+   $current_context_item = $environment->getCurrentPortalItem();
+   if ( in_array($plugin,$c_plugin_array)
+        and isset($current_context_item)
+        and $current_context_item->isPluginOn($plugin)
+      ) {
+      $plugin_class = $environment->getPluginClass($plugin);
+      if ( isset($plugin_class)
+           and method_exists($plugin_class,$hook_function)
+         ) {
+         $retour = $plugin_class->$hook_function($params);
+      }
+   }
+   return $retour;
 }
 ?>
