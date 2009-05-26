@@ -292,6 +292,8 @@
             var span = document.createElement('SPAN');
             span.id = 'span' + commsy_panel_index;
             span.innerHTML = panelTitles[commsy_panel_index].replace(/&COMMSYDHTMLTAG&/g,'</');
+            span.style.lineHeight = '20px';
+            span.style.verticalAlign = 'bottom';
             info.appendChild(span);
 
             var span2 = document.createElement('SPAN');

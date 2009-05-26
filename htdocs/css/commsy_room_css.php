@@ -165,6 +165,7 @@ div.page_header_border{
 
 #page_header{
    clear:both;
+   min-height:70px;
    padding:0px 10px 5px 10px;
    background-color: white;
    font-size:8pt;
