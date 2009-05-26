@@ -515,18 +515,18 @@ class cs_page_room_view extends cs_page_view {
             $params['picture'] = $context_item->getLogoFilename();
             $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
             unset($params);
-            $html .= '<td style="padding:0px; height:45px;">';
+            $html .= '<td style="padding:0px; height:50px;">';
             $html .= '<div class="logo" style="vertical-align:top; padding:5px 5px 0px 0px; margin:0px;">'.LF;
             $html .= '     <img style="height:40px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= '</div>'.LF;
             $html .= '</td>';
             $html .= '<td style="vertical-align:middle; padding: 5px 0px 0px 0px;">';
          }else{
-            $html .= '<td colspan="2" style="vertical-align:middle; padding:0px;">';
+            $html .= '<td colspan="2" style="height:50px; vertical-align:middle; padding:0px;">';
 
          }
       }else{
-         $html .= '<td colspan="2" style="height:45px; vertical-align:bottom; padding:5px 0px 0px 0px;">';
+         $html .= '<td colspan="2" style="height:50px; vertical-align:bottom; padding:5px 0px 0px 0px;">';
 
       }
       $length = mb_strlen($context_item->getTitle());
