@@ -91,10 +91,86 @@ span.home_forward_links{
    color: <?php echo($color['info_color'])?>;
 }
 div.homeheader {
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
+   background-color:<?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    padding: 3px 3px;
+   line-height: 18px;
+   vertical-align:middle;
    font-weight:bold;
    white-space:nowrap;
 }
 
+div.homerubric {
+}
+
+
+/*List Layout*/
+.homelist {
+   border-collapse: collapse;
+   width: 100%;
+   font-size:10pt;
+   margin:0px;
+   padding:0px;
+}
+
+.homelist tr{
+}
+
+table.homelist, div.index_flash {
+   width: 100%;
+   font-size:10pt;
+}
+
+.homelist td, td.odd {
+   background-color: #FFFFFF;
+   padding: 2px 3px;
+   font-size:10pt;
+}
+.homelist td.even  {
+   background-color: <?php echo($color['list_entry_even'])?>;
+}
+
+.even{
+   background-color: <?php echo($color['list_entry_even'])?>;
+}
+.homelist td.head {
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
+   background-color:<?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   line-height:17px;
+   padding: 3px 3px;
+   font-weight:bold;
+   white-space:nowrap;
+}
+.homelist td.head_nav {
+   border-bottom: none;
+   padding: 3px 3px;
+   font-weight:bold;
+   text-align: right;
+}
+.homelist td.foot_left {
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>
+   background-color: <?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   padding: 2px 2px;
+   font-weight:bold;
+}
+.homelist td.foot_right {
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
+   color: <?php echo($color['headline_text'])?>;
+   border-bottom: none;
+   padding: 2px 2px;
+   font-weight:bold;
+   text-align: right;
+}

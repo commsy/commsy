@@ -421,7 +421,7 @@ class cs_activity_view extends cs_view {
          $html .= '         </table>'.LF;
       }
 
-      $conf = $context->getHomeConf();
+/*      $conf = $context->getHomeConf();
       if ( !empty($conf) ) {
          $rubrics = explode(',', $conf);
       } else {
@@ -486,7 +486,7 @@ class cs_activity_view extends cs_view {
       }
       $html .= '         </td>'.LF;
       $html .= '         </tr>'.LF;
-      $html .= '         </table>'.LF;
+      $html .= '         </table>'.LF;*/
 
 
 
