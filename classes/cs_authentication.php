@@ -487,25 +487,27 @@ class cs_authentication {
                }
             }
          } else {
-            $new_account_data = $this->_used_auth_manager->get_data_for_new_account($uid, $password);
-            if(!empty($new_account_data)){
-               $user_item = $user_manager->getNewItem();
-               $user_item->setUserID($uid);
-               $user_item->setFirstname($new_account_data['firstname']);
-               $user_item->setLastname($new_account_data['lastname']);
-               if(!empty($new_account_data['email'])){
-                  $user_item->setEmail($new_account_data['email']);
-               } else {
-                  $server_item = $this->_environment->getServerItem();
-                  $email = $server_item->getDefaultSenderAddress();
-                  $user_item->setEmail($email);
-                  $user_item->setHasToChangeEmail();
+            if ( isset($this->_used_auth_manager) ) {
+               $new_account_data = $this->_used_auth_manager->get_data_for_new_account($uid, $password);
+               if(!empty($new_account_data)){
+                  $user_item = $user_manager->getNewItem();
+                  $user_item->setUserID($uid);
+                  $user_item->setFirstname($new_account_data['firstname']);
+                  $user_item->setLastname($new_account_data['lastname']);
+                  if(!empty($new_account_data['email'])){
+                     $user_item->setEmail($new_account_data['email']);
+                  } else {
+                     $server_item = $this->_environment->getServerItem();
+                     $email = $server_item->getDefaultSenderAddress();
+                     $user_item->setEmail($email);
+                     $user_item->setHasToChangeEmail();
+                  }
+                  $user_item->setAuthSource($this->_used_auth_manager->getAuthSourceItemID());
+                  $user_item->makeUser();
+                  $user_item->save();
+                  $this->_environment->setCurrentUser($user_item);
+                  $granted = true;
                }
-               $user_item->setAuthSource($this->_used_auth_manager->getAuthSourceItemID());
-               $user_item->makeUser();
-               $user_item->save();
-               $this->_environment->setCurrentUser($user_item);
-               $granted = true;
             }
 
             if(!$granted){
