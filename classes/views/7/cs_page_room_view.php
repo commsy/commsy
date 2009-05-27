@@ -1199,7 +1199,7 @@ class cs_page_room_view extends cs_page_view {
                foreach ($this->_views_left as $view) {
                   if (!$this->_environment->inPrivateRoom()){
                      if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
-                        $html .= '<div class="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
+                        $html .= '<div class="commsy_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
                      }else{
                         $html .= '<div id="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
                      }$desc = $view->_getDescriptionAsHTML();
@@ -1227,7 +1227,7 @@ class cs_page_room_view extends cs_page_view {
                      }else{
                         $image_text = 'material';
                      }
-                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding:1px; float:left;"/>';
+                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;"/>';
                      $title = addslashes($image.' '.$view->getViewTitle());
                      if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
                        $item_list = $view->getList();
@@ -1248,36 +1248,27 @@ class cs_page_room_view extends cs_page_view {
                           $size = round($size/3,0);
                        }
                        if (empty($title_string)){
-#                          $title_string .= '"'.$title.'"';
-#                          $desc_string  .= '"'.$desc.'"';
-#                          $size_string  .= '"'.$size.'"';
+                          $title_string .= '"'.$title.'"';
+                          $desc_string  .= '"'.$desc.'"';
+                          $size_string  .= '"'.$size.'"';
                        }else{
-#                          $title_string .= ',"'.$title.'"';
-#                          $desc_string  .= ',"'.$desc.'"';
-#                          $size_string  .= ',"'.$size.'"';
+                          $title_string .= ',"'.$title.'"';
+                          $desc_string  .= ',"'.$desc.'"';
+                          $size_string  .= ',"'.$size.'"';
                        }
                      }
-                     $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-                     $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-                     if ( $current_browser == 'firefox' ){
-                        $style= ' style="margin-left:-1px;"';
-                     }else{
-                        $style= ' ';
-                     }
-                     $html .= '<div class="homeheader" '.$style.'>';
-                     $new_image = '<img src="images/commsyicons/16x16/new.png" style="padding:0px; float:right;"/>';
-                     $params = array();
-                     $params['id']='NEW';
-                     $html .= ahref_curl($this->_environment->getCurrentContextID(),$image_text,'edit',$params,$new_image,$this->_translator->getMessage('COMMON_NEW_ITEM'));
-                     $html .= $image.$noscript_title.' <span style="font-size:8pt;">'.$desc.'</span>';
-                     $html .= '</div>';
+                     $html .= '<div>';
+                     $html .= '<noscript>';
+                     $html .= '<div class="homeheader">'.$noscript_title.' '.$desc.'</div>';
+                     $html .= '</noscript>';
                   } else {
                      if ($view->getViewName() == $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
-                        $html .= '<div id="commsy_no_panel" style="margin-bottom:20px;">'.LF;
+                        $html .= '<div id="commsy_no_panel" style="margin-bottom:20px; border:0px solid black;">'.LF;
                      }
                   }
                   $html .= $view->asHTML();
                   if (!$this->_environment->inPrivateRoom()){
+                     $html .= '</div>'.LF;
                      $html .= '</div>'.LF;
                   } else {
                      if ($view->getViewName() == $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
@@ -1295,7 +1286,7 @@ class cs_page_room_view extends cs_page_view {
                $html .='</div>'.LF;
                $html .= '<script type="text/javascript">'.LF;
                /*******************************/
-               /* TBD: Die Werte des dritten Arrays setzen, falls die Veränderungen*/
+               /* TBD: Die Werte des dritten Arrays setzen, falls die VerÃ¤nderungen*/
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
