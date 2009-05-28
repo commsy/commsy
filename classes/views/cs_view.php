@@ -2583,34 +2583,72 @@ class cs_view {
               and $value != 'left'
               and $value != 'right'
             ) {
-            include_once('functions/error_functions.php');
-            trigger_error('float must be left or right',E_USER_WARNING);
-         } elseif ( $key == 'text' ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('float must be left or right',E_USER_WARNING);
+         } elseif ( $key == 'text'
+                    or $key == 'alt'
+                    or $key == 'gallery'
+                    or $key == 'image'
+                    or $key == 'server'
+                  ) {
             $retour[$key] = $this->_htmlentities_small($value);
          } elseif ( $key == 'width'
                     and !is_numeric($value)
                   ) {
-            include_once('functions/error_functions.php');
-            trigger_error('width must be a number',E_USER_WARNING);
-
+            #include_once('functions/error_functions.php');
+            #trigger_error('width must be a number',E_USER_WARNING);
          } elseif ( $key == 'height'
                     and !is_numeric($value)
                   ) {
-            include_once('functions/error_functions.php');
-            trigger_error('height must be a number',E_USER_WARNING);
-
+            #include_once('functions/error_functions.php');
+            #trigger_error('height must be a number',E_USER_WARNING);
          } elseif ( $key == 'width'
                     and $value > 1000
                   ) {
-            include_once('functions/error_functions.php');
-            trigger_error('width must be under 1000',E_USER_WARNING);
-
+            #include_once('functions/error_functions.php');
+            #trigger_error('width must be under 1000',E_USER_WARNING);
          } elseif ( $key == 'height'
                     and $value > 1000
                   ) {
-            include_once('functions/error_functions.php');
-            trigger_error('height must be under 1000',E_USER_WARNING);
-
+            #include_once('functions/error_functions.php');
+            #trigger_error('height must be under 1000',E_USER_WARNING);
+         } elseif ( $key == 'icon'
+                    and $value != 'true'
+                    and $value != 'false'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('icon must be true or false',E_USER_WARNING);
+         } elseif ( $key == 'size'
+                    and $value != 'true'
+                    and $value != 'false'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('size must be true or false',E_USER_WARNING);
+         } elseif ( $key == 'play'
+                    and $value != 'true'
+                    and $value != 'false'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('play must be true or false',E_USER_WARNING);
+         } elseif ( $key == 'navigation'
+                    and $value != 'true'
+                    and $value != 'false'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('navigation must be true or false',E_USER_WARNING);
+         } elseif ( $key == 'orientation'
+                    and $value != 'portrait'
+                    and $value != 'landscape'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('orientation must be portrait or landscape',E_USER_WARNING);
+         } elseif ( $key == 'target'
+                    and $value != '_blank'
+                    and $value != '_top'
+                    and $value != '_parent'
+                  ) {
+            #include_once('functions/error_functions.php');
+            #trigger_error('target must be _blank, _top or _parent',E_USER_WARNING);
          } else {
             $retour[$key] = $value;
          }
