@@ -421,6 +421,7 @@ class cs_connection_soap {
       }
    }
 
+   // + authenticate_with_login...
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
@@ -487,6 +488,16 @@ class cs_connection_soap {
          $result = $this->_encode_output($result);
       }
       return $result;
+   }
+
+   public function authenticateWithLogin ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
+        $session = $this->authenticate($user_id, $password, $portal_id, $auth_source_id);
+        if(!is_soap_fault($session)){
+            if ( $session->issetValue('SOAP_SESSION') ) {
+               $session->unsetValue('SOAP_SESSION');
+            }
+        }
+        return $session;
    }
 
    public function authenticateViaSession($session_id) {

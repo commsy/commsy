@@ -59,6 +59,15 @@
 <message name='authenticateOUT'>
   <part name='result' type='xsd:string'/>
 </message>
+<message name='authenticateWithLoginIN'>
+  <part name='user_id' type='xsd:string'/>
+  <part name='password' type='xsd:string'/>
+  <part name='portal_id' type='xsd:integer'/>
+  <part name='auth_source_id' type='xsd:integer'/>
+</message>
+<message name='authenticateWithLoginOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 <message name='IMSIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='ims_xml' type='xsd:string'/>
@@ -284,6 +293,10 @@
     <input message='tns:authenticateIN'/>
     <output message='tns:authenticateOUT'/>
   </operation>
+  <operation name='authenticateWithLogin'>
+    <input message='tns:authenticateWithLoginIN'/>
+    <output message='tns:authenticateWithLoginOUT'/>
+  </operation>
   <operation name='IMS'>
     <input message='tns:IMSIN'/>
     <output message='tns:IMSOUT'/>
@@ -458,6 +471,17 @@
   </operation>
   <operation name='authenticate'>
     <soap:operation soapAction='urn:xmethodsCommSy#authenticate'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='authenticateWithLogin'>
+    <soap:operation soapAction='urn:xmethodsCommSy#authenticateWithLogin'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

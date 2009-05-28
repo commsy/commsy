@@ -227,7 +227,7 @@ class cs_session_manager {
             $toolname = $session_item->getToolname();
          }
       }
-      if (isset($session_item )){
+      if (isset($session_id )){
          $query = 'DELETE FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
          $this->_last_query = $query;
          $result = $this->_db_conntector->performQuery($query);
