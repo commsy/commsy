@@ -1262,7 +1262,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       $retour  = '';
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $desc = $this->_show_images($desc,$item,true);
          $retour .= $this->getScrollableContent($desc,$item,'',true).LF;
       }

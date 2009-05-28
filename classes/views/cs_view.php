@@ -277,6 +277,27 @@ class cs_view {
 
       return $text;
    }
+
+   function _cleanDataFromTextArea ( $text ) {
+      preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
+      foreach ($values as $key => $value) {
+         $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
+      }
+      $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+      foreach ($values as $key => $value) {
+         $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
+      }
+      return $text;
+   }
+
+   function _cleanDataFromTextAreaNotFromFCK ( $text ) {
+      return $this->_htmlentities_smaller($text);
+   }
+
+   function _cleanDataFromTextAreaFromFCK ( $text ) {
+      return $text;
+   }
+
    function _cs_htmlspecialchars ($text) {
       global $c_html_textarea;
       $text = $this->_cleanBadCode($text);
@@ -2661,6 +2682,13 @@ class cs_view {
       $value = str_replace('>','&gt;',$value);
       $value = str_replace('"','&quot;',$value);
       $value = str_replace('\'','&quot;',$value);
+      return $value;
+   }
+
+   function _htmlentities_smaller ( $value ) {
+      $value = str_replace('<','&lt;',$value);
+      $value = str_replace('>','&gt;',$value);
+      $value = str_replace('"','&quot;',$value);
       return $value;
    }
 

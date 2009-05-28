@@ -66,7 +66,7 @@ var $_room_type = 'context';
       // description
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $html .= $desc.LF;
       }
       $html .= BR.BRLF.$this->_getRoomWindowAsHTML($item,$this->getAccountMode());

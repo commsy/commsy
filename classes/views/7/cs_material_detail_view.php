@@ -612,7 +612,7 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array[]   = $this->_translator->getMessage('MATERIAL_ABSTRACT');
          $description = $item->getDescription();
          if ( !empty($description) ) {
-            $temp_string = $this->_text_as_html_long($description);
+            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($description));
             $temp_array[]   =  '<div class="handle_width">'.$this->_show_images($temp_string,$this->_item, $with_links).'</div>'.'<br/><br/>';
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
@@ -751,7 +751,7 @@ class cs_material_detail_view extends cs_detail_view {
          // Description
          $desc = $item->getDescription();
          if ( !empty($desc) ) {
-            $temp_string = $this->_text_as_html_long($desc);
+            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
             $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          }
       }
@@ -769,7 +769,7 @@ class cs_material_detail_view extends cs_detail_view {
       $html = '';
       $section_description = $item->getDescription();
       if ( !empty($section_description) ) {
-         $section_description = $this->_text_as_html_long($section_description);
+         $section_description = $this->_text_as_html_long($this->_cleanDataFromTextArea($section_description));
          $section_description = $this->_show_images($section_description, $item, $with_links);
          $html .= $this->getScrollableContent($section_description,$item,'',$with_links);
       }

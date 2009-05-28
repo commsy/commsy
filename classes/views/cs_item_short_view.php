@@ -278,7 +278,7 @@ class cs_item_short_view extends cs_home_view {
       if ( empty($description) ) {
          $description = '&nbsp;';
       } elseif (mb_strlen($description) > $len) {
-         $description = chunkText($description,$len).' ... ';
+         $description = chunkText($this->_cleanDataFromTextArea($description),$len).' ... ';
          $params = array();
          $params['iid'] = $item->getItemID();
          $description .= '('.ahref_curl( $this->_environment->getCurrentContextID(),
@@ -288,7 +288,7 @@ class cs_item_short_view extends cs_home_view {
                                          $this->_translator->getMessage('COMMON_MORE')).')';
          unset($params);
       } else {
-         $description = $item->getDescription();
+         $description = $this->_cleanDataFromTextArea($item->getDescription());
       }
 
      return $this->_text_as_html_short($description);

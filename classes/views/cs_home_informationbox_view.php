@@ -168,7 +168,7 @@ class cs_home_informationbox_view extends cs_home_view {
       $desc = '';
       $desc = $entry->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
       }
       $html .= '<div style="max-height: 220px; height:auto !important; height: 220px; overflow:auto;">';
       $html .= '<div style="padding:3px;">'.$desc.'</div></div>'.LF;

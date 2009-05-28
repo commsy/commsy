@@ -2406,7 +2406,7 @@ class cs_form_view extends cs_view {
             $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             $style_text .= 'font-size:'.$font_size.'px;"';
             $title  = '<span  '.$style_text.'>'.LF;
-            $title .= $buzzword_entry->getName().LF;
+            $title .= $this->_text_as_html_short($buzzword_entry->getName()).LF;
             $title .= '</span> ';
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 $this->_environment->getCurrentModule(),
@@ -2532,8 +2532,8 @@ class cs_form_view extends cs_view {
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params,
-                                $father_tag_item->getTitle(),
-                                $father_tag_item->getTitle(),
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
                                 '',
                                 '',
                                 '',
@@ -2558,8 +2558,8 @@ class cs_form_view extends cs_view {
                              $this->_environment->getCurrentModule(),
                              'index',
                              $params,
-                             $tag_item->getTitle(),
-                             $tag_item->getTitle(),
+                             $this->_text_as_html_short($tag_item->getTitle()),
+                             $this->_text_as_html_short($tag_item->getTitle()),
                              '',
                              '',
                              '',

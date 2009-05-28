@@ -102,7 +102,7 @@ class cs_context_guide_detail_view extends cs_view {
             // description
             $desc = $this->_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($desc);
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
                $html .= $desc.BR.BRLF;
             }
          } else {
@@ -117,7 +117,7 @@ class cs_context_guide_detail_view extends cs_view {
                 // description
             $desc = $this->_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($desc);
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
                $html .= $desc.BRLF;
             }
 

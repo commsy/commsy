@@ -353,7 +353,7 @@ var $_clipboard_id_array=array();
       // Description
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $desc = $this->_show_images($desc,$item,true);
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }

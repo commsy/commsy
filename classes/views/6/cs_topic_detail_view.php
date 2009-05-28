@@ -54,7 +54,7 @@ class cs_topic_detail_view extends cs_detail_view {
 
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 

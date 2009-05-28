@@ -2662,7 +2662,7 @@ class cs_detail_view extends cs_view {
       $html .= '   <div class="item" style="margin-left:3px;">'.LF;
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $html .= $this->getScrollableContent($desc,$item,'',true);
       }
       // Show info about the version the annotation refers to

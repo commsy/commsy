@@ -349,7 +349,7 @@ class cs_user_detail_view extends cs_detail_view {
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
          $html .='<div style="padding-top:10px; vertical-align:top;"></div>'.LF;
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $html .= $desc.LF;
       }
       $html  .= '<!-- END OF USER ITEM DETAIL -->'."\n\n";

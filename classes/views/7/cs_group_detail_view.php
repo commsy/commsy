@@ -242,7 +242,7 @@ class cs_group_detail_view extends cs_detail_view {
       // Description
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($desc);
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
@@ -256,7 +256,7 @@ class cs_group_detail_view extends cs_detail_view {
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
             $desc = $grouproom_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($desc);
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
                $html .= $desc.LF;
             }
          }

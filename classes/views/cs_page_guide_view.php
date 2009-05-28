@@ -422,7 +422,7 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '<tr>'."\n";
          $html .= '<td colspan="2" style="text-align:left; vertical-align:top; padding-top:5px; padding-bottom:5px; padding-left: 5px; font-weight: normal;">'."\n";
       }
-      $html .= $this->_text_as_html_long($current_portal->getDescription());
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($current_portal->getDescription()));
       if ($current_portal->isShowAnnouncementsOnHome()){
          $html .= '</td>'."\n";
       }
@@ -487,7 +487,7 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '</tr>'."\n";
       $html .= '<tr>'."\n";
       $html .= '<td  style="text-align:left; vertical-align:top; padding-top:5px; padding-bottom:5px; padding-left: 5px; font-weight: normal;">'."\n";
-      $html .= $this->_text_as_html_long($current_portal->getDescription());
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($current_portal->getDescription()));
       $current_user = $this->_environment->getCurrentUser();
       if ( $current_user->isRoot() ){
          $html .= '<div class="search_link" style="padding-left:0px; padding-top: 5px;">'.LF;
@@ -1625,7 +1625,7 @@ class cs_page_guide_view extends cs_page_view {
          $html .= '<td style="font-weight:normal; font-size:8pt; vertical-align:top;">'.LF;
          $desc = $item->getDescription();
          if (!empty($desc)){
-            $html .= $this->_text_as_html_long($item->getDescription());
+            $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($item->getDescription()));
          }else{
             $html .= '<span class="disabled">'.getMessage('COMMON_NO_DESCRIPTION').'</span>'.LF;
          }
