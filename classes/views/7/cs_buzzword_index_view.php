@@ -150,7 +150,7 @@ var $_item = NULL;
                   }
                   $text .= '/>'.LF;
                   $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
-                  $layout_array[$row][$col] = $text.'&nbsp;'.$item->getTitle();
+                  $layout_array[$row][$col] = $text.'&nbsp;'.$this->_text_as_html_short($item->getTitle());
                   $item = $list->getNext();
                } else {
                   $layout_array[$row][$col] = '';

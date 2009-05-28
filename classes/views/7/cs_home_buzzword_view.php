@@ -76,7 +76,7 @@ class cs_home_buzzword_view extends cs_view {
             $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             $style_text .= 'font-size:'.$font_size.'px;"';
             $title  = '<span  '.$style_text.'>'.LF;
-            $title .= $buzzword->getName().LF;
+            $title .= $this->_text_as_html_short($buzzword->getName()).LF;
             $title .= '</span> ';
 
             $html .= ahref_curl($this->_environment->getCurrentContextID(),

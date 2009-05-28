@@ -137,7 +137,7 @@ class cs_home_tag_view extends cs_view {
                }else{
                   $html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
                }
-               $title = $current_item->getTitle();
+               $title = $this->_text_as_html_short($current_item->getTitle());
                $params['seltag_'.$ebene] = $current_item->getItemID();
                if( isset($params['seltag']) ){
                   $i = $ebene+1;
