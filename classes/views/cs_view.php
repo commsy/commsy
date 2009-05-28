@@ -279,6 +279,14 @@ class cs_view {
    }
 
    function _cleanDataFromTextArea ( $text ) {
+
+      ### hack ###
+      # unmotiviertes br ausserhalb des fck texts
+      # keine Ahnung wo das her kommt
+      # ij 28.05.2009
+      $text = str_replace('<!-- KFC TEXT --><br />','<!-- KFC TEXT -->COMMSY_BR',$text);
+      ### hack ###
+
       preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
@@ -287,18 +295,16 @@ class cs_view {
       foreach ($values as $key => $value) {
          $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
       }
+
+      ### hack ###
+      $text = str_replace('COMMSY_BR',BRLF,$text);
+      ### hack ###
+
       return $text;
    }
 
    function _cleanDataFromTextAreaNotFromFCK ( $text ) {
-      #######
-      # hack: 1 br taucht unmotiviert außerhalb des FCK auf
-      #######
-      if ( $text == '<br />' ) {
-         return $text;
-      } else {
-         return $this->_htmlentities_smaller($text);
-      }
+      return $this->_htmlentities_smaller($text);
    }
 
    function _cleanDataFromTextAreaFromFCK ( $text ) {
