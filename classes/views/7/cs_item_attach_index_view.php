@@ -520,6 +520,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( !empty($item) ) {
          $title = $item->getTitle();
          $title = $this->_compareWithSearchText($title);
+         $title = $this->_text_as_html_short($title);
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
          $title .= ' '.$this->_getItemFiles($item);

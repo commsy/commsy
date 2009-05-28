@@ -678,7 +678,7 @@ class cs_index_view extends cs_view {
                $style_text .= 'font-size:'.$font_size.'px;"';
             }
             $title  = '<span  '.$style_text.'>'.LF;
-            $title .= $buzzword->getName().LF;
+            $title .= $this->_text_as_html_short($buzzword->getName()).LF;
             $title .= '</span> ';
             if ( $this->_environment->inPrivateRoom()
                  and $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
@@ -1188,13 +1188,13 @@ EOD;
                                 CS_USER_TYPE,
                                 'detail',
                                 $link_params,
-                                chunkText($ref_item->getFullName(),15),
+                                chunkText($this->_text_as_html_short($ref_item->getFullName()),15),
                                 '',
                                 '',
                                 $this->getFragment()
                                );
             unset($link_params);
-            $html_text .= '<span><a title="'.$ref_item->getFullName().'">'.$title.'</a></span>';
+            $html_text .= '<span><a title="'.$this->_text_as_html_short($ref_item->getFullName()).'">'.$title.'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['ref_user']);
@@ -1213,9 +1213,9 @@ EOD;
             $ref_item = $this->getRefItem();
             $ref_item_type = $ref_item->getItemType();
             if($ref_item_type == CS_USER_TYPE){
-               $link_title = $ref_item->getFullName();
+               $link_title = $this->_text_as_html_short($ref_item->getFullName());
             } else {
-               $link_title = $ref_item->getTitle();
+               $link_title = $this->_text_as_html_short($ref_item->getTitle());
             }
             if ( $ref_item_type == CS_ANNOTATION_TYPE ) {
               $ref_item2 = $ref_item->getLinkedItem();
@@ -1295,7 +1295,7 @@ EOD;
             $html_text .= '<span class="infocolor">'.getMessage('COMMON_SEARCH_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span><a title="'.urldecode($params['search']).'">'.chunkText(urldecode($params['search']),13).'</a></span>';
+            $html_text .= '<span><a title="'.urldecode($params['search']).'">'.chunkText($this->_text_as_html_short(urldecode($params['search'])),13).'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['search']);
@@ -1322,7 +1322,7 @@ EOD;
                                 CS_GROUP_TYPE,
                                 'detail',
                                 $link_params,
-                                chunkText($group_item->getTitle(),17),$group_item->getTitle()).LF;
+                                chunkText($this->_text_as_html_short($group_item->getTitle()),17),$this->_text_as_html_short($group_item->getTitle())).LF;
             }
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1349,7 +1349,7 @@ EOD;
                                 CS_USER_TYPE,
                                 'detail',
                                 $link_params,
-                                chunkText($user_item->getFullName(),17),$user_item->getFullName()).LF;
+                                chunkText($this->_text_as_html_short($user_item->getFullName()),17),$this->_text_as_html_short($user_item->getFullName())).LF;
             }
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1376,7 +1376,7 @@ EOD;
                                 CS_INSTITUTION_TYPE,
                                 'detail',
                                 $link_params,
-                                chunkText($institution_item->getTitle(),14),$institution_item->getTitle()).LF;
+                                chunkText($this->_text_as_html_short($institution_item->getTitle()),14),$this->_text_as_html_short($institution_item->getTitle())).LF;
             }
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1403,7 +1403,7 @@ EOD;
                                 CS_TOPIC_TYPE,
                                 'detail',
                                 $link_params,
-                                chunkText($topic_item->getTitle(),17),$topic_item->getTitle()).LF;
+                                chunkText($this->_text_as_html_short($topic_item->getTitle()),17),$this->_text_as_html_short($topic_item->getTitle())).LF;
             }
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1424,7 +1424,7 @@ EOD;
                $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $buzzword_item = $buzzword_manager->getItem($params['selbuzzword']);
-               $html_text .= '<span><a title="'.$buzzword_item->getName().'">'.chunkText($buzzword_item->getName(),12).'</a></span>';
+               $html_text .= '<span><a title="'.$this->_text_as_html_short($buzzword_item->getName()).'">'.chunkText($this->_text_as_html_short($buzzword_item->getName()),12).'</a></span>';
             }
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1447,7 +1447,7 @@ EOD;
             $html_text .= '<span class="infocolor">'.getMessage('COMMON_TAG_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.chunkText($tag_item->getTitle(),12).'</span>';
+            $html_text .= '<span>'.chunkText($this->_text_as_html_short($tag_item->getTitle()),12).'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['seltag_'.$i]);

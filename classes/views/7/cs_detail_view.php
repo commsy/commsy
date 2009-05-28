@@ -502,7 +502,7 @@ class cs_detail_view extends cs_view {
             $item = $manager->getItem($ids[$count_items]);
             if ($item->getItemID()== $this->_item->getItemID()){
                $html .='<li class="detail_list_entry" style="padding:0px 5px;">';
-               $html .= '<span>'.chunkText($item->getTitle(),35).'</span>';
+               $html .= '<span>'.chunkText($this->_text_as_html_short($item->getTitle()),35).'</span>';
             }else{
                $html .='<li style="padding:0px 5px;">';
                $params['iid'] =	$item->getItemID();
@@ -510,7 +510,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 chunkText($item->getTitle(),35),
+                                 chunkText($this->_text_as_html_short($item->getTitle()),35),
                                  '',
                                  '',
                                  '',
@@ -686,6 +686,7 @@ class cs_detail_view extends cs_view {
             } else {
                $link_title = '';
             }
+            $link_title = $this->_text_as_html_short($link_title);
             if ($this->_environment->getCurrentModule() == 'account'){
                $type = 'account';
             }
@@ -869,7 +870,7 @@ class cs_detail_view extends cs_view {
             $style_text .= ' color: rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
             $style_text .= 'font-size:'.$font_size.'px;"';
             $title  = '<span  '.$style_text.'>'.LF;
-            $title .= $buzzword_entry->getName().LF;
+            $title .= $this->_text_as_html_short($buzzword_entry->getName()).LF;
             $title .= '</span> ';
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 $this->_environment->getCurrentModule(),
@@ -979,8 +980,8 @@ class cs_detail_view extends cs_view {
                                 $this->_environment->getCurrentModule(),
                                 'index',
                                 $params,
-                                $father_tag_item->getTitle(),
-                                $father_tag_item->getTitle(),
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
                                 '',
                                 '',
                                 '',
@@ -1005,8 +1006,8 @@ class cs_detail_view extends cs_view {
                              $this->_environment->getCurrentModule(),
                              'index',
                              $params,
-                             $tag_item->getTitle(),
-                             $tag_item->getTitle(),
+                             $this->_text_as_html_short($tag_item->getTitle()),
+                             $this->_text_as_html_short($tag_item->getTitle()),
                              '',
                              '',
                              '',
@@ -1784,7 +1785,7 @@ class cs_detail_view extends cs_view {
          while($link_item){
             $link_creator = $link_item->getCreatorItem();
             if ( isset($link_creator) and !$link_creator->isDeleted() ) {
-               $fullname = $link_creator->getFullname();
+               $fullname = $this->_text_as_html_short($link_creator->getFullname());
             } else {
                $fullname = $this->_translator->getMessage('COMMON_DELETED_USER');
             }
@@ -1831,7 +1832,7 @@ class cs_detail_view extends cs_view {
                      $text .= $this->_translator->getMessage('COMMON_USER');
                      break;
                   default:
-                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view(692) ';
+                     $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
                      break;
                }
                $link_creator_text = $text.' - '.$this->_translator->getMessage('COMMON_LINK_CREATOR').' '.
@@ -1860,7 +1861,7 @@ class cs_detail_view extends cs_view {
                $module = Type2Module($type);
                $user = $this->_environment->getCurrentUser();
                if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
-                   $link_title = chunkText($linked_item->getFullName(),35);
+                   $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
@@ -1885,9 +1886,9 @@ class cs_detail_view extends cs_view {
                          $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                       }
                       if ($module == CS_USER_TYPE){
-                          $link_title = chunkText($linked_item->getFullName(),35);
+                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
                       }else{
-                          $link_title = chunkText($linked_item->getTitle(),35);
+                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
                       }
                       $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -1907,9 +1908,9 @@ class cs_detail_view extends cs_view {
                      unset($params);
                   }else{
                       if ($module == CS_USER_TYPE){
-                          $link_title = chunkText($linked_item->getFullName(),35);
+                          $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
                       }else{
-                          $link_title = chunkText($linked_item->getTitle(),35);
+                          $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
                       }
                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
@@ -2291,7 +2292,7 @@ class cs_detail_view extends cs_view {
             case 'ACCOUNT':
                $text = $this->_translator->getMessage('COMMON_ACCOUNTS');
             break;            default:
-               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_item_detail_view(2232) ' );
+               $text = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.') ' );
                break;
          }
          if ( empty($ids) ) {
@@ -2302,7 +2303,6 @@ class cs_detail_view extends cs_view {
       }
       $html .= '';
       $html .= '</div>';
-
 
       return /*$this->_text_as_html_short(*/$html/*)*/;
    }
