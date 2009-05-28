@@ -69,7 +69,7 @@ class cs_configuration_room_options_form_view extends cs_configuration_form_view
             $html .= '         &nbsp;';
             $html .= $this->_getButtonAsHTML($form_element['button_text'],$form_element['button_name'],'',false).LF;
          }
-         $html .= '<br />'."\n";
+         $html .= BRLF;
       }
       return $html;
    }

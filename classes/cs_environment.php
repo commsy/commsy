@@ -1009,8 +1009,8 @@ class cs_environment {
 
   /** get instance of a class, INTERNAL
    * returns a single instance of a class. a reference to the returned object must
-   * be assigned, otherwise a copy is created.<br />
-   * Example:<br />
+   * be assigned, otherwise a copy is created.
+   * Example:
    * $news_manager =<b>&</b> $enviroment->_getInstance('cs_news_manager');
    *
    * @param string           name      name of the class to be instantiated

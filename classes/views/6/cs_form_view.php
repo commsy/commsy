@@ -371,7 +371,7 @@ class cs_form_view extends cs_view {
          if ( isset($form_element['extention']) and !empty($form_element['extention']) ) {
             $html .= ' </div >';
          }else{
-            $html .= '<br />'."\n";
+            $html .= BRLF;
          }
       }
       return $html;

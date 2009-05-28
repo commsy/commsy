@@ -291,7 +291,14 @@ class cs_view {
    }
 
    function _cleanDataFromTextAreaNotFromFCK ( $text ) {
-      return $this->_htmlentities_smaller($text);
+      #######
+      # hack: 1 br taucht unmotiviert außerhalb des FCK auf
+      #######
+      if ( $text == '<br />' ) {
+         return $text;
+      } else {
+         return $this->_htmlentities_smaller($text);
+      }
    }
 
    function _cleanDataFromTextAreaFromFCK ( $text ) {

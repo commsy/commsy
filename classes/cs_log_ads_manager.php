@@ -77,7 +77,8 @@ class cs_log_ads_manager extends cs_manager {
       // perform query
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems '.$this->_table_name.' from query:<br />"'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems '.$this->_table_name.' from query:<br />"'.$query.'"',E_USER_WARNING);
       } else {
          return $result;
       }
@@ -85,7 +86,8 @@ class cs_log_ads_manager extends cs_manager {
 
    function save ($data) {
       if ( !is_array($data) ) {
-         include_once('functions/error_functions.php');trigger_error('need array',E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('need array',E_USER_ERROR);
          $success = false;
       } else {
          $query = 'INSERT INTO '.$this->_table_name.' SET '.

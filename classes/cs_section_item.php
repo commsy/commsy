@@ -175,8 +175,8 @@ class cs_section_item extends cs_item {
    /** set materials of a section item by id
    * this method sets a list of group item_ids which are linked to the section
    *
-   * @param array of group ids, index of id must be 'iid', index of version must be 'vid'<br />
-   * Example:<br />
+   * @param array of group ids, index of id must be 'iid', index of version must be 'vid'
+   * Example:
    * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
    *
    * @author CommSy Development Group

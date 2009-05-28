@@ -67,7 +67,7 @@ class cs_discussion_manager extends cs_manager {
    var $_sort_order = NULL;
 
    /** constructor
-    * the only available constructor, initial values for internal variables<br />
+    * the only available constructor, initial values for internal variables
     * NOTE: the constructor must never be called directly, instead the cs_environment must
     * be used to access this manager
     *
