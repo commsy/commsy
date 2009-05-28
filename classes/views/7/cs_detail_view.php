@@ -760,9 +760,9 @@ class cs_detail_view extends cs_view {
          $manager = $this->_environment->getManager($type);
          $item = $manager->getItem($_GET['link_item_path']);
          if($type == CS_USER_TYPE){
-             $link_title = $item->getFullName();
+             $link_title = $this->_text_as_html_short($item->getFullName());
          } else {
-             $link_title = $item->getTitle();
+             $link_title = $this->_text_as_html_short($item->getTitle());
          }
          $html .= $this->_translator->getMessage('COMMON_BACK_TO_ITEM').': '.ahref_curl( $this->_environment->getCurrentContextID(),
                            $type,
@@ -1714,7 +1714,7 @@ class cs_detail_view extends cs_view {
                      $title = $topic_item->getTitle();
                      $length = mb_strlen($title);
                      if ( $length > 22 ) {
-                        $title = mb_substr($title,0,22).'...';
+                        $title = mb_substr($this->_text_as_html_short($title),0,22).'...';
                      }
                      $params['iid'] = $topic_item->getItemID();
                      $noscript_title = ahref_curl($this->_environment->getCurrentContextID(),CS_TOPIC_TYPE,'detail',$params,$title);
