@@ -437,7 +437,11 @@ class cs_environment {
       if ( count($parameter_array) > 0 ) {
          foreach ($parameter_array as $parameter) {
             $temp_parameter_array = explode('=',$parameter);
-            $retour[$temp_parameter_array[0]] = $temp_parameter_array[1];
+            if ( !empty($temp_parameter_array[1]) ) {
+               $retour[$temp_parameter_array[0]] = $temp_parameter_array[1];
+            } else {
+               $retour[$temp_parameter_array[0]] = '';
+            }
          }
       }
       $translator = $this->getTranslationObject();

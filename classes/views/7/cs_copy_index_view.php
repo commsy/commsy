@@ -285,7 +285,7 @@ class cs_copy_index_view extends cs_index_view {
          $html .= '      </td>'.LF;
          if ($item->isNotActivated()){
             $title = $item->getTitle();
-            $title = $this->_compareWithSearchText($title);
+            $title = $this->_compareWithSearchText($this->_text_as_html_short($title));
             $user = $this->_environment->getCurrentUser();
             if($item->getCreatorID() == $user->getItemID() or $user->isModerator()){
                $params = array();
@@ -361,7 +361,7 @@ class cs_copy_index_view extends cs_index_view {
             $text .= $this->_translator->getMessage('COMMON_ACCOUNTS');
             break;
          default:
-            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view(1762) ';
+            $text .= getMessage('COMMON_MESSAGETAG_ERROR').' cs_index_view('.__LINE__.') ';
             break;
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$text.'</td>'.LF;
@@ -373,7 +373,7 @@ class cs_copy_index_view extends cs_index_view {
    }
 
    function _getItemTitle($item){
-      $title = $item->getTitle();
+      $title = $this->_text_as_html_short($item->getTitle());
       return $title;
    }
 
