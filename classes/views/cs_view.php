@@ -2573,9 +2573,58 @@ class cs_view {
          else { $z['#'][] = $t[1]; $z[$t[1]][] = $v; }
          $z['#'][] = $v;
       }
-      return $z;
+      return $this->_checkSecurity($z);
    }
 
+   function _checkSecurity ( $array ) {
+      $retour = array();
+      foreach ( $array as $key => $value ) {
+         if ( $key == 'float'
+              and $value != 'left'
+              and $value != 'right'
+            ) {
+            include_once('functions/error_functions.php');
+            trigger_error('float must be left or right',E_USER_WARNING);
+         } elseif ( $key == 'text' ) {
+            $retour[$key] = $this->_htmlentities_small($value);
+         } elseif ( $key == 'width'
+                    and !is_numeric($value)
+                  ) {
+            include_once('functions/error_functions.php');
+            trigger_error('width must be a number',E_USER_WARNING);
+
+         } elseif ( $key == 'height'
+                    and !is_numeric($value)
+                  ) {
+            include_once('functions/error_functions.php');
+            trigger_error('height must be a number',E_USER_WARNING);
+
+         } elseif ( $key == 'width'
+                    and $value > 1000
+                  ) {
+            include_once('functions/error_functions.php');
+            trigger_error('width must be under 1000',E_USER_WARNING);
+
+         } elseif ( $key == 'height'
+                    and $value > 1000
+                  ) {
+            include_once('functions/error_functions.php');
+            trigger_error('height must be under 1000',E_USER_WARNING);
+
+         } else {
+            $retour[$key] = $value;
+         }
+      }
+      return $retour;
+   }
+
+   function _htmlentities_small ( $value ) {
+      $value = str_replace('<','&lt;',$value);
+      $value = str_replace('>','&gt;',$value);
+      $value = str_replace('"','&quot;',$value);
+      $value = str_replace('\'','&quot;',$value);
+      return $value;
+   }
 
   function _getArgs ($data,$reg_exp) {
      $variable_array = array();
