@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 include_once('../migration.conf.php');
-include_once('../db_link.dbi.php');
+include_once('../db_link.dbi_utf8.php');
 include_once('../update_functions.php');
 
 // time management for this script

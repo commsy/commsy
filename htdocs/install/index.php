@@ -770,7 +770,7 @@ $schreibe6 = \"".$_POST['abspath']."\";
 $schreibe12 = \"".$sec_key."\";
 
 // include first default commsy settings
-include_once('etc/commsy/default.php');
+@include_once('etc/commsy/default.php');
 
 // include second special commsy settings
 @include_once('etc/commsy/settings.php');

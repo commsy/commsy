@@ -58,7 +58,7 @@ if ( !empty($_SERVER['HTTP_HOST']) ) {
 // $c_security_key = '';
 
 // include first default commsy settings
-include_once('etc/commsy/default.php');
+@include_once('etc/commsy/default.php');
 
 // include second special commsy settings
 @include_once('etc/commsy/settings.php');
