@@ -421,7 +421,6 @@ class cs_connection_soap {
       }
    }
 
-   // + authenticate_with_login...
    public function authenticate ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
       $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
