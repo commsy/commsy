@@ -26,6 +26,9 @@ function performAction ( $environment, $action_array, $post_array ) {
    // perform action
    $user_manager = $environment->getUserManager();
    $admin = $user_manager->getItem($action_array['user_item_id']);
+   if ( !isset($admin) ) {
+      $admin = $environment->getCurrentUserItem();
+   }
 
    if ( isset($post_array['copy'])
         and !empty($post_array['copy'])
