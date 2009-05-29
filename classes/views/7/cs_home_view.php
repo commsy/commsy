@@ -127,7 +127,7 @@ class cs_home_view extends cs_view {
       $color = $this->_environment->getCurrentContextItem()->getColorArray();
       $browser = $this->_environment->getCurrentBrowser();
       $style='';
-      if ($browser == 'MSIE' or 'safari') {
+      if ($browser == 'MSIE' or $browser == 'safari') {
          $style=' style="border-left:1px solid '.$color['tabs_background'].';"';
       }else{
          $style=' style="border-left:2px solid '.$color['tabs_background'].';"';

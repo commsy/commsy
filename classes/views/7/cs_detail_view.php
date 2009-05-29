@@ -491,7 +491,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 'Einträge '.($forward_start+1).' bis '.($start)
+                                 $this->_translator->getMessage('COMMON_ENTRIES').' '.($forward_start+1).' '.$this->_translator->getMessage('COMMON_TO').' '.($start)
                                  );
           $html .='</li>';
           $html .='</ul>';
@@ -546,7 +546,7 @@ class cs_detail_view extends cs_view {
                                  $this->_environment->getCurrentModule(),
                                  $this->_environment->getCurrentFunction(),
                                  $params,
-                                 'Einträge '.($end+2).' bis '.($forward_end+1)
+                                 $this->_translator->getMessage('COMMON_ENTRIES').' '.($end+2).' '.$this->_translator->getMessage('COMMON_TO').' '.($forward_end+1)
                                  );
           $html .='</li>';
           $html .='</ul>';
