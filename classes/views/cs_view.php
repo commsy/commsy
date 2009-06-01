@@ -285,8 +285,10 @@ class cs_view {
       # keine Ahnung wo das her kommt
       # ij 28.05.2009
       $text = str_replace('<!-- KFC TEXT --><br />','<!-- KFC TEXT -->COMMSY_BR',$text);
+      $text = str_replace('<!-- KFC TEXT --><br type="_moz" />','<!-- KFC TEXT -->COMMSY_BR',$text);
       ### hack ###
 
+      #preg_match('~<!-- KFC TEXT [a-z0-9 ]*-->[\S|\s]*<!-- KFC TEXT [a-z0-9 ]*-->~u',$text,$values);
       preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
@@ -308,6 +310,20 @@ class cs_view {
    }
 
    function _cleanDataFromTextAreaFromFCK ( $text ) {
+      /*
+      $values = array();
+      preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$text,$values);
+      if ( !empty($values[1]) ) {
+         $hash = $values[1];
+         $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$text);
+         include_once('functions/security_functions.php');
+         if ( getSecurityHash($temp_text) != $hash ) {
+            $text = '<!-- KFC TEXT '.$hash.' -->'.$this->_cleanDataFromTextAreaNotFromFCK($temp_text).'<!-- KFC TEXT '.$hash.' -->';
+         }
+      } else {
+         #$text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+      }
+      */
       return $text;
    }
 

@@ -42,7 +42,26 @@ class cs_html_textarea {
 
       // value translations
       $value = str_replace('<!-- KFC TEXT -->','',$value);
-      $value = '<!-- KFC TEXT -->'.$value.'<!-- KFC TEXT -->';
+      $temp_text = $value;
+
+      // security
+      /*
+      $values = array();
+      preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$value,$values);
+      if ( !empty($values[1]) ) {
+         $hash = $values[1];
+         $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$value);
+         include_once('functions/security_functions.php');
+         if ( getSecurityHash($temp_text) == $hash ) {
+            $text = '<!-- KFC TEXT '.$hash.' -->'.$temp_text.'<!-- KFC TEXT '.$hash.' -->';
+         }
+      } else {
+      */
+         $value = '<!-- KFC TEXT -->'.$value.'<!-- KFC TEXT -->';
+      /*
+      }
+      */
+
       // this is for migration of texts not insert with FCKeditor
       $value = str_replace("\n\n",'<br/><br/>',$value);
 
@@ -90,7 +109,15 @@ class cs_html_textarea {
       } else {
          $oFCKeditor->ToolbarSet = 'CommSy';
       }
-      $retour = $oFCKeditor->CreateHtml() ;
+      $retour = $oFCKeditor->CreateHtml().LF;
+
+      // security
+      /*
+      $hidden_value = str_replace('"','COMMSY_QUOT',$temp_text);
+      $hidden_value = str_replace('&','COMMSY_AMPERSEND',$hidden_value);
+      $retour .= '<input type="hidden" name="'.$name.'_fck_hidden" value="'.$hidden_value.'" />';
+      */
+
       return LF.$retour.LF;
    }
 }

@@ -35,26 +35,21 @@ function _text_form2php ($text) {
    $text = mb_ereg_replace('~\r\n?~u', "\n", $text);
    $text = trim($text);
 
-   // security out of fckeditor
-   // dann muss die ganze Ausgabenseite überdacht werden
-   /*
-   preg_match('$<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->$',$text,$values);
-   foreach ($values as $key => $value) {
-      $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
-   }
-   $text = str_replace('"','&quot;',$text);
-   $text = str_replace('<','&lt;',$text);
-   $text = str_replace('>','&gt;',$text);
-   foreach ($values as $key => $value) {
-      $text = str_replace('COMMSY_FCKEDITOR'.$key,$value,$text);
-   }
-   */
-
-   // corrections for FCKeditor
+   // corrections for FCKeditor: create input
    if ( strstr($text,'<!-- KFC TEXT --><!-- KFC TEXT -->') ) {
       $text = str_replace('<!-- KFC TEXT -->','',$text);
       if ( !empty($text) ) {
-         $text = '<!-- KFC TEXT -->'.$text.'<!-- KFC TEXT -->';
+         $fck_text = '<!-- KFC TEXT -->';
+         /*
+         global $c_html_textarea;
+         if ( isset($c_html_textarea)
+              and $c_html_textarea
+            ) {
+            include_once('functions/security_functions.php');
+            $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+         }
+         */
+         $text = $fck_text.$text.$fck_text;
       }
    }
 
@@ -357,25 +352,11 @@ function _text_encode ($text, $mode) {
 }
 
 function _array_encode ($array, $mode) {
-//      $retour_array = array();
-//      if (is_array($array) and count($array) > 0) {
-//         foreach ($array as $key => $value) {
-//            if (is_array($value)) {
-//               $retour_array[$key] = _array_encode($value, $mode);
-//            }
-//            else {
-//               //sometimes we submit some Values in this arrays- eg. for checked boxes. In this case: don't change...
-//               if (preg_match('|<VALUE>.*</VALUE>|', $value)) {
-//                  $retour_array[$key] = $value;
-//               }
-//               else {
-//                  $retour_array[$key] = _text_encode($value, $mode);
-//               }
-//            }
-//         }
-//      }
-//      return $retour_array;
-
+   /*
+   if ( $mode == FROM_FORM ) {
+      $array = _array_encode_fck_security($array);
+   }
+   */
    $retour_array = array();
    foreach ($array as $key => $value) {
       if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
@@ -387,6 +368,51 @@ function _array_encode ($array, $mode) {
       }
    }
    return $retour_array;
+}
+
+function _array_encode_fck_security ($array) {
+   $retour = array();
+   $fck_array = array();
+   foreach ( $array as $key => $value ) {
+      if ( is_string($value)
+           and strstr($value,'<!-- KFC TEXT')
+         ) {
+         $fck_array[$key] = $value;
+      } else {
+         $retour[$key] = $value;
+      }
+   }
+   if ( !empty($fck_array) ) {
+      foreach ( $fck_array as $key => $value ) {
+         if ( isset($retour[$key.'_fck_hidden']) ) {
+            $values = array();
+            preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$value,$values);
+            if ( !empty($values[1]) ) {
+               $hash = $values[1];
+               $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$value);
+
+               // html bug of fckeditor
+               $temp_text = str_replace('<br type="_moz" />','<br />',$temp_text);
+               // ist dies das unmotivierte br ??? cs_view.php Zeile 283
+
+               $hidden_value = str_replace('COMMSY_AMPERSEND','&',$retour[$key.'_fck_hidden']);
+               $hidden_value = str_replace('COMMSY_QUOT','"',$hidden_value);
+
+               include_once('functions/security_functions.php');
+               if ( getSecurityHash($hidden_value) == $hash ) {
+                  $new_hash = getSecurityHash($temp_text);
+                  $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
+               } else {
+                  # $retour[$key] = $value; ???
+                  # trigger error ???
+               }
+            } else {
+               $retour[$key] = $value;
+            }
+         }
+      }
+   }
+   return $retour;
 }
 
 function _format_html_long ($text) {
