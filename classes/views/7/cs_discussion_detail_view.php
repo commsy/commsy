@@ -381,11 +381,11 @@ class cs_discussion_detail_view extends cs_detail_view {
          $rest_subitems = clone($subitems);
          $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;" summary="Layout">'.LF;
          $article = $subitems->getFirst();
-   if(!empty($article)){
+         if(!empty($article)){
             $article_old = clone($article);
-   }
+         }
 
-   $pos_number = 1;
+         $pos_number = 1;
          $picture_array = array();
          $picture_array[] = '';
          while ( $article ) {
@@ -473,7 +473,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                if ($length > $max){
                   $display_subject = mb_substr($display_subject,0,$max).'...';
                }
-               $hover = str_replace('"','\'',$article->getSubject());
+               $hover = str_replace('"','&quot;',$this->_text_as_html_short($article->getSubject()));
                $em = $position_length-2;
                $old_postion_length = count(explode('.',$article_old->getPosition()));
                if ($pos_number != 1){
@@ -489,8 +489,8 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $display_subject,
-                $hover,
+                           $this->_text_as_html_short($display_subject),
+                           $hover,
                            '',
                            'anchor'.$article->getItemID());
                   $html .= $this->_getItemChangeStatus($article).' ';
@@ -506,8 +506,8 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $display_subject,
-                $hover,
+                           $this->_text_as_html_short($display_subject),
+                           $hover,
                            '',
                            'anchor'.$article->getItemID());
                   $html .= $this->_getItemChangeStatus($article).' ';
@@ -528,7 +528,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                if ($length > $max){
                   $display_subject = mb_substr($display_subject,0,$max).'...';
                }
-               $hover = str_replace('"','\'',$article->getSubject());
+               $hover = str_replace('"','\'',$this->_text_as_html_short($article->getSubject()));
                $html .= '   <td style="width: 2%; vertical-align:bottom">'.$pos_number.'. '.'</td>'.LF;
                $html .= '   <td style="width: 46%;">';
                $params = array();
@@ -537,8 +537,8 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $display_subject,
-                $hover,
+                           $this->_text_as_html_short($display_subject),
+                           $hover,
                            '',
                            'anchor'.$article->getItemID());
 

@@ -2646,9 +2646,9 @@ class cs_form_view extends cs_view {
             $text .= ' - '.$item->getTitle();
             $html .= '   <li  style="padding:0px 3px;">';
             if ($type == CS_USER_TYPE){
-               $html .= '<a title="'.$text.'">'.chunkText($item->getFullName(),35).'</a>';
+               $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getFullName(),35)).'</a>';
             }else{
-               $html .= '<a title="'.$text.'">'.chunkText($item->getTitle(),35).'</a>';
+               $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
             }
             $html .= '</li>'.LF;
             $linked_item = $linked_items->getNext();

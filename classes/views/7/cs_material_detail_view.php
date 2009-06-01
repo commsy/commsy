@@ -571,7 +571,7 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array = array();
          $temp_array[]  = $this->_translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
          if ( !empty($biblio) ) {
-            $temp_array[]  = $this->_text_as_html_long($biblio);
+            $temp_array[]  = $this->_text_as_html_long($this->_cleanDataFromTextArea($biblio));
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
          }
