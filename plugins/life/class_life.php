@@ -60,8 +60,8 @@ class class_life extends cs_plugin {
             global $c_proxy_port;
             if ( !empty($c_proxy_port) ) {
                $proxy = $c_proxy_ip.':'.$c_proxy_port;
+               curl_setopt($cURL,CURLOPT_PROXY,$proxy);
             }
-            curl_setopt($cURL,CURLOPT_PROXY,$proxy);
             $output = curl_exec($cURL);
             if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
                $retour = true;
@@ -107,8 +107,8 @@ class class_life extends cs_plugin {
                global $c_proxy_port;
                if ( !empty($c_proxy_port) ) {
                   $proxy = $c_proxy_ip.':'.$c_proxy_port;
+                  curl_setopt($cURL,CURLOPT_PROXY,$proxy);
                }
-               curl_setopt($cURL,CURLOPT_PROXY,$proxy);
                $output = curl_exec($cURL);
                if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
                   $retour = true;
