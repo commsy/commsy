@@ -254,7 +254,8 @@ if ($type != CS_MATERIAL_TYPE) {
                }
             }
 
-      $annotations = $version_item->getAnnotationList();
+         if ( !empty($version_item) ) {
+            $annotations = $version_item->getAnnotationList();
             $reader_manager = $environment->getReaderManager();
             $noticed_manager = $environment->getNoticedManager();
             $id_array = array();
@@ -277,10 +278,10 @@ if ($type != CS_MATERIAL_TYPE) {
                }
                $annotation = $annotations->getNext();
             }
-      $detail_view->setAnnotationList($annotations);
+            $detail_view->setAnnotationList($annotations);
+         }
 
-
-      $page->add($detail_view);
+         $page->add($detail_view);
       }
    }
 }
