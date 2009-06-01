@@ -88,15 +88,10 @@ class cs_todo_detail_view extends cs_detail_view {
          while ($member) {
             $counter++;
             if ( $member->isUser() ){
-               $linktext = $member->getFullname();
+               $linktext = $this->_text_as_html_short($member->getFullname());
                if ( $member->maySee($user) ) {
                   $params = array();
                   $params['iid'] = $member->getItemID();
-
-
-
-
-
                   $member_html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 'user',
                                 'detail',
@@ -110,7 +105,7 @@ class cs_todo_detail_view extends cs_detail_view {
                   $member_html .= ', ';
                }
             }else{
-               $link_title = chunkText($member->getFullName(),35);
+               $link_title = $this->_text_as_html_short(chunkText($member->getFullName(),35));
                $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    $this->_environment->getCurrentModule(),
                                    $this->_environment->getCurrentFunction(),
@@ -161,12 +156,12 @@ class cs_todo_detail_view extends cs_detail_view {
                }
                $params = array();
                $params['iid'] = $item->getItemID();
-               $hover = str_replace('"','\'',$step->getTitle());
+               $hover = str_replace('"','&quot;',$this->_text_as_html_short($step->getTitle()));
                $title = ahref_curl( $this->_environment->getCurrentContextID(),
                         CS_TODO_TYPE,
                         'detail',
                         $params,
-                        $step->getTitle(),
+                        $this->_text_as_html_short($step->getTitle()),
                         $hover,
                         '',
                         'anchor'.$step->getItemID());
