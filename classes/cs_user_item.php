@@ -1163,13 +1163,15 @@ class cs_user_item extends cs_item {
          } else {
             $access = false;
          }
-      } else {    // Project room
+      } else {    // Project room, group room, private room
          $access = parent::maySee($user_item);
-         if ($access){
+         if ( $access ) {
             $room = $this->_environment->getCurrentContextItem();
-            if ($room->withRubric(CS_USER_TYPE)){
+            if ( $room->isPrivateRoom()
+                 or $room->withRubric(CS_USER_TYPE)
+               ) {
                $access = true;
-            }else{
+            } else {
                $access = false;
             }
          }
