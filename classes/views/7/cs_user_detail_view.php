@@ -256,11 +256,9 @@ class cs_user_detail_view extends cs_detail_view {
          $html_text = '<div style=" vertical-align:bottom; ">';
          if ( !empty($icq_number) ){
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
-            #$html_text .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
-            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://status.icq.com/online.gif?icq='.$icq_number.'&amp;img=2" alt="ICQ Online Status Indicator" />'.LF;
-            #$html_text .= '</a>'.LF;
+            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=2" alt="ICQ Online Status Indicator" />'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$icq_number.')';
+            $html_text .= ' ('.$this->_text_as_html_short($icq_number).')';
             $first = false;
          }
          /*
@@ -270,11 +268,11 @@ class cs_user_detail_view extends cs_detail_view {
             }
             $first = false;
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
-            $html_text .= '<a href="skype:'.$jabber_number.'?chat">'.LF;
-            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="'.$url_to_service.'/jabber/'.$jabber_number.'/onurl='.$url_to_img.'/jabber_long_online.gif/offurl='.$url_to_img.'/jabber_long_offline.gif/unknownurl='.$url_to_img.'/jabber_long_unknown.gif" alt="Jabber Online Status Indicator" />'.LF;
+            $html_text .= '<a href="skype:'.rawurlencode($jabber_number).'?chat">'.LF;
+            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="'.$url_to_service.'/jabber/'.rawurlencode($jabber_number).'/onurl='.$url_to_img.'/jabber_long_online.gif/offurl='.$url_to_img.'/jabber_long_offline.gif/unknownurl='.$url_to_img.'/jabber_long_unknown.gif" alt="Jabber Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$jabber_number.')';
+            $html_text .= ' ('.$this->_text_as_html_short($jabber_number).')';
          }
          */
          if ( !empty($msn_number) ) {
@@ -284,10 +282,10 @@ class cs_user_detail_view extends cs_detail_view {
             $first = false;
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
             $html_text .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;
-            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://www.IMStatusCheck.com/status/msn/'.$msn_number.'?icons" alt="MSN Online Status Indicator" />'.LF;
+            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$msn_number.')';
+            $html_text .= ' ('.$this->_text_as_html_short($msn_number).')';
          }
          if ( !empty($skype_number) ) {
             if ( !$first ){
@@ -296,11 +294,11 @@ class cs_user_detail_view extends cs_detail_view {
             $first = false;
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
             $html_text .= '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>'.LF;
-            $html_text .= '<a href="skype:'.$skype_number.'?chat">'.LF;
-            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://mystatus.skype.com/smallclassic/'.$skype_number.'" alt="Skype Online Status Indicator" />'.LF;
+            $html_text .= '<a href="skype:'.rawurlencode($skype_number).'?chat">'.LF;
+            $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://mystatus.skype.com/smallclassic/'.rawurlencode($skype_number).'" alt="Skype Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$skype_number.')';
+            $html_text .= ' ('.$this->_text_as_html_short($skype_number).')';
          }
          if ( !empty($yahoo_number) ) {
             if ( !$first ){
@@ -309,11 +307,11 @@ class cs_user_detail_view extends cs_detail_view {
             $first = false;
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
             $html_text .= '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>'.LF;
-            $html_text .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.$yahoo_number.'">'.LF;
-            $html_text .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.$yahoo_number.'/m=g/t=1/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
+            $html_text .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.rawurlencode($yahoo_number).'">'.LF;
+            $html_text .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.rawurlencode($yahoo_number).'/m=g/t=1/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$yahoo_number.')';
+            $html_text .= ' ('.$this->_text_as_html_short($yahoo_number).')';
          }
          $html_text .='</div>'.LF;
          $temp_array[] = $html_text;
@@ -329,9 +327,9 @@ class cs_user_detail_view extends cs_detail_view {
       $homepage_short = chunkText($homepage,60);
       if ( !empty($homepage) ) {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
-            $homepage = $homepage_short;
+            $homepage = $this->_text_as_html_short($homepage_short);
          }else{
-            $homepage = '<a href="'.$homepage.'" title="'.$homepage_text.'" target="_blank">'.$homepage_short.'</a>';
+            $homepage = '<a href="'.rawurlencode($homepage).'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
          }
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_HOMEPAGE');

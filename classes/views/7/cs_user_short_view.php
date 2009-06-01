@@ -127,27 +127,25 @@ class cs_user_short_view extends cs_home_view {
 
       $icq_number = $item->getICQ();
       if ( !empty($icq_number) ){
-         #$name .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.$icq_number.'&amp;img=5" alt="ICQ Online Status" />'.LF;
-         #$name .= '</a>'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=5" alt="ICQ Online Status" />'.LF;
       }
-     $msn_number = $item->getMSN();
+      $msn_number = $item->getMSN();
       if ( !empty($msn_number) ){
          $name .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://www.IMStatusCheck.com/status/msn/'.$msn_number.'?icons" alt="MSN Online Status" />'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status" />'.LF;
          $name .= '</a>'.LF;
       }
       $skype_number = $item->getSkype();
       if ( !empty($skype_number) ){
          $name .= '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>'.LF;
-         $name .= '<a href="skype:'.$skype_number.'?chat">'.LF;
-         $name .= '   <img src="http://mystatus.skype.com/smallicon/'.$skype_number.'" style="vertical-align:middle; border: none;" width="16" height="16" alt="Skype Online Status" />'.LF;
+         $name .= '<a href="skype:'.rawurlencode($skype_number).'?chat">'.LF;
+         $name .= '   <img src="http://mystatus.skype.com/smallicon/'.rawurlencode($skype_number).'" style="vertical-align:middle; border: none;" width="16" height="16" alt="Skype Online Status" />'.LF;
          $name .= '</a>'.LF;
       }
       $yahoo_number = $item->getYahoo();
       if ( !empty($yahoo_number) ){
-         $name .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.$yahoo_number.'">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.$yahoo_number.'/m=g/t=0/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
+         $name .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.rawurlencode($yahoo_number).'">'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.rawurlencode($yahoo_number).'/m=g/t=0/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
          $name .= '</a>'.LF;
       }
 

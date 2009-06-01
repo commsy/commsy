@@ -248,7 +248,7 @@ class cs_user_index_view extends cs_room_index_view {
 
 
    function _getItemPicture($item){
-    	$html = '';
+       $html = '';
       $picture = $item->getPicture();
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
@@ -315,42 +315,40 @@ class cs_user_index_view extends cs_room_index_view {
       ##################################################
 
       global $c_commsy_domain;
-         $host = $c_commsy_domain;
+      $host = $c_commsy_domain;
       global $c_commsy_url_path;
       $url_to_img = $host.$c_commsy_url_path.'/images/messenger';
       #$url_to_service = '???';
 
       $icq_number = $item->getICQ();
       if ( !empty($icq_number) ){
-         #$name .= '<a href="'.$url_to_service.'/message/icq/'.$icq_number.'">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.$icq_number.'&amp;img=5" alt="ICQ Online Status" />'.LF;
-         #$name .= '</a>'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=5" alt="ICQ Online Status" />'.LF;
       }
       /*
       $jabber_number = $item->getJabber();
       if ( !empty($jabber_number) ){
          $name .= '<a href="xmpp:'.$jabber_number.'">'.LF;
-         $name .= '   <img style="vertical-align:middle;" srcC="'.$url_to_service.'/jabber/'.$jabber_number.'/onurl='.$url_to_img.'/jabber_short_online.gif/offurl='.$url_to_img.'/jabber_short_offline.gif/unknownurl='.$url_to_img.'/jabber_short_unknown.gif" alt="Jabber Online Status Indicator" />'.LF;
+         $name .= '   <img style="vertical-align:middle;" srcC="'.$url_to_service.'/jabber/'.rawurlencode($jabber_number).'/onurl='.$url_to_img.'/jabber_short_online.gif/offurl='.$url_to_img.'/jabber_short_offline.gif/unknownurl='.$url_to_img.'/jabber_short_unknown.gif" alt="Jabber Online Status Indicator" />'.LF;
          $name .= '</a>'.LF;
       }
       */
       $msn_number = $item->getMSN();
       if ( !empty($msn_number) ){
          $name .= '<a href="http://www.IMStatusCheck.com/?msn">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://www.IMStatusCheck.com/status/msn/'.$msn_number.'?icons" alt="MSN Online Status" />'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status" />'.LF;
          $name .= '</a>'.LF;
       }
       $skype_number = $item->getSkype();
       if ( !empty($skype_number) ){
          $name .= '<script type="text/javascript" src="http://download.skype.com/share/skypebuttons/js/skypeCheck.js"></script>'.LF;
-         $name .= '<a href="skype:'.$skype_number.'?chat">'.LF;
-         $name .= '   <img src="http://mystatus.skype.com/smallicon/'.$skype_number.'" style="vertical-align:middle; border: none;" width="16" height="16" alt="Skype Online Status" />'.LF;
+         $name .= '<a href="skype:'.rawurlencode($skype_number).'?chat">'.LF;
+         $name .= '   <img src="http://mystatus.skype.com/smallicon/'.rawurlencode($skype_number).'" style="vertical-align:middle; border: none;" width="16" height="16" alt="Skype Online Status" />'.LF;
          $name .= '</a>'.LF;
       }
       $yahoo_number = $item->getYahoo();
       if ( !empty($yahoo_number) ){
-         $name .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.$yahoo_number.'">'.LF;
-         $name .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.$yahoo_number.'/m=g/t=0/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
+         $name .= '<a href="http://messenger.yahoo.com/edit/send/?.target='.rawurlencode($yahoo_number).'">'.LF;
+         $name .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.rawurlencode($yahoo_number).'/m=g/t=0/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
          $name .= '</a>'.LF;
       }
 
