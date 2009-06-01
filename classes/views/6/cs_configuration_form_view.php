@@ -509,7 +509,6 @@ class cs_configuration_form_view extends cs_form_view {
      function _getConfigurationBoxAsHTML($act_fct){
       $html = '';
       $room = $this->_environment->getCurrentContextItem();
-      $info_text = $room->getUsageInfoTextForRubricForm($act_fct);
       $link_item = new cs_link();
       $link_item->setDescription(getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_OVERVIEW.gif');

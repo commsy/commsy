@@ -295,7 +295,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
             $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
             $html .= '<div class="usage_info">'.LF;
             $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-            $html .= $this->_text_as_html_long($info_text).BRLF;
+            $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
             $html .= '</div>'.LF;
             $html .='</div>'.LF;
          }

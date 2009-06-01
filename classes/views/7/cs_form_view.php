@@ -2703,9 +2703,9 @@ class cs_form_view extends cs_view {
       $html .= '<div style="position:relative; top:12px;">'.LF;
       $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
       $html .= '</div>'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_text_as_html_short($room->getUsageInfoHeaderForRubricForm($act_rubric)).'</div>';
       $html .= '<div class="usage_info">'.LF;
-      $html .= $this->_text_as_html_long($info_text).BRLF;
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
       if (strstr($info_text, 'COMMON_MESSAGETAG_ERROR')

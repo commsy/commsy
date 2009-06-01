@@ -453,27 +453,11 @@ class cs_account_index_view extends cs_index_view {
       $html .= '</div>'.LF;
       $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
       $html .= '<div class="usage_info">'.LF;
-#      $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-      $html .= $this->_text_as_html_long($info_text).BRLF;
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
       return $html;
    }
-
-
-/*  function _getRubricInfoAsHTML($act_rubric){
-      $html='';
-      $room = $this->_environment->getCurrentContextItem();
-      $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-      $html .= '<div class="right_box">'.LF;
-      $html .= '<div class="right_box_title">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
-      $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
-      $html .= $this->_text_as_html_long($info_text).BRLF;
-      $act_user = $this->_environment->getCurrentUserItem();
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      return $html;
-   }*/
 
    /** get the item of the list view as HTML
     * this method returns the single item in HTML-Code
@@ -1196,7 +1180,6 @@ class cs_account_index_view extends cs_index_view {
      function _getConfigurationBoxAsHTML($act_fct){
       $html = '';
       $room = $this->_environment->getCurrentContextItem();
-      $info_text = $room->getUsageInfoTextForRubricForm($act_fct);
       $link_item = new cs_link();
       $link_item->setDescription(getMessage('HOME_ROOM_MEMBER_ADMIN_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_OVERVIEW.gif');

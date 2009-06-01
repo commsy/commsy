@@ -1484,7 +1484,7 @@ class cs_detail_view extends cs_view {
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
-      $html .= $this->_text_as_html_long($info_text).BRLF;
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
       $act_user = $this->_environment->getCurrentUserItem();
       if ($act_user->isModerator()){
          $array = $this->_environment->getCurrentParameterArray();

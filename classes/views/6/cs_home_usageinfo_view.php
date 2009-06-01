@@ -71,7 +71,7 @@ var $_config_boxes = false;
       $html .= '<div class="right_box_title" style="padding-top:3px; font-weight:bold;">'.$room->getUsageInfoHeaderForRubric($act_rubric).'</div>';
       $html .= '         </noscript>';
       $html .= '<div class="right_box_main" style="font-size:8pt;">'.LF;
-      $html .= $this->_text_as_html_long($info_text).BRLF;
+      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
