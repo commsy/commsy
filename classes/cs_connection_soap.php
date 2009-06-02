@@ -490,13 +490,71 @@ class cs_connection_soap {
    }
 
    public function authenticateWithLogin ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-        $session = $this->authenticate($user_id, $password, $portal_id, $auth_source_id);
-        if(!is_soap_fault($session)){
-            if ( $session->issetValue('SOAP_SESSION') ) {
-               $session->unsetValue('SOAP_SESSION');
+        $user_id = $this->_encode_input($user_id);
+      $password = $this->_encode_input($password);
+      $portal_id = $this->_encode_input($portal_id);
+      if ( !empty($auth_source_id) and $auth_source_id != 0 ) {
+         $auth_source_id = $this->_encode_input($auth_source_id);
+      }
+      $result = '';
+
+      $info = 'ERROR';
+      $info_text = 'default-error';
+      if ( empty($user_id) or empty($password) ) {
+         $info = 'ERROR';
+         $info_text = 'user_id or password lost';
+      } else {
+         if ( !isset($this->_environment) ) {
+            $info = 'ERROR';
+            $info_text = 'environment lost';
+         } else {
+            $this->_environment->setCurrentContextID($portal_id);
+            $authentication = $this->_environment->getAuthenticationObject();
+            if ( isset($authentication) ) {
+               if ($authentication->isAccountGranted($user_id,$password,$auth_source_id)) {
+                  if ($this->_isSessionActive($user_id,$portal_id)) {
+                     $result = $this->_getActiveSessionID($user_id,$portal_id);
+                     if ( empty($result) ) {
+                        $info = 'ERROR';
+                        $info_text = 'no session id from session manager -> database error';
+                     }
+                  } else {
+                     // make session
+                     include_once('classes/cs_session_item.php');
+                     $session = new cs_session_item();
+                     $session->createSessionID($user_id);
+                     // save portal id in session to be sure, that user didn't
+                     // switch between portals
+                     $session->setValue('user_id',$user_id);
+                     $session->setValue('commsy_id',$portal_id);
+                     if ( empty($auth_source_id) or $auth_source_id == 0 ) {
+                        $auth_source_id = $authentication->getAuthSourceItemID();
+                     }
+                     $session->setValue('auth_source',$auth_source_id);
+                     //$session->setSoapSession();
+
+                     // save session
+                     $session_manager = $this->_environment->getSessionManager();
+                     $session_manager->save($session);
+
+                     $result = $session->getSessionID();
+                  }
+               } else {
+                  $info = 'ERROR';
+                  $info_text = 'account not granted '.$user_id.' - '.$password.' - '.$portal_id;
+               }
+            } else {
+               $info = 'ERROR';
+               $info_text = 'authentication object lost';
             }
-        }
-        return $session;
+         }
+      }
+      if ( empty($result) and !empty($info) ) {
+         $result = new SoapFault($info,$info_text);
+      } else {
+         $result = $this->_encode_output($result);
+      }
+      return $result;
    }
 
    public function authenticateViaSession($session_id) {

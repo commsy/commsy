@@ -51,7 +51,7 @@ class class_life extends cs_plugin {
          $session_id = $session->getSessionID();
          if ( !empty($session_id) ) {
             $cURL = curl_init();
-            curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logout/" . $session_id);
+            curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
             curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
             global $c_proxy_ip;
             if ( !empty($c_proxy_port) ) {
@@ -98,7 +98,7 @@ class class_life extends cs_plugin {
             $session_id = $session->getSessionID();
             if ( !empty($session_id) ) {
                $cURL = curl_init();
-               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeuser/" . $session_id . '/' . $user_id . '/' . $firstname . '/' . $lastname . '/' . $email);
+               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
                curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
                global $c_proxy_ip;
                if ( !empty($c_proxy_port) ) {
