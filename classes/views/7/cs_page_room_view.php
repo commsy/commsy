@@ -541,7 +541,7 @@ class cs_page_room_view extends cs_page_view {
          $title = chunkText($title,50);
       }
       if ($context_item->showTitle()){
-         $html .= '<h1 '.$size.'>'.$title.'</h1>'.LF;
+         $html .= '<h1 '.$size.'>'.$this->_text_as_html_short($title).'</h1>'.LF;
          $html .= '</td>';
          $html .= '</tr>';
          $html .= '<tr>';
