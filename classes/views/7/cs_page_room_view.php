@@ -558,7 +558,7 @@ class cs_page_room_view extends cs_page_view {
       $params = array();
       if ($current_user->isRoot()){
          $server_item = $this->_environment->getServerItem();
-         $breadcrump.= ahref_curl($server_item->getItemID(),'home','index',$params,$server_item->getTitle(),'','','','','','','style="color:#800000"');
+         $breadcrump.= ahref_curl($server_item->getItemID(),'home','index',$params,$this->_text_as_html_short($server_item->getTitle()),'','','','','','','style="color:#800000"');
          $breadcrump .= ' &gt; ';
       }
       $portal_item = $this->_environment->getCurrentPortalItem();
@@ -566,25 +566,25 @@ class cs_page_room_view extends cs_page_view {
       if ($this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()){
          $params['room_id'] = $context_item->getItemID();
       }
-      $breadcrump.= ahref_curl($portal_item->getItemID(),'home','index',$params,$portal_item->getTitle(),'','','','','','','style="color:#800000"');
+      $breadcrump.= ahref_curl($portal_item->getItemID(),'home','index',$params,$this->_text_as_html_short($portal_item->getTitle()),'','','','','','','style="color:#800000"');
       if ($this->_environment->inProjectRoom()){
          $community_list = $context_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
-            $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
+            $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
          }
-         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
+         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
       }elseif($this->_environment->inGroupRoom()){
          $project_item = $context_item->getLinkedProjectItem();
          $community_list = $project_item->getCommunityList();
          $community_item = $community_list->getFirst();
          if (!empty($community_item)){
-             $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$community_item->getTitle(),'','','','','','','style="color:#800000"');
+             $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
          }
-         $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$project_item->getTitle(),'','','','','','','style="color:#800000"');
-         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
+         $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$this->_text_as_html_short($project_item->getTitle()),'','','','','','','style="color:#800000"');
+         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
       }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
-         $breadcrump.= ' &gt; '.chunkText($context_item->getTitle(),50);
+         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
       }
       $html .= '<span style="height: 20px;font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
       $html .= '</td>';
