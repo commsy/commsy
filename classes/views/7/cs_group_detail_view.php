@@ -309,8 +309,8 @@ class cs_group_detail_view extends cs_detail_view {
          $i = 1;
          while ($member) {
             if ( $member->isUser() ){
-               $linktext = $this->_text_as_html_long($member->getFullname());
-               $member_title = $this->_text_as_html_long($member->getTitle());
+               $linktext = $this->_text_as_html_short($member->getFullname());
+               $member_title = $this->_text_as_html_short($member->getTitle());
                if ( !empty($member_title) ) {
                   $linktext .= ', '.$member_title;
                }
