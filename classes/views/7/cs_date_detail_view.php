@@ -270,7 +270,7 @@ var $_clipboard_id_array=array();
       if (!empty($place)) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('DATES_PLACE');
-         $temp_array[] = $this->_text_as_html_long($place);
+         $temp_array[] = $this->_text_as_html_short($place);
          $formal_data[] = $temp_array;
       }
 
