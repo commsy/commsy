@@ -167,6 +167,57 @@ function _text_php2html_long ($text) {
 }
 
 
+   function _cleanDataFromTextArea ( $text ) {
+
+      ### hack ###
+      # unmotiviertes br ausserhalb des fck texts
+      # keine Ahnung wo das her kommt
+      # ij 28.05.2009
+      $text = str_replace('<!-- KFC TEXT --><br />','<!-- KFC TEXT -->COMMSY_BR',$text);
+      $text = str_replace('<!-- KFC TEXT --><br type="_moz" />','<!-- KFC TEXT -->COMMSY_BR',$text);
+      ### hack ###
+
+      #preg_match('~<!-- KFC TEXT [a-z0-9 ]*-->[\S|\s]*<!-- KFC TEXT [a-z0-9 ]*-->~u',$text,$values);
+      preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
+      foreach ($values as $key => $value) {
+         $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
+      }
+      $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+      foreach ($values as $key => $value) {
+         $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
+      }
+
+      ### hack ###
+      $text = str_replace('COMMSY_BR',BRLF,$text);
+      ### hack ###
+
+      return $text;
+   }
+
+   function _cleanDataFromTextAreaNotFromFCK ( $text ) {
+      return $this->_htmlentities_smaller($text);
+   }
+
+   function _cleanDataFromTextAreaFromFCK ( $text ) {
+      /*
+      $values = array();
+      preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$text,$values);
+      if ( !empty($values[1]) ) {
+         $hash = $values[1];
+         $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$text);
+         include_once('functions/security_functions.php');
+         if ( getSecurityHash($temp_text) != $hash ) {
+            $text = '<!-- KFC TEXT '.$hash.' -->'.$this->_cleanDataFromTextAreaNotFromFCK($temp_text).'<!-- KFC TEXT '.$hash.' -->';
+         }
+      } else {
+         #$text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+      }
+      */
+      return $text;
+   }
+
+
+
 /////////////////////////////////////////////////////////////////////////////////
 /// 2mail functions /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////

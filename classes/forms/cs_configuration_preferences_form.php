@@ -413,7 +413,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                if ( isset($default_item) ) {
                   $template_availability = $default_item->getTemplateAvailability();
                   if( ($template_availability == '0') and ($default_item->isClosed() or $default_item->isDesign7())){
-                     $temp_array['text'] = '*'.$this->_text_as_html_short($default_item->getTitle());
+                     $temp_array['text'] = '*'._text_php2html_short($default_item->getTitle());
                      $temp_array['value'] = $default_item->getItemID();
                      $this->_template_array[] = $temp_array;
                      $temp_array = array();
@@ -421,7 +421,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                      $temp_array['value'] = 'disabled';
                      $this->_with_template_form_element2 = true;
                      $this->_template_array[] = $temp_array;
-                     $this->_javascript_array[$default_item->getItemID()] = $this->_text_as_html_long($this->_cleanDataFromTextArea($default_item->getTemplateDescription()));
+                     $this->_javascript_array[$default_item->getItemID()] = _text_php2html_long(_cleanDataFromTextArea($default_item->getTemplateDescription()));
                   }
                }
             }
@@ -456,10 +456,10 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                   ){
                   if ($item->getItemID() != $default_id or $item->getTemplateAvailability() != '0'){
                      $this->_with_template_form_element2 = true;
-                     $temp_array['text'] = $this->_text_as_html_short($item->getTitle());
+                     $temp_array['text'] = _text_php2html_short($item->getTitle());
                      $temp_array['value'] = $item->getItemID();
                      $this->_template_array[] = $temp_array;
-                     $this->_javascript_array[$item->getItemID()] = $this->_text_as_html_long($this->_cleanDataFromTextArea($item->getTemplateDescription()));
+                     $this->_javascript_array[$item->getItemID()] = _text_php2html_long(_cleanDataFromTextArea($item->getTemplateDescription()));
                   }
 
                }
