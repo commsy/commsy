@@ -182,9 +182,9 @@ function _text_php2html_long ($text) {
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
       }
-      $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+      $text = _cleanDataFromTextAreaNotFromFCK($text);
       foreach ($values as $key => $value) {
-         $text = str_replace('COMMSY_FCKEDITOR'.$key,$this->_cleanDataFromTextAreaFromFCK($value),$text);
+         $text = str_replace('COMMSY_FCKEDITOR'.$key,_cleanDataFromTextAreaFromFCK($value),$text);
       }
 
       ### hack ###
@@ -195,7 +195,8 @@ function _text_php2html_long ($text) {
    }
 
    function _cleanDataFromTextAreaNotFromFCK ( $text ) {
-      return $this->_htmlentities_smaller($text);
+     # return $this->_htmlentities_smaller($text);
+     return $text;
    }
 
    function _cleanDataFromTextAreaFromFCK ( $text ) {
