@@ -147,35 +147,40 @@ class cs_server_item extends cs_guide_item {
    }
 
    function _cronRemoveTempExportDirectory () {
+      $cron_array = array();
+      $cron_array['title'] = 'remove temporary directories for export cron';
+      $cron_array['description'] = 'free space on hard disk';
+
       global $export_temp_folder;
       if ( !isset($export_temp_folder) ) {
          $export_temp_folder = 'var/temp/zip_export';
       }
-      $handle = opendir($export_temp_folder);
-      //delete sourcefiles from harddisk
-      while (false !== ($dir = readdir($handle))) {
-         if (($dir != '.') and ($dir != '..')) {
-            if ( is_dir('./'.$export_temp_folder.'/'.$dir) ) {
-               $handle2 = opendir('./'.$export_temp_folder.'/'.$dir);
-               while (false !== ($file = readdir($handle2))) {
-                  if (($file != '.') and ($file != '..')) {
-                     unlink('./'.$export_temp_folder.'/'.$dir.'/'.$file);
+      $handle = @opendir($export_temp_folder);
+      if ( $handle ) {
+         // delete sourcefiles from harddisk
+         while (false !== ($dir = readdir($handle))) {
+            if (($dir != '.') and ($dir != '..')) {
+               if ( is_dir('./'.$export_temp_folder.'/'.$dir) ) {
+                  $handle2 = opendir('./'.$export_temp_folder.'/'.$dir);
+                  while (false !== ($file = readdir($handle2))) {
+                     if (($file != '.') and ($file != '..')) {
+                        unlink('./'.$export_temp_folder.'/'.$dir.'/'.$file);
+                     }
                   }
+                  closedir($handle2);
+                  rmdir('./'.$export_temp_folder.'/'.$dir);
+               } else {
+                  unlink('./'.$export_temp_folder.'/'.$dir);
                }
-               closedir($handle2);
-               rmdir('./'.$export_temp_folder.'/'.$dir);
-            } else {
-               unlink('./'.$export_temp_folder.'/'.$dir);
             }
          }
+         closedir($handle);
+         $cron_array['success'] = true;
+         $cron_array['success_text'] = 'cron done';
+      } else {
+         $cron_array['success'] = false;
+         $cron_array['success_text'] = 'failed to open dir: no such directory: '.$export_temp_folder;
       }
-      closedir($handle);
-
-      $cron_array = array();
-      $cron_array['title'] = 'remove temporary directories for export cron';
-      $cron_array['description'] = 'free space on hard disk';
-      $cron_array['success'] = true;
-      $cron_array['success_text'] = 'cron done';
 
       return $cron_array;
    }
