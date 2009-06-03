@@ -461,7 +461,7 @@ class cs_authentication {
       $granted = false;
 
       $allowed = $this->checkAccount($uid, $password, $auth_source);
-      $allowed = true;
+//      $allowed = true;
 
       if ($allowed and !$this->_ask_for_root) {
          $user_item = $this->_getPortalUserItem($uid,$this->_auth_source_granted);
@@ -1280,6 +1280,13 @@ class cs_authentication {
 
    function getGrantedAuthSourceItemID () {
       return $this->_auth_source_granted;
+   }
+   
+   function logToFile($msg){
+     $fd = fopen('', "a");
+     $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
+     fwrite($fd, $str . "\n");
+     fclose($fd);
    }
 }
 ?>

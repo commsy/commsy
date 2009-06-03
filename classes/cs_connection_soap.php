@@ -491,7 +491,7 @@ class cs_connection_soap {
    }
 
    public function authenticateWithLogin ($user_id, $password, $portal_id = 99, $auth_source_id = 0) {
-        $user_id = $this->_encode_input($user_id);
+      $user_id = $this->_encode_input($user_id);
       $password = $this->_encode_input($password);
       $portal_id = $this->_encode_input($portal_id);
       if ( !empty($auth_source_id) and $auth_source_id != 0 ) {
@@ -2131,6 +2131,12 @@ class cs_connection_soap {
          $result = new SoapFault($info,$info_text);
       }
       return $result;
+   }
+   function logToFile($msg){
+     $fd = fopen('', "a");
+     $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
+     fwrite($fd, $str . "\n");
+     fclose($fd);
    }
 }
 ?>
