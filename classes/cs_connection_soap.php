@@ -463,6 +463,7 @@ class cs_connection_soap {
                         $auth_source_id = $authentication->getAuthSourceItemID();
                      }
                      $session->setValue('auth_source',$auth_source_id);
+                     $session->setValue('cookie','0');
                      $session->setSoapSession();
 
                      // save session
@@ -531,6 +532,7 @@ class cs_connection_soap {
                         $auth_source_id = $authentication->getAuthSourceItemID();
                      }
                      $session->setValue('auth_source',$auth_source_id);
+                     $session->setValue('cookie','0');
                      //$session->setSoapSession();
 
                      // save session
@@ -2042,7 +2044,7 @@ class cs_connection_soap {
          $wiki_manager->deleteWiki($room_item);
       }
    }
-   
+
    public function changeUserEmail($session_id, $email){
       $result = true;
       $session_id = $this->_encode_input($session_id);
@@ -2071,7 +2073,7 @@ class cs_connection_soap {
       }
       return $result;
    }
-   
+
    public function changeUserEmailAll($session_id, $email){
       $result = true;
       $session_id = $this->_encode_input($session_id);
@@ -2101,7 +2103,7 @@ class cs_connection_soap {
       }
       return $result;
    }
-   
+
    public function changeUserId($session_id, $user_id){
       $result = true;
       $session_id = $this->_encode_input($session_id);
