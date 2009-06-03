@@ -2110,7 +2110,6 @@ class cs_connection_soap {
       $result = true;
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
-      	$this->logToFile('_isSessionValid - '.$new_user_id);
          $this->_environment->setSessionID($session_id);
          $session = $this->_environment->getSessionItem();
          $user_id = $session->getValue('user_id');
@@ -2172,7 +2171,7 @@ class cs_connection_soap {
    }
    
    function logToFile($msg){
-     $fd = fopen('/home/johannes/phplog', "a");
+     $fd = fopen('', "a");
      $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
      fwrite($fd, $str . "\n");
      fclose($fd);
