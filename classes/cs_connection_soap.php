@@ -2151,8 +2151,9 @@ class cs_connection_soap {
          $user_list = $user_manager->get();
          if ( $user_list->getCount() == 1 ) {
             $user_item = $user_list->getFirst();
-            $user_item->setExternalID($external_id);
-            $user_item->save();
+            $dummy_user = $user_manager->getNewItem();
+            $dummy_user->setExternalID($external_id);
+            $user_item->changeRelatedUser($dummy_user);
          }
       } else {
          $info = 'ERROR: SET USER EXTRA';
