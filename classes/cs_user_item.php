@@ -1904,5 +1904,17 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
+   
+   function setExternalID ($value) {
+      $this->_addExtra('EXTERNALID',(string)$value);
+   }
+
+   function getExternalID () {
+      $retour = '';
+      if ($this->_issetExtra('EXTERNALID')) {
+         $retour = $this->_getExtra('EXTERNALID');
+      }
+      return $retour;
+   }
 }
 ?>
