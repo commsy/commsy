@@ -1369,6 +1369,13 @@ class cs_user_item extends cs_item {
                }
                $user_item->setYahoo($value);
             }
+            $value = $dummy_item->getExternalID();
+            if (!empty($value)) {
+               if ($value == -1) {
+                  $value = '';
+               }
+               $user_item->setExternalID($value);
+            }
 
             $user_item->save();
 
