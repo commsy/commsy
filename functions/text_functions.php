@@ -1106,6 +1106,6 @@ if (!function_exists('mb_vsprintf')) {
       // Convert new format back from UTF-8 to the original encoding
       $newformat = mb_convert_encoding($newformat, $encoding, 'UTF-8');
       return vsprintf($newformat, $newargv);
-  }
+   }
 }
 ?>
