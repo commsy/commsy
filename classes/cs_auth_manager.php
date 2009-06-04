@@ -222,9 +222,7 @@ class cs_auth_manager {
    }
 
    public function get_data_for_new_account($uid, $password){
-      return array('firstname' => '',
-                   'lastname' => '',
-                   'email' => '');
+      return null;
    }
 }
 ?>
