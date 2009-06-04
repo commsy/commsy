@@ -76,7 +76,7 @@ class class_life extends cs_plugin {
       return $retour;
    }
 
-   public function user_save($user_item){
+   public function user_save($user_item = null){
       $retour = false;
       $changed = false;
       if ( !empty($user_item)
@@ -92,7 +92,7 @@ class class_life extends cs_plugin {
          $user_id = $user_item->getUserID();
          $changed = true;
       }
-      if ( $changed ) {
+      if ( $changed or empty($user_item)) {
          $session = $this->_environment->getSessionItem();
          if ( !empty($session) ) {
             $session_id = $session->getSessionID();
