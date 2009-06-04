@@ -1714,6 +1714,25 @@ class cs_page_view extends cs_view {
                   ) {
                   $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_PROFILE').'</div>'.LF;
                   $html .= '<div class="myarea_content" style="padding-bottom:5px;">'.LF;
+
+                  // new: commsy 7 profile on portal
+                  $params = array();
+                  $params = $this->_environment->getCurrentParameterArray();
+                  $params['uid'] = $this->_current_user->getItemID();
+                  $params['show_profile'] = 'yes';
+                  unset($params['is_saved']);
+                  unset($params['show_copies']);
+                  unset($params['profile_page']);
+                  global $c_annonymous_account_array;
+                  if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
+                       and !$this->_current_user->isOnlyReadUser()
+                     ) {
+                     $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
+                  } else {
+                     $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
+                  }
+
+                  /*
                   $current_portal_item = $this->_environment->getCurrentPortalItem();
                   if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
                      $link_active = true;
@@ -1737,6 +1756,7 @@ class cs_page_view extends cs_view {
                      // disable private room
                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
                   }
+                  */
                } elseif ( !$this->_current_user->isRoot() ) {
                   $html .= '<div>'.LF;
                }
