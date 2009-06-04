@@ -60,32 +60,38 @@ class class_life extends cs_plugin {
       if ( $user_list->getCount() == 1 ) {
         $user_item = $user_list->getFirst();
         if($user_item->_issetExtra('EXTERNALID')){
-	      $session = $this->_environment->getSessionItem();
-	      if ( !empty($session) ) {
-	         $session_id = $session->getSessionID();
-	         if ( !empty($session_id) ) {
-	            $cURL = curl_init();
-	            curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
-	            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-	            global $c_proxy_ip;
-	            if ( !empty($c_proxy_port) ) {
-	               $proxy = $c_proxy_ip;
-	            }
-	            global $c_proxy_port;
-	            if ( !empty($c_proxy_port) ) {
-	               $proxy = $c_proxy_ip.':'.$c_proxy_port;
-	               curl_setopt($cURL,CURLOPT_PROXY,$proxy);
-	            }
-	            $output = curl_exec($cURL);
-	            if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
-	               $retour = true;
-	            } else {
-	               #include_once('functions/error_functions.php');
-	               #trigger_error('can not logout drupal user in life',E_USER_WARNING);
-	            }
-	            curl_close($cURL);
-	         }
-	      }
+         $session = $this->_environment->getSessionItem();
+         if ( !empty($session) ) {
+            $session_id = $session->getSessionID();
+            if ( !empty($session_id) ) {
+               $cURL = curl_init();
+               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
+               curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+
+               // proxy
+               $proxy = '';
+               global $c_proxy_ip;
+               if ( !empty($c_proxy_port) ) {
+                  $proxy = $c_proxy_ip;
+                  global $c_proxy_port;
+                  if ( !empty($c_proxy_port) ) {
+                     $proxy .= ':'.$c_proxy_port;
+                  }
+               }
+               if ( isset($proxy) and !empty($proxy) ) {
+                  curl_setopt($cURL,CURLOPT_PROXY,$proxy);
+               }
+
+               $output = curl_exec($cURL);
+               if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
+                  $retour = true;
+               } else {
+                  #include_once('functions/error_functions.php');
+                  #trigger_error('can not logout drupal user in life',E_USER_WARNING);
+               }
+               curl_close($cURL);
+            }
+         }
         }
       }
       return $retour;
@@ -94,45 +100,51 @@ class class_life extends cs_plugin {
    public function user_save($user_item){
       $retour = false;
       if ($user_item->_issetExtra('EXTERNALID')){
-	      $changed = false;
-	      if ( !empty($user_item)
-	           and ( $user_item->hasChanged('email')
-	                 or $user_item->hasChanged('firstname')
-	                 or $user_item->hasChanged('lastname')
-	                 or $user_item->hasChanged('user_id')
-	               )
-	         ) {
-	         $changed = true;
-	      }
-	      if ( $changed ) {
-	         $session = $this->_environment->getSessionItem();
-	         if ( !empty($session) ) {
-	            $session_id = $session->getSessionID();
-	            if ( !empty($session_id) ) {
-	               $cURL = curl_init();
-	               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
-	               curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-	               global $c_proxy_ip;
-	               if ( !empty($c_proxy_port) ) {
-	                  $proxy = $c_proxy_ip;
-	               }
-	               global $c_proxy_port;
-	               if ( !empty($c_proxy_port) ) {
-	                  $proxy = $c_proxy_ip.':'.$c_proxy_port;
-	                  curl_setopt($cURL,CURLOPT_PROXY,$proxy);
-	               }
-	               $output = curl_exec($cURL);
-	               if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
-	                  $retour = true;
-	               } else {
-	                  #include_once('functions/error_functions.php');
-	                  #trigger_error('can not change drupal user in life',E_USER_WARNING);
-	               }
-	               curl_close($cURL);
-	            }
-	         }
-	      }
-   	  }
+         $changed = false;
+         if ( !empty($user_item)
+              and ( $user_item->hasChanged('email')
+                    or $user_item->hasChanged('firstname')
+                    or $user_item->hasChanged('lastname')
+                    or $user_item->hasChanged('user_id')
+                  )
+            ) {
+            $changed = true;
+         }
+         if ( $changed ) {
+            $session = $this->_environment->getSessionItem();
+            if ( !empty($session) ) {
+               $session_id = $session->getSessionID();
+               if ( !empty($session_id) ) {
+                  $cURL = curl_init();
+                  curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
+                  curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+
+                  // proxy
+                  $proxy = '';
+                  global $c_proxy_ip;
+                  if ( !empty($c_proxy_port) ) {
+                     $proxy = $c_proxy_ip;
+                     global $c_proxy_port;
+                     if ( !empty($c_proxy_port) ) {
+                        $proxy = $c_proxy_ip.':'.$c_proxy_port;
+                     }
+                  }
+                  if ( isset($proxy) and !empty($proxy) ) {
+                     curl_setopt($cURL,CURLOPT_PROXY,$proxy);
+                  }
+
+                  $output = curl_exec($cURL);
+                  if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
+                     $retour = true;
+                  } else {
+                     #include_once('functions/error_functions.php');
+                     #trigger_error('can not change drupal user in life',E_USER_WARNING);
+                  }
+                  curl_close($cURL);
+               }
+            }
+         }
+        }
       return $retour;
    }
 }
