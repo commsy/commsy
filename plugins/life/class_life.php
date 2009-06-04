@@ -24,6 +24,8 @@ include_once('classes/cs_plugin.php');
 class class_life extends cs_plugin {
 
    private $_url_to_life = '';
+   private $_proxy_ip = '';
+   private $_proxy_port = '';
 
    /** constructor
     * the only available constructor
@@ -37,6 +39,12 @@ class class_life extends cs_plugin {
       @include_once('plugins/life/config.php');
       if ( !empty($life_url_to_life) ) {
          $this->_url_to_life = $life_url_to_life;
+      }
+      if ( !empty($life_proxy_ip) ) {
+         $this->_proxy_ip = $life_proxy_ip;
+      }
+      if ( !empty($life_proxy_port) ) {
+         $this->_proxy_port = $life_proxy_port;
       }
    }
 
@@ -70,12 +78,10 @@ class class_life extends cs_plugin {
 
                // proxy
                $proxy = '';
-               global $c_proxy_ip;
-               if ( !empty($c_proxy_port) ) {
-                  $proxy = $c_proxy_ip;
-                  global $c_proxy_port;
-                  if ( !empty($c_proxy_port) ) {
-                     $proxy .= ':'.$c_proxy_port;
+               if ( !empty($this->_proxy_ip) ) {
+                  $proxy = $this->_proxy_ip;
+                  if ( !empty($this->_proxy_port) ) {
+                     $proxy .= ':'.$this->_proxy_port;
                   }
                }
                if ( isset($proxy) and !empty($proxy) ) {
@@ -121,12 +127,10 @@ class class_life extends cs_plugin {
 
                   // proxy
                   $proxy = '';
-                  global $c_proxy_ip;
-                  if ( !empty($c_proxy_port) ) {
-                     $proxy = $c_proxy_ip;
-                     global $c_proxy_port;
-                     if ( !empty($c_proxy_port) ) {
-                        $proxy = $c_proxy_ip.':'.$c_proxy_port;
+                  if ( !empty($this->_proxy_ip) ) {
+                     $proxy = $this->_proxy_ip;
+                     if ( !empty($this->_proxy_port) ) {
+                        $proxy .= ':'.$this->_proxy_port;
                      }
                   }
                   if ( isset($proxy) and !empty($proxy) ) {
