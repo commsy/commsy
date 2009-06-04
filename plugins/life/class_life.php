@@ -47,79 +47,92 @@ class class_life extends cs_plugin {
    public function logout () {
       $retour = false;
       $session = $this->_environment->getSessionItem();
-      if ( !empty($session) ) {
-         $session_id = $session->getSessionID();
-         if ( !empty($session_id) ) {
-            $cURL = curl_init();
-            curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
-            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-            global $c_proxy_ip;
-            if ( !empty($c_proxy_port) ) {
-               $proxy = $c_proxy_ip;
-            }
-            global $c_proxy_port;
-            if ( !empty($c_proxy_port) ) {
-               $proxy = $c_proxy_ip.':'.$c_proxy_port;
-               curl_setopt($cURL,CURLOPT_PROXY,$proxy);
-            }
-            $output = curl_exec($cURL);
-            if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
-               $retour = true;
-            } else {
-               #include_once('functions/error_functions.php');
-               #trigger_error('can not logout drupal user in life',E_USER_WARNING);
-            }
-            curl_close($cURL);
-         }
+      $user_id = $session->getValue('user_id');
+      $auth_source_id = $session->getValue('auth_source');
+      $context_id = $session->getValue('commsy_id');
+      $this->_environment->setCurrentContextID($context_id);
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->setContextLimit($context_id);
+      $user_manager->setUserIDLimit($user_id);
+      $user_manager->setAuthSourceLimit($auth_source_id);
+      $user_manager->select();
+      $user_list = $user_manager->get();
+      if ( $user_list->getCount() == 1 ) {
+        $user_item = $user_list->getFirst();
+        if($user_item->_issetExtra('EXTERNALID')){
+	      $session = $this->_environment->getSessionItem();
+	      if ( !empty($session) ) {
+	         $session_id = $session->getSessionID();
+	         if ( !empty($session_id) ) {
+	            $cURL = curl_init();
+	            curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
+	            curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+	            global $c_proxy_ip;
+	            if ( !empty($c_proxy_port) ) {
+	               $proxy = $c_proxy_ip;
+	            }
+	            global $c_proxy_port;
+	            if ( !empty($c_proxy_port) ) {
+	               $proxy = $c_proxy_ip.':'.$c_proxy_port;
+	               curl_setopt($cURL,CURLOPT_PROXY,$proxy);
+	            }
+	            $output = curl_exec($cURL);
+	            if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
+	               $retour = true;
+	            } else {
+	               #include_once('functions/error_functions.php');
+	               #trigger_error('can not logout drupal user in life',E_USER_WARNING);
+	            }
+	            curl_close($cURL);
+	         }
+	      }
+        }
       }
-
       return $retour;
    }
 
-   public function user_save($user_item = null){
+   public function user_save($user_item){
       $retour = false;
-      $changed = false;
-      if ( !empty($user_item)
-           and ( $user_item->hasChanged('email')
-                 or $user_item->hasChanged('firstname')
-                 or $user_item->hasChanged('lastname')
-                 or $user_item->hasChanged('user_id')
-               )
-         ) {
-         $email = $user_item->getEmail();
-         $firstname = $user_item->getFirstname();
-         $lastname = $user_item->getLastname();
-         $user_id = $user_item->getUserID();
-         $changed = true;
-      }
-      if ( $changed or empty($user_item)) {
-         $session = $this->_environment->getSessionItem();
-         if ( !empty($session) ) {
-            $session_id = $session->getSessionID();
-            if ( !empty($session_id) ) {
-               $cURL = curl_init();
-               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
-               curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
-               global $c_proxy_ip;
-               if ( !empty($c_proxy_port) ) {
-                  $proxy = $c_proxy_ip;
-               }
-               global $c_proxy_port;
-               if ( !empty($c_proxy_port) ) {
-                  $proxy = $c_proxy_ip.':'.$c_proxy_port;
-                  curl_setopt($cURL,CURLOPT_PROXY,$proxy);
-               }
-               $output = curl_exec($cURL);
-               if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
-                  $retour = true;
-               } else {
-                  #include_once('functions/error_functions.php');
-                  #trigger_error('can not change drupal user in life',E_USER_WARNING);
-               }
-               curl_close($cURL);
-            }
-         }
-      }
+      if ($user_item->_issetExtra('EXTERNALID')){
+	      $changed = false;
+	      if ( !empty($user_item)
+	           and ( $user_item->hasChanged('email')
+	                 or $user_item->hasChanged('firstname')
+	                 or $user_item->hasChanged('lastname')
+	                 or $user_item->hasChanged('user_id')
+	               )
+	         ) {
+	         $changed = true;
+	      }
+	      if ( $changed ) {
+	         $session = $this->_environment->getSessionItem();
+	         if ( !empty($session) ) {
+	            $session_id = $session->getSessionID();
+	            if ( !empty($session_id) ) {
+	               $cURL = curl_init();
+	               curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
+	               curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
+	               global $c_proxy_ip;
+	               if ( !empty($c_proxy_port) ) {
+	                  $proxy = $c_proxy_ip;
+	               }
+	               global $c_proxy_port;
+	               if ( !empty($c_proxy_port) ) {
+	                  $proxy = $c_proxy_ip.':'.$c_proxy_port;
+	                  curl_setopt($cURL,CURLOPT_PROXY,$proxy);
+	               }
+	               $output = curl_exec($cURL);
+	               if ( strstr(mb_strtolower($output,'UTF-8'),'true') ) {
+	                  $retour = true;
+	               } else {
+	                  #include_once('functions/error_functions.php');
+	                  #trigger_error('can not change drupal user in life',E_USER_WARNING);
+	               }
+	               curl_close($cURL);
+	            }
+	         }
+	      }
+   	  }
       return $retour;
    }
 }

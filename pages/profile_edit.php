@@ -700,14 +700,17 @@ if ($command != 'error') { // only if user is allowed to edit user
                         $session_id_old = $session->getSessionID();
                         $session_manager = $environment->getSessionManager();
                         $session_manager->delete($session_id_old,true);
-                        unset($session_manager);
                         $session->createSessionID($_POST['user_id']);
                         $cookie = $session->getValue('cookie');
                         if ( $cookie == 1 ) {
                            $session->setValue('cookie',2);
                         }
+                        $session_manager->save($session);
+                        unset($session_manager);
                         $success_1 = true;
                         $portal_user->setUserID($_POST['user_id']);
+                        include_once('functions/misc_functions.php');
+                        plugin_hook('user_save', $portal_user);
                      }
                   } else {
                      $success_1 = true;
