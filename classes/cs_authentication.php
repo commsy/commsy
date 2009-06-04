@@ -489,7 +489,10 @@ class cs_authentication {
          } else {
             if ( isset($this->_used_auth_manager) ) {
                $new_account_data = $this->_used_auth_manager->get_data_for_new_account($uid, $password);
-               if(!empty($new_account_data)){
+               if ( !empty($new_account_data)
+                    and !empty($new_account_data['firstname'])
+                    and !empty($new_account_data['lastname'])
+                  ) {
                   $user_item = $user_manager->getNewItem();
                   $user_item->setUserID($uid);
                   $user_item->setFirstname($new_account_data['firstname']);
@@ -1281,7 +1284,7 @@ class cs_authentication {
    function getGrantedAuthSourceItemID () {
       return $this->_auth_source_granted;
    }
-   
+
    function logToFile($msg){
      $fd = fopen('', "a");
      $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;
