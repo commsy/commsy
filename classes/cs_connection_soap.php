@@ -2106,6 +2106,40 @@ class cs_connection_soap {
       return $result;
    }
 
+   public function changeUserName($session_id, $firstname, $lastname){
+      $result = true;
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($context_id);
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if ( $user_list->getCount() == 1 ) {
+            $user_item = $user_list->getFirst();
+            $dummy_user = $user_manager->getNewItem();
+            $dummy_user->setFirstname($firstname);
+            $dummy_user->setLastname($lastname);
+            $user_item->changeRelatedUser($dummy_user);
+            $user_item->setFirstname($firstname);
+            $user_item->setLastname($lastname);
+            $user_item->save();
+         }
+      } else {
+         $info = 'ERROR: CHANGE USER EMAIL ALL';
+         $info_text = 'session id ('.$session_id.') is not valid';
+         $result = new SoapFault($info,$info_text);
+      }
+      return $result;
+   }
+
    public function changeUserId($session_id, $new_user_id){
       $result = true;
       $session_id = $this->_encode_input($session_id);
@@ -2123,12 +2157,12 @@ class cs_connection_soap {
          $user_manager->select();
          $user_list = $user_manager->get();
          if ( $user_list->getCount() == 1 ) {
-         	$user_item = $user_list->getFirst();
+            $user_item = $user_list->getFirst();
             $authentication = $this->_environment->getAuthenticationObject();
             $authentication->changeUserID($new_user_id,$user_item);
             $session->setValue('user_id',$new_user_id);
-			$session_manager = $this->_environment->getSessionManager();
-          	$session_manager->save($session);
+            $session_manager = $this->_environment->getSessionManager();
+            $session_manager->save($session);
          }
       } else {
          $info = 'ERROR: CHANGE USER_ID';
@@ -2137,7 +2171,7 @@ class cs_connection_soap {
       }
       return $result;
    }
-   
+
    public function setUserExternalId($session_id, $external_id){
       $result = true;
       $session_id = $this->_encode_input($session_id);
@@ -2169,7 +2203,7 @@ class cs_connection_soap {
       }
       return $result;
    }
-   
+
    function logToFile($msg){
      $fd = fopen('', "a");
      $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $msg;

@@ -274,6 +274,14 @@
 <message name='setUserExternalIdOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='changeUserNameIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='firstname' type='xsd:string'/>
+  <part name='lastname' type='xsd:string'/>
+</message>
+<message name='changeUserNameOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -419,6 +427,10 @@
   <operation name='setUserExternalId'>
     <input message='tns:setUserExternalIdIN'/>
     <output message='tns:setUserExternalIdOUT'/>
+  </operation>
+  <operation name='changeUserName'>
+    <input message='tns:changeUserNameIN'/>
+    <output message='tns:changeUserNameOUT'/>
   </operation>
 </portType>
 
@@ -799,7 +811,7 @@
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
     </output>
-  </operation> 
+  </operation>
   <operation name='changeUserId'>
     <soap:operation soapAction='urn:xmethodsCommSy#changeUserId'/>
     <input>
@@ -813,6 +825,17 @@
   </operation>
   <operation name='setUserExternalId'>
     <soap:operation soapAction='urn:xmethodsCommSy#setUserExternalId'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='changeUserName'>
+    <soap:operation soapAction='urn:xmethodsCommSy#changeUserName'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
