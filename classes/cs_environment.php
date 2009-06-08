@@ -1654,5 +1654,14 @@ class cs_environment {
    public function isOutputModeNot ( $value ) {
       return !$this->isOutputMode($value);
    }
+
+   public function getConfiguration ( $var ) {
+      global $$var;
+      $retour = NULL;
+      if ( isset($$var) ) {
+         $retour = $$var;
+      }
+      return $retour;
+   }
 }
 ?>
