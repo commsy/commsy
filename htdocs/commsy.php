@@ -1076,6 +1076,13 @@ if ( $environment->getCurrentFunction() != 'getfile'
    $current_page['function'] = $current_function;
    $current_page['parameter'] = $environment->getCurrentParameterArray();
 
+   if ( !empty($plugin_module) ) {
+      $current_page['module'] = $plugin_module;
+   }
+   if ( !empty($plugin_function) ) {
+      $current_page['function'] = $plugin_function;
+   }
+
    if ( !isset($_GET['mode']) or ($_GET['mode'] != 'print') ) {
       if (empty($history)) {
          $history[0] = $current_page;
