@@ -306,7 +306,12 @@ class cs_view {
    }
 
    function _cleanDataFromTextAreaNotFromFCK ( $text ) {
-      return $this->_htmlentities_smaller($text);
+      // word and open office bugs
+      $retour = str_replace('</meta>','',$text);
+      // word and open office bugs
+
+      $retour = $this->_htmlentities_smaller($retour);
+      return $retour;
    }
 
    function _cleanDataFromTextAreaFromFCK ( $text ) {
