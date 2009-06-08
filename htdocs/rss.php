@@ -458,7 +458,10 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_section_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $linked_item = $item->getLinkedItem();
-            $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
+            $title = '';
+            if ( isset($linked_item) ) {
+               $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
+            }
             $description = $item->getDescriptionWithoutHTML();
             if ( mb_strlen($description) > $desc_len ) {
                $description = chunkText($description,$desc_len);
