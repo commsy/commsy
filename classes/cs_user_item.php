@@ -1147,7 +1147,6 @@ class cs_user_item extends cs_item {
       }
    }
 
-
    function maySee ($user_item) {
       if ( $this->_environment->inCommunityRoom() ) {  // Community room
          if ( $user_item->isRoot()
@@ -1163,11 +1162,12 @@ class cs_user_item extends cs_item {
          } else {
             $access = false;
          }
-      } else {    // Project room, group room, private room
+      } else {    // Project room, group room, private room, portal
          $access = parent::maySee($user_item);
          if ( $access ) {
             $room = $this->_environment->getCurrentContextItem();
             if ( $room->isPrivateRoom()
+                 or $room->isPortal()
                  or $room->withRubric(CS_USER_TYPE)
                ) {
                $access = true;
@@ -1178,8 +1178,6 @@ class cs_user_item extends cs_item {
       }
       return $access;
    }
-
-
 
    function mayEdit ($user_item) {
       $access = false;
@@ -1911,7 +1909,7 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
-   
+
    function setExternalID ($value) {
       $this->_addExtra('EXTERNALID',(string)$value);
    }

@@ -1024,14 +1024,14 @@ class cs_guide_list_view extends cs_list_view_plain {
       $html .='</div>'.LF;
       $html .='</td>'.LF;
       $html .='<td class="room_list_head" style="width:15%; padding-top:5px; vertical-align:top; text-align:right; white-space:nowrap;">'.LF;
- #     if (!$this->_environment->inServer()) {
+      if (!$this->_environment->inServer()) {
          $html .='<div style="float:right;text-align:right;">'.LF;
  #        $html .= '<span class="portal_description">'.$this->_getIntervalLinksFirstLineAsHTML().'</span>'.BRLF;
  #        $html .= '<span class="portal_description">'.$this->_getIntervalLinksSecondLineAsHTML().'</span>'.LF;
          $html .= '&nbsp;&nbsp;<span class="portal_forward_links">'.$this->_getForwardLinkAsHTML().'</span>'.BRLF;
 
          $html .='</div>'.LF;
- #     }
+      }
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .='<tr>'.LF;
