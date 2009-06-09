@@ -4998,7 +4998,10 @@ class cs_context_item extends cs_item {
             $community_room_list = $this->getCommunityList();
             if ( isset($community_room_list) and $community_room_list->isNotEmpty() ) {
                $context = $community_room_list->getFirst();
-               $retour = $context->isDesign7();
+               $c_design = $context->_getDesign();
+               if ( $c_design == 7 ) {
+                  $retour = true;
+               }
                unset($context);
             } else {
                $context = $this->getContextItem();
