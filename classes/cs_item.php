@@ -67,6 +67,8 @@ class cs_item {
    */
    var $_change_modification_on_save = true;
 
+   public $_link_modifier = true;
+
    /** constructor
    * the only available constructor, initial values for internal variables
    *
@@ -95,6 +97,10 @@ class cs_item {
 
    public function setCacheOff () {
       $this->_cache_on = false;
+   }
+
+   public function setSaveWithoutLinkModifier () {
+      $this->_link_modifier = false;
    }
 
    /** Sets the data of the item.
@@ -983,6 +989,9 @@ class cs_item {
       $saved = false;
       if(isset($this->_changed['general']) and $this->_changed['general'] == TRUE) {
          $manager->setCurrentContextID($this->getContextID());
+         if ( !$this->_link_modifier ) {
+            $manager->setSaveWithoutLinkModifier();
+         }
          $saved = $manager->saveItem($this);
       }
       foreach ($this->_changed as $changed_key => $is_changed) {

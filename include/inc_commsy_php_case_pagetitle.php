@@ -107,11 +107,8 @@
          break;
       default:
          $text = '';
-         if ( $tempModule == mb_strtoupper(CS_PLUGIN_TYPE, 'UTF-8')
-              and !empty($plugin_module)
-              and $environment->isPlugin($plugin_module)
-            ) {
-            $text = plugin_hook_output($plugin_module,'getDisplayName');
+         if ( $environment->isPlugin($environment->getCurrentModule()) ) {
+            $text = plugin_hook_output($environment->getCurrentModule(),'getDisplayName');
          }
          if ( !empty($text) ) {
             $tempMessage .= $text;

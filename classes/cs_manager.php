@@ -127,6 +127,7 @@ class cs_manager {
 
    public $_class_factory = NULL;
    public $_id_array_limit = NULL;
+   public $_link_modifier = true;
 
   /** constructor: cs_manager
     * the only available constructor, initial values for internal variables. sets room limit to room
@@ -154,6 +155,10 @@ class cs_manager {
 
    public function setCacheOff () {
       $this->_cache_on = false;
+   }
+
+   public function setSaveWithoutLinkModifier () {
+      $this->_link_modifier = false;
    }
 
   /** reset class

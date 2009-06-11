@@ -546,20 +546,18 @@ function pr_xml ($value) {
    echo('</pre>'.LF.LF);
 }
 
-function isPlugin ( $mod ) {
-   $retour = false;
-   global $c_plugin_array;
-   $retour = in_array(mb_strtolower($mod, 'UTF-8'),$c_plugin_array);
-   return $retour;
-}
-
 /** checks if url is valid
  *
  * @return   boolean  is URL valid [= commsy conform]
  */
 function isURLValid () {
-   global $_GET;
    global $environment;
+
+   if ( !empty($_GET['mod'])
+        and $environment->isPlugin($_GET['mod'])
+      ) {
+      return true;
+   }
 
    if ( (empty($_GET['fct'])  and !empty($_GET['mod']))
         or

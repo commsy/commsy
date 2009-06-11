@@ -281,73 +281,73 @@ else {
       $user_change_array = array();
       foreach ($user_array_all as $key => $user_item) {
 
-      // exits user at current portal ?
-      $authentication = $environment->getAuthenticationObject();
-      $user_id = $user_item->getUserID();
-      $auth_source = $user_item->getAuthSource();
-      $first = true;
-      $go = true;
-      while ($go) {
-         $user_manager->resetLimits();
-         $user_manager->setContextLimit($environment->getCurrentPortalID());
-         $user_manager->setAuthSourceLimit($auth_source_translation_array[$auth_source]);
-         $user_manager->setUserIDLimit($user_id);
-         $user_manager->select();
-         $user_list = $user_manager->get();
+         // exits user at current portal ?
+         $authentication = $environment->getAuthenticationObject();
+         $user_id = $user_item->getUserID();
+         $auth_source = $user_item->getAuthSource();
+         $first = true;
+         $go = true;
+         while ($go) {
+            $user_manager->resetLimits();
+            $user_manager->setContextLimit($environment->getCurrentPortalID());
+            $user_manager->setAuthSourceLimit($auth_source_translation_array[$auth_source]);
+            $user_manager->setUserIDLimit($user_id);
+            $user_manager->select();
+            $user_list = $user_manager->get();
 
-         // external auth source
-         if ( !$auth_source_item_array[$auth_source_translation_array[$auth_source]]->isCommSyDefault() ) {
-            unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
-            // user_id exists in portal
-            if ( $user_list->isEmpty() ) {
-               $user_array_new[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
-            }
-            $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
-            $go = false;
-         }
-
-         // commsy auth source
-         // user_id exists in portal
-         elseif ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
-            $user_item2 = $user_list->getFirst();
-
-            // email is equal
-            if ($user_item2->getEmail() == $user_item->getEmail()) {
+            // external auth source
+            if ( !$auth_source_item_array[$auth_source_translation_array[$auth_source]]->isCommSyDefault() ) {
                unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
+               // user_id exists in portal
+               if ( $user_list->isEmpty() ) {
+                  $user_array_new[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+               }
+               $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+               $go = false;
+            }
+
+            // commsy auth source
+            // user_id exists in portal
+            elseif ($user_list->isNotEmpty() and $user_list->getCount() == 1) {
+               $user_item2 = $user_list->getFirst();
+
+               // email is equal
+               if ($user_item2->getEmail() == $user_item->getEmail()) {
+                  unset($user_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]);
+                  if ($user_item->getUserID() != $user_id) {
+                     $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
+                  } else {
+                     $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
+                  }
+                  $go = false;
+               } else {
+                  // generate new user id
+                  if ($first) {
+                     $first = false;
+                     $user_id .= '1';
+                  } else {
+                     $count = $user_id{mb_strlen($user_id)-1};
+                     $count = (int)$count;
+                     $count++;
+                     $user_id = mb_substr($user_id,0,mb_strlen($user_id)-1);
+                     $user_id .= $count;
+                  }
+               }
+            } elseif ($user_list->isNotEmpty() and $user_list->getCount() > 1) {
+               include_once('functions/error_functions.php');
+               trigger_error('ERROR: multiple user id '.$user_id.' for one portal',E_USER_WARNING);
+               $go = false;
+               $failure = true;
+            } else {
+               // find free user id
                if ($user_item->getUserID() != $user_id) {
                   $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
                } else {
                   $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
                }
                $go = false;
-            } else {
-               // generate new user id
-               if ($first) {
-                  $first = false;
-                  $user_id .= '1';
-               } else {
-                  $count = $user_id{mb_strlen($user_id)-1};
-                  $count = (int)$count;
-                  $count++;
-                  $user_id = mb_substr($user_id,0,mb_strlen($user_id)-1);
-                  $user_id .= $count;
-               }
             }
-         } elseif ($user_list->isNotEmpty() and $user_list->getCount() > 1) {
-            include_once('functions/error_functions.php');
-            trigger_error('ERROR: multiple user id '.$user_id.' for one portal',E_USER_WARNING);
-            $go = false;
-            $failure = true;
-         } else {
-            // find free user id
-            if ($user_item->getUserID() != $user_id) {
-               $user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_id;
-            } else {
-               $user_array_no_change[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$auth_source]] = $user_item;
-            }
-            $go = false;
          }
-      }
       }
 
       if ($failure) {
@@ -441,6 +441,7 @@ else {
                // AUTH: auth source transaltion
 
                $user_item->setChangeModificationOnSave(false);
+               $user_item->setSaveWithoutLinkModifier();
                $user_item->save();
 
                $user_item = $user_list->getNext();
@@ -464,80 +465,80 @@ else {
 
          $room_item->setContextID($environment->getCurrentPortalID());
 
-   // set link between project and community room
-   if ($copy_links_between_rooms and $room_item->isProjectRoom()) {
-      $temp_array = array();
-      $temp_array[] = $item->getItemID();
-      $room_item->setCommunityListByID($temp_array);
-      unset($temp_array);
-   }
+         // set link between project and community room
+         if ($copy_links_between_rooms and $room_item->isProjectRoom()) {
+            $temp_array = array();
+            $temp_array[] = $item->getItemID();
+            $room_item->setCommunityListByID($temp_array);
+            unset($temp_array);
+         }
 
-   // unlock room
-   if ($item->getItemID() == $room_item->getItemID()) {
-      $room_item->unlockForMove();
-   }
+         // unlock room
+         if ($item->getItemID() == $room_item->getItemID()) {
+            $room_item->unlockForMove();
+         }
 
-   // save room with new context id
-   $room_item->save();
-   $room_item = $room_list->getNext();
-   }
+         // save room with new context id
+         $room_item->save();
+         $room_item = $room_list->getNext();
+      }
 
       // send email to users
       $current_portal = $environment->getCurrentPortalItem();
       foreach ($user_array_all as $user_item) {
          $language_user = $user_item->getLanguage();
-   if ($language_user == 'browser') {
-      $language = $environment->getSelectedLanguage();
-   } else {
-      $language = $language_user;
-   }
-   $translator->setSelectedLanguage($language);
+         if ($language_user == 'browser') {
+            $language = $environment->getSelectedLanguage();
+         } else {
+            $language = $language_user;
+         }
+         $translator->setSelectedLanguage($language);
 
-   include_once('classes/cs_mail.php');
+         include_once('classes/cs_mail.php');
          $mail = new cs_mail();
          $mail->set_to($user_item->getEmail());
-   $server_item = $environment->getServerItem();
-   $default_sender_address = $server_item->getDefaultSenderAddress();
-   if (!empty($default_sender_address)) {
-            $mail->set_from_email($default_sender_address);
-   } else {
-      $mail->set_from_email('@');
-   }
+         $server_item = $environment->getServerItem();
+         $default_sender_address = $server_item->getDefaultSenderAddress();
+         if (!empty($default_sender_address)) {
+                  $mail->set_from_email($default_sender_address);
+         } else {
+            $mail->set_from_email('@');
+         }
          $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$current_portal->getTitle()));
          $mail->set_reply_to_name($current_user->getFullname());
          $mail->set_reply_to_email($current_user->getEmail());
 
-   // subject
-   if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
-      $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S',$room_name_array[$user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()][0]]);
-   } else {
-      $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL',$old_portal->getTitle());
-   }
+         // subject
+         if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
+            $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_S',$room_name_array[$user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()][0]]);
+         } else {
+            $subject = $translator->getMessage('MOVE_ROOM_MAIL_SUBJECT_SUCCESS_PL',$old_portal->getTitle());
+         }
          $mail->set_subject($subject);
 
-   // body
+         // body
          $body = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
          $body .= LF.LF;
-   if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
+         if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCESS_S',$old_portal->getTitle(),$current_portal->getTitle()).LF;
-   } else {
+         } else {
             $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCESS_PL',$old_portal->getTitle(),$current_portal->getTitle()).LF;
-   }
-   foreach ($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()] as $room_id) {
-      $body .= $room_name_array[$room_id].LF;
-      $body .= '   http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_id.LF.LF;
-   }
-   if (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_change_array)) {
-      $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE',$user_item->getUserID(),$user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]]);
-   } elseif (array_key_exists($user_item->getUserID().'__CS__'.$user_item->getAuthSource(),$user_array)) {
-      $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY',$user_item->getUserID());
-   } elseif (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_array_no_change)) {
-      if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
-         $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S',$user_item->getUserID());
-      } else {
-         $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL',$user_item->getUserID());
-      }
-   }
+         }
+         foreach ($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()] as $room_id) {
+            $body .= $room_name_array[$room_id].LF;
+            $body .= '   http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_id.LF.LF;
+         }
+         if (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_change_array)) {
+            $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY_CHANGE',$user_item->getUserID(),$user_change_array[$user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()]]);
+         } elseif (array_key_exists($user_item->getUserID().'__CS__'.$user_item->getAuthSource(),$user_array)) {
+            $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_COPY',$user_item->getUserID());
+         } elseif (array_key_exists($user_item->getUserID().'__CS__'.$auth_source_translation_array[$user_item->getAuthSource()],$user_array_no_change)) {
+            if (count($user_room_array[$user_item->getUserID().'__CS__'.$user_item->getAuthSource()]) == 1) {
+               $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_S',$user_item->getUserID());
+            } else {
+               $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_SUCCESS_ACCOUNT_NO_COPY_PL',$user_item->getUserID());
+            }
+         }
          $body .= LF.LF;
          $body .= $translator->getMessage('MOVE_ROOM_MAIL_BODY_TO_NEW_PORTAL').LF;
          $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$current_portal->getItemID();

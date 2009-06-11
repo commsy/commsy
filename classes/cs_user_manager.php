@@ -1199,7 +1199,7 @@ class cs_user_manager extends cs_manager {
         $context_id = $item->getContextID();
         $portal_id = $this->_environment->getCurrentPortalID();
         if ( $context_id == $portal_id ) {
-           // Einrichtung privater Raum
+           // initiation of private room
            $room_manager = $this->_environment->getPrivateRoomManager();
            $room_item = $room_manager->getNewItem();
            $room_item->setCreatorItem($item);
@@ -1242,8 +1242,10 @@ class cs_user_manager extends cs_manager {
      }
 
      //Add modifier to all users who ever edited this user
-     $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-     $link_modifier_item_manager->markEdited($item->getItemID());
+     if ( $this->_link_modifier ) {
+        $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+        $link_modifier_item_manager->markEdited($item->getItemID());
+     }
      unset($item);
   }
 

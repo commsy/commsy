@@ -134,26 +134,8 @@ if ( isset($_GET['cid']) ) {
 }
 
 if ( !isURLValid() ) {
-   if ( !empty($_GET['mod'])
-        and !empty($_GET['fct'])
-        and isPlugin($_GET['mod'])
-      ) {
-      $current_module = CS_PLUGIN_TYPE;
-      $current_function = 'index';
-      $plugin_module = $_GET['mod'];
-      $plugin_function = $_GET['fct'];
-   } elseif ( !empty($_POST['mod'])
-              and !empty($_POST['fct'])
-              and isPlugin($_POST['mod'])
-      ) {
-      $current_module = CS_PLUGIN_TYPE;
-      $current_function = 'index';
-      $plugin_module = $_POST['mod'];
-      $plugin_function = $_POST['fct'];
-   } else {
-      $current_module = 'home';
-      $current_function = 'index';
-   }
+   $current_module = 'home';
+   $current_function = 'index';
 } else {
    if ( !isset($_GET['mod']) or !isset($_GET['fct']) ) {
       $current_module = 'home';
@@ -448,17 +430,10 @@ if ( !empty($SID) ) {
       // and set current user
 
       $plugin_boolean_with_check = true;
-      global $c_plugin_array;
-      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-         foreach ($c_plugin_array as $plugin) {
-            if ( !empty($plugin_module)
-                 and $plugin_module == $plugin
-               ) {
-               $plugin_class = $environment->getPluginClass($plugin);
-               if ( method_exists($plugin_class,'accessPageWithCheck') ) {
-                  $plugin_boolean_with_check = $plugin_class->accessPageWithCheck($plugin_function);
-               }
-            }
+      if ( $environment->isPlugin($environment->getCurrentModule()) ) {
+         $plugin_class = $environment->getPluginClass($environment->getCurrentModule());
+         if ( method_exists($plugin_class,'accessPageWithCheck') ) {
+            $plugin_boolean_with_check = $plugin_class->accessPageWithCheck($environment->getCurrentFunction());
          }
       }
 
@@ -841,6 +816,14 @@ if ( $show_agb_again ) {
       include_once('pages/agb_detail.php');
    }
 } elseif ( !isset($errorbox) ) {
+
+   if ( $environment->isPlugin($environment->getCurrentModule()) ) {
+      $current_module = 'plugin';
+      $current_function = 'index';
+      $plugin_module = $environment->getCurrentModule();
+      $plugin_function = $environment->getCurrentFunction();
+   }
+
    // JCommSy delegation
    if ( isset($jcommsy)
         and array_key_exists($current_module,$jcommsy)
@@ -1075,13 +1058,6 @@ if ( $environment->getCurrentFunction() != 'getfile'
    $current_page['module'] = $current_module;
    $current_page['function'] = $current_function;
    $current_page['parameter'] = $environment->getCurrentParameterArray();
-
-   if ( !empty($plugin_module) ) {
-      $current_page['module'] = $plugin_module;
-   }
-   if ( !empty($plugin_function) ) {
-      $current_page['function'] = $plugin_function;
-   }
 
    if ( !isset($_GET['mode']) or ($_GET['mode'] != 'print') ) {
       if (empty($history)) {
