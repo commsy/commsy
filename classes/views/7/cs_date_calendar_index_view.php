@@ -254,7 +254,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
-                                'ims_import',
+                                'import',
                                 $params,
                                 $image,
                                 $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
