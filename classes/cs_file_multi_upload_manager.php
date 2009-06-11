@@ -81,19 +81,23 @@ class cs_file_multi_upload_manager extends cs_manager {
 
    // special method to add a file array
    function addFileArray ($session_id, $file_array, $context_id = 0) {
-      $query = 'INSERT INTO file_multi_upload SET session_id="'.encode(AS_DB,$session_id).'", file_array="'.encode(AS_DB,serialize($file_array)).'"';
-      if ( !empty($context_id) ) {
-         $query .= ', cid="'.encode(AS_DB,$context_id).'"';
-      }
-      $query .= ';';
-      $result = $this->_db_connector->performQuery($query);
-         include_once('functions/error_functions.php');
-         trigger_error('Problems '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
-      if ( !isset($result) ) {
-         include_once('functions/error_functions.php');
-         trigger_error('Problems '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
+      $file_array_string = serialize($file_array);
+      if ( !empty($file_array_string) ) {
+         $query = 'INSERT INTO file_multi_upload SET session_id="'.encode(AS_DB,$session_id).'", file_array="'.encode(AS_DB,$file_array_string).'"';
+         if ( !empty($context_id) ) {
+            $query .= ', cid="'.encode(AS_DB,$context_id).'"';
+         }
+         $query .= ';';
+         $result = $this->_db_connector->performQuery($query);
+         if ( !isset($result) ) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
+         } else {
+            return $result;
+         }
       } else {
-         return $result;
+         include_once('functions/error_functions.php');
+         trigger_error('Problem to serialse file-array: '.$file_array['name'],E_USER_WARNING);
       }
    }
 

@@ -109,7 +109,7 @@ if ( isset($c_virus_scan)
    }
 } elseif (  move_uploaded_file($_FILES['userfile']['tmp_name'], $_FILES['userfile']['tmp_name'].'commsy3') ) {
    $temp_array = array();
-   $temp_array['name'] = $_FILES['userfile']['name'];
+   $temp_array['name'] = utf8_encode($_FILES['userfile']['name']);
    $temp_array['tmp_name'] = $_FILES['userfile']['tmp_name'].'commsy3';
    $temp_array['file_id'] = $temp_array['name'].'_'.getCurrentDateTimeInMySQL();
 
