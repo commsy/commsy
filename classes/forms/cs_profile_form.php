@@ -468,6 +468,20 @@ class cs_profile_form extends cs_rubric_form {
             $this->_form->setFailure('password2');
          }
       }
+
+      // user data
+      elseif ( $this->getProfilePageName() == 'user' ) {
+         $portal_user = $this->_environment->getPortalUserItem();
+         if ( isset($portal_user)
+              and !empty($this->_form_post['email'])
+              and $portal_user->hasToChangeEmail()
+              and $portal_user->getEmail() == $this->_form_post['email']
+            ) {
+            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'COMMON_ERROR_FIELD_CORRECT',$this->_translator->getMessageInLang($this->_language,'USER_EMAIL'));
+            $this->_form->setFailure('email');
+         }
+      }
+
       if ( !empty($this->_form_post['user_id']) ) {
          $current_user = $this->_environment->getCurrentUserItem();
          $auth_source = $current_user->getAuthSource();
