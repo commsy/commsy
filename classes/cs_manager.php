@@ -833,9 +833,8 @@ class cs_manager {
    * @param string mode    one of select, count or id_array
    *
    * @return resource result from database
-   * @author CommSy Development Group
    */
-   function _performQuery($mode) {
+   function _performQuery($mode = 'select') {
       include_once('functions/error_functions.php');
       trigger_error("must be overwritten!", E_USER_ERROR);
    }

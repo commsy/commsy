@@ -578,13 +578,13 @@ class cs_item {
    }
 
 
-   function getTitle ($mode=NONE) {              //TBD: In Zukunft sollten alle Titel auch Titel sein!!!
-     $title = $this->_getValue('title',$mode);
+   function getTitle () {              //TBD: In Zukunft sollten alle Titel auch Titel sein!!!
+     $title = $this->_getValue('title');
      if (!empty($title)){
         return($title);
      }
      else{
-        return($this->_getValue('name',$mode));
+        return($this->_getValue('name'));
      }
    }
 
