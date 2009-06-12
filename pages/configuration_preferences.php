@@ -949,6 +949,16 @@ if ($current_user->isGuest()) {
                   //******************************************//
 
                   // Save item
+                  if ( $new_flag
+                       and !$item->isPortal()
+                       and !$item->isServer()
+                     ) {
+                     $current_portal_item = $environment->getCurrentPortalItem();
+                     if ($current_portal_item->withHtmlTextArea()) {
+                        $item->setHtmlTextAreaStatus($current_portal_item->getHtmlTextAreaStatus());
+                     }
+                     unset($current_portal_item);
+                  }
                   $item->save();
                   $form_view->setItemIsSaved();
                   $is_saved = true;
