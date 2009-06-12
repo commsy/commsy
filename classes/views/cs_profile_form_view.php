@@ -89,7 +89,10 @@ class cs_profile_form_view extends cs_form_view {
          $html .= '<div class="profile_tab">'.$title.'</div>'.LF;
       }
       $params['profile_page'] = 'newsletter';
-      if ( !$current_user_item->isRoomMember() ) {
+      $private_room = $current_user_item->getOwnRoom();
+      if ( !$private_room->isPrivateRoomNewsletterActive()
+           and !$current_user_item->isRoomMember()
+         ) {
          $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA').'</a>';
       } else {
          $title = ahref_curl( $this->_environment->getCurrentContextID(),
@@ -98,6 +101,7 @@ class cs_profile_form_view extends cs_form_view {
                               $params,
                               $this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA'));
       }
+      unset($private_room);
       if (isset($_GET['profile_page']) and $_GET['profile_page'] == 'newsletter'){
          $html .= '<div class="profile_tab_current">'.$title.'</div>'.LF;
       }else{
