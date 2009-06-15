@@ -66,28 +66,28 @@ class cs_agb_form extends cs_rubric_form {
       $this->setHeadline($this->_translator->getMessage('AGB_CHANGE_TITLE'));
       $this->_form->addText('agb_text','',$this->_agb_text);
       if ( !($this->_environment->getCurrentModule() == 'agb' and
-		       $this->_environment->getCurrentFunction() == 'index')
-		   ) {
+             $this->_environment->getCurrentFunction() == 'index')
+         ) {
          $this->_form->addEmptyLine();
          if ( !$this->_environment->inPortal() ) {
             $this->_form->addButtonBar('option',
-					$this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
-					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
-					$this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_ROOM'));
+            $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
+            $this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
+            $this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_ROOM'));
          } else {
-         	if($this->_environment->getCurrentUserItem()->getCreationDate() > getCurrentDateTimeMinusMinutesInMySQL(1) ) {
-         	   $this->_form->addHidden('is_no_user', '1');
-         	   $this->_form->addButtonBar('option',
-				   $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
-					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
+            if($this->_environment->getCurrentUserItem()->getCreationDate() > getCurrentDateTimeMinusMinutesInMySQL(1) ) {
+               $this->_form->addHidden('is_no_user', '1');
+               $this->_form->addButtonBar('option',
+               $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
+               $this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
 
-         	}
-         	else {
-         	   $this->_form->addButtonBar('option',
-				   $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
-					$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
-					$this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'));
-         	}
+            }
+            else {
+               $this->_form->addButtonBar('option',
+               $this->_translator->getMessage('AGB_ACCEPTANCE_BUTTON'),
+               $this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
+               $this->_translator->getMessage('AGB_ACCEPTANCE_NOT_BUTTON_PORTAL'));
+            }
          }
       }
    }

@@ -410,11 +410,11 @@ class cs_page_guide_view extends cs_page_view {
       }
       $text = $current_portal->getDescriptionWellcome1();
       if ( !empty($text) ) {
-         $html .= '<div style="width:99%; text-align:left; padding-top:10px; padding-bottom:5px;"><h1 class="portal_title">'.$current_portal->getDescriptionWellcome1().'</h1></div>'.LF;
+         $html .= '<div style="width:99%; text-align:left; padding-top:10px; padding-bottom:5px;"><h1 class="portal_title">'.$this->_text_as_html_short($current_portal->getDescriptionWellcome1()).'</h1></div>'.LF;
       }
       $text = $current_portal->getDescriptionWellcome2();
       if ( !empty($text) ) {
-         $html .= '<div style="width:99%; text-align:right; padding-bottom:10px;"><h1 class="portal_main_title">'.$current_portal->getDescriptionWellcome2().'</h1></div>'.LF;
+         $html .= '<div style="width:99%; text-align:right; padding-bottom:10px;"><h1 class="portal_main_title">'.$this->_text_as_html_short($current_portal->getDescriptionWellcome2()).'</h1></div>'.LF;
       }
       if ($current_portal->isShowAnnouncementsOnHome()){
          $html .= '</td>'."\n";

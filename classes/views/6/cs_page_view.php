@@ -2109,19 +2109,19 @@ class cs_page_view extends cs_view {
          $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $server_item->getServerNewsLink();
          if (!empty($link)) {
-            $title = '<span style="font-weight: bold;"><a href="'.$link.'" style="color:#800000" target="_blank">'.$server_item->getServerNewsTitle().'</a></span>'.LF;
+            $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($server_item->getServerNewsTitle()).'</a></span>'.LF;
          } else {
-            $title = '<span style="font-weight: bold;">'.$server_item->getServerNewsTitle().'</span>'.LF;
+            $title = '<span style="font-weight: bold;">'.$this->_text_as_html_short($server_item->getServerNewsTitle()).'</span>'.LF;
          }
          $html .= '<div class="myarea_section_title">'.$title.'</div>';
          $html .= '<div class="myarea_content" style="position:relative; padding-bottom:0em;">'.LF;
 
          $text = $server_item->getServerNewsText();
          if (!empty($text)) {
-            $html .= '<span style="font-size: 8pt;">'.$text.'</span>'.LF;
+            $html .= '<span style="font-size: 8pt;">'.$this->_cleanDataFromTextArea($text).'</span>'.LF;
          }
          if (!empty($link)) {
-            $html .= '<span style="font-size: 8pt;"> [<a href="'.$link.'" style="color:#800000" target="_blank">'.'mehr ...'.'</a>]</span>'.LF;
+            $html .= '<span style="font-size: 8pt;"> [<a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.'mehr ...'.'</a>]</span>'.LF;
          }
 
          $html .= BRLF;
@@ -2150,19 +2150,19 @@ class cs_page_view extends cs_view {
          $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $portal_item->getServerNewsLink();
          if (!empty($link)) {
-            $title = '<span style="font-weight: bold;"><a href="'.$link.'" style="color:#800000" target="_blank">'.$portal_item->getServerNewsTitle().'</a></span>'.LF;
+            $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($portal_item->getServerNewsTitle()).'</a></span>'.LF;
          } else {
-            $title = '<span style="font-weight: bold;">'.$portal_item->getServerNewsTitle().'</span>'.LF;
+            $title = '<span style="font-weight: bold;">'.$this->_text_as_html_short($portal_item->getServerNewsTitle()).'</span>'.LF;
          }
          $html .= '<div class="myarea_section_title">'.$title.'</div>';
          $html .= '<div class="myarea_content" style="position:relative; padding-bottom:0em;">'.LF;
 
          $text = $portal_item->getServerNewsText();
          if (!empty($text)) {
-            $html .= '<span style="font-size: 8pt;">'.$text.'</span>'.LF;
+            $html .= '<span style="font-size: 8pt;">'.$this->_cleanDataFromTextArea($text).'</span>'.LF;
          }
          if (!empty($link)) {
-            $html .= '<span style="font-size: 8pt;"> [<a href="'.$link.'" style="color:#800000" target="_blank">'.'mehr ...'.'</a>]</span>'.LF;
+            $html .= '<span style="font-size: 8pt;"> [<a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.'mehr ...'.'</a>]</span>'.LF;
          }
 
          $html .= BRLF;
