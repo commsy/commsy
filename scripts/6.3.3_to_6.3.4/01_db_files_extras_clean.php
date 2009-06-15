@@ -47,7 +47,9 @@ if ($count < 1) {
          while ( strstr($new_extra,'\\"') ) {
             $new_extra = str_replace('\\"','"',$new_extra);
          }
-         if ( is_array(mb_unserialize($new_extra)) ) {
+         if ( is_array(mb_unserialize($new_extra))
+              or ($new_extra == 's:0:"";')
+            ) {
             $sql = 'UPDATE files SET extras="'.addslashes($new_extra).'" WHERE files_id="'.$row['files_id'].'";';
             $success1 = select($sql);
             $sucess = $sucess and $success1;
