@@ -408,7 +408,18 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 // Get data from database
 $todo_manager = $environment->getToDosManager();
 $todo_manager->setContextLimit($environment->getCurrentContextID());
-$count_all = $todo_manager->getCountAll();
+$all_ids = $todo_manager->getIds();
+$count_all = count($all_ids);
+if (isset($all_ids[0])){
+	$newest_id = $all_ids[0];
+	$item = $todo_manager->getItem($newest_id);
+	$date = $item->getModificationDate();
+	$now = getCurrentDateTimeInMySQL();
+	if ($date <= $now){
+	   $sel_activating_status = 1;
+	}
+}
+$todo_manager->resetData();
 if ( !empty($ref_iid) and $mode == 'attached' ){
    $todo_manager->setRefIDLimit($ref_iid);
 }

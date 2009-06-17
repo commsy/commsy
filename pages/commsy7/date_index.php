@@ -585,7 +585,19 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
    $dates_manager->setSortOrder('time');
 } else {
    $dates_manager->setDateModeLimit(2);
-   $count_all = $dates_manager->getCountAll();
+   $all_ids = $dates_manager->getIds();
+   $count_all = count($all_ids);
+   if (isset($all_ids[0])){
+	   $newest_id = $all_ids[0];
+	   $item = $dates_manager->getItem($newest_id);
+	   $date = $item->getModificationDate();
+	   $now = getCurrentDateTimeInMySQL();
+	   if ($date <= $now){
+	      $sel_activating_status = 1;
+	   }
+   }
+   $dates_manager->resetData();
+   $dates_manager->setDateModeLimit(2);
 }
 if ( $sel_activating_status == 2 ) {
    $dates_manager->showNoNotActivatedEntries();

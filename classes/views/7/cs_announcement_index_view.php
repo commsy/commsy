@@ -56,7 +56,8 @@ class cs_announcement_index_view extends cs_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       $context_item = $this->_environment->getCurrentContextItem();
       if ($context_item->withActivatingContent()){
-         if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+         $activation_limit= $this->getActivationLimit();
+         if ( $activation_limit == 2 ){
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;

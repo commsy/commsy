@@ -1701,7 +1701,7 @@ EOD;
             $parameter_array = $this->_environment->getCurrentParameterArray();
             if (
                 (isset($parameter_array['attribute_limit']) and $parameter_array['attribute_limit']!='0')
-                or (isset($parameter_array['selactivatingstatus']) and $parameter_array['selactivatingstatus']!='0')
+  #              or (isset($parameter_array['selactivatingstatus']) and $parameter_array['selactivatingstatus']!='0')
                 or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
                 or (isset($parameter_array['selrubric']) and !empty($parameter_array['selrubric']))
                 or (isset($parameter_array['selrestriction']) and !empty($parameter_array['selrestriction']))
@@ -2326,7 +2326,7 @@ EOD;
          $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
          $html .= '         </noscript>';
          $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
-         if ($context_item->withActivatingContent()){
+  /*       if ($context_item->withActivatingContent()){
             $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
             $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
             $html .= '      <option value="1"';
@@ -2342,7 +2342,7 @@ EOD;
             $html .= '>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</option>'.LF;
             $html .= '   </select>'.LF;
             $html .='</div>';
-         }
+         }*/
          $html .= $this->_getAdditionalRestrictionBoxAsHTML('14.5').LF;
          $html .= $this->_getAdditionalFormFieldsAsHTML().LF;
          $html .= '</div>'.LF;

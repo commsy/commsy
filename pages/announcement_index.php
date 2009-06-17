@@ -397,7 +397,18 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 // Get data from database
 $announcement_manager = $environment->getAnnouncementManager();
 $announcement_manager->setContextLimit($environment->getCurrentContextID());
-$count_all = $announcement_manager->getCountAll();
+$all_ids = $announcement_manager->getIds();
+$count_all = count($all_ids);
+if (isset($all_ids[0])){
+	$newest_id = $all_ids[0];
+	$item = $announcement_manager->getItem($newest_id);
+	$date = $item->getModificationDate();
+	$now = getCurrentDateTimeInMySQL();
+	if ($date <= $now){
+	   $sel_activating_status = 1;
+	}
+}
+$announcement_manager->resetData();
 if ( !empty($ref_iid) and $mode == 'attached' ){
    $announcement_manager->setRefIDLimit($ref_iid);
 }

@@ -371,7 +371,18 @@ $discussion_manager->setContextLimit($environment->getCurrentContextID());
 
 $context_item = $environment->getCurrentContextItem();
 
-$count_all = $discussion_manager->getCountAll();
+$all_ids = $discussion_manager->getIds();
+$count_all = count($all_ids);
+if (isset($all_ids[0])){
+	$newest_id = $all_ids[0];
+	$item = $discussion_manager->getItem($newest_id);
+	$date = $item->getModificationDate();
+	$now = getCurrentDateTimeInMySQL();
+	if ($date <= $now){
+	   $sel_activating_status = 1;
+	}
+}
+$discussion_manager->resetData();
 
 
 if ( !empty($ref_iid) and $mode == 'attached' ){

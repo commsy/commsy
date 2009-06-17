@@ -410,8 +410,19 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
 $material_manager = $environment->getMaterialManager();
 $material_manager->create_tmp_table($environment->getCurrentContextID());
 $material_manager->setContextLimit($environment->getCurrentContextID());
-$count_all = $material_manager->getCountAll();
+$all_ids = $material_manager->getIds();
+$count_all = count($all_ids);
+if (isset($all_ids[0])){
+	$newest_id = $all_ids[0];
+	$item = $material_manager->getItem($newest_id);
+	$date = $item->getModificationDate();
+	$now = getCurrentDateTimeInMySQL();
+	if ($date <= $now){
+	   $sel_activating_status = 1;
+	}
+}
 $material_manager->resetData();
+
 if ( !empty($ref_iid) and $mode == 'attached' ){
    $material_manager->setRefIDLimit($ref_iid);
 }

@@ -103,7 +103,9 @@ class cs_material_index_view extends cs_index_view {
 /***Activating Code***/
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
-      if ( !isset($params['selactivatingstatus']) or (isset($params['selactivatingstatus']) and $params['selactivatingstatus'] == 2 ) ){
+
+      $activation_limit= $this->getActivationLimit();
+      if ( $activation_limit == 2 ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
