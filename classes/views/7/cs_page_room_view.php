@@ -510,7 +510,7 @@ class cs_page_room_view extends cs_page_view {
             $params['picture'] = $context_item->getLogoFilename();
             $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
             unset($params);
-            $html .= '<td style="padding:0px; height:55px;">';
+            $html .= '<td style="padding:0px; height:55px; width:10%;">';
             $html .= '<div class="logo" style="vertical-align:top; padding:5px 5px 0px 0px; margin:0px;">'.LF;
             $html .= '     <img style="height:45px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
             $html .= '</div>'.LF;
