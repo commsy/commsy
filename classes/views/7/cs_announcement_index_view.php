@@ -294,10 +294,6 @@ class cs_announcement_index_view extends cs_index_view {
                                   '','', '', '', '', '', '', '',
                                   CS_ANNOUNCEMENT_TYPE.$item->getItemID());
                unset($params);
-               if ($this->_environment->inProjectRoom()) {
-                  $title .= $this->_getItemChangeStatus($item);
-                  $title .= $this->_getItemAnnotationChangeStatus($item);
-               }
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
@@ -352,7 +348,7 @@ class cs_announcement_index_view extends cs_index_view {
                            '', '', '', '', '', '', '', '',
                            CS_ANNOUNCEMENT_TYPE.$item->getItemID());
       unset($params);
-     if ($this->_environment->inProjectRoom()) {
+      if ( $this->_environment->inProjectRoom() and !$item->isNotActivated()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
      }

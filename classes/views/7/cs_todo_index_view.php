@@ -290,10 +290,6 @@ class cs_todo_index_view extends cs_room_index_view {
                                   '','', '', '', '', '', '', '',
                                   CS_TODO_TYPE.$item->getItemID());
                unset($params);
-               if ($this->_environment->inProjectRoom()) {
-                  $title .= $this->_getItemChangeStatus($item);
-                  $title .= $this->_getItemAnnotationChangeStatus($item);
-               }
             }
             $activating_date = $item->getActivatingDate();
             if (strstr($activating_date,'9999-00-00')){
@@ -344,8 +340,10 @@ class cs_todo_index_view extends cs_room_index_view {
             CS_TODO_TYPE.$item->getItemID());
 
       unset($params);
-      $title .= $this->_getItemChangeStatus($item);
-      $title .= $this->_getItemAnnotationChangeStatus($item);
+      if ( $this->_environment->inProjectRoom() and !$item->isNotActivated()) {
+         $title .= $this->_getItemChangeStatus($item);
+         $title .= $this->_getItemAnnotationChangeStatus($item);
+      }
       return $title;
    }
 
