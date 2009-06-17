@@ -273,7 +273,12 @@ class cs_file_item extends cs_item {
    }
 
    function getDisplayName() {
-      return rawurldecode($this->_getValue('filename'));
+   	  $temp_display_name = rawurldecode($this->_getValue('filename'));
+   	  if(mb_check_encoding($temp_display_name, 'UTF-8')){
+   	  	 return $temp_display_name;
+   	  } else if(mb_check_encoding($temp_display_name, 'ISO-8859-1')) {
+         return utf8_encode($temp_display_name);
+   	  }
    }
 
    function setTempKey ($value) {
