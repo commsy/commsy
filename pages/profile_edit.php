@@ -526,7 +526,7 @@ if ($command != 'error') { // only if user is allowed to edit user
                       if (empty($value)) {
                          $value = -1;
                       }
-                      $dummy_user->setPostion($value);
+                      $dummy_user->setPosition($value);
                    }
                    if (isset($_POST['messenger_change_all'])) {
                       $value = $user_item->getICQ();
