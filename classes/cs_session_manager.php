@@ -155,7 +155,7 @@ class cs_session_manager {
          trigger_error('Problems selecting session values for: '.encode(AS_DB,$item->getSessionID()).'.', E_USER_WARNING);
       } else {
          include_once('functions/text_functions.php');
-      if (!empty($result[0])) {
+         if (!empty($result[0])) {
             $query = "UPDATE session SET session_value='".encode(AS_DB,$session_data)."',
                                          created='".$current_date_time."'
                                      WHERE session_id='".$item->getSessionID()."';";

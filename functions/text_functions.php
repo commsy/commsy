@@ -1108,4 +1108,12 @@ if (!function_exists('mb_vsprintf')) {
       return vsprintf($newformat, $newargv);
    }
 }
+
+function cs_utf8_encode ($value) {
+   if ( mb_check_encoding($value, 'UTF-8') ) {
+      return $value;
+   } elseif ( mb_check_encoding($value, 'ISO-8859-1') ) {
+      return utf8_encode($value);
+   }
+}
 ?>

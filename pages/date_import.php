@@ -262,7 +262,8 @@ else {
                      $temp_data_array = explode(',',$temp_data);
                      for ($j = 0; $j < count($data_header_array); $j++){
                         if ( isset($temp_data_array[$j]) ){
-                           $dates_data_array[$i-1][$data_header_array[$j]] = $temp_data_array[$j];
+                           include_once('functions/text_functions.php');
+                           $dates_data_array[$i-1][$data_header_array[$j]] = cs_utf8_encode($temp_data_array[$j]);
                         }
                      }
                   }
