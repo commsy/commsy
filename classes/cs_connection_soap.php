@@ -1952,6 +1952,12 @@ class cs_connection_soap {
             $label_type = $item_manager->getItemType($label_id);
             if ( $label_type == CS_LINKITEM_TYPE ) {
                $result = $this->savePosForItem($session_id,$label_id,$x,$y);
+            } elseif ( $label_type == CS_TAG_TYPE ) {
+               $link_manager = $this->_environment->getLinkItemManager();
+               $link_item = $link_manager->getItemByFirstAndSecondID($item_id,$label_id);
+               if ( isset($link_item) ) {
+                  $result = $this->savePosForItem($session_id,$link_item->getItemID(),$x,$y);
+               }
             } else {
                $manager = $this->_environment->getLinkManager();
                if ( $item_type != CS_BUZZWORD_TYPE ) {
