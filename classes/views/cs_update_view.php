@@ -80,7 +80,7 @@ class cs_update_view extends cs_view {
 
    private function _initProgressBar($count,$title = 'Total entries to be processed',$value = '100%') {
       echo (BRLF.$title.": ".$count.LF);
-      echo (BRLF."|....................................................................................................|".$value.LF);
+      echo (BRLF."|....................................................................................................| ".$value.LF);
       echo ('<script type="text/javascript">window.scrollTo(1,10000000);</script>'.LF);
       echo BRLF."|";
       flush();
@@ -123,10 +123,11 @@ class cs_update_view extends cs_view {
    private function _getSuccessAsHTML ($value) {
       $retour = '';
       if ( $value ) {
-         $retour = '[done]';
+         $retour = ' <span style="color: green;">[done]</span>';
       } else {
-         $retour = '[error]';
+         $retour = ' <span style="color: red;">[error]</span>';
       }
+      return $retour;
    }
 
    private function _getDBConnector () {
@@ -144,6 +145,22 @@ class cs_update_view extends cs_view {
          $db->setDisplayOn();
       }
       return $db->performQuery($sql);
+   }
+
+   private function _existsField ( $table, $field ) {
+      $retour = false;
+      $sql = 'SHOW COLUMNS FROM '.$table;
+      $result = $this->_select($sql);
+      foreach ( $result as $field_array ) {
+         if ( !empty($field_array)
+              and !empty($field_array['Field'])
+              and $field_array['Field'] == $field
+            ) {
+            $retour = true;
+            break;
+         }
+      }
+      return $retour;
    }
 
    /** get content of plugin as HTML

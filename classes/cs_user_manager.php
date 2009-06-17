@@ -605,12 +605,12 @@ class cs_user_manager extends cs_manager {
       if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND ( 1 = 1';
    if (!isset($this->_attribute_limit) || ('all'==$this->_attribute_limit)){
-      $field_array = array('user.city','user.user_id','user.firstname','user.lastname','user.email','user.modification_date','TRIM(CONCAT(user.firstname," ",user.lastname))');
+      $field_array = array('user.city','user.user_id','user.firstname','user.lastname','user.email','user.modification_date','user.description','TRIM(CONCAT(user.firstname," ",user.lastname))');
       $search_limit_query_code = ' AND '.$this->_generateSearchLimitCode($field_array);
       $query .= $search_limit_query_code;
    } else {
       if ('description' == $this->_attribute_limit) {
-         $query .= $this->_generateSearchLimitCode(array('user.extras'));
+         $query .= $this->_generateSearchLimitCode(array('user.description'));
       }
       if (('modificator' == $this->_attribute_limit) || ('title'==$this->_attribute_limit)) {
                if ('description' == $this->_attribute_limit) {
@@ -983,6 +983,7 @@ class cs_user_manager extends cs_manager {
      $query .= 'email="'.encode(AS_DB,$user_item->getEmail()).'",';
      $query .= 'city="'.encode(AS_DB,$user_item->getCity()).'",';
      $query .= 'visible="'.encode(AS_DB,$user_item->getVisible()).'",';
+     $query .= 'description="'.encode(AS_DB,$user_item->getDescription()).'",';
 
      // if user was entered by system (creator_id == 0) then creator_id must change from 0 to item_id of the user_item
      // see methode _create()
@@ -1076,6 +1077,7 @@ class cs_user_manager extends cs_manager {
                'email="'.encode(AS_DB,$item->getEmail()).'",'.
                'city="'.encode(AS_DB,$item->getCity()).'",'.
                'visible="'.encode(AS_DB,$item->getVisible()).'",'.
+               'description="'.encode(AS_DB,$item->getDescription()).'",'.
                "extras='".encode(AS_DB,serialize($item->getExtraInformation()))."'";
 
      $result = $this->_db_connector->performQuery($query);

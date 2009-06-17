@@ -526,7 +526,7 @@ class cs_user_item extends cs_item {
     * @param string value description of the user
     */
    function setDescription ($value) {
-      $this->_addExtra('USERDESCRIPTION',(string)$value);
+      $this->_setValue('description',(string)$value);
    }
 
    /** get description of the user
@@ -535,11 +535,7 @@ class cs_user_item extends cs_item {
     * @return string description of the user
     */
    function getDescription () {
-      $retour = '';
-      if ($this->_issetExtra('USERDESCRIPTION')) {
-         $retour = $this->_getExtra('USERDESCRIPTION');
-      }
-      return $retour;
+      return $this->_getValue('description');
    }
 
    /** set picture filename of the user

@@ -1063,6 +1063,7 @@ CREATE TABLE `user` (
   `visible` tinyint(4) NOT NULL default '1',
   `extras` text,
   `auth_source` int(11) default NULL,
+  `description` text,
   PRIMARY KEY  (`item_id`),
   KEY `context_id` (`context_id`),
   KEY `creator_id` (`creator_id`),
