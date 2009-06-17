@@ -420,6 +420,8 @@ if (isset($all_ids[0])){
 	if ($date <= $now){
 	   $sel_activating_status = 1;
 	}
+}elseif($count_all == 0){
+	$sel_activating_status = 1;
 }
 $material_manager->resetData();
 

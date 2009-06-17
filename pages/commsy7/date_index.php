@@ -595,6 +595,8 @@ if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'det
 	   if ($date <= $now){
 	      $sel_activating_status = 1;
 	   }
+   }elseif($count_all == 0){
+	   $sel_activating_status = 1;
    }
    $dates_manager->resetData();
    $dates_manager->setDateModeLimit(2);
