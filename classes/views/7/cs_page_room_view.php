@@ -1137,7 +1137,24 @@ class cs_page_room_view extends cs_page_view {
                      $html .= $view->asHTML();
                      $title_string .= $append.'"'.$view->getViewTitle().'"';
                      $desc_string  .= $append.'"&nbsp;"';
-                     $size_string  .= $append.'"10"';
+                     if ($view_name == 'buzzwords'){
+                        $buzzword_manager = $this->_environment->getLabelManager();
+                        $buzzword_manager->resetLimits();
+                        $buzzword_manager->setContextLimit($this->_environment->getCurrentContextID());
+                        $buzzword_manager->setTypeLimit('buzzword');
+                        $size = count($buzzword_manager->getIds());
+                        unset($buzzword_manager);
+                        $size_string  .= $append.'"'.$size.'"';
+                     }elseif($view_name == 'tags'){
+                        $tag_manager = $this->_environment->getTagManager();
+                        $tag_manager->setContextLimit($this->_environment->getCurrentContextID());
+                        $tag_manager->select();
+                        $size = $tag_manager->getCountAll();
+                        unset($tag_manager);
+                        $size_string  .= $append.'"'.$size.'"';
+                     }else{
+                        $size_string  .= $append.'"10"';
+                     }
                      if (
                          ($view_name == 'buzzwords' and $context_item->isBuzzwordShowExpanded() )
                          or ($view_name == 'tags' and $context_item->isTagsShowExpanded() )
