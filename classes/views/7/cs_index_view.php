@@ -1676,14 +1676,17 @@ EOD;
          $context_item = $this->_environment->getCurrentContextItem();
 
          /*********Expert Search*******/
+         $html_text1 = $this->_getAdditionalRestrictionBoxAsHTML('14.5');
+         $html_text2 = $this->_getAdditionalFormFieldsAsHTML();
          if ( !strstr($list_box_conf,'search_nodisplay')
-            and ($context_item->withActivatingContent()
-                 or $this->_environment->getCurrentModule() == CS_DATE_TYPE
+            and ($this->_environment->getCurrentModule() == CS_DATE_TYPE
                  or $this->_environment->getCurrentModule() == CS_ANNOUNCEMENT_TYPE
+                 or $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE
                  or $this->_environment->getCurrentModule() == CS_USER_TYPE
                  or $this->_environment->getCurrentModule() == CS_MATERIAL_TYPE
                  or $this->_environment->getCurrentModule() == CS_TODO_TYPE
             )
+            and( $html_text1 != '' or $html_text2 != '')
          ){
             if ( $first_box ){
                $first_box = false;
@@ -1701,8 +1704,8 @@ EOD;
             $parameter_array = $this->_environment->getCurrentParameterArray();
             if (
                 (isset($parameter_array['attribute_limit']) and $parameter_array['attribute_limit']!='0')
-  #              or (isset($parameter_array['selactivatingstatus']) and $parameter_array['selactivatingstatus']!='0')
                 or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
+                or (isset($parameter_array['selgroup']) and $parameter_array['selgroup']!='0')
                 or (isset($parameter_array['selrubric']) and !empty($parameter_array['selrubric']))
                 or (isset($parameter_array['selrestriction']) and !empty($parameter_array['selrestriction']))
                 or (isset($parameter_array['seluser']) and !empty($parameter_array['seluser']))
@@ -2326,6 +2329,7 @@ EOD;
          $html .= '<div class="right_box_title">'.$this->_translator->getMessage('COMMON_RESTRICTIONS').'</div>';
          $html .= '         </noscript>';
          $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
+         $html .= '   <input type="hidden" name="selactivatingstatus" value="'.$this->_activation_limit.'"/>'.LF;
   /*       if ($context_item->withActivatingContent()){
             $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
             $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
