@@ -30,12 +30,15 @@ $admin_link_list = new cs_list();
 if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
+if ( !isset($translator) and isset($this->_translator) ) {
+   $translator = $this->_translator;
+}
 
    if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
       $link_item = new cs_link();
-      $link_item->setDescription(getMessage('ROOM_MEMBER_ADMIN_DESC'));
+      $link_item->setDescription($translator->getMessage('ROOM_MEMBER_ADMIN_DESC'));
       $link_item->setIconPath('images/cs_config/ROOM_MEMBER_ADMIN.gif');
-      $link_item->setTitle(getMessage('ROOM_MEMBER_ADMIN'));
+      $link_item->setTitle($translator->getMessage('ROOM_MEMBER_ADMIN'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('account');
       $link_item->setFunction('index');
@@ -46,8 +49,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_MAIL_LINK'));
-      $link_item->setDescription(getMessage('PREFERENCES_MAIL_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_MAIL_LINK'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_MAIL_DESC'));
       $link_item->setIconPath('images/cs_config/PREFERENCES_MAIL.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -58,8 +61,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_AGB'));
-      $link_item->setDescription(getMessage('PREFERENCES_AGB_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_AGB'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_AGB_DESC'));
       $link_item->setIconPath('images/cs_config/PREFERENCES_AGB.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -73,9 +76,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
         and !$environment->inPortal()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
-      $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
-      $link_item->setDescription(getMessage('COMMON_INFORMATION_BOX_DESC'));
+      $link_item->setTitle($translator->getMessage('COMMON_INFORMATION_BOX'));
+      $link_item->setShortTitle($translator->getMessage('COMMON_INFORMATION_BOX_SHORT'));
+      $link_item->setDescription($translator->getMessage('COMMON_INFORMATION_BOX_DESC'));
       $link_item->setIconPath('images/cs_config/COMMON_INFORMATION_BOX.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -86,9 +89,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( !$environment->inServer() and !$environment->inPrivateRoom() and !$environment->inPortal()) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('COMMON_CONFINGURATION_ARCHIVE'));
-      $link_item->setShortTitle(getMessage('COMMON_CONFINGURATION_ARCHIVE_SHORT'));
-      $link_item->setDescription(getMessage('COMMON_CONFIGURATION_ARCHIVE_DESC'));
+      $link_item->setTitle($translator->getMessage('COMMON_CONFINGURATION_ARCHIVE'));
+      $link_item->setShortTitle($translator->getMessage('COMMON_CONFINGURATION_ARCHIVE_SHORT'));
+      $link_item->setDescription($translator->getMessage('COMMON_CONFIGURATION_ARCHIVE_DESC'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_ARCHIVE.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -105,8 +108,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
         and $context_item->withRubric(CS_MATERIAL_TYPE)
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
-      $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
+      $link_item->setTitle($translator->getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
+      $link_item->setDescription($translator->getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
       $link_item->setIconPath('images/cs_config/MATERIAL_ADMIN_TINY_DESCRIPTION.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('material_admin');
@@ -121,8 +124,8 @@ if ( !isset($environment) and isset($this->_environment) ) {
         or $environment->inGroupRoom()
       ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_USAGE_INFOS'));
-      $link_item->setDescription(getMessage('PREFERENCES_USAGE_INFOS_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_USAGE_INFOS'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_USAGE_INFOS_DESC'));
       $link_item->setIconPath('images/cs_config/PREFERENCES_USAGE_INFOS.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -134,9 +137,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( $environment->inPortal() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PORTAL_NEWS_LINK'));
+      $link_item->setTitle($translator->getMessage('PORTAL_NEWS_LINK'));
       $link_item->setIconPath('images/cs_config/SERVER_NEWS_LINK.gif');
-      $link_item->setDescription(getMessage('PORTAL_NEWS_LINK_DESC'));
+      $link_item->setDescription($translator->getMessage('PORTAL_NEWS_LINK_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('news');
@@ -146,9 +149,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( $environment->inServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('SERVER_NEWS_LINK'));
+      $link_item->setTitle($translator->getMessage('SERVER_NEWS_LINK'));
       $link_item->setIconPath('images/cs_config/SERVER_NEWS_LINK.gif');
-      $link_item->setDescription(getMessage('SERVER_NEWS_LINK_DESC'));
+      $link_item->setDescription($translator->getMessage('SERVER_NEWS_LINK_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('news');
@@ -158,9 +161,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( $environment->inServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('CONFIGURATION_EXTRA_FORM_HEADLINE'));
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_EXTRA_FORM_HEADLINE'));
       $link_item->setIconPath('images/cs_config/CONFIGURATION_EXTRA_FORM.gif');
-      $link_item->setDescription(getMessage('CONFIGURATION_EXTRA_FORM_DESC'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_EXTRA_FORM_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('extra');
@@ -170,9 +173,9 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( $environment->inServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('SERVER_STATISTIC_LINK'));
+      $link_item->setTitle($translator->getMessage('SERVER_STATISTIC_LINK'));
       $link_item->setIconPath('images/cs_config/SERVER_STATISTIC_LINK.gif');
-      $link_item->setDescription(getMessage('SERVER_STATISTIC_LINK_DESC'));
+      $link_item->setDescription($translator->getMessage('SERVER_STATISTIC_LINK_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('statistic');
@@ -182,12 +185,24 @@ if ( !isset($environment) and isset($this->_environment) ) {
 
    if ( $environment->inServer() ) {
       $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_OUTOFSERVICE'));
-      $link_item->setDescription(getMessage('PREFERENCES_OUTOFSERVICE_DESC'));
+      $link_item->setTitle($translator->getMessage('PREFERENCES_OUTOFSERVICE'));
+      $link_item->setDescription($translator->getMessage('PREFERENCES_OUTOFSERVICE_DESC'));
       $link_item->setIconPath('images/cs_config/SERVER_OUTOFSERVICE.gif');
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('outofservice');
+      $link_item->setParameter(array());
+      $admin_link_list->add($link_item);
+   }
+
+   if ( $environment->inServer() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_UPDATE_LINK'));
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_UPDATE_DESC'));
+      $link_item->setIconPath('images/commsyicons/48x48/config/update.png');
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('update');
       $link_item->setParameter(array());
       $admin_link_list->add($link_item);
    }

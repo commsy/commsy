@@ -118,6 +118,8 @@ class cs_page_view extends cs_view {
 
    var $_style_image_path = 'images/layout/';
 
+   var $_flush_mode = false;
+
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -128,6 +130,14 @@ class cs_page_view extends cs_view {
       if (file_exists('htdocs/'.$this->_environment->getCurrentPortalID().'/commsy.css') ){
          $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images/';
       }
+   }
+
+   public function setFlushModeOn () {
+      $this->_flush_mode = true;
+   }
+
+   public function flushHTML () {
+      return $this->_flush_mode;
    }
 
    function setMyAreaErrorBox($value){

@@ -467,6 +467,7 @@ class cs_configuration_form_view extends cs_form_view {
              $this->_environment->getCurrentModule() == 'account' or
              $this->_environment->getCurrentFunction() == 'statistic' or
              $this->_environment->getCurrentFunction() == 'informationbox' or
+             $this->_environment->getCurrentFunction() == 'update' or
              $this->_environment->getCurrentFunction() == 'archive'
             ){
             $show_entry = '0';
@@ -492,6 +493,10 @@ class cs_configuration_form_view extends cs_form_view {
              $this->_environment->getCurrentFunction() == 'path' or
              $this->_environment->getCurrentFunction() == 'tags' or
              $this->_environment->getCurrentFunction() == 'grouproom'
+             or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'plugins')
+             or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'service')
+             or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'wiki')
+             or ( $this->_environment->inPortal() and $this->_environment->getCurrentFunction() == 'htmltextarea')
             ){
             $show_entry = '2';
          }else{

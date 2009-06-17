@@ -246,6 +246,12 @@ $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC"]["en"] = "Wild-cards for ye
 <br/>Format (from to): DD.MM";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_TITLE"]["en"] = "Clock pulse %1";
 $message["CONFIGURATION_TIME_FORM_HEADLINE"]["en"] = "Clock pulse";
+$message["CONFIGURATION_UPDATE_ALL"]["en"] = "perform all";
+$message["CONFIGURATION_UPDATE_BUTTON"]["en"] = "Perform update";
+$message["CONFIGURATION_UPDATE_DESC"]["en"] = "If you have installed a new version, you can perform needed update scripts here.";
+$message["CONFIGURATION_UPDATE_LINK"]["en"] = "Update";
+$message["CONFIGURATION_UPDATE_VERSION_CODE"]["en"] = "Version code";
+$message["CONFIGURATION_UPDATE_VERSION_DB"]["en"] = "Version database";
 $message["CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT"]["en"] = "Choose workspace rubric";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO"]["en"] = "Toggle this user notice";
 $message["CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC"]["en"] = "Display this notice";

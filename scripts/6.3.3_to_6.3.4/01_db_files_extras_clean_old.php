@@ -3,7 +3,9 @@
 //
 // Release $Name$
 //
-// Copyright (c)2009 Iver Jackewitz
+// Copyright (c)2002-2007 Dirk Bloessl, Matthias Finck, Dirk Fust, Oliver Hankel, Iver Jackewitz, Michael Janneck,
+// Martti Jeenicke, Detlev Krause, Irina L. Marinescu, Timo Nolte, Bernd Pape,
+// Edouard Simon, Monique Strauss, José Manuel González Vázquez
 //
 //    This file is part of CommSy.
 //
@@ -20,33 +22,24 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// init $success
+include_once('../migration.conf.php');
+include_once('../db_link.dbi_utf8.php');
+include_once('../update_functions.php');
+
+// time management for this script
+$time_start = getmicrotime();
 $success = true;
 
-// headline
-$this->_flushHTML('files: clean extras'.BRLF);
-
-// count entries
-$result = $this->_select('SELECT count(files_id) AS count FROM files WHERE extras LIKE \'%\\\\\\\\"%\';');
-if ( !empty($result[0]['count']) ) {
-   $count = $result[0]['count'];
-} else {
-   $count = 0;
-}
+echo ('files: clean extras'.LINEBREAK);
+$count = array_shift(mysql_fetch_row(select('SELECT count(files_id) AS count FROM files WHERE extras LIKE \'%\\\\\\\\"%\';')));
 if ($count < 1) {
-   // nothing to do
-   $this->_flushHTML('nothing to do.'.BRLF);
+   echo "nothing to do.";
 } else {
-   // something to do
-   $this->_initProgressBar($count);
+   init_progress_bar($count);
    $sql = 'SELECT * FROM files WHERE extras LIKE \'%\\\\\\\\"%\';';
-   $result = $this->_select($sql);
-   foreach ($result as $row) {
-      $extra_array = @unserialize($row['extras']);
-      if ( empty($extra_array) ) {
-         $serial_str = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $row['extras'] );
-         $extra_array = @unserialize($serial_str);
-      }
+   $result = select($sql);
+   while ($row = mysql_fetch_assoc($result)) {
+      $extra_array = mb_unserialize($row['extras']);
       if ( strlen($row['extras']) > 0
            and !is_array($extra_array)
          ) {
@@ -58,11 +51,16 @@ if ($count < 1) {
               or ($new_extra == 's:0:"";')
             ) {
             $sql = 'UPDATE files SET extras="'.addslashes($new_extra).'" WHERE files_id="'.$row['files_id'].'";';
-            $success1 = $this->_select($sql);
-            $success = $success and $success1;
+            $success1 = select($sql);
+            $sucess = $sucess and $success1;
          }
       }
-      $this->_updateProgressBar($count);
+      update_progress_bar($count);
    }
 }
+
+// end of execution time
+$time_end = getmicrotime();
+$time = round($time_end - $time_start,3);
+echo LINEBREAK."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60)).LINEBREAK;
 ?>

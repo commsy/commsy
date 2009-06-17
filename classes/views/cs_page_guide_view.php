@@ -1836,11 +1836,16 @@ class cs_page_guide_view extends cs_page_view {
             if ( !empty($this->_views) ) {
                foreach ($this->_views as $view) {
                   if ( isset($view->_title) ){
-                    $html .= '<tr>'.LF;
-                    $html .= '<td colspan="2">'.LF;
-                    $html .= $view->asHTML();
-                    $html .= '</td>'.LF;
-                    $html .= '</tr>'.LF;
+                     $html .= '<tr>'.LF;
+                     $html .= '<td colspan="2">'.LF;
+                     if ( $this->flushHTML() ) {
+                        echo($html);
+                        flush();
+                        $html = '';
+                     }
+                     $html .= $view->asHTML();
+                     $html .= '</td>'.LF;
+                     $html .= '</tr>'.LF;
                   }
                }
             }
@@ -1988,6 +1993,7 @@ class cs_page_guide_view extends cs_page_view {
 
             $html .= '</div>'.LF;
             $html .= '</td></tr>';
+
             $html .= '<tr>';
             if ( !$this->_environment->inServer() ) {
                $html .= '<td></td>';

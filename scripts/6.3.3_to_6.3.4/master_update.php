@@ -40,6 +40,7 @@ while(false !== ($entry = readdir($directory_handle))) {
         and $entry != 'master_update_bash.php'
         and !is_dir($directory.'/'.$entry)
         and !strstr($entry,'~')
+        and strstr($entry,'_old')
       ) {
       $scripts[] = $entry;
    }

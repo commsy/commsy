@@ -726,12 +726,14 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_SCRIBD':
                $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM',$link);
                break;
+            case 'CONFIGURATION_UPDATE':
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM',$link);
+               break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item _FORM";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item ('.__LINE__.')";
                break;
          }
          $retour = $tempMessage;
-         // if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_'.strtoupper($rubric).'_'.strtoupper($funct).'_FORM' or $retour == 'tbd') {
          if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_'.$temp.'_FORM' or $retour == 'tbd') {
             $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
@@ -893,6 +895,17 @@ class cs_server_item extends cs_guide_item {
       $this->_setOutOfServiceShow(1);
    }
 
+   public function getDBVersion () {
+      $retour = '';
+      if ($this->_issetExtra('VERSION')) {
+         $retour = $this->_getExtra('VERSION');
+      }
+      return $retour;
+   }
+
+   function setDBVersion ($value) {
+      $this->_addExtra('VERSION',$value);
+   }
 
    function getScribdApiKey () {
       $retour = '';
