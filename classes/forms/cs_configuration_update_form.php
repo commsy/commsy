@@ -50,16 +50,34 @@ class cs_configuration_update_form extends cs_rubric_form {
       $found = false;
       $directory_handle = @opendir($this->_path_to_scripts);
       if ($directory_handle) {
+         $over = false;
          while ( false !== ( $entry = readdir($directory_handle) ) ) {
             if ( is_dir($this->_path_to_scripts.'/'.$entry)
                  and strstr($entry,'_to_')
                ) {
-               if ( strstr($entry,$version.'_to_')
-                    or ( strstr($this->_version_code,'beta')
-                         and strstr($entry,$version)
-                       )
+               if ( ( !$found
+                       and ( strstr($entry,$version.'_to_')
+                             or ( strstr($this->_version_code,'beta')
+                                  and strstr($entry,$version)
+                                )
+                           )
+                     ) or $over
                   ) {
-                  $found = true;
+                  $over = true;
+                  $folder_array = explode('_to_',$entry);
+                  $first_folder = $folder_array[0];
+                  $first_folder_array = explode('.',$first_folder);
+                  if ( $first_folder_array[0] > 6
+                       or ( $first_folder_array[0] == 6
+                            and $first_folder_array[1] > 3
+                          )
+                       or ( $first_folder_array[0] == 6
+                            and $first_folder_array[1] == 3
+                            and $first_folder_array[2] > 2
+                          )
+                     ) {
+                     $found = true;
+                  }
                }
                if ( $found ) {
                   $retour[] = $entry;
