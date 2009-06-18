@@ -513,3 +513,52 @@ table.configuration_table{
    border: 1px solid <?php echo($color['tabs_background'])?>;
    margin-bottom:20px;
 }
+
+#cs_portal_announcements {
+	width:180px;
+   border-collapse: collapse;
+   border: 0px;
+   padding:0px;
+   margin-left:5px;
+   font-weight:normal;
+}
+
+#cs_portal_announcements .first-column{
+   vertical-align: middle; width: 10%;
+   padding-top: 0px;
+   padding-bottom: 0px;
+}
+#cs_portal_announcements .second-column{
+   vertical-align: middle;
+   width: 70%;
+   padding-top: 0px;
+   padding-bottom: 0px;
+   text-align:left;
+}
+#cs_portal_announcements .one-column{
+   vertical-align: middle;
+   width: 80%;
+   padding-top: 3px;
+   padding-bottom:3px;
+   padding-left:3px;
+   text-align:left;
+}
+#cs_portal_announcements .third-column{
+   width:20%;
+   text-align:right;
+}
+#cs_portal_announcements .second-row{
+    font-size:8pt;
+    padding-bottom:3px;
+}
+
+#cs_portal_announcements td.second-row a{
+    font-weight: bold;
+    background-color: <?php echo($color['myarea_title_backround'])?>;
+    font-size:10pt;
+}
+
+#cs_portal_announcements td.second-row a:hover{
+    color: <?php echo($color['myarea_section_title'])?>;
+    font-size:10pt;
+}
