@@ -58,8 +58,6 @@ var $_with_tags = false;
             $this->_with_tags = true;
          }
       }
-      $this->_headline = getMessage('CONFIGURATION_TAGS_LINK');
-      $this->setHeadline($this->_headline);
    }
 
    /** create the form, INTERNAL
