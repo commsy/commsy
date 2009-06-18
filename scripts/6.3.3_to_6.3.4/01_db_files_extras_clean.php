@@ -20,6 +20,11 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// new version of the update mechanism
+// -----------------------------------
+// the following is part of the method "asHTML"
+// from the object cs_update_view.php
+
 // init $success
 $success = true;
 
