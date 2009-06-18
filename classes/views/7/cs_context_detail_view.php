@@ -709,7 +709,11 @@ var $_room_type = 'context';
          $retour .= '    img { border: 0px; }'.LF;
          $retour .= '    img.logo_small { height: 40px; }'.LF;
          $retour .= '    table.room_window {margin:0px; padding:5px 10px 5px 10px; ';
-         $retour .= ' color: '.$color_array['page_title'].';';
+         if(isset($color_array['page_title'])){
+            $retour .= ' color: '.$color_array['page_title'].';';
+         } else {
+            $retour .= ' color: #000000;';
+         }
          if ($color_array['schema']=='SCHEMA_OWN'){
             if ($this->_item->getBGImageFilename()){
                global $c_single_entry_point;
