@@ -549,10 +549,10 @@ class cs_material_detail_view extends cs_detail_view {
                $biblio .= '.';
                if ( $item->getURL() ) {
                   $biblio .= ' '.$this->_translator->getMessage('MATERIAL_BIB_URL', $item->getURL());
-        if( $item->getURLDate() ) {
-           $biblio .= ' ('.$this->_translator->getMessage('MATERIAL_BIB_URL_DATE', $item->getURLDate()).')';
-        }
-        $biblio .= '.';
+                  if( $item->getURLDate() ) {
+                     $biblio .= ' ('.$this->_translator->getMessage('MATERIAL_BIB_URL_DATE', $item->getURLDate()).')';
+                  }
+                  $biblio .= '.';
                }
                break;
             case 'website':
@@ -561,6 +561,20 @@ class cs_material_detail_view extends cs_detail_view {
                   $biblio .= ' ('.$this->_translator->getMessage('MATERIAL_BIB_URL_DATE', $item->getURLDate()).')';
                }
                $biblio .= '.';
+               break;
+            case 'manuscript':
+               $biblio .= $item->getBibliographicValues();
+               if ( $item->getAddress() ) {
+                  $biblio .= ' '.$item->getAddress();
+                  $biblio .= '.';
+               }
+               if ( $item->getURL() ) {
+                  $biblio .= ' '.$this->_translator->getMessage('MATERIAL_BIB_URL', $item->getURL());
+                  if( $item->getURLDate() ) {
+                     $biblio .= ' ('.$this->_translator->getMessage('MATERIAL_BIB_URL_DATE', $item->getURLDate()).')';
+                  }
+                  $biblio .= '.';
+               }
                break;
             case 'none':
             default:
