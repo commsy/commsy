@@ -410,13 +410,20 @@ class cs_date_index_view extends cs_room_index_view {
          if ( $sort_criteria != $this->_last_sort_criteria ) {
             $this->_last_sort_criteria = $sort_criteria;
             $this->_count_headlines ++;
-            $room_manager = $this->_environment->getProjectManager();
+            $room_manager = $this->_environment->getRoomManager();
             $sort_room = $room_manager->getItem($sort_criteria);
+            if ( !isset($sort_room) ) {
+               $priv_manager = $this->_environment->getPrivateRoomManager();
+               $sort_room = $priv_manager->getItem($sort_criteria);
+               unset($priv_manager);
+            }
             $html .= '                     <tr class="list"><td '.$style.' width="100%" style="font-weight:bold;" colspan="5">'.LF;
             if ( empty($sort_room) ) {
                $community_manager = $this->_environment->getCommunityManager();
                $sort_community = $community_manager->getItem($sort_criteria);
-               $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_community->getTitle().'"'."\n";
+               if ( !isset($sort_community) ) {
+                  $html .= '                        '.$this->_translator->getMessage('COPY_FROM').'&nbsp;'.$this->_translator->getMessage('COMMON_COMMUNITY_ROOM_TITLE').'&nbsp;"'.$sort_community->getTitle().'"'.LF;
+               }
             } elseif( $sort_room->isPrivateRoom() ){
                $user = $this->_environment->getCurrentUserItem();
                $html .= '                        '.$this->_translator->getMessage('COPY_FROM_PRIVATEROOM').'&nbsp;"'.$user->getFullname().'"'."\n";
