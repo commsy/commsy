@@ -329,7 +329,8 @@ class cs_user_detail_view extends cs_detail_view {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
             $homepage = $this->_text_as_html_short($homepage_short);
          }else{
-            $homepage = '<a href="'.rawurlencode($homepage).'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
+            //$homepage = '<a href="'.rawurlencode($homepage).'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
+            $homepage = '<a href="'.$homepage.'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
          }
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_HOMEPAGE');
