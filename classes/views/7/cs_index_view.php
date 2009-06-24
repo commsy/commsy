@@ -2048,7 +2048,7 @@ EOD;
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
       $html .= $this->_getBrowsingIconsAsHTML().LF;
-      $html .= '<div style="white-space:nowrap;">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div id="right_box_page_numbers">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
       $html .='</div>'.LF;
 
       $width = '';

@@ -2097,7 +2097,7 @@ class cs_detail_view extends cs_view {
          $html .= '         <span>&gt;&gt;</span>'.LF;
       }
       $html .= '</div>';
-      $html .= '<div>';
+      $html .= '<div id="right_box_page_numbers">';
       if (!empty($forward_type) and $forward_type =='path'){
          if ( empty($ids) ) {
             $html .= '<span class="bold">'.$this->_translator->getMessage('COMMON_PATH_ENTRIES').' 1 / 1</span>'.LF;

@@ -347,6 +347,11 @@ class cs_page_view extends cs_view {
              $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="css/external_portal_styles/'.$portal_item->getItemID().'/css/commsy_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          }
       }
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and strstr($current_browser_version,'7.') ){
+         $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_room_ie_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      }
       return $retour;
    }
 
