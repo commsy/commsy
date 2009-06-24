@@ -582,7 +582,6 @@ class cs_detail_view extends cs_view {
                                  'class="detail_list"');
                $html .='</li>';
             }
-            $html .='</li>';
             unset($item);
          }
          $count_items++;
