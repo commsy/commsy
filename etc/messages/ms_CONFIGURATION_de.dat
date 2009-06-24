@@ -6,7 +6,7 @@ $message["CONFIGURATION_AGB_FORM_TEXT"]["de"] = "Text";
 $message["CONFIGURATION_AGB_FORM_WANT"]["de"] = "Einschalten?";
 $message["CONFIGURATION_AGB_FORM_WANT_DESC"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme an diesem Raum integriert. Potentielle TeilnehmerInnen müssen die AGBs bewußt ankreuzen, um Zutritt zu diesem Raum zu erhalten.";
 $message["CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL"]["de"] = "Hiermit werden Nutzungsvereinbarungen in den Prozess zur Anmeldung der Teilnahme am Portal integriert. Potentielle Mitglieder müssen die AGBs bewußt ankreuzen, um eine Kennung zu erhalten.";
-$message["CONFIGURATION_AGB_TEXT_ERROR"]["de"] = "Bitte geben Sie AGBs an.";
+$message["CONFIGURATION_AGB_TEXT_ERROR"]["de"] = "Bitte geben Sie AGBs an. Achten Sie darauf, dass Sie die AGBs in <span class=&quot;bold&quot;>allen Sprachen</span> angegeben haben.";
 $message["CONFIGURATION_ANNOUNCEMENT"]["de"] = "Ankündigungen";
 $message["CONFIGURATION_AUTHENTICATION_ADD_ACCOUNT_TITLE"]["de"] = "Kennung anlegen";
 $message["CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_TITLE"]["de"] = "Passwort ändern";
