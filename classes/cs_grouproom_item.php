@@ -104,6 +104,10 @@ class cs_grouproom_item extends cs_room_item {
       $item_id = $this->getItemID();
 
       $manager = $this->_environment->getGroupRoomManager();
+      $current_user = $this->_environment->getCurrentUser();
+      if ( empty($item_id) ) {
+         $this->setContactPerson($current_user->getFullName());
+      }
       $this->_save($manager);
 
       // sync group item

@@ -274,6 +274,20 @@ class cs_user_item extends cs_item {
       $this->_setValue("is_contact", '0');
    }
 
+   function makeContactPerson2(){
+      $this->_setValue("is_contact", '1');
+      $room_item = $this->_environment->getCurrentContextItem();
+      $room_item->setContactPerson($this->getFullName());
+      $room_item->save();
+   }
+
+   function makeNoContactPerson2(){
+      $this->_setValue("is_contact", '0');
+      $room_item = $this->_environment->getCurrentContextItem();
+      $room_item->unsetContactPerson($this->getFullName());
+      $room_item->save();
+   }
+
    function getContactStatus(){
       $status = $this->_getValue("is_contact");
       return $status;
@@ -1210,6 +1224,7 @@ class cs_user_item extends cs_item {
       if (!$related_user->isEmpty()) {
          $user_item = $related_user->getFirst();
          while ($user_item) {
+            $old_fullname = $user_item->getFullName();
             $value = $dummy_item->getFirstName();
             if (!empty($value)) {
                $user_item->setFirstName($value);
@@ -1372,6 +1387,14 @@ class cs_user_item extends cs_item {
             }
 
             $user_item->save();
+            if ($old_fullname != $user_item->getFullName() and $user_item->isContact()){
+               $room_id = $user_item->getContextID();
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($room_id);
+               $room_item->unsetContactPerson ($old_fullname);
+               $room_item->setContactPerson ($user_item->getFullName());
+               $room_item->save();
+            }
 
             $user_item = $related_user->getNext();
          }

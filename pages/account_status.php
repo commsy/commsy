@@ -233,9 +233,9 @@ if (empty($command)) {
          if ( $status == 'user' ) {
             $user->makeUser();
             if (!empty($_POST['contact_person'])) {
-               $user->makeContactPerson();
+               $user->makeContactPerson2();
             } else {
-               $user->makeNoContactPerson();
+               $user->makeNoContactPerson2();
             }
 
             ################################
@@ -278,9 +278,9 @@ if (empty($command)) {
          } elseif ( $status == 'moderator' ) {
             $user->makeModerator();
             if (!empty($_POST['contact_person'])) {
-               $user->makeContactPerson();
+               $user->makeContactPerson2();
             } else {
-               $user->makeNoContactPerson();
+               $user->makeNoContactPerson2();
             }
 
             ################################

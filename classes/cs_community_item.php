@@ -119,9 +119,11 @@ class cs_community_item extends cs_room_item {
    function save() {
       $item_id = $this->getItemID();
       $manager = $this->_environment->getCommunityManager();
+      $current_user = $this->_environment->getCurrentUser();
       if ( empty($item_id) ) {
          $this->setContinuous();
          $this->setServiceLinkActive();
+         $this->setContactPerson($current_user->getFullName());
       }
 
       $this->_save($manager);
@@ -129,7 +131,6 @@ class cs_community_item extends cs_room_item {
 
       if ( empty($item_id) ) {
          // create first moderator
-         $current_user = $this->_environment->getCurrentUser();
          $new_room_user = $current_user->cloneData();
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();

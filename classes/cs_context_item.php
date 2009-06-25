@@ -5009,8 +5009,13 @@ class cs_context_item extends cs_item {
                unset($context);
             }
          }
-         if ( $this->isCommunityRoom()
-              or $this->isPrivateRoom()
+         if ( $this->isCommunityRoom()){
+               $c_design = $this->_getDesign();
+               if ( $c_design == 7 ) {
+                  $retour = true;
+               }
+         }
+         if ($this->isPrivateRoom()
               or $this->isPortal()
             ) {
             $context = $this->getContextItem();

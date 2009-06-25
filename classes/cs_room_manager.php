@@ -192,6 +192,7 @@ class cs_room_manager extends cs_context_manager {
      }
 
      $query .= ' FROM '.$this->_db_table;
+
      // user id limit
      if (isset($this->_user_id_limit)) {
         $query .= ' LEFT JOIN user ON user.context_id='.$this->_db_table.'.item_id AND user.deletion_date IS NULL';
@@ -199,9 +200,10 @@ class cs_room_manager extends cs_context_manager {
            $query .= ' AND user.status >= "2"';
         }
      }
-     if (isset($this->_search_array) AND !empty($this->_search_array)) {
-        $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id';
-     }
+
+#     if (isset($this->_search_array) AND !empty($this->_search_array)) {
+#        $query .= ' LEFT JOIN user AS user2 ON user2.context_id='.$this->_db_table.'.item_id';
+#     }
 
     // time (clock pulses)
     if ( isset($this->_time_limit) ) {
@@ -215,9 +217,9 @@ class cs_room_manager extends cs_context_manager {
 
      $query .= ' WHERE 1';
 
-     if (isset($this->_search_array) AND !empty($this->_search_array)) {
-        $query .= ' AND user2.deletion_date IS NULL AND (user2.is_contact="1" OR user2.status="3")';
-     }
+#     if (isset($this->_search_array) AND !empty($this->_search_array)) {
+#        $query .= ' AND user2.deletion_date IS NULL AND (user2.is_contact="1" OR user2.status="3")';
+#     }
 
      if ( !empty($this->_id_array_limit) ) {
         $query .= ' AND '.$this->_db_table.'.item_id IN ('.implode(',',$this->_id_array_limit).')';
@@ -262,7 +264,8 @@ class cs_room_manager extends cs_context_manager {
      //search limit
      if (isset($this->_search_array) AND !empty($this->_search_array)) {
          $query .= ' AND (';
-         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title',$this->_db_table.'.extras');
+#         $field_array = array('CONCAT(user2.firstname, " ",user2.lastname)','user2.lastname','user2.firstname',$this->_db_table.'.title',$this->_db_table.'.extras');
+         $field_array = array($this->_db_table.'.title',$this->_db_table.'.extras');
          $search_limit_query_code = $this->_generateSearchLimitCode($field_array);
          $query .= $search_limit_query_code;
          $query .= ')';

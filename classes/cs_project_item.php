@@ -234,15 +234,16 @@ class cs_project_item extends cs_room_item {
    function save() {
       $item_id = $this->getItemID();
 
+      $current_user = $this->_environment->getCurrentUser();
       $manager = $this->_environment->getProjectManager();
       if ( empty($item_id) ) {
          $this->setServiceLinkActive();
+         $this->setContactPerson($current_user->getFullName());
       }
       $this->_save($manager);
 
       if ( empty($item_id) ) {
          // create first moderator
-         $current_user = $this->_environment->getCurrentUser();
          $new_room_user = $current_user->cloneData();
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();

@@ -268,11 +268,11 @@ function performAction ( $environment, $action_array, $post_array ) {
          ################################
 
       } elseif ( $action_array['action'] == 'USER_MAKE_CONTACT_PERSON' ) {
-         $user->makeContactPerson();
+         $user->makeContactPerson2();
          $user->save();
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON' ) {
-         $user->makeNoContactPerson();
+         $user->makeNoContactPerson2();
          $user->save();
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_EMAIL_SEND' ) {

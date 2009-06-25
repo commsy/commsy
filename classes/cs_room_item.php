@@ -183,6 +183,41 @@ class cs_room_item extends cs_context_item {
       return $retour;
    }
 
+   function setContactPerson ($fullname) {
+      $value = '';
+      if ($this->_issetExtra('CONTACT_PERSONS')) {
+         $value = $this->_getExtra('CONTACT_PERSONS');
+      }
+      if(!mb_stristr($value,$fullname)){
+         $value .= $fullname.', ';
+         $this->_setExtra('CONTACT_PERSONS',$value);
+      }
+   }
+
+   function getContactPersonString () {
+      $return = '';
+      if ($this->_issetExtra('CONTACT_PERSONS')) {
+         $return = $this->_getExtra('CONTACT_PERSONS');
+      }
+      if(mb_strlen($return)>2 and mb_strstr($return,', ')){
+         $return = mb_substr($return,0,(mb_strlen($return)-2));
+      }
+      return $return;
+   }
+
+
+   function unsetContactPerson ($fullname) {
+      $value = '';
+      if ($this->_issetExtra('CONTACT_PERSONS')) {
+         $value = $this->_getExtra('CONTACT_PERSONS');
+      }
+      if(mb_stristr($value,$fullname.', ')){
+         $value = str_replace($fullname.', ','',$value);
+      }
+      $this->_setExtra('CONTACT_PERSONS',$value);
+   }
+
+
    /** close a room
    * this method sets the status of the room to closed
    */

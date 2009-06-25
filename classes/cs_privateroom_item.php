@@ -203,11 +203,13 @@ class cs_privateroom_item extends cs_room_item {
    function save() {
       $item_id = $this->getItemID();
       $manager = $this->_environment->getPrivateRoomManager();
+      $current_user = $this->_environment->getCurrentUserItem();
 
-     if ( empty($item_id) ) {
-        $this->setContinuous();
-        $this->setServiceLinkActive();
-     }
+      if ( empty($item_id) ) {
+         $this->setContinuous();
+         $this->setServiceLinkActive();
+         $this->setContactPerson($current_user->getFullName());
+      }
 
       $this->_save($manager);
 

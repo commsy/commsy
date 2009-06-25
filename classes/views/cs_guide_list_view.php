@@ -457,7 +457,8 @@ class cs_guide_list_view extends cs_list_view_plain {
     * @return string contact moderators
     */
    function _getContactModerators ($item) {
-      $mod_list = $item->getContactModeratorList();
+/*      $mod_list = $item->getContactModeratorList();
+
       $html = '';
 
       $moderator = $mod_list->getFirst();
@@ -472,7 +473,9 @@ class cs_guide_list_view extends cs_list_view_plain {
          }
       } else {
         $html .= '<span class="small_font">'.$this->_translator->getMessage('COMMON_NO_CONTACT_MODERATOR').'</span>'.LF;
-      }
+      }*/
+
+      $html = $item->getContactPersonString();
 
       return $html;
    }
