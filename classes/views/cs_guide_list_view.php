@@ -474,8 +474,9 @@ class cs_guide_list_view extends cs_list_view_plain {
       } else {
         $html .= '<span class="small_font">'.$this->_translator->getMessage('COMMON_NO_CONTACT_MODERATOR').'</span>'.LF;
       }*/
-
-      $html = $item->getContactPersonString();
+      $html = '<span class="small_font">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getContactPersonString())).'</span>';
+            
+      //$html = $item->getContactPersonString();
 
       return $html;
    }
