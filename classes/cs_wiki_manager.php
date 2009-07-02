@@ -1786,5 +1786,75 @@ function setWikiGroupsAsPublic($groups){
    }
 }
 
+function getSoapWsdlUrl(){
+	global $c_pmwiki_path_url;
+	return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
+	
+}
+
+function getGroupsForWiki_soap($complete){
+	$client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+	$groups = $client->getGroupNames();
+	$result = array('groups' => array(), 'public' => array());
+	foreach($groups as $group){
+		if((!in_array($group, $result['groups']))
+	        && ($group != '')
+	        && (!mb_stristr($group, 'Site'))
+	        && (!mb_stristr($group, 'SiteAdmin'))
+	        && (!mb_stristr($group, 'Main'))
+	        && (!mb_stristr($group, 'Discussion_Backup_'))
+	        && (!mb_stristr($group, 'FoxNotifyLists'))
+	        && (!mb_stristr($group, 'Profiles'))
+	        && (!mb_stristr($group, 'PmWikiDe'))
+	        && (!mb_stristr($group, 'Calendar'))
+	        && (!mb_stristr($group, 'Category'))
+	        && (!mb_stristr($group, 'FoxTemplates'))
+	        && (!mb_stristr($group, 'index'))
+	        && (!mb_stristr($group, 'README'))
+	        && (!mb_stristr($group, 'Forum'))
+	        && (!mb_stristr($group, 'LICENSE'))){
+	   		$result['groups'][] = $group;
+	        $page_data_array = $client->getReadPage($group . '.GroupAttributes');
+	        $found = false;
+	        foreach($page_data_array as $page_data){
+	           if(stripos($page_data, '$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
+                   $result['public'][] = 'selected';
+                   $found = true;
+               }
+	        }
+	        if(!$found){
+	        	$result['public'][] = '';
+	        }
+	    }
+	}
+	return $result;
+}
+
+function soapCallToWiki(){
+	$client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+	//$test = $client->getPage('Main.GroupAttributes');		// - OK - UTF-8 check
+	//$test = $client->getPageSource('Main.HomePage');	// - OK - UTF-8 check
+	//$test = $client->getGroupNames();					// - OK
+	//$test = $client->getPageNames();					// - OK
+	//$test = $client->getPageData();					// - OK
+	//$test = $client->getRevision('Main.HomePage');	// - OK
+	//$test = $client->getMinRevision('Main.HomePage');	// - OK
+	//$test = $client->getRevisions('Main.HomePage');	// - OK
+	//$test = $client->getChanges('Main', '0');			// - OK
+	//$test = $client->getFileStorageMethod();			// - OK
+	//$test = $client->getFileList('Main.HomePage');	// - OK
+	//$test = $client->getFileInfo('Main.HomePage', 'Main.CommSyMaterial131.html');	// - OK
+	//$test = $client->getUploadInfo('Main.HomePage', 'Main.CommSyMaterial131.html'); // - check Auth!
+	//$test = $client->getProperties();					// - OK
+	//$test = $client->getVersion();						// - OK
+
+	$test = $client->getReadPage('Johannes.GroupAttributes');
+
+	pr($test);
+	
+	#pr($client->__getLastRequestHeaders());
+	#pr($client->__getLastResponseHeaders());
+	pr($client->__getLastResponse());
+}
 }
 ?>
