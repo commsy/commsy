@@ -276,16 +276,20 @@ class cs_user_item extends cs_item {
 
    function makeContactPerson2(){
       $this->_setValue("is_contact", '1');
-      $room_item = $this->_environment->getCurrentContextItem();
-      $room_item->setContactPerson($this->getFullName());
-      $room_item->save();
+      if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
+         $room_item = $this->_environment->getCurrentContextItem();
+         $room_item->setContactPerson($this->getFullName());
+         $room_item->save();
+      }
    }
 
    function makeNoContactPerson2(){
       $this->_setValue("is_contact", '0');
-      $room_item = $this->_environment->getCurrentContextItem();
-      $room_item->unsetContactPerson($this->getFullName());
-      $room_item->save();
+      if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
+         $room_item = $this->_environment->getCurrentContextItem();
+         $room_item->unsetContactPerson($this->getFullName());
+         $room_item->save();
+      }
    }
 
    function getContactStatus(){
@@ -866,6 +870,7 @@ class cs_user_item extends cs_item {
     */
    function reject () {
       $this->_setValue('status', 0);
+      $this->makeNoContactPerson2();
    }
 
    /** request a user
@@ -1144,6 +1149,7 @@ class cs_user_item extends cs_item {
          }
       }
 
+      $this->makeNoContactPerson2();
       $user_manager = $this->_environment->getUserManager();
       $this->_delete($user_manager);
 
