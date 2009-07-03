@@ -951,6 +951,9 @@ class cs_item {
    * @author CommSy Development Group
    */
    function _setValue($key, $value, $internal=TRUE) {
+      if(strpos($value,'<!-- KFC TEXT -->')!==false){
+         $value = correctFCKTags($value);
+      }
       $this->_data[$key] = $value;
       if ($internal) {
          $this->_changed['general'] = TRUE;
