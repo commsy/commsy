@@ -742,4 +742,75 @@ $cs_color['SCHEMA_20']['index_td_head_title']        = 'white';
 $cs_color['SCHEMA_20']['repeat_background']          = 'xy';
 /*****************************************************************/
 
+//SCHEMA 21: Blümchenwiese
+/*****************************************************************/
+$cs_color['SCHEMA_21']['schema']                     = 'SCHEMA_21';
+$cs_color['SCHEMA_21']['tabs_background']            = '#FDF98A';
+$cs_color['SCHEMA_21']['tabs_focus']                 = '#F4E17C';
+$cs_color['SCHEMA_21']['tabs_title']                 = '#1A4120';
+$cs_color['SCHEMA_21']['content_background']         = '#FDF98A';
+$cs_color['SCHEMA_21']['boxes_background']           = '#FBFDC3';
+$cs_color['SCHEMA_21']['hyperlink']                  = '#C4143F';
+$cs_color['SCHEMA_21']['list_entry_even']            = '#FBFDC3';
+
+$cs_color['SCHEMA_21']['table_background']           = $cs_color['SCHEMA_21']['content_background'];
+$cs_color['SCHEMA_21']['headline_text']              = $cs_color['SCHEMA_21']['tabs_title'];
+$cs_color['SCHEMA_21']['help_background']            = $cs_color['SCHEMA_21']['content_background'];
+$cs_color['SCHEMA_21']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_21']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_21']['date_title']                 = '#666699';
+$cs_color['SCHEMA_21']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_21']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_21']['warning']                    = 'red';
+
+$cs_color['SCHEMA_21']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_21']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_21']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_21']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_21']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_21']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_21']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_21']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_21']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_21']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_21']['repeat_background']          = 'xy';
+/*****************************************************************/
+
+//SCHEMA 21: Notenzimmer
+/*****************************************************************/
+$cs_color['SCHEMA_22']['schema']                     = 'SCHEMA_22';
+$cs_color['SCHEMA_22']['tabs_background']            = '#F2D0A6';
+$cs_color['SCHEMA_22']['tabs_focus']                 = '#FAE8D1';
+$cs_color['SCHEMA_22']['tabs_title']                 = '#FAF6D5';
+$cs_color['SCHEMA_22']['content_background']         = '#F2D0A6';
+$cs_color['SCHEMA_22']['boxes_background']           = '#FAE8D1';
+$cs_color['SCHEMA_22']['hyperlink']                  = '#A77B07';
+$cs_color['SCHEMA_22']['list_entry_even']            = '#FAE8D1';
+
+$cs_color['SCHEMA_22']['table_background']           = $cs_color['SCHEMA_22']['content_background'];
+$cs_color['SCHEMA_22']['headline_text']              = $cs_color['SCHEMA_22']['tabs_title'];
+$cs_color['SCHEMA_22']['help_background']            = $cs_color['SCHEMA_22']['content_background'];
+$cs_color['SCHEMA_22']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_22']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_22']['date_title']                 = '#666699';
+$cs_color['SCHEMA_22']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_22']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_22']['warning']                    = 'red';
+
+$cs_color['SCHEMA_22']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_22']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_22']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_22']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_22']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_22']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_22']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_22']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_22']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_22']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_22']['repeat_background']          = 'xy';
+/*****************************************************************/
+
+
 ?>
