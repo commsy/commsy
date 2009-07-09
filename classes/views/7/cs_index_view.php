@@ -1825,7 +1825,11 @@ EOD;
                 }
                 $html .= '<div style="margin-bottom:1px;">'.LF;
                 $html .= '<div style="position:relative; top:12px;">'.LF;
-                $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                   $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
+                } else {
+                   $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+                }
                 $html .= '</div>'.LF;
                 $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_text_as_html_short($room->getUsageInfoHeaderForRubric($act_rubric)).'</div>';
                 $html .= '<div class="usage_info">'.LF;
