@@ -34,7 +34,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
       $link_item = new cs_link();
       $link_item->setDescription(getMessage('ROOM_MEMBER_ADMIN_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/account.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/account.png');
+      }
       $link_item->setTitle(getMessage('ROOM_MEMBER_ADMIN'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('account');
@@ -51,7 +55,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
       $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
       $link_item->setDescription(getMessage('COMMON_INFORMATION_BOX_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/informationbox.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/informationbox.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/informationbox.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('informationbox');
@@ -68,7 +76,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
       $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/material_admin.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/material_admin.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/material_admin.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('material_admin');
       $link_item->setFunction('index');
@@ -84,7 +96,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('PREFERENCES_USAGE_INFOS'));
       $link_item->setDescription(getMessage('PREFERENCES_USAGE_INFOS_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/usage_info_options.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/usage_info_options.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/usage_info_options.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('usageinfo');
@@ -96,7 +112,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('PREFERENCES_MAIL_LINK'));
       $link_item->setDescription(getMessage('PREFERENCES_MAIL_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/mail_options.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/mail_options.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/mail_options.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('mail');

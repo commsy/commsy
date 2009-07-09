@@ -34,7 +34,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item = new cs_link();
    $link_item->setTitle(getMessage('CONFIGURATION_ROOM_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
-   $link_item->setIconPath('images/commsyicons/48x48/config/room_options.png');
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/room_options.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/room_options.png');
+   }
    $link_item->setDescription(getMessage('CONFIGURATION_ROOM_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
@@ -45,7 +49,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item = new cs_link();
    $link_item->setTitle(getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
-   $link_item->setIconPath('images/commsyicons/48x48/config/rubric_options.png');
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_options.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/rubric_options.png');
+   } 
    $link_item->setDescription(getMessage('CONFIGURATION_RUBRIC_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
@@ -56,7 +64,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item = new cs_link();
    $link_item->setTitle(getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
-   $link_item->setIconPath('images/commsyicons/48x48/config/structure_options.png');
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/structure_options.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/structure_options.png');
+   }
    $link_item->setDescription(getMessage('CONFIGURATION_STRUCTURE_OPTIONS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
@@ -68,7 +80,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE'));
       $link_item->setDescription(getMessage('CONFIGURATION_ACCOUNT_OPTIONS_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/account_options.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account_options.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/account_options.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('account_options');

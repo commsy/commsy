@@ -199,7 +199,11 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('CONFIGURATION_UPDATE_LINK'));
       $link_item->setDescription($translator->getMessage('CONFIGURATION_UPDATE_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/update.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/update.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/update.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('update');

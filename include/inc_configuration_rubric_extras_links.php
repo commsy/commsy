@@ -36,7 +36,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CONFIGURATION_TEXTAREA_TITLE'));
       $link_item->setDescription(getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/htmltextarea.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/htmltextarea.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/htmltextarea.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('htmltextarea');
@@ -51,7 +55,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    if ( $context_item->withWikiFunctions() and !$context_item->isServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('WIKI_CONFIGURATION_LINK'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/pmwiki.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/pmwiki.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/pmwiki.png');
+      }
       $link_item->setDescription(getMessage('WIKI_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -67,7 +75,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() and !$context_item->isGrouproom()) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
-      $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/etchat.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
+      }
       $link_item->setDescription(getMessage('CHAT_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -91,7 +103,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
          $link_item->setShortTitle(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'));
          $link_item->setDescription(getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_VALUE'));
       }
-      $link_item->setIconPath('images/commsyicons/48x48/config/template_options.png');
+      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/template_options.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/template_options.png');
+      }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
       $link_item->setFunction('template_options');
@@ -102,7 +118,11 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $link_item = new cs_link();
    $link_item->setTitle(getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE'));
    $current_context = $environment->getCurrentContextItem();
-   $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_extras.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
+   }
    $link_item->setDescription(getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
    $link_item->setModule('configuration');
