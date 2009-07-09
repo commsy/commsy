@@ -91,7 +91,11 @@ var $_room_type = 'context';
       $html .= $this->_getAdditionalActionsAsHTML($item);
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
-      $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+      }
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'detail',
@@ -103,7 +107,11 @@ var $_room_type = 'context';
          if ( $current_user->isUser() and $this->_with_modifying_actions ) {
             $params = array();
             $params['iid'] = $item->getItemID();
-            $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/mail.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/mail.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            }
             $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'rubric',
                                     'mail',
@@ -112,14 +120,22 @@ var $_room_type = 'context';
                                     getMessage('COMMON_EMAIL_TO')).LF;
             unset($params);
          } else {
-            $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/mail_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EMAIL_TO').'"/>';
+            }
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
          }
       }
       if ( $current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = 'NEW';
-         $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         }
          $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'edit',
@@ -128,7 +144,11 @@ var $_room_type = 'context';
                                     getMessage('COMMON_NEW_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+         }
          $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;

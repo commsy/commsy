@@ -138,7 +138,11 @@ class cs_material_index_view extends cs_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       if ($current_context->withMaterialImportLink() ){
-         $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+         }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                             CS_MATERIAL_TYPE,
                             'ims_import',

@@ -302,7 +302,11 @@ class cs_activity_view extends cs_view {
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
          global $c_pmwiki_path_url;
-         $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+         }
          $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
          $url_session_id = '';
          if ( $current_context->withWikiUseCommSyLogin() ) {
@@ -313,7 +317,11 @@ class cs_activity_view extends cs_view {
          $html .= ' '.'<a title="'.$title.'" href="'.$c_pmwiki_path_url.'/wikis/'.$current_context->getContextID().'/'.$current_context->getItemID().'/'.$url_session_id.'" target="_blank">'.$image.'</a>'.LF;
       }
       if ( $current_context->showHomepageLink() ) {
-         $image = '<img src="images/commsyicons/22x22/commsy_homepage.png" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/commsy_homepage.gif" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/commsy_homepage.png" style="vertical-align:bottom;" alt="'.getMessage('HOMEPAGE_HOMEPAGE').'"/>';
+         }
          $title = $this->_translator->getMessage('HOMEPAGE_HOMEPAGE');
          $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
                              'context',
@@ -333,11 +341,19 @@ class cs_activity_view extends cs_view {
             ) {
             $current_user = $this->_environment->getCurrentUserItem();
             if ( isset($current_user) and $current_user->isReallyGuest() ) {
-               $image = '<img src="images/commsyicons/22x22/etchat_grey.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/etchat_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/etchat_grey.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               }
                $html .= ' '.$image;
                // TBD: icon ausgrauen
             } else {
-               $image = '<img src="images/commsyicons/22x22/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CHAT').'"/>';
+               }
                $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
                                    'context',
                                    'forward',
@@ -367,7 +383,11 @@ class cs_activity_view extends cs_view {
          $html .= $this->_translator->getMessage('COMMON_PAGETITLE_CONFIGURATION').': ';
          $html .= '         </td>'.LF;
          $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-         $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+         }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',
@@ -397,9 +417,17 @@ class cs_activity_view extends cs_view {
             $params = array();
             $params['selstatus']='1';
             if ($count_new_accounts < 16){
-               $image = '<img src="images/commsyicons/22x22/config/account_'.$count_new_accounts.'.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_'.$count_new_accounts.'.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/config/account_'.$count_new_accounts.'.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               }
             }else{
-               $image = '<img src="images/commsyicons/22x22/config/account_16.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/config/account_16.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/config/account_16.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+               }
             }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
@@ -408,7 +436,11 @@ class cs_activity_view extends cs_view {
                                        $image,
                                        getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
          }else{
-            $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/config_account.gif" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+            }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
                                        'index',

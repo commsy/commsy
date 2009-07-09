@@ -171,7 +171,11 @@ class cs_copy_index_view extends cs_index_view {
                            '','', '', '', '', '', 'class="titlelink"');
       $html .='<div>'.LF;
       $html .= '<div class="copy_title" style="float:right">'.$title.'</div>';
-      $tempMessage = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $tempMessage = '<img src="images/commsyicons_msie6/22x22/copy.gif" style="vertical-align:bottom;"/>';
+      } else {
+         $tempMessage = '<img src="images/commsyicons/22x22/copy.png" style="vertical-align:bottom;"/>';
+      }
       $html .= '<h2 id="copy_title">'.$tempMessage.'&nbsp;'.getMessage('MYAREA_MY_COPIES').'</h2>';
       $html .='</div>'.LF;
       $html .='<div style="padding:10px;">'.LF;

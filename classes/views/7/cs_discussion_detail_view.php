@@ -567,7 +567,11 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $item->getItemID();
-         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           $this->_environment->getCurrentModule(),
                                           'edit',
@@ -576,21 +580,37 @@ class cs_discussion_detail_view extends cs_detail_view {
                                           getMessage('COMMON_EDIT_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       $discussion_type = $item->getDiscussionType();
       if ( $current_user->isUser() and $this->_with_modifying_actions and $discussion_type == 'simple') {
-         $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         }
          $html .= '<a title="'.getMessage('DISCARTICLE_ENTER_NEW').'" href="#form">'.$image.'</a>'.LF;
       } elseif ($discussion_type == 'simple') {
-         $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+         }
          $html .= '<span class="disabled">'.$image.'</span>'.LF;
       }
       if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
          $params = $this->_environment->getCurrentParameterArray();
          $params['action'] = 'delete';
-         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                      $this->_environment->getCurrentModule(),
                                      'detail',
@@ -599,7 +619,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                                      getMessage('COMMON_DELETE_ITEM')).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html.'&nbsp;&nbsp;&nbsp;';
@@ -615,7 +639,11 @@ class cs_discussion_detail_view extends cs_detail_view {
          $params = array();
          $params['iid'] = $item->getItemID();
          $params['export_to_wiki'] = 'true';
-         $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    CS_DISCUSSION_TYPE,
                                    'detail',
@@ -624,7 +652,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                                    $this->_translator->getMessage('ITEM_EXPORT_TO_WIKI')).LF;
          unset($params);
       } elseif($current_context->isWikiActive()) {
-         $image = '<img src="images/commsyicons/22x22/export_wiki_grey.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/export_wiki_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/export_wiki_grey.png" style="vertical-align:bottom;" alt="'.getMessage('ITEM_EXPORT_TO_WIKI').'"/>';
+         }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
@@ -642,7 +674,11 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $subitem->getItemID();
-         $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+         }
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'discarticle',
                                     'edit',
@@ -650,7 +686,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                                     $image).LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+         }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       $discussion_type = $item->getDiscussionType();
@@ -664,7 +704,11 @@ class cs_discussion_detail_view extends cs_detail_view {
             $params['ref_position'] = $subitem->getPosition();
          }
          $params['ref_did'] = $subitem->getItemID();
-         $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         }
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'discarticle',
                                     'edit',
@@ -673,7 +717,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                                     $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW')).LF;
          unset($params);
       } elseif ($discussion_type == 'threaded') {
-         $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+         }
          $html .= $this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').LF;
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
@@ -683,7 +731,11 @@ class cs_discussion_detail_view extends cs_detail_view {
         $params['discarticle_iid'] = $subitem->getItemID();
         $params['iid'] = $item->getItemID();
         $params['discarticle_action'] = 'delete';
-         $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+           $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+        } else {
+           $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+        }
         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $this->_environment->getCurrentModule(),
                                        'detail',
@@ -694,7 +746,11 @@ class cs_discussion_detail_view extends cs_detail_view {
                                        'anchor'.$subitem->getItemID()).LF;
         unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+         }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;

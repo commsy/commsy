@@ -92,14 +92,22 @@ class cs_todo_index_view extends cs_room_index_view {
       $html  = '';
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
-      $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_ABBO').'"/>';
+      }
       $ical_url = '<a title="'.getMessage('TODO_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
-      $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_EXPORT').'"/>';
+      }
       $html .= '<a title="'.getMessage('TODO_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;mod=todo&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
      unset($params);
      return $html;

@@ -629,7 +629,11 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $html .= ' value="'.$this->_text_as_form($_POST['search']).'"';
       }
       $html .= '/>'.LF;
-      $html .= '   <input src="images/commsyicons/22x22/search.png" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $html .= '   <input src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
+      } else {
+         $html .= '   <input src="images/commsyicons/22x22/search.png" style="vertical-align: top;" alt="Suchen" type="image">'.LF;
+      }
 
       # div end
       $html .= '</div>'.LF;

@@ -155,7 +155,11 @@ class cs_private_room_detailed_short_view extends cs_view{
          $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
          if ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() ) {
             global $c_pmwiki_path_url;
-            $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_WIKI_LINK').'"/>';
+            }
             $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
             $url_session_id = '';
             if ( $current_context->withWikiUseCommSyLogin() ) {
@@ -167,7 +171,11 @@ class cs_private_room_detailed_short_view extends cs_view{
             unset($session_item);
          }
          if ( !$context_user->isOnlyReadUser() ) {
-            $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/config.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/config.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION').'"/>';
+            }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
                                        'index',

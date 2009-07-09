@@ -227,7 +227,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
      $html .= '   <input type="hidden" name="fct" value="index"/>'.LF;
      $html .= '   <input type="hidden" name="selrubric" value="'.$this->_environment->getCurrentModule().'"/>'.LF;
      $html .= '<input id="searchtext" onclick="javascript:resetSearchText(\'searchtext\');" style="width:130px; font-size:10pt; margin-bottom:0px;" name="search" type="text" size="20" value="'.$this->_text_as_form($this->getSearchText()).'"/>'.LF;
-     $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+        $html .= '<input type="image" src="images/commsyicons_msie6/22x22/search.gif" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     } else {
+        $html .= '<input type="image" src="images/commsyicons/22x22/search.png" style="vertical-align:top;" alt="'.getMessage('COMMON_SEARCH_BUTTON').'"/>';
+     }
      $html .= '</form>';
      return $html;
   }
@@ -238,20 +242,32 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html  = '';
       $hash_manager = $this->_environment->getHashManager();
       $params = $this->_environment->getCurrentParameterArray();
-      $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/abbo.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/abbo.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_ABBO').'"/>';
+      }
       $ical_url = '<a title="'.getMessage('DATES_ABBO').'"  href="webcal://';
       $ical_url .= $_SERVER['HTTP_HOST'];
       global $c_single_entry_point;
       $ical_url .= str_replace($c_single_entry_point,'ical.php',$_SERVER['PHP_SELF']);
       $ical_url .= '?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       $html .= $ical_url;
-      $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/22x22/export.gif" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/export.png" style="vertical-align:bottom;" alt="'.getMessage('DATES_EXPORT').'"/>';
+      }
       $html .= '<a title="'.getMessage('DATES_EXPORT').'"  href="ical.php?cid='.$_GET['cid'].'&amp;hid='.$hash_manager->getICalHashForUser($current_user->getItemID()).'">'.$image.'</a>'.LF;
       unset($params);
       if ( $this->_environment->inPrivateRoom() ) {
          if ( $this->_with_modifying_actions ) {
             $params['import'] = 'yes';
-            $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/import.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/import.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            }
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
                                 'import',
@@ -260,7 +276,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $this->_translator->getMessage('COMMON_IMPORT_DATES')).LF;
             unset($params);
          } else {
-            $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+               $image = '<img src="images/commsyicons_msie6/22x22/import_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            } else {
+               $image = '<img src="images/commsyicons/22x22/import_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_IMS_IMPORT').'"/>';
+            }
             $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
          }
       }
