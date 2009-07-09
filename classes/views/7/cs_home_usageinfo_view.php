@@ -71,7 +71,11 @@ var $_config_boxes = false;
       $info_text = $room->getUsageInfoTextForRubric($act_rubric);
       $html .= '<div style="margin-top:0px;">'.LF;
       $html .= '<div style="position:relative; top:12px;">'.LF;
-      $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
+      } else {
+         $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+      }
       $html .= '</div>'.LF;
       $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('PREFERENCES_USAGE_INFOS').'</div>';
       $html .= '<div class="usage_info">'.LF;
