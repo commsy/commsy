@@ -193,7 +193,11 @@ class cs_mail extends Mail
          } else {
             $multipart_header["Reply-To"] = $this->from_email;
          }
-         $multipart_header["Subject"] = $this->subject;
+         if (isset($this->subject)){
+            $multipart_header["Subject"] = $this->subject;
+         }else{
+            $multipart_header["Subject"] = '';
+         }
 
          $return_mail_address = '';
          global $c_return_path_mail_address;
