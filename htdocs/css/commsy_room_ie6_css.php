@@ -50,3 +50,7 @@ if (!empty($_GET['cid'])) {
    float:left;
    white-space:nowrap;
 }
+
+div.right_box_main{
+   padding-top:100px;
+}
