@@ -53,6 +53,7 @@ if (!empty($_GET['cid'])) {
 
 div.right_box_main{
    margin-top:0px;
+   font-size:10pt;
 }
 
 #detail_annotations .annotation_creator_information{
