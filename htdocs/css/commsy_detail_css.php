@@ -191,7 +191,7 @@ div.sub_item_main{
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }
 
-.detail_annotations{
+#detail_annotations{
    margin:40px 0px 0px 0px;
    padding:0px;
    background-color: #FFFFFF;

@@ -55,4 +55,11 @@ div.right_box_main{
    margin-top:0px;
 }
 
+#detail_annotations .annotation_creator_information{
+	font-size: 8pt;
+}
+
+#detail_annotations a{
+    font-size: 8pt;
+}
 

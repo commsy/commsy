@@ -103,7 +103,7 @@ img {
    vertical-align:top;
 }
 
-.detail_annotations{
+#detail_annotations{
    margin:40px 0px 0px 0px;
    padding:0px;
    background-color: #FFFFFF;

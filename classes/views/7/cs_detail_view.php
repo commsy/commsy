@@ -1475,7 +1475,7 @@ class cs_detail_view extends cs_view {
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
 #      $html .='<div class="detail_annotations" style="width:100%;">'.LF;
-      $html .='<div class="detail_annotations">'.LF;
+      $html .='<div id="detail_annotations">'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){
@@ -1549,7 +1549,7 @@ class cs_detail_view extends cs_view {
                $html .='</tr>'.LF;
                if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
                   $html .='<tr>'.LF;
-                  $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                  $html .='<td class="annotation_creator_information" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
                   $mode = 'short';
                   if (!$item->isA(CS_USER_TYPE)) {
                      $mode = 'short';
