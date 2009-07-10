@@ -19,7 +19,7 @@ function initTextFormatingInformation(id,show){
       var is_shown = show;
          var mySlide = new Fx.Slide('creator_information'+item_id,{duration: 200});
          if (is_shown == false){
-            alert("hier");
+            alert("hier2");
             mySlide.hide();
          }else{
             var img = document.getElementById('toggle'+item_id);
