@@ -352,6 +352,9 @@ class cs_page_view extends cs_view {
       if ( $current_browser == 'msie' and strstr($current_browser_version,'7.') ){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_room_ie_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
+      if ( $current_browser == 'msie' and strstr($current_browser_version,'6.') ){
+         $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_room_ie6_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
+      }
       return $retour;
    }
 
