@@ -223,21 +223,41 @@ class cs_material_detail_view extends cs_detail_view {
       $html ='';
       $i =0;
       if ( $pos_number == 1 ) {
-         $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" border="0"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/16x16/browse_left2.gif" alt="&lt;" border="0"/>';
+         } else {
+            $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" border="0"/>';
+         }
          $html .= '<a href="#top">'.$image.'</a>'.LF;
       }elseif ( $pos_number > 1 ) {
          $i = $pos_number-1;
-         $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" border="0"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/16x16/browse_left2.gif" alt="&lt;" border="0"/>';
+         } else {
+            $image = '<img src="images/commsyicons/16x16/browse_left2.png" alt="&lt;" border="0"/>';
+         }
          $html .= '<a href="#anchor'.$i.'">'.$image.'</a>'.LF;
       } else {
-         $html .= '<span class="disabled"><img src="images/commsyicons/16x16/browse_left_grey2.png" alt="&lt;" border="0"/></span>'.LF;
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $html .= '<span class="disabled"><img src="images/commsyicons_msie6/16x16/browse_left_grey2.gif" alt="&lt;" border="0"/></span>'.LF;
+         } else {
+            $html .= '<span class="disabled"><img src="images/commsyicons/16x16/browse_left_grey2.png" alt="&lt;" border="0"/></span>'.LF;
+         }
       }
       if ( $pos_number < $count) {
          $i = $pos_number+1;
-         $image = '<img src="images/commsyicons/16x16/browse_right2.png" alt="&gt;" border="0"/>';
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/16x16/browse_right2.gif" alt="&gt;" border="0"/>';
+         } else {
+            $image = '<img src="images/commsyicons/16x16/browse_right2.png" alt="&gt;" border="0"/>';
+         }
          $html .= '<a href="#anchor'.$i.'">'.$image.'</a>'.LF;
       } else {
-         $html .= '<span class="disabled"><img src="images/commsyicons/16x16/browse_right_grey2.png" alt="&gt;" border="0"/></span>'.LF;
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $html .= '<span class="disabled"><img src="images/commsyicons_msie6/16x16/browse_right_grey2.gif" alt="&gt;" border="0"/></span>'.LF;
+         } else {
+            $html .= '<span class="disabled"><img src="images/commsyicons/16x16/browse_right_grey2.png" alt="&gt;" border="0"/></span>'.LF;
+         }
       }
       return $html;
    }

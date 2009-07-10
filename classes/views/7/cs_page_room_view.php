@@ -257,31 +257,51 @@ class cs_page_room_view extends cs_page_view {
             switch ($link['module']) {
                case 'topic':
                   if ( $with_icons ) {
-                     $link_title .= '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $link_title .= '<img src="images/commsyicons_msie6/16x16/topic.gif" style="vertical-align:bottom;"/>';
+                     } else {
+                        $link_title .= '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                     }
                   }
                   $link_title .= $link['title'];
                   break;
                case 'material':
                   if ( $with_icons ) {
-                     $link_title .= '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $link_title .= '<img src="images/commsyicons_msie6/16x16/material.gif" style="vertical-align:bottom;"/>';
+                     } else {
+                        $link_title .= '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                     }
                   }
                   $link_title .= $link['title'];
                   break;
                case 'date':
                   if ( $with_icons ) {
-                     $link_title .= '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $link_title .= '<img src="images/commsyicons_msie6/16x16/date.gif" style="vertical-align:bottom;"/>';
+                     } else {
+                        $link_title .= '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                     }
                   }
                   $link_title .= $link['title'];
                   break;
                case 'myroom':
                   if ( $with_icons ) {
-                     $link_title .= '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $link_title .= '<img src="images/commsyicons_msie6/16x16/room.gif" style="vertical-align:bottom;"/>';
+                     } else {
+                        $link_title .= '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                     }
                   }
                   $link_title .= $this->_translator->getMessage('PRIVATEROOMS');
                   break;
                case 'todo':
                   if ( $with_icons ) {
-                     $link_title .= '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $link_title .= '<img src="images/commsyicons_msie6/16x16/todo.gif" style="vertical-align:bottom;"/>';
+                     } else {
+                        $link_title .= '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                     }
                   }
                   $link_title .= $link['title'];
                   break;
@@ -306,39 +326,76 @@ class cs_page_room_view extends cs_page_view {
             }
          } else {
             if ( $with_icons ) {
-               switch ($link['module']) {
-                  case 'user':
-                     $link_title = '<img src="images/commsyicons/16x16/user.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'discussion':
-                     $link_title = '<img src="images/commsyicons/16x16/discussion.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'material':
-                     $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'date':
-                     $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'announcement':
-                     $link_title = '<img src="images/commsyicons/16x16/announcement.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'group':
-                     $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'institution':
-                     $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'todo':
-                     $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'topic':
-                     $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
-                     break;
-                  case 'project':
-                     $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
-                     break;
-                  default:
-                     $link_title = '';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  switch ($link['module']) {
+                     case 'user':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/user.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'discussion':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/discussion.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'material':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/material.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'date':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/date.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'announcement':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/announcement.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'group':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/group.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'institution':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/group.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'todo':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/todo.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'topic':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/topic.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'project':
+                        $link_title = '<img src="images/commsyicons_msie6/16x16/room.gif" style="vertical-align:bottom;"/>';
+                        break;
+                     default:
+                        $link_title = '';
+                  }
+               } else {
+                  switch ($link['module']) {
+                     case 'user':
+                        $link_title = '<img src="images/commsyicons/16x16/user.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'discussion':
+                        $link_title = '<img src="images/commsyicons/16x16/discussion.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'material':
+                        $link_title = '<img src="images/commsyicons/16x16/material.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'date':
+                        $link_title = '<img src="images/commsyicons/16x16/date.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'announcement':
+                        $link_title = '<img src="images/commsyicons/16x16/announcement.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'group':
+                        $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'institution':
+                        $link_title = '<img src="images/commsyicons/16x16/group.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'todo':
+                        $link_title = '<img src="images/commsyicons/16x16/todo.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'topic':
+                        $link_title = '<img src="images/commsyicons/16x16/topic.png" style="vertical-align:bottom;"/>';
+                        break;
+                     case 'project':
+                        $link_title = '<img src="images/commsyicons/16x16/room.png" style="vertical-align:bottom;"/>';
+                        break;
+                     default:
+                        $link_title = '';
+                  }
                }
             }
             $link_title .= $link['title'];
@@ -1244,7 +1301,11 @@ class cs_page_room_view extends cs_page_view {
                      }else{
                         $image_text = 'material';
                      }
-                     $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;"/>';
+                     if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                        $image = '<img src="images/commsyicons_msie6/16x16/'.$image_text.'.gif" style="padding-top:2px; float:left;"/>';
+                     } else {
+                        $image = '<img src="images/commsyicons/16x16/'.$image_text.'.png" style="padding-top:2px; float:left;"/>';
+                     }
                      $title = addslashes($image.' '.$view->getViewTitle());
                      if ($view->getViewName() != $this->_translator->getMessage('COMMON_INFORMATION_INDEX')){
                        $item_list = $view->getList();
