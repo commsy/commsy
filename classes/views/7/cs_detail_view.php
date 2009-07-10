@@ -1471,7 +1471,8 @@ class cs_detail_view extends cs_view {
       $html .= '</div>'.LF.LF;
       $html .= '</div>'.LF.LF;
       $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
-      $html .='<div class="detail_annotations" style="width:100%;">'.LF;
+#      $html .='<div class="detail_annotations" style="width:100%;">'.LF;
+      $html .='<div class="detail_annotations">'.LF;
       if ( !empty($this->_annotation_list) ){
          $count = $this->_annotation_list->getCount();
          if ($count == 1){

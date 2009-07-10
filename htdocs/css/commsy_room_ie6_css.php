@@ -56,5 +56,5 @@ div.right_box_main{
 }
 
 .infoborder_display_content{
-    width: 65%;
+    width: 400px;
 }
