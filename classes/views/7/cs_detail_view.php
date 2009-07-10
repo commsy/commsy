@@ -2525,7 +2525,7 @@ class cs_detail_view extends cs_view {
                                                  CS_ANNOTATION_TYPE))
          ) {
          $html .= '<table class="gauge-wrapper" summary="Layout"><tr>'.LF;
-         $html .= '   <td width="50%">'.$this->_translator->getMessage('COMMON_READ').':</td>'.LF;
+         $html .= '   <td id="creator_information_read_text" width="50%">'.$this->_translator->getMessage('COMMON_READ').':</td>'.LF;
          $html .= '   <td width="50%">'.LF;
          $html .= '      <div class="gauge">'.LF;
          if ( $read_percentage >= 5 ) {
