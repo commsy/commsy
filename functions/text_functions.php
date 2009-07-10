@@ -1125,5 +1125,6 @@ function cs_utf8_encode ($value) {
 function correctFCKTags($value){
    $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
    $value = '<!-- KFC TEXT -->' . $value . '<!-- KFC TEXT -->';
+   return $value;
 }
 ?>
