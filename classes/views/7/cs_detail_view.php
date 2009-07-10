@@ -444,6 +444,9 @@ class cs_detail_view extends cs_view {
             $width = '640';
          }
       }
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+          $width = '600';
+      }
       $params = $this->_environment->getCurrentParameterArray();
       if (!isset($params['mode']) or $params['mode'] != 'print'){
       $params['mode']='print';
