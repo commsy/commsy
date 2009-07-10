@@ -126,6 +126,7 @@ $message["COMMON_COLOR_SCHEMA_2"]["en"] = "Deep as the ocean";
 $message["COMMON_COLOR_SCHEMA_20"]["en"] = "noble red and grey";
 $message["COMMON_COLOR_SCHEMA_21"]["en"] = "Flowering meadow";
 $message["COMMON_COLOR_SCHEMA_22"]["en"] = "Room of notes";
+$message["COMMON_COLOR_SCHEMA_23"]["en"] = "Confetti";
 $message["COMMON_COLOR_SCHEMA_3"]["en"] = "Living room from the 70ies";
 $message["COMMON_COLOR_SCHEMA_4"]["en"] = "Black and white";
 $message["COMMON_COLOR_SCHEMA_5"]["en"] = "Everything set to green";
