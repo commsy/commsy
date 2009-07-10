@@ -1651,7 +1651,7 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-#         $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",false)</script>';
+         $html .='<script type="text/javascript">initTextFormatingInformation("'.$drop_down_name.'",false)</script>';
       }
       if (isset($form_element_array[0]['type']) and $form_element_array[0]['type'] == 'emptyline'){
          $html .= '</td>'.LF;
