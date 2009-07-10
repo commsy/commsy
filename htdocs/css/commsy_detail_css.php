@@ -234,6 +234,7 @@ div.sub_item_main{
 /*Creator Information*/
 table.creator_info td {
    vertical-align: middle;
+   font-size:10pt;
 }
 
 table.creator_info td.key {
