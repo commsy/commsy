@@ -1709,7 +1709,7 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }
-      $html .='<script type="text/javascript">document.onload = initTextFormatingInformation("'.$item->getItemID().'",false);</script>';
+      $html .='<script type="text/javascript">alert("hier");document.onload = initTextFormatingInformation("'.$item->getItemID().'",false);</script>';
       $html .= '<!-- END OF FORM-VIEW -->'.LF;
       $current_module = $this->_environment->getCurrentModule();
       if ( ( $current_module == CS_DATE_TYPE or
