@@ -344,11 +344,17 @@ class cs_date_index_view extends cs_index_view {
       $html .= '<div class="right_box">'.LF;
       $html .= '<div class="right_box_title">'.LF;
       $html .= $this->_getBrowsingIconsAsHTML().LF;
-      $html .= '<div style="white-space:nowrap;">'.getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
+      $html .= '<div id="right_box_page_numbers">'.$this->_translator->getMessage('COMMON_PAGE').' '.$this->_getForwardLinkAsHTML().'</div>'.LF;
       $html .='</div>'.LF;
 
+      $width = '';
+      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+         $width = 'width:250px;';
+      }
+      $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
 
-      $html .= '<div class="right_box_main" >'.LF;
       $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
