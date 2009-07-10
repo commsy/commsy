@@ -889,13 +889,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       // Edit the news item, if the current user may so
       if ( $item->mayEdit($user) and $mod ) {
-         $title .= ' '.ahref_curl( $this->_environment->getCurrentContextID(),
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $title .= ' '.ahref_curl( $this->_environment->getCurrentContextID(),
+                            CS_DATE_TYPE,
+                           'edit',
+                           $params,
+                           '<img title="'.$this->_translator->getMessage('COMMON_EDIT').'" alt="'.$this->_translator->getMessage('COMMON_EDIT').'" src="images/commsyicons_msie6/12x12/edit.gif" border="0"/>',
+                           '');
+         } else {
+            $title .= ' '.ahref_curl( $this->_environment->getCurrentContextID(),
                             CS_DATE_TYPE,
                            'edit',
                            $params,
                            '<img title="'.$this->_translator->getMessage('COMMON_EDIT').'" alt="'.$this->_translator->getMessage('COMMON_EDIT').'" src="images/commsyicons/12x12/edit.png" border="0"/>',
                            '');
-
+         }
       }
       unset($params);
       return $title;
