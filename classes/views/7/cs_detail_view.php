@@ -2515,7 +2515,7 @@ class cs_detail_view extends cs_view {
       $html .= '</div>'.LF;
       $html .='</div>'.LF;
       $html .='</div>'.LF;
-      $html .='<script type="text/javascript">initCreatorInformations("'.$item->getItemID().'",false)</script>';
+      $html .='<script type="text/javascript">document.onload = initCreatorInformations("'.$item->getItemID().'",false);</script>';
 
       //Read percentage gauge (for improved awareness)
       if ( $context->isProjectRoom()
