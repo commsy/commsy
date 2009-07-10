@@ -950,17 +950,17 @@ class cs_item {
    * @access private
    * @author CommSy Development Group
    */
-   function _setValue($key, $value, $internal=TRUE) {
+   /*function _setValue($key, $value, $internal=TRUE) {
       $this->_data[$key] = $value;
       if ($internal) {
          $this->_changed['general'] = TRUE;
       } else {
          $this->_changed[$key] = TRUE;
       }
-   }
+   }*/
 
-/*   function _setValue($key, $value, $internal=TRUE) {
-      if(!is_array($value)){
+   function _setValue($key, $value, $internal=TRUE) {
+      if(is_string($value)){
          if(strpos($value,'<!-- KFC TEXT -->')!==false){
             $value = correctFCKTags($value);
          }
@@ -971,7 +971,7 @@ class cs_item {
       } else {
          $this->_changed[$key] = TRUE;
       }
-   }*/
+   }
 
    function _unsetValue ($key) {
       unset($this->_data[$key]);
