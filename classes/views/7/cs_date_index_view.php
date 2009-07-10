@@ -355,7 +355,7 @@ class cs_date_index_view extends cs_index_view {
       }
       $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
 
-      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .= '<table id="list_info_table" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
       $html .= '<span class="infocolor">'.getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';
@@ -370,7 +370,7 @@ class cs_date_index_view extends cs_index_view {
 
       $html .= '<div class="listinfoborder"></div>'.LF;
 
-      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .= '<table id="list_info_table2" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
       $connection = $this->_environment->getCurrentModule();

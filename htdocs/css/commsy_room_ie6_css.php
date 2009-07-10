@@ -71,3 +71,6 @@ div.right_box_main{
 #list_info_table{
     font-size: 10pt;
 }
+#list_info_table2{
+    font-size: 10pt;
+}

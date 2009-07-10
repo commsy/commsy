@@ -2090,7 +2090,7 @@ EOD;
 
       $html .= '<div class="listinfoborder"></div>'.LF;
 
-      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .= '<table id="list_info_table2" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
       $connection = $this->_environment->getCurrentModule();
