@@ -29,7 +29,7 @@ include_once('classes/cs_reader_manager.php');
 /**
  *  class for CommSy list view: date
  */
-class cs_date_index_view extends cs_room_index_view {
+class cs_date_index_view extends cs_index_view {
 
    /** array of ids in clipboard*/
    var $_clipboard_id_array = array();
@@ -49,7 +49,7 @@ class cs_date_index_view extends cs_room_index_view {
     * @author CommSy Development Group
     */
    function cs_date_index_view ($params) {
-      $this->cs_room_index_view($params);
+      $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('DATES_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_DATES'));
    }
