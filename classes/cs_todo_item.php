@@ -271,6 +271,18 @@ class cs_todo_item extends cs_item {
    function delete() {
       $todo_manager = $this->_environment->getTodosManager();
       $this->_delete($todo_manager);
+
+      // delete steps
+      $step_item_list = $this->getStepItemList();
+      if ( $step_item_list->isNotEmpty() ) {
+         $step_item = $step_item_list->getFirst();
+         while ($step_item) {
+            $step_item->delete();
+            $step_item = $step_item_list->getNext();
+         }
+      }
+
+
    }
 
    /** Checks and sets the data of the todo_item.

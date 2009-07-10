@@ -79,7 +79,11 @@ if ( $current_iid == 'NEW' ) {
    $buzzword_array = array();
    $tag_array = array();
    $material_manager = $environment->getMaterialManager();
-   $material_item = $material_manager->getItem($current_iid);
+   if (isset($_GET['act_version'])){
+      $material_item = $material_manager->getItemByVersion($current_iid,$_GET['act_version']);
+   }else{
+      $material_item = $material_manager->getItem($current_iid);
+   }
 /*** Neue Schlagwörter und Tags***/
    if(empty($_POST)){
       $buzzword_array = array();
