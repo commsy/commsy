@@ -2075,7 +2075,7 @@ EOD;
       }
       $html .= '<div class="right_box_main" style="'.$width.'">'.LF;
 
-      $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
+      $html .= '<table id="list_info_table" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;">';
       $html .='<tr>'.LF;
       $html .='<td>'.LF;
       $html .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_LIST_SHOWN_ENTRIES').' </span>';

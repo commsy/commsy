@@ -67,3 +67,7 @@ div.right_box_main{
 #creator_information_read_text{
 	font-size: 10pt;
 }
+
+#list_info_table{
+    font-size: 10pt;
+}
