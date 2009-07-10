@@ -52,5 +52,5 @@ if (!empty($_GET['cid'])) {
 }
 
 div.right_box_main{
-   padding-top:100px;
+   margin-top:100px;
 }
