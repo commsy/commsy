@@ -74,3 +74,6 @@ div.right_box_main{
 #list_info_table2{
     font-size: 10pt;
 }
+#room_information_activity_description{
+    font-size: 10pt;
+}

@@ -249,7 +249,7 @@ class cs_activity_view extends cs_view {
       $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
       $html .= '         <tr>'.LF;
       $html .= '         <td style="width:175px;">'.LF;
-      $html .= '      <div class="infocolor">'.$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread).':</div>'.LF;
+      $html .= '      <div id="room_information_activity_description" class="infocolor">'.$this->_translator->getMessage('ACTIVITY_ACTIVE_MEMBERS_DESC',$time_spread).':</div>'.LF;
       $html .= '         </td>'.LF;
       $html .= '         <td style="width:60px;">'.LF;
       $html .= '         <div class="gauge" style="margin:0px; float:right; width:65px;">'.LF;
