@@ -404,16 +404,16 @@ class cs_account_index_view extends cs_index_view {
       $html .= '</form>'.LF;
       $html .='</td>'.LF;
 
-      $html .='<td style="width:28%; vertical-align:top; padding-top:5px;">'.LF;
-      $html .='<div id="commsy_panels" style="margin-bottom:1px;">'.LF;
+      $html .='<td style="vertical-align:top; padding-left:10px; padding-top:5px;">'.LF;
+      $html .='<div id="commsy_panels" style="width:250px; margin-bottom:1px;">'.LF;
       $html .= $this->_getListInfosAsHTML(getMessage('ACCOUNT_INDEX'));
       $html .='</div>'.LF;
-      $html .= '<div class="commsy_no_panel" style="margin-bottom:0px;">'.LF;
+      $html .= '<div class="commsy_no_panel" style="width:250px; margin-bottom:0px;">'.LF;
       $title_string = '"'.getMessage('COMMON_SEARCHFIELD').'"';
       $desc_string = '""';
       $size_string = '"10"';
       $config_text ='true';
-      $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
+      $html .= '<form style="width:250px; padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
       $html .= $this->_getListSelectionsAsHTML();
       $html .= '</form>'.LF;
 
@@ -431,10 +431,11 @@ class cs_account_index_view extends cs_index_view {
          $title_string .= ',"'.$room->getUsageInfoHeaderForRubric($this->_environment->getCurrentModule()).'"';
          $desc_string .= ',""';
          $size_string .= ',"10"';
-         $html .= '<div class="commsy_no_panel" style="margin-bottom:1px;">'.LF;
+         $html .= '<div class="commsy_no_panel" style="width:250px; margin-bottom:1px;">'.LF;
          $html .= $this->_getRubricInfoAsHTML($this->_environment->getCurrentModule());
          $html .='</div>'.LF;
       }
+      $html .='</div>'.LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .= '</table>'.BRLF;
@@ -447,7 +448,7 @@ class cs_account_index_view extends cs_index_view {
       $room = $this->_environment->getCurrentContextItem();
       $info_text = $room->getUsageInfoTextForRubric($act_rubric);
       $html='';
-      $html .= '<div style="margin-bottom:1px;">'.LF;
+      $html .= '<div style="margin-bottom:1px; width:250px;">'.LF;
       $html .= '<div style="position:relative; top:12px;">'.LF;
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
          $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
@@ -635,7 +636,7 @@ class cs_account_index_view extends cs_index_view {
          $html .= $this->_getViewActionsAsHTML();
       }
       $html .= '</td>'.LF;
-      $html .= '<td class="foot_right" colspan="3" style="padding: 0px 2px 2px 2px; vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
+      $html .= '<td class="foot_right" style="padding: 0px 2px 2px 2px; vertical-align:middle; text-align:right; font-size:8pt;">'.LF;
       if ( $this->hasCheckboxes() ) {
          if (count($this->getCheckedIDs())=='1'){
             $html .= ''.$this->_translator->getMessage('COMMON_SELECTED_ONE',count($this->getCheckedIDs()));
@@ -999,7 +1000,7 @@ class cs_account_index_view extends cs_index_view {
      function _getConfigurationOverviewAsHTML(){
         $html='';
         $room = $this->_environment->getCurrentContextItem();
-        $html .='<div class="commsy_no_panel" style="margin-bottom:1px; padding:0px;">'.LF;
+        $html .='<div class="commsy_no_panel" style="width:250px; margin-bottom:1px; padding:0px;">'.LF;
         $html .= '<div class="right_box">'.LF;
         $array = $this->_environment->getCurrentParameterArray();
         $html .= '<div class="right_box_title">'.getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
