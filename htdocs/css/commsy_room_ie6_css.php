@@ -93,3 +93,7 @@ div.right_box_main{
    padding-top:0px;
    vertical-align:bottom;
 }
+
+.handle_width{
+	font-size:10pt;
+}

@@ -1519,7 +1519,7 @@ class cs_detail_view extends cs_view {
       $html .= '<a name="annotations"></a>'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
       $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
+      if ($current_browser == 'msie' and !(strstr($current_browser_version,'7.') or strstr($current_browser_version,'8.'))){
          $html .='<div style="width:100%; padding:5px 10px 5px 5px; background-color:#FFFFFF;">'.LF;
       }else{
          $html .='<div style="background-color:#FFFFFF; padding:5px;">'.LF;
