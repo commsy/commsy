@@ -166,9 +166,11 @@ div.content_bottom {
 }
 
 #commsy_panels .commsy_panel .topBar, #commsy_panel_form .commsy_panel .topBar{
-   background:url(images/layout/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
-   color:<?php echo($color['headline_text'])?>;
+   color:<?php echo($color['tabs_title'])?>;
    padding: 0px 0px;
    height:20px;
    overflow:hidden;

@@ -385,7 +385,9 @@ table.list {
    background-color: <?php echo($color['list_entry_even'])?>;
 }
 .list td.head {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_24.png) repeat-x;');
+   ?>
    background-color:<?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
@@ -401,22 +403,23 @@ table.list {
    text-align: right;
 }
 .list td.foot_left {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;
    font-weight:bold;
 }
 .list td.foot_right {
-   background:url(images/tab_fader_<?php echo($color['schema'])?>.gif) repeat-x;
-   background-color: <?php echo($color['tabs_background'])?>;
+   <?php
+   echo('background: url(../'.$c_single_entry_point.'?cid='.$cid.'&mod=picture&fct=getfile&picture=' . $color['schema'] . '_cs_gradient_32.png) repeat-x;');
+   ?>background-color: <?php echo($color['tabs_background'])?>;
    color: <?php echo($color['headline_text'])?>;
    border-bottom: none;
    padding: 2px 2px;
    font-weight:bold;
    text-align: right;
-}
-.even{
+}.even{
    background-color: <?php echo($color['list_entry_even'])?>;
 }
