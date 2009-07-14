@@ -78,6 +78,6 @@ div.right_box_main{
     font-size: 10pt;
 }
 
-#detail_content td.key{
+#detail_content td.key, #detail_content td.value{
 	font-size:10pt;
 }
