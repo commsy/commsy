@@ -77,3 +77,7 @@ div.right_box_main{
 #room_information_activity_description{
     font-size: 10pt;
 }
+
+#detail_content td.key{
+	font-size:10pt;
+}
