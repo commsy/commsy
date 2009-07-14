@@ -1346,30 +1346,30 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $date_array = array();
       while ($current_date) {
          $start_date_month = '';
-    $start_date_day = '';
-    $start_date_year = '';
-    $end_date_month = '';
-    $end_date_day = '';
-    $end_date_year = '';
+         $start_date_day = '';
+         $start_date_year = '';
+         $end_date_month = '';
+         $end_date_day = '';
+         $end_date_year = '';
          $start_date_time ='';
          $start_end_time ='';
          $start_date_array = convertDateFromInput($current_date->getStartingDay(),$this->_environment->getSelectedLanguage());
          if ($start_date_array['conforms'] == true) {
-       $start_date_array = getDateFromString($start_date_array['timestamp']);
-       $start_date_month = $start_date_array['month'];
-       $start_date_day = $start_date_array['day'];
-       $start_date_year = $start_date_array['year'];
-    }
+            $start_date_array = getDateFromString($start_date_array['timestamp']);
+            $start_date_month = $start_date_array['month'];
+            $start_date_day = $start_date_array['day'];
+            $start_date_year = $start_date_array['year'];
+         }
          $start_time_array = convertTimeFromInput($current_date->getStartingTime(),$this->_environment->getSelectedLanguage());
-    $end_date_array = convertDateFromInput($current_date->getEndingDay(),$this->_environment->getSelectedLanguage());
-    if ($end_date_array['conforms'] == true) {
-       $end_date_array = getDateFromString($end_date_array['timestamp']);
-       $end_date_month = $end_date_array['month'];
-       $end_date_day =   $end_date_array['day'];
-       $end_date_year = $end_date_array['year'];
-    }
+         $end_date_array = convertDateFromInput($current_date->getEndingDay(),$this->_environment->getSelectedLanguage());
+         if ($end_date_array['conforms'] == true) {
+            $end_date_array = getDateFromString($end_date_array['timestamp']);
+            $end_date_month = $end_date_array['month'];
+            $end_date_day =   $end_date_array['day'];
+            $end_date_year = $end_date_array['year'];
+         }
          $end_time_array = convertTimeFromInput($current_date->getEndingTime(),$this->_environment->getSelectedLanguage());
-    if ($start_date_day != '') {
+         if ($start_date_day != '') {
             $date_array[$start_date_array['day'].$start_date_array['month'].$start_date_array['year']][] = $current_date;
             $start_day = mb_substr($current_date->getStartingDay(),8,2);
             $start_month = $start_date_array['month'];
