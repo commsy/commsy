@@ -82,6 +82,6 @@ div.right_box_main{
 	font-size:10pt;
 }
 
-#commsy_panels {
+#commsy_panels span.infocolor{
 	font-size:10pt;
 }
