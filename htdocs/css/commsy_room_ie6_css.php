@@ -85,3 +85,11 @@ div.right_box_main{
 #commsy_panels span.infocolor{
 	font-size:10pt;
 }
+
+#configuration_form{
+   width:100%;
+   font-size:10pt;
+   margin-top:5px;
+   padding-top:0px;
+   vertical-align:bottom;
+}

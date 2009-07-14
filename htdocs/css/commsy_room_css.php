@@ -562,3 +562,11 @@ table.configuration_table{
     color: <?php echo($color['myarea_section_title'])?>;
     font-size:10pt;
 }
+
+#configuration_form{
+   width:70%;
+   font-size:10pt;
+   margin-top:5px;
+   padding-top:0px;
+   vertical-align:bottom;
+}

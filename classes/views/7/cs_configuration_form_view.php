@@ -383,9 +383,9 @@ class cs_configuration_form_view extends cs_form_view {
 
 
 
-      $html .='<div id="form" style="width:70%; font-size:10pt; margin-top:5px; padding-top:0px; vertical-align:bottom;">'.LF;
+      $html .='<div id="configuration_form">'.LF;
       $html .= '<!-- BEGIN OF FORM-VIEW -->'.LF;
-      $html .= '<table style="font-size:10pt; margin:10px 5px; border-collapse:collapse;" summary="Layout">'.LF;
+      $html .= '<table id="form" class="configuration_form" summary="layout">'.LF;
       $form_element = $this->_form_elements->getFirst();
       $html .= '<tr>'.LF;
       $html .= '<td style="border:0px; padding:0px;" colspan="4">'.LF;
