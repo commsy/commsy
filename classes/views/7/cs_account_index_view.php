@@ -1000,7 +1000,7 @@ class cs_account_index_view extends cs_index_view {
      function _getConfigurationOverviewAsHTML(){
         $html='';
         $room = $this->_environment->getCurrentContextItem();
-        $html .='<div class="commsy_no_panel" style="width:260px; margin-bottom:1px; padding:0px;">'.LF;
+        $html .='<div class="commsy_no_panel" style="width:250px; margin-bottom:1px; padding:0px;">'.LF;
         $html .= '<div class="right_box">'.LF;
         $array = $this->_environment->getCurrentParameterArray();
         $html .= '<div class="right_box_title">'.getMessage('COMMON_COMMSY_CONFIGURE_LINKS').'</div>';
