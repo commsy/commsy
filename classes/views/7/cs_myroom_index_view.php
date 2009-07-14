@@ -67,7 +67,11 @@ class cs_myroom_index_view extends cs_context_index_view {
       $html .= '</div>'.LF;
       $html .='<div style="width:70%;">'.LF;
       $html .='<div style="vertical-align:bottom;">'.LF;
-      $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>';
+      } else {
+         $image = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>';
+      }
       $html .= '<h2 class="pagetitle">'.$image.$this->_translator->getMessage('MYROOM_INDEX');
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;

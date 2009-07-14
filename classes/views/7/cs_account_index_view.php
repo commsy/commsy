@@ -370,7 +370,11 @@ class cs_account_index_view extends cs_index_view {
       $html .='<div>'.LF;
       $html .= '<h2 class="pagetitle">'.LF;
       $tempMessage = getMessage('ACCOUNT_INDEX');
-      $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+      } else {
+         $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+      }
       $html .= $tempMessage;
 
       $html .= '</h2>'.LF;

@@ -1851,59 +1851,115 @@ class cs_form_view extends cs_view {
             {
                case 'ANNOUNCEMENT_EDIT':
                   $tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/announcement.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/announcement.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/announcement.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'MATERIAL_EDIT':
                   $tempMessage = getMessage('COMMON_MATERIAL_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'DATE_EDIT':
                   $tempMessage = getMessage('COMMON_DATE_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/date.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'TODO_EDIT':
                   $tempMessage = getMessage('COMMON_TODO_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'GROUP_EDIT':
                   $tempMessage = getMessage('COMMON_GROUP_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'USER_EDIT':
                   $tempMessage = $this->_item->getFullname();
-                  $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/user.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/user.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'TOPIC_EDIT':
                   $tempMessage = getMessage('COMMON_TOPIC_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/topic.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/topic.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'INSTITUTION_EDIT':
                   $tempMessage = getMessage('COMMON_INSTITUTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/group.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'DISCUSSION_EDIT':
                   $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'DISCARTICLE_EDIT':
                   $tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/discussion.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'SECTION_EDIT':
                   $tempMessage = getMessage('COMMON_SECTION_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'ACCOUNT_PASSWORD':      // Password ändern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PASSWORD_FORM_TITLE');
-                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'ACCOUNT_PREFERENCES':   // Benutzer, Einstellungen ändern
                   $tempMessage = getMessage('COMMON_ACCOUNT_PREFERENCES_FORM_TITLE');
-                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'ACCOUNT_STATUS':        // Status ändern (Portal)
                   $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');
-                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'CONFIGURATION_AGB':     // Nutzungsvereinbarungen
                   $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');
@@ -1979,7 +2035,11 @@ class cs_form_view extends cs_view {
                   break;
                case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
                   $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
-                  $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'CONFIGURATION_RUBRIC':  // Auswahl der Rubriken
                   $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');
@@ -2025,18 +2085,30 @@ class cs_form_view extends cs_view {
                   break;
                case 'MATERIAL_IMS_IMPORT':      //
                   $tempMessage = getMessage('MATERIAL_IMS_IMPORT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/material.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'ANNOTATION_EDIT':      //
                   $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');
                   break;
                case 'STEP_EDIT':      //
                   $tempMessage = getMessage('COMMON_STEP_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/todo.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                case 'ACCOUNT_EDIT':      //
                   $tempMessage = getMessage('ACCOUNT_EDIT');
-                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
                   break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(".__LINE__.") ";
