@@ -81,3 +81,7 @@ div.right_box_main{
 #detail_content td.key, #detail_content td.value{
 	font-size:10pt;
 }
+
+#commsy_panels {
+	font-size:10pt;
+}
