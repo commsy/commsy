@@ -56,7 +56,7 @@ class cs_grouproom_item extends cs_room_item {
       $this->_default_home_conf_array[CS_ANNOUNCEMENT_TYPE] = 'none';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
       $this->_default_home_conf_array[CS_DATE_TYPE] = 'short';
-      $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'none';
+      $this->_default_home_conf_array[CS_MATERIAL_TYPE] = 'short';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'short';
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_TOPIC_TYPE] = 'none';
