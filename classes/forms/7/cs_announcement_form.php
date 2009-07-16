@@ -237,7 +237,7 @@ class cs_announcement_form extends cs_rubric_form {
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
                               getMessage('ANNOUNCEMENT_TIME_DAY_END_DESC'),true,false);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$link),'',20);
+ #     $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$link),'',20);
 
 
       // rubric connections
