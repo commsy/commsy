@@ -227,7 +227,7 @@ class cs_announcement_form extends cs_rubric_form {
       // announcement
       $this->_form->addHidden('iid','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,58,true);
-/*      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
+      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
                   getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
@@ -236,7 +236,7 @@ class cs_announcement_form extends cs_rubric_form {
                               getMessage('ANNOUNCEMENT_SHOW_HOME_DATE'),
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
-                              getMessage('ANNOUNCEMENT_TIME_DAY_END_DESC'),true,false);*/
+                              getMessage('ANNOUNCEMENT_TIME_DAY_END_DESC'),true,false,100,100);
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$link),'',20);
 
 
