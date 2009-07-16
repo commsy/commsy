@@ -6,7 +6,7 @@ $message["ANNOUNCEMENT_EDIT"]["de"] = "Ankündigung ändern";
 $message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ankündigung erstellen";
 $message["ANNOUNCEMENT_INDEX"]["de"] = "Ankündigungen";
 $message["ANNOUNCEMENT_SAVE_BUTTON"]["de"] = "Ankündigung speichern";
-$message["ANNOUNCEMENT_SHOW_HOME_DATE"]["de"] = "Angezeigt auf der Home bis";
+$message["ANNOUNCEMENT_SHOW_HOME_DATE"]["de"] = "Aktuell bis";
 $message["ANNOUNCEMENT_TIME_DAY_END"]["de"] = "Gültig bis";
 $message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["de"] = "Zu diesem Datum verschwindet Ihre Ankündigung von der Einstiegsseite des Raums.<br/>
 <br/>
