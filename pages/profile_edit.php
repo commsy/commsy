@@ -64,7 +64,9 @@ $room_item = $environment->getCurrentContextItem();
 // Check access rights
 if (!empty($iid) and $iid != 'NEW') {
    $current_user = $environment->getCurrentUserItem();
-   if (!$user_item->mayEdit($current_user)) { // only user should be allowed to edit her/his own account
+   if (!$user_item->mayEdit($current_user)
+      and !($user_item->getUserID() == $current_user->getUserID() and $user_item->getAuthSource() == $current_user->getAuthSource())
+      ) { // only user should be allowed to edit her/his own account
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = true;

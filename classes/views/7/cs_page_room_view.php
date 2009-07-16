@@ -1670,6 +1670,7 @@ class cs_page_room_view extends cs_page_view {
    function _getCopyLinkAsHTML(){
       $html = '';
       $context_item = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
       $session = $this->_environment->getSession();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
@@ -1695,7 +1696,7 @@ class cs_page_room_view extends cs_page_view {
       }
       unset($rubric_copy_array);
       unset($context_item);
-      if ( $count > 0 ){
+      if ( $count > 0 and $current_user->isUser()){
          $params = $this->_environment->getCurrentParameterArray();
          $params['show_copies'] = 'yes';
          unset($params['show_profile']);
@@ -1727,13 +1728,28 @@ class cs_page_room_view extends cs_page_view {
       if ( $this->_with_personal_area) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
             $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
+            if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
+                 and !$this->_environment->inServer()
+                 and !$this->_environment->inPortal()
+            ) {
+               $html .= ' ('.$this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST').') ';
+            }
+            $params = array();
+            $params['room_id'] = $this->_environment->getCurrentContextID();
+            $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', $params,$this->_translator->getMessage('MYAREA_LOGIN_BUTTON'),'','','','','','','style="color:#800000"').''.LF;
             // @segment-end 77327
             // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest
-         } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
-               $params = array();
-               $params['iid'] = $this->_current_user->getItemID();
-               $fullname = $this->_current_user->getFullname();
-               $html .= $fullname;
+         } elseif ( !$this->_environment->inServer() and !empty($this->_current_user)) {
+                  $params = array();
+                  $params['iid'] = $this->_current_user->getItemID();
+                  $fullname = $this->_current_user->getFullname();
+                  $html .= $fullname;
+                  if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
+                       and !$this->_environment->inServer()
+                       and !$this->_environment->inPortal()
+                  ) {
+                     $html .= ' ('.$this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST').') ';
+                  }
                $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="color:#800000"').''.LF;
                $params = $this->_environment->getCurrentParameterArray();
                $params['uid'] = $this->_current_user->getItemID();
@@ -1751,12 +1767,6 @@ class cs_page_room_view extends cs_page_view {
                $html .= '&nbsp;'.$this->_getFlagsAsHTML();
 
          }
-      }
-      if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
-                 and !$this->_environment->inServer()
-                 and !$this->_environment->inPortal()
-      ) {
-         $html .= '<span class="bold">'.$this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST').'</span>';
       }
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
