@@ -1644,25 +1644,41 @@ class cs_page_room_view extends cs_page_view {
             unset($img);
          }
       }
-/*      global $web_feedback_url;
+      global $web_feedback_url;
       global $web_feedback_server_url;
       global $use_web_feedback_system;
       global $web_feedback_room_id_array;
       global $server_url;
       $current_context_id = $this->_environment->getCurrentContextItem()->getItemID();
       if ($use_web_feedback_system and in_array($current_context_id,$web_feedback_room_id_array)){
-      $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;';
-         $html .='<!-- Code for WFS-Feedback -->
-<script src="'.$web_feedback_url.'lib/jquery-latest.js" type="text/javascript" ></script>
-<script src="'.$web_feedback_url.'lib/jquery.field.js" type="text/javascript"></script>
-<script src="'.$web_feedback_url.'lib/jquery.dimensions.js" type="text/javascript"></script>
-<script src="'.$web_feedback_url.'lib/jquery.tooltip.js" type="text/javascript"></script>
-<script src="'.$web_feedback_url.'lib/feedback.js" type="text/javascript"></script>
+         $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;';
+         $html .= '<!-- Code for WFS-Feedback -->'.LF;
+         $html .= '<script src="'.$web_feedback_url.'lib/jquery-latest.js" type="text/javascript" ></script>'.LF;
+         $html .= '<script src="'.$web_feedback_url.'lib/jquery.field.js" type="text/javascript"></script>'.LF;
+         $html .= '<script src="'.$web_feedback_url.'lib/jquery.dimensions.js" type="text/javascript"></script>'.LF;
+         $html .= '<script src="'.$web_feedback_url.'lib/jquery.tooltip.js" type="text/javascript"></script>'.LF;
+         $html .= '<script src="'.$web_feedback_url.'lib/feedback.js" type="text/javascript"></script>'.LF;
+         $html .= '<a id="wfs_button" href="javascript:feedbackPage(\''.$web_feedback_url.'\',\''.$web_feedback_server_url.'\');"><img style="vertical-align:bottom;" id="wfs_feedback_gif" src="images/wfs.png" title="Click here to open a window with a feedback system." ></img></a>&nbsp;'.LF;
+         $html .= '<!-- End of Code for WFS-Feedback -->'.LF;
+      }
 
- <a id="wfs_button" href="javascript:feedbackPage(\''.$web_feedback_url.'\',\''.$web_feedback_server_url.'\');"><img style="vertical-align:bottom;" id="wfs_feedback_gif" src="images/wfs.png" title="Click here to open a window with a feedback system." ></img></a>&nbsp;
 
-<!-- End of Code for WFS-Feedback -->'.LF;
-      }*/
+/*$wfs_js_url="http://wfs.conftool.net/wfs-sandbox/wfs";
+$wfs_server_url="http://wfs.conftool.net/wfs-server/";
+
+$html .="<link href=\"$wfs_js_url/styles/wfs_button.css\" rel=\"stylesheet\" type=\"text/css\">\n\n";
+
+$html .="<script src=\"$wfs_js_url/lib/jquery-latest.js\" type=\"text/javascript\" ></script>\n";
+$html .="<script src=\"$wfs_js_url/lib/jquery.field.js\" type=\"text/javascript\"></script>\n";
+$html .="<script src=\"$wfs_js_url/lib/jquery.dimensions.js\" type=\"text/javascript\"></script>\n";
+$html .="<script src=\"$wfs_js_url/lib/jquery.tooltip.js\" type=\"text/javascript\"></script>\n";
+$html .="<script src=\"$wfs_js_url/lib/feedback.js\" type=\"text/javascript\"></script>\n";
+
+$html .="<div id=\"wfs_button\" class=\"wfs_button\">\n";
+$html .="<a href=\"javascript:feedbackPage('$wfs_js_url/','$wfs_server_url');\"><img id=\"wfs_feedback_gif\" src=\"$wfs_js_url/includes/feedback.gif\" title=\"Click here to open a window with a feedback system.\" ></img></a>\n";
+$html .="</div>\n";*/
+
+
       return $html;
    }
 
