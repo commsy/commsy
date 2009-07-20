@@ -1397,43 +1397,53 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             if ($first_char == '0'){
                $end_year = mb_substr($end_year,1,2);
             }
-            if (((($start_day != $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
-                  ($start_day == $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
-                  ($start_day != $end_day and !empty($end_day) and $start_month == $end_month and !empty($end_month))) or
-                  ($start_year < $end_year and !empty($end_year)))){
-               while ((($start_day != $end_day and $start_month != $end_month) or
-                      ($start_day == $end_day and $start_month != $end_month) or
-                      ($start_day != $end_day and $start_month == $end_month)) or
-                      ($start_year < $end_year)){
-                  $temp_date = clone $current_date;
-                  if ($current_date->getStartingTime()){
-                     $temp_date->setStartingTime('00:00:00');
-                  }
-                  $temp_starting_day = $temp_date->getStartingDay();
-                  $days = daysInMonth($start_month,$start_year);
-                  $start_day ++;
-                  if ($start_day > $days){
-                     $start_day = 1;
-                     $start_month++;
-                     if ($start_month > 12){
-                        $start_month = 1;
-                        $start_year++;
+            if ( is_numeric($start_day)
+                 and is_numeric($end_day)
+                 and is_numeric($start_month)
+                 and is_numeric($end_month)
+                 and is_numeric($start_year)
+                 and is_numeric($end_year)
+               ) {
+               if (((($start_day != $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
+                     ($start_day == $end_day and !empty($end_day) and $start_month != $end_month and !empty($end_month)) or
+                     ($start_day != $end_day and !empty($end_day) and $start_month == $end_month and !empty($end_month))) or
+                     ($start_year < $end_year and !empty($end_year)))){
+                  while ( ( ($start_day != $end_day and $start_month != $end_month) or
+                            ($start_day == $end_day and $start_month != $end_month) or
+                            ($start_day != $end_day and $start_month == $end_month)
+                          )
+                          or ($start_year < $end_year)
+                        ) {
+                     $temp_date = clone $current_date;
+                     if ($current_date->getStartingTime()){
+                        $temp_date->setStartingTime('00:00:00');
                      }
+                     $temp_starting_day = $temp_date->getStartingDay();
+                     $days = daysInMonth($start_month,$start_year);
+                     $start_day ++;
+                     if ($start_day > $days){
+                        $start_day = 1;
+                        $start_month++;
+                        if ($start_month > 12){
+                           $start_month = 1;
+                           $start_year++;
+                        }
+                     }
+                     $temp_start_day = $start_day;
+                     if (mb_strlen($temp_start_day) == 1){
+                        $temp_start_day = '0'.$temp_start_day;
+                     }
+                     $temp_start_month = $start_month;
+                     if (mb_strlen($temp_start_month) == 1){
+                        $temp_start_month = '0'.$temp_start_month;
+                     }
+                     $temp_starting_day = $start_year.'-'.$temp_start_month.'-'.$temp_start_day;
+                     $temp_date->setShownStartingDay($current_date->getStartingDay());
+                     $temp_date->setShownStartingTime($current_date->getStartingTime());
+                     $temp_date->setStartingDay($temp_starting_day);
+                     $date_array[$temp_start_day.$temp_start_month.$start_year][] = $temp_date;
+                     unset($temp_date);
                   }
-                  $temp_start_day = $start_day;
-                  if (mb_strlen($temp_start_day) == 1){
-                     $temp_start_day = '0'.$temp_start_day;
-                  }
-                  $temp_start_month = $start_month;
-                  if (mb_strlen($temp_start_month) == 1){
-                     $temp_start_month = '0'.$temp_start_month;
-                  }
-                  $temp_starting_day = $start_year.'-'.$temp_start_month.'-'.$temp_start_day;
-                  $temp_date->setShownStartingDay($current_date->getStartingDay());
-                  $temp_date->setShownStartingTime($current_date->getStartingTime());
-                  $temp_date->setStartingDay($temp_starting_day);
-                  $date_array[$temp_start_day.$temp_start_month.$start_year][] = $temp_date;
-                  unset($temp_date);
                }
             }
          }
@@ -1500,7 +1510,6 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                   $html .= $this->_translator->getMessage('COMMON_DATE_WEEKVIEW_SUNDAY',    $display_startday, $startmonth);
                   break;
                default:
-                  // $html .= getMessage('COMMON_MESSAGETAG_ERROR'.' cs_datescalendar_index_view(1380) ');
                   break;
             }
             $html .= '</td>'.LF;
@@ -1542,10 +1551,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                      $display_start_time = mb_substr($date->getStartingTime(),0,2);
                      $first_char = mb_substr($display_start_time,0,1);
                      if ($first_char == '0'){
-                       $display_start_time = mb_substr($display_start_time,1,2);
+                        $display_start_time = mb_substr($display_start_time,1,2);
                      }
-                     if ( $display_start_time=='0' ){
-                       $display_start_time ='6';
+                     if ( $display_start_time=='0' or !is_numeric($display_start_time) ){
+                        $display_start_time ='6';
                      }
                      if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
                         $length = mb_strlen($date->getTitle());
@@ -1576,6 +1585,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                         $first_char = mb_substr($display_ending_time,0,1);
                         if ($first_char == '0'){
                            $display_ending_time = mb_substr($display_ending_time,1,2);
+                        }
+                        if ( !is_numeric($display_ending_time)
+                             and is_numeric($display_start_time)
+                           ) {
+                           $display_ending_time = $display_start_time+1;
                         }
                         $display_ending_minutes = mb_substr($date->getEndingTime(),3,2);
                         if ($display_ending_minutes !='00'){
