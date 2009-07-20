@@ -95,7 +95,6 @@ if ($environment->getCurrentModule() == CS_USER_TYPE){
    }else{
       $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
    }
-
 }else{
    $selected_ids = $item->getAllLinkedItemIDArray();
 }
@@ -169,6 +168,12 @@ if ( !empty($option)
     unset($params['pos']);
     unset($params['mode']);
     unset($params['return_attach_item_list']);
+    if ( $environment->getCurrentModule() == type2module(CS_DATE_TYPE) ) {
+       unset($params['date_option']);
+    }
+    if ( $environment->getCurrentModule() == type2module(CS_TODO_TYPE) ) {
+       unset($params['todo_option']);
+    }
     redirect($environment->getCurrentContextID(),$environment->getCurrentModule(), $environment->getCurrentFunction(), $params);
 }
 

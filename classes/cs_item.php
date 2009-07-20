@@ -1114,11 +1114,11 @@ class cs_item {
          or ( $changed_key == CS_PROJECT_TYPE
                and $this->isA(CS_COMMUNITY_TYPE)
             )
-       ) {
+         ) {
          $link_manager->setContextLimit($this->getContextID());
-     } else {
+      } else {
          $link_manager->setContextLimit($this->_environment->getCurrentContextID() );
-     }
+      }
       if ($changed_key == CS_COMMUNITY_TYPE){
          $change_all_items_in_community_room = true;
       }else{
@@ -1158,7 +1158,7 @@ class cs_item {
          $old_link_item = $old_link_item_list->getNext();
       }
 
-      foreach( $create_key_array as $item_data ){
+      foreach( $create_key_array as $item_data ) {
          //Das neue Link_item erzeugen und abspeichern
          $link_item = $link_manager->getNewItem();
          $link_item->setFirstLinkedItem($this);
