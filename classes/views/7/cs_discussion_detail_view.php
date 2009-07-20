@@ -379,7 +379,7 @@ class cs_discussion_detail_view extends cs_detail_view {
          $noticed_manager = $this->_environment->getNoticedManager();
          $noticed_manager->getLatestNoticedByIDArray($id_array);
          $rest_subitems = clone($subitems);
-         $html .= '<table style="width:100%; padding:0px; margin:0px; border-collapse:collapse;" summary="Layout">'.LF;
+         $html .= '<table id="discussionSummary" style="width:100%; padding:0px; margin:0px; border-collapse:collapse;" summary="Layout">'.LF;
          $article = $subitems->getFirst();
          if(!empty($article)){
             $article_old = clone($article);

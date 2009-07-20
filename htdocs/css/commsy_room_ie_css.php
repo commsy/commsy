@@ -50,3 +50,7 @@ if (!empty($_GET['cid'])) {
    float:left;
    white-space:nowrap;
 }
+
+#discussionSummary{
+	font-size:10pt;
+}
