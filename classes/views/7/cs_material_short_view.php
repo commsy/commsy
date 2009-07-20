@@ -158,7 +158,7 @@ class cs_material_short_view extends cs_home_view {
          }else{
             $title = $title.LF;
          }
-         if ( $this->_environment->inProjectRoom() ) {
+         if ( !$this->_environment->inPrivateRoom() ) {
             $title .= $this->_getItemChangeStatus($item);
             $title .= $this->_getItemAnnotationChangeStatus($item);
          }

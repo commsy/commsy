@@ -348,7 +348,7 @@ class cs_todo_index_view extends cs_room_index_view {
             CS_TODO_TYPE.$item->getItemID());
 
       unset($params);
-      if ( $this->_environment->inProjectRoom() and !$item->isNotActivated()) {
+      if ( !$this->_environment->inPrivateRoom() and !$item->isNotActivated()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
       }

@@ -2791,6 +2791,5 @@ class cs_view {
       }
       return $info_text;
    }
-
 }
 ?>

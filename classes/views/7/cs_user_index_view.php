@@ -377,7 +377,7 @@ class cs_user_index_view extends cs_room_index_view {
       ##################################################
 
       unset($params);
-      if ($this->_environment->inProjectRoom()) {
+      if ( !$this->_environment->inPrivateRoom() ) {
          $name .= $this->_getItemChangeStatus($item);
       }
       return $name;

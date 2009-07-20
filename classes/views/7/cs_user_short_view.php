@@ -154,7 +154,7 @@ class cs_user_short_view extends cs_home_view {
       ##################################################
 
       unset($params);
-      if ($this->_environment->inProjectRoom()) {
+      if ( !$this->_environment->inPrivateRoom() ) {
          $name .= $this->_getItemChangeStatus($item);
       }
       return $name;

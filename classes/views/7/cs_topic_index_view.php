@@ -154,7 +154,7 @@ class cs_topic_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -170,7 +170,7 @@ class cs_topic_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -294,10 +294,10 @@ class cs_topic_index_view extends cs_index_view {
                            $params,
                            $this->_text_as_html_short($title),
                            '','', '', '', '', '', '', '',
-			   CS_TOPIC_TYPE.$item->getItemID());
+            CS_TOPIC_TYPE.$item->getItemID());
 
       unset($params);
-      if (!empty($this->_room_id) and $this->_environment->inProjectRoom()) {
+      if (!empty($this->_room_id) and !$this->_environment->inPrivateRoom()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
       }
@@ -306,13 +306,13 @@ class cs_topic_index_view extends cs_index_view {
 
    function _getAdditionalCommunityFormFieldsAsHTML () {
       $html = '';
-	   $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       if ($left_menue_status !='disapear'){
-	     $width = '14.3';
+        $width = '14.3';
       }else{
-	     $width = '18.3';
+        $width = '18.3';
       }
       $context = $this->_environment->getCurrentContextItem();
       if ($context->withRubric(CS_INSTITUTION_TYPE)) {
@@ -345,7 +345,7 @@ class cs_topic_index_view extends cs_index_view {
             $html .= '>*'.$this->_translator->getMessage('COMMON_NOT_LINKED').'</option>'.LF;
             $html .= '   </select>'.LF;
          } else {
-	        $html.='';
+           $html.='';
          }
       }
       $html .= '</div>';
@@ -381,7 +381,7 @@ class cs_topic_index_view extends cs_index_view {
   }
 
    function _getAdditionalProjectFormFieldsAsHTML () {
-	   $current_context = $this->_environment->getCurrentContextItem();
+      $current_context = $this->_environment->getCurrentContextItem();
       $width = '235';
       $context_item = $this->_environment->getCurrentContextItem();
       $list = $this->getAvailableGroups();

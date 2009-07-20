@@ -104,7 +104,7 @@ class cs_announcement_short_view extends cs_home_view {
                            $params,
                            $title);
       unset($params);
-      if ($this->_environment->inProjectRoom()) {
+      if ( !$this->_environment->inPrivateRoom() ) {
           $title .= $this->_getItemChangeStatus($item);
           $title .= $this->_getItemAnnotationChangeStatus($item);
       }

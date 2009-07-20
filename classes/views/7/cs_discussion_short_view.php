@@ -116,9 +116,9 @@ class cs_discussion_short_view extends cs_home_view {
       if($item->isClosed()){
          $title .= ' <span class="closed">('.$this->_translator->getMessage('DISCUSSION_IS_CLOSED').')</span>';
       }
-     if ($this->_environment->inProjectRoom()) {
+      if ( !$this->_environment->inPrivateRoom() ) {
          $title .= $this->_getItemChangeStatus($item);
-     }
+      }
       return $title;
    }
 

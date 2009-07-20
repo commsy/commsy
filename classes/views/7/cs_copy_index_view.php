@@ -302,7 +302,7 @@ class cs_copy_index_view extends cs_index_view {
                                   '','', '', '', '', '', '', '',
                                   CS_ANNOUNCEMENT_TYPE.$item->getItemID());
                unset($params);
-               if ($this->_environment->inProjectRoom()) {
+               if ( !$this->_environment->inPrivateRoom() ) {
                   $title .= $this->_getItemChangeStatus($item);
                   $title .= $this->_getItemAnnotationChangeStatus($item);
                }

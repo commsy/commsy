@@ -203,7 +203,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
                               $params,
                               $this->_text_as_html_short($title_text));
          unset($params);
-         if ( $this->_environment->inProjectRoom() ) {
+         if ( !$this->_environment->inPrivateRoom() ) {
             $title .= $this->_getItemChangeStatus($item);
             $title .= $this->_getItemAnnotationChangeStatus($item);
          }

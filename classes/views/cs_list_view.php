@@ -1247,7 +1247,6 @@ class cs_list_view extends cs_view {
          } else {
             $info_text = '';
          }
-         // Add change info for annotations (TBD)
       } else {
          $info_text = '';
       }
