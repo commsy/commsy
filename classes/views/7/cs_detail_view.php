@@ -2374,7 +2374,14 @@ class cs_detail_view extends cs_view {
                                     CS_USER_TYPE,
                                     'detail',
                                     $params,
-                                    $modificator->getFullname());
+                                    $modificator->getFullname(),
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     'style="font-size:10pt;"');
          } elseif ( isset($modificator) and !$modificator->isDeleted() ) {
             $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
          } else {

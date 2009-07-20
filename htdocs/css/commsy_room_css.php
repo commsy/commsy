@@ -59,7 +59,7 @@ body {
    min-width:930px;
    max-width:1200px;
    font-family: 'Trebuchet MS','lucida grande',tahoma,'ms sans serif',verdana,arial,sans-serif;
-   font-size:10pt;
+   font-size:80%;
    font-size-adjust:none;
    font-stretch:normal;
    font-style:normal;
