@@ -838,7 +838,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='</tr>'.LF;
                if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
                   $html .='<tr>'.LF;
-                  $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                  $html .='<td id="discarticleCreatorInformation" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
                   $mode = 'short';
                   if (!$item->isA(CS_USER_TYPE)) {
                      $mode = 'short';
