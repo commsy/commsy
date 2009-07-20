@@ -90,7 +90,7 @@ div.right_box_main{
     font-size:10pt;
 }
 
-.discarticleCreatorInformation{
+a.discarticleCreatorInformation{
 	font-size:10pt;
 }
 
