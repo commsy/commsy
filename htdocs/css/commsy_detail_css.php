@@ -68,6 +68,7 @@ span.index_description{
 span.detail_forward_links, span.creator_information_key, .multiupload_discussion_detail{
    color: <?php echo($color['myarea_section_title'])?>;
    white-space: nowrap;
+   font-size:10pt;
 }
 
 a.select_link, span.select_link{

@@ -86,10 +86,13 @@ div.right_box_main{
 	font-size:10pt;
 }
 
-#discussionSummary td, discarticleCreatorInformation td{
+#discussionSummary td{
     font-size:10pt;
 }
 
+.discarticleCreatorInformation{
+	font-size:10pt;
+}
 
 #configuration_form{
    width:100%;
