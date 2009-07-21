@@ -1043,6 +1043,15 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>';
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
          $html .= '</p>';
+      } elseif ( $this->_environment->getCurrentModule() == 'configuration'
+                 and ( $this->_environment->getCurrentFunction() == 'room_options'
+                       or $this->_environment->getCurrentFunction() == 'account_options'
+                     )
+               ) {
+         $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
+         $html .= '</h2>';
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
+         $html .= '</p>';
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');
@@ -1058,7 +1067,10 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
       $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
       if ( ( $this->_environment->getCurrentModule() == 'configuration'
-             and $this->_environment->getCurrentFunction() == 'preferences'
+             and ( $this->_environment->getCurrentFunction() == 'preferences'
+                   or $this->_environment->getCurrentFunction() == 'room_options'
+                   or $this->_environment->getCurrentFunction() == 'account_options'
+                 )
            )
            or
            ( $this->_environment->getCurrentModule() == 'project'
@@ -1078,7 +1090,7 @@ class cs_page_room_view extends cs_page_view {
    }
 
    function addDeleteBox($url,$mode='detail',$selected_ids = NULL){
-        $this->_with_delete_box = true;
+      $this->_with_delete_box = true;
       $this->_delete_box_action_url = $url;
       $this->_delete_box_mode = $mode;
       $this->_delete_box_ids = $selected_ids;

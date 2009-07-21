@@ -28,7 +28,7 @@ include_once('classes/cs_list.php');
 $current_room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 
-if ( isset($current_room_item) and !$current_room_item->isOpen() ) {
+if ( isset($current_room_item) and !$current_room_item->isOpen() and !$current_room_item->isTemplate() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

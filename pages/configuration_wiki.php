@@ -60,9 +60,16 @@ if ( isset($item) and !$item->mayEdit($current_user) ) {
    unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
-}
-
-elseif ( isset($item) and !$item->withWikiFunctions() ) {
+} elseif ( !$item->isOpen() and !$item->isTemplate() ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $item->getTitle()));
+   $page->add($errorbox);
+   $command = 'error';
+} elseif ( isset($item) and !$item->withWikiFunctions() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
@@ -237,19 +244,19 @@ else {
          } else {
             $item->unsetWikiUseCommSyLogin();
          }
-         
+
          if ( isset($_POST['community_read_access']) ) {
             $item->setWikiCommunityReadAccess();
          } else {
             $item->unsetWikiCommunityReadAccess();
          }
-         
+
          if ( isset($_POST['community_write_access']) ) {
             $item->setWikiCommunityWriteAccess();
          } else {
             $item->unsetWikiCommunityWriteAccess();
          }
-         
+
          if ( isset($_POST['portal_read_access']) ) {
             $item->setWikiPortalReadAccess();
          } else {
@@ -316,7 +323,7 @@ else {
          } else {
             $item->unsetWikiEnablePdf();
          }
-         
+
          if ( isset($_POST['enable_rater']) ) {
             $item->setWikiEnableRater();
          } else {
@@ -328,7 +335,7 @@ else {
          } else {
             $item->unsetWikiEnableListCategories();
          }
-         
+
          if ((isset($_POST['new_page_template'])) &&  ($_POST['new_page_template'] != '')) {
             $item->setWikiNewPageTemplate($_POST['new_page_template']);
          } else {

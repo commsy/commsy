@@ -793,7 +793,7 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       }
 
       /******** buttons***********/
-      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
 
    }
 

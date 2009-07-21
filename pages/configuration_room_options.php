@@ -32,7 +32,27 @@ if (!empty($_POST['option'])) {
 $is_saved = false;
 
 $context_item = $environment->getCurrentContextItem();
+$_GET['iid'] = $context_item->getItemID();
+include_once('include/inc_delete_entry.php');
 
+// Find out what to do
+if ( isset($_POST['option']) and $_POST['option'] == $translator->getMessage('COMMON_DELETE_ROOM')) {
+   $_GET['action'] = 'delete';
+}
+if ( isset($_GET['action']) and $_GET['action'] == 'delete' ) {
+   $current_user_item = $environment->getCurrentUserItem();
+   if ( !empty($context_item) ) {
+      if ( $current_user_item->isModerator()
+           or ( isset($context_item)
+                and $context_item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+              )
+         ) {
+         $params = $environment->getCurrentParameterArray();
+         $page->addDeleteBox(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params));
+      }
+   }
+   unset($current_user_item);
+}
 
 // Check access rights
 if ($current_user->isGuest()) {
@@ -43,7 +63,7 @@ if ($current_user->isGuest()) {
       $params['cid'] = $context_item->getItemId();
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
-} elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
+} elseif ( !$context_item->isOpen() and !$context_item->isTemplate() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

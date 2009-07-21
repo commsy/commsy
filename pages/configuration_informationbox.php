@@ -36,7 +36,7 @@ if ($current_user->isGuest()) {
       $params['cid'] = $room_item->getItemId();
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
-} elseif ( $room_item->isProjectRoom() and !$room_item->isOpen() ) {
+} elseif ( !$room_item->isOpen() and !$room_item->isTemplate() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;

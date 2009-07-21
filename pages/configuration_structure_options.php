@@ -35,6 +35,15 @@ if (!$current_user->isModerator()) {
    unset($params);
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
+} elseif ( !$room_item->isOpen() and !$room_item->isTemplate() ) {
+   $params = array();
+   $params['environment'] = $environment;
+   $params['with_modifying_actions'] = true;
+   $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+   unset($params);
+   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $room_item->getTitle()));
+   $page->add($errorbox);
+   $command = 'error';
 }
 // Access granted
 else {

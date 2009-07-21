@@ -75,9 +75,9 @@ class cs_configuration_account_options_form extends cs_rubric_form {
             $this->_description_text = 'de';
          }
       }
-      $this->_choice[0]['text'] = getMessage('COMMON_YES');
+      $this->_choice[0]['text'] = $this->_translator->getMessage('COMMON_YES');
       $this->_choice[0]['value'] = '1';
-      $this->_choice[1]['text'] = getMessage('COMMON_NO');
+      $this->_choice[1]['text'] = $this->_translator->getMessage('COMMON_NO');
       $this->_choice[1]['value'] = '2';
 
    }
@@ -87,7 +87,7 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       $current_context_item = $this->_environment->getCurrentContextItem();
 
       /**************Raumteilnahme******/
-      
+
       $use_javascript = false;
       $session_item = $this->_environment->getSessionItem();
       if($session_item->issetValue('javascript')){
@@ -95,7 +95,7 @@ class cs_configuration_account_options_form extends cs_rubric_form {
             $use_javascript = true;
          }
       }
-      
+
       $radio_values = array();
       $radio_values[0]['text'] = $this->_translator->getMessage('PREFERENCES_CHECK_NEW_MEMBERS_NEVER');
       $radio_values[0]['value'] = 'never';
@@ -131,13 +131,13 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       /********Gastzugang********/
       if ($this->_environment->inCommunityRoom()){
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('COMMON_ON');
+         $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_ON');
          $radio_values[0]['value'] = 'open';
-         $radio_values[1]['text'] = getMessage('COMMON_OFF');
+         $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_OFF');
          $radio_values[1]['value'] = 'closed';
          $this->_form->addRadioGroup('open_for_guests',
-                                     getMessage('PREFERENCES_OPEN_FOR_GUESTS'),
-                                     getMessage('PREFERENCES_OPEN_FOR_GUESTS_DESC'),
+                                     $this->_translator->getMessage('PREFERENCES_OPEN_FOR_GUESTS'),
+                                     $this->_translator->getMessage('PREFERENCES_OPEN_FOR_GUESTS_DESC'),
                                      $radio_values,
                                      '',
                                      true,
@@ -151,27 +151,27 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       $this->_form->addCheckbox('status',
                                      '2',
                                      false,
-                                     getMessage('ROOM_ARCHIVE_STATUS'),
-                                     getMessage('ROOM_STATUS_DESCRIPTION'),
+                                     $this->_translator->getMessage('ROOM_ARCHIVE_STATUS'),
+                                     $this->_translator->getMessage('ROOM_STATUS_DESCRIPTION'),
                                      '',
                                      '',
                                      '',
                                      ''
                                     );
       $this->_form->combine();
-      $this->_form->addExplanation('status_desc',getMessage('ROOM_STATUS_LONG_DESCRIPTION'),getMessage('ROOM_STATUS_LONG_DESCRIPTION'));
+      $this->_form->addExplanation('status_desc',$this->_translator->getMessage('ROOM_STATUS_LONG_DESCRIPTION'),$this->_translator->getMessage('ROOM_STATUS_LONG_DESCRIPTION'));
 
 
 
       /*************AGBs**************/
       if ($this->_environment->inCommunityRoom()) {
-        $desc = getMessage('CONFIGURATION_AGB_FORM_WANT_DESC');
+         $desc = $this->_translator->getMessage('CONFIGURATION_AGB_FORM_WANT_DESC');
       } elseif ($this->_environment->inPortal()) {
-         $desc = getMessage('CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL');
+         $desc = $this->_translator->getMessage('CONFIGURATION_AGB_FORM_WANT_DESC_PORTAL');
       } else {
          $desc = '';
       }
-      $this->_form->addRadioGroup('agb_status',getMessage('CONFIGURATION_CONFIRMATION_FORM_TITLE'),$desc,$this->_choice,'',true,true,'','','','onclick="cs_toggle()"');
+      $this->_form->addRadioGroup('agb_status',$this->_translator->getMessage('CONFIGURATION_CONFIRMATION_FORM_TITLE'),$desc,$this->_choice,'',true,true,'','','','onclick="cs_toggle()"');
       $this->_form->combine();
       $languageArray = array();
       $tmpArray = $this->_environment->getAvailableLanguageArray();
@@ -179,10 +179,10 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       foreach ($tmpArray as $item){
          switch ( mb_strtoupper($item, 'UTF-8') ){
             case 'DE':
-               $languageArray[$zaehler]['text']= getMessage('DE');
+               $languageArray[$zaehler]['text']= $this->_translator->getMessage('DE');
                break;
             case 'EN':
-               $languageArray[$zaehler]['text']= getMessage('EN');
+               $languageArray[$zaehler]['text']= $this->_translator->getMessage('EN');
                break;
             default:
                break;
@@ -193,13 +193,13 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       $this->_form->addSelect( 'description_text',
                                $languageArray,
                                '',
-                               getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
+                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
                                'option','','','16',true);
 
       $this->_form->combine();
@@ -216,13 +216,13 @@ class cs_configuration_account_options_form extends cs_rubric_form {
          }
       }
       $this->_form->combine();
-      $this->_form->addText(getMessage('COMMON_SUCCESSBOX_TITLE'),
-                            getMessage('COMMON_SUCCESSBOX_TITLE'),
-                            getMessage('PREFERENCES_AGB_NOTE')
+      $this->_form->addText($this->_translator->getMessage('COMMON_SUCCESSBOX_TITLE'),
+                            $this->_translator->getMessage('COMMON_SUCCESSBOX_TITLE'),
+                            $this->_translator->getMessage('PREFERENCES_AGB_NOTE')
                            );
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessage('COMMON_DELETE_ROOM'));
    }
 
 
@@ -284,7 +284,7 @@ class cs_configuration_account_options_form extends cs_rubric_form {
          foreach ($this->_languages as $language) {
             if (empty($this->_values['agb_text_'.cs_strtoupper($language)])) {
                if ($first) {
-                  $this->_error_array[] = getMessage('CONFIGURATION_AGB_TEXT_ERROR');
+                  $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_TEXT_ERROR');
                   $first = false;
                }
                $this->_form->setFailure('agb_text_'.cs_strtoupper($language),'');

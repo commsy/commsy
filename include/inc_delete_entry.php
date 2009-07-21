@@ -38,7 +38,7 @@ if ( isset($_POST['delete_option']) ) {
 }
 if ( isset($_GET['action']) and $_GET['action'] == 'delete' ) {
    $params = $environment->getCurrentParameterArray();
-   $page->addDeleteBox(curl($environment->getCurrentContextID(),module2type($environment->getCurrentModule()),'detail',$params));
+   $page->addDeleteBox(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params));
 }
 // Cancel editing
 if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
@@ -73,7 +73,7 @@ if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
       $params['iid'] = $current_item_iid;
    }
    unset($params['action']);
-   redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'detail', $params,$anchor);
+   redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $environment->getCurrentFunction(), $params,$anchor);
 }
 // Delete item
 elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
@@ -161,7 +161,45 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
              $item = $material_version_list->getFirst();
              $item->delete(CS_ALL); // CS_ALL -> delete all versions of the material
           }
-      }else{
+      } elseif ($environment->getCurrentModule() == 'configuration' ) {
+         $manager = $environment->getRoomManager();
+         $item = $manager->getItem($current_item_iid);
+         if ( $item->isProjectRoom()
+              or $item->isCommunityRoom()
+              or $item->isGroupRoom()
+              or $item->isPrivateRoom()
+            ) {
+            if ( $item->isCommunityRoom()
+                 or $item->isPrivateRoom()
+               ) {
+               $redirect_context_id = $item->getContextID();
+               $redirect_module     = 'home';
+               $redirect_function   = 'index';
+               $redirect_params     = array();
+            } elseif ( $item->isGroupRoom() ) {
+               $redirect_context_id = $item->getLinkedProjectItemID();
+               $redirect_module     = CS_GROUP_TYPE;
+               $redirect_function   = 'detail';
+               $redirect_params     = array();
+               $redirect_params['iid'] = $item->getLinkedGroupItemID();
+            } elseif ( $item->isProjectRoom() ) {
+               $redirect_context_id = $item->getContextID();
+               $redirect_module     = 'home';
+               $redirect_function   = 'index';
+               $redirect_params     = array();
+               // community room
+               $community_list = $item->getCommunityList();
+               if ( !empty($community_list) and $community_list->isNotEmpty() ) {
+                  $community_item = $community_list->getFirst();
+                  $redirect_context_id = $community_item->getItemID();
+                  unset($community_item);
+                  unset($community_list);
+               }
+            }
+            $item->delete();
+            redirect($redirect_context_id,$redirect_module,$redirect_function,$redirect_params);
+         }
+      } else {
          $manager = $environment->getManager(module2type($environment->getCurrentModule()));
          $item = $manager->getItem($current_item_id);
          $item->delete();
@@ -173,7 +211,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 // room archive
 elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
    $manager = $environment->getRoomManager();
-   $item = $manager->getItem($current_item_id);
+   $item = $manager->getItem($current_item_iid);
    $item->close();
    $item->save();
    if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
@@ -196,9 +234,19 @@ elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
       } else {
          redirect($environment->getCurrentContextID(),CS_MYROOM_TYPE,'index','');
       }
+   } elseif ($environment->getCurrentModule() == 'configuration') {
+      if ( $environment->getCurrentFunction() == 'account_options' ) {
+         $redirect_context_id = $environment->getCurrentContextID();
+         $redirect_module     = $environment->getCurrentModule();
+         $redirect_function   = $environment->getCurrentFunction();
+      } else {
+         $redirect_context_id = $environment->getCurrentContextID();
+         $redirect_module     = 'home';
+         $redirect_function   = 'index';
+      }
+      $redirect_params     = array();
+      redirect($redirect_context_id,$redirect_module,$redirect_function,$redirect_params);
    } else {
-      $session = $environment->getSessionItem();
-      $history = $session->getValue('history');
       redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
    }
 }

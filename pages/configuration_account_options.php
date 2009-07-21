@@ -28,6 +28,29 @@ $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
 
+$context_item = $room_item;
+$_GET['iid'] = $context_item->getItemID();
+include_once('include/inc_delete_entry.php');
+
+// Find out what to do
+if ( isset($_POST['option']) and $_POST['option'] == $translator->getMessage('COMMON_DELETE_ROOM')) {
+   $_GET['action'] = 'delete';
+}
+if ( isset($_GET['action']) and $_GET['action'] == 'delete' ) {
+   $current_user_item = $environment->getCurrentUserItem();
+   if ( !empty($context_item) ) {
+      if ( $current_user_item->isModerator()
+           or ( isset($context_item)
+                and $context_item->isModeratorByUserID($current_user_item->getUserID(),$current_user_item->getAuthSource())
+              )
+         ) {
+         $params = $environment->getCurrentParameterArray();
+         $page->addDeleteBox(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params));
+      }
+   }
+   unset($current_user_item);
+}
+
 if ($current_user->isGuest()) {
    if (!$room_item->isOpenForGuests()) {
       redirect($environment->getCurrentPortalId(),'home','index','');
@@ -36,7 +59,7 @@ if ($current_user->isGuest()) {
       $params['cid'] = $room_item->getItemId();
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
-}  elseif (!$current_user->isModerator()) {
+} elseif (!$current_user->isModerator()) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
@@ -68,18 +91,8 @@ if ($current_user->isGuest()) {
 
    $form_view->setAction(curl($environment->getCurrentContextID(),'configuration','account_options',''));
 
-   /* we are not called as a result of a form post, so just display the form */
-   if ( empty($command) ) {
-      $current_context = $environment->getCurrentContextItem();
-      $form->setItem($current_context);
-      if ( !empty($_POST)) {
-         $form->setFormPost($_POST);
-      }
-      $form->prepareForm();
-      $form->loadValues();
-   }
-   elseif ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
-     redirect($environment->getCurrentContextID(),'configuration', 'index', '');
+   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
 
    /* we called ourself as result of a form post */
@@ -172,14 +185,21 @@ if ($current_user->isGuest()) {
          $current_user->setAGBAcceptance();
          $current_user->save();
       }
+   } else {
+      $current_context = $environment->getCurrentContextItem();
+      $form->setItem($current_context);
+      if ( !empty($_POST)) {
+         $form->setFormPost($_POST);
+      }
+      $form->prepareForm();
+      $form->loadValues();
    }
 
    $form_view->setForm($form);
    if ( $environment->inPortal() or $environment->inServer() ){
       $page->addForm($form_view);
-   }else{
+   } else {
       $page->add($form_view);
    }
 }
-
 ?>

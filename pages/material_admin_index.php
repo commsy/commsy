@@ -78,7 +78,7 @@ if ($current_user->isGuest()) {
       $params['cid'] = $context_item->getItemId();
       redirect($environment->getCurrentPortalId(),'home','index',$params);
    }
-} elseif ( $context_item->isProjectRoom() and !$context_item->isOpen() ) {
+} elseif ( !$context_item->isOpen() and !$context_item->isTemplate() ) {
    $params = array();
    $params['environment'] = $environment;
    $params['with_modifying_actions'] = true;
@@ -98,8 +98,6 @@ if ($current_user->isGuest()) {
    //access granted
 
    /*** Start of list display ***/
-
-
 
    // Find current browsing starting point
    if ( isset($_GET['from']) ) {
