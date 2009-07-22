@@ -147,6 +147,18 @@ if ( !isset($translator) and isset($this->_translator) ) {
       $admin_link_list->add($link_item);
    }
 
+   if ( $environment->inPortal() ) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('PORTAL_AUTOACCOUNTS_LINK'));
+      $link_item->setIconPath('images/cs_config/SERVER_AUTOACCOUNTS_LINK.gif');
+      $link_item->setDescription($translator->getMessage('PORTAL_AUTOACCOUNTS_LINK_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('autoaccounts');
+      $link_item->setParameter(array());
+      $admin_link_list->add($link_item);
+   }
+
    if ( $environment->inServer() ) {
       $link_item = new cs_link();
       $link_item->setTitle($translator->getMessage('SERVER_NEWS_LINK'));

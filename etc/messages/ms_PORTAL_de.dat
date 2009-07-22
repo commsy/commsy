@@ -1,6 +1,8 @@
 <?php
 $message["PORTAL_ADMINISTRATION_DESC"]["de"] = "dieses Portals";
 $message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"]["de"] = "aus %_COMMUNITY_ART_DEF_DATPL_LOW aktivsten %_COMMUNITY_SUB_DATPL_LOW";
+$message["PORTAL_AUTOACCOUNTS_LINK"]["de"] = "Kennungen automatisch anlegen";
+$message["PORTAL_AUTOACCOUNTS_LINK_DESC"]["de"] = "Hier können Sie mehrere Kennungen auf einmal anlegen.";
 $message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["PORTAL_CONFIGURATION_ACTION"]["de"] = "Portal konfigurieren";
 $message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"]["de"] = "Serverinfos<br/>

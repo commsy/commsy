@@ -1,6 +1,8 @@
 <?php
 $message["PORTAL_ADMINISTRATION_DESC"]["en"] = "of this portal";
 $message["PORTAL_ANNOUNCEMENT_FROM_COMMUNITIES_DESC"]["en"] = "from the most active %_COMMUNITY_SUB_NOMPL_LOW";
+$message["PORTAL_AUTOACCOUNTS_LINK"]["en"] = "Automatic account generation";
+$message["PORTAL_AUTOACCOUNTS_LINK_DESC"]["en"] = "Create multiple accounts.";
 $message["PORTAL_COMMUNITY_ROOM_LIST_ROOMS"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["PORTAL_CONFIGURATION_ACTION"]["en"] = "Configure Portal";
 $message["PORTAL_CONFIGURATION_NEWS_SHOW_SERVER"]["en"] = "Show<br/>

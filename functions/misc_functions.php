@@ -804,7 +804,10 @@ function isURLValid () {
          $funct != 'ads' and
 
          // upload file for external tools
-         $funct != 'upload'
+         $funct != 'upload' and
+         
+         // automtic generated accounts
+         $funct != 'autoaccounts'
        ) {
        return false;
     }
