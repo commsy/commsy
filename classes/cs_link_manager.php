@@ -996,10 +996,10 @@ class cs_link_manager extends cs_manager {
          $query .= ' AND '.$this->_db_table.'.second_item_id = "'.encode(AS_DB,$first_id).'")';
          $query .= ';';
          $result = $this->_db_connector->performQuery($query);
-         if ( !isset($result) or empty($result[0]) ) {
+         if ( !isset($result) ) {
             include_once('functions/error_functions.php');
             trigger_error('Problems selecting one '.$this->_db_table.' item ('.$first_id.','.$second_id.').',E_USER_WARNING);
-         } else {
+         } elseif ( !empty($result[0]) ) {
             $item = $this->_buildItem($result[0]);
             if ( $this->_cache_on ) {
                $this->_cached_items[$result[0]['item_id']] = $result[0];

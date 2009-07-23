@@ -372,7 +372,8 @@ class cs_item_manager extends cs_manager {
       $query .= ' WHERE item_id = "'.encode(AS_DB,$iid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting an item from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems selecting an item from query: "'.$query.'"',E_USER_WARNING);
          $success = false;
       } else {
          foreach ( $result as $query_result ) {

@@ -197,8 +197,6 @@ class cs_rubric_form {
 
    /** prepare values and load it into form
     * this methods prepare the values in an arry and load it into the form
-    *
-    * @author CommSy Development Group
     */
    function loadValues () {
       $this->_prepareValues();

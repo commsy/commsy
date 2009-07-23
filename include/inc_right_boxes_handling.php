@@ -163,7 +163,7 @@ if ( isOption($right_box_command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
 if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
      isOption($command, getMessage('COMMON_GROUP_ATTACH')) or
      isOption($command, getMessage('COMMON_INSTITUTION_ATTACH'))
- ) {
+   ) {
 
     $entry_array = array();
     $entry_new_array = array();
