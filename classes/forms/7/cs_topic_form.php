@@ -71,6 +71,10 @@ class cs_topic_form extends cs_rubric_form {
 
    var $_path_button_disable = true;
 
+   private $_path_reset_items = false;
+
+   private $_path_new_id_array = array();
+
   /** constructor
     * the only available constructor
     *
@@ -101,6 +105,10 @@ class cs_topic_form extends cs_rubric_form {
      $this->_path_activated = false;
    }
 
+   public function resetPathItems () {
+      $this->_path_reset_items = true;
+   }
+
    /** init data for form, INTERNAL
     * this methods init the data for the form, for example topics
     *
@@ -124,21 +132,21 @@ class cs_topic_form extends cs_rubric_form {
          $fullname = $current_user->getFullname();
       }
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
 
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('TOPIC_EDIT');
+         $this->_headline = $this->_translator->getMessage('TOPIC_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('TOPIC_EDIT');
+            $this->_headline = $this->_translator->getMessage('TOPIC_EDIT');
          } else {
-            $this->_headline = getMessage('TOPIC_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('TOPIC_ENTER_NEW');
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_TOPIC_TYPE);
@@ -148,19 +156,19 @@ class cs_topic_form extends cs_rubric_form {
                $genus = $rubric_array['EN']['GENUS'];
             }
             if ($genus =='M'){
-               $new = getMessage('COMMON_NEW_M_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
             }
             elseif ($genus =='F'){
-               $new =  getMessage('COMMON_NEW_F_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
             }
             else {
-               $new = getMessage('COMMON_NEW_N_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
             }
 
             $this->_headline = $new.$this->_headline;
          }
       } else {
-         $this->_headline = getMessage('TOPIC_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('TOPIC_ENTER_NEW');
          $new='';
          $context_item = $this->_environment->getCurrentContextItem();
          $rubric_array = $context_item->_getRubricArray(CS_TOPIC_TYPE);
@@ -170,13 +178,13 @@ class cs_topic_form extends cs_rubric_form {
             $genus = $rubric_array['EN']['GENUS'];
          }
          if ($genus =='M'){
-            $new = getMessage('COMMON_NEW_M_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
          }
          elseif ($genus =='F'){
-            $new =  getMessage('COMMON_NEW_F_BIG').' ';
+            $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
          }
          else {
-            $new = getMessage('COMMON_NEW_N_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
          }
          $this->_headline = $new.$this->_headline;
       }
@@ -205,8 +213,10 @@ class cs_topic_form extends cs_rubric_form {
       $this->_file_array = $file_array;
 
       // PATH
-      if ( isset($this->_item) or isset($item) ) {
-
+      if ( isset($this->_item)
+           or isset($item)
+           or $this->_path_reset_items
+         ) {
          $link_manager = $this->_environment->getLinkItemManager();
          if ( isset($this->_item) ) {
             $link_manager->setLinkedItemLimit($this->_item);
@@ -219,13 +229,12 @@ class cs_topic_form extends cs_rubric_form {
          $link_manager->select();
          $link_item_list = $link_manager->get();
 
-
          if ( !$link_item_list->isEmpty() ) {
             $counter = 1;
             $link_item = $link_item_list->getFirst();
             while ($link_item) {
                $this->_link_item_place_array[$counter] = $link_item->getItemID();
-               if ($link_item->getSortingPlace()) {
+               if ( $link_item->getSortingPlace() ) {
                   $this->_link_item_check_array[] = $link_item->getItemID();
                }
                $linked_item = $link_item->getLinkedItem($topic_item);
@@ -291,6 +300,49 @@ class cs_topic_form extends cs_rubric_form {
             ksort($temp_array);
             $this->_link_item_array = $temp_array;
          }
+         if ( $this->_path_reset_items ) {
+            $session = $this->_environment->getSessionItem();
+            if ( $session->issetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids')) {
+               $entry_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
+               $entry_link_array = array();
+               $link_manager = $this->_environment->getLinkItemManager();
+               foreach ( $entry_array as $entry_id ) {
+                  $link_item = $link_manager->getItemByFirstAndSecondID($topic_item->getItemID(),$entry_id);
+                  if ( !empty($link_item) ) {
+                     $entry_link_array[$entry_id] = $link_item->getItemID();
+                  }
+                  unset($link_item);
+               }
+               unset($link_manager);
+               $temp_link_item_array = array();
+               $temp_link_value_array = array();
+               foreach ( $this->_link_item_array as $link_item ) {
+                  if ( in_array($link_item['value'],$entry_link_array) ) {
+                     $temp_link_item_array[] = $link_item;
+                     $temp_link_value_array[] = $link_item['value'];
+                  }
+               }
+               foreach ( $entry_array as $value ) {
+                  if ( empty($entry_link_array[$value]) ) {
+                     $item_manager = $this->_environment->getItemManager();
+                     $item_type = $item_manager->getItemType($value);
+                     $manager = $this->_environment->getManager(type2Module($item_type));
+                     $item = $manager->getItem($value);
+                     $temp_item = array();
+                     $temp_item['text'] = $item->getTitle();
+                     $temp_item['value'] = $item->getItemID();
+                     $this->_path_new_id_array[] = $item->getItemID();
+                     $temp_link_item_array[] = $temp_item;
+                     unset($temp_item);
+                     unset($item);
+                     unset($manager);
+                     unset($item_manager);
+                  }
+               }
+            }
+            unset($session);
+            $this->_link_item_array = $temp_link_item_array;
+         }
          if ( isset($this->_link_item_array) and !empty($this->_link_item_array) ) {
             $this->_path_button_disable = false;
          }
@@ -299,19 +351,18 @@ class cs_topic_form extends cs_rubric_form {
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
-    *
-    * @author CommSy Development Group
     */
    function _createForm () {
 
       // topic
       $this->_form->addHidden('iid','');
-      $this->_form->addTitleField('name','',getMessage('COMMON_NAME'),getMessage('COMMON_NAME_DESC'),200,45,true);
+      $this->_form->addHidden('path_new_id_array',$this->_path_new_id_array);
+      $this->_form->addTitleField('name','',$this->_translator->getMessage('COMMON_NAME'),$this->_translator->getMessage('COMMON_NAME_DESC'),200,45,true);
       $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
                   array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
+                  $this->_translator->getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),60);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),$this->_translator->getMessage('COMMON_CONTENT_DESC',$format_help_link),60);
 
       // files
       $this->_form->addAnchor('fileupload');
@@ -330,11 +381,11 @@ class cs_topic_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -363,10 +414,10 @@ class cs_topic_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
 
 
@@ -378,13 +429,13 @@ class cs_topic_form extends cs_rubric_form {
             $this->_form->addHidden('path_active',-1);
             $this->_form->addButton('option',$this->_translator->getMessage('TOPIC_ACTIVATE_PATH'),'','','',$this->_path_button_disable);
             $this->_form->combine('vertical');
-            $this->_form->addText('activate_path','',getMessage('TOPIC_ACTIVATE_PATH_DESCRIPTION'));
+            $this->_form->addText('activate_path','',$this->_translator->getMessage('TOPIC_ACTIVATE_PATH_DESCRIPTION'));
          } else {
             $this->_form->addHidden('path_active',1);
             $this->_form->addHidden('place_array',$this->_link_item_place_array);
             $this->_form->addButton('option',$this->_translator->getMessage('TOPIC_DEACTIVATE_PATH'),'','','',$this->_path_button_disable);
             $this->_form->combine('vertical');
-            $this->_form->addText('activate_path','',getMessage('TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION'));
+            $this->_form->addText('activate_path','',$this->_translator->getMessage('TOPIC_ACTIVATE_PATH_SELECT_DESCRIPTION'));
             $this->_form->addCheckboxGroup('sorting',$this->_link_item_array,$this->_link_item_check_array,$this->_translator->getMessage('TOPIC_PATH'),'','','','','','','',50,true,false,true);
          }
          // PATH - END
@@ -394,12 +445,12 @@ class cs_topic_form extends cs_rubric_form {
       if ( !$this->_environment->inPrivateRoom() ){
          $this->_form->addEmptyline();
          if ( !isset($this->_item) ) {
-            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+            $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
          } else {
             $current_user = $this->_environment->getCurrentUser();
             $creator = $this->_item->getCreatorItem();
             if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-               $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+               $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
             } else {
                $this->_form->addHidden('public','');
             }
@@ -421,21 +472,19 @@ class cs_topic_form extends cs_rubric_form {
       $this->_setFormElementsForConnectedRubrics();
 
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('TOPIC_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','','','','','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('TOPIC_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','','','','','','');
       } else {
-         $this->_form->addButtonBar('option',getMessage('TOPIC_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','','','','','',' onclick="saveData()"');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('TOPIC_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','','','','','',' onclick="saveData()"');
       }
    }
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
-    *
-    * @author CommSy Development Group
     */
    function _prepareValues () {
       $this->_values = array();
       if ( !empty($this->_form_post) ) {
-          $this->_values = $this->_form_post;
+         $this->_values = $this->_form_post;
          if ( !isset($this->_values['public']) ) {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }

@@ -148,6 +148,9 @@ else {
                 and $topic_item->isPathActive() ) {
          $form->activatePath();
       }
+      if ( isOption($command, $translator->getMessage('COMMON_ITEM_NEW_ATTACH')) ) {
+         $form->resetPathItems();
+      }
 
       // Back from multi upload
       if ( !empty($_POST) ) {
@@ -285,8 +288,21 @@ else {
                foreach ($_POST['sorting'] as $place => $item_id) {
                   $temp_array = array();
                   $temp_array['place'] = $place+1;
-                  $temp_array['item_id'] = $item_id;
-                  $item_place_array[] = $temp_array;
+                  if ( !empty($_POST['path_new_id_array'])
+                       and in_array($item_id,$_POST['path_new_id_array'])
+                     ) {
+                     $link_manager = $environment->getLinkItemManager();
+                     $link_item = $link_manager->getItemByFirstAndSecondID($item_id,$topic_item->getItemID());
+                     if ( !empty($link_item) ) {
+                        $item_id = $link_item->getItemID();
+                     } else {
+                        $item_id = '';
+                     }
+                  }
+                  if ( !empty($item_id) ) {
+                     $temp_array['item_id'] = $item_id;
+                     $item_place_array[] = $temp_array;
+                  }
                }
                $link_item_manager = $environment->getLinkItemManager();
                $link_item_manager->cleanSortingPlaces($topic_item);
