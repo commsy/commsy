@@ -293,7 +293,7 @@ class cs_configuration_template_options_form extends cs_rubric_form {
               $user_array['2']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_USERS');
               $user_array['2']['value'] = '1';
               $user_array['3']['text'] = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_AVAILABILITY_ROOM_MODERATORS');
-              $user_array['4']['value'] = '2';
+              $user_array['3']['value'] = '2';
            }
            $this->_form->addSelect('template_availability',
                                $user_array,
