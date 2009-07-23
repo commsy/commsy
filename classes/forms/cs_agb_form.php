@@ -56,7 +56,11 @@ class cs_agb_form extends cs_rubric_form {
       // agb text
       $context = $this->_environment->getCurrentContextItem();
       $text_array = $context->getAGBTextArray();
-      $this->_agb_text = $text_array[mb_strtoupper(getSelectedLanguage(), 'UTF-8')];
+      $language = $context->getLanguage();
+      if ( $language == 'user' ) {
+         $language = getSelectedLanguage();
+      }
+      $this->_agb_text = $text_array[mb_strtoupper($language, 'UTF-8')];
    }
 
    /** create the form, INTERNAL

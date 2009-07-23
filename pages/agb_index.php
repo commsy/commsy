@@ -24,7 +24,11 @@
 include_once('functions/language_functions.php');
 $commsy = $environment->getCurrentContextItem();
 $text_array = $commsy->getAGBTextArray();
-$text = $text_array[mb_strtoupper(getSelectedLanguage(), 'UTF-8')];
+$language = $commsy->getLanguage();
+if ( $language == 'user' ) {
+   $language = getSelectedLanguage();
+}
+$text = $text_array[mb_strtoupper($language, 'UTF-8')];
 
 $params = array();
 $params['environment'] = $environment;

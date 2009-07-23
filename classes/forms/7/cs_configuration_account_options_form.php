@@ -66,7 +66,11 @@ class cs_configuration_account_options_form extends cs_rubric_form {
 
       /*************AGBs**************/
       $current_context_item = $this->_environment->getCurrentContextItem();
-      $this->_languages = $this->_environment->getAvailableLanguageArray();
+      if ( $current_context_item->getLanguage() == 'user' ) {
+         $this->_languages = $this->_environment->getAvailableLanguageArray();
+      } else {
+         $this->_languages[] = $current_context_item->getLanguage();
+      }
       if (isset($this->_form_post['description_text'])) {
          $this->_description_text = $this->_form_post['description_text'];
       } else{
@@ -174,7 +178,8 @@ class cs_configuration_account_options_form extends cs_rubric_form {
       $this->_form->addRadioGroup('agb_status',$this->_translator->getMessage('CONFIGURATION_CONFIRMATION_FORM_TITLE'),$desc,$this->_choice,'',true,true,'','','','onclick="cs_toggle()"');
       $this->_form->combine();
       $languageArray = array();
-      $tmpArray = $this->_environment->getAvailableLanguageArray();
+      #$tmpArray = $this->_environment->getAvailableLanguageArray();
+      $tmpArray = $this->_languages;
       $zaehler = 0;
       foreach ($tmpArray as $item){
          switch ( mb_strtoupper($item, 'UTF-8') ){
