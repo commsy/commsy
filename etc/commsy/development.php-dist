@@ -43,4 +43,8 @@ $c_send_email = 'print';
 
 // support for debugging
 $c_show_debug_infos = false;
+
+// enable and configure logging to file
+$c_enable_logging_to_file = false;
+$c_logging_file = '';
 ?>
