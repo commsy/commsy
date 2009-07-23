@@ -22,8 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-
 // Get the current user and room
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
@@ -208,13 +206,14 @@ function auto_create_accounts($date_array){
       if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
          //Test auf E-Mail-Adresse...
          $user_manager = $environment->getUserManager();
+         $user_manager->resetCacheSQL();
          $user_manager->resetLimits();
          $user_manager->setContextLimit($environment->getCurrentContextID());
          $user_manager->setEmailLimit($temp_account_email);
          $user_manager->select();
          $user_list = $user_manager->get();
          if (!$user_list->isEmpty()) {
-            if ($user_list->getCount() > 1) {
+            if ($user_list->getCount() > 0) {
                $found_user_by_email = true;
                $temp_acount = $user_list->getFirst();
                while($temp_acount){
