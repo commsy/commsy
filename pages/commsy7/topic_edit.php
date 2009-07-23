@@ -132,6 +132,23 @@ else {
       // files
       include_once('include/inc_fileupload_edit_page_handling.php');
       include_once('include/inc_right_boxes_handling.php');
+
+      // PATH
+      if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
+         $form->activatePath();
+         $_POST['path_active'] = 1;
+      } elseif ( isOption($command, $translator->getMessage('TOPIC_DEACTIVATE_PATH')) ) {
+         $form->deactivatePath();
+         $_POST['path_active'] = -1;
+      } elseif ( !empty($_POST)
+                and !empty($_POST['path_active'])
+                and $_POST['path_active'] == 1 ) {
+         $form->activatePath();
+      } elseif ( isset($topic_item)
+                and $topic_item->isPathActive() ) {
+         $form->activatePath();
+      }
+
       // Back from multi upload
       if ( !empty($_POST) ) {
          if (empty($session_post_vars)){
@@ -149,21 +166,6 @@ else {
          $form->setFormPost($session_post_vars);
       }
 
-      // PATH
-      if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
-         $form->activatePath();
-         $_POST['path_active'] = 1;
-      } elseif ( isOption($command, $translator->getMessage('TOPIC_DEACTIVATE_PATH')) ) {
-         $form->deactivatePath();
-         $_POST['path_active'] = -1;
-      } elseif ( !empty($_POST)
-                and !empty($_POST['path_active'])
-                and $_POST['path_active'] == 1 ) {
-         $form->activatePath();
-      } elseif ( isset($topic_item)
-                and $topic_item->isPathActive() ) {
-         $form->activatePath();
-      }
       include_once('include/inc_right_boxes_handling.php');
 
       // Load form data from postvars
@@ -210,9 +212,11 @@ else {
       $form->loadValues();
 
       // Save item
-      if ( !empty($command) and
-           (isOption($command, getMessage('TOPIC_SAVE_BUTTON'))
-            or isOption($command, getMessage('TOPIC_CHANGE_BUTTON'))) ) {
+      if ( !empty($command)
+           and ( isOption($command, $translator->getMessage('TOPIC_SAVE_BUTTON'))
+                 or isOption($command, $translator->getMessage('TOPIC_CHANGE_BUTTON'))
+               )
+         ) {
 
          $correct = $form->check();
          if ( $correct ) {
