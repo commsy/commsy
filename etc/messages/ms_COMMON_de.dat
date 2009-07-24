@@ -160,6 +160,7 @@ $message["COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL_DESCRIPTION"]
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_NO_FILE_ERROR"]["de"] = "Bitte wählen Sie einen Datei aus";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_NO_SUBJECT_ERROR"]["de"] = "Bitte geben Sie eine Betreff-Zeile ein";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_NO_TEXT_ERROR"]["de"] = "Bitte geben Sie einen E-Mail-Text ein";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED"]["de"] = "Da es sich um einen neue Kennung handelt, für die kein Passwort angegeben wurde, wurde automatisch ein Passwort generiert: %1";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ACCOUNT"]["de"] = "Kennung";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_EMAIL"]["de"] = "E-Mail";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_FIRSTNAME"]["de"] = "Vorname";
