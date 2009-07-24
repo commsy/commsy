@@ -1318,6 +1318,9 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_WIKI':    // getestet Einstellungen Raum-Wiki
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_WIKI_FORM',$link);
                   break;
+               case 'CONFIGURATION_AUTOACCOUNTS':    // getestet Einstellungen Raum-Wiki
+                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM',$link);
+                  break;
                case 'PROJECT_EDIT':          // getestet: Projektraum neu eröffnen
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_PROJECT_EDIT_FORM',$link);
                   break;

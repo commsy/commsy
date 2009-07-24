@@ -114,6 +114,7 @@ $message["USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_PREFERENCES_FORM"]["de"] = "Leg
 Legen Sie fest, ob Sie per E-Mail benachrichtigt werden möchten, wenn sich der Status dieses Raumes oder Räume die mit diesem Raum verknüpft sind ändern.";
 $message["USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM"]["de"] = "Diese Message Tags sind zwar definiert, werden aber im CommSy- Code nicht (mehr) verwendet.";
 $message["USAGE_INFO_TEXT_MATERIAL_IMS_IMPORT"]["de"] = "Über dieses Formular lassen sich externe Inhalte über ein standardisiertes Austauschformat direkt in CommSy importieren. Dazu wird das *IMS-Content*-Format verwendet. IMS Content Packaging ist eine Spezifikation, die vorrangig ein Datenformat für E-Learning beschreibt. Das spezifizierte Datenformat auf XML-Basis soll Online- Materialien vereinheitlichen, und wurde von der Organisation IMS Global Learning Consortium entworfen.";
+$message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM"]["de"] = "Keine Nutzungshinweise vorhanden";
 $message["USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM"]["de"] = "CommSy verschickt zu verschiedenen Anlässen E-Mails, deren Texte hier verändert werden können. Dazu ist zunächst ein Textbaustein auszuwählen, der im Feld darunter beliebig verändert werden kann.
 Mit &quot;speichern&quot; werden die Änderungen übernommen und sind sofort wirksam.
 Um wieder den Standardtext zu erhalten, wählen Sie den entsprechenden Textbaustein aus, klicken unter &quot;Zurücksetzen?&quot; auf &quot;Ja&quot; und anschließend auf &quot;speichern&quot;.

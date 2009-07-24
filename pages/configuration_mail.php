@@ -52,9 +52,9 @@ if ($current_user->isGuest()) {
    $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
+
 // Access granted
 else {
-
    // Find out what to do
    if ( isset($_POST['option']) ) {
       $command = $_POST['option'];

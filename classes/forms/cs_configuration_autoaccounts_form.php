@@ -54,7 +54,8 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->setHeadline(getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE'));
+      $this->_headline = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
+      $this->setHeadline($this->_headline);
    }
 
    /** create the form, INTERNAL
@@ -65,6 +66,7 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
    function _createForm () {
       $this->_form->addImage('dates_upload','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOADFILE'),'');
       $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES'));
    }
 
    /** loads the selected and given values to the form

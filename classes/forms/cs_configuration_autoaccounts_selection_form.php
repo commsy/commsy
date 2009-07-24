@@ -35,8 +35,6 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
    var $_headline = NULL;
    var $_array = NULL;
 
-
-
   /** constructor
     * the only available constructor
     *
@@ -65,7 +63,8 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->setHeadline(getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE'));
+      $this->_headline = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
+      $this->setHeadline($this->_headline);
    }
 
    /** create the form, INTERNAL
@@ -84,7 +83,23 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
 
       $this->_form->addCheckbox('autoaccount_no_new_account_when_email_exists',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
 
-      $this->_form->addCheckbox('autoaccount_send_email',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
+      //$this->_form->addCheckbox('autoaccount_send_email',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
+
+      $radio_values = array();
+      $radio_values[0]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_NO_EMAIL');
+      $radio_values[0]['value'] = 'autoaccount_send_email_no_email';
+      $radio_values[1]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_COMMSY');
+      $radio_values[1]['value'] = 'autoaccount_send_email_commsy';
+      $radio_values[2]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_FORM');
+      $radio_values[2]['value'] = 'autoaccount_send_email_form';
+      $this->_form->addRadioGroup('autoaccount_send_email',
+                                  getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
+                                  getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
+                                  $radio_values,
+                                  '',
+                                  false,
+                                  false
+                                 );
 
       $this->_form->addTextField('autoaccount_email_subject','',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_SUBJECT'),'',150,50,false,'','','','left','','',false,'','',false,false);
       
@@ -102,6 +117,8 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       $this->_values = array();
       if (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
+      } else {
+         $this->_values['autoaccount_send_email'] = 'autoaccount_send_email_no_email';
       }
    }
 
@@ -110,13 +127,13 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
     * this methods check the entered values
     */
    function _checkValues () {
-      if ( !empty($this->_form_post['autoaccount_send_email'])
+      if ( ($this->_form_post['autoaccount_send_email'] == 'autoaccount_send_email_form')
            and empty($this->_form_post['autoaccount_email_subject'])
          ) {
          $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NO_SUBJECT_ERROR');
          $this->_form->setFailure('autoaccount_email_subject','');
       }
-      if ( !empty($this->_form_post['autoaccount_send_email'])
+      if ( ($this->_form_post['autoaccount_send_email'] == 'autoaccount_send_email_form')
            and empty($this->_form_post['autoaccount_email_text'])
          ) {
          $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NO_TEXT_ERROR');
