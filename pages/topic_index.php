@@ -226,7 +226,7 @@ if ($mode == '') {
                                                   '_'.$environment->getCurrentModule().
                                                   '_deleted_ids');
       }
-      $manager = $environment->getTopicManager();
+      $manager = $environment->getManager(module2type($environment->getCurrentModule()));
       foreach ($selected_ids as $id) {
          $item = $manager->getItem($id);
          $item->delete();

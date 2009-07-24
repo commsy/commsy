@@ -195,6 +195,7 @@ class cs_topic_index_view extends cs_index_view {
          $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
       }else{
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         $user = $this->_environment->getCurrentUserItem();
          if ($user->isModerator()){
             $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{

@@ -134,7 +134,6 @@ class cs_date_index_view extends cs_index_view {
    }
 
    function _getViewActionsAsHTML () {
-      $user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
@@ -147,6 +146,7 @@ class cs_date_index_view extends cs_index_view {
             $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{
             $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+            $user = $this->_environment->getCurrentUserItem();
             if ($user->isModerator()){
                $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
             }else{

@@ -72,6 +72,15 @@ if ( isset($_POST['option']) ) {
    $option = '';
 }
 
+// Find out what to do
+if ( isset($_POST['delete_option']) ) {
+   $delete_command = $_POST['delete_option'];
+}elseif ( isset($_GET['delete_option']) ) {
+   $delete_command = $_GET['delete_option'];
+} else {
+   $delete_command = '';
+}
+
 // Handle attaching
 if ( $mode == 'formattach' or $mode == 'detailattach' ) {
    $attach_type = CS_GROUP_TYPE;
@@ -180,6 +189,38 @@ if ($mode == '') {
    // perform list actions              //
    ///////////////////////////////////////
 
+   // Cancel editing
+   if ( isOption($delete_command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      $params = $environment->getCurrentParameterArray();
+      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $environment->getCurrentFunction(), $params);
+   }
+
+   // Delete item(s)
+   elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
+      if ($session->issetValue('cid'.$environment->getCurrentContextID().
+                                     '_'.$environment->getCurrentModule().
+                                    '_deleted_ids')) {
+         $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().
+                                                  '_'.$environment->getCurrentModule().
+                                                  '_deleted_ids');
+      }
+      $manager = $environment->getManager(module2type($environment->getCurrentModule()));
+      foreach ($selected_ids as $id) {
+         $item = $manager->getItem($id);
+         $item->delete();
+      }
+      unset($manager);
+      unset($item);
+      $session->unsetValue('cid'.$environment->getCurrentContextID().
+                                 '_'.$environment->getCurrentModule().
+                                 '_deleted_ids');
+      $params = $environment->getCurrentParameterArray();
+      unset($params['mode']);
+      unset($params['select']);
+      $selected_ids = array();
+      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), $environment->getCurrentFunction(), $params);
+   }
+
    if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and $_POST['index_view_action'] != '-1'
         and !empty($selected_ids)
@@ -212,6 +253,18 @@ if ($mode == '') {
                if ( !in_array($id, $clipboard_id_array) ) {
                   $clipboard_id_array[] = $id;
                }
+            }
+            break;
+         case 3:
+            $user = $environment->getCurrentUserItem();
+            if( $user->isModerator() or $environment->inPrivateRoom() ){
+                $session->setValue('cid'.$environment->getCurrentContextID().
+                                               '_'.$environment->getCurrentModule().
+                                               '_deleted_ids', $selected_ids);
+               $params = $environment->getCurrentParameterArray();
+               $params['mode'] = 'list_actions';
+               $page->addDeleteBox(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),$params),'index',$selected_ids);
+               unset($params);
             }
             break;
          default:

@@ -113,7 +113,7 @@ class cs_group_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_NAME'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_NAME'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
       $html .= '      <td style="width:25%; font-size:8pt;" class="head">E-Mail</td>'.LF;
@@ -130,7 +130,7 @@ class cs_group_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-	                          $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -152,7 +152,18 @@ class cs_group_index_view extends cs_index_view {
       $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
 #      $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
 #      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-#      $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+      if ($this->_environment->inPrivateRoom()){
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+      }else{
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         $user = $this->_environment->getCurrentUserItem();
+         if ($user->isModerator()){
+            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }else{
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }
+      }
       $html .= '</select>'.LF;
       $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
@@ -311,7 +322,7 @@ class cs_group_index_view extends cs_index_view {
 
 
    function _getAdditionalFormFieldsAsHTML () {
-	   $context_item = $this->_environment->getCurrentContextItem();
+      $context_item = $this->_environment->getCurrentContextItem();
       $width = '235';
       if ($context_item->withRubric(CS_TOPIC_TYPE)){
          $topic_list = $this->getAvailableTopics();

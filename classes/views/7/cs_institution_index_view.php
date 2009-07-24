@@ -117,6 +117,18 @@ class cs_institution_index_view extends cs_index_view {
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
       $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
+      if ($this->_environment->inPrivateRoom()){
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+      }else{
+         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
+         $user = $this->_environment->getCurrentUserItem();
+         if ($user->isModerator()){
+            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }else{
+            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+         }
+      }
       $html .= '</select>'.LF;
       $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
