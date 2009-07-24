@@ -23,16 +23,6 @@
 //    along with CommSy.
 
 // CommSy-Plugin logout-hook
-
-//global $c_plugin_array;
-//if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-//   foreach ($c_plugin_array as $plugin) {
-//      $plugin_class = $environment->getPluginClass($plugin);
-//      if (method_exists($plugin_class,'logout')) {
-//         $plugin_class->logout();
-//      }
-//   }
-//}
 plugin_hook('logout');
 
 // delete session
@@ -86,10 +76,12 @@ if ( isset($root_session_id) and !empty($root_session_id) ) {
    $params['SID'] = $root_session_id;
    redirect($history[0]['context'],$history[0]['module'],$history[0]['function'],$params,'','',$back_tool);
 } elseif ( !$current_context->isOpenForGuests()
-     and ( empty($back_tool)
-     or (!empty($back_tool) and $back_tool == 'commsy')
-         )
-   ) {
+           and ( empty($back_tool)
+                 or ( !empty($back_tool)
+                      and $back_tool == 'commsy'
+                    )
+               )
+         ) {
    if (!$current_context->isServer()) {
       $parent_context = $current_context->getContextItem();
       if ($parent_context->isOpenForGuests()) {

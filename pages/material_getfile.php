@@ -118,10 +118,10 @@ if ( !empty($_GET['iid']) ) {
          if ( $file->isOnDisk() ) {
             header('Content-type: '.$file->getMime());
             // der IE kann damit nicht bei https umgehen, alle anderen Browser schon
-            #header('Pragma: no-cache');
+            // header('Pragma: no-cache');
             header('Expires: 0');
             @readfile($file->getDiskFileName());
-            exit;
+            exit();
          } else {
             include_once('functions/error_functions.php');
             trigger_error("material_getfile: File ".$file->getDiskFileName()." does not seem to be on disk

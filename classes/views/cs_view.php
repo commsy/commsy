@@ -1461,7 +1461,7 @@ class cs_view {
          if ( !empty($args['height']) ) {
             $image_text .= '   height="'.$args['height'].'"'.LF;
          }
-         $image_text .= '>';
+         $image_text .= '>'.LF;
          $image_text .= '<param name="fileName" value="'.$source.'" />'.LF;
          $image_text .= '<param name="autoStart" value="'.$play.'" />'.LF;
          $image_text .= '<param name="showControls" value="true" />'.LF;
