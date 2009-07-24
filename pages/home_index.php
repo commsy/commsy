@@ -439,9 +439,6 @@ if ( $context_item->isLocked() ) {
       }
    }
 
-
-
-
 }elseif ( $context_item->isServer() or $context_item->isPortal() ) {
    $filename = 'external_pages/'.$context_item->getItemID().'/home_index_guide.php';
    if (file_exists  ($filename)){

@@ -36,13 +36,9 @@ var $_config_boxes = false;
    function cs_home_usageinfo_view ($params) {
       $this->cs_view($params);
       $this->setViewName('usageinfos');
-      $user = $this->_environment->getCurrentUserItem();
       $room = $this->_environment->getCurrentContextItem();
       $this->_view_title = $room->getUsageInfoHeaderForRubric($this->_environment->getCurrentModule());
-      $rubric_info_array = $room->getUsageInfoArray();
-      if (!is_array($rubric_info_array)) {
-         $rubric_info_array = array();
-      }
+      unset($room);
    }
 
 
@@ -77,7 +73,7 @@ var $_config_boxes = false;
          $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
       }
       $html .= '</div>'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.getMessage('PREFERENCES_USAGE_INFOS').'</div>';
+      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$this->_text_as_html_short($this->_view_title).'</div>';
       $html .= '<div class="usage_info">'.LF;
       $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
       $html .= '</div>'.LF;

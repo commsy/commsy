@@ -720,11 +720,11 @@ class cs_room_item extends cs_context_item {
    function getUsageInfoHeaderForRubric($rubric){
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
-       if ( empty($retour) ) {
-         $retour = array();
-       } elseif ( !is_array($retour) ) {
-         $retour = XML2Array($retour);
-       }
+         if ( empty($retour) ) {
+            $retour = array();
+         } elseif ( !is_array($retour) ) {
+            $retour = XML2Array($retour);
+         }
       } else {
          $retour = array();
       }

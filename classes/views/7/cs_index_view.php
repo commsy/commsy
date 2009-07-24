@@ -23,11 +23,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 $this->includeClass(VIEW);
-#include_once('classes/cs_view.php');
-#include_once('classes/cs_list.php');
-#include_once('functions/curl_functions.php');
-#include_once('functions/date_functions.php');
-#include_once('functions/misc_functions.php');
 
 /**
  *  generic upper class for CommSy list-views
@@ -1859,12 +1854,13 @@ EOD;
          if (!strstr($info_text, $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'))
              and !strstr($info_text, $this->_translator->getMessage('USAGE_INFO_COMING_SOON'))
              and !empty($info_text)
-         ){
+            ){
              $rubric_info_array = $room->getUsageInfoArray();
              if (!is_array($rubric_info_array)) {
                 $rubric_info_array = array();
              }
-             if ( !strstr($list_box_conf,'usage_nodisplay') ){
+             // kann man dies noch über die oberfläche schalten ??? (2009.07.24 ij)
+             #if ( !strstr($list_box_conf,'usage_nodisplay') ){
                 if ( $first_box ){
                    $first_box = false;
                    $additional_text ='';
@@ -1885,7 +1881,7 @@ EOD;
                 $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
                 $html .= '</div>'.LF;
                 $html .= '</div>'.LF;
-             }
+             #} // end if
          }
          $html .= '</form>'.LF;
 
