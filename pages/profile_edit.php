@@ -430,6 +430,7 @@ if ($command != 'error') { // only if user is allowed to edit user
 
                 // save user
                 $user_item->save();
+                $is_saved = true;
                 if ( isset($portal_user_item) ) {
                    $portal_user_item->save();
                 }
@@ -593,6 +594,9 @@ if ($command != 'error') { // only if user is allowed to edit user
 
                 // redirect
                 $params = $environment->getCurrentParameterArray();
+                if ($is_saved){
+                   $params['is_saved'] = true;
+                }
                 redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
              }
           }
@@ -631,7 +635,7 @@ if ($command != 'error') { // only if user is allowed to edit user
              if ($is_saved){
                 $params['is_saved'] = true;
              }
-            redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
+             redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
           }
 
       }elseif ($profile_page =='newsletter'){
