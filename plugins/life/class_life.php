@@ -148,7 +148,7 @@ class class_life extends cs_plugin {
                }
             }
          }
-        }
+      }
       return $retour;
    }
 }

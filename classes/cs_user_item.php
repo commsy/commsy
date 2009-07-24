@@ -1142,7 +1142,7 @@ class cs_user_item extends cs_item {
          }
       }
 
-      if ( $this->_environment->inPortal() ) {
+      if ( $this->_environment->getCurrentPortalID() == $this->getContextID() ) {
          $own_room = $this->getOwnRoom();
          if ( isset($own_room) ) {
             $own_room->delete();
@@ -1156,7 +1156,7 @@ class cs_user_item extends cs_item {
       // set old status to current status
       $this->_old_status = $this->getStatus();
 
-      if ( $this->_environment->inPortal() ) {
+      if ( $this->_environment->getCurrentPortalID() == $this->getContextID() ) {
          $id_manager = $this->_environment->getExternalIdManager();
          $id_manager->deleteByCommSyID($this->getItemID());
          unset($id_manager);

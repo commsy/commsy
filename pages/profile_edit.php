@@ -131,6 +131,37 @@ if ($command != 'error') { // only if user is allowed to edit user
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
    }
 
+   // lock user
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_LOCK_BUTTON')) ) {
+      $portal_user_item = $user_item->getRelatedCommSyUserItem();
+      $portal_user_item->reject();
+      $portal_user_item->save();
+      $session = $environment->getSessionItem();
+      $session_manager = $environment->getSessionManager();
+      $session_manager->delete($session->getSessionID());
+      unset($session);
+      unset($session_manager);
+      unset($portal_user_item);
+      unset($user_item);
+      $environment->setSessionItem(NULL);
+      redirect($portal_user_item->getContextID(), 'home','index', array());
+   }
+
+   // delete user
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_REALLY_DELETE_BUTTON')) ) {
+      $authentication = $environment->getAuthenticationObject();
+      $authentication->delete($user_item->getItemID());
+      unset($authentication);
+      $session = $environment->getSessionItem();
+      $session_manager = $environment->getSessionManager();
+      $session_manager->delete($session->getSessionID());
+      unset($session);
+      unset($session_manager);
+      $environment->setSessionItem(NULL);
+      redirect($environment->getCurrentPortalID(), 'home','index', array());
+   }
+
+
    // save user
    else {
       $class_params = array();

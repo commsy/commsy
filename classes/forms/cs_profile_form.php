@@ -293,6 +293,11 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addEmptyline();
          $this->_form->addCheckbox('delete',1,false,'',$this->_translator->getMessageInLang($this->_language,'PROFILE_ROOMLIST_DELETE_OPTION'));
          $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),'');
+      } elseif ( !empty($_POST['option']) and isOption($_POST['option'],$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON')) ) {
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON')));
+         unset($current_portal_item);
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON'),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON'));
       }else{
 
          // headline and hidden fields
@@ -335,7 +340,7 @@ class cs_profile_form extends cs_rubric_form {
 
          // buttons
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON'));
       }
    }
 
