@@ -92,7 +92,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
     */
    function _initForm () {
       // headline
-      $this->_headline = getMessage('COMMON_EMAIL_TO_TITLE');
+      $this->_headline = $this->_translator->getMessage('COMMON_EMAIL_TO_TITLE');
 
       // context name
       $context = $this->_environment->getCurrentContextItem();
@@ -138,11 +138,11 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $content = '';
       //generate module name for the interface- a pretty version of module...
        if ($module== 'new' or $module== 'news') {
-          $news_content = getMessage('COMMON_NEWS').': '.$item->getTitle().LF;
+          $news_content = $this->_translator->getMessage('COMMON_NEWS').': '.$item->getTitle().LF;
           $content = $news_content;
 
        } elseif ($module== CS_DATE_TYPE) {
-          $rubric_type_pretty = getMessage('COMMON_DATES');
+          $rubric_type_pretty = $this->_translator->getMessage('COMMON_DATES');
           // set up style of days and times
           $parse_time_start = convertTimeFromInput($item->getStartingTime());
           $conforms = $parse_time_start['conforms'];
@@ -180,130 +180,129 @@ class cs_rubric_mail_form extends cs_rubric_form {
           $time_print ="";
 
           if ($end_day_print != "") { //with ending day
-             $date_print = getMessage('DATES_AS_OF').' '.$start_day_print.' '.getMessage('DATES_TILL').' '.$end_day_print;
+             $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_day_print;
              if ($parse_day_start['conforms']
                  and $parse_day_end['conforms']) { //start and end are dates, not strings
-               $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.getMessage('DATES_DAYS').')';
+               $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
              }
              if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                $time_print = getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
                 if ($parse_time_start['conforms'] == true) {
-                   $time_print .= ' '.getMessage('DATES_OCLOCK');
+                   $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                 }
              } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                $time_print = getMessage('DATES_TILL').' '.$end_time_print;
+                $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                 if ($parse_time_end['conforms'] == true) {
-                   $time_print .= ' '.getMessage('DATES_OCLOCK');
+                   $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                 }
              } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
                 if ($parse_time_end['conforms'] == true) {
-                   $end_time_print .= ' '.getMessage('DATES_OCLOCK');
+                   $end_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                 }
                 if ($parse_time_start['conforms'] == true) {
-                    $start_time_print .= ' '.getMessage('DATES_OCLOCK');
+                    $start_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                 }
-                $date_print = getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
-                          getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
+                $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
+                          $this->_translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
                 if ($parse_day_start['conforms']
                      and $parse_day_end['conforms']) {
-                   $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.getMessage('DATES_DAYS').')';
+                   $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
                 }
              }
 
           } else { //without ending day
              $date_print = $start_day_print;
              if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                 $time_print = getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                 $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
                  if ($parse_time_start['conforms'] == true) {
-                    $time_print .= ' '.getMessage('DATES_OCLOCK');
+                    $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                  }
               } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                 $time_print = getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
                  if ($parse_time_end['conforms'] == true) {
-                     $time_print .= ' '.getMessage('DATES_OCLOCK');
+                     $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                  }
               } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
                  if ($parse_time_end['conforms'] == true) {
-                    $end_time_print .= ' '.getMessage('DATES_OCLOCK');
+                    $end_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                  }
                  if ($parse_time_start['conforms'] == true) {
-                    $start_time_print .= ' '.getMessage('DATES_OCLOCK');
+                    $start_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
                  }
-                 $time_print = getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
               }
            }
 
            if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
-              $date_print = getMessage('DATES_ON_DAY').' '.$start_day_print;
+              $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
               if ($start_time_print != "" and $end_time_print =="") { //starting time given
-                  $time_print = getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                  $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
               } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
-                 $time_print = getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
               } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
-                 $time_print = getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.getMessage('DATES_TILL').' '.$end_time_print;
+                 $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
               }
            }
           // Date and time
           $dates_content = '';
-          $dates_content = getMessage('DATES_DATETIME').': '.$item_name.LF;
+          $dates_content = $this->_translator->getMessage('DATES_DATETIME').': '.$item_name.LF;
           if ($time_print != '') {
-          $dates_content .= getMessage('COMMON_TIME').': '.$date_print.','.$time_print.LF;
+          $dates_content .= $this->_translator->getMessage('COMMON_TIME').': '.$date_print.','.$time_print.LF;
           } else {
-          $dates_content .= getMessage('COMMON_TIME').': '.$date_print.LF;
+          $dates_content .= $this->_translator->getMessage('COMMON_TIME').': '.$date_print.LF;
           }
           // Place
           $place = $item->getPlace();
           if (!empty($place)) {
-             $dates_content .= getMessage('DATES_PLACE').': ';
+             $dates_content .= $this->_translator->getMessage('DATES_PLACE').': ';
              $dates_content .= $place.LF;
           }
           $content = $dates_content;
        } elseif ($module== 'discussion' or $module== 'discussions') {
-          $discussion_content = getMessage('COMMON_DISCUSSION').': '.$item->getTitle().LF;
+          $discussion_content = $this->_translator->getMessage('COMMON_DISCUSSION').': '.$item->getTitle().LF;
           $article_count = $item->getAllArticlesCount();
-          $discussion_content .= getMessage('DISCUSSION_DISCARTICLE_COUNT').': '.$article_count.LF;
+          $discussion_content .= $this->_translator->getMessage('DISCUSSION_DISCARTICLE_COUNT').': '.$article_count.LF;
           $time = $item->getLatestArticleModificationDate();
-          $discussion_content .= getMessage('DISCUSSION_LAST_ENTRY').': '.getDateTimeInLang($time).LF;
+          $discussion_content .= $this->_translator->getMessage('DISCUSSION_LAST_ENTRY').': '.getDateTimeInLang($time).LF;
           $content = $discussion_content;
        } elseif ($module== 'material' or $module== 'materials') {
-          $material_content = getMessage('COMMON_MATERIAL').': '.$item->getTitle().LF;
+          $material_content = $this->_translator->getMessage('COMMON_MATERIAL').': '.$item->getTitle().LF;
           $content = $material_content;
        } elseif ($module== 'announcement' or $module== CS_ANNOUNCEMENT_TYPE) {
-          $announcement_content = getMessage('COMMON_ANNOUNCEMENT').': '.$item->getTitle().LF;
+          $announcement_content = $this->_translator->getMessage('COMMON_ANNOUNCEMENT').': '.$item->getTitle().LF;
           $content = $announcement_content;
        }  elseif ($module== 'label' or $module== 'labels') {
           $label_manager = $this->_environment->getLabelManager();
           $label = $label_manager->getItem($iid);
           $module= $label->getLabelType();
           if ($module== 'group' or $module== 'groups') {
-             $group_content = getMessage('COMMON_GROUP').': '.$item->getTitle().LF;
+             $group_content = $this->_translator->getMessage('COMMON_GROUP').': '.$item->getTitle().LF;
              $content = $group_content;
           } elseif ($module== 'institution' or $module== 'institutions') {
-             $institution_content = getMessage('INSTITUTION').': '.$item->getTitle().LF;
+             $institution_content = $this->_translator->getMessage('INSTITUTION').': '.$item->getTitle().LF;
              $content = $institution_content;
           }
        }
        if ( $this->_environment->inProjectRoom() ){
-          $emailtext = getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT',$context_name).LF;
+          $emailtext = $this->_translator->getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT',$context_name).LF;
        } elseif ( $this->_environment->inGroupRoom() ){
-          $emailtext = getMessage('RUBRIC_EMAIL_DEFAULT_GROUPROOM',$context_name).LF;
+          $emailtext = $this->_translator->getMessage('RUBRIC_EMAIL_DEFAULT_GROUPROOM',$context_name).LF;
        } else {
-          $emailtext = getMessage('RUBRIC_EMAIL_DEFAULT_COMMUNITY', $context_name).LF;
+          $emailtext = $this->_translator->getMessage('RUBRIC_EMAIL_DEFAULT_COMMUNITY', $context_name).LF;
        }
        if ( empty($content) ){
           $emailtext .= LF.LF;
        } else {
           $emailtext .= $content;
        }
-       $emailtext .= getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT_END',$link);
-      $this->_form->addTextField('subject','',getMessage('COMMON_MAIL_SUBJECT'),'','','57',true);
+       $emailtext .= $this->_translator->getMessage('RUBRIC_EMAIL_DEFAULT_PROJECT_END',$link);
+      $this->_form->addTextField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),'','','57',true);
 
-      $this->_form->addTextArea('mailcontent',$emailtext,getMessage('COMMON_MAIL_CONTENT'),getMessage('COMMON_MAIL_CONTENT_DESC'), '60', '15', '', true,false,false);
+      $this->_form->addTextArea('mailcontent',$emailtext,$this->_translator->getMessage('COMMON_MAIL_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'), '60', '15', '', true,false,false);
       if ($module== 'date'){
-         $this->_form->addCheckBox('attendees','2',true,getMessage('COMMON_MAIL_SEND_TO_ASIGNED_PEOPLE'),getMessage('COMMON_MAIL_SEND_TO_ATTENDEES'));
-
+         $this->_form->addCheckBox('attendees','2',false,$this->_translator->getMessage('COMMON_MAIL_SEND_TO_ASIGNED_PEOPLE'),$this->_translator->getMessage('COMMON_MAIL_SEND_TO_ATTENDEES'));
       }elseif($module== 'todo') {
-         $this->_form->addCheckBox('processors','2',true,getMessage('COMMON_MAIL_SEND_TO_ASIGNED_PEOPLE'),getMessage('COMMON_MAIL_SEND_TO_PROCESSORS'));
+         $this->_form->addCheckBox('processors','2',false,$this->_translator->getMessage('COMMON_MAIL_SEND_TO_ASIGNED_PEOPLE'),$this->_translator->getMessage('COMMON_MAIL_SEND_TO_PROCESSORS'));
       }
 
       if ( $this->_environment->inProjectRoom() and !empty($this->_group_array) ) {
@@ -320,15 +319,24 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $projekt_room_show_mail_to_all = false;
 
       //Projectroom and no groups enabled -> send mails to group all
-      if ($context_item->isProjectRoom() and !$context_item->withRubric(CS_GROUP_TYPE)) {
+      if ( $context_item->isProjectRoom()
+           and !$context_item->withRubric(CS_GROUP_TYPE)
+         ) {
          $cid = $this->_environment->getCurrentContextId();
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setUserLimit();
          $user_manager->setContextLimit($cid);
          $count = $user_manager->getCountAll();
-         $this->_form->addText('receiver_text', getMessage('COMMON_MAIL_RECEIVER'), getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
          $all_iid = $this->_group_array[0]['value'];
-         $this->_form->addHidden('groups[0]',$all_iid);
+         if ( $item->getItemType() != CS_DATE_TYPE
+              and $item->getItemType() != CS_TODO_TYPE
+            ) {
+            $this->_form->addText('receiver_text', $this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+            $this->_form->addHidden('groups[0]',$all_iid);
+         } else {
+            $this->_form->combine();
+            $this->_form->addCheckbox('groups[0]',$all_iid,false,$this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+         }
       }
 
       if ($context_item->isCommunityRoom() and !$context_item->withRubric(CS_INSTITUTION_TYPE)) {
@@ -337,8 +345,15 @@ class cs_rubric_mail_form extends cs_rubric_form {
          $user_manager->setUserLimit();
          $user_manager->setContextLimit($cid);
          $count = $user_manager->getCountAll();
-         $this->_form->addText('receiver_text', getMessage('COMMON_MAIL_RECEIVER'), getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
-         $this->_form->addHidden('send_to_all',true);
+         if ( $item->getItemType() != CS_DATE_TYPE
+              and $item->getItemType() != CS_TODO_TYPE
+            ) {
+            $this->_form->addText('receiver_text', $this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+            $this->_form->addHidden('send_to_all',true);
+         } else {
+            $this->_form->combine();
+            $this->_form->addCheckbox('send_to_all',1,false,$this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+         }
       }
 
       // send to all members in group rooms
@@ -348,19 +363,26 @@ class cs_rubric_mail_form extends cs_rubric_form {
          $user_manager->setUserLimit();
          $user_manager->setContextLimit($cid);
          $count = $user_manager->getCountAll();
-         $this->_form->addText('receiver_text', getMessage('COMMON_MAIL_RECEIVER'), getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
-         $this->_form->addHidden('send_to_all',true);
+         if ( $item->getItemType() != CS_DATE_TYPE
+              and $item->getItemType() != CS_TODO_TYPE
+            ) {
+            $this->_form->addText('receiver_text', $this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+            $this->_form->addHidden('send_to_all',true);
+         } else {
+            $this->_form->combine();
+            $this->_form->addCheckbox('send_to_all',1,false,$this->_translator->getMessage('COMMON_MAIL_RECEIVER'), $this->_translator->getMessage('COMMON_MAIL_ALL_IN_ROOM',$count));
+         }
       }
 
       $yesno[][] = array();
-      $yesno['0']['text']  = getMessage('COMMON_YES');
-      $yesno['0']['value'] = getMessage('COMMON_YES');
-      $yesno['1']['text']  = getMessage('COMMON_NO');
-      $yesno['1']['value'] = getMessage('COMMON_NO');
-      $this->_form->addRadioGroup('copytosender',getMessage('MAILCOPY_TO_SENDER'),getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,getMessage('COMMON_NO'),true,false);
+      $yesno['0']['text']  = $this->_translator->getMessage('COMMON_YES');
+      $yesno['0']['value'] = $this->_translator->getMessage('COMMON_YES');
+      $yesno['1']['text']  = $this->_translator->getMessage('COMMON_NO');
+      $yesno['1']['value'] = $this->_translator->getMessage('COMMON_NO');
+      $this->_form->addRadioGroup('copytosender',getMessage('MAILCOPY_TO_SENDER'),$this->_translator->getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,$this->_translator->getMessage('COMMON_NO'),true,false);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('COMMON_MAIL_SEND_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_MAIL_SEND_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -392,30 +414,31 @@ class cs_rubric_mail_form extends cs_rubric_form {
          unset($current_context);
          $this->_values['groups'] = $this->_groups;
          $this->_values['institutions'] = $this->_institutions;
+         $this->_values['attendees'] = true;
+         $this->_values['processors'] = true;
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post; // no encode here - encode in form-views
+         if ( !empty($this->_values['groups'][0]) ) {
+            $this->_values['groups[0]'] = $this->_values['groups'][0];
+         }
       }
    }
 
    /** initializes a check box for selecting the relevant groups
     *  this method is called in the child classes, where this row is needed
-    *
-    * @author CommSy Development Group
     */
    function _initCheckBoxGroup () {
       if (isset($this->_group_array)) {
-         $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',getMessage('COMMON_MAILTO_GROUPS'),getMessage('COMMON_RELEVANT_FOR_DESC'), false, false);
+         $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',$this->_translator->getMessage('COMMON_MAILTO_GROUPS'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_DESC'), false, false);
       }
    }
 
    /** initializes a check box for selecting the relevant institutions
     *  this method is called in the child classes, where this row is needed
-    *
-    * @author CommSy Development Group
     */
    function _initCheckBoxInstitution () {
       if (isset($this->_institution_array)) {
-         $this->_form->addCheckBoxGroup('institutions',$this->_institution_array,'',getMessage('COMMON_RELEVANT_FOR_INSTITUTION'),getMessage('COMMON_RELEVANT_FOR_INSTITUTION_DESC'), false, false);
+         $this->_form->addCheckBoxGroup('institutions',$this->_institution_array,'',$this->_translator->getMessage('COMMON_RELEVANT_FOR_INSTITUTION'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_INSTITUTION_DESC'), false, false);
       }
    }
 
