@@ -269,7 +269,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       foreach ( $_COOKIE['itemlist'] as $key => $val ) {
          setcookie ('itemlist['.$key.']', '', time()-3600);
          if ( $val == '1' ) {
-            if ( !in_array($key, $selected_ids) ) {
+            if ( is_array($selected_ids) and !in_array($key, $selected_ids) ) {
                $selected_ids[] = $key;
             }
          } else {

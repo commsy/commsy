@@ -22,6 +22,11 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// ATTENTION
+// _linked_items_index_selected_ids2 is for CommSy 7
+// must be refactored when CommSy 6 ist gone
+// 24.07.2009 ij
+
 include_once('classes/cs_list.php');
 
 if ( isset($_GET['iid']) ) {
@@ -42,6 +47,7 @@ if ( isset($_POST['return_attach_item_list']) ) {
    $second_call = true;
 } elseif ( isset($_GET['return_attach_item_list']) ) {
    $second_call = true;
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
 } else {
    $second_call = false;
 }
@@ -99,27 +105,81 @@ if ($environment->getCurrentModule() == CS_USER_TYPE){
    $selected_ids = $item->getAllLinkedItemIDArray();
 }
 
+// initial
+if ( !$session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2') ) {
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$selected_ids);
+}
+
+if ( empty($option)
+     and ( !empty($_POST['itemlist'])
+           or !empty($_POST['shown'])
+         )
+   ) {
+   $sess_selected_ids = array();
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')) {
+      $sess_selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
+   }
+   if ( !empty($_POST['itemlist']) ) {
+      foreach ($_POST['itemlist'] as $key => $id) {
+         $sess_selected_ids[] = $key;
+      }
+   }
+   if ( !empty($_POST['shown']) ) {
+      $drop_array = array();
+      foreach ( $_POST['shown'] as $id => $value) {
+         if ( in_array($id,$sess_selected_ids)
+              and ( empty($_POST['itemlist'])
+                    or !array_key_exists($id,$_POST['itemlist'])
+                  )
+            ) {
+            $drop_array[] = $id;
+         }
+      }
+      if ( !empty($drop_array) ) {
+         $temp_array = array();
+         foreach ($sess_selected_ids as $id) {
+            if ( !in_array($id,$drop_array) ) {
+               $temp_array[] = $id;
+            }
+         }
+         $sess_selected_ids = $temp_array;
+      }
+   }
+   $sess_selected_ids = array_unique($sess_selected_ids);
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$sess_selected_ids);
+}
+
+// for commsy 7
+if ( $environment->getCurrentContextItem()->isDesign7()
+     and $session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')
+   ) {
+   $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
+}
+
 if ($mode == '') {
-   $session->unsetValue('cid'.$environment->getCurrentContextID().
-                              '_linked_items_index_selected_ids');
-}elseif ($mode == 'list_actions') {
-   if ($session->issetValue('cid'.$environment->getCurrentContextID().
-                                  '_linked_items_index_selected_ids')) {
-      $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().
-                                               '_linked_items_index_selected_ids');
+   $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+}
+
+// wie komme ich von einer liste über die actions hier her ???
+// 2009.07.24 ij
+elseif ( $mode == 'list_actions' ) {
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')) {
+      $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
    }
 }
-if ( isset($_COOKIE['itemlist']) ) {
-   foreach ( $_COOKIE['itemlist'] as $key => $val ) {
-      setcookie ('itemlist['.$key.']', '', time()-3600);
-      if ( $val == '1' ) {
-         if ( !in_array($key, $selected_ids) ) {
-            $selected_ids[] = $key;
-         }
-      } else {
-         $idx = array_search($key, $selected_ids);
-         if ( $idx !== false ) {
-            unset($selected_ids[$idx]);
+if ( $environment->getCurrentContextItem()->isDesign7() ) {
+   if ( isset($_COOKIE['itemlist']) ) {
+      foreach ( $_COOKIE['itemlist'] as $key => $val ) {
+         setcookie ('itemlist['.$key.']', '', time()-3600);
+         if ( $val == '1' ) {
+            if ( !in_array($key, $selected_ids) ) {
+               $selected_ids[] = $key;
+            }
+         } else {
+            $idx = array_search($key, $selected_ids);
+            if ( $idx !== false ) {
+               unset($selected_ids[$idx]);
+            }
          }
       }
    }
@@ -162,6 +222,7 @@ if ( !empty($option)
     $item->setLinkedItemsByIDArray($entry_array);
     $item->save();
     $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+    $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
     unset($params['attach_view']);
     unset($params['attach_type']);
     unset($params['from']);
