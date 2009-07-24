@@ -125,14 +125,32 @@ if ($command != 'error') { // only if user is allowed to edit user
    unset($portal_user_item);
 
    $form->setProfilePageName($profile_page);
+
+   $current_portal_item = $environment->getCurrentPortalItem();
+
    // cancel edit process
    if ( isOption($command,$translator->getMessageInLang($portal_language,'COMMON_CANCEL_BUTTON')) ) {
       $params = $environment->getCurrentParameterArray();
       redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
    }
 
-   // lock user
-   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_LOCK_BUTTON')) ) {
+   // lock user (room)
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_LOCK_BUTTON_ROOM')) ) {
+      $user_item->reject();
+      $user_item->save();
+      unset($user_item);
+      redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
+   }
+
+   // delte user (room)
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')) ) {
+      $user_item->delete();
+      unset($user_item);
+      redirect($current_portal_item->getItemID(), 'home','index', array('room_id' => $environment->getCurrentContextID()));
+   }
+
+   // lock user (portal)
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle())) ) {
       $portal_user_item = $user_item->getRelatedCommSyUserItem();
       $portal_user_item->reject();
       $portal_user_item->save();
@@ -144,11 +162,11 @@ if ($command != 'error') { // only if user is allowed to edit user
       unset($portal_user_item);
       unset($user_item);
       $environment->setSessionItem(NULL);
-      redirect($portal_user_item->getContextID(), 'home','index', array());
+      redirect($environment->getCurrentPortalID(), 'home','index', array());
    }
 
-   // delete user
-   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_REALLY_DELETE_BUTTON')) ) {
+   // delete user (portal)
+   elseif ( isOption($command,$translator->getMessageInLang($portal_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())) ) {
       $authentication = $environment->getAuthenticationObject();
       $authentication->delete($user_item->getItemID());
       unset($authentication);

@@ -219,11 +219,24 @@ class cs_profile_form_view extends cs_form_view {
       //Berechnung der Buttonleiste
       $form_element_array = $temp_array;
       $temp_array=array();
+      $buttonbar_counter = 0;
+      $buttonbar_counter2 = 0;
       foreach ($form_element_array as $form_element) {
          if ( isset($form_element['type']) and $form_element['type'] == 'buttonbar' ) {
+            $buttonbar_counter++;
+         }
+      }
+      foreach ($form_element_array as $form_element) {
+         if ( isset($form_element['type']) and $form_element['type'] == 'buttonbar' ) {
+            $buttonbar_counter2++;
             $this->_count_form_elements = $this->_count_form_elements + 100;
             $buttonbartext = $this->_getButtonBarAsHTML($form_element);
             $this->_count_form_elements = $this->_count_form_elements - 100;
+            if ( $buttonbar_counter > 1
+                 and $buttonbar_counter != $buttonbar_counter2
+               ) {
+               $temp_array[] = $form_element;
+            }
          }else{
             $temp_array[] = $form_element;
          }
@@ -346,7 +359,33 @@ class cs_profile_form_view extends cs_form_view {
                   $text = '   <tr>'."\n";
                }
             }
-            if ( !(isset($form_element['type']) and $form_element['type'] == 'netnavigation')
+            if ( isset($form_element['type'])
+                 and $form_element['type'] == 'buttonbar'
+               ) {
+               $html .= '<tr>'.LF;
+               $html .='      <td>';
+               $html .='      </td>';
+               if (!$this->_display_plain) {
+                  if ($this->_special_color) {
+                     $html .='      <td>';
+                  } else {
+                     if ($this->_warn_changer) {
+                        $html .='      <td style="background-color:#FF0000;">';
+                     } else {
+                        $html .='      <td class="buttonbar">';
+                     }
+                  }
+               } else {
+                  if ($this->_special_color) {
+                     $html .='      <td style="border-bottom: none; xwhite-space:nowrap;">';
+                  } else {
+                     $html .='      <td style="border-bottom: none; xwhite-space:nowrap;">';
+                  }
+               }
+               $html .= $this->_getButtonBarAsHTML($form_element);
+               $html .= '</td>'.LF;
+               $html .= '</tr>'.LF;
+            } elseif ( !(isset($form_element['type']) and $form_element['type'] == 'netnavigation')
                and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzwordlist')
                and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'buzzword')
                and !(isset($form_element[0]['name']) and $form_element[0]['name'] == 'taglist')

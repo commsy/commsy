@@ -38,7 +38,8 @@ $message["PREFERENCES_HEXACOLOR"]["de"] = "Farbkonfiguration";
 $message["PREFERENCES_HEXACOLOR_DESC"]["de"] = "Hier können Sie die Farben per HTML-HEX-Code oder per Farbauswahl einstellen.";
 $message["PREFERENCES_LISTVIEWS_CONFIGURATION"]["de"] = "Konfiguration der Menüspalten";
 $message["PREFERENCES_LISTVIEWS_CONFIGURATION_DESC"]["de"] = "Hier können Sie die Darstellung der Listenansichten konfigurieren.";
-$message["PREFERENCES_LOCK_BUTTON"]["de"] = "Teilnahme beenden";
+$message["PREFERENCES_LOCK_BUTTON"]["de"] = "Teilnahme beenden (%1)";
+$message["PREFERENCES_LOCK_BUTTON_ROOM"]["de"] = "Teilnahme beenden in diesem Raum";
 $message["PREFERENCES_MAIL_DESC"]["de"] = "Konfiguration der E-Mail-Texte, die über das System verschickt werden.";
 $message["PREFERENCES_MAIL_LINK"]["de"] = "E-Mail-Texte";
 $message["PREFERENCES_NO_COMMUNITY_ROOM"]["de"] = "keine weitere Auswahl";
@@ -49,14 +50,15 @@ $message["PREFERENCES_OUTOFSERVICE"]["de"] = "Wartungsarbeiten";
 $message["PREFERENCES_OUTOFSERVICE_DESC"]["de"] = "Wartungsseite aktivieren, um die Nutzung zu unterbrechen.";
 $message["PREFERENCES_PATH_CONFIGURATIONS"]["de"] = "Pfade in %_TOPIC_ART_DEF_DATPL_LOW %_TOPIC_SUB_DATPL_LOW";
 $message["PREFERENCES_PATH_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die Pfade in %_TOPIC_ART_DEF_DATPL_LOW %_TOPIC_SUB_DATPL_LOW aktivieren.";
-$message["PREFERENCES_REALLY_DELETE_BUTTON"]["de"] = "Zugang wirklich löschen";
+$message["PREFERENCES_REALLY_DELETE_BUTTON"]["de"] = "Teilnahme löschen (%1)";
+$message["PREFERENCES_REALLY_DELETE_BUTTON_ROOM"]["de"] = "Teilnahme löschen in diesem Raum";
 $message["PREFERENCES_REALLY_DELETE_DESC"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das gesamte Portal gesperrt. Sie haben dann keinen Zutritt mehr zu diesem CommSy [%1] und Ihren Räumen. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 
 Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li>
 <li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung in diesem CommSy [%1] und allen Räumen gelöscht. Sie können danach den Raum nicht mehr betreten.
 
-Achtung: Dies kann nicht rückgängig gemacht werden.</li>
-</ul>";
+Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["de"] = "Alternativ können Sie auch nur für diesen Raum [%1] die Teilnahme beenden bzw. löschen.";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["de"] = "Zuordnung von <br/>
 %_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["de"] = "Einstellungen speichern";
