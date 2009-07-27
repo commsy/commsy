@@ -378,6 +378,17 @@ $campus_search_parameter_array['selfiles'] = $selfiles;
 $campus_search_parameter_array['sel_array'] = $sel_array;
 $campus_search_parameter_array['interval'] = $interval;
 $campus_search_parameter_array['sel_activating_status'] = $sel_activating_status;
+
+$ftsearch_manager = $environment->getFTSearchManager();
+if ($ftsearch_manager->getSearchStatus()) {
+   // get fids from cs_ftsearch_manager
+   $ft_file_ids = $ftsearch_manager->getFileIDs();
+   if ( !empty($ft_file_ids) ) {
+      $campus_search_parameter_array['file_id_array'] = $ft_file_ids;
+   }
+}
+unset($ftsearch_manager);
+
 $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array', $campus_search_parameter_array);
 $session->setValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids', $campus_search_ids);
 ?>
