@@ -893,6 +893,11 @@ if ( $show_agb_again ) {
                      )
                ) {
          include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
+      } elseif ( $current_function == 'status'
+                 and $environment->getCurrentModule() == 'account'
+                 and $current_context->isDesign7()
+               ) {
+         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
       } else {
          include('pages/'.$current_module.'_'.$current_function.'.php');
       }

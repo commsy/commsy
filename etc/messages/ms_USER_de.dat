@@ -36,6 +36,8 @@ Ihre Kennung kann bei Bedarf wieder freigeschaltet werden.
 Wenn Sie <b>alles löschen</b> möchten, werden sämtliche ihrer Beiträge und ihre Kennung in diesem Raum gelöscht. Sie können danach den Raum eventuell nicht mehr betreten.
 </li>
 </ul>";
+$message["USER_DELETE_FORM_DESCRIPTION"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie die <b>Teilnahme beenden</b>, wird die Kennung für diesen Raum gesperrt. die Person hat dann keinen Zutritt mehr zu diesem Raum. Alle Beiträge bleiben aber erhalten. Die Kennung kann bei Bedarf wieder freigeschaltet werden.</li>
+<li>Wenn Sie die Kennung <b>löschen</b> möchten, werden sämtliche Beiträge und die Kennung in diesem Raum gelöscht. Die Person kann danach den Raum nicht mehr betreten.</li></ul>";
 $message["USER_DELETE_MAIL_BODY"]["de"] = "Die Kennung [%2] wurde gelöscht.
 
 Die Informationen im einzelnen:
