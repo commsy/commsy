@@ -714,13 +714,27 @@ class cs_detail_view extends cs_view {
                            $link_title
                            );
       }else{
+         $display_mod = $this->_environment->getValueOfParameter('seldisplay_mode');
+         if ( empty($display_mod) ) {
+            $session = $this->_environment->getSessionItem();
+            if ( $session->issetValue($this->_environment->getCurrentContextID().'_dates_seldisplay_mode') ) {
+               $display_mod = $session->getValue($this->_environment->getCurrentContextID().'_dates_seldisplay_mode');
+            }
+         }
          $params = array();
          $params['back_to_index'] = 'true';
+         $link_text = $this->_translator->getMessage('COMMON_BACK_TO_LIST');
+         if ( module2type($this->_environment->getCurrentModule()) == CS_DATE_TYPE
+              and !empty($display_mod)
+              and $display_mod == 'calendar'
+            ) {
+            $link_text = $this->_translator->getMessage('DATE_BACK_TO_CALENDAR');
+         }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                            $this->_environment->getCurrentModule(),
                            'index',
                            $params,
-                           $this->_translator->getMessage('COMMON_BACK_TO_LIST')
+                           $link_text
                            );
       }
       $html .= '</div>'.LF;
