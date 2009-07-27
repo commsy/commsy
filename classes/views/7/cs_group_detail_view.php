@@ -152,7 +152,7 @@ class cs_group_detail_view extends cs_detail_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       $linked_item->getTitle(),
+                                       $this->_text_as_html_short($this->_compareWithSearchText($linked_item->getTitle())),
                                        $link_creator_text,
                                        '_self',
                                        $fragment,
@@ -169,7 +169,7 @@ class cs_group_detail_view extends cs_detail_view {
                                        $module,
                                        'detail',
                                        $params,
-                                       $linked_item->getTitle(),
+                                       $this->_text_as_html_short($this->_compareWithSearchText($linked_item->getTitle())),
                                        $link_creator_text,
                                        '_self',
                                        $fragment);
@@ -242,7 +242,7 @@ class cs_group_detail_view extends cs_detail_view {
       // Description
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
@@ -256,7 +256,7 @@ class cs_group_detail_view extends cs_detail_view {
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
             $desc = $grouproom_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
                $html .= $desc.LF;
             }
          }
@@ -293,6 +293,7 @@ class cs_group_detail_view extends cs_detail_view {
       #########################################
       # FLAG: group room
       #########################################
+
       // Members
 #      $html .= $this->_getNewestLinkedItemsAsHTML($item);
       $html .= '<h3 class="subitemtitle" style="margin-top:10px;">'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;
@@ -309,8 +310,8 @@ class cs_group_detail_view extends cs_detail_view {
          $i = 1;
          while ($member) {
             if ( $member->isUser() ){
-               $linktext = $this->_text_as_html_short($member->getFullname());
-               $member_title = $this->_text_as_html_short($member->getTitle());
+               $linktext = $this->_text_as_html_short($this->_compareWithSearchText($member->getFullname()));
+               $member_title = $this->_text_as_html_short($this->_compareWithSearchText($member->getTitle()));
                if ( !empty($member_title) ) {
                   $linktext .= ', '.$member_title;
                }
@@ -725,7 +726,7 @@ class cs_group_detail_view extends cs_detail_view {
          }
          $html .= '</div>'.LF;
          $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
-         $html .= $this->_text_as_html_short($title);
+         $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false));
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
          } elseif ($item->isProjectroom() and $item->isTemplate()) {
@@ -736,7 +737,7 @@ class cs_group_detail_view extends cs_detail_view {
          $html .= '</div>'.LF;
       } else {
          $html .= '<div style="background-color:'.$color_array['tabs_background'].';  color:'.$color_array['tabs_title'].'; vertical-align: large; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
-         $html .= $this->_text_as_html_short($title)."\n";
+         $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false)).LF;
 
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']';
@@ -886,7 +887,7 @@ class cs_group_detail_view extends cs_detail_view {
             if ( $user_item->isModerator() ) {
                $status = ' ('.$this->_translator->getMessage('CONTEXT_MODERATOR').')';
             }
-            $linktext = $user_item->getFullname();
+            $linktext = $this->_text_as_html_short($this->_compareWithSearchText($user_item->getFullname()));
             $html_temp .= '   <li>';
             $params = array();
             $params['iid'] = $user_item->getItemID();

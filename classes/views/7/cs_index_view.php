@@ -328,7 +328,6 @@ class cs_index_view extends cs_view {
        return $this->_search_text;
     }
 
-    // @segment-begin 8397  setSearchText($search_tex)-sets:_search_text/_search_array
     /** set the value of the search box
     * this method sets the search value of the list
     *
@@ -365,9 +364,7 @@ class cs_index_view extends cs_view {
        }
        $this->_search_array = $search_array;
     }
-    // @segment-end 8397
 
-    // @segment-begin 96650  getSortKey()/setSortKey($sort_key)
     /** set the value of the sort box
      * this method sets the sort key of the list
      *
@@ -2881,16 +2878,11 @@ EOD;
       $mod_date = $this->_compareWithSearchText($mod_date);
       return $this->_text_as_html_short($mod_date);
    }
-   // @segment-end 82455
 
-
-   // @segment-begin 53255 _compareWithSearchText($value):format-string
    /** compare the item text and the search criteria
     * this method returns the item text bold if it fits to the search criteria
     *
     * @return string value
-    *
-    * @author CommSy Development Group
     */
    function _compareWithSearchText($value){
       if ( !empty($this->_search_array) ){
@@ -2902,8 +2894,7 @@ EOD;
       }
       return $value;
    }
-   // @segment-end 53255
-   // @segment-begin 50746 _getItemAnnotationChangeStatus($item):modification-state-of-item-annotation
+
    /** return a text indicating the modification state of an item
     * this method returns a string like [new] or [modified] depending
     * on the read state of the current user.

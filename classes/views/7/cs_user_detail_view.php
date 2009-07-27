@@ -52,7 +52,7 @@ class cs_user_detail_view extends cs_detail_view {
       $list = new cs_list();
       $list->add($item);
       $this->setSubItemList($list);
-      $this->_sub_item_title_description = $this->_translator->getMessage('COMMON_READABLE_ONLY_USER',$item->getFullName());
+      $this->_sub_item_title_description = $this->_translator->getMessage('COMMON_READABLE_ONLY_USER',$this->_compareWithSearchText($item->getFullName()));
    }
 
    function addModifiedItemIDArray($type, $array){
@@ -78,7 +78,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($title) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_TITLE');
-         $temp_array[] = $this->_text_as_html_short($title);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($title));
          $formal_data[] = $temp_array;
       }
 
@@ -86,7 +86,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($birthday) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_BIRTHDAY');
-         $temp_array[] = $this->_text_as_html_short($birthday);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($birthday));
          $formal_data[] = $temp_array;
       }
       if ( !empty($formal_data) ) {
@@ -95,7 +95,7 @@ class cs_user_detail_view extends cs_detail_view {
       $formal_data = array();
 
       $email = $item->getEmail();
-      $email_text = $this->_text_as_html_short($email);
+      $email_text = $this->_text_as_html_short($this->_compareWithSearchText($email));
       $email_short = chunkText($email_text,45);
       if ( !empty($email) and ( $item->isEmailVisible() or $this->_display_mod == 'admin') ) {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
@@ -118,7 +118,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($telephone) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_TELEPHONE');
-         $temp_array[] = $this->_text_as_html_short($telephone);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($telephone));
          $formal_data[] = $temp_array;
       }
 
@@ -126,7 +126,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($cellularphone) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_CELLULARPHONE');
-         $temp_array[] = $this->_text_as_html_short($cellularphone);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($cellularphone));
          $formal_data[] = $temp_array;
       }
       if ( !empty($formal_data) ) {
@@ -139,7 +139,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($street) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_STREET');
-         $temp_array[] = $this->_text_as_html_short($street);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($street));
          $formal_data[] = $temp_array;
       }
 
@@ -148,7 +148,7 @@ class cs_user_detail_view extends cs_detail_view {
          $zipcode = $item->getZipCode();
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_CITY');
-         $temp_array[] = $this->_text_as_html_short(trim($zipcode.' '.$city));
+         $temp_array[] = $this->_text_as_html_short(trim($this->_compareWithSearchText($zipcode).' '.$this->_compareWithSearchText($city)));
          $formal_data[] = $temp_array;
       }
 
@@ -157,7 +157,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($room) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_ROOM');
-         $temp_array[] = $this->_text_as_html_short($room);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($room));
          $formal_data[] = $temp_array;
       }
 
@@ -170,7 +170,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($organisation) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_ORGANISATION');
-         $temp_array[] = $this->_text_as_html_short($organisation);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($organisation));
          $formal_data[] = $temp_array;
       }
 
@@ -178,7 +178,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($position) ) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_POSITION');
-         $temp_array[] = $this->_text_as_html_short($position);
+         $temp_array[] = $this->_text_as_html_short($this->_compareWithSearchText($position));
          $formal_data[] = $temp_array;
       }
 
@@ -192,7 +192,7 @@ class cs_user_detail_view extends cs_detail_view {
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
-          $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
             $pict_width = $image_array[0];
             if ($pict_width > 150){
                $width = 150;
@@ -200,7 +200,7 @@ class cs_user_detail_view extends cs_detail_view {
                $width = $pict_width;
             }
          }else{
-             $width = 150;
+            $width = 150;
          }
          $html .='<td style="vertical-align:top; width: 150px;">'.LF;
          $params = array();
@@ -258,7 +258,7 @@ class cs_user_detail_view extends cs_detail_view {
             $html_text .= '<!-- Begin Online Status Indicator code -->'.LF;
             $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://status.icq.com/online.gif?icq='.rawurlencode($icq_number).'&amp;img=2" alt="ICQ Online Status Indicator" />'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$this->_text_as_html_short($icq_number).')';
+            $html_text .= ' ('.$this->_text_as_html_short($this->_compareWithSearchText($icq_number)).')';
             $first = false;
          }
          /*
@@ -285,7 +285,7 @@ class cs_user_detail_view extends cs_detail_view {
             $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://www.IMStatusCheck.com/status/msn/'.rawurlencode($msn_number).'?icons" alt="MSN Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$this->_text_as_html_short($msn_number).')';
+            $html_text .= ' ('.$this->_text_as_html_short($this->_compareWithSearchText($msn_number)).')';
          }
          if ( !empty($skype_number) ) {
             if ( !$first ){
@@ -298,7 +298,7 @@ class cs_user_detail_view extends cs_detail_view {
             $html_text .= '   <img style="vertical-align:middle; margin-bottom:5px;" src="http://mystatus.skype.com/smallclassic/'.rawurlencode($skype_number).'" alt="Skype Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$this->_text_as_html_short($skype_number).')';
+            $html_text .= ' ('.$this->_text_as_html_short($this->_compareWithSearchText($skype_number)).')';
          }
          if ( !empty($yahoo_number) ) {
             if ( !$first ){
@@ -311,7 +311,7 @@ class cs_user_detail_view extends cs_detail_view {
             $html_text .= '   <img style="vertical-align:middle;" src="http://opi.yahoo.com/yahooonline/u='.rawurlencode($yahoo_number).'/m=g/t=1/l='.$this->_environment->getSelectedLanguage().'/opi.jpg" alt="Yahoo Online Status Indicator" />'.LF;
             $html_text .= '</a>'.LF;
             $html_text .= '<!-- End Online Status Indicator code -->'.LF;
-            $html_text .= ' ('.$this->_text_as_html_short($yahoo_number).')';
+            $html_text .= ' ('.$this->_text_as_html_short($this->_compareWithSearchText($yahoo_number)).')';
          }
          $html_text .='</div>'.LF;
          $temp_array[] = $html_text;
@@ -327,10 +327,10 @@ class cs_user_detail_view extends cs_detail_view {
       $homepage_short = chunkText($homepage,60);
       if ( !empty($homepage) ) {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
-            $homepage = $this->_text_as_html_short($homepage_short);
+            $homepage = $this->_text_as_html_short($this->_compareWithSearchText($homepage_short));
          }else{
             //$homepage = '<a href="'.rawurlencode($homepage).'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
-            $homepage = '<a href="'.$homepage.'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
+            $homepage = '<a href="'.$homepage.'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($this->_compareWithSearchText($homepage_short)).'</a>';
          }
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_HOMEPAGE');
@@ -348,7 +348,7 @@ class cs_user_detail_view extends cs_detail_view {
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
          $html .='<div style="padding-top:10px; vertical-align:top;"></div>'.LF;
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $html .= $desc.LF;
       }
       $html  .= '<!-- END OF USER ITEM DETAIL -->'."\n\n";

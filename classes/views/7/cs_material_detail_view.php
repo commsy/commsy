@@ -436,13 +436,13 @@ class cs_material_detail_view extends cs_detail_view {
          $formal_data1 = array();
          if (!empty($author)){
             $temp_array[0]  = $this->_translator->getMessage('MATERIAL_AUTHORS');
-            $temp_array[1]  = $this->_text_as_html_short($item->getAuthor());
+            $temp_array[1]  = $this->_text_as_html_short($this->_compareWithSearchText($item->getAuthor()));
             $formal_data1[] = $temp_array;
          }
          $pub_date = $item->getPublishingDate();
          if (!empty($pub_date)){
             $temp_array[0]  = $this->_translator->getMessage('MATERIAL_PUBLISHING_DATE');
-            $temp_array[1]  = $this->_text_as_html_long($item->getPublishingDate());
+            $temp_array[1]  = $this->_text_as_html_long($this->_compareWithSearchText($item->getPublishingDate()));
             $formal_data1[] = $temp_array;
          }
          if ( !empty($formal_data1) ) {
@@ -661,7 +661,7 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array = array();
          $temp_array[]  = $this->_translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
          if ( !empty($biblio) ) {
-            $temp_array[]  = $this->_text_as_html_long($this->_cleanDataFromTextArea($biblio));
+            $temp_array[]  = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($biblio)));
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
          }
@@ -702,7 +702,7 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array[]   = $this->_translator->getMessage('MATERIAL_ABSTRACT');
          $description = $item->getDescription();
          if ( !empty($description) ) {
-            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($description));
+            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($description)));
             $temp_array[]   =  '<div class="handle_width">'.$this->_show_images($temp_string,$this->_item, $with_links).'</div>'.'<br/><br/>';
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
@@ -718,7 +718,7 @@ class cs_material_detail_view extends cs_detail_view {
                $fileicons = '&nbsp;'.$fileicons;
             }
 
-            $section_title = $this->_text_as_html_short($section->getTitle());
+            $section_title = $this->_text_as_html_short($this->_compareWithSearchText($section->getTitle()));
             if( $with_links and !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
                $section_title = '<a href="#anchor'.$section->getItemID().'">'.$section_title.'</a>'.$fileicons.LF;
             }
@@ -841,7 +841,7 @@ class cs_material_detail_view extends cs_detail_view {
          // Description
          $desc = $item->getDescription();
          if ( !empty($desc) ) {
-            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
             $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          }
       }
@@ -859,7 +859,7 @@ class cs_material_detail_view extends cs_detail_view {
       $html = '';
       $section_description = $item->getDescription();
       if ( !empty($section_description) ) {
-         $section_description = $this->_text_as_html_long($this->_cleanDataFromTextArea($section_description));
+         $section_description = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($section_description)));
          $section_description = $this->_show_images($section_description, $item, $with_links);
          $html .= $this->getScrollableContent($section_description,$item,'',$with_links);
       }
@@ -927,9 +927,9 @@ class cs_material_detail_view extends cs_detail_view {
                     or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                      ) {
                       $this->_with_slimbox = true;
-                      $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                      $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($this->_compareWithSearchText($displayname)).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
                   }else{
-                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                     $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($this->_compareWithSearchText($displayname)).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
                   }
                }
              }

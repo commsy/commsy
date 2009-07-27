@@ -48,8 +48,6 @@ class cs_detail_view extends cs_view {
     */
    var $_position = -1;
 
-   var $_search_text = '';
-
    var $_horizontal_line_number = 2;
    /**
     * item - containing the item to display
@@ -66,6 +64,16 @@ class cs_detail_view extends cs_view {
    var $_with_slimbox = false;
 
    var $_right_box_config = array();
+
+   /**
+    * string - with search_text as keys
+    */
+   var $_search_text = NULL;
+
+   /*
+    * array containing all search expressions to be highlighted
+    */
+   var $_search_array = array();
 
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
@@ -612,7 +620,9 @@ class cs_detail_view extends cs_view {
             }
 
 
-            if($this->_environment->getCurrentModule() == CS_USER_TYPE or $this->_environment->getCurrentModule() == 'account'){
+            if ( $item->isA(CS_USER_TYPE)
+                 and ( $this->_environment->getCurrentModule() == CS_USER_TYPE or $this->_environment->getCurrentModule() == 'account' )
+               ) {
                $link_title = $item->getFullName();
             } elseif ( isset($item) ) {
                $link_title = $item->getTitle();
@@ -1284,11 +1294,11 @@ class cs_detail_view extends cs_view {
       if($rubric == CS_DISCUSSION_TYPE){
          $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
       }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
-         $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($item->getTitle());
+         $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
       }elseif ($rubric == 'account' ){
-         $html .= '<h2 class="contenttitle">'.$item->getFullName();
+         $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
       }else{
-        $html .= '<h2 class="contenttitle">'.$item->getFullName();
+        $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
       }
       $html .= '</h2>'.LF;
       $html .= '</div>'.LF;
@@ -2025,10 +2035,10 @@ class cs_detail_view extends cs_view {
          if ($subitem->isA(CS_USER_TYPE)) {
             $html .= $this->_translator->getMessage('USER_PREFERENCES').LF;
             if ( !empty($this->_sub_item_title_description) ) {
-               $html .= ' <span style="font-weight: normal; font-size: small;">('.$this->_text_as_html_short($this->_sub_item_title_description).')</span>'.LF;
+               $html .= ' <span style="font-weight: normal; font-size: small;">('.$this->_text_as_html_short($this->_compareWithSearchText($this->_sub_item_title_description)).')</span>'.LF;
             }
          } else {
-            $html .= $this->_text_as_html_short($subitem->getTitle());
+            $html .= $this->_text_as_html_short($this->_compareWithSearchText($subitem->getTitle()));
          }
       } else {
          $html .= 'NO ITEM';
@@ -2374,7 +2384,7 @@ class cs_detail_view extends cs_view {
                                     CS_USER_TYPE,
                                     'detail',
                                     $params,
-                                    $modificator->getFullname(),
+                                    $this->_compareWithSearchText($modificator->getFullname()),
                                      '',
                                      '',
                                      '',
@@ -2399,7 +2409,7 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $modificator->getFullname(),
+                                     $this->_compareWithSearchText($modificator->getFullname()),
                                      '',
                                      '',
                                      '',
@@ -2408,7 +2418,7 @@ class cs_detail_view extends cs_view {
                                      '',
                                      'style="font-size:10pt;"');
             }else{
-               $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+               $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
             }
          }else{
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
@@ -2420,7 +2430,7 @@ class cs_detail_view extends cs_view {
             if ( $current_user_item->isGuest() or  !$modificator->maySee($user) ) {
                $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</span>';
             } else {
-               $temp_html = '<span class="disabled">'.$modificator->getFullname().'</span>';
+               $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
             }
             unset($current_user_item);
          }else{
@@ -2471,9 +2481,9 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $creator->getFullname());
+                                     $this->_compareWithSearchText($creator->getFullname()));
          } elseif ( isset($creator) and !$creator->isDeleted()){
-            $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
+            $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
          } else {
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
          }
@@ -2487,9 +2497,9 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $creator->getFullname());
+                                     $this->_compareWithSearchText($creator->getFullname()));
             }else{
-               $temp_html = '<span class="disabled">'.$creator->getFullname().'</span>';
+               $temp_html = '<span class="disabled">'.$this->_compareWithSearchText($creator->getFullname()).'</span>';
             }
          }else{
             $temp_html = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
@@ -2501,7 +2511,7 @@ class cs_detail_view extends cs_view {
             if ( $current_user_item->isGuest() ) {
                $temp_html = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
             } else {
-               $temp_html = $creator->getFullname();
+               $temp_html = $this->_compareWithSearchText($creator->getFullname());
             }
             unset($current_user_item);
          }else{
@@ -2534,9 +2544,9 @@ class cs_detail_view extends cs_view {
                                   'user',
                                   'detail',
                                   $params,
-                                  $modificator->getFullname());
+                                  $this->_compareWithSearchText($modificator->getFullname()));
             }elseif(isset($modificator) and  !$modificator->isDeleted()){
-                $temp_text = '<span class="disabled">'.$modificator->getFullname().'</span>';
+                $temp_text = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
             }else{
                 $temp_text = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
             }
@@ -2552,9 +2562,9 @@ class cs_detail_view extends cs_view {
                                      'user',
                                      'detail',
                                      $params,
-                                     $modificator->getFullname());
+                                     $this->_compareWithSearchText($modificator->getFullname()));
                }else{
-                  $modifier_array[] = '<span class="disabled">'.$modificator->getFullname().'</span>';
+                  $modifier_array[] = '<span class="disabled">'.$this->_compareWithSearchText($modificator->getFullname()).'</span>';
                }
             }else{
                $modifier_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_DELETED_USER').'</span>';
@@ -2566,7 +2576,7 @@ class cs_detail_view extends cs_view {
                if ( $current_user_item->isGuest() ) {
                   $modifier_array[] = $this->_translator->getMessage('COMMON_USER_NOT_VISIBLE');
                } else {
-                  $modifier_array[] = $modificator->getFullname();
+                  $modifier_array[] = $this->_compareWithSearchText($modificator->getFullname());
                }
                unset($current_user_item);
             }else{
@@ -2623,8 +2633,6 @@ class cs_detail_view extends cs_view {
          $html .= '   </td>'.LF;
          $html .= '</tr></table>'.LF;
       }
-         $title = str_replace('</','&COMMSYDHTMLTAG&',$title);
-
       return $html;
    }
 
@@ -2747,13 +2755,13 @@ class cs_detail_view extends cs_view {
                   ) {
                   $this->_with_slimbox = true;
                   $file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
-                  $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+                  $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
                } else {
                   $file_string = '<a href="'.$file->getUrl().'" target="blank">';
-                  $file_string .= $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName())).'</a> ('.$file->getFileSize().' KB)';
+                  $file_string .= $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
                }
             }else{
-               $file_string = $file->getFileIcon().' '.($this->_text_as_html_short($file->getDisplayName()));
+               $file_string = $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName())));
             }
             $files[] = $file_string;
             $file = $file_list->getNext();
@@ -3189,6 +3197,77 @@ class cs_detail_view extends cs_view {
         }
    }
 
+    /** set the value of the search box
+    * this method sets the search value of the list
+    *
+    * @param string  $this->_search_text
+    */
+    function setSearchText ($search_text){
+       $this->_search_text = $search_text;
+       $literal_array = array();
+       $search_array = array();
 
+       //find all occurances of quoted text and store them in an array
+       preg_match_all('~("(.+?)")~u',$search_text,$literal_array);
+       //delete this occurances from the original string
+       $search_text = preg_replace('~("(.+?)")~u','',$search_text);
+
+       $search_text = preg_replace('~-(\w+)~u','',$search_text);
+
+       //clean up the resulting array from quots
+       $literal_array = str_replace('"','',$literal_array[2]);
+       //clean up rest of $limit and get an array with entrys
+       $search_text = str_replace('  ',' ',$search_text);
+       $search_text = trim($search_text);
+       $split_array = explode(' ',$search_text);
+
+       //check which array contains search limits and act accordingly
+       if ($split_array[0] != '' AND count($literal_array) > 0) {
+          $search_array = array_merge($split_array,$literal_array);
+       } else {
+          if ($split_array[0] != '') {
+             $search_array = $split_array;
+          } else {
+             $search_array = $literal_array;
+          }
+       }
+
+       $this->_search_array = $search_array;
+
+       // now handle äöüÄÖÜß
+       if ( !empty($search_array) ) {
+          foreach ($search_array as $search_word) {
+             if ( $search_word != htmlentities($search_word,ENT_COMPAT,'UTF-8') ) {
+                $this->_search_array[] = htmlentities($search_word,ENT_COMPAT,'UTF-8');
+             }
+          }
+       }
+    }
+
+   /** compare the item text and the search criteria
+    * this method returns the item text bold if it fits to the search criteria
+    *
+    * @return string value
+    */
+   function _compareWithSearchText($value, $bold = true) {
+      if ( !empty($this->_search_array) ) {
+         foreach ($this->_search_array as $search_text) {
+            if ( mb_stristr($value,$search_text) ) {
+               $replace = '*$0*';
+               if ( !$bold ) {
+                  $replace = '_$0_';
+               }
+               if ( stristr($value,'<!-- KFC TEXT -->') ) {
+                  $replace = '<span class="bold">$0</span>';
+                  if ( !$bold ) {
+                     $replace = '<span class="italic" style="font-style: italic;">$0</span>';
+                  }
+               }
+               $value = preg_replace('~'.preg_quote($search_text,'/').'~iu',$replace,$value);
+            }
+         }
+      }
+      return $value;
+   }
 }
 ?>

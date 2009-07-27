@@ -647,7 +647,9 @@ class cs_page_view extends cs_view {
          $this->_is_print_page = true;
       }
       $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
+      if ( isset($session) ) {
+         $left_menue_status = $session->getValue('left_menue_status');
+      }
       $retour  = '';
 #      $retour .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'.LF;
       $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');

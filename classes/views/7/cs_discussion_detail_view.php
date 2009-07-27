@@ -50,7 +50,7 @@ class cs_discussion_detail_view extends cs_detail_view {
 
    function _getTitleAsHTML() {
       $item = $this->getItem();
-      $html = $this->_text_as_html_short($item->getTitle());
+      $html = $this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
       if ( $item->isClosed() ) {
          $html .= ' <span style="font-size:smaller">('.$this->_translator->getMessage('DISCUSSION_IS_CLOSED').')</span>';
       }
@@ -323,11 +323,6 @@ class cs_discussion_detail_view extends cs_detail_view {
         }
    }
 
-
-
-
-
-
    function _getButtonAsHTML ($button_text, $button_name, $width = '', $is_disabled = false, $style='', $font_size='10') {
      $html  = '';
       $html .= '<input type="submit" name="'.$button_name.'"';
@@ -351,7 +346,6 @@ class cs_discussion_detail_view extends cs_detail_view {
     * @returns string $item as HMTL
     *
     * @param object item     the single list entry
-    * @author CommSy Development Group
     */
    function _getItemAsHTML($item) {
       $subitems = $this->_subitems;
@@ -489,7 +483,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $this->_text_as_html_short($display_subject),
+                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
                            $hover,
                            '',
                            'anchor'.$article->getItemID());
@@ -506,15 +500,15 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $this->_text_as_html_short($display_subject),
+                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
                            $hover,
                            '',
                            'anchor'.$article->getItemID());
                   $html .= $this->_getItemChangeStatus($article).' ';
                   $html .= $title.$fileicons;
                }
-               $html .= '   <td style="white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($creator_fullname).'&nbsp; </td>'.LF;
-               $html .= '   <td style="white-space:nowrap; width: 25%;">'.$this->_text_as_html_short(getDateTimeInLang($article->getModificationDate(),false)).'</td>'.LF;
+               $html .= '   <td style="white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
+               $html .= '   <td style="white-space:nowrap; width: 25%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(),false))).'</td>'.LF;
             }
 
             // lineare diskussion
@@ -537,15 +531,15 @@ class cs_discussion_detail_view extends cs_detail_view {
                            CS_DISCUSSION_TYPE,
                            'detail',
                            $params,
-                           $this->_text_as_html_short($display_subject),
+                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
                            $hover,
                            '',
                            'anchor'.$article->getItemID());
 
                $html .= $this->_getItemChangeStatus($article).' ';
                $html .= $fileicons.'</td>'.LF;
-               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($creator_fullname).'&nbsp; </td>'.LF;
-               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 22%;">'.$this->_text_as_html_short(getDateTimeInLang($article->getModificationDate(), false)).'</td>'.LF;
+               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;
+               $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 22%;">'.$this->_text_as_html_short($this->_compareWithSearchText(getDateTimeInLang($article->getModificationDate(), false))).'</td>'.LF;
             }
             $html .= '</tr>'.LF;
             $article_old = clone($article);
@@ -935,18 +929,18 @@ class cs_discussion_detail_view extends cs_detail_view {
 
 
    function _getSubItemTitleAsHTML ($item, $pos_number) {
-      return $pos_number.'. '. $this->_parseText2ID($this->_text_as_html_short($item->getSubject()));
+      return $pos_number.'. '. $this->_parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
    }
 
    function _getSubItemTitleWithOutNumberAsHTML ($item) {
-      return $this->_text_as_html_short($item->getSubject());
+      return $this->_text_as_html_short($this->_compareWithSearchText($item->getSubject()));
    }
 
    function _getSubItemAsHTML ($item, $anchor_number) {
       $retour  = '';
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $retour .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
@@ -1047,9 +1041,9 @@ class cs_discussion_detail_view extends cs_detail_view {
                  or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                   ) {
                    $this->_with_slimbox = true;
-                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($this->_compareWithSearchText($displayname)).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
                }else{
-                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
+                  $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($this->_compareWithSearchText($displayname)).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
                }
             }
          } else {

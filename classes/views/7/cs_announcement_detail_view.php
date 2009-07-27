@@ -50,8 +50,6 @@ class cs_announcement_detail_view extends cs_detail_view {
       return $this->_clipboard_id_array;
    }
 
-
-
    /** get the single entry of the list view as HTML
     * this method returns the single entry in HTML-Code
     *
@@ -64,7 +62,7 @@ class cs_announcement_detail_view extends cs_detail_view {
       $html  = LF.'<!-- BEGIN OF ANNOUNCEMENT ITEM DETAIL -->'.LF;
       $formal_data = array();
       $temp_array[0] = $this->_translator->getMessage('ANNOUNCEMENT_SHOW_HOME_DATE');
-      $temp_array[1] = getDateTimeInLang($item->getSeconddateTime());
+      $temp_array[1] = $this->_compareWithSearchText(getDateTimeInLang($item->getSeconddateTime()));
       $formal_data[] = $temp_array;
 
       // Files
@@ -81,14 +79,12 @@ class cs_announcement_detail_view extends cs_detail_view {
       }
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $html .= $this->getScrollableContent($desc,$item,'',true);
       }
       $html  .= '<!-- END OF ANNOUNCEMENT ITEM DETAIL -->'.LF.LF;
       return $html;
    }
-
-
 }
 ?>

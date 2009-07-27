@@ -66,7 +66,7 @@ var $_room_type = 'context';
       // description
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $html .= $desc.LF;
       }
       $html .= '<div style="width:100%; padding-left:15%; padding-bottom:20px; vertical-align:center;">'.$this->_getRoomWindowAsHTML($item,$this->getAccountMode()).'</div>';
@@ -317,7 +317,7 @@ var $_room_type = 'context';
          }
          $html .= '</div>'.LF;
          $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
-         $html .= $this->_text_as_html_short($title);
+         $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false));
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
          } elseif ($item->isProjectroom() and $item->isTemplate()) {
@@ -459,7 +459,7 @@ var $_room_type = 'context';
                ) {
                $html_temp .= '<li>'.$this->_translator->getMessage('COMMON_USER_NOT_VISIBLE').'</li>';
             } else {
-               $html_temp .= '<li>'.$this->_text_as_html_short($moda_item->getFullName()).'</li>';
+               $html_temp .= '<li>'.$this->_text_as_html_short($this->_compareWithSearchText($moda_item->getFullName())).'</li>';
             }
             unset($current_user_item);
             $moda_item = $moda_list->getNext();
@@ -759,7 +759,5 @@ var $_room_type = 'context';
       }
       return $retour;
    }
-
-
 }
 ?>

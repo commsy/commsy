@@ -495,6 +495,20 @@ if ( !empty($SID) ) {
 
 $translator = $environment->getTranslationObject();
 
+/************ session: clean search infos *******************/
+if ( $environment->getCurrentFunction() == 'index'
+     and empty($_POST)
+     and !isset($_GET['back_to_search'])
+   ) {
+   $session = $environment->getSessionItem();
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array')) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+   }
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids')) {
+      $session->unsetValue('cid'.$environment->getCurrentContextID().'_campus_search_index_ids');
+   }
+}
+
 /************ profile: update email address *****************/
 $current_user_item = $environment->getCurrentUserItem();
 if ( isset($current_user_item) ) {

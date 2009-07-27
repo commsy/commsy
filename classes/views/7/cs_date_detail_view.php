@@ -176,11 +176,9 @@ var $_clipboard_id_array=array();
     * @returns string $item as HMTL
     *
     * @param object item     the single list entry
-    *
-    * @author CommSy Development Group
     */
    function _getItemAsHTML($item) {
-      $html  = LF.'<!-- BEGIN OF NEWS ITEM DETAIL -->'.LF;
+      $html  = LF.'<!-- BEGIN OF DATE ITEM DETAIL -->'.LF;
 
       // DATE AND TIME //
       $formal_data  = array();
@@ -191,7 +189,7 @@ var $_clipboard_id_array=array();
       if ($conforms == TRUE) {
          $start_time_print = getTimeLanguage($parse_time_start['datetime']);
       } else {
-         $start_time_print = $this->_text_as_html_short($item->getStartingTime());
+         $start_time_print = $this->_text_as_html_short($this->_compareWithSearchText($item->getStartingTime()));
       }
 
       $parse_time_end = convertTimeFromInput($item->getEndingTime());
@@ -199,7 +197,7 @@ var $_clipboard_id_array=array();
       if ($conforms == TRUE) {
          $end_time_print = getTimeLanguage($parse_time_end['datetime']);
       } else {
-         $end_time_print = $this->_text_as_html_short($item->getEndingTime());
+         $end_time_print = $this->_text_as_html_short($this->_compareWithSearchText($item->getEndingTime()));
       }
 
      $parse_day_start = convertDateFromInput($item->getStartingDay(),$this->_environment->getSelectedLanguage());
@@ -207,7 +205,7 @@ var $_clipboard_id_array=array();
       if ($conforms == TRUE) {
         $start_day_print = $item->getStartingDayName().', '.$this->_translator->getDateInLang($parse_day_start['datetime']);
       } else {
-         $start_day_print = $this->_text_as_html_short($item->getStartingDay());
+         $start_day_print = $this->_text_as_html_short($this->_compareWithSearchText($item->getStartingDay()));
       }
 
       $parse_day_end = convertDateFromInput($item->getEndingDay(),$this->_environment->getSelectedLanguage());
@@ -215,7 +213,7 @@ var $_clipboard_id_array=array();
       if ($conforms == TRUE) {
          $end_day_print =$item->getEndingDayName().', '.$this->_translator->getDateInLang($parse_day_end['datetime']);
       } else {
-         $end_day_print =$this->_text_as_html_short($item->getEndingDay());
+         $end_day_print =$this->_text_as_html_short($this->_compareWithSearchText($item->getEndingDay()));
       }
       //formating dates and times for displaying
       $date_print ="";
@@ -300,6 +298,7 @@ var $_clipboard_id_array=array();
       // Place
       $place = $item->getPlace();
       if (!empty($place)) {
+         $place = $this->_compareWithSearchText($place);
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('DATES_PLACE');
          $temp_array[] = $this->_text_as_html_short($place);
@@ -334,6 +333,7 @@ var $_clipboard_id_array=array();
             $counter++;
             if ( $member->isUser() ){
                $linktext = $member->getFullname();
+               $linktext = $this->_compareWithSearchText($linktext);
                if ( $member->maySee($user) ) {
                   $params = array();
                   $params['iid'] = $member->getItemID();
@@ -351,6 +351,7 @@ var $_clipboard_id_array=array();
                }
             }else{
                $link_title = chunkText($member->getFullName(),35);
+               $link_title = $this->_compareWithSearchText($link_title);
                $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    $this->_environment->getCurrentModule(),
                                    $this->_environment->getCurrentFunction(),
@@ -385,7 +386,7 @@ var $_clipboard_id_array=array();
       // Description
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
@@ -394,12 +395,11 @@ var $_clipboard_id_array=array();
       return $html;
    }
 
-
-
+/*
    function _getTitleAsHTML () {
       $item = $this->getItem();
       if ( isset($item) ){
-         $html = $item->getTitle();
+         $html = $this->_compareWithSearchText($item->getTitle(),false);
       } else {
          $html = 'NO ITEM';
       }
@@ -409,7 +409,6 @@ var $_clipboard_id_array=array();
       }
       return $html;
    }
-
-
+*/
 }
 ?>

@@ -76,7 +76,7 @@ class cs_institution_detail_view extends cs_detail_view {
       }
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
       // Members
@@ -90,10 +90,10 @@ class cs_institution_detail_view extends cs_detail_view {
          $member = $members->getFirst();
          while ($member) {
             if ( $member->isUser() ){
-               $linktext = $member->getFullname();
+               $linktext = $this->_compareWithSearchText($member->getFullname());
                $member_title = $member->getTitle();
                if ( !empty($member_title) ) {
-                  $linktext .= ', '.$member_title;
+                  $linktext .= ', '.$this->_compareWithSearchText($member_title);
                }
                $html .= '   <li>';
                if ($member->maySee($user)) {
@@ -103,7 +103,7 @@ class cs_institution_detail_view extends cs_detail_view {
                                    'user',
                                    'detail',
                                    $params,
-                                   $linktext);
+                                   $this->_text_as_html_short($linktext));
                   unset($params);
                } else {
                   $current_user_item = $this->_environment->getCurrentUserItem();
@@ -329,10 +329,5 @@ class cs_institution_detail_view extends cs_detail_view {
       }
       return $html;
    }
-
-
-
-
-
 }
 ?>

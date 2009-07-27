@@ -88,7 +88,7 @@ class cs_todo_detail_view extends cs_detail_view {
          while ($member) {
             $counter++;
             if ( $member->isUser() ){
-               $linktext = $this->_text_as_html_short($member->getFullname());
+               $linktext = $this->_text_as_html_short($this->_compareWithSearchText($member->getFullname()));
                if ( $member->maySee($user) ) {
                   $params = array();
                   $params['iid'] = $member->getItemID();
@@ -105,7 +105,7 @@ class cs_todo_detail_view extends cs_detail_view {
                   $member_html .= ', ';
                }
             }else{
-               $link_title = $this->_text_as_html_short(chunkText($member->getFullName(),35));
+               $link_title = $this->_text_as_html_short($this->_compareWithSearchText(chunkText($member->getFullName(),35)));
                $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    $this->_environment->getCurrentModule(),
                                    $this->_environment->getCurrentFunction(),
@@ -161,7 +161,7 @@ class cs_todo_detail_view extends cs_detail_view {
                         CS_TODO_TYPE,
                         'detail',
                         $params,
-                        $this->_text_as_html_short($step->getTitle()),
+                        $this->_text_as_html_short($this->_compareWithSearchText($step->getTitle())),
                         $hover,
                         '',
                         'anchor'.$step->getItemID());
@@ -319,7 +319,7 @@ class cs_todo_detail_view extends cs_detail_view {
       // Description
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
@@ -632,7 +632,7 @@ class cs_todo_detail_view extends cs_detail_view {
       }
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $retour .= $this->getScrollableContent($desc,$item,'',true).LF;
       }

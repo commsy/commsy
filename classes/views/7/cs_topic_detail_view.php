@@ -170,7 +170,7 @@ class cs_topic_detail_view extends cs_detail_view {
       }
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($desc));
+         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
          $html .= $this->getScrollableContent($desc,$item,'',true).LF;
       }
 
@@ -181,7 +181,7 @@ class cs_topic_detail_view extends cs_detail_view {
       // PATH - BEGIN
 
       // PATH - END
-      $html  .= '<!-- END OF TOPIC ITEM DETAIL -->'."\n\n";
+      $html  .= '<!-- END OF TOPIC ITEM DETAIL -->'.LF.LF;
 
       return $html;
    }

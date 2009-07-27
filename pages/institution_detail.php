@@ -178,7 +178,23 @@ if ($type != CS_INSTITUTION_TYPE) {
          $annotation = $annotations->getNext();
       }
       $detail_view->setAnnotationList($annotations);
+
+      // highlight search words in detail views
+      $current_context_item = $environment->getCurrentContextItem();
+      if ( $current_context_item->isDesign7() ) {
+         $session_item = $environment->getSessionItem();
+         if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
+            $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+            if ( !empty($search_array['search']) ) {
+               $detail_view->setSearchText($search_array['search']);
+            }
+            unset($search_array);
+         }
+      }
+      unset($current_context_item);
+
       $page->add($detail_view);
+
       // Safe information in session for later use
       $session->setValue('cid'.$environment->getCurrentContextID().'_institution_index_ids', $institution_ids);
    }

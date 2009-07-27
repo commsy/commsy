@@ -38,12 +38,5 @@ class cs_myroom_detail_view extends cs_context_detail_view {
       $this->_room_type = CS_MYROOM_TYPE;
       $this->cs_context_detail_view($params);
    }
-
-
 }
-
-
-
-
-
 ?>

@@ -40,8 +40,6 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
       $this->cs_material_detail_view($params);
    }
 
-
-
    function _getDetailActionsAsHTML ($item) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
