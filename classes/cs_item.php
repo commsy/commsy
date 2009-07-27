@@ -444,8 +444,6 @@ class cs_item {
    * By default the creator is returned.
    *
    * @return cs_user_item creator of the item
-   *
-   * @author CommSy Development Group
    */
    function getModificatorItem () {
       $retour = $this->_getUserItem('modifier');
@@ -899,16 +897,10 @@ class cs_item {
    }
 
    /** get data object
-
    * this method returns the object for the specified key or NULL if it is not set.
-
    *
-
    * @param string key
    * @access private
-
-   * @author CommSy Development Group
-
    */
    function _getObject($key) {
       if(!isset($this->_data[$key])) {

@@ -2376,7 +2376,11 @@ class cs_detail_view extends cs_view {
          $read_percentage = round(($read_count/$user_count) * 100);
          $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
       }
-      if ( $environment->inProjectRoom() ) {
+      if ( isset($modificator)
+           and $modificator->isRoot()
+         ) {
+         $temp_html = $this->_compareWithSearchText($modificator->getFullname());
+      } elseif ( $environment->inProjectRoom() ) {
          if ( isset($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
             $params = array();
             $params['iid'] = $modificator->getItemID();
@@ -2473,7 +2477,9 @@ class cs_detail_view extends cs_view {
       }
       // Creator
       $creator = $item->getCreatorItem();
-      if ( $environment->inProjectRoom() ) {
+      if ( isset($creator) and $creator->isRoot() ) {
+         $temp_html = $this->_compareWithSearchText($creator->getFullname());
+      } elseif ( $environment->inProjectRoom() ) {
          if ( isset($creator) and $creator->isUser() and !$creator->isDeleted()  and $creator->maySee($user)){
             $params = array();
             $params['iid'] = $creator->getItemID();
@@ -2536,7 +2542,10 @@ class cs_detail_view extends cs_view {
       foreach($modifiers as $modifier_id) {
          $modificator = $user_manager->getItem($modifier_id);
          //Links only at accessible contact pages
-         if ( $environment->inProjectRoom() ) {
+         if ( isset($modificator) and $modificator->isRoot() ) {
+            $temp_text = $this->_compareWithSearchText($modificator->getFullname());
+            $modifier_array[] = $temp_text;
+         } elseif ( $environment->inProjectRoom() ) {
             $params = array();
             if (isset($modificator) and !empty($modificator) and $modificator->isUser() and !$modificator->isDeleted() and $modificator->maySee($user)){
                $params['iid'] = $modificator->getItemID();
