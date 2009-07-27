@@ -186,10 +186,37 @@ if ( $environment->getCurrentContextItem()->isDesign7() ) {
 }
 $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
 
+if ( isset($_POST['right_box_option2']) ) {
+   $right_box_command2 = $_POST['right_box_option2'];
+} elseif ( isset($_GET['right_box_option2']) ) {
+   $right_box_command2 = $_GET['right_box_option2'];
+} else {
+   $right_box_command2 = '';
+}
+
+$browse_dir = '';
+if ( strstr($right_box_command2, '_START') ) {
+   $browse_dir = '_start';
+   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_LEFT') ) {
+   $browse_dir = '_left';
+   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_RIGHT') ) {
+   $browse_dir = '_right';
+   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+} elseif ( strstr($right_box_command2, '_END') ) {
+   $browse_dir = '_end';
+   #$right_box_command = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+}
+
 // Find current browsing starting point
-if ( isset($_GET['from']) ) {
+if ( isset($_POST['from'.$browse_dir]) ) {
+   $from = $_POST['from'.$browse_dir];
+} elseif ( isset($_GET['from']) ) {
    $from = $_GET['from'];
-}  else {
+} elseif ( isset($_POST['from']) ) {
+   $from = $_POST['from'];
+} else {
    $from = 1;
 }
 
@@ -197,7 +224,9 @@ if ( isset($_GET['from']) ) {
 // The browsing interval is applied to all rubrics!
 if ( isset($_GET['interval']) ) {
    $interval = $_GET['interval'];
-}  else {
+} elseif ( isset($_POST['interval']) ) {
+   $interval = $_POST['interval'];
+} else {
    $interval = CS_LIST_INTERVAL;
 }
 

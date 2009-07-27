@@ -808,6 +808,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $interval  = $this->_interval;
       $count_all_shown = $this->_count_all_shown;
       $params = $this->_environment->getCurrentParameterArray();
+      $current_context = $this->_environment->getCurrentContextItem();
       if ( $this->getChoosenRubric() != 'all'  ){
          $params['selrubric'] = $this->getChoosenRubric();
       }
@@ -856,11 +857,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_start > 0 ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
-         if ($edit_page){
-            $html .= '<input type="hidden" name="from_start" value="'.$browse_start.'"/>';
+         if ( $edit_page
+              or ( !$edit_page
+                   and $current_context->isDesign7()
+                 )
+            ) {
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_START'.'\');"">'.$image.'</a>'.LF;
+            $html .= '<input type="hidden" name="from_start" value="'.$browse_start.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_START'.'\');" class="index_system_link">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
@@ -883,11 +888,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_left > 0 ) {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
-         if ($edit_page){
-            $html .= '<input type="hidden" name="from_left" value="'.$browse_left.'"/>';
+         if ( $edit_page
+              or ( !$edit_page
+                   and $current_context->isDesign7()
+                 )
+            ) {
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_LEFT'.'\');"">'.$image.'</a>'.LF;
+            $html .= '<input type="hidden" name="from_left" value="'.$browse_left.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_LEFT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
@@ -908,12 +917,16 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_right > 0 ) {
          $params['from'] = $browse_right;
          $image = '<span class="bold">&gt;</span>';
-         if ($edit_page){
+         if ( $edit_page
+              or ( !$edit_page
+                   and $current_context->isDesign7()
+                 )
+            ) {
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
             $html .= '<input type="hidden" name="from_right" value="'.$browse_right.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_RIGHT'.'\');"">'.$image.'</a>'.LF;
-         }else{
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_RIGHT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
+         } else {
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module,
                                          $this->_function,
@@ -935,11 +948,15 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_end > 0 ) {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
-         if ($edit_page){
-            $html .= '<input type="hidden" name="from_end" value="'.$browse_end.'"/>';
+         if ( $edit_page
+              or ( !$edit_page
+                   and $current_context->isDesign7()
+                 )
+            ) {
             $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
             $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_END'.'\');"">'.$image.'</a>'.LF;
+            $html .= '<input type="hidden" name="from_end" value="'.$browse_end.'"/>';
+            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_END'.'\');" class="index_system_link">'.$image.'</a>'.LF;
          }else{
             $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                          $this->_module, $this->_function,
@@ -960,8 +977,6 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html .= '</div>';
       return $html;
   }
-
-
 
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
