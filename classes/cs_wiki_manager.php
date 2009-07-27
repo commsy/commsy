@@ -1856,5 +1856,73 @@ function soapCallToWiki(){
 	#pr($client->__getLastResponseHeaders());
 	pr($client->__getLastResponse());
 }
+
+function updateWiki($portal, $room){
+   global $c_commsy_path_file;
+   global $c_pmwiki_path_file;
+   // Backup der Inhalte
+   $old_dir = getcwd();
+   chdir($c_pmwiki_path_file);
+   $directory_handle = @opendir('wikis/' . $portal->getItemID());
+   if ($directory_handle) {
+      chdir('wikis/' . $portal->getItemID());
+      if(file_exists($room->getItemID())){
+         $this->recurse_copy_dir($room->getItemID(), $room->getItemID() . '.backup');
+         // Altes Wiki-Verzeichnis loeschen
+         // nicht über deleteWiki() damit die Einstellungen erhalten bleiben
+         $this->deleteDirectory($room->getItemID());
+      }
+   }
+   chdir($old_dir);
+   // Neuanlegen des Wikis
+   $this->createWiki($room);
+   // Inhalte kopieren
+   chdir($c_pmwiki_path_file);
+   $directory_handle_wikid = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/wiki.d');
+   if ($directory_handle_wikid) {
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/wiki.d', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/wiki.d');
+   }
+   $directory_handle_pub = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/pub');
+   if ($directory_handle_pub) {
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/pub', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/pub');
+   }
+   $directory_handle_uploads = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/uploads');
+   if ($directory_handle_uploads) {
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/uploads', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/uploads');
+   }
+   // Backup loeschen
+   $this->deleteDirectory('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup');
+   chdir($old_dir);
+}
+
+function recurse_copy_dir($src,$dst) {
+    $dir = opendir($src);
+    @mkdir($dst);
+    while(false !== ( $file = readdir($dir)) ) {
+        if (( $file != '.' ) && ( $file != '..' )) {
+            if ( is_dir($src . '/' . $file) ) {
+                $this->recurse_copy_dir($src . '/' . $file,$dst . '/' . $file);
+            }
+            else {
+                copy($src . '/' . $file,$dst . '/' . $file);
+            }
+        }
+    }
+    closedir($dir);
+}
+
+// von http://us2.php.net/manual/en/function.rmdir.php
+function deleteDirectory($dir) {
+    if (!file_exists($dir)) return true;
+    if (!is_dir($dir) || is_link($dir)) return unlink($dir);
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') continue;
+            if (!$this->deleteDirectory($dir . "/" . $item)) {
+                chmod($dir . "/" . $item, 0777);
+                if (!$this->deleteDirectory($dir . "/" . $item)) return false;
+            };
+        }
+        return rmdir($dir);
+    } 
 }
 ?>
