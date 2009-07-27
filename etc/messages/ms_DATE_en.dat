@@ -1,5 +1,6 @@
 <?php
 $message["DATE_ALTERNATIVE_DISPLAY"]["en"] = "Change display";
+$message["DATE_BACK_TO_CALENDAR"]["en"] = "calendar";
 $message["DATE_ENDDAY"]["en"] = "Day (end)";
 $message["DATE_ENDTIME"]["en"] = "Time (end)";
 $message["DATE_ENTER"]["en"] = "Accept participation";

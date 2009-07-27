@@ -1,5 +1,6 @@
 <?php
 $message["DATE_ALTERNATIVE_DISPLAY"]["de"] = "Ansicht wechseln";
+$message["DATE_BACK_TO_CALENDAR"]["de"] = "zum Kalender";
 $message["DATE_ENDDAY"]["de"] = "Tag (Ende)";
 $message["DATE_ENDTIME"]["de"] = "Uhrzeit (Ende)";
 $message["DATE_ENTER"]["de"] = "Teilnahme zusagen";
