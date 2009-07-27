@@ -1761,7 +1761,11 @@ class cs_page_room_view extends cs_page_view {
       unset($post_vars);
       $html  = '<div style="white-space:nowrap;">';
       if ( $this->_with_personal_area) {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
+         if ( !empty($this->_current_user)
+              and ( $this->_current_user->getUserID() == 'guest'
+                    and $this->_current_user->isGuest()
+                   )
+              and !$this->_environment->inServer() ) {
             $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
             if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
                  and !$this->_environment->inServer()
@@ -1771,6 +1775,7 @@ class cs_page_room_view extends cs_page_view {
             }
             $params = array();
             $params['room_id'] = $this->_environment->getCurrentContextID();
+            $params['login_redirect'] = true;
             $html .= '&nbsp;&nbsp;|&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', $params,$this->_translator->getMessage('MYAREA_LOGIN_BUTTON'),'','','','','','','style="color:#800000"').''.LF;
             // @segment-end 77327
             // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest

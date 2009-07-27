@@ -459,7 +459,7 @@ if ( !empty($SID) ) {
          #}
 
          ###############################################
-         # goto portal "vor die Tuer"
+         # goto portal "vor die Tuer" - BEGIN
          ###############################################
          $parameter_array = $environment->getCurrentParameterArray();
          $parameter_array['cid'] = $environment->getCurrentContextID();
@@ -474,6 +474,23 @@ if ( !empty($SID) ) {
 
          $current_module = $environment->getCurrentModule();
          $current_function = $environment->getCurrentFunction();
+      } elseif ( !empty($_GET['login_redirect'])
+                 and $_GET['login_redirect']
+               ) {
+         $history = $session->getValue('history');
+         $parameter_array = array();
+         if ( !empty($history[0]['parameter']) ) {
+            $parameter_array = $history[0]['parameter'];
+         }
+         $parameter_array['cid'] = $history[0]['context'];
+         $parameter_array['mod'] = $history[0]['module'];
+         $parameter_array['fct'] = $history[0]['function'];
+         unset($parameter_array['login_redirect']);
+         $session->setValue('login_redirect',$parameter_array);
+
+         ###############################################
+         # goto portal "vor die Tuer" - END
+         ###############################################
       }
       $current_user = $authentication->getUserItem();
       $environment->setCurrentUserItem($current_user);

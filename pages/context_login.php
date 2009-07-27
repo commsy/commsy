@@ -21,6 +21,7 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+
 if (!empty($_POST['option'])) {
    $command = $_POST['option'];
 } else {
