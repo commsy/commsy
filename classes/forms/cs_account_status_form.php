@@ -233,27 +233,33 @@ class cs_account_status_form extends cs_rubric_form {
       }
    }
 
-        /** specific check the values of the form
-        * this methods check the entered values
-        */
-        function _checkValues () {
-                //Don't loose last moderator by closing or downgrading to user
-                if (isset($this->_form_post['status']) and $this->_form_post['status'] != 'moderator') {
-                        $user_manager = $this->_environment->getUserManager();
-                        $user_manager->resetLimits();
-                        $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-                        $user_manager->setModeratorLimit();
-                        $moderator_count = $user_manager->getCountAll();
-                        if ($moderator_count == 1) {
-                                $user_manager->select();
-                                $moderator_list = $user_manager->get();
-                                $moderator_item = $moderator_list->getFirst();
-                                if ($moderator_item->getItemID() == $this->_form_post['iid']) {
-                                        $this->_error_array[] = getMessage('ERROR_LAST_MODERATOR');
-                                        $this->_form->setFailure('status');
-                                }
-                        }
-                }
+   /** specific check the values of the form
+     * this methods check the entered values
+     */
+     function _checkValues () {
+        //Don't loose last moderator by closing or downgrading to user
+        if ( ( isset($this->_form_post['option'])
+               and $this->_form_post['option'] == $this->_translator->getMessage('ACCOUNT_DELETE_BUTTON')
+             )
+             or ( isset($this->_form_post['status'])
+                  and $this->_form_post['status'] != 'moderator'
+                )
+           ) {
+           $user_manager = $this->_environment->getUserManager();
+           $user_manager->resetLimits();
+           $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+           $user_manager->setModeratorLimit();
+           $moderator_count = $user_manager->getCountAll();
+           if ($moderator_count == 1) {
+              $user_manager->select();
+              $moderator_list = $user_manager->get();
+              $moderator_item = $moderator_list->getFirst();
+              if ($moderator_item->getItemID() == $this->_form_post['iid']) {
+                 $this->_error_array[] = getMessage('ERROR_LAST_MODERATOR');
+                 $this->_form->setFailure('status');
+              }
+           }
         }
+     }
 }
 ?>

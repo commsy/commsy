@@ -451,21 +451,23 @@ class cs_account_index_view extends cs_index_view {
   function _getRubricInfoAsHTML($act_rubric){
       $room = $this->_environment->getCurrentContextItem();
       $info_text = $room->getUsageInfoTextForRubric($act_rubric);
-      $html='';
-      $html .= '<div style="margin-bottom:1px; width:250px;">'.LF;
-      $html .= '<div style="position:relative; top:12px;">'.LF;
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
-      } else {
-         $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+      if ( !empty($info_text) ) {
+         $html='';
+         $html .= '<div style="margin-bottom:1px; width:250px;">'.LF;
+         $html .= '<div style="position:relative; top:12px;">'.LF;
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $html .= '<img src="images/commsyicons_msie6/usage_info_3.gif"/>';
+         } else {
+            $html .= '<img src="images/commsyicons/usage_info_3.png"/>';
+         }
+         $html .= '</div>'.LF;
+         $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
+         $html .= '<div class="usage_info">'.LF;
+         $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
+         $html .= '</div>'.LF;
+         $html .='</div>'.LF;
+         return $html;
       }
-      $html .= '</div>'.LF;
-      $html .= '<div class="right_box_title" style="font-weight:bold;">'.$room->getUsageInfoHeaderForRubricForm($act_rubric).'</div>';
-      $html .= '<div class="usage_info">'.LF;
-      $html .= $this->_text_as_html_long($this->_cleanDataFromTextArea($info_text)).BRLF;
-      $html .= '</div>'.LF;
-      $html .='</div>'.LF;
-      return $html;
    }
 
    /** get the item of the list view as HTML

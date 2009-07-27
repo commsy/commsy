@@ -35,7 +35,8 @@ if (!empty($_GET['iid'])) {
 } elseif (!empty($_POST['iid'])) {
    $iid = $_POST['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('No user selected!',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('No user selected!',E_USER_ERROR);
 }
 
 $user_manager = $environment->getUserManager();

@@ -161,7 +161,8 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
              $item = $material_version_list->getFirst();
              $item->delete(CS_ALL); // CS_ALL -> delete all versions of the material
           }
-      } elseif ($environment->getCurrentModule() == 'configuration' ) {
+         redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
+      } elseif ( $environment->getCurrentModule() == 'configuration' ) {
          $manager = $environment->getRoomManager();
          $item = $manager->getItem($current_item_iid);
          if ( $item->isProjectRoom()
@@ -199,12 +200,15 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             $item->delete();
             redirect($redirect_context_id,$redirect_module,$redirect_function,$redirect_params);
          }
+         redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
+      } elseif ( $environment->getCurrentModule() == 'account' ) {
+         // do nothing, handling in page account_status
       } else {
          $manager = $environment->getManager(module2type($environment->getCurrentModule()));
          $item = $manager->getItem($current_item_id);
          $item->delete();
+         redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
       }
-      redirect($environment->getCurrentContextID(), $environment->getCurrentModule(), 'index', '');
    }
 }
 
@@ -249,5 +253,9 @@ elseif ( isOption($delete_command, getMessage('ROOM_ARCHIV_BUTTON')) ) {
    } else {
       redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),'');
    }
+}
+// user reject
+elseif ( isOption($delete_command, getMessage('COMMON_USER_REJECT_BUTTON')) ) {
+   // do nothing, handling in page account_status
 }
 ?>

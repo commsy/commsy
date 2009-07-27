@@ -63,6 +63,8 @@ class cs_page_room_view extends cs_page_view {
 
    var $_delete_box_ids = NULL;
 
+   var $_delete_box_hidden_values = array();
+
    /**
     * array - containing the hyperlinks for the page
     */
@@ -1006,21 +1008,25 @@ class cs_page_room_view extends cs_page_view {
       $html  = '<div style="position: absolute; z-index:1000; top:95px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
       $html .= '<center>';
       $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
-      $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">';
+      $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">'.LF;
+
+      foreach ( $this->_delete_box_hidden_values as $key => $value ) {
+         $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
+      }
 
       if ($this->_delete_box_mode == 'index'){
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_TITLE');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $count = 0;
          if($this->_delete_box_ids){
             $count = count($this->_delete_box_ids);
          }
          if($count == 1){
             $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION_ONE_ENTRY',$count);
-            $html .= '</p>';
+            $html .= '</p>'.LF;
          }else{
             $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_INDEX_DESCRIPTION',$count);
-            $html .= '</p>';
+            $html .= '</p>'.LF;
          }
       } elseif ( $this->_environment->getCurrentFunction() == 'preferences'
                  or
@@ -1029,47 +1035,53 @@ class cs_page_room_view extends cs_page_view {
                  )
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
-         $html .= '</p>';
+         $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'material'
                    and $this->_environment->getCurrentFunction() == 'detail'
                    and (isset ($_GET['del_version']) and !empty($_GET['del_version']))
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MATERIAL_VERSION');
-         $html .= '</p>';
+         $html .= '</p>'.LF;
       }elseif ( $this->_environment->getCurrentModule() == 'configuration'
                    and $this->_environment->getCurrentFunction() == 'wiki'
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_WIKI_TITLE');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_WIKI');
-         $html .= '</p>';
+         $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'configuration'
                  and ( $this->_environment->getCurrentFunction() == 'room_options'
                        or $this->_environment->getCurrentFunction() == 'account_options'
                      )
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE_ROOM');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
-         $html .= '</p>';
+         $html .= '</p>'.LF;
+      } elseif ( $this->_environment->getCurrentModule() == 'account'
+               ) {
+         $html .= '<h2>'.$this->_translator->getMessage('USER_CLOSE_FORM');
+         $html .= '</h2>'.LF;
+         $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
+         $html .= '</p>'.LF;
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');
-         $html .= '</h2>';
+         $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION');
-         $html .= '</p>';
+         $html .= '</p>'.LF;
          if( $user_item->isModerator() ) {
             $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
-            $html .= '</p>';
+            $html .= '</p>'.LF;
          }
       }
-      $html .= '<div>';
-      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>';
-      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>';
+      $html .= '<div>'.LF;
+      $html .= '<input style="float:right;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_DELETE_BUTTON').'" tabindex="2"/>'.LF;
+      $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'" tabindex="2"/>'.LF;
       if ( ( $this->_environment->getCurrentModule() == 'configuration'
              and ( $this->_environment->getCurrentFunction() == 'preferences'
                    or $this->_environment->getCurrentFunction() == 'room_options'
@@ -1081,15 +1093,17 @@ class cs_page_room_view extends cs_page_view {
              and $this->_environment->getCurrentFunction() == 'detail'
            )
          ) {
-         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>';
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('ROOM_ARCHIV_BUTTON').'" tabindex="2"/>'.LF;
+      } elseif ( $this->_environment->getCurrentModule() == 'account' ) {
+         $html .= '<input style="float:left;" type="submit" name="delete_option" value="'.$this->_translator->getMessage('COMMON_USER_REJECT_BUTTON').'" tabindex="2"/>'.LF;
       }
-      $html .= '</div>';
-      $html .= '</form>';
-      $html .= '</div>';
-      $html .= '</center>';
-      $html .= '</div>';
-      $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
-      $html .= '</div>';
+      $html .= '</div>'.LF;
+      $html .= '</form>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</center>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="delete" style="position: absolute; z-index:900; top:95px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
+      $html .= '</div>'.LF;
       return $html;
    }
 
@@ -1098,6 +1112,10 @@ class cs_page_room_view extends cs_page_view {
       $this->_delete_box_action_url = $url;
       $this->_delete_box_mode = $mode;
       $this->_delete_box_ids = $selected_ids;
+   }
+
+   function addDeleteBoxHiddenValues ($array){
+      $this->_delete_box_hidden_values = $array;
    }
 
    function asHTML () {
