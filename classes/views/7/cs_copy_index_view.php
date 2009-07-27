@@ -209,9 +209,9 @@ class cs_copy_index_view extends cs_index_view {
       $user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
-      $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
+      $html .= '   <option value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
       $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-      $html .= '   <option value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;
+      $html .= '   <option selected="selected" value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;
       $html .= '   <option value="2">'.$this->_translator->getMessage('CLIPBOARD_DELETE_BUTTON').'</option>'.LF;
       $html .= '</select>'.LF;
       $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
@@ -220,7 +220,6 @@ class cs_copy_index_view extends cs_index_view {
 
       return $html;
    }
-
 
    function _getItemAsHTML($item,$pos=0,$with_links=TRUE) {
       $html = '';
