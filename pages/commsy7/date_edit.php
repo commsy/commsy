@@ -631,6 +631,7 @@ else {
                    }
                 }
                 unsetCalendarSessionArray();
+                /*
                 $history = $session->getValue('history');
                 $i = 1;
                 $j = $i+1;
@@ -641,11 +642,17 @@ else {
                    $j++;
                 }
                 if ($funct !='index'){
-                  $params['iid']= $current_iid;
-                    redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'detail',$params);
+                */
+                  $params['iid'] = $current_iid;
+                  if ( !is_numeric($current_iid) ) {
+                     $params['iid'] = $dates_item->getItemID();
+                  }
+                  redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'detail',$params);
+                /*
             }else{
                   redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index',$params);
             }
+            */
             }else{
                $params = array();
                $params['iid'] = $dates_item->getItemID();

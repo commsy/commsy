@@ -877,11 +877,6 @@ else {
                $dates_item->setPlace('');
             }
 
-
-
-
-
-
             // Set links to connected rubrics
             if ( isset($_POST[CS_MATERIAL_TYPE]) ) {
                $dates_item->setMaterialListByID($_POST[CS_MATERIAL_TYPE]);
@@ -987,43 +982,49 @@ else {
             if ( empty($noticed) or $noticed['read_date'] < $dates_item->getModificationDate() ) {
                $noticed_manager->markNoticed($dates_item->getItemID(),0);
             }
-               }
-                $params = array();
-                $params = getCalendarParameterArrayByItem($dates_item);
-                $params['seldisplay_mode'] = $seldisplay_mode;
-                if($params['presentation_mode'] == '1' and !empty($params['week'])){
-                   $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
-                   if ($converted_day_start['conforms'] == TRUE) {
-                      $year = mb_substr($converted_day_start['datetime'],0,4);
-                      $month = mb_substr($converted_day_start['datetime'],5,2);
-                      $day = mb_substr($converted_day_start['datetime'],8,2);
-                      $d_time = mktime ( 3, 0, 0, $month, $day, $year );
-                      $wday = date ( "w", $d_time );
-                      $parameter_week = mktime ( 3, 0, 0, $month, $day - ( $wday - 1 ), $year );
-                      $params['week'] = $parameter_week;
-                   }
-                }
-                unsetCalendarSessionArray();
-                $history = $session->getValue('history');
-                $i = 1;
-                $j = $i+1;
-                $funct = 'index';
-                while (isset($history[$j]['function']) and $history[$i]['function'] == 'edit'){
-                   $funct = $history[$j]['function'];
-                   $i++;
-                   $j++;
-                }
-                if ($funct !='index'){
-                  $params['iid']= $current_iid;
-                    redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'detail',$params);
-            }else{
-                  redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index',$params);
+         }
+         $params = array();
+         $params = getCalendarParameterArrayByItem($dates_item);
+         $params['seldisplay_mode'] = $seldisplay_mode;
+         if($params['presentation_mode'] == '1' and !empty($params['week'])){
+            $converted_day_start = convertDateFromInput($_POST['dayStart'],$environment->getSelectedLanguage());
+            if ($converted_day_start['conforms'] == TRUE) {
+               $year = mb_substr($converted_day_start['datetime'],0,4);
+               $month = mb_substr($converted_day_start['datetime'],5,2);
+               $day = mb_substr($converted_day_start['datetime'],8,2);
+               $d_time = mktime ( 3, 0, 0, $month, $day, $year );
+               $wday = date ( "w", $d_time );
+               $parameter_week = mktime ( 3, 0, 0, $month, $day - ( $wday - 1 ), $year );
+               $params['week'] = $parameter_week;
             }
-            }else{
-               $params = array();
+         }
+         unsetCalendarSessionArray();
+         /*
+         $history = $session->getValue('history');
+         $i = 1;
+         $j = $i+1;
+         $funct = 'index';
+         while (isset($history[$j]['function']) and $history[$i]['function'] == 'edit'){
+            $funct = $history[$j]['function'];
+            $i++;
+            $j++;
+         }
+         if ($funct !='index'){
+         */
+            if ( !is_numeric($current_iid) ) {
                $params['iid'] = $dates_item->getItemID();
-               redirect($environment->getCurrentContextID(),
-                     CS_DATE_TYPE, 'detail', $params);
+            }
+            $params['iid']= $current_iid;
+            redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'detail',$params);
+         /*
+         }else{
+            redirect($environment->getCurrentContextID(),CS_DATE_TYPE, 'index',$params);
+         }
+         */
+      } else {
+         $params = array();
+         $params['iid'] = $dates_item->getItemID();
+         redirect($environment->getCurrentContextID(), CS_DATE_TYPE, 'detail', $params);
             }
          }
       }
