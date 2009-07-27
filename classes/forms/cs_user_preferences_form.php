@@ -78,7 +78,7 @@ class cs_user_preferences_form extends cs_rubric_form {
          $i=0;
          $this->_language_options = array();
          $this->_language_options[$i]['value'] = 'browser';
-         $this->_language_options[$i]['text'] = getMessage('USER_BROWSER_LANGUAGE');
+         $this->_language_options[$i]['text'] = $this->_translator->getMessage('USER_BROWSER_LANGUAGE');
          $i++;
          $this->_language_options[$i]['value'] = 'disabled';
          $this->_language_options[$i]['text'] = '------------------';
@@ -94,18 +94,18 @@ class cs_user_preferences_form extends cs_rubric_form {
 
       // visible options
       $this->_options = array();
-//      $this->_options[0]['text'] = getMessage('VISIBLE_NEVER');
+//      $this->_options[0]['text'] = $this->_translator->getMessage('VISIBLE_NEVER');
 //      $this->_options[0]['value'] = '1';
-      $this->_options[0]['text'] = getMessage('VISIBLE_ONLY_LOGGED');
+      $this->_options[0]['text'] = $this->_translator->getMessage('VISIBLE_ONLY_LOGGED');
       $this->_options[0]['value'] = '1';
-      $this->_options[1]['text'] = getMessage('VISIBLE_ALWAYS');
+      $this->_options[1]['text'] = $this->_translator->getMessage('VISIBLE_ALWAYS');
       $this->_options[1]['value'] = '2';
 
       // choice options
       $this->_choice_options = array();
-      $this->_choice_options[0]['text'] = getMessage('COMMON_YES');
+      $this->_choice_options[0]['text'] = $this->_translator->getMessage('COMMON_YES');
       $this->_choice_options[0]['value'] = 'yes';
-      $this->_choice_options[1]['text'] = getMessage('COMMON_NO');
+      $this->_choice_options[1]['text'] = $this->_translator->getMessage('COMMON_NO');
       $this->_choice_options[1]['value'] = 'no';
    }
 
@@ -113,8 +113,9 @@ class cs_user_preferences_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
+      $disable_save_button = true;
 
-      $this->_form->addHeadline('headline',getMessage('USER_EDIT_PREFERENCES'));
+      $this->_form->addHeadline('headline',$this->_translator->getMessage('USER_EDIT_PREFERENCES'));
       $this->_form->addHidden('iid','');
 
       $context = $this->_environment->getCurrentContextItem();
@@ -122,33 +123,35 @@ class cs_user_preferences_form extends cs_rubric_form {
          $this->_form->addSelect('language',
                                  $this->_language_options,
                                  '',
-                                 getMessage('USER_LANGUAGE'),
-                                 getMessage('USER_LANGUAGE_DESC'),
+                                 $this->_translator->getMessage('USER_LANGUAGE'),
+                                 $this->_translator->getMessage('USER_LANGUAGE_DESC'),
                                  '',
                                  '',
                                  true
                                 );
+         $disable_save_button = false;
       }
 
       if ( $this->_environment->inCommunityRoom() ) {
          $current_context = $this->_environment->getCurrentContextItem();
          if ( $current_context->isOpenForGuests() ) {
             $this->_form->addRadioGroup('commsy_visible',
-                                        getMessage('VISIBLE_PROPERTY'),
-                                        getMessage('VISIBLE_PROPERTY_DESC'),
+                                        $this->_translator->getMessage('VISIBLE_PROPERTY'),
+                                        $this->_translator->getMessage('VISIBLE_PROPERTY_DESC'),
                                         $this->_options,
                                         '',
                                         true,
                                         false
                                        );
+            $disable_save_button = false;
          }
          $current_user = $this->_environment->getCurrentUserItem();
          if ( $this->_user->isModerator() ) {
             $context = $this->_environment->getCurrentContextItem();
             $this->_form->addRadioGroup('want_mail_get_account',
-                                        getMessage('USER_MAIL_GET_ACCOUNT'),
-                                        getMessage('USER_MAIL_GET_ACCOUNT_DESC',
-                                        getMessage('MAIL_AT_CAMPUS'),
+                                        $this->_translator->getMessage('USER_MAIL_GET_ACCOUNT'),
+                                        $this->_translator->getMessage('USER_MAIL_GET_ACCOUNT_DESC',
+                                        $this->_translator->getMessage('MAIL_AT_CAMPUS'),
                                         $context->getTitle()),
                                         $this->_choice_options,
                                         '',
@@ -157,57 +160,67 @@ class cs_user_preferences_form extends cs_rubric_form {
                                        );
             if ($context->isOpenForGuests()) {
                $this->_form->addRadioGroup('want_mail_publish_material',
-                                           getMessage('USER_MAIL_PUBLISH_MATERIAL'),
-                                           getMessage('USER_MAIL_PUBLISH_MATERIAL_DESC'),
+                                           $this->_translator->getMessage('USER_MAIL_PUBLISH_MATERIAL'),
+                                           $this->_translator->getMessage('USER_MAIL_PUBLISH_MATERIAL_DESC'),
                                            $this->_choice_options,
                                            '',
                                            true,
                                            true
                                           );
+               $disable_save_button = false;
             }
          }
       } elseif ( !$context->isPrivateRoom() ) {
-         $current_user = $this->_environment->getCurrentUserItem();
          if ( $this->_user->isModerator() ) {
             $context = $this->_environment->getCurrentContextItem();
             $this->_form->addRadioGroup('want_mail_get_account',
-                                        getMessage('USER_MAIL_GET_ACCOUNT'),
-                                        getMessage('USER_MAIL_GET_ACCOUNT_DESC',
-                                        getMessage('MAIL_AT_CAMPUS'),
+                                        $this->_translator->getMessage('USER_MAIL_GET_ACCOUNT'),
+                                        $this->_translator->getMessage('USER_MAIL_GET_ACCOUNT_DESC',
+                                        $this->_translator->getMessage('MAIL_AT_CAMPUS'),
                                         $context->getTitle()),
                                         $this->_choice_options,
                                         '',
                                         true,
                                         true
                                        );
+            $disable_save_button = false;
          }
       }
 
-      if ( !$context->isPrivateRoom() ) {
+      if ( !$context->isPrivateRoom()
+           and $this->_user->isModerator()
+         ) {
          $this->_form->addRadioGroup('want_mail_open_room',
-                                     getMessage('USER_MAIL_ROOM'),
+                                     $this->_translator->getMessage('USER_MAIL_ROOM'),
                                      '',
                                      $this->_choice_options,
                                      '',
                                      true,
                                      true
                                     );
+         $disable_save_button = false;
       }
 
       if ( $context->isPrivateRoom() ) {
          $this->_form->addRadioGroup('autosave_status',
-                                     getMessage('CONFIGURATION_AUTOSAVE_STATUS'),
+                                     $this->_translator->getMessage('CONFIGURATION_AUTOSAVE_STATUS'),
                                      '',
                                      $this->_choice_options,
                                      '',
                                      true,
                                      true
                                     );
+         $disable_save_button = false;
       }
 
       $this->_form->addButtonBar('option',
-                                 getMessage('COMMON_CHANGE_BUTTON'),
-                                 getMessage('COMMON_CANCEL_BUTTON')
+                                 $this->_translator->getMessage('COMMON_CHANGE_BUTTON'),
+                                 $this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 $disable_save_button
                                 );
    }
 

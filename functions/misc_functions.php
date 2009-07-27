@@ -530,9 +530,18 @@ function redirect_with_history_save ($context_id, $module, $function, $parameter
  * @param   $value
  */
 function pr ($value) {
+   if ( is_object($value)
+        and !empty($value->_environment)
+      ) {
+      $env = $value->_environment;
+      unset($value->_environment);
+   }
    echo('<pre>');
    print_r($value);
    echo('</pre>'.LF.LF);
+   if ( !empty($env) ) {
+      $value->_environment = $env;
+   }
 }
 
 /** print xml_value in mode print_r
@@ -805,7 +814,7 @@ function isURLValid () {
 
          // upload file for external tools
          $funct != 'upload' and
-         
+
          // automtic generated accounts
          $funct != 'autoaccounts'
        ) {

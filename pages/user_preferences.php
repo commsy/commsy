@@ -65,8 +65,11 @@ if ($command != 'error') { // only if user is allowed to edit user
    unset($class_params);
 
    if (empty($command)) {
-      $user_manager = $environment->getUserManager();
-      $user = $user_manager->getItem($iid);
+      if ( !empty($user) ) {
+         $user_manager = $environment->getUserManager();
+         $user = $user_manager->getItem($iid);
+         unset($user_manager);
+      }
       $form->setItem($user);
       $form->prepareForm();
       $form->loadValues();
