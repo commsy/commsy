@@ -141,19 +141,13 @@ if ( isset($_GET['interval']) ) {
 } else{
    $interval = $context_item->getListLength();
 }
-// @segment-end 34656
 
-// @segment-begin 56414 read:sort-parameter-from-GET
-// Find current sort key
 if ( isset($_GET['sort']) ) {
    $sort = $_GET['sort'];
 }  else {
    $sort = 'modified';
 }
-// @segment-end 56414
 
-// @segment-begin 34622 read:'search'/'selgroup'="searchtext"/"selected_group"-from-GET
-// Search / Select Area
 if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
    $search = '';
    $selinstitution = '';
@@ -400,15 +394,15 @@ $announcement_manager->setContextLimit($environment->getCurrentContextID());
 $all_ids = $announcement_manager->getIds();
 $count_all = count($all_ids);
 if (isset($all_ids[0])){
-	$newest_id = $all_ids[0];
-	$item = $announcement_manager->getItem($newest_id);
-	$date = $item->getModificationDate();
-	$now = getCurrentDateTimeInMySQL();
-	if ($date <= $now){
-	   $sel_activating_status = 1;
-	}
+   $newest_id = $all_ids[0];
+   $item = $announcement_manager->getItem($newest_id);
+   $date = $item->getModificationDate();
+   $now = getCurrentDateTimeInMySQL();
+   if ($date <= $now){
+      $sel_activating_status = 1;
+   }
 }elseif($count_all == 0){
-	$sel_activating_status = 1;
+   $sel_activating_status = 1;
 }
 $announcement_manager->resetData();
 if ( !empty($ref_iid) and $mode == 'attached' ){

@@ -207,7 +207,7 @@ class cs_ftsearch_manager extends cs_manager {
 //
 //               // append iid
 //               $ft_fids[] = $ft_fid;
-               
+
                // *** split string
                // get file rank
                $f_rank = mb_substr($r_entry, 0, mb_strpos($r_entry, " "));
@@ -231,6 +231,13 @@ class cs_ftsearch_manager extends cs_manager {
          }
          // set file item ids for cs_file_item (file icon with border)
          $this->_ft_file_ids = $ft_fids;
+
+         $session = $this->_environment->getSessionItem();
+         if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')) {
+            $search_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
+            $search_array['file_id_array'] = $this->getFileIDs();
+            $session->setValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array',$search_array);
+         }
 
          return $ft_fids;
       }

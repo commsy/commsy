@@ -331,17 +331,29 @@ class cs_file_item extends cs_item {
          $img .= $this->_icon['unknown'];
       }
 
-      $ftsearch_manager = $this->_environment->getFTSearchManager();
+      $ft_file_ids = array();
+
       // are we in search status? - set by cs_manager -> initFTSearch()
+      $ftsearch_manager = $this->_environment->getFTSearchManager();
       if ($ftsearch_manager->getSearchStatus()) {
          // get fids from cs_ftsearch_manager
          $ft_file_ids = $ftsearch_manager->getFileIDs();
-         if ( !empty($ft_file_ids) and in_array($this->getFileID(),$ft_file_ids) ) {
-            $img = str_replace('.','_found.',$img);
-         }
-         unset($ft_file_ids);
       }
       unset($ftsearch_manager);
+
+      // are we in search status? - set by session
+      $session = $this->_environment->getSessionItem();
+      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array')) {
+         $search_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_campus_search_parameter_array');
+         if ( !empty($search_array['file_id_array']) ) {
+            $ft_file_ids = $search_array['file_id_array'];
+         }
+      }
+
+      if ( !empty($ft_file_ids) and in_array($this->getFileID(),$ft_file_ids) ) {
+         $img = str_replace('.','_found.',$img);
+      }
+      unset($ft_file_ids);
       $img .= '" style="border:0;" align="baseline"';
 
       if (!empty($title_of_image)) {
