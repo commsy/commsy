@@ -140,5 +140,38 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          $this->_form->setFailure('autoaccount_email_text','');
       }
    }
+   
+   function show_account_array($account_array){
+      $this->_form->reset();
+      $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER') . ':');
+      foreach($account_array as $account){
+         $account_string = '';
+         $account_string .= $account['lastname'] . ', ';
+         $account_string .= $account['firstname'] . '<br/>';
+         $account_string .= '&nbsp;&nbsp;&nbsp;' . ' ';
+         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_EMAIL') . '</b>: ';
+         $account_string .= $account['email'] . '<br/>';
+         $account_string .= '&nbsp;&nbsp;&nbsp;&nbsp;';
+         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
+         if(!$account['found_account_by_email']){
+            if($account['account_changed']){
+               $account_string .= $account['account'];
+               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS'). ': <i>' . $account['account_csv'] . '</i>' . ')';
+            } else {
+               $account_string .= $account['account'];
+            }
+            $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+            $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD') . '</b>: ';
+            $account_string .= $account['password'];
+            if($account['password_generated']){
+               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD_GENERATED') . ')';
+            }
+         } else {
+            $account_string .= '<b>' . $account['account'] . '</b> ';
+            $account_string .= '(' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
+         }
+         $this->_form->addText(null, null, $account_string);
+      }
+   }
 }
 ?>

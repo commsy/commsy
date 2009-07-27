@@ -172,12 +172,21 @@ $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_COMMSY"]["de"] = "Standar
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_DESCRIPTION"]["de"] = "E-Mail verschicken";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_FORM"]["de"] = "E-Mail in diesem Formular verfassen";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_NO_EMAIL"]["de"] = "Keine E-Mail verschicken";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS"]["de"] = "E-Mail-Adresse wird schon verwendet";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT"]["de"] = "Kennung";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS"]["de"] = "Angegebene Kennung schon vorhanden";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_EMAIL"]["de"] = "E-Mail";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER"]["de"] = "Diese Kennungen wurden angelegt";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD"]["de"] = "Passwort";
+$message["COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD_GENERATED"]["de"] = "Nicht angegeben, daher automatisch generiert";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOADFILE"]["de"] = "csv-Datei";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON"]["de"] = "Datei hochladen";
 $message["COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES"]["de"] = "Vorlagen für die csv-Datei:<br/>
 <a href=&quot;templates/CommSyAutomatischeKennungenVorlage.csv&quot;>Textdatei (.csv)</a>
 <a href=&quot;templates/CommSyAutomatischeKennungenVorlage.ods&quot;>OpenOffice (.ods)</a>
-<a href=&quot;templates/CommSyAutomatischeKennungenVorlage.xls&quot;>Excel (.xls)</a>";
+<a href=&quot;templates/CommSyAutomatischeKennungenVorlage.xls&quot;>Excel (.xls)</a>
+
+Achtung: Aus den OpenOffice- und Excel-Dateien müssen nach Eingabe der Daten erst csv-Dateien exportiert werden! Feldtrenner:<b>,</b> Texttrenner:<b>&quot;</b>";
 $message["COMMON_CONFIGURATION_BACKUP_FORM_TITLE"]["de"] = "Backup eines Raumes einspielen";
 $message["COMMON_CONFIGURATION_CHAT_FORM_TITLE"]["de"] = "Raum-Chat einstellen";
 $message["COMMON_CONFIGURATION_COLOR_FORM_TITLE"]["de"] = "Farbkonfiguration";

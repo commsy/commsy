@@ -88,8 +88,10 @@ else {
             isOption($command, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON')) ) {
             $correct = $form->check();
             if($correct){
-               auto_create_accounts($date_array);
-               redirect($environment->getCurrentContextID(),'account', 'index','');
+               $account_array = auto_create_accounts($date_array);
+               //$params['show_list']= true;
+               //redirect($environment->getCurrentContextID(),'configuration','autoaccounts',$params);
+               $form->show_account_array($account_array);
             }
          }
          // display form
@@ -104,6 +106,8 @@ else {
          $page->addForm($form_view);
    
       }
+   } elseif( isset($_GET['show_list']) ){
+      pr('Ergebniss');
    }else{
       // function for page edit
       // - to check files for virus
@@ -218,7 +222,7 @@ else {
 
 function auto_create_accounts($date_array){
    global $environment;
-   $password_generated = false;
+   $account_array = array();
    foreach($date_array as $account){
       $temp_account_lastname = $account[$_POST['autoaccounts_lastname']];
       $temp_account_firstname = $account[$_POST['autoaccounts_firstname']];
@@ -226,10 +230,13 @@ function auto_create_accounts($date_array){
       $temp_account_account = $account[$_POST['autoaccounts_account']];
       $temp_account_account = get_free_account($temp_account_account);
       $temp_account_password = $account[$_POST['autoaccounts_password']];
-//      if($temp_account_password == ''){
-//         $temp_account_password = generate_password();
-//         $password_generated = true;
-//      }
+      $password_length = strlen($temp_account_password);
+      if($password_length == 0){
+         $temp_account_password = generate_password();
+         $password_generated = true;
+      } else {
+         $password_generated = false;
+      }
       $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
       $temp_account_rooms_array = explode(';', $temp_account_rooms);
 
@@ -289,11 +296,43 @@ function auto_create_accounts($date_array){
          $temp_user = $authentication->getUserItem();
          $temp_user->makeUser();
          $temp_user->save();
+         
+         $temp_account_array = array();
+         $temp_account_array['lastname'] = $temp_account_lastname;
+         $temp_account_array['firstname'] = $temp_account_firstname;
+         $temp_account_array['email'] = $temp_account_email;
+         $temp_account_array['account'] = $temp_account_account;
+         if($temp_account_account != $account[$_POST['autoaccounts_account']]){
+            $temp_account_array['account_changed'] = true;
+            $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+         } else {
+            $temp_account_array['account_changed'] = false;      
+         }
+         $temp_account_array['password'] = $temp_account_password;
+         if($password_generated){
+            $temp_account_array['password_generated'] = true;
+         } else {
+            $temp_account_array['password_generated'] = false;      
+         }
+         $temp_account_array['found_account_by_email'] = false;
+         
          add_user_to_rooms($temp_user, $temp_account_rooms_array, $password_generated, $temp_account_password);
       } else {
+         $temp_account_array = array();
+         $temp_account_array['lastname'] = $most_recent_account->getFirstname();
+         $temp_account_array['firstname'] = $most_recent_account->getLastname();
+         $temp_account_array['email'] = $most_recent_account->getEmail();
+         $temp_account_array['account'] = $most_recent_account->getUserID();
+         $temp_account_array['account_changed'] = false;      
+         $temp_account_array['password'] = '';
+         $temp_account_array['password_generated'] = false;      
+         $temp_account_array['found_account_by_email'] = true;
+         
          add_user_to_rooms($most_recent_account, $temp_account_rooms_array);
       }
+      $account_array[] = $temp_account_array;
    }
+   return $account_array;
 }
 
 function get_free_account($temp_account_account, $index = 0){
@@ -487,10 +526,10 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    $body .= LF.LF;
    $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
    $body .= LF.LF;
-//   if($password_generated){
-//      $body .= $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED',$temp_account_password);
-//      $body .= LF.LF;
-//   }
+   if($password_generated){
+      $body .= $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED',$temp_account_password);
+      $body .= LF.LF;
+   }
    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
    $body .= LF.LF;
    $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
