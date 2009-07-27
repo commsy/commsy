@@ -329,7 +329,20 @@ class cs_user_detail_view extends cs_detail_view {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
             $homepage = $this->_text_as_html_short($this->_compareWithSearchText($homepage_short));
          }else{
-            //$homepage = '<a href="'.rawurlencode($homepage).'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($homepage_short).'</a>';
+            if ( strstr($homepage,'?') ) {
+               $homepage_array = explode('?',$homepage);
+               $homepage = $homepage_array[0].'?';
+               if ( strstr($homepage_array[1],'&') ) {
+                  $param_array = explode('&',$homepage_array[1]);
+                  foreach ($param_array as $key => $value) {
+                     $value = str_replace('=','EQUAL',$value);
+                     $value = rawurlencode($value);
+                     $value = str_replace('EQUAL','=',$value);
+                     $param_array[$key] = $value;
+                  }
+                  $homepage .= implode('&',$param_array);
+               }
+            }
             $homepage = '<a href="'.$homepage.'" title="'.str_replace('"','&quot;',$homepage_text).'" target="_blank">'.$this->_text_as_html_short($this->_compareWithSearchText($homepage_short)).'</a>';
          }
          $temp_array = array();
