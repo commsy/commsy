@@ -1861,13 +1861,14 @@ function updateWiki($portal, $room){
    global $c_commsy_path_file;
    global $c_pmwiki_path_file;
    // Backup der Inhalte
+   $backup_time = time();
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file);
    $directory_handle = @opendir('wikis/' . $portal->getItemID());
    if ($directory_handle) {
       chdir('wikis/' . $portal->getItemID());
       if(file_exists($room->getItemID())){
-         $this->recurse_copy_dir($room->getItemID(), $room->getItemID() . '.backup');
+         $this->recurse_copy_dir($room->getItemID(), $room->getItemID() . '.backup_' . $backup_time);
          // Altes Wiki-Verzeichnis loeschen
          // nicht über deleteWiki() damit die Einstellungen erhalten bleiben
          $this->deleteDirectory($room->getItemID());
@@ -1878,20 +1879,20 @@ function updateWiki($portal, $room){
    $this->createWiki($room);
    // Inhalte kopieren
    chdir($c_pmwiki_path_file);
-   $directory_handle_wikid = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/wiki.d');
+   $directory_handle_wikid = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/wiki.d');
    if ($directory_handle_wikid) {
-      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/wiki.d', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/wiki.d');
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/wiki.d', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/wiki.d');
    }
-   $directory_handle_pub = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/pub');
+   $directory_handle_pub = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/pub');
    if ($directory_handle_pub) {
-      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/pub', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/pub');
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/pub', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/pub');
    }
-   $directory_handle_uploads = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/uploads');
+   $directory_handle_uploads = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/uploads');
    if ($directory_handle_uploads) {
-      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup/uploads', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/uploads');
+      $this->recurse_copy_dir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time . '/uploads', 'wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/uploads');
    }
    // Backup loeschen
-   $this->deleteDirectory('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup');
+   //$this->deleteDirectory('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '.backup_' . $backup_time);
    chdir($old_dir);
 }
 
