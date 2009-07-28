@@ -39,6 +39,13 @@ class cs_configuration_extra_form extends cs_rubric_form {
    */
    var $_array_extra = NULL;
 
+  /**
+   * array - containing the portals to choose
+   */
+   var $_array_portal = NULL;
+
+   var $_show_checkboxes = false;
+
   /** constructor
     * the only available constructor
     *
@@ -54,39 +61,59 @@ class cs_configuration_extra_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->_headline = getMessage('CONFIGURATION_EXTRA_FORM_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_EXTRA_FORM_HEADLINE');
+
+      // portal option choice
+      $this->_array_portal[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL');
+      $this->_array_portal[0]['value'] = -1;
+
+      $server_item = $this->_environment->getServerItem();
+      $portal_list = $server_item->getPortalList();
+      if ( $portal_list->isNotEmpty() ) {
+         $this->_array_portal[1]['text']  = '----------------------';
+         $this->_array_portal[1]['value'] = 'disabled';
+         $portal_item = $portal_list->getFirst();
+         while ( $portal_item ) {
+            $temp_array = array();
+            $temp_array['text']  = $portal_item->getTitle();
+            $temp_array['value'] = $portal_item->getItemID();
+            $this->_array_portal[] = $temp_array;
+
+            $portal_item = $portal_list->getNext();
+         }
+      }
 
       // extra option choice
-      $this->_array_extra[0]['text']  = '*'.getMessage('CONFIGURATION_EXTRA_CHOOSE_TEXT');
+      $this->_array_extra[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_EXTRA_CHOOSE_TEXT');
       $this->_array_extra[0]['value'] = -1;
 
       // extra options
       $this->_array_extra[1]['text']  = '----------------------';
       $this->_array_extra[1]['value'] = 'disabled';
-      $this->_array_extra[5]['text']  = getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
+      $this->_array_extra[5]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_MATERIALIMPORT');
       $this->_array_extra[5]['value'] = 'CONFIGURATION_EXTRA_MATERIALIMPORT';
-      $this->_array_extra[6]['text']  = getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT');
+      $this->_array_extra[6]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_ACTIVATING_CONTENT');
       $this->_array_extra[6]['value'] = 'CONFIGURATION_EXTRA_ACTIVATING_CONTENT';
-      $this->_array_extra[7]['text']  = getMessage('CONFIGURATION_EXTRA_GROUPROOM');
+      $this->_array_extra[7]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_GROUPROOM');
       $this->_array_extra[7]['value'] = 'CONFIGURATION_EXTRA_GROUPROOM';
-      $this->_array_extra[8]['text']  = getMessage('CONFIGURATION_EXTRA_LOGARCHIVE');
+      $this->_array_extra[8]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_LOGARCHIVE');
       $this->_array_extra[8]['value'] = 'CONFIGURATION_EXTRA_LOGARCHIVE';
       $this->_array_extra[20]['text']  = '----------------------';
       $this->_array_extra[20]['value'] = 'disabled';
 
       global $c_etchat_enable;
       if ( isset($c_etchat_enable) and  $c_etchat_enable ) {
-         $this->_array_extra[21]['text']  = getMessage('CHAT_CONFIGURATION_EXTRA_CHAT');
+         $this->_array_extra[21]['text']  = $this->_translator->getMessage('CHAT_CONFIGURATION_EXTRA_CHAT');
          $this->_array_extra[21]['value'] = 'CHAT_CONFIGURATION_EXTRA_CHAT';
       }
 
-      $this->_array_extra[22]['text']  = getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE');
+      $this->_array_extra[22]['text']  = $this->_translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE');
       $this->_array_extra[22]['value'] = 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE';
       #$this->_array_extra[23]['text']  = getMessage('CONFIGURATION_EXTRA_PDA');
       #$this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_PDA';
       global $c_pmwiki;
       if ( isset($c_pmwiki) and  $c_pmwiki ) {
-         $this->_array_extra[23]['text']  = getMessage('CONFIGURATION_EXTRA_WIKI');
+         $this->_array_extra[23]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_WIKI');
          $this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_WIKI';
       }
 
@@ -103,6 +130,13 @@ class cs_configuration_extra_form extends cs_rubric_form {
                }
             }
          }
+      }
+
+      // show checkboxes
+      if ( !empty($this->_form_post['portal'])
+           and $this->_form_post['portal'] > 99
+         ) {
+         $this->_show_checkboxes = $this->_form_post['portal'];
       }
    }
 
@@ -129,43 +163,58 @@ class cs_configuration_extra_form extends cs_rubric_form {
                                '',
                                true,
                                $translator->getMessage('COMMON_CHOOSE_BUTTON'),
-                               'option');
+                               'option',
+                               '',
+                               '',
+                               '',
+                               true);
+
+      $this->_form->addSelect( 'portal',
+                               $this->_array_portal,
+                               '',
+                               $translator->getMessage('COMMON_PORTAL'),
+                               '',
+                               '',
+                               '',
+                               '',
+                               true,
+                               $translator->getMessage('COMMON_CHOOSE_BUTTON'),
+                               'option',
+                               '',
+                               '',
+                               '',
+                               true);
 
       // description text
       $this->_form->addText('description',$translator->getMessage('COMMON_DESCRIPTION'),'');
       $this->_form->addHidden('description_hidden','');
 
       // generate checkboxes for rooms
-      $server_item = $this->_environment->getServerItem();
-      $portal_list = $server_item->getPortalList();
-      unset($server_item);
-      if ( !$portal_list->isEmpty() ) {
-         $portal = $portal_list->getFirst();
-         while ($portal) {
-            $this->_form->addSubHeadline('headline',$portal->getTitle());
-            $this->_form->addCheckbox('ROOM_'.$portal->getItemID(),$portal->getItemID(),'','',$portal->getTitle().' ('.$translator->getMessage('ROOM_TYPE_PORTAL').')','','',$disabled);
-            $room_list = $portal->getRoomList();
-            if ( !$portal_list->isEmpty() ) {
-               $room = $room_list->getFirst();
-               while ($room) {
-                  $type = '';
-                  if ( $room->isProjectRoom() ) {
-                     $type = ' ('.$translator->getMessage('ROOM_TYPE_PROJECT').')';
-                  } elseif ( $room->isCommunityRoom() ) {
-                     $type = ' ('.$translator->getMessage('ROOM_TYPE_COMMUNITY').')';
-                  }
-                  $this->_form->combine();
-                  $this->_form->addCheckbox('ROOM_'.$room->getItemID(),$room->getItemID(),'','',$room->getTitle().$type,'','',$disabled);
-                  unset($type);
-                  unset($room);
-                  $room = $room_list->getNext();
+      if ( $this->_show_checkboxes ) {
+         $portal_manager = $this->_environment->getPortalManager();
+         $portal = $portal_manager->getItem($this->_show_checkboxes);
+         unset($portal_manager);
+         $this->_form->addSubHeadline('headline',$portal->getTitle());
+         $this->_form->addCheckbox('ROOM_'.$portal->getItemID(),$portal->getItemID(),'','',$portal->getTitle().' ('.$translator->getMessage('ROOM_TYPE_PORTAL').')','','',$disabled);
+         $room_list = $portal->getRoomList();
+         if ( !$room_list->isEmpty() ) {
+            $room = $room_list->getFirst();
+            while ($room) {
+               $type = '';
+               if ( $room->isProjectRoom() ) {
+                  $type = ' ('.$translator->getMessage('ROOM_TYPE_PROJECT').')';
+               } elseif ( $room->isCommunityRoom() ) {
+                  $type = ' ('.$translator->getMessage('ROOM_TYPE_COMMUNITY').')';
                }
-               unset($room_list);
+               $this->_form->combine();
+               $this->_form->addCheckbox('ROOM_'.$room->getItemID(),$room->getItemID(),'','',$room->getTitle().$type,'','',$disabled);
+               unset($type);
+               unset($room);
+               $room = $room_list->getNext();
             }
-            unset($portal);
-            $portal = $portal_list->getNext();
+            unset($room_list);
          }
-         unset($portal_list);
+         unset($portal);
       }
 
       // buttons
@@ -196,15 +245,15 @@ class cs_configuration_extra_form extends cs_rubric_form {
    function _checkValues () {
       // check choosen mail text
       if (mb_strlen($this->_form_post['extra']) == 2 and $this->_form_post['extra'] != -1) {
-         $this->_error_array[] = getMessage('CONFIGURATION_EXTRA_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_EXTRA_CHOICE_ERROR');
          $this->_form->setFailure('extra','');
       }
       if ( mb_strlen($this->_form_post['extra']) == 2 and
            $this->_form_post['extra'] == -1 and
            isset($this->_form_post['option']) and
-           isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))
+           isOption($this->_form_post['option'], $this->_translator->getMessage('COMMON_SAVE_BUTTON'))
          ) {
-         $this->_error_array[] = getMessage('CONFIGURATION_EXTRA_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_EXTRA_CHOICE_ERROR');
          $this->_form->setFailure('extra','');
       }
    }

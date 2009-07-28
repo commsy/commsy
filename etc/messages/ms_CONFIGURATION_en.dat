@@ -76,6 +76,7 @@ $message["CONFIGURATION_DISCUSSION_DESC_3"]["en"] = "Mixed: both flat and thread
 $message["CONFIGURATION_DISCUSSION_WARNING"]["en"] = "<font color=&quot;#b9b4aa&quot;>Activating mixed styles in a &quot;fresh&quot; workspace is not recommended, because handling two discussion styles in one workspace might give your users unnecessary hassle. Use this option when you have a workspace running with existing discussions and want to enable the other discussion style. In this second case, only option &quot;mixed&quot; will keep all your discussions visible.</font>";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["en"] = "Activate entries";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["en"] = "Hide entries by giving an activating date.";
+$message["CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL"]["en"] = "no portal";
 $message["CONFIGURATION_EXTRA_CHOOSE_TEXT"]["en"] = "no extra";
 $message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA"]["en"] = "Extra";
 $message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA_DESC"]["en"] = "Please choose an extra.";

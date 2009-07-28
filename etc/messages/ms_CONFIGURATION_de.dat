@@ -78,6 +78,7 @@ $message["CONFIGURATION_DISCUSSION_DESC_3"]["de"] = "Beide Darstellungen";
 $message["CONFIGURATION_DISCUSSION_WARNING"]["de"] = "Wählen Sie zwischen linearen (Option 1) und verzweigten Diskussionen (Option 2). Das Aktivieren beider Darstellungen wird nicht empfohlen, da es auf Grund der unterschiedlichen Handhabungen der beiden Diskussionsarten zu Irritation bei den Benutzern führen kann.";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT"]["de"] = "Einträge freischalten";
 $message["CONFIGURATION_EXTRA_ACTIVATING_CONTENT_DESC"]["de"] = "Durch Eingabe eines Datum können Einträge bis zu dem Zeitpunkt verborgen werden. Sie sind zwar in der Liste sichtbar, jedoch nicht zugreifbar.";
+$message["CONFIGURATION_EXTRA_CHOOSE_NO_PORTAL"]["de"] = "kein Portal";
 $message["CONFIGURATION_EXTRA_CHOOSE_TEXT"]["de"] = "kein Extra";
 $message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA"]["de"] = "Extra";
 $message["CONFIGURATION_EXTRA_FORM_CHOOSE_EXTRA_DESC"]["de"] = "Wählen Sie ein Extra aus.";

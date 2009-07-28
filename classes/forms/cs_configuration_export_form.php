@@ -56,7 +56,7 @@ class cs_configuration_export_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('name_hidden','');
       $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
-     $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('CONTEXT_EXPORT_DESC'));
+      $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('CONTEXT_EXPORT_DESC'));
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PORTAL_EXPORT_ROOM_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
@@ -68,19 +68,19 @@ class cs_configuration_export_form extends cs_rubric_form {
    function _prepareValues () {
       $this->_values = array();
       if (isset($this->_item)) {
-   $this->_values['iid'] = $this->_item->getItemID();
+         $this->_values['iid'] = $this->_item->getItemID();
          $title = $this->_item->getTitle();
          if ($title != 'PRIVATE_ROOM') {
-      $this->_values['name_hidden'] = $this->_item->getTitle();
-      $this->_values['name_title'] = $this->_item->getTitle();
+            $this->_values['name_hidden'] = $this->_item->getTitle();
+            $this->_values['name_title'] = $this->_item->getTitle();
          } else {
             $user_item = $this->_item->getOwnerUserItem();
-      $this->_values['name_hidden'] = $this->_translator->getMessage('PRIVATE_ROOM_TITLE').' '.$user_item->getFullname();
-      $this->_values['name_title'] = $this->_values['name_hidden'];
+            $this->_values['name_hidden'] = $this->_translator->getMessage('PRIVATE_ROOM_TITLE').' '.$user_item->getFullname();
+            $this->_values['name_title'] = $this->_values['name_hidden'];
          }
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post; // no encode here - encode in form-views
-   $this->_values['name_title'] = $this->_values['name_hidden'];
+         $this->_values['name_title'] = $this->_values['name_hidden'];
       }
    }
 }
