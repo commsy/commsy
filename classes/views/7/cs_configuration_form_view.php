@@ -779,6 +779,20 @@ class cs_configuration_form_view extends cs_form_view {
                                        '',
                                        $image,
                                        getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
+
+        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+           $image = '<img src="images/commsyicons_msie6/22x22/config/service.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_SERVICE_LINK').'"/>';
+        } else {
+           $image = '<img src="images/commsyicons/22x22/config/service.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_SERVICE_LINK').'"/>';
+        }
+        $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                       'configuration',
+                                       'service',
+                                       '',
+                                       $image,
+                                       $this->_translator->getMessage('CONFIGURATION_SERVICE_LINK')).LF;
+
+
         $html .= '         </td>'.LF;
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;

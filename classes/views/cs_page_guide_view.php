@@ -2018,7 +2018,6 @@ class cs_page_guide_view extends cs_page_view {
             if ( $current_context->showServiceLink()
                  and $current_user->isUser()
                ) {
-               $color = '#D5D5D5';
                $server_item = $this->_environment->getServerItem();
                $link = 'http://www.commsy.net/?n=Software.FAQ&amp;mod=edit';
                $email_to_service = '<form action="'.$link.'" method="post" name="service" style="margin-bottom: 0px;">'.LF;
@@ -2055,7 +2054,8 @@ class cs_page_guide_view extends cs_page_view {
                $email_to_service .= '<input type="hidden" name="user_name" value="'.$this->_text_as_html_short($current_user->getFullname()).'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="user_email" value="'.$this->_text_as_html_short($current_user->getEmail()).'"/>'.LF;
                $email_to_service .= '<input type="hidden" name="service_email" value="'.$this->_text_as_html_short($service_email).'"/>'.LF;
-               $email_to_service .= $this->_translator->getMessage('COMMON_MAIL_TO_SERVICE').' <input type="image" src="images/servicelink.jpg" alt="Link to CommSyService" style="vertical-align:text-bottom;" />'.LF;
+               #$email_to_service .= $this->_translator->getMessage('COMMON_MAIL_TO_SERVICE').' <input type="image" src="images/servicelink.jpg" alt="Link to CommSyService" style="vertical-align:text-bottom;" />'.LF;
+               $email_to_service .= '<a href="javascript:document.service.submit();" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
                $email_to_service .= '</form>'.LF;
                $html .= '<table style="margin:0px; padding:0px; border-collapse: collapse; border:0px solid black;" summary="Layout">'.LF;
                $html .= '  <tr>'.LF;

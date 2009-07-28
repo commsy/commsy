@@ -64,7 +64,7 @@ class cs_configuration_service_form extends cs_rubric_form {
    function _createForm () {
       // form fields
       $this->_form->addHidden('iid','');
-      $this->_form->addCheckbox('servicelink',1,'',$this->_translator->getMessage('SERVICELINK_PREFERENCES_SERVICELINK'),$this->_translator->getMessage('COMMON_SHOW'),'','','','onclick="cs_toggle()"');
+      $this->_form->addCheckbox('servicelink',1,'',$this->_translator->getMessage('SERVICELINK_PREFERENCES_SERVICELINK',$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2')),$this->_translator->getMessage('COMMON_SHOW'),'','','','onclick="cs_toggle()"');
 
       $tier = '';
       if (isset($this->_item) and !empty($this->_item)) {
@@ -172,24 +172,34 @@ class cs_configuration_service_form extends cs_rubric_form {
    }
 
    function getInfoForHeaderAsHTML () {
+      $form_name = 'edit';
+      $current_context_item = $this->_environment->getCurrentContextItem();
+      if ( $this->_environment->inPortal()
+           or $this->_environment->inServer()
+           or $current_context_item->isDesign6()
+         ) {
+         $form_name = 'f';
+      }
+      unset($current_context_item);
+
       $retour  = '';
       $retour .= '         function cs_toggle() {'.LF;
-      $retour .= '            if (document.f.servicelink.checked) {'.LF;
+      $retour .= '            if (document.'.$form_name.'.servicelink.checked) {'.LF;
       $retour .= '               cs_enable();'.LF;
       $retour .= '            } else {'.LF;
       $retour .= '               cs_disable();'.LF;
       $retour .= '            }'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_disable() {'.LF;
-      $retour .= '            document.f.servicelink.value = -1;'.LF;
-      $retour .= '            document.f.serviceemail.disabled = true;'.LF;
-      $retour .= '            document.f.moderatorlink.checked = true;'.LF;
-      $retour .= '            document.f.moderatorlink.disabled = true;'.LF;
-      $retour .= '            document.f.serviceemail.value = "";'.LF;
+      $retour .= '            document.'.$form_name.'.servicelink.value = -1;'.LF;
+      $retour .= '            document.'.$form_name.'.serviceemail.disabled = true;'.LF;
+      $retour .= '            document.'.$form_name.'.moderatorlink.checked = true;'.LF;
+      $retour .= '            document.'.$form_name.'.moderatorlink.disabled = true;'.LF;
+      $retour .= '            document.'.$form_name.'.serviceemail.value = "";'.LF;
       $retour .= '         }'.LF;
       $retour .= '         function cs_enable() {'.LF;
-      $retour .= '            document.f.serviceemail.disabled = false;'.LF;
-      $retour .= '            document.f.moderatorlink.disabled = false;'.LF;
+      $retour .= '            document.'.$form_name.'.serviceemail.disabled = false;'.LF;
+      $retour .= '            document.'.$form_name.'.moderatorlink.disabled = false;'.LF;
       $retour .= '         }'.LF;
 
    return $retour;

@@ -667,8 +667,7 @@ $message["HELP_CONFIGURATION_PREFERENCES"]["de"] = "<p>
    Die Beschreibung des Raumes wird für die Außendarstellung des Raumes auf dem Portal bzw. von Projekträumen auch in Gemeinschaftsräumen gebraucht. Sie können hier für jede von CommSy unterstützte Sprache ein Beschreibung eingeben. Sofern Sie nur eine Beschreibung in einer Sprache eingeben, wird diese auch präsentiert, wenn der Nutzende eigentlich eine andere Spache für sich eingestellt hat.
 </p>";
 $message["HELP_CONFIGURATION_RUBRIC"]["de"] = "Wählen Sie mit Hilfe der Selectboxen die Reihenfolge der zur Verfügung stehenden Rubriken. Mit &quot;-----&quot; können Sie Plätze leer lassen, so dass dadurch Rubriken ausgeschaltet werden können. Zwei- oder mehrfach können Sie keine Rubriken anschalten.";
-$message["HELP_CONFIGURATION_SERVICE"]["de"] = "Hiermit aktivieren Sie eine Link zum CommSyService, dem Dienstleister rund um CommSy. Der Link wird in Form eines kleinen Bildes unten rechts auf jeder Seite angezeigt. Der Link führt zu einem Formular, in das der Nutzende seine Anfrage eintippen kann. CommSy-BetreuerInnen werden dann über diese Anfrage informiert und können per E-Mail antworten.<br/><br/>
-Achtung: Dieser Service ist kostenpflichtig. Nähere Informationen finden Sie auf der Webseite des CommSy-Service: <a href=&quot;http://service.commsy.de/&quot;>http://service.commsy.de/</a>";
+$message["HELP_CONFIGURATION_SERVICE"]["de"] = "Hiermit aktivieren Sie eine Link für Supportanfragen. Der Link wird unten rechts auf jeder Seite angezeigt. Er führt zu einem Formular, in das der Nutzende seine Anfrage eintippen kann. Die Anfrage wird dann per E-Mail an die angegebene E-Mail-Adresse geschickt.";
 $message["HELP_CONFIGURATION_SPONSOR"]["de"] = "Hiermit können Sie Logos von Partnern (Sponsoren) auf den Seiten Ihres Raumes einblenden.
 <ul>
 <li>Der <span style=&quot;font-weight:bold;&quot;>Hauptsponsor</span> erscheint oben rechts. Es kann nur einen Hauptsponsor geben.</li>
