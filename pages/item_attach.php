@@ -94,6 +94,13 @@ $item_manager = $environment->getItemManager();
 $tmp_item = $item_manager->getItem($ref_iid);
 $manager = $environment->getManager($tmp_item->getItemType());
 $item = $manager->getItem($ref_iid);
+if ( $item->isA(CS_LABEL_TYPE)
+     and $item->getLabelType() == CS_GROUP_TYPE
+   ) {
+   $group_manager = $environment->getGroupManager();
+   $item = $group_manager->getItem($ref_iid);
+   unset($group_manager);
+}
 
 if ($environment->getCurrentModule() == CS_USER_TYPE){
    if ($environment->inCommunityRoom()){
@@ -248,6 +255,7 @@ if ( !empty($option)
     }
     $entry_array = array_merge($entry_array,$entry_new_array);
     $entry_array = array_unique($entry_array);
+
     $item->setLinkedItemsByIDArray($entry_array);
     $item->save();
     $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');

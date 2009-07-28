@@ -100,7 +100,7 @@ class cs_group_item extends cs_label_item {
          $retour = explode('§§', $retour);
       }
       return $retour;
-   }   
+   }
 
    public function getGroupRoomItem () {
       $retour = NULL;
@@ -275,7 +275,7 @@ class cs_group_item extends cs_label_item {
       ##########################
 
       unset($current_user_item);
-      
+
       if($this->_environment->getCurrentContextItem()->WikiEnableDiscussionNotificationGroups() == "1"){
          $this->updateWikiNotification();
       }
@@ -287,10 +287,99 @@ class cs_group_item extends cs_label_item {
    function saveOnlyItem () {
       $this->save(false);
    }
-   
+
    function updateWikiNotification(){
       $wiki_manager = $this->_environment->getWikiManager();
       $wiki_manager->updateNotification();
    }
+
+/* verlagern der anmeldung für einen gruppenraum
+ * in das group_item
+ * Angefangen: 28.07.2009
+ * Autor: Iver
+
+   public function addMember2 ($user) {
+      if ( !$this->isMember($user) ) {
+         #parent::addMember($user);
+         $this->addMember($user);
+
+         ##################################
+         # FLAG: group room
+         ##################################
+         if ( $this->isGroupRoomActivated() ) {
+            $grouproom_item = $this->getGroupRoomItem();
+            if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+               $group_room_user_item = $grouproom_item->getUserByUserID($user->getUserID(),$user->getAuthSource());
+               if ( !isset($group_room_user_item) ) {
+                  // clone user
+                  $group_room_user_item = $user->cloneData();
+                  $group_room_user_item->setContextID($grouproom_item->getItemID());
+                  $picture = $user->getPicture();
+                  if ( !empty($picture) ) {
+                     $value_array = explode('_',$picture);
+                     $value_array[0] = 'cid'.$group_room_user_item->getContextID();
+                     $new_picture_name = implode('_',$value_array);
+                     $disc_manager = $this->_environment->getDiscManager();
+                     $disc_manager->copyImageFromRoomToRoom($picture,$group_room_user_item->getContextID());
+                     $group_room_user_item->setPicture($new_picture_name);
+                  }
+
+                  $group_room_user_item->makeUser(); // free ???
+                  $group_room_user_item->save();
+                  $group_room_user_item->setCreatorID2ItemID();
+
+               } elseif ( !$group_room_user_item->isUser() ) {
+                  $group_room_user_item->makeUser(); // free ???
+                  $group_room_user_item->save();
+                  $group_room_user_item->setCreatorID2ItemID();
+               }
+               // mail to user and moderator
+            }
+         }
+         ##################################
+         # FLAG: group room
+         ##################################
+      }
+   }
+
+   public function addMember2ByItemID ($iid) {
+      if ( !empty($iid)
+           and is_numeric($iid)
+         ) {
+         $user_manager = $this->_environment->getUserManager();
+         $user_item = $user_manager->getItem($iid);
+         unset($user_manager);
+         $this->addMember2($user_item);
+      }
+   }
+
+   public function removeMember2 ($user) {
+      if ( $this->isMember($user) ) {
+         #parent::removeMember($user);
+         $this->removeMember($user);
+
+         ##################################
+         # FLAG: group room
+         ##################################
+         if ( $this->isGroupRoomActivated() ) {
+            $grouproom_item = $this->getGroupRoomItem();
+            if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+               $group_room_user_item = $grouproom_item->getUserByUserID($user->getUserID(),$user->getAuthSource());
+               if ( isset($group_room_user_item)
+                    and !$group_room_user_item->isRejected()
+                  ) {
+                  $group_room_user_item->reject();
+                  $group_room_user_item->save();
+
+                  // mail to user and moderators
+               }
+            }
+         }
+         ##################################
+         # FLAG: group room
+         ##################################
+      }
+   }
+ */
 }
 ?>

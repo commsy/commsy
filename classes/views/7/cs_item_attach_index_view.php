@@ -105,18 +105,38 @@ class cs_item_attach_index_view extends cs_item_index_view {
    }
 
    function _getGroupItemAsLongHTML($item, $style) {
+      $disable_group = false;
+      $check_group = false;
+      $add_hidden = false;
+      $ref_item = $this->_getRefItem();
+      if ( $ref_item->isA(CS_USER_TYPE) ) {
+         if ( $item->isGroupRoomActivated() ) {
+            $disable_group = true;
+            if ( $item->isMember($ref_item) ) {
+               $check_group = true;
+               $add_hidden = true;
+            }
+         }
+      }
+
       $html = '   <tr>'.LF;
       $checked_item_array = $this->_checked_ids;
       $key = $item->getItemID();
       $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" onClick="quark(this)" type="checkbox" name="itemlist['.$key.']" value="1"';
       $tmp_text = '';
-      if ( isset($checked_item_array) and !empty($checked_item_array) and in_array($key, $checked_item_array)) {
+      if ( ( isset($checked_item_array)
+             and !empty($checked_item_array)
+             and in_array($key, $checked_item_array)
+           )
+           or $check_group
+         ) {
          $tmp_text .= ' checked="checked"';
       }
-      if ($item->getItemID() == $this->_ref_iid){
+      if ( $item->getItemID() == $this->_ref_iid
+           or $disable_group
+         ) {
          $tmp_text .= ' disabled="disabled"';
       }
-      $add_hidden = false;
       if ( $item->isSystemLabel() ) {
          $ref_item = $this->_getRefItem();
          if ( !empty($ref_item)
@@ -133,7 +153,11 @@ class cs_item_attach_index_view extends cs_item_index_view {
       }
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.LF.$text.'      </td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:70%;" colspan="2">'.$this->_getItemTitle($item);
+      if ( $disable_group ) {
+         $html .= ' ('.$this->_translator->getMessage('COMMON_GROUPROOM').')';
+      }
+      $html .= '</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:29%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
       return $html;
@@ -200,7 +224,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt;" >'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getItemDate($item).LF;
+      $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getItemDate($item);
       $time = $this->_getItemTime($item);
       $starting_time = $item->getStartingTime();
       if (!empty($time) and !empty($starting_time)) {
@@ -234,20 +258,46 @@ class cs_item_attach_index_view extends cs_item_index_view {
    }
 
    function _getUserItemAsLongHTML($item, $style) {
+
+      $disable_user = false;
+      $check_user = false;
+      $add_hidden = false;
+      $ref_item = $this->_getRefItem();
+      if ( $ref_item->isA(CS_LABEL_TYPE)
+           and $ref_item->getLabelType() == CS_GROUP_TYPE
+         ) {
+         if ( $ref_item->isGroupRoomActivated() ) {
+            $disable_user = true;
+            if ( $ref_item->isMember($item) ) {
+               $check_user = true;
+               $add_hidden = true;
+            }
+         }
+      }
+
       $phone = $this->_compareWithSearchText($item->getTelephone());
       $handy = $this->_compareWithSearchText($item->getCellularphone());
       $html  = '   <tr>'.LF;
       $checked_item_array = $this->_checked_ids;
       $key = $item->getItemID();
       $text = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" onClick="quark(this)" type="checkbox" name="itemlist['.$key.']" value="1"';
-      if ( isset($checked_item_array) and !empty($checked_item_array) and in_array($key, $checked_item_array)) {
+      if ( ( isset($checked_item_array)
+             and !empty($checked_item_array)
+             and in_array($key, $checked_item_array)
+           )
+           or $check_user
+         ) {
          $text .= ' checked="checked"'.LF;
       }
-      if ($item->getItemID() == $this->_ref_iid){
+      if ( $item->getItemID() == $this->_ref_iid
+           or $disable_user
+         ) {
          $text .= ' disabled="disabled"'.LF;
-
       }
       $text .= '/>'.LF;
+      if ($add_hidden) {
+         $text .= '         <input type="hidden" name="itemlist['.$key.']" value="1"/>'.LF;
+      }
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt; width:40%;">'.$this->_getItemFullname($item).'</td>'.LF;
@@ -1285,7 +1335,13 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $tmp_item = $item_manager->getItem($this->_ref_iid);
          if ( isset($tmp_item) ) {
             $manager = $this->_environment->getManager($tmp_item->getItemType());
-            $this->_ref_item = $item = $manager->getItem($this->_ref_iid);
+            $this->_ref_item = $manager->getItem($this->_ref_iid);
+            if ( $this->_ref_item->isA(CS_LABEL_TYPE)
+                 and $this->_ref_item->getLabelType() == CS_GROUP_TYPE
+               ) {
+               $manager = $this->_environment->getGroupManager();
+               $this->_ref_item = $manager->getItem($this->_ref_iid);
+            }
             $retour = $this->_ref_item;
             unset($manager);
          }
