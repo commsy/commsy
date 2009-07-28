@@ -70,22 +70,19 @@ function updateWikiNavigation($portal, $room){
          updateNavigationForCommSyExports('Main.SideBar');
          addUpdateComment('Main.SideBar');
          rename('Site.SideBar', 'Site.SideBarBackup');
-      }
-      if(file_exists('Site.SideBar') and
-        !file_exists('Main.SideBar')){
+      } else if(!file_exists('Site.SideBar') and
+                file_exists('Main.SideBar')){
+         updateNavigationForStandardLinks('Main.SideBar');
+         updateNavigationForCommSyExports('Main.SideBar');
+         addUpdateComment('Main.SideBar');
+      } else if(file_exists('Site.SideBar') and
+                !file_exists('Main.SideBar')){
          correctLinksInSideBar('Site.SideBar');
          updateNavigationForCommSyExports('Site.SideBar');
          copy('Site.SideBar', 'Site.SideBarBackup');
          rename('Site.SideBar', 'Main.SideBar');
-      }
-      if(!file_exists('Site.SideBar') and
-         file_exists('Main.SideBar')){
-         updateNavigationForStandardLinks('Main.SideBar');
-         updateNavigationForCommSyExports('Main.SideBar');
-         addUpdateComment('Main.SideBar');
-      }
-      if(!file_exists('Site.SideBar') and
-         !file_exists('Main.SideBar')){
+      } else if(!file_exists('Site.SideBar') and
+                !file_exists('Main.SideBar')){
       }
    }
    chdir($old_dir);
@@ -131,6 +128,9 @@ function updateNavigationForStandardLinks($file){
                $text = $file_contents_array[$index];
                $text = substr($text, 5, strlen($text)-5);
                $text = 'text=%25sidehead%25 Navigation%0a%0a* [[Main/HomePage]]%0a* [[PmWikiDe/Anleitung]]%0a%0a' . $text;
+               if(!stristr($text, '(:include Site.Navi:)')){
+                  $text = $text . '%0a%0a(:include Site.Navi:)';
+               }
                $file_contents_array[$index] = $text;
             }
          }
@@ -184,7 +184,7 @@ function copyLinks($from, $to){
       if(stripos($file_contents_array[$index], 'text=') !== false){
          $text = $file_contents_array[$index];
          $text = $text = str_replace('(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)', '', $text);
-         $text = $text . $site_content . '%0a%0a(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)';
+         $text = $text . '%0a%0a' . $site_content . '%0a%0a(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)';
          $file_contents_array[$index] = $text;
       }
    }
