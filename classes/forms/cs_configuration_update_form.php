@@ -46,6 +46,9 @@ class cs_configuration_update_form extends cs_rubric_form {
    }
 
    private function _getRelevantUpdateFolder ($version) {
+      if ( substr_count($version,'.') > 2 ) {
+         $version = substr($version,0,strrpos($version,'.'));
+      }
       $retour = array();
       $found = false;
       $directory_handle = @opendir($this->_path_to_scripts);
