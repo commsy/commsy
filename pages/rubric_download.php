@@ -20,6 +20,73 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+function getCSS ( $file, $file_url ) {
+   $out = fopen($file,'wb');
+   if ( $out == false ) {
+      include_once('functions/error_functions.php');
+      trigger_error('can not open destination file. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+   }
+   if ( function_exists('curl_init') ) {
+      $ch = curl_init();
+      curl_setopt($ch,CURLOPT_FILE,$out);
+      curl_setopt($ch,CURLOPT_HEADER,0);
+      curl_setopt($ch,CURLOPT_URL,$file_url);
+      global $c_proxy_ip;
+      global $c_proxy_port;
+      if ( !empty($c_proxy_ip) ) {
+         $proxy = $c_proxy_ip;
+         if ( !empty($c_proxy_port) ) {
+            $proxy = $c_proxy_ip.':'.$c_proxy_port;
+         }
+         curl_setopt($ch,CURLOPT_PROXY,$proxy);
+      }
+      curl_exec($ch);
+      $error = curl_error($ch);
+      if ( !empty($error) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('curl error: '.$error.' - '.$file_url.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+      }
+      curl_close($ch);
+   } else {
+      include_once('functions/error_functions.php');
+      trigger_error('curl library php5-curl is not installed - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+   }
+   fclose($out);
+}
+
+// Function to recursively add a directory,
+// sub-directories and files to a zip archive
+function addFolderToZip($dir, $zipArchive, $zipdir = ''){
+   if ( is_dir($dir) ) {
+      if ( $dh = opendir($dir) ) {
+         //Add the directory
+         if ( $dir !== "." ) {
+            $zipArchive->addEmptyDir($dir);
+         }
+
+         // Loop through all the files
+         while ( ($file = readdir($dh)) !== false ) {
+            if ( $dir !== "." ) {
+               $file_path = $dir.DIRECTORY_SEPARATOR.$file;
+            } else {
+              $file_path = $file;
+            }
+
+            //If it's a folder, run the function again!
+            if ( !is_file($file_path) ) {
+                // Skip parent and root directories
+                if ( ($file !== ".") and ($file !== "..") ) {
+                   addFolderToZip($file_path , $zipArchive, $file_path);
+                }
+            } else {
+               // Add the files
+               $zipArchive->addFile($file_path, $file_path);
+            }
+         }
+      }
+   }
+   return $zipArchive;
+}
 
      global $export_temp_folder;
      if(!isset($export_temp_folder)) {
@@ -28,7 +95,6 @@
      $directory_split = explode("/",$export_temp_folder);
      $done_dir = "./";
      foreach($directory_split as $dir) {
-
         if(!is_dir($done_dir.'/'.$dir)) {
            mkdir($done_dir.'/'.$dir, 0777);
         }
@@ -46,6 +112,7 @@
      //String replacements
      $output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
      $output = str_replace('commsy_pda_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
+     $output = str_replace('commsy_myarea_css.php?cid='.$environment->getCurrentContextID(),'stylesheet2.css', $output);
      $params = $environment->getCurrentParameterArray();
 
      //find images in string
@@ -72,8 +139,9 @@
           $icon = $directory.'/'.$file->getIconFilename();
           $filearray[$i] = $file->getDiskFileName();
           if(file_exists(realpath($file->getDiskFileName()))) {
-             copy($file->getDiskFileName(),$directory.'/'.$file->getFilename());
-             $output = str_replace($match, $file->getFilename(), $output);
+             include_once('functions/text_functions.php');
+             copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
+             $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
              copy('htdocs/images/'.$file->getIconFilename(),$icon);
              $output = str_replace('images/'.$file->getIconFilename(),$file->getIconFilename(), $output);
 
@@ -168,6 +236,7 @@
      fwrite($handle, $output);
      fclose($handle);
      unset($output);
+
      //copy CSS File
      if (isset($params['view_mode'])){
         $csssrc = 'htdocs/commsy_pda_css.php';
@@ -175,30 +244,67 @@
         $csssrc = 'htdocs/commsy_print_css.php';
      }
      $csstarget = $directory.'/stylesheet.css';
-     copy($csssrc,$csstarget);
+
+     // commsy 7
+     $current_context = $environment->getCurrentContextItem();
+     if ( $current_context->isDesign7() ) {
+        mkdir($directory.'/css', 0777);
+
+        if (isset($params['view_mode'])){
+           $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$environment->getCurrentContextID();
+        } else {
+           $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
+        }
+        getCSS($directory.'/css/stylesheet.css',$url_to_style);
+        unset($url_to_style);
+
+        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
+        getCSS($directory.'/css/stylesheet2.css',$url_to_style);
+        unset($url_to_style);
+     } else {
+        copy($csssrc,$csstarget);
+     }
 
      //create ZIP File
      if(isset($params['iid'])) {
-        $zipfile = $export_temp_folder.'/'.$environment->getCurrentModule().'_'.$params['iid'].'.zip';
+        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$params['iid'].'.zip';
      }
      else {
-        $zipfile = $export_temp_folder.'/'.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.zip';
+        $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.zip';
      }
      if(file_exists(realpath($zipfile))) {
         unlink($zipfile);
       }
-     //include zip class
-     include_once('classes/external_classes/zip.php');
 
-     $zip = new ziparch();
-     //copy file into ziparchive
-     // mkzip(srcdirectory, targetfile, catch, include_basedir)
-     $zip->mkzip($directory,$zipfile, true, false);
+     if ( $current_context->isDesign7() ) {
+        $zip = new ZipArchive();
+        $filename = $zipfile;
 
-    unset($zip);
-    unset($params['downloads']);
+        if ( $zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE ) {
+           exit("cannot open <$filename>\n"); // trigger_error
+        }
+        $temp_dir = getcwd();
+        chdir($directory);
 
-    //send zipfile by header
+        $zip = addFolderToZip('.',$zip,'/');
+        chdir($temp_dir);
+
+        $zip->close();
+        unset($zip);
+     } else {
+        //include zip class
+        include_once('classes/external_classes/zip.php');
+
+        $zip = new ziparch();
+        //copy file into ziparchive
+        // mkzip(srcdirectory, targetfile, catch, include_basedir)
+        $zip->mkzip($directory,$zipfile, true, false);
+
+        unset($zip);
+        unset($params['downloads']);
+     }
+
+     //send zipfile by header
      if(isset($params['iid'])) {
         $downloadfile = $environment->getCurrentModule().'_'.$params['iid'].'.zip';
      }
