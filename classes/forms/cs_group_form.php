@@ -186,8 +186,10 @@ class cs_group_form extends cs_rubric_form {
          $this->_with_group_room = true;
          if ( isset($this->_item) ) {
             $this->_exists_group_room = $this->_item->isGroupRoomActivated();
+            $this->_exists_group_room_id = $this->_item->getGroupRoomItemID();
          } elseif ( !empty($this->_form_post['group_room_exists']) ) {
             $this->_exists_group_room = $this->_form_post['group_room_exists'];
+            $this->_exists_group_room_id = $this->_form_post['group_room_id'];
          }
       }
 
@@ -244,8 +246,8 @@ class cs_group_form extends cs_rubric_form {
       # FLAG: group rooms
       #############################################
       $context_id = '';
-      if ( isset($this->_exists_group_room) and $this->_exists_group_room ) {
-         $context_id = $this->_item->getGroupRoomItemID();
+      if ( !empty($this->_exists_group_room_id) ) {
+         $context_id = $this->_exists_group_room_id;
       }
       #############################################
       # FLAG: group rooms
@@ -300,6 +302,10 @@ class cs_group_form extends cs_rubric_form {
             if ( $this->_exists_group_room ) {
                $checked = true;
                $dead = true;
+               $this->_form->addHidden('group_room_exists',1);
+            }
+            if ( !empty($this->_exists_group_room_id) ) {
+               $this->_form->addHidden('group_room_id',$this->_exists_group_room_id);
             }
             $this->_form->addCheckbox('group_room_activate','1',$checked,getMessage('GROUPROOM_FORM_CHECKBOX_TITLE'),getMessage('GROUPROOM_FORM_CHECKBOX_TEXT'),'','',$dead);
          }

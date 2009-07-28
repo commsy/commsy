@@ -400,7 +400,9 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
             $post_values = array();
             $post_array = explode('§',$_POST['orig_post_keys']);
             foreach ( $post_array as $key ) {
-               $post_values_orig[$key] = $_POST[$key];
+               if ( isset($_POST[$key]) ) {
+                  $post_values_orig[$key] = $_POST[$key];
+               }
             }
          } else {
             $post_values_orig = $_POST;
