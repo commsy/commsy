@@ -58,32 +58,34 @@ while ( $portal ) {
 function updateWikiNavigation($portal, $room){
    global $c_commsy_path_file;
    global $c_pmwiki_path_file;
-   // Backup der Inhalte
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file);
    $directory_handle = @opendir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/wiki.d');
    if ($directory_handle) {
       chdir('wikis/' . $portal->getItemID() . '/' . $room->getItemID() . '/wiki.d');
-      pr('updateWikiNavigation');
       if(file_exists('Site.SideBar') and
          file_exists('Main.SideBar')){
-         pr('found both');
+         correctLinksInSideBar('Site.SideBar');
+         copyLinks('Site.SideBar', 'Main.SideBar');
+         updateNavigationForCommSyExports('Main.SideBar');
+         addUpdateComment('Main.SideBar');
+         rename('Site.SideBar', 'Site.SideBarBackup');
       }
       if(file_exists('Site.SideBar') and
         !file_exists('Main.SideBar')){
-//         copy('Site.SideBar', 'Site.SideBar.backup');
-//         updateNavigationForCommSyExports('Site.SideBar');
-//         rename('Site.SideBar', 'Main.SideBar');
-         pr('found Site.SideBar');
+         correctLinksInSideBar('Site.SideBar');
+         updateNavigationForCommSyExports('Site.SideBar');
+         copy('Site.SideBar', 'Site.SideBarBackup');
+         rename('Site.SideBar', 'Main.SideBar');
       }
       if(!file_exists('Site.SideBar') and
          file_exists('Main.SideBar')){
-//         rename('Site.SideBar', 'Main.SideBar');
-         pr('found Main.SideBar');
+         updateNavigationForStandardLinks('Main.SideBar');
+         updateNavigationForCommSyExports('Main.SideBar');
+         addUpdateComment('Main.SideBar');
       }
       if(!file_exists('Site.SideBar') and
          !file_exists('Main.SideBar')){
-         pr('found nothing');
       }
    }
    chdir($old_dir);
@@ -94,12 +96,119 @@ function updateNavigationForCommSyExports($file){
    $file_contents_array = explode("\n", $file_contents);
    for ($index = 0; $index < sizeof($file_contents_array); $index++) {
       if(stripos($file_contents_array[$index], 'text=') !== false){
-         // neue Inhalte einfügen
          $text = $file_contents_array[$index];
          if(stristr($text, '(:include Main.CommSyMaterialienNavi:)') or
             stristr($text, '(:include Main.CommSyDiskussionenNavi:)')){
-           pr('update');
+         } else {
+            $file_contents = file_get_contents($file);
+            $file_contents_array = explode("\n", $file_contents);
+            for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+               if(stripos($file_contents_array[$index], 'text=') !== false){
+                  $text = $file_contents_array[$index];
+                  $text = $text . '%0a%0a(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)';
+                  $file_contents_array[$index] = $text;
+               }
+            }
+            $file_contents = implode("\n", $file_contents_array);
+            file_put_contents($file, $file_contents);
          }
+      }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   file_put_contents($file, $file_contents);
+}
+
+function updateNavigationForStandardLinks($file){
+   $file_contents = file_get_contents($file);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'text=') !== false){
+         $text = $file_contents_array[$index];
+         $file_contents = file_get_contents($file);
+         $file_contents_array = explode("\n", $file_contents);
+         for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+            if(stripos($file_contents_array[$index], 'text=') !== false){
+               $text = $file_contents_array[$index];
+               $text = substr($text, 5, strlen($text)-5);
+               $text = 'text=%25sidehead%25 Navigation%0a%0a* [[Main/HomePage]]%0a* [[PmWikiDe/Anleitung]]%0a%0a' . $text;
+               $file_contents_array[$index] = $text;
+            }
+         }
+         $file_contents = implode("\n", $file_contents_array);
+         file_put_contents($file, $file_contents);
+      }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   file_put_contents($file, $file_contents);
+}
+
+function correctLinksInSideBar($file){
+   $file_contents = file_get_contents($file);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'text=') !== false){
+         $text = $file_contents_array[$index];
+         preg_match_all('~\[\[[a-zA-Z0-9]*?\]\]~u', $text, $matches);
+         foreach($matches as $match){
+            if(is_array($match)){
+               foreach($match as $link){
+                  $new_link = str_replace('[[', '[[Site.', $link);
+                  $text = str_replace($link, $new_link, $text);
+               }
+            }
+         }
+         $file_contents_array[$index] = $text;
+      }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   file_put_contents($file, $file_contents);
+}
+
+function copyLinks($from, $to){
+   // Inhalte Suchen
+   $site_content = '';
+   $file_contents = file_get_contents($from);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'text=') !== false){
+         $text = $file_contents_array[$index];
+         $text = substr($text, 5, strlen($text)-5);
+         $site_content = $text;
+      }
+   }
+   
+   // Inhalte hinzufuegen
+   $file_contents = file_get_contents($to);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'text=') !== false){
+         $text = $file_contents_array[$index];
+         $text = $text = str_replace('(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)', '', $text);
+         $text = $text . $site_content . '%0a%0a(:include Main.CommSyMaterialienNavi:)%0a(:include Main.CommSyDiskussionenNavi:)';
+         $file_contents_array[$index] = $text;
+      }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   file_put_contents($to, $file_contents);
+}
+
+function addUpdateComment($file){
+   $file_contents = file_get_contents($file);
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'text=') !== false){
+         $text = $file_contents_array[$index];
+         $file_contents = file_get_contents($file);
+         $file_contents_array = explode("\n", $file_contents);
+         for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+            if(stripos($file_contents_array[$index], 'text=') !== false){
+               $text = $file_contents_array[$index];
+               $text = $text . '%0a%0a(:comment Durch ein Update der Wiki-Version musste die Navigaton angepasst werden. Die Seite Main.SideBar wird nun für alle Seite als Navigation genutzt. Dadurch wurde die Navigation in Ihrem Wiki evtl. verändert. Frühere Anpassungen der Main.SideBar sind weiterhin enthalten. Frühere Anpassungen der Site.SideBar wurden in die Main.Sidebar kopiert. Ein Backup der Site.SideBar ist als Site.SideBarBackup zugreifbar:)';
+               $file_contents_array[$index] = $text;
+            }
+         }
+         $file_contents = implode("\n", $file_contents_array);
+         file_put_contents($file, $file_contents);
       }
    }
    $file_contents = implode("\n", $file_contents_array);
