@@ -43,11 +43,9 @@ $message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["en"] = "This e-mail was sent from the 
 $message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["en"] = "---
 Link:
 %1";
-$message["RUBRIC_INSTITUTION"]["en"] = "%_INSTITUTION_SUB_NOMPL_BIG";
 $message["RUBRIC_PUBLIC"]["en"] = "Edit permission";
 $message["RUBRIC_PUBLIC_DESC"]["en"] = "Choose who else may edit this item.";
 $message["RUBRIC_PUBLIC_NO"]["en"] = "Only %1";
 $message["RUBRIC_PUBLIC_YES"]["en"] = "All workspace members";
-$message["RUBRIC_TOPIC"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["RUBRIC_WARN_CHANGER"]["en"] = "Attention";
 ?>

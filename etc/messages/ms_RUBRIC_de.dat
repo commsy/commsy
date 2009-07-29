@@ -43,11 +43,9 @@ $message["RUBRIC_EMAIL_DEFAULT_PROJECT"]["de"] = "Diese Mail wurde über %_PROJE
 $message["RUBRIC_EMAIL_DEFAULT_PROJECT_END"]["de"] = "---
 Link:
 %1";
-$message["RUBRIC_INSTITUTION"]["de"] = "%_INSTITUTION_SUB_NOMPL_BIG";
 $message["RUBRIC_PUBLIC"]["de"] = "Bearbeitbar";
 $message["RUBRIC_PUBLIC_DESC"]["de"] = "Hier können Sie entscheiden, wer außer Ihnen diesen Eintrag bearbeiten darf.";
 $message["RUBRIC_PUBLIC_NO"]["de"] = "Nur von %1 bearbeitbar";
 $message["RUBRIC_PUBLIC_YES"]["de"] = "Für alle bearbeitbar";
-$message["RUBRIC_TOPIC"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["RUBRIC_WARN_CHANGER"]["de"] = "Achtung";
 ?>

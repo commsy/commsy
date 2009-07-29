@@ -8,7 +8,6 @@ $message["CONTEXT_ENTER_LOGIN2"]["en"] = "To get into this room, login first.";
 $message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES"]["en"] = "To get into this room, login first or %1.";
 $message["CONTEXT_ENTER_LOGIN_EXTERNAL_PAGES2"]["en"] = "To get into this room, login first.";
 $message["CONTEXT_ENTER_LOGIN_NOT_ALLOWED"]["en"] = "You are not allowed to enter this room.";
-$message["CONTEXT_EXPORT_DESC"]["en"] = "Export workspace";
 $message["CONTEXT_IS_DELETED"]["en"] = "This workspace (%1) has benn deleted.";
 $message["CONTEXT_IS_LOCKED"]["en"] = "This workspace (%1) has been blocked by the moderator/s.";
 $message["CONTEXT_JOIN"]["en"] = "Apply for membership";

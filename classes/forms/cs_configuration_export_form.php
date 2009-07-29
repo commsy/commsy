@@ -56,7 +56,6 @@ class cs_configuration_export_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('name_hidden','');
       $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
-      $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('CONTEXT_EXPORT_DESC'));
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('PORTAL_EXPORT_ROOM_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));

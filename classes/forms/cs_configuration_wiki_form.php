@@ -39,7 +39,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
     */
    function __construct ($params) {
       $this->cs_rubric_form($params);
-      $this->_translator = $this->_environment->getTranslationObject(); 
+      $this->_translator = $this->_environment->getTranslationObject();
    }
 
    function setDeletionValues(){
@@ -113,7 +113,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addTextField('edit','',$this->_translator->getMessage('COMMON_WIKI_EDIT_PW'),'',200,10,false,'','','','left',$this->_translator->getMessage('COMMON_WIKI_EDIT_PW'));
       $this->_form->combine();
       $this->_form->addTextField('read','',$this->_translator->getMessage('COMMON_WIKI_READ_PW'),'',200,10,false,'','','','left',$this->_translator->getMessage('COMMON_WIKI_READ_PW'));
-     
+
       $wiki_manager = $this->_environment->getWikiManager();
       $wiki_groups_array = $wiki_manager->getGroupsForWiki(false);
 
@@ -132,21 +132,21 @@ class cs_configuration_wiki_form extends cs_rubric_form {
            if($first){
               $first = false;
            }
-      	}
+         }
       }
 
       $this->_form->addEmptyline();
 
       $this->_form->addCheckbox('use_commsy_login',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC'),false,false,'','',true,false);
-	  //$this->_form->combine();
+     //$this->_form->combine();
       //$this->_form->addText('wiki_space2','',' ');
       //$this->_form->combine();
       //$this->_form->addCheckbox('community_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
-	  //$this->_form->combine();
+     //$this->_form->combine();
       //$this->_form->addCheckbox('community_write_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
-	  //$this->_form->combine();
+     //$this->_form->combine();
       //$this->_form->addText('wiki_space2','',' ');
-	  //$this->_form->combine();
+     //$this->_form->combine();
       //$this->_form->addCheckbox('portal_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
 
       $this->_form->addEmptyline();
@@ -215,54 +215,54 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       }
       $this->_form->combine();
       $this->_form->addTextField('new_page_template','',$this->_translator->getMessage('WIKI_NEW_PAGE_TEMPLATE'),'',200,20,false,'','','','left',$this->_translator->getMessage('WIKI_NEW_PAGE_TEMPLATE').': ');
-      
+
       $this->_form->addEmptyline();
 
       $features_available = array();
 
       if (file_exists($c_pmwiki_path_file.'/cookbook/edit_fckeditor.php')) {
         // FCKEditor
-        $features_available[] = array('enable_fckeditor',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_fckeditor',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
       if ((file_exists($c_pmwiki_path_file.'/cookbook/totalcounter.php')) && (file_exists($c_pmwiki_path_file.'/cookbook/totalcounterlink.php'))) {
         // Statistic
-        $features_available[] = array('enable_statistic',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_statistic',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_STATISTIC_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
       if (file_exists($c_pmwiki_path_file.'/cookbook/feedlinks.php')) {
         // RSS
-        $features_available[] = array('enable_rss',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_rss',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RSS_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
       if (file_exists($c_pmwiki_path_file.'/cookbook/wikilog.php')) {
         // Calendar
         if((($this->_environment->getCurrentContextItem()->getLanguage() == "de") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-de.php'))) ||
            (($this->_environment->getCurrentContextItem()->getLanguage() == "en") && (file_exists($c_pmwiki_path_file.'/cookbook/wikilog-i18n-en.php')))){
-              $features_available[] = array('enable_calendar',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+              $features_available[] = array('enable_calendar',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
         }
       }
       if (file_exists($c_pmwiki_path_file.'/cookbook/gallery.php')) {
         // Gallery
-        $features_available[] = array('enable_gallery',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_gallery',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
 //      if (file_exists($c_pmwiki_path_file.'/cookbook/postitnotes.php')) {
 //        // Notice
-//        $features_available[] = array('enable_notice',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+//        $features_available[] = array('enable_notice',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
 //      }
       if ((file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdf/pmwiki2pdf.php')) && (file_exists($c_pmwiki_path_file.'/cookbook/pmwiki2pdflink.php'))) {
         // PDF
-        $features_available[] = array('enable_pdf',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_pdf',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_PDF_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
 //      if (file_exists($c_pmwiki_path_file.'/cookbook/rater.php')) {
 //        // Rater
-//        $features_available[] = array('enable_rater',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_RATER_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+//        $features_available[] = array('enable_rater',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_RATER_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
 //      }
       if (file_exists($c_pmwiki_path_file.'/cookbook/listcategories.php')) {
         // List Categories
-        $features_available[] = array('enable_listcategories',1,'','COMMON_CONFIGURATION_WIKI_EXTRAS','COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE','COMMON_CONFIGURATION_WIKI_EXTRAS_DESC');
+        $features_available[] = array('enable_listcategories',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_EXTRAS_DESC'));
       }
 
       for ($index = 0; $index < sizeof($features_available); $index++) {
             $array_element = $features_available[$index];
-            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $this->_translator->getMessage($array_element[3]), $this->_translator->getMessage($array_element[4]), $this->_translator->getMessage($array_element[5]),false,false,'','',true,false);
+            $this->_form->addCheckbox($array_element[0], $array_element[1], $array_element[2], $array_element[3], $array_element[4], $array_element[5],false,false,'','',true,false);
             if($index < sizeof($features_available)-1){
                $this->_form->combine();
             }
@@ -517,7 +517,7 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $wiki_manager = $this->_environment->getWikiManager();
         $wiki_manager->setWikiGroupsAsPublic(array());
       }
-      
+
       if ( empty($this->_form_post['community_read_access'])
            and (!empty($this->_form_post['community_write_access']))
          ) {

@@ -17,17 +17,7 @@ $message["COMMON_ADDITIONAL_CONFIGURATION"]["de"] = "Zusätzliche Optionen und E
 $message["COMMON_ADDITIONAL_CONFIGURATION_TITLE"]["de"] = "Zusätzliche Optionen";
 $message["COMMON_ADD_BUTTON"]["de"] = "hinzufügen";
 $message["COMMON_ADD_BUZZWORD_BUTTON"]["de"] = "Zuordnen";
-$message["COMMON_ADD_INSTITUTION_ERROR"]["de"] = "Es wurden keine %_INSTITUTION_SUB_NOMPL_BIG mit dem Namen <span style=&quot;font-weight:bold;&quot;>%1</span> gefunden. Dies könnte folgende Gründe haben:<br />
-<ul>
-<li>%_INSTITUTION_ART_DEF_NOMS_BIG %_INSTITUTION_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> existiert noch nicht im CommSy %2.</li>
-<li>Sie haben sich verschrieben.</li>
-</ul>";
 $message["COMMON_ADD_TAG_BUTTON"]["de"] = "Zuordnen";
-$message["COMMON_ADD_TOPIC_ERROR"]["de"] = "Es wurden keine %_TOPICS_SUB_NOMPL_BIG mit dem Namen <span style=&quot;font-weight:bold;&quot;>%1</span> gefunden. Dies könnte folgende Gründe haben:<br />
-<ul>
-<li>%_TOPICS_ART_DEF_NOMS_BIG %_TOPICS_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> existiert noch nicht im CommSy %2.</li>
-<li>Sie haben sich verschrieben.</li>
-</ul>";
 $message["COMMON_ADMINISTRATION"]["de"] = "Administration";
 $message["COMMON_AGB_CONFIRMATION_LINK_INPUT"]["de"] = "Nutzungsvereinbarungen";
 $message["COMMON_ALL_ENTRIES"]["de"] = "Alle";
@@ -228,7 +218,7 @@ $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE"]["de"] = "Kalenderfun
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE"]["de"] = "Den FCK-Editor im Wiki benutzen";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY"]["de"] = "Gallery";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE"]["de"] = "Extra Bilder Galerie verwenden.";
-$message["COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE"]["de"] = "Stichwortwolke verwenden.";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE"]["de"] = "Stichwortwolke verwenden";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA"]["de"] = "Medien";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC"]["de"] = "Darstellung von Filmen, Audiodateien, etc.";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE"]["de"] = "Notizzettel verwenden.";

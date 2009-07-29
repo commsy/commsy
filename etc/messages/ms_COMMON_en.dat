@@ -17,17 +17,7 @@ $message["COMMON_ADDITIONAL_CONFIGURATION"]["en"] = "Additional settings / Exten
 $message["COMMON_ADDITIONAL_CONFIGURATION_TITLE"]["en"] = "Additional settings / Extensions";
 $message["COMMON_ADD_BUTTON"]["en"] = "add";
 $message["COMMON_ADD_BUZZWORD_BUTTON"]["en"] = "Add";
-$message["COMMON_ADD_INSTITUTION_ERROR"]["en"] = "%_INSTITUTION_ART_DEF_NOMS_BIG %_INSTITUTION_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> could not be found. Maybe:<br />
-<ul>
-<li>%1 does not yet exist in CommSy %2.</li>
-<li>You mistyped %_INSTITUTION_ART_DEF_NOMS_LOW %_INSTITUTION_SUB_NOMS_LOW name.</li>
-</ul>";
 $message["COMMON_ADD_TAG_BUTTON"]["en"] = "Add";
-$message["COMMON_ADD_TOPIC_ERROR"]["en"] = "%_TOPICS_ART_DEF_NOMS_BIG %_TOPICS_SUB_NOMS_LOW <span style=&quot;font-weight:bold;&quot;>%1</span> could not be found. Maybe:<br />
-<ul>
-<li>%1 does not yet exist in CommSy %2.</li>
-<li>You mistyped %_TOPICS_ART_DEF_NOMS_LOW %_TOPICS_SUB_NOMS_LOW name.</li>
-</ul>";
 $message["COMMON_ADMINISTRATION"]["en"] = "Administration";
 $message["COMMON_AGB_CONFIRMATION_LINK_INPUT"]["en"] = "Terms and Conditions";
 $message["COMMON_ALL_ENTRIES"]["en"] = "All";
@@ -224,7 +214,7 @@ $message["COMMON_CONFIGURATION_WIKI_DESC"]["en"] = "e. g. show login box, show l
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_CALENDAR_VALUE"]["en"] = "Enable a calendar.";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_FCKEDITOR_VALUE"]["en"] = "Use the FCK-Editor within the Wiki";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_GALLERY_VALUE"]["en"] = "Enable a picture-gallerie.";
-$message["COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE"]["en"] = "Use tag cloud.";
+$message["COMMON_CONFIGURATION_WIKI_ENABLE_LISTCATEGORIES_VALUE"]["en"] = "use tag cloud";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA"]["en"] = "Media";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_MEDIA_DESC"]["en"] = "Presentation of e.g. videos or audio files";
 $message["COMMON_CONFIGURATION_WIKI_ENABLE_NOTICE_VALUE"]["en"] = "Activate post it notes.";
