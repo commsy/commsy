@@ -56,6 +56,7 @@ function getCSS ( $file, $file_url ) {
 
 // Function to recursively add a directory,
 // sub-directories and files to a zip archive
+/*
 function addFolderToZip($dir, $zipArchive, $zipdir = ''){
    if ( is_dir($dir) ) {
       if ( $dh = opendir($dir) ) {
@@ -88,6 +89,7 @@ function addFolderToZip($dir, $zipArchive, $zipdir = ''){
    return $zipArchive;
 }
 
+*/
      global $export_temp_folder;
      if(!isset($export_temp_folder)) {
         $export_temp_folder = 'var/temp/zip_export';
@@ -276,32 +278,27 @@ function addFolderToZip($dir, $zipArchive, $zipdir = ''){
         unlink($zipfile);
       }
 
-     if ( $current_context->isDesign7() ) {
+     if ( class_exists('ZipArchive') ) {
+        include_once('functions/misc_functions.php');
         $zip = new ZipArchive();
         $filename = $zipfile;
 
         if ( $zip->open($filename, ZIPARCHIVE::CREATE) !== TRUE ) {
-           exit("cannot open <$filename>\n"); // trigger_error
+            include_once('functions/error_functions.php');
+            trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
         }
         $temp_dir = getcwd();
         chdir($directory);
 
-        $zip = addFolderToZip('.',$zip,'/');
+        $zip = addFolderToZip('.',$zip);
         chdir($temp_dir);
 
         $zip->close();
         unset($zip);
-     } else {
-        //include zip class
-        include_once('classes/external_classes/zip.php');
-
-        $zip = new ziparch();
-        //copy file into ziparchive
-        // mkzip(srcdirectory, targetfile, catch, include_basedir)
-        $zip->mkzip($directory,$zipfile, true, false);
-
-        unset($zip);
         unset($params['downloads']);
+     } else {
+        include_once('functions/error_functions.php');
+        trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
      }
 
      //send zipfile by header

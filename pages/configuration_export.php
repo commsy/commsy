@@ -30,7 +30,8 @@ if ( !empty($_GET['iid']) ) {
 } elseif ( !empty($_POST['iid']) ) {
    $current_iid = $_POST['iid'];
 } else {
-   include_once('functions/error_functions.php');trigger_error('lost room id',E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error('lost room id',E_USER_ERROR);
 }
 
 $manager = $environment->getRoomManager();
@@ -175,7 +176,6 @@ else {
             fputs($xmlfile, $xml);
             fclose($xmlfile);
 
-            include_once('classes/external_classes/zip.php');
             //Location where export is saved
             $zipfile = 'var/temp/upload_export_'.$_POST['iid'].'.zip';
             if ( file_exists($zipfile) ) {
@@ -184,14 +184,30 @@ else {
 
             //Location, that will be backuped
             $backuppath = 'var/'.$environment->getCurrentPortalID().'/'.$_POST['iid'].'';
-            $zip=new ziparch();
 
-            //Add Uploads to zip-file
-            $zip->mkzip($backuppath,$zipfile);
-            //Add XML-Export to zip-file
-            $zip->mkzip($filename,$zipfile);
-            unlink($filename);
-            unset($zip);
+            if ( class_exists('ZipArchive') ) {
+               include_once('functions/misc_functions.php');
+               $zip = new ZipArchive();
+               $filename_zip = $zipfile;
+
+               if ( $zip->open($filename_zip, ZIPARCHIVE::CREATE) !== TRUE ) {
+                  include_once('functions/error_functions.php');
+                  trigger_error('can not open zip-file '.$filename_zip,E_USER_WARNNG);
+               }
+               $temp_dir = getcwd();
+               chdir($backuppath);
+
+               $zip = addFolderToZip('.',$zip,'files');
+               chdir($temp_dir);
+
+               $zip->addFile($filename, basename($filename));
+               $zip->close();
+               unset($zip);
+            } else {
+               include_once('functions/error_functions.php');
+               trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
+            }
+
             $params = array();
             $params['environment'] = $environment;
             $params['with_modifying_actions'] = true;

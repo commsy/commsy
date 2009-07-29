@@ -1003,4 +1003,43 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
    }
    return $retour;
 }
+
+// Function to recursively add a directory,
+// sub-directories and files to a zip archive
+function addFolderToZip($dir, $zipArchive, $zipdir = ''){
+   if ( is_dir($dir) ) {
+      if ( $dh = opendir($dir) ) {
+         //Add the directory
+         if ( $dir !== "." ) {
+            $zipArchive->addEmptyDir($dir);
+         }
+
+         // Loop through all the files
+         while ( ($file = readdir($dh)) !== false ) {
+            if ( $dir !== "." ) {
+               $file_path = $dir.DIRECTORY_SEPARATOR.$file;
+            } else {
+               $file_path = $file;
+            }
+            if ( !empty($zipdir) ) {
+               $zip_path = $zipdir.DIRECTORY_SEPARATOR.$file;
+            } else {
+               $zip_path = $file_path;
+            }
+
+            //If it's a folder, run the function again!
+            if ( !is_file($file_path) ) {
+                // Skip parent and root directories
+                if ( ($file !== ".") and ($file !== "..") ) {
+                   addFolderToZip($file_path , $zipArchive, $zip_path);
+                }
+            } else {
+               // Add the files
+               $result = $zipArchive->addFile($file_path, $zip_path);
+            }
+         }
+      }
+   }
+   return $zipArchive;
+}
 ?>
