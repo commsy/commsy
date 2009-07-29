@@ -40,8 +40,8 @@ var $_room_type = 'context';
     */
    function cs_context_detail_view ($params) {
       $this->cs_detail_view($params);
+      $this->_show_content_without_window = true;
    }
-
 
    function setAccountMode($mode){
       $this->_account_mode = $mode;
@@ -59,29 +59,26 @@ var $_room_type = 'context';
     * @param object item     the single list entry
     */
    function _getItemAsHTML ($item) {
-      $current_user = $this->_environment->getCurrentUserItem();
-
       $html  = LF.'<!-- BEGIN OF CONTEXT ITEM DETAIL -->'.LF;
-
-      // description
-      $desc = $this->_item->getDescription();
-      if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
-         $html .= $desc.LF;
+      if ( $this->_show_content_without_window ) {
+         $html .= $this->_getRoomWindowAsHTML($item,$this->getAccountMode());
+      } else {
+         $current_user = $this->_environment->getCurrentUserItem();
+         // description
+         $desc = $this->_item->getDescription();
+         if ( !empty($desc) ) {
+            $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+            $html .= $desc.LF;
+         }
+         $html .= '<div style="width:100%; padding-left:15%; padding-bottom:20px; vertical-align:center;">'.$this->_getRoomWindowAsHTML($item,$this->getAccountMode()).'</div>';
       }
-      $html .= '<div style="width:100%; padding-left:15%; padding-bottom:20px; vertical-align:center;">'.$this->_getRoomWindowAsHTML($item,$this->getAccountMode()).'</div>';
-
       $html .= '<!-- END OF CONTEXT ITEM DETAIL -->'.LF.LF;
-
       return $html;
    }
 
    function _getPrintableItemAsHTML($item) {
       return $this->_getItemAsHTML($item);
    }
-
-
-
 
    function _getDetailActionsAsHTML ($item) {
       $current_context = $this->_environment->getCurrentContextItem();
@@ -154,112 +151,6 @@ var $_room_type = 'context';
       return $html;
    }
 
-   /** get all the actions for this detail view as HTML
-    * this method returns the actions in HTML-Code. It checks the access rights!
-    *
-    * @return string navigation as HMTL
-    *
-    * @author CommSy Development Group
-    */
-/*   function _getDetailActionsAsHTML ($item) {
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_user = $this->_environment->getCurrentUserItem();
-      $user = $this->_environment->getCurrentUserItem();
-      $html  = '';
-      $html .= '<div class="right_box">'.LF;
-      $html .= '         <noscript>';
-      $html .= '<div class="right_box_title">'.getMessage('COMMON_ACTIONS').'</div>';
-      $html .= '         </noscript>';
-      $html .= '<div class="right_box_main" >'.LF;
-      if ( !$this->_environment->inPrivateRoom() ){
-         if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
-            $params = array();
-            $params['iid'] = $item->getItemID();
-            $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $this->_room_type,
-                                          'edit',
-                                          $params,
-                                          $this->_translator->getMessage('COMMON_EDIT_ITEM')).BRLF;
-            unset($params);
-         } else {
-            $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('COMMON_EDIT_ITEM').'</span>'.BRLF;
-         }
-      }
-
-      if ( !$this->_environment->inPrivateRoom() ){
-         if ( $current_user->isUser() and $this->_with_modifying_actions ) {
-            $params = array();
-            $params['iid'] = $item->getItemID();
-            $html .= '> '. ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    'rubric',
-                                    'mail',
-                                    $params,
-                                    $this->_translator->getMessage('COMMON_EMAIL_TO')).BRLF;
-            unset($params);
-         } else {
-            $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('COMMON_EMAIL_TO').'</span>'.BRLF;
-         }
-         $portal_item = $this->_environment->getCurrentPortalItem();
-      } elseif ( $this->_with_modifying_actions ) {
-
-         $params = array();
-         if ( $this->_item->isShownInPrivateRoomHome($current_user->getUserID()) ){
-            $params = $this->_environment->getCurrentParameterArray();
-            $params['delete_room_id'] = $item->getItemID();
-            $title = getMessage('CONTEXT_SHOW_NOT_ON_HOME');
-            $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
-                           'myroom',
-                           'detail',
-                           $params,
-                           getMessage('CONTEXT_NOT_SHOW_ON_HOME')).BRLF;
-            unset ($params);
-         }else{
-            $params = $this->_environment->getCurrentParameterArray();
-            $params['undelete_room_id'] = $item->getItemID();
-            $title = getMessage('CONTEXT_SHOW_ON_HOME');
-            $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
-                           'myroom',
-                           'detail',
-                           $params,
-                           getMessage('CONTEXT_SHOW_ON_HOME')).BRLF;
-            unset ($params);
-         }
-      }
-
-      if ( $item->mayEdit($current_user) ) {
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['action'] = 'delete';
-         $html .= '> '. ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $this->_environment->getCurrentModule(),
-                                          'detail',
-                                          $params,
-                                          $this->_translator->getMessage('COMMON_DELETE_ITEM')).BRLF;
-         unset($params);
-      } else {
-         $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('COMMON_DELETE_ITEM').'</span>'.BRLF;
-      }
-      if ( !$this->_environment->inPrivateRoom() ){
-         if ( $current_user->isUser() and $this->_with_modifying_actions ) {
-            $params = array();
-            $params['iid'] = 'NEW';
-            $html .= '> '. ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    $this->_room_type,
-                                    'edit',
-                                    $params,
-                                    $this->_translator->getMessage('COMMON_NEW_ITEM')).BRLF;
-            unset($params);
-         } else {
-            $html .= '<span class="disabled">'.'> '.$this->_translator->getMessage('COMMON_NEW_ITEM').'</span>'.BRLF;
-         }
-      }
-      $params = $this->_environment->getCurrentParameterArray();
-      $params['mode']='print';
-      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params,$this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).BRLF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      return $html;
-   }*/
-
    function _getFormalDataAsHTML2($data, $spacecount=0, $clear=false) {
       $prefix = str_repeat(' ', $spacecount);
       $html  = $prefix.'<table class="detail" style="width: 100%;" summary="Layout"';
@@ -296,7 +187,12 @@ var $_room_type = 'context';
       $color_array = $item->getColorArray();
       $title = $item->getTitle();
       $html  = '';
-      $html .= '<table class="room_window" style="width: 70%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
+      if ( $this->_show_content_without_window ) {
+         $html = '<table class="room_window" style="margin-left:0px; width: 70%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px;" summary="Layout">'.LF;
+      } else {
+         $html .= '<table class="room_window" style="width: 70%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';';
+         $html .= '" summary="Layout">'.LF;
+      }
       $html .= '<tr><td style="padding:0px;">'.LF.LF;
       $logo = $item->getLogoFilename();
       $html .= '<table style="width: 100%; padding:0px; border-collapse:collapse;" summary="Layout">'.LF;
@@ -305,7 +201,7 @@ var $_room_type = 'context';
 
       // Titelzeile
       if (!empty($logo) ) {
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; float: left; padding: 5px;">'.LF;
+         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; float: left; padding: 2px;">'.LF;
          $params = array();
          $params['picture'] = $item->getLogoFilename();
          $curl = curl($item->getItemID(), 'picture', 'getfile', $params,'');
@@ -316,7 +212,11 @@ var $_room_type = 'context';
             $html .= ahref_curl($item->getItemID(),'home','index','','<img class="logo_small" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>');
          }
          $html .= '</div>'.LF;
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         if ( $this->_show_content_without_window ) {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding: 9px 0px 0px 0px;">'.LF;
+         } else {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         }
          $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false));
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
@@ -327,24 +227,32 @@ var $_room_type = 'context';
          }
          $html .= '</div>'.LF;
       } else {
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].';  color:'.$color_array['tabs_title'].'; vertical-align: large; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
-         $html .= $this->_text_as_html_short($title)."\n";
+         if ( $this->_show_content_without_window ) {
+            $html .= '<h2 class="contenttitle" style="background-color:'.$color_array['tabs_background'].'; color: '.$color_array['tabs_title'].'; padding: 4px 4px 4px 2px;">'.LF;
+         } else {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].';  color:'.$color_array['tabs_title'].'; vertical-align: large; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         }
+         $html .= $this->_text_as_html_short($title).LF;
 
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']';
          } elseif ($item->isClosed()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_CLOSED').']';
          }
-         $html .= '</div>';
+         if ( $this->_show_content_without_window ) {
+            $html .= '</h2>'.LF;
+         } else {
+            $html .= '</div>'.LF;
+         }
       }
-      $html .= '</td>';
+      $html .= '</td>'.LF;
       $html .= '</tr>'.LF;
 
       $formal_data = array();
 
       //Projektraum User
       $html .= '<tr>'.LF;
-      $html .= '<td  colspan="2" class="room_content_fader">'.LF;
+      $html .= '<td colspan="2" class="room_content_fader" style="padding: 5px 10px 5px 10px;">'.LF;
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());
       $user_manager->setAuthSourceLimit($current_user->getAuthSource());
@@ -443,9 +351,20 @@ var $_room_type = 'context';
            $html.= '</div>';
         }
          $html .= '</div>'.LF;
-        $html .= '<div>'.LF;
+
+         // description
+         if ( $this->_show_content_without_window ) {
+            $html .= '<div style="padding-bottom: 10px;">'.LF;
+            $desc = $this->_item->getDescription();
+            if ( !empty($desc) ) {
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+               $html .= $desc.LF;
+            }
+            $html .= '</div>'.LF;
+         }
 
          // prepare moderator
+         $html .= '<div>'.LF;
          $html_temp='';
          $moda = array();
          $moda_list = $this->_item->getContactModeratorList();
@@ -464,6 +383,7 @@ var $_room_type = 'context';
             unset($current_user_item);
             $moda_item = $moda_list->getNext();
          }
+
          $html .= '<span style="font-weight:bold;">'.$this->_translator->getMessage('ROOM_CONTACT').':</span>'.LF;
          $html .= '<ul style="margin-left:0px;margin-top:0.5em; spacing-left:0px; padding-top:0px;padding-left:1.5em;">'.LF;
          if (!empty($html_temp) ) {
@@ -704,7 +624,24 @@ var $_room_type = 'context';
       $html .= '</table>'.LF.LF;
 
       $html .= '</td></tr>'.LF;
+
+      // creator, modificator infos
+      if ( $this->_show_content_without_window ) {
+         $html .= '<tr><td colspan="2" style="padding: 5px 10px 5px 10px;">'.LF;
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
+            $mode = 'short';
+            if (in_array($this->_item->getItemID(),$this->_openCreatorInfo)) {
+               $mode = 'long';
+            }
+            $html .= $this->_getCreatorInformationAsHTML($this->_item, 3,$mode).LF;
+            $html .= '</div>'.LF;
+         }
+         $html .= '</td></tr>'.LF;
+      }
+
       $html .= '</table>'.LF.LF;
+
       return $html;
    }
 
@@ -754,8 +691,9 @@ var $_room_type = 'context';
                $retour .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
             }
          }
-         $retour .= '   </style>'."\n";
-         $retour .= '   <!-- END Styles -->'."\n";
+         $retour .= ' background-color:'.$color_array['content_background'].'; '.LF;
+         $retour .= '   </style>'.LF;
+         $retour .= '   <!-- END Styles -->'.LF;
       }
       return $retour;
    }

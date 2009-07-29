@@ -75,6 +75,8 @@ class cs_detail_view extends cs_view {
     */
    var $_search_array = array();
 
+   var $_show_content_without_window = false;
+
    /** constructor: cs_detail_view
     * the only available constructor, initial values for internal variables
     *
@@ -1298,27 +1300,29 @@ class cs_detail_view extends cs_view {
          $width= '';
       }
 
-      if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
-         $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
-      }else{
-         $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
-      }
-      $html .='<div id="detail_headline">'.LF;
-      $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
-      if($rubric == CS_DISCUSSION_TYPE){
-         $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
-      }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
-         $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
-      }elseif ($rubric == 'account' ){
-         $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
-      }else{
-        $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
-      }
-      $html .= '</h2>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      $html .='<div id="detail_content" style="font-size:10pt; '.$width.'">'.LF;
+      if ( !$this->_show_content_without_window ) {
+         if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
+            $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
+         }else{
+            $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
+         }
+         $html .='<div id="detail_headline">'.LF;
+         $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
+         if($rubric == CS_DISCUSSION_TYPE){
+            $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
+         }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
+            $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
+         }elseif ($rubric == 'account' ){
+            $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
+         }else{
+           $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getFullName(),false));
+         }
+         $html .= '</h2>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
 
+         $html .='<div id="detail_content" style="font-size:10pt; '.$width.'">'.LF;
+      }
 
       $formal_data1 = array();
       if ($item->isNotActivated()){
@@ -1346,13 +1350,15 @@ class cs_detail_view extends cs_view {
       }
 
       $html .= $this->_getContentAsHTML();
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
-         $mode = 'short';
-         if (in_array($item->getItemID(),$this->_openCreatorInfo)) {
-            $mode = 'long';
+      if ( !$this->_show_content_without_window ) {
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
+            $mode = 'short';
+            if (in_array($item->getItemID(),$this->_openCreatorInfo)) {
+               $mode = 'long';
+            }
+            $html .= $this->_getCreatorInformationAsHTML($item, 3,$mode).LF;
          }
-         $html .= $this->_getCreatorInformationAsHTML($item, 3,$mode).LF;
       }
       if (($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom()) and
          !($rubric == CS_TODO_TYPE and !$current_context->withTodoManagment())
@@ -1396,11 +1402,13 @@ class cs_detail_view extends cs_view {
          }
       }
 
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .='</div>'.LF;
+      if ( !$this->_show_content_without_window ) {
+         $html .='</div>'.LF;
+         $html .='</div>'.LF;
+         $html .='<div style="clear:both;">'.LF;
+         $html .='</div>'.LF;
+         $html .='</div>'.LF;
+      }
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .= '<script type="text/javascript">'.LF;

@@ -51,6 +51,20 @@ class cs_group_detail_view extends cs_detail_view {
       return $this->_account_mode;
    }
 
+   /**
+    * Set the cs_item and optionally a list of subitems (also
+    * of type cs_item) to display.
+    */
+   function setItem ($item){
+      parent::setItem($item);
+      if ( $item->isA(CS_LABEL_TYPE)
+           and $item->getLabelType() == CS_GROUP_TYPE
+           and $item->isGroupRoomActivated()
+         ) {
+         $this->_show_content_without_window = true;
+      }
+   }
+
    function _getNewestLinkedItemsAsHTML($item){
       $title_string =$this->_translator->getMessage('COMMON_REFERENCED_LATEST_ENTRIES');
       $link_items = $item->getLatestLinkItemList(10);
@@ -194,221 +208,227 @@ class cs_group_detail_view extends cs_detail_view {
     * @returns string $item as HMTL
     *
     * @param object item     the single list entry
-    * @author CommSy Development Group
     */
    function _getItemAsHTML($item) {
-      $current_context = $this->_environment->getCurrentContextItem();
-
       $html  = LF.'<!-- BEGIN OF GROUP ITEM DETAIL -->'.LF;
-
-      $html  .='<table style="width:100%; border-collapse:collapse; border:0px solid black;" summary="Layout"><tr><td>';
-
-      #########################################
-      # FLAG: group room
-      #########################################
-      $current_context_item = $this->_environment->getCurrentContextItem();
-      if ( !$current_context_item->showGrouproomFunctions()
-           or !$item->isGroupRoomActivated()
+      if ( $this->_show_content_without_window
+           and $item->isA(CS_LABEL_TYPE)
+           and $item->getLabelType() == CS_GROUP_TYPE
+           and $item->isGroupRoomActivated()
          ) {
-      #########################################
-      # FLAG: group room
-      #########################################
-
-      // Picture
-      $picture = $item->getPicture();
-      if ( !empty($picture) ){
-         $disc_manager = $this->_environment->getDiscManager();
-         if ( $disc_manager->existsFile($picture) ) {
-            $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
-            $pict_width = $image_array[0];
-            if ( $pict_width > 150 ) {
-               $width = 150;
-            } else {
-               $width = $pict_width;
-            }
-         } else {
-            $width = 150;
-         }
-         unset($disc_manager);
-         $params = array();
-         $params['picture'] = $picture;
-         $curl = curl($this->_environment->getCurrentContextID(),
-                      'picture', 'getfile', $params, '');
-         unset($params);
-         $html .= '<img style=" width: '.$width.'px; margin-left:5px; margin-bottom:5px;" alt="Portrait" src="'.$curl.'" class="portrait2" />'.LF;
-      }
-      unset($picture);
-
-      // Description
-      $desc = $this->_item->getDescription();
-      if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
-         $html .= $this->getScrollableContent($desc,$item,'',true).LF;
-      }
-
-
-      #########################################
-      # FLAG: group room
-      #########################################
-      } else {
-         // Description
          $grouproom_item = $item->getGroupRoomItem();
          if ( isset($grouproom_item) and !empty($grouproom_item) ) {
-            $desc = $grouproom_item->getDescription();
+            $html .= $this->_getRoomWindowAsHTML($grouproom_item,$this->_account_mode);
+         }
+      } else {
+
+         $current_context = $this->_environment->getCurrentContextItem();
+         $html  .='<table style="width:100%; border-collapse:collapse; border:0px solid black;" summary="Layout"><tr><td>';
+
+         #########################################
+         # FLAG: group room
+         #########################################
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         if ( !$current_context_item->showGrouproomFunctions()
+              or !$item->isGroupRoomActivated()
+            ) {
+         #########################################
+         # FLAG: group room
+         #########################################
+
+            // Picture
+            $picture = $item->getPicture();
+            if ( !empty($picture) ){
+               $disc_manager = $this->_environment->getDiscManager();
+               if ( $disc_manager->existsFile($picture) ) {
+                  $image_array = getimagesize($disc_manager->getFilePath('picture').$picture);
+                  $pict_width = $image_array[0];
+                  if ( $pict_width > 150 ) {
+                     $width = 150;
+                  } else {
+                     $width = $pict_width;
+                  }
+               } else {
+                  $width = 150;
+               }
+               unset($disc_manager);
+               $params = array();
+               $params['picture'] = $picture;
+               $curl = curl($this->_environment->getCurrentContextID(),
+                            'picture', 'getfile', $params, '');
+               unset($params);
+               $html .= '<img style=" width: '.$width.'px; margin-left:5px; margin-bottom:5px;" alt="Portrait" src="'.$curl.'" class="portrait2" />'.LF;
+            }
+            unset($picture);
+
+            // Description
+            $desc = $this->_item->getDescription();
             if ( !empty($desc) ) {
                $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
-               $html .= $desc.LF;
+               $html .= $this->getScrollableContent($desc,$item,'',true).LF;
+            }
+
+         #########################################
+         # FLAG: group room
+         #########################################
+         } else {
+            // Description
+            $grouproom_item = $item->getGroupRoomItem();
+            if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+               $desc = $grouproom_item->getDescription();
+               if ( !empty($desc) ) {
+                  $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+                  $html .= $desc.LF;
+               }
             }
          }
-      }
-      #########################################
-      # FLAG: group room
-      #########################################
+         #########################################
+         # FLAG: group room
+         #########################################
 
-      #########################################
-      # FLAG: group room
-      #########################################
-      $current_context_item = $this->_environment->getCurrentContextItem();
-      if ( $current_context_item->showGrouproomFunctions() ) {
-         $grouproom_item = $item->getGroupRoomItem();
-         if ( isset($grouproom_item) and !empty($grouproom_item) ) {
-            if ( !empty($desc) ) {
-               $char = '';
+         #########################################
+         # FLAG: group room
+         #########################################
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         if ( $current_context_item->showGrouproomFunctions() ) {
+            $grouproom_item = $item->getGroupRoomItem();
+            if ( isset($grouproom_item) and !empty($grouproom_item) ) {
+               if ( !empty($desc) ) {
+                  $char = '';
+                  $i = 1;
+                  while ( (empty($char) or $char == LF) and $i < mb_strlen($desc) ) {
+                     $char = $desc[mb_strlen($desc)-$i];
+                     $i++;
+                  }
+                  if ( $char != '>' ) {
+                     $html .= BRLF.BRLF;
+                  }
+                  unset($char);
+               }
+               $html .= $this->_getRoomWindowAsHTML($grouproom_item,$this->_account_mode);
+               $show_group_room_window = true;
+            }
+         }
+         unset($desc);
+         if ( !isset($show_group_room_window) or !$show_group_room_window ) {
+         #########################################
+         # FLAG: group room
+         #########################################
+
+            // Members
+      #      $html .= $this->_getNewestLinkedItemsAsHTML($item);
+            $html .= '<h3 class="subitemtitle" style="margin-top:10px;">'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;
+            $context_item = $this->_environment->getCurrentContextItem();
+            $members = $item->getMemberItemList();
+            $count_member = $members->getCount();
+            $html1 = '';
+            $html2 = '';
+            $html3 = '';
+            if ( $members->isEmpty() ) {
+               $html1 .= '   <li><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></li>'.LF;
+            } else {
+               $member = $members->getFirst();
                $i = 1;
-               while ( (empty($char) or $char == LF) and $i < mb_strlen($desc) ) {
-                  $char = $desc[mb_strlen($desc)-$i];
-                  $i++;
+               while ($member) {
+                  if ( $member->isUser() ){
+                     $linktext = $this->_text_as_html_short($this->_compareWithSearchText($member->getFullname()));
+                     $member_title = $this->_text_as_html_short($this->_compareWithSearchText($member->getTitle()));
+                     if ( !empty($member_title) ) {
+                        $linktext .= ', '.$member_title;
+                     }
+                     if ($i == 1){
+                        $html1 .= '   <li>';
+                        $params = array();
+                        $params['iid'] = $member->getItemID();
+                        $html1 .= ahref_curl($this->_environment->getCurrentContextID(),
+                                      'user',
+                                      'detail',
+                                      $params,
+                                      $linktext);
+                        unset($params);
+                        $html1 .= '</li>'.LF;
+                     }elseif($i == 2){
+                        $html2 .= '   <li>';
+                        $params = array();
+                        $params['iid'] = $member->getItemID();
+                        $html2 .= ahref_curl($this->_environment->getCurrentContextID(),
+                                      'user',
+                                      'detail',
+                                      $params,
+                                      $linktext);
+                        unset($params);
+                        $html2 .= '</li>'.LF;
+                     }else{
+                        $html3 .= '   <li>';
+                        $params = array();
+                        $params['iid'] = $member->getItemID();
+                        $html3 .= ahref_curl($this->_environment->getCurrentContextID(),
+                                      'user',
+                                      'detail',
+                                      $params,
+                                      $linktext);
+                        unset($params);
+                        $html3 .= '</li>'.LF;
+                        $i = 0;
+                     }
+                     $i++;
+                  }
+                  unset($member);
+                  $member = $members->getNext();
                }
-               if ( $char != '>' ) {
-                  $html .= BRLF.BRLF;
-               }
-               unset($char);
             }
-            $html .= $this->_getRoomWindowAsHTML($grouproom_item,$this->_account_mode);
-            $show_group_room_window = true;
-         }
-      }
-      unset($desc);
-      if ( !isset($show_group_room_window) or !$show_group_room_window ) {
-      #########################################
-      # FLAG: group room
-      #########################################
-
-      // Members
-#      $html .= $this->_getNewestLinkedItemsAsHTML($item);
-      $html .= '<h3 class="subitemtitle" style="margin-top:10px;">'.$this->_translator->getMessage('GROUP_MEMBERS').'</h3>'.LF;
-      $context_item = $this->_environment->getCurrentContextItem();
-      $members = $item->getMemberItemList();
-      $count_member = $members->getCount();
-      $html1 = '';
-      $html2 = '';
-      $html3 = '';
-      if ( $members->isEmpty() ) {
-         $html1 .= '   <li><span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span></li>'.LF;
-      } else {
-         $member = $members->getFirst();
-         $i = 1;
-         while ($member) {
-            if ( $member->isUser() ){
-               $linktext = $this->_text_as_html_short($this->_compareWithSearchText($member->getFullname()));
-               $member_title = $this->_text_as_html_short($this->_compareWithSearchText($member->getTitle()));
-               if ( !empty($member_title) ) {
-                  $linktext .= ', '.$member_title;
-               }
-               if ($i == 1){
-                  $html1 .= '   <li>';
-                  $params = array();
-                  $params['iid'] = $member->getItemID();
-                  $html1 .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'user',
-                                'detail',
-                                $params,
-                                $linktext);
-                  unset($params);
-                  $html1 .= '</li>'.LF;
-               }elseif($i == 2){
-                  $html2 .= '   <li>';
-                  $params = array();
-                  $params['iid'] = $member->getItemID();
-                  $html2 .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'user',
-                                'detail',
-                                $params,
-                                $linktext);
-                  unset($params);
-                  $html2 .= '</li>'.LF;
-               }else{
-                  $html3 .= '   <li>';
-                  $params = array();
-                  $params['iid'] = $member->getItemID();
-                  $html3 .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'user',
-                                'detail',
-                                $params,
-                                $linktext);
-                  unset($params);
-                  $html3 .= '</li>'.LF;
-                  $i = 0;
-               }
-               $i++;
-            }
-            unset($member);
-            $member = $members->getNext();
-         }
-      }
-      $html .= '<table summary = "layout">'.LF;
-      $html .= '<tr>'.LF;
-      $html .= '<td style="vertical-align:top;">'.LF;
-      $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-#      $html .= '<ul>'.LF;
-      $html .= $html1.LF;
-      $html .= '</ul>'.LF;
-      $html .= '</td>'.LF;
-      if (!empty($html2)){
-         $html .= '<td style="vertical-align:top;">'.LF;
-         $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-         $html .= $html2;
-         $html .= '</ul>'.LF;
-         $html .= '</td>'.LF;
-      }
-      if (!empty($html3)){
-         $html .= '<td style="vertical-align:top;">'.LF;
-         $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
-         $html .= $html3;
-         $html .= '</ul>'.LF;
-         $html .= '</td>'.LF;
-      }
-      $html .= '</tr>'.LF;
-      $html .= '</table>'.LF;
-
-      // Foren
-      $context_item = $this->_environment->getCurrentContextItem();
-      if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
-         $discussions = $item->getDiscussionNotificationArray();
-         if ( isset($discussions[0]) ) {
-            $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
-            $html .= '<ul>'.LF;
-            foreach($discussions as $discussion){
-                  $html .= '   <li>' . $discussion . '</li>'.LF;
-
-            }
+            $html .= '<table summary = "layout">'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:top;">'.LF;
+            $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+      #      $html .= '<ul>'.LF;
+            $html .= $html1.LF;
             $html .= '</ul>'.LF;
+            $html .= '</td>'.LF;
+            if (!empty($html2)){
+               $html .= '<td style="vertical-align:top;">'.LF;
+               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+               $html .= $html2;
+               $html .= '</ul>'.LF;
+               $html .= '</td>'.LF;
+            }
+            if (!empty($html3)){
+               $html .= '<td style="vertical-align:top;">'.LF;
+               $html .='<ul style="list-style-position:inside; font-size:10pt; padding-left:0px; margin-left:20px; margin-top:0px; margin-bottom:20px; padding-bottom:0px;">  '.LF;
+               $html .= $html3;
+               $html .= '</ul>'.LF;
+               $html .= '</td>'.LF;
+            }
+            $html .= '</tr>'.LF;
+            $html .= '</table>'.LF;
+
+            // Foren
+            $context_item = $this->_environment->getCurrentContextItem();
+            if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
+               $discussions = $item->getDiscussionNotificationArray();
+               if ( isset($discussions[0]) ) {
+                  $html .= '<h3>'.$this->_translator->getMessage('GROUP_DISCUSSIONS').'</h3>'.LF;
+                  $html .= '<ul>'.LF;
+                  foreach($discussions as $discussion){
+                        $html .= '   <li>' . $discussion . '</li>'.LF;
+
+                  }
+                  $html .= '</ul>'.LF;
+               }
+            }
+
+         #########################################
+         # FLAG: group room
+         #########################################
          }
+         #########################################
+         # FLAG: group room
+         #########################################
+         $html .= '</td></tr></table>'.LF;
+         unset($grouproom_item);
+         unset($current_context_item);
       }
-
-      #########################################
-      # FLAG: group room
-      #########################################
-      }
-      #########################################
-      # FLAG: group room
-      #########################################
-      $html .= '</td></tr></table>'.LF;
-
       $html .= '<!-- END OF group ITEM DETAIL -->'.LF.LF;
-
-      unset($grouproom_item);
-      unset($current_context_item);
       return $html;
    }
 
@@ -522,12 +542,12 @@ class cs_group_detail_view extends cs_detail_view {
       return $html;
    }
 
-
    function _getDetailItemActionsAsHTML ($item) {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $context_item = $this->_environment->getCurrentContextItem();
+
       ##############################
       # FLAG: group room
       ##############################
@@ -596,58 +616,58 @@ class cs_group_detail_view extends cs_detail_view {
       # FLAG: group room
       ##############################
 
-      // Enter or leave the group
-      if ( $item->isMember($current_user) ) {
-         if ( !$item->isSystemLabel() and $this->_with_modifying_actions ) {
-            $params = array();
-            $params['iid'] = $this->_item->getItemID();
-            $params['group_option'] = '2';
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+         // Enter or leave the group
+         if ( $item->isMember($current_user) ) {
+            if ( !$item->isSystemLabel() and $this->_with_modifying_actions ) {
+               $params = array();
+               $params['iid'] = $this->_item->getItemID();
+               $params['group_option'] = '2';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               }
+               $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'group',
+                                          'detail',
+                                          $params,
+                                          $image,
+                                          $this->_translator->getMessage('GROUP_LEAVE')).LF;
+               unset($params);
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               }
+               $html .= '<a title="'.$this->_translator->getMessage('GROUP_LEAVE').' "class="disabled">'.$image.'</a>'.LF;
             }
-            $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       'group',
-                                       'detail',
-                                       $params,
-                                       $image,
-                                       $this->_translator->getMessage('GROUP_LEAVE')).LF;
-            unset($params);
          } else {
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+            if ( !$item->isSystemLabel() and $this->_with_modifying_actions ) {
+               $params = array();
+               $params['iid'] = $this->_item->getItemID();
+               $params['group_option'] = '1';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+               }
+               $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
+                                          'group',
+                                          'detail',
+                                          $params,
+                                          $image,
+                                          $this->_translator->getMessage('GROUP_ENTER')).LF;
+               unset($params);
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_LEAVE').'"/>';
+               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                  $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+               } else {
+                  $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
+               }
+               $html .= '<a title="'.$this->_translator->getMessage('GROUP_ENTER').' "class="disabled">'.$image.'</a>'.LF;
             }
-            $html .= '<a title="'.$this->_translator->getMessage('GROUP_LEAVE').' "class="disabled">'.$image.'</a>'.LF;
          }
-      } else {
-         if ( !$item->isSystemLabel() and $this->_with_modifying_actions ) {
-            $params = array();
-            $params['iid'] = $this->_item->getItemID();
-            $params['group_option'] = '1';
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
-            } else {
-               $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
-            }
-            $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                       'group',
-                                       'detail',
-                                       $params,
-                                       $image,
-                                       $this->_translator->getMessage('GROUP_ENTER')).LF;
-            unset($params);
-         } else {
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
-            } else {
-               $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('GROUP_ENTER').'"/>';
-            }
-            $html .= '<a title="'.$this->_translator->getMessage('GROUP_ENTER').' "class="disabled">'.$image.'</a>'.LF;
-         }
-      }
 
       ##############################
       # FLAG: group room
@@ -704,8 +724,36 @@ class cs_group_detail_view extends cs_detail_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $may_enter = $item->mayEnter($current_user);
       $color_array = $item->getColorArray();
+
+      $style = ' color: '.$color_array['page_title'].';';
+      if ($color_array['schema']=='SCHEMA_OWN'){
+         if ($item->getBGImageFilename()){
+            global $c_single_entry_point;
+            if ($item->issetBGImageRepeat()){
+               $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
+            }else{
+               $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
+            }
+         }
+      } else {
+         if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
+            $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
+         }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
+            $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
+         }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
+            $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
+         }else{
+            $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
+         }
+      }
+      $style .= ' background-color:'.$color_array['content_background'].'; ';
+
       $title = $item->getTitle();
-      $html = '<table class="room_window" style="margin-left:20px; width: 80%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
+      if ( $this->_show_content_without_window ) {
+         $html = '<table class="room_window" style="margin-left:0px; width: 70%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px; '.$style.'" summary="Layout">'.LF;
+      } else {
+         $html = '<table class="room_window" style="margin-left:20px; width: 80%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
+      }
       $html .= '<tr><td style="padding:0px;">'.LF.LF;
       $logo = $item->getLogoFilename();
       $html .= '<table style="width: 100%; padding:0px; border-collapse:collapse;" summary="Layout">'.LF;
@@ -714,7 +762,7 @@ class cs_group_detail_view extends cs_detail_view {
 
       // Titelzeile
       if ( !empty($logo) ) {
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; float: left; padding: 5px;">'.LF;
+         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; float: left; padding: 2px;">'.LF;
          $params = array();
          $params['picture'] = $item->getLogoFilename();
          $curl = curl($item->getItemID(), 'picture', 'getfile', $params,'');
@@ -725,7 +773,11 @@ class cs_group_detail_view extends cs_detail_view {
             $html .= ahref_curl($item->getItemID(),'home','index','','<img class="logo_small" src="'.$curl.'" alt="'.$this->_translator->getMessage('LOGO').'" border="0"/>');
          }
          $html .= '</div>'.LF;
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         if ( $this->_show_content_without_window ) {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding: 9px 0px 0px 0px;">'.LF;
+         } else {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         }
          $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false));
          if ($item->isLocked()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_LOCKED').']'.LF;
@@ -736,7 +788,11 @@ class cs_group_detail_view extends cs_detail_view {
          }
          $html .= '</div>'.LF;
       } else {
-         $html .= '<div style="background-color:'.$color_array['tabs_background'].';  color:'.$color_array['tabs_title'].'; vertical-align: large; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         if ( $this->_show_content_without_window ) {
+            $html .= '<h2 class="contenttitle" style="background-color:'.$color_array['tabs_background'].'; color: '.$color_array['tabs_title'].'; padding: 4px 4px 4px 2px;">'.LF;
+         } else {
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].';  color:'.$color_array['tabs_title'].'; vertical-align: large; font-size: large; padding-top: 8px; padding-bottom: 8px;">'.LF;
+         }
          $html .= $this->_text_as_html_short($this->_compareWithSearchText($title,false)).LF;
 
          if ($item->isLocked()) {
@@ -744,7 +800,11 @@ class cs_group_detail_view extends cs_detail_view {
          } elseif ($item->isClosed()) {
             $html .= ' ['.$this->_translator->getMessage('PROJECTROOM_CLOSED').']';
          }
-         $html .= '</div>';
+         if ( $this->_show_content_without_window ) {
+            $html .= '</h2>'.LF;
+         } else {
+            $html .= '</div>'.LF;
+         }
       }
       $html .= '</td>';
       $html .= '</tr>'.LF;
@@ -754,30 +814,11 @@ class cs_group_detail_view extends cs_detail_view {
       // group room user
       $html .= '<tr>'.LF;
       $html .= '<td  colspan="2" style="';
-      $style = ' color: '.$color_array['page_title'].';';
-         if ($color_array['schema']=='SCHEMA_OWN'){
-            if ($item->getBGImageFilename()){
-               global $c_single_entry_point;
-               if ($item->issetBGImageRepeat()){
-                  $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') repeat; ';
-               }else{
-                  $style .= 'background: url('.$c_single_entry_point.'?cid='.$item->getItemID().'&mod=picture&fct=getfile&picture='.$item->getBGImageFilename().') no-repeat; ';
-               }
-            }
-         }else{
-            if (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'xy'){
-               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat; ';
-            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'x'){
-               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-x; ';
-            }elseif (isset($color_array['repeat_background']) and $color_array['repeat_background'] == 'y'){
-               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) repeat-y; ';
-            }else{
-               $style .= 'background: url(css/images/bg-'.$color_array['schema'].'.jpg) no-repeat; ';
-            }
-         }
-      $style .= ' background-color:'.$color_array['content_background'].'; ';
+      if ( !$this->_show_content_without_window ) {
+         $html .= $style;
+      }
+      $html .= ' padding:5px;">'.LF;
 
-      $html .= $style.' padding:5px;">'.LF;
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());
       $user_manager->setAuthSourceLimit($current_user->getAuthSource());
@@ -877,6 +918,18 @@ class cs_group_detail_view extends cs_detail_view {
          }
          $html .= '</div>'.LF;
          $html .= '<div>'.LF;
+
+         // description
+         if ( $this->_show_content_without_window ) {
+            $group_item = $this->_item->getGroupRoomItem();
+            $html .= '<div style="padding-bottom: 10px;">'.LF;
+            $desc = $group_item->getDescription();
+            if ( !empty($desc) ) {
+               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+               $html .= $desc.LF;
+            }
+            $html .= '</div>'.LF;
+         }
 
          // prepare member list
          $html_temp = '';
@@ -1007,7 +1060,23 @@ class cs_group_detail_view extends cs_detail_view {
       $html .= '</table>'.LF.LF;
 
       $html .= '</td></tr>'.LF;
+      // creator, modificator infos
+      if ( $this->_show_content_without_window ) {
+         $html .= '<tr><td colspan="2" style="padding: 5px 10px 5px 10px;">'.LF;
+         if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+            $html .='<div class="infoborder" style="margin-top:5px; padding-top:10px; vertical-align:top;">';
+            $mode = 'short';
+            if (in_array($this->_item->getItemID(),$this->_openCreatorInfo)) {
+               $mode = 'long';
+            }
+            $html .= $this->_getCreatorInformationAsHTML($this->_item, 3,$mode).LF;
+            $html .= '</div>'.LF;
+         }
+         $html .= '</td></tr>'.LF;
+      }
+
       $html .= '</table>'.LF.LF;
+
       return $html;
    }
 
