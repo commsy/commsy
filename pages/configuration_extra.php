@@ -101,7 +101,9 @@ else {
          $description_hidden = $values['description'];
       }
 
-      if ( !empty($_POST['portal']) ) {
+      if ( !empty($_POST['portal'])
+           and $_POST['portal'] > 99
+         ) {
          $portal_manager = $environment->getPortalManager();
          $portal = $portal_manager->getItem($_POST['portal']);
          unset($portal_manager);

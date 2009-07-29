@@ -63,18 +63,18 @@ class cs_material_ims_import_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
+      $this->_form->addImage('ims_upload','',getMessage('MATERIAL_UPLOADFILE'), getMessage('MATERIAL_UPLOADFILE_DESC'),'',false);
+      $this->_form->combine('vertical');
+      $this->_form->addText('ims_upload_description','',getMessage('IMS_UPLOAD_DESCRIPTION'));
+
       if ($this->_environment->withBelugaConnection()){
+         $this->_form->addEmptyLine();
          $link = $this->_environment->getBelugaConnectionLink();
 
          $this->_form->addText('import',getMessage('MATERIAL_IMS_UPLOADLINK'),'<a style="font-weight:bold;" href="'.$link.'">'.getMessage('MATERIAL_IMS_UPLOAD_LINK_HEADER').'</a>');
          $this->_form->combine('vertical');
          $this->_form->addText('import_description','',getMessage('BELUGA_IMPORT_DESCRIPTION').BR);
-         $this->_form->addEmptyLine();
       }
-
-      $this->_form->addImage('ims_upload','',getMessage('MATERIAL_UPLOADFILE'), getMessage('MATERIAL_UPLOADFILE_DESC'),'',false);
-      $this->_form->combine('vertical');
-      $this->_form->addText('ims_upload_description','',getMessage('IMS_UPLOAD_DESCRIPTION'));
       $this->_form->addButtonBar('option',getMessage('MATERIAL_IMS_IMPORT_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
    }
 
@@ -103,11 +103,11 @@ class cs_material_ims_import_form extends cs_rubric_form {
          $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'ZIP') {
             $this->_error_array[] = getMessage('DATES_WRONG_FILE_FORMAT');
-	   $error = true;
+      $error = true;
          }
       }elseif ( !isset($file_elements[1]) ){
             $this->_error_array[] = getMessage('NO_DATES_FILE_FOUND');
-	   $error = true;
+      $error = true;
       }
       return $error;
    }
