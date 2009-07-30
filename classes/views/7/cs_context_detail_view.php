@@ -188,7 +188,7 @@ var $_room_type = 'context';
       $title = $item->getTitle();
       $html  = '';
       if ( $this->_show_content_without_window ) {
-         $html = '<table class="room_window" style="margin-left:0px; width: 70%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px;" summary="Layout">'.LF;
+         $html = '<table class="room_window" style="margin-left:0px; width: 100%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px;" summary="Layout">'.LF;
       } else {
          $html .= '<table class="room_window" style="width: 70%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';';
          $html .= '" summary="Layout">'.LF;
@@ -213,7 +213,7 @@ var $_room_type = 'context';
          }
          $html .= '</div>'.LF;
          if ( $this->_show_content_without_window ) {
-            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding: 9px 0px 0px 0px;">'.LF;
+            $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding: 5px 0px 5px 0px;">'.LF;
          } else {
             $html .= '<div style="background-color:'.$color_array['tabs_background'].'; color:'.$color_array['tabs_title'].'; font-size: 14pt; padding-top: 8px; padding-bottom: 8px;">'.LF;
          }

@@ -607,13 +607,14 @@ class cs_item_attach_index_view extends cs_item_index_view {
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none'
-              and ($link_name[0] != CS_USER_TYPE
-                 or ($this->_environment->getCurrentModule() != CS_MATERIAL_TYPE
-                     and $this->_environment->getCurrentModule() != CS_DISCUSSION_TYPE
-                     and $this->_environment->getCurrentModule() != CS_ANNOUNCEMENT_TYPE
-                     and $this->_environment->getCurrentModule() != CS_TOPIC_TYPE
-                    )
-                 )
+              and ( $link_name[0] != CS_USER_TYPE
+                    or ( $this->_environment->getCurrentModule() != CS_MATERIAL_TYPE
+                         and $this->_environment->getCurrentModule() != CS_DISCUSSION_TYPE
+                         and $this->_environment->getCurrentModule() != CS_ANNOUNCEMENT_TYPE
+                         and $this->_environment->getCurrentModule() != CS_TOPIC_TYPE
+                       )
+                  )
+              and $link_name[0] != CS_PROJECT_TYPE
               and !$this->_environment->isPlugin($link_name[0])
               and !( $this->_environment->inPrivateRoom()
                      and $link_name[0] == CS_MYROOM_TYPE
@@ -787,6 +788,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
    function _getProjectTitle ($item) {
       $title = $item->getTitle();
       $title = $this->_compareWithSearchText($title);
+      $title = $this->_text_as_html_short($title);
       $params = array();
       $params['iid'] = $item->getItemID();
 

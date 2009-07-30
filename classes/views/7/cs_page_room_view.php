@@ -1528,8 +1528,6 @@ class cs_page_room_view extends cs_page_view {
          }
          $html .= $this->_getPluginInfosForAfterContentAsHTML();
 
-         // @segment-end 35577
-         // @segment-begin 91880 asHTML(): link"email_to_moderator"&co(right-bottom-corner)
          $html .= '<div id="ie_footer" class="commsy_footer">'.LF;
          $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:12px; padding-top:5px; padding-bottom:10px; ">'.LF;
          $email_to_moderators = '';

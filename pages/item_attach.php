@@ -174,6 +174,7 @@ elseif ( $mode == 'list_actions' ) {
       $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
    }
 }
+
 if ( $environment->getCurrentContextItem()->isDesign7() ) {
    if ( isset($_COOKIE['itemlist']) ) {
       foreach ( $_COOKIE['itemlist'] as $key => $val ) {

@@ -1300,12 +1300,12 @@ class cs_detail_view extends cs_view {
          $width= '';
       }
 
+      if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
+         $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
+      }else{
+         $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
+      }
       if ( !$this->_show_content_without_window ) {
-         if ( (isset($_GET['mode']) and $_GET['mode']=='print') ){
-            $html .='<div class="infoborder" style="width:100%; margin-top:5px; vertical-align:bottom;">'.LF;
-         }else{
-            $html .='<div class="infoborder_display_content"  style="'.$width.'margin-top:5px; vertical-align:bottom;">'.LF;
-         }
          $html .='<div id="detail_headline">'.LF;
          $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
          if($rubric == CS_DISCUSSION_TYPE){
@@ -1360,28 +1360,40 @@ class cs_detail_view extends cs_view {
             $html .= $this->_getCreatorInformationAsHTML($item, 3,$mode).LF;
          }
       }
-      if (($this->_environment->getCurrentModule() != 'user' or !$this->_environment->inPrivateRoom()) and
-         !($rubric == CS_TODO_TYPE and !$current_context->withTodoManagment())
-      ){
+      if ( ( $this->_environment->getCurrentModule() != 'user'
+             or !$this->_environment->inPrivateRoom()
+           )
+           and !( $rubric == CS_TODO_TYPE
+                  and !$current_context->withTodoManagment()
+                )
+         ) {
+
 ############SQL-Statements reduzieren
-          $html .= $this->_getSubItemsAsHTML($item);
-          if ($rubric == CS_DISCUSSION_TYPE and !$item->isClosed() and $this->_with_modifying_actions ) {
+
+         $html .= $this->_getSubItemsAsHTML($item);
+         if ( $rubric == CS_DISCUSSION_TYPE
+              and !$item->isClosed()
+              and $this->_with_modifying_actions
+            ) {
             $html .= $this->_getDiscussionFormAsHTML();
             $html .= '</div>'.LF;
          }
-          if ($rubric == CS_TODO_TYPE and $this->_with_modifying_actions ) {
+         if ( $rubric == CS_TODO_TYPE
+              and $this->_with_modifying_actions
+            ) {
             if ( $current_context->withTodoManagment() ){
                $html .= $this->_getTodoFormAsHTML();
             }
             $html .= '</div>'.LF;
          }
       }
-      if ($rubric != CS_GROUP_TYPE
-      and $rubric != CS_TOPIC_TYPE
-      and $rubric != CS_INSTITUTION_TYPE
-      and $rubric != CS_USER_TYPE
-      and $rubric != CS_DISCUSSION_TYPE
-      and $this->_environment->getCurrentModule() !='account'){
+      if ( $rubric != CS_GROUP_TYPE
+           and $rubric != CS_TOPIC_TYPE
+           and $rubric != CS_INSTITUTION_TYPE
+           and $rubric != CS_USER_TYPE
+           and $rubric != CS_DISCUSSION_TYPE
+           and $this->_environment->getCurrentModule() !='account'
+         ) {
          if (!$current_context->isPrivateRoom()){
             $html .= $this->_getAnnotationsAsHTML();
             $html .= $this->_getAnnotationFormAsHTML();
@@ -1402,11 +1414,17 @@ class cs_detail_view extends cs_view {
          }
       }
 
-      if ( !$this->_show_content_without_window ) {
+      $html .='</div>'.LF;
+      if ( !$this->_show_content_without_window
+           or $this->_environment->getCurrentModule() == type2module(CS_PROJECT_TYPE)
+         ) {
          $html .='</div>'.LF;
-         $html .='</div>'.LF;
-         $html .='<div style="clear:both;">'.LF;
-         $html .='</div>'.LF;
+      }
+      $html .='<div style="clear:both;">'.LF;
+      $html .='</div>'.LF;
+      if ( !$this->_show_content_without_window
+           or $this->_environment->getCurrentModule() == type2module(CS_PROJECT_TYPE)
+         ) {
          $html .='</div>'.LF;
       }
       $html .= '<!-- END OF DETAIL VIEW -->'.LF.LF;
@@ -1569,113 +1587,118 @@ class cs_detail_view extends cs_view {
       return $html;
    }
 
-
    function _getAnnotationsAsHTML () {
       $item = $this->_item;
       $html = '';
       $count = $this->_annotation_list->getCount();
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') or $count > 0){
-      $html .= '</div>'.LF.LF;
-      $html .= '</div>'.LF.LF;
-      $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
-#      $html .='<div class="detail_annotations" style="width:100%;">'.LF;
-      $html .='<div id="detail_annotations">'.LF;
-      if ( !empty($this->_annotation_list) ){
-         $count = $this->_annotation_list->getCount();
-         if ($count == 1){
-            $desc = ' ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
-         }else{
-            $desc = ' ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
+         if ( !$this->_show_content_without_window ) {
+            $html .= '</div>'.LF.LF;
+            $html .= '</div>'.LF.LF;
          }
-      }else{
-         $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
-      }
-      $desc .= ')'.LF;
-      $html .='<div id="detail_annotation_headline">'.LF;
-      $html .= '<h3>'.$this->_translator->getMessage('COMMON_ANNOTATIONS').$desc;
-      $html .= '</h3>'.LF;
-      $html .='</div>'.LF;
-      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
-         $html .='<div class="sub_item_main">'.LF;
-      }else{
-         $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
-      }
-      $html .= '<a name="annotations"></a>'.LF;
-      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ($current_browser == 'msie' and !(strstr($current_browser_version,'7.') or strstr($current_browser_version,'8.'))){
-         $html .='<div style="width:100%; padding:5px 10px 5px 5px; background-color:#FFFFFF;">'.LF;
-      }else{
-         $html .='<div style="background-color:#FFFFFF; padding:5px;">'.LF;
-      }
-      if ( !empty($this->_annotation_list) ){
-         $annotation_item = $this->_annotation_list->getFirst();
-      }
-      if ( !empty($annotation_item) ){
-         $pos_number = 1;
-         if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
-            $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+         $html .= '<!-- BEGIN OF ANNOTATION VIEW -->'.LF.LF;
+         #$html .='<div class="detail_annotations" style="width:100%;">'.LF;
+         #if ( $this->_show_content_without_window ) {
+         #   $html .= '<div id="detail_annotations" style="width: 69%; margin-left: 9px;">'.LF;
+         #} else {
+            $html .= '<div id="detail_annotations">'.LF;
+         #}
+         if ( !empty($this->_annotation_list) ){
+            $count = $this->_annotation_list->getCount();
+            if ($count == 1){
+               $desc = ' ('.$this->_translator->getMessage('COMMON_ONE_ANNOTATION');
+            }else{
+               $desc = ' ('.$this->_translator->getMessage('COMMON_X_ANNOTATIONS',$count);
+            }
          }else{
-            $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+            $desc = ' ('.$this->_translator->getMessage('COMMON_NO_ANNOTATIONS');
          }
-         $current_item = $this->_annotation_list->getFirst();
-         while( $current_item ){
-               $image = $this->_getItemPicture($current_item->getModificatorItem());
-               $html .='<tr>'.LF;
-               $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
-               $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
-               $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
-               $html .='<div style="padding-top:10px;">'.LF;
-               $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
-               $html .= '<h3 class="subitemtitle">'.$pos_number.'. '.$this->_getSubItemTitleAsHTML($current_item, $pos_number);
-               $html .= '</h3>'.LF;
-               $html .='</div>'.LF;
-               $html .='</td>'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                  $html .= $this->getAnnotationActionsAsHTML($current_item);
-                  $html .='</td>'.LF;
-               }else{
-                  $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
-                  $html .= '&nbsp';
-                  $html .='</td>'.LF;
-               }
-               $html .='</tr>'.LF;
-               $html .='<tr>'.LF;
-               $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
-                  $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
+         $desc .= ')'.LF;
+         $html .='<div id="detail_annotation_headline">'.LF;
+         $html .= '<h3>'.$this->_translator->getMessage('COMMON_ANNOTATIONS').$desc;
+         $html .= '</h3>'.LF;
+         $html .='</div>'.LF;
+         if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ){
+            $html .='<div class="sub_item_main">'.LF;
+         }else{
+            $html .='<div class="sub_item_main" style="background-color:#FFFFFF;">'.LF;
+         }
+         $html .= '<a name="annotations"></a>'.LF;
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ($current_browser == 'msie' and !(strstr($current_browser_version,'7.') or strstr($current_browser_version,'8.'))){
+            $html .='<div style="width:100%; padding:5px 10px 5px 5px; background-color:#FFFFFF;">'.LF;
+         }else{
+            $html .='<div style="background-color:#FFFFFF; padding:5px;">'.LF;
+         }
+         if ( !empty($this->_annotation_list) ){
+            $annotation_item = $this->_annotation_list->getFirst();
+         }
+         if ( !empty($annotation_item) ){
+            $pos_number = 1;
+            if ($current_browser == 'msie' and !strstr($current_browser_version,'7.')){
+               $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+            }else{
+               $html .='<table summary="layout" class="detail_annotation_table">'.LF;
+            }
+            $current_item = $this->_annotation_list->getFirst();
+            while( $current_item ){
+                  $image = $this->_getItemPicture($current_item->getModificatorItem());
+                  $html .='<tr>'.LF;
+                  $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
+                  $html .='<td style="width:70%; padding-top:5px; vertical-align:bottom;">'.LF;
+                  $html .= '<a id="annotation_'.$pos_number.'" name="annotation_'.$pos_number.'"></a>'.LF;
+                  $html .='<div style="padding-top:10px;">'.LF;
+                  $html .= '<a id="anchor'.$current_item->getItemID().'" name="anchor'.$current_item->getItemID().'"></a>'.LF;
+                  $html .= '<h3 class="subitemtitle">'.$pos_number.'. '.$this->_getSubItemTitleAsHTML($current_item, $pos_number);
+                  $html .= '</h3>'.LF;
                   $html .='</div>'.LF;
-               }
-               $html .= $this->_getAnnotationContentAsHTML($current_item).LF;
-               $html .='</td>'.LF;
-               $html .='</tr>'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-                  $html .='<tr>'.LF;
-                  $html .='<td class="annotation_creator_information" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
-                  $mode = 'short';
-                  if (!$item->isA(CS_USER_TYPE)) {
-                     $mode = 'short';
-                     if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
-                        $mode = 'long';
-                     }
-                     $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                  $html .='</td>'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= $this->getAnnotationActionsAsHTML($current_item);
+                     $html .='</td>'.LF;
+                  }else{
+                     $html .='<td style="width:28%; padding-top:5px; padding-left:0px; padding-right:3px; vertical-align:bottom; text-align:right;">'.LF;
+                     $html .= '&nbsp';
+                     $html .='</td>'.LF;
                   }
-                  $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               }else{
                   $html .='<tr>'.LF;
-                  $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
+                  $html .='<td colspan="2" class="infoborder" style="padding-top:5px; vertical-align:top; ">'.LF;
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<div style="float:right; height:6px; font-size:2pt;">'.LF;
+                     $html .= $this->_getAnnotationBrowsingIconsAsHTML($current_item, $pos_number,$count);
+                     $html .='</div>'.LF;
+                  }
+                  $html .= $this->_getAnnotationContentAsHTML($current_item).LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               }
-            $pos_number++;
-            $current_item = $this->_annotation_list->getNext();
+                  if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+                     $html .='<tr>'.LF;
+                     $html .='<td class="annotation_creator_information" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
+                     $mode = 'short';
+                     if (!$item->isA(CS_USER_TYPE)) {
+                        $mode = 'short';
+                        if (in_array($current_item->getItemId(),$this->_openCreatorInfo)) {
+                           $mode = 'long';
+                        }
+                        $html .= $this->_getCreatorInformationAsHTML($current_item, 6,$mode).LF;
+                     }
+                     $html .='</td>'.LF;
+                     $html .='</tr>'.LF;
+                  }else{
+                     $html .='<tr>'.LF;
+                     $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
+                     $html .='</td>'.LF;
+                     $html .='</tr>'.LF;
+                  }
+               $pos_number++;
+               $current_item = $this->_annotation_list->getNext();
+            }
+            $html .='</table>'.LF;
          }
-         $html .='</table>'.LF;
-      }
-      $html .= '<!-- END OF ANNOTATION VIEW -->'.LF.LF;
+         $html .= '<!-- END OF ANNOTATION VIEW -->'.LF.LF;
       }
       return $html;
 }
