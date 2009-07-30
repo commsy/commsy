@@ -806,6 +806,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                      $number .= '.'.$tmp_num;
                   }
                }
+               $number = substr($number,2);
                $html .= '<h3 class="subitemtitle">'.$this->_getSubItemTitleAsHTML($current_item, $number);
                $html .= '</h3>'.LF;
                $html .='</div>'.LF;
@@ -929,7 +930,12 @@ class cs_discussion_detail_view extends cs_detail_view {
 
 
    function _getSubItemTitleAsHTML ($item, $pos_number) {
-      return $pos_number.'. '. $this->_parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
+      $retour = '';
+      if ( !empty($pos_number) ) {
+         $retour .= $pos_number.'. ';
+      }
+      $retour .= $this->_parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
+      return $retour;
    }
 
    function _getSubItemTitleWithOutNumberAsHTML ($item) {
