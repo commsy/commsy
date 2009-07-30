@@ -634,6 +634,8 @@ class cs_detail_view extends cs_view {
             $link_title = $this->_text_as_html_short($link_title);
             if ($this->_environment->getCurrentModule() == 'account'){
                $type = 'account';
+            } elseif ( $this->_environment->getCurrentModule() == type2module(CS_MYROOM_TYPE) ) {
+               $type = CS_MYROOM_TYPE;
             }
             if ($count_items < 9){
                $style='padding:0px 5px 0px 10px;';
