@@ -188,7 +188,7 @@ var $_room_type = 'context';
       $title = $item->getTitle();
       $html  = '';
       if ( $this->_show_content_without_window ) {
-         $html = '<table class="room_window" style="margin-left:0px; width: 100%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px;" summary="Layout">'.LF;
+         $html = '<table class="room_window" style="margin-left:0px; width: 100%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:1px;" summary="Layout">'.LF;
       } else {
          $html .= '<table class="room_window" style="width: 70%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';';
          $html .= '" summary="Layout">'.LF;

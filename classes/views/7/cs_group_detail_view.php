@@ -750,7 +750,7 @@ class cs_group_detail_view extends cs_detail_view {
 
       $title = $item->getTitle();
       if ( $this->_show_content_without_window ) {
-         $html = '<table class="room_window" style="margin-left:0px; width: 100%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top:5px; '.$style.'" summary="Layout">'.LF;
+         $html = '<table class="room_window" style="margin-left:0px; width: 100%; border-collapse:collapse; border: 1px solid '.$color_array['tabs_background'].'; margin-top: 1px; '.$style.'" summary="Layout">'.LF;
       } else {
          $html = '<table class="room_window" style="margin-left:20px; width: 80%; border-collapse:collapse; border: 2px solid '.$color_array['tabs_background'].';" summary="Layout">'.LF;
       }

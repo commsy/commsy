@@ -197,7 +197,7 @@ class cs_myroom_index_view extends cs_context_index_view {
       /*******BEGIN RIGHT BOXES*****/
       /*****************************/
       if(!$this->_clipboard_mode and !(isset($_GET['mode']) and $_GET['mode']=='print')){
-         $html .='<div id="right_boxes_area" style="float:right; width:27%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
+         $html .='<div id="right_boxes_area" style="float:right; width:28%; padding-top:5px; vertical-align:top; text-align:left;">'.LF;
          $html .='<div style="width:250px;">'.LF;
          $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;
          $current_context = $this->_environment->getCurrentContextItem();
