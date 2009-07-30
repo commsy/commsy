@@ -758,7 +758,7 @@ class cs_group_detail_view extends cs_detail_view {
       $logo = $item->getLogoFilename();
       $html .= '<table style="width: 100%; padding:0px; border-collapse:collapse;" summary="Layout">'.LF;
       $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:'.$color_array['tabs_background'].'; padding:0px;">';
+      $html .= '<td style="background-color:'.$color_array['tabs_background'].'; padding:0px; border-right: 1px solid '.$color_array['tabs_background'].';">';
 
       // Titelzeile
       if ( !empty($logo) ) {
@@ -817,7 +817,7 @@ class cs_group_detail_view extends cs_detail_view {
       if ( !$this->_show_content_without_window ) {
          $html .= $style;
       }
-      $html .= ' padding:5px;">'.LF;
+      $html .= ' padding:5px; border-right: 1px solid '.$color_array['tabs_background'].';">'.LF;
 
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());

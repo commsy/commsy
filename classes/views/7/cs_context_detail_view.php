@@ -197,7 +197,7 @@ var $_room_type = 'context';
       $logo = $item->getLogoFilename();
       $html .= '<table style="width: 100%; padding:0px; border-collapse:collapse;" summary="Layout">'.LF;
       $html .= '<tr>'.LF;
-      $html .= '<td style="background-color:'.$color_array['tabs_background'].'; padding:0px;">';
+      $html .= '<td style="background-color:'.$color_array['tabs_background'].'; padding:0px; border-right: 1px solid '.$color_array['tabs_background'].';">';
 
       // Titelzeile
       if (!empty($logo) ) {
@@ -252,7 +252,7 @@ var $_room_type = 'context';
 
       //Projektraum User
       $html .= '<tr>'.LF;
-      $html .= '<td colspan="2" class="room_content_fader" style="padding: 5px 10px 5px 10px;">'.LF;
+      $html .= '<td colspan="2" class="room_content_fader" style="border-right: 1px solid '.$color_array['tabs_background'].'; padding: 5px 10px 5px 10px;">'.LF;
       $user_manager = $this->_environment->getUserManager();
       $user_manager->setUserIDLimit($current_user->getUserID());
       $user_manager->setAuthSourceLimit($current_user->getAuthSource());
@@ -285,7 +285,7 @@ var $_room_type = 'context';
                              'index',
                              '');
             if (!$this->isPrintableView()) {
-               $html .= '<a class="room_window" href="'.$actionCurl.'"><img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/></a>'.BRLF;
+               $html .= '<a class="room_window" href="'.$actionCurl.'"><img alt="door" src="images/door_open_large.gif"/></a>'.BRLF;
             } else {
                $html .= '<img alt="door" src="images/door_open_large.gif" style="vertical-align: large;"/>'.BRLF;
             }
