@@ -1416,7 +1416,13 @@ class cs_page_guide_view extends cs_page_view {
       }
       $html  = '<div style="position: absolute; z-index:100;  top:-3px; left:-3px; width:'.$width.'; height: 300px;">'.LF;
       $html .= '<center>';
-      $html .= '<div style="position:fixed; z-index:100; margin-top:0px; margin-left:100px; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
+      $margin_left = '100px;';
+      if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+           and (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '7')
+         ) {
+         $margin_left = '-200px;';
+      }
+      $html .= '<div style="position:fixed; z-index:100; margin-top:0px; margin-left:'.$margin_left.'; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
       $html .= '<form style="margin-bottom:0px; padding:0px;" method="post" action="'.$this->_delete_box_action_url.'">';
       if ( $type == 'portal' ) {
          $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_PORTAL');
