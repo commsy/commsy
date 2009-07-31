@@ -363,17 +363,19 @@ else {
          $auth_manager = $authentication->getAuthManager($user_item->getAuthSource());
          $auth_manager->setContextLimit($old_portal_id);
          $auth_item_old = $auth_manager->getItem($user_item->getUserID());
-         $auth_item_new = clone $auth_item_old;
-         $auth_item_new->setPortalID($environment->getCurrentPortalID());
-         $auth_item_new->setAuthSourceID($auth_source_translation_array[$auth_source_key]);
-         if (!empty($user_change_array[$user_id_key.'__CS__'.$auth_source_translation_array[$auth_source_key]])) {
-            $auth_item_new->setUserID($user_change_array[$user_id_key.'__CS__'.$auth_source_translation_array[$auth_source_key]]);
-         }
-         $auth_manager = $authentication->getAuthManager($auth_source_translation_array[$auth_source_key]);
-         $auth_manager->setContextLimit($environment->getCurrentPortalID());
-         $user_id_auth_new = $auth_item_new->getUserID();
-         if (!empty($user_id_auth_new)) {
-            $auth_manager->save($auth_item_new);
+         if ( !empty($auth_item_old) ) {
+            $auth_item_new = clone $auth_item_old;
+            $auth_item_new->setPortalID($environment->getCurrentPortalID());
+            $auth_item_new->setAuthSourceID($auth_source_translation_array[$auth_source_key]);
+            if (!empty($user_change_array[$user_id_key.'__CS__'.$auth_source_translation_array[$auth_source_key]])) {
+               $auth_item_new->setUserID($user_change_array[$user_id_key.'__CS__'.$auth_source_translation_array[$auth_source_key]]);
+            }
+            $auth_manager = $authentication->getAuthManager($auth_source_translation_array[$auth_source_key]);
+            $auth_manager->setContextLimit($environment->getCurrentPortalID());
+            $user_id_auth_new = $auth_item_new->getUserID();
+            if (!empty($user_id_auth_new)) {
+               $auth_manager->save($auth_item_new);
+            }
          }
          unset($user_id_auth_new);
 
