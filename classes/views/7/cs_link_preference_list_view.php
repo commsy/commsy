@@ -107,7 +107,7 @@ var $_important_configuration_room_list = NULL;
          while ( $current_item ) {
             if ( $count == 4 ){
                 $count = 0;
-                $html .= '</tr><tr>'.LF;
+                $html .= '</tr><tr class="list">'.LF;
             }
             $item_text = $this->_getItemAsHTML($current_item);
             $html .= $item_text;
@@ -133,7 +133,7 @@ var $_important_configuration_room_list = NULL;
          while ( $current_item ) {
              if ( $count == 4 ){
                    $count = 0;
-                   $html .= '</tr><tr>'.LF;
+                   $html .= '</tr><tr class="list">'.LF;
                }
             $item_text = $this->_getItemAsHTML($current_item);
             $html .= $item_text;
@@ -160,7 +160,7 @@ var $_important_configuration_room_list = NULL;
          while ( $current_item ) {
              if ( $count == 4 ){
                    $count = 0;
-                   $html .= '</tr><tr>'.LF;
+                   $html .= '</tr><tr class="list">'.LF;
                }
             $item_text = $this->_getItemAsHTML($current_item);
             $html .= $item_text;
@@ -174,110 +174,6 @@ var $_important_configuration_room_list = NULL;
       }
       $html .= '</tr></table>'.LF;
 
-
-
-
-
-/*
-      $html .= '<table class="configuration_table" style="margin-top:5px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="4"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</span></td></tr>'.LF;
-      $html .= '<tr>';
-      $configuration_admin_list = $this->_configuration_admin_list;
-      if ( isset($configuration_admin_list)) {
-         $current_item = $configuration_admin_list->getFirst();
-            $count = 0;
-         while ( $current_item ) {
-             if ( $count == 4 ){
-                   $count = 0;
-                   $html .= '</tr><tr>'.LF;
-               }
-            $item_text = $this->_getItemAsHTML($current_item);
-            $html .= $item_text;
-            $current_item = $configuration_admin_list->getNext();
-               $count++;
-         }
-            while ( $count < 4 ){
-           $html .= '<td width="25%" style="vertical-align: baseline; padding-bottom:10px;"></td>';
-           $count++;
-            }
-      }
-      $html .= '</tr></table>'.LF;
-
-
-
-      $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="4"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</span></td></tr>'.LF;
-      $html .= '<tr>';
-      $configuration_room_list = $this->_configuration_room_list;
-         if ( isset($configuration_room_list)) {
-            $current_item = $configuration_room_list->getFirst();
-			$count = 0;
-            while ( $current_item ) {
-			   if ( $count == 4 ){
-				   $count = 0;
-				   $html .= '</tr><tr>'.LF;
-			   }
-               $item_text = $this->_getItemAsHTML($current_item);
-               $html .= $item_text;
-               $current_item = $configuration_room_list->getNext();
-			   $count++;
-            }
-			while ( $count < 4 ){
-               $html .= '<td width="25%" style="vertical-align: baseline; padding-bottom:10px;"></td>';
-               $count++;
-			}
-         }
-      $html .= '</tr></table>'.LF;
-      if ( !$this->_environment->inPortal() and !$this->_environment->inServer() ){
-      $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
-      $html .= '<tr class="list"><td class="head" colspan="4"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_RUBRIC_OPTIONS').'</span></td></tr>'.LF;
-      $html .= '<tr>';
-      $configuration_rubric_list = $this->_configuration_rubric_list;
-         if ( isset($configuration_rubric_list)) {
-            $current_item = $configuration_rubric_list->getFirst();
-			$count = 0;
-            while ( $current_item ) {
-			   if ( $count == 4 ){
-				   $count = 0;
-				   $html .= '</tr><tr>'.LF;
-			   }
-               $item_text = $this->_getItemAsHTML($current_item);
-               $html .= $item_text;
-               $current_item = $configuration_rubric_list->getNext();
-			   $count++;
-            }
-			while ( $count < 4 ){
-               $html .= '<td width="25%" style="vertical-align: baseline; padding-bottom:10px;"></td>';
-               $count++;
-			}
-         }
-      $html .= '</tr></table>'.LF;
-      }
-      if ( isset($this->_addon_list)) {
-		  $html .= '<table class="configuration_table" style="padding-top:15px;" summary="Layout">'.LF;
-	      $html .= '<tr class="list"><td class="head" colspan="4"><span style="font-weight: bold">'.getMessage('COMMON_ADDITIONAL_CONFIGURATION').'</span></td></tr>'.LF;
-	      $html.='<tr>';
-	         $list = $this->_addon_list;
-	         if ( isset($list)) {
-	            $current_item = $list->getFirst();
-				$count = 0;
-	            while ( $current_item ) {
-				   if ( $count == 4 ){
-					   $count = 0;
-					   $html .= '</tr><tr>'.LF;
-				   }
-	               $item_text = $this->_getItemAsHTML($current_item);
-	               $html .= $item_text;
-	               $current_item = $list->getNext();
-				   $count++;
-	            }
-				while ( $count < 4 ){
-	               $html .= '<td width="25%" style="vertical-align: baseline;"></td>';
-	               $count++;
-				}
-	         }
-	      $html .= '</tr></table>'.LF;
-      }*/
       $html .='</div>'.LF;
       $html .= '<!-- END OF LIST VIEW -->'.LF.LF;
       return $html;
@@ -287,8 +183,6 @@ var $_important_configuration_room_list = NULL;
     * this method sets the title of the list view
     *
     * @param string  $this->_title          title of the list view
-    *
-    * @author CommSy Development Group
     */
     function setTitle ($value) {
        $this->_title = (string)$value;
