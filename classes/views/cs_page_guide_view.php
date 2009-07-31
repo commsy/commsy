@@ -1782,6 +1782,10 @@ class cs_page_guide_view extends cs_page_view {
             } else {
                $html .=       '<td style="width:72em; vertical-align:bottom; padding-bottom:0px;">';
             }
+            $server_item = $this->_environment->getServerItem();
+            if ( $server_item->showOutOfService() ) {
+               $html .= '<h2 style="margin-left: 10px;">'.$this->_translator->getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE').'</h2>';
+            }
             $html .='</td>'.LF;
             $html .='</tr>'.LF;
 

@@ -186,6 +186,7 @@ if ( $environment->inProjectRoom()
 
 $server_item = $environment->getServerItem();
 if ( $server_item->showOutOfService() ) {
+   $current_context_id_save = $environment->getCurrentContextID();
    $current_module_save = $current_module;
    $current_function_save = $current_function;
    $current_module = 'home';
@@ -633,17 +634,15 @@ if ( isset($_GET['jscheck'])
 }
 
 $current_user_item = $environment->getCurrentUserItem();
+
 if ( $outofservice
      and $current_user_item->isRoot()
    ) {
-   $current_module = 'configuration';
-   if ( $current_function_save != 'outofservice' ) {
-      $current_function = 'outofservice';
-   } else {
-      $current_function = $current_function_save;
-   }
-   $environment->setCurrentModule($current_module);
-   $environment->setCurrentFunction($current_function);
+   $environment->setCurrentContextID($current_context_id_save);
+   $environment->setCurrentModule($current_module_save);
+   $environment->setCurrentFunction($current_function_save);
+   $current_module = $environment->getCurrentModule();
+   $current_function = $environment->getCurrentFunction();
 }
 
 /*********** forward ********/

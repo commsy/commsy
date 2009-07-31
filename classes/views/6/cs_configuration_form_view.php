@@ -469,6 +469,7 @@ class cs_configuration_form_view extends cs_form_view {
              $this->_environment->getCurrentFunction() == 'informationbox' or
              $this->_environment->getCurrentFunction() == 'update' or
              $this->_environment->getCurrentFunction() == 'archive' or
+             $this->_environment->getCurrentFunction() == 'outofservice' or
              $this->_environment->getCurrentFunction() == 'autoaccounts'
             ){
             $show_entry = '0';
