@@ -47,19 +47,18 @@ while ( $portal ) {
    $room = $room_list->getFirst();
    while ( $room ) {
       $value = $room->getContactPersonString();
-         if(empty($value)){
-            $moderator_list = $room->getContactModeratorList();
-            $current_moderator = $moderator_list->getFirst();
-            while ( $current_moderator ) {
-               $contact_name = $current_moderator->getFullname();
-               $room->setContactPerson($contact_name);
-               $current_moderator = $moderator_list->getNext();
-            }
-            $room->save();
+      if ( empty($value) ) {
+         $moderator_list = $room->getContactModeratorList();
+         $current_moderator = $moderator_list->getFirst();
+         while ( $current_moderator ) {
+            $contact_name = $current_moderator->getFullname();
+            $room->setContactPerson($contact_name);
+            $current_moderator = $moderator_list->getNext();
          }
+         $room->save();
+      }
       $room = $room_list->getNext();
    }
    $portal = $portal_list->getNext();
 }
-
 ?>

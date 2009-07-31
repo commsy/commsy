@@ -25,14 +25,34 @@
 // the following is part of the method "asHTML"
 // from the object cs_update_view.php
 
+set_time_limit(0);
+
+$memory_limit2 = 1000 * 1024 * 1024;
+$memory_limit = ini_get('memory_limit');
+if ( !empty($memory_limit) ) {
+   if ( strstr($memory_limit,'M') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024 * 1024;
+   } elseif ( strstr($memory_limit,'K') ) {
+      $memory_limit = substr($memory_limit,0,strlen($memory_limit)-1);
+      $memory_limit = $memory_limit * 1024;
+   }
+}
+if ( $memory_limit < $memory_limit2 ) {
+   ini_set('memory_limit',$memory_limit2);
+   $memory_limit3 = ini_get('memory_limit');
+   if ( $memory_limit3 != $memory_limit2 ) {
+      $this->_flushHTML('Can not set memory limit. Please try 1000M in your php.ini and run this script again.'.BRLF);
+      exit();
+   }
+}
+
 // init $success
 $success = true;
 
 // headline
 $this->_flushHTML('update wiki'.BRLF);
 
-//ini_set("memory_limit","1000M");
-//set_time_limit(600);
 $portal_manager = $this->_environment->getPortalManager();
 $portal_manager->setContextLimit($this->_environment->getCurrentContextID());
 $portal_manager->select();
@@ -176,7 +196,7 @@ function copyLinks($from, $to){
          $site_content = $text;
       }
    }
-   
+
    // Inhalte hinzufuegen
    $file_contents = file_get_contents($to);
    $file_contents_array = explode("\n", $file_contents);
