@@ -50,11 +50,11 @@ class cs_configuration_update_form extends cs_rubric_form {
          $version = substr($version,0,strrpos($version,'.'));
       }
       $retour = array();
-      $found = false;
       $directory_handle = @opendir($this->_path_to_scripts);
       if ($directory_handle) {
          $over = false;
          while ( false !== ( $entry = readdir($directory_handle) ) ) {
+            $found = false;
             if ( is_dir($this->_path_to_scripts.'/'.$entry)
                  and strstr($entry,'_to_')
                ) {
@@ -107,6 +107,7 @@ class cs_configuration_update_form extends cs_rubric_form {
                }
             }
          }
+         sort($retour[$folder]);
       }
       return $retour;
    }
