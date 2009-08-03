@@ -349,8 +349,10 @@ class cs_wiki_manager extends cs_manager {
                         }
                      }
                  } else {
-                    if($titleForForm == $_POST['new_discussion']){
-                        $keep_discussion = true;
+                    if ( !empty($_POST['new_discussion'])
+                         and $titleForForm == $_POST['new_discussion']
+                       ) {
+                       $keep_discussion = true;
                     }
                  }
 
@@ -1127,42 +1129,48 @@ function updateNotification(){
    if($context_item->WikiEnableDiscussionNotificationGroups() != "1"){
       // Alle Foren mit allen Nutzern füllen
       $discussion_array = $context_item->getWikiDiscussionArray();
-      foreach($discussion_array as $discussion){
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->reset();
-         $user_manager->setContextLimit($this->_environment->getCurrentContextID());
-         $user_manager->setUserLimit();
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         $user_array = $user_list->to_array();
-         $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
+      if ( !empty($discussion_array) ) {
+         foreach($discussion_array as $discussion){
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->reset();
+            $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+            $user_manager->setUserLimit();
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            $user_array = $user_list->to_array();
+            $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
+         }
       }
    } else {
       // Gruppen durchgehen
       $context_item = $this->_environment->getCurrentContextItem();
       $discussion_array = $context_item->getWikiDiscussionArray();
-      foreach($discussion_array as $discussion){
-         $group_manager = $this->_environment->getGroupManager();
-         $group_manager->resetCache();
-         $group_manager->reset();
-         $group_manager->select();
-         $group_ids = $group_manager->getIDArray();
-         $discussion_member = array();
-         foreach($group_ids as $group_id){
-             $group = $group_manager->getItem($group_id);
-             $group_discussions = $group->getDiscussionNotificationArray();
-             foreach($group_discussions as $group_discussion){
-               if($group_discussion == $discussion){
-                  $user_array = $group->getMemberItemList()->to_array();
-                  foreach($user_array as $user){
-                     if(!in_array($user, $discussion_member)){
-                        $discussion_member[] = $user;
-                     }
-                  }
-               }
-             }
+      if ( !empty($discussion_array) ) {
+         foreach($discussion_array as $discussion){
+            $group_manager = $this->_environment->getGroupManager();
+            $group_manager->resetCache();
+            $group_manager->reset();
+            $group_manager->select();
+            $group_ids = $group_manager->getIDArray();
+            $discussion_member = array();
+            foreach($group_ids as $group_id){
+                $group = $group_manager->getItem($group_id);
+                $group_discussions = $group->getDiscussionNotificationArray();
+                if ( !empty($group_discussions) ) {
+                   foreach($group_discussions as $group_discussion){
+                      if($group_discussion == $discussion){
+                         $user_array = $group->getMemberItemList()->to_array();
+                         foreach($user_array as $user){
+                            if(!in_array($user, $discussion_member)){
+                               $discussion_member[] = $user;
+                            }
+                         }
+                      }
+                   }
+                }
+            }
+            $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
          }
-         $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
       }
    }
    chdir($old_dir);
@@ -1787,74 +1795,74 @@ function setWikiGroupsAsPublic($groups){
 }
 
 function getSoapWsdlUrl(){
-	global $c_pmwiki_path_url;
-	return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
-	
+   global $c_pmwiki_path_url;
+   return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
+
 }
 
 function getGroupsForWiki_soap($complete){
-	$client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
-	$groups = $client->getGroupNames();
-	$result = array('groups' => array(), 'public' => array());
-	foreach($groups as $group){
-		if((!in_array($group, $result['groups']))
-	        && ($group != '')
-	        && (!mb_stristr($group, 'Site'))
-	        && (!mb_stristr($group, 'SiteAdmin'))
-	        && (!mb_stristr($group, 'Main'))
-	        && (!mb_stristr($group, 'Discussion_Backup_'))
-	        && (!mb_stristr($group, 'FoxNotifyLists'))
-	        && (!mb_stristr($group, 'Profiles'))
-	        && (!mb_stristr($group, 'PmWikiDe'))
-	        && (!mb_stristr($group, 'Calendar'))
-	        && (!mb_stristr($group, 'Category'))
-	        && (!mb_stristr($group, 'FoxTemplates'))
-	        && (!mb_stristr($group, 'index'))
-	        && (!mb_stristr($group, 'README'))
-	        && (!mb_stristr($group, 'Forum'))
-	        && (!mb_stristr($group, 'LICENSE'))){
-	   		$result['groups'][] = $group;
-	        $page_data_array = $client->getReadPage($group . '.GroupAttributes');
-	        $found = false;
-	        foreach($page_data_array as $page_data){
-	           if(stripos($page_data, '$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
+   $client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+   $groups = $client->getGroupNames();
+   $result = array('groups' => array(), 'public' => array());
+   foreach($groups as $group){
+      if((!in_array($group, $result['groups']))
+           && ($group != '')
+           && (!mb_stristr($group, 'Site'))
+           && (!mb_stristr($group, 'SiteAdmin'))
+           && (!mb_stristr($group, 'Main'))
+           && (!mb_stristr($group, 'Discussion_Backup_'))
+           && (!mb_stristr($group, 'FoxNotifyLists'))
+           && (!mb_stristr($group, 'Profiles'))
+           && (!mb_stristr($group, 'PmWikiDe'))
+           && (!mb_stristr($group, 'Calendar'))
+           && (!mb_stristr($group, 'Category'))
+           && (!mb_stristr($group, 'FoxTemplates'))
+           && (!mb_stristr($group, 'index'))
+           && (!mb_stristr($group, 'README'))
+           && (!mb_stristr($group, 'Forum'))
+           && (!mb_stristr($group, 'LICENSE'))){
+            $result['groups'][] = $group;
+           $page_data_array = $client->getReadPage($group . '.GroupAttributes');
+           $found = false;
+           foreach($page_data_array as $page_data){
+              if(stripos($page_data, '$1$83L9njI9$fEsgQxzfx7xSVvRK5accZ0') !== false){
                    $result['public'][] = 'selected';
                    $found = true;
                }
-	        }
-	        if(!$found){
-	        	$result['public'][] = '';
-	        }
-	    }
-	}
-	return $result;
+           }
+           if(!$found){
+              $result['public'][] = '';
+           }
+       }
+   }
+   return $result;
 }
 
 function soapCallToWiki(){
-	$client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
-	//$test = $client->getPage('Main.GroupAttributes');		// - OK - UTF-8 check
-	//$test = $client->getPageSource('Main.HomePage');	// - OK - UTF-8 check
-	//$test = $client->getGroupNames();					// - OK
-	//$test = $client->getPageNames();					// - OK
-	//$test = $client->getPageData();					// - OK
-	//$test = $client->getRevision('Main.HomePage');	// - OK
-	//$test = $client->getMinRevision('Main.HomePage');	// - OK
-	//$test = $client->getRevisions('Main.HomePage');	// - OK
-	//$test = $client->getChanges('Main', '0');			// - OK
-	//$test = $client->getFileStorageMethod();			// - OK
-	//$test = $client->getFileList('Main.HomePage');	// - OK
-	//$test = $client->getFileInfo('Main.HomePage', 'Main.CommSyMaterial131.html');	// - OK
-	//$test = $client->getUploadInfo('Main.HomePage', 'Main.CommSyMaterial131.html'); // - check Auth!
-	//$test = $client->getProperties();					// - OK
-	//$test = $client->getVersion();						// - OK
+   $client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+   //$test = $client->getPage('Main.GroupAttributes');		// - OK - UTF-8 check
+   //$test = $client->getPageSource('Main.HomePage');	// - OK - UTF-8 check
+   //$test = $client->getGroupNames();					// - OK
+   //$test = $client->getPageNames();					// - OK
+   //$test = $client->getPageData();					// - OK
+   //$test = $client->getRevision('Main.HomePage');	// - OK
+   //$test = $client->getMinRevision('Main.HomePage');	// - OK
+   //$test = $client->getRevisions('Main.HomePage');	// - OK
+   //$test = $client->getChanges('Main', '0');			// - OK
+   //$test = $client->getFileStorageMethod();			// - OK
+   //$test = $client->getFileList('Main.HomePage');	// - OK
+   //$test = $client->getFileInfo('Main.HomePage', 'Main.CommSyMaterial131.html');	// - OK
+   //$test = $client->getUploadInfo('Main.HomePage', 'Main.CommSyMaterial131.html'); // - check Auth!
+   //$test = $client->getProperties();					// - OK
+   //$test = $client->getVersion();						// - OK
 
-	$test = $client->getReadPage('Johannes.GroupAttributes');
+   $test = $client->getReadPage('Johannes.GroupAttributes');
 
-	pr($test);
-	
-	#pr($client->__getLastRequestHeaders());
-	#pr($client->__getLastResponseHeaders());
-	pr($client->__getLastResponse());
+   pr($test);
+
+   #pr($client->__getLastRequestHeaders());
+   #pr($client->__getLastResponseHeaders());
+   pr($client->__getLastResponse());
 }
 
 function updateWiki($portal, $room){
@@ -1924,6 +1932,6 @@ function deleteDirectory($dir) {
             };
         }
         return rmdir($dir);
-    } 
+    }
 }
 ?>
