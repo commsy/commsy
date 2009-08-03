@@ -256,6 +256,10 @@ class cs_configuration_account_options_form extends cs_rubric_form {
             $this->_values['member_check'] = 'withcode';
          }
 
+         $code = $this->_item->getCheckNewMemberCode();
+         if ( !empty($code) ) {
+            $this->_values['code'] = $code;
+         }
 
          /******Raum archivieren*****/
          if ( $current_context_item->isOpen() ) {
