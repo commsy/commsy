@@ -1009,7 +1009,6 @@ class cs_page_room_view extends cs_page_view {
       $html .= '<center>';
       $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left: 30%; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
       $html .= '<form style="margin-bottom:50px;" method="post" action="'.$this->_delete_box_action_url.'">'.LF;
-
       foreach ( $this->_delete_box_hidden_values as $key => $value ) {
          $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
       }
@@ -1039,8 +1038,12 @@ class cs_page_room_view extends cs_page_view {
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_ROOM');
          $html .= '</p>'.LF;
       } elseif ( $this->_environment->getCurrentModule() == 'material'
-                   and $this->_environment->getCurrentFunction() == 'detail'
-                   and (isset ($_GET['del_version']) and !empty($_GET['del_version']))
+                 and $this->_environment->getCurrentFunction() == 'detail'
+                 and ( isset($_GET['del_version'])
+                       and ( !empty($_GET['del_version'])
+                             or $_GET['del_version'] == 0
+                           )
+                     )
                ) {
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_VERSION_TITLE_MATERIAL_VERSION');
          $html .= '</h2>'.LF;

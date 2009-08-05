@@ -1592,7 +1592,10 @@ class cs_detail_view extends cs_view {
    function _getAnnotationsAsHTML () {
       $item = $this->_item;
       $html = '';
-      $count = $this->_annotation_list->getCount();
+      $count = 0;
+      if ( !empty($this->_annotation_list) ) {
+         $count = $this->_annotation_list->getCount();
+      }
       if ( !(isset($_GET['mode']) and $_GET['mode']=='print') or $count > 0){
          if ( !$this->_show_content_without_window ) {
             $html .= '</div>'.LF.LF;

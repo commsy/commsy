@@ -387,6 +387,7 @@ class cs_wiki_view extends cs_view {
       // clean wikistyle text from HTML-Code (via fckeditor)
       // and replace wikisyntax
       if ($clean_text) {
+         $text_converter = $this->_environment->getTextConverter();
          $matches = array();
          foreach ($reg_exp_father_array as $exp) {
          $found = preg_match_all($exp,$text,$matches);
@@ -418,12 +419,14 @@ class cs_wiki_view extends cs_view {
                      break;
                   } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
                      $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
+                     #$value_new = $text_converter->formatFile($value_new,$this->_getArgs($value_new,$reg_exp),$this->_getItemFileListForView());
                      break;
                   } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
                      //$value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
                      // Zip entpacken und als Webseite darstellen funktioniert nicht. Daher
                      // ersteinmal behandeln wie eine Datei.
                      $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
+                     #$value_new = $text_converter->formatFile($value_new,$this->_getArgs($value_new,$reg_exp),$this->_getItemFileListForView());
                      break;
                   } elseif ( $key == '(:youtube' and mb_stristr($value_new,'(:youtube') ) {
                      $value_new = $this->_format_youtube($value_new,$this->_getArgs($value_new,$reg_exp));

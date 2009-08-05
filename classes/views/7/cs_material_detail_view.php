@@ -775,7 +775,6 @@ class cs_material_detail_view extends cs_detail_view {
       // Versions
       $versions = array();
       if ( !$this->_version_list->isEmpty() ) {
-         $versions = array();
          $version = $this->_version_list->getFirst();
          if ( $version->getVersionID() == $this->_item->getVersionID() ) {
             $title = '&nbsp;&nbsp;'.$this->_translator->getMessage('MATERIAL_CURRENT_VERSION_DATE').' '.getDateTimeInLang($version->getModificationDate());
@@ -790,8 +789,13 @@ class cs_material_detail_view extends cs_detail_view {
          $current_user = $this->_environment->getCurrentUserItem();
          $is_user = $current_user->isUser();
          while ( $version ) {
-            if ( !$with_links || (!$is_user and $this->_environment->inCommunityRoom() and !$version->isWorldPublic())
-                    || ($item->getVersionID() == $version->getVersionID()) ) {
+            if ( !$with_links
+                 or ( !$is_user
+                      and $this->_environment->inCommunityRoom()
+                      and !$version->isWorldPublic()
+                    )
+                 or $item->getVersionID() == $version->getVersionID()
+               ) {
                $versions[] = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('MATERIAL_VERSION_DATE').' '.getDateTimeInLang($version->getModificationDate());
             } else {
                $params = array();

@@ -1107,6 +1107,9 @@ class cs_view {
       // clean wikistyle text from HTML-Code (via fckeditor)
       // and replace wikisyntax
       if ($clean_text) {
+
+         $text_converter = $this->_environment->getTextConverter();
+
          $matches = array();
          foreach ($reg_exp_father_array as $exp) {
             $found = preg_match_all($exp,$text,$matches);
@@ -1121,7 +1124,7 @@ class cs_view {
 
                   foreach ($reg_exp_array as $key => $reg_exp) {
                      if ( $key == '(:flash' and mb_stristr($value_new,'(:flash') ) {
-                        $value_new = $this->_format_flash($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $text_converter->formatFlash($value_new,$this->_getArgs($value_new,$reg_exp),$this->_getItemFileListForView());
                         break;
                      } elseif ( $key == '(:wmplayer' and mb_stristr($value_new,'(:wmplayer') ) {
                         $value_new = $this->_format_wmplayer($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -1139,7 +1142,7 @@ class cs_view {
                         $value_new = $this->_format_link($value_new,$this->_getArgs($value_new,$reg_exp));
                         break;
                      } elseif ( $key == '(:file' and mb_stristr($value_new,'(:file') ) {
-                        $value_new = $this->_format_file($value_new,$this->_getArgs($value_new,$reg_exp));
+                        $value_new = $text_converter->formatFile($value_new,$this->_getArgs($value_new,$reg_exp),$this->_getItemFileListForView());
                         break;
                      } elseif ( $key == '(:zip' and mb_stristr($value_new,'(:zip') ) {
                         $value_new = $this->_format_zip($value_new,$this->_getArgs($value_new,$reg_exp));
@@ -1580,191 +1583,6 @@ class cs_view {
          $image_text .= '</embed>'.LF;
          $image_text .= '</object>'.LF;
          $image_text .= '</div>'.LF;
-         $text = str_replace($array[0],$image_text,$text);
-      }
-      $retour = $text;
-      return $retour;
-   }
-
-
-   function _format_flash ( $text, $array ) {
-      $retour = '';
-      if ( empty($array[1]) ) {
-         // internal resource
-         $file_name_array = $this->_getItemFileListForView();
-         $file = $file_name_array[$array[2]];
-         if ( isset($file) ) {
-            $source = $file->getURL();
-            $ext = $file->getExtension();
-            $extern = false;
-         }
-      } else {
-         $source = $array[1].$array[2];
-         $ext = cs_strtolower(mb_substr(strrchr($source,'.'),1));
-         $extern = true;
-      }
-      if ( !empty($array[3]) ) {
-         $args = $this->_parseArgs($array[3]);
-      } else {
-         $args = array();
-      }
-
-      if ( !empty($args['play']) ) {
-         $play = $args['play'];
-      } else {
-         $play = 'false';
-      }
-
-      if ( !empty($args['float'])
-           and ( $args['float'] == 'left'
-                 or $args['float'] == 'right'
-               )
-         ) {
-         $float = 'float:'.$args['float'].';';
-      } elseif ( !empty($args['lfloat']) ) {
-         $float = 'float:left;';
-      } elseif ( !empty($args['rfloat']) ) {
-         $float = 'float:right;';
-      } else {
-         $float = '';
-      }
-
-      if ( !empty($args['navigation'])
-           and $args['navigation']
-         ) {
-         $with_player = true;
-      } elseif ( !empty($args['navigation'])
-                 and !$args['navigation']
-               ) {
-         $with_player = false;
-      } elseif ( $ext == 'swf' ) {
-         $with_player = false;
-      } else {
-         $with_player = true;
-      }
-
-      if ( !empty($source) ) {
-         $image_text = '';
-         if ( $ext == 'swf'
-              and !$with_player
-            ) {
-            $image_text .= '<div style="'.$float.' padding:10px;">'.LF;
-            $image_text .= '   <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'.LF;
-            if ( !empty($args['width']) ) {
-               $image_text .= '           width="'.$args['width'].'"'.LF;
-            }
-            if ( !empty($args['height']) ) {
-               $image_text .= '           height="'.$args['height'].'"'.LF;
-            }
-            $image_text .= '           codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0">'.LF;
-            $image_text .= '      <param name="movie" value="'.$source.'" />'.LF;
-            $image_text .= '      <param name="quality" value="high" />'.LF;
-            $image_text .= '      <param name="scale" value="exactfit" />'.LF;
-            $image_text .= '      <param name="menu" value="true" />'.LF;
-            $image_text .= '      <param name="bgcolor" value="#000000" />'.LF;
-            $image_text .= '      <param name="wmode" value="opaque" />'.LF;
-            $image_text .= '      <param name="play" value="'.$play.'" />'.LF;
-            $image_text .= '      <param name="loop" value="false" />'.LF;
-            $image_text .= '      <param name="devicefont" value="true" />'.LF;
-            $image_text .= '      <embed src="'.$source.'" quality="high"'.LF;
-            $image_text .= '             scale="exactfit"'.LF;
-            $image_text .= '             menu="true"'.LF;
-            $image_text .= '             bgcolor="#000000"'.LF;
-            $image_text .= '             wmode="opaque"'.LF;
-            $image_text .= '             play="'.$play.'"'.LF;
-            $image_text .= '             loop="false"'.LF;
-            $image_text .= '             devicefont="true"'.LF;
-            if ( !empty($args['width']) ) {
-               $image_text .= '             width="'.$args['width'].'"'.LF;
-            }
-            if ( !empty($args['height']) ) {
-               $image_text .= '             height="'.$args['height'].'"'.LF;
-            }
-            $image_text .= '             swLiveConnect="false"'.LF;
-            $image_text .= '             type="application/x-shockwave-flash"'.LF;
-            $image_text .= '             pluginspage="http://www.macromedia.com/go/getflashplayer">'.LF;
-            $image_text .= '      </embed>'.LF;
-            $image_text .= '   </object>'.LF;
-            $image_text .= '</div>'.LF;
-         }
-
-         else {
-            // use flv media player for swf, flv
-            // see: http://www.jeroenwijering.com/?item=JW_FLV_Media_Player
-            if ( empty($args['width']) ) {
-               $current_item = $this->_environment->getCurrentContextItem();
-               if ( $current_item->isDesign7() ) {
-                  $args['width'] = '600'; // 16:9
-               } else {
-                  $args['width'] = '300'; // old
-               }
-               unset($current_item);
-            }
-            if ( empty($args['height']) ) {
-               $current_item = $this->_environment->getCurrentContextItem();
-               if ( $current_item->isDesign7() ) {
-                  $args['height'] = '337.5';  // 16:9
-               } else {
-                  $args['height'] = '250'; // old
-               }
-            }
-            if ( $this->_environment->getCurrentBrowser() == 'MSIE' ) {
-               $args['height'] -= 10;
-               if ( $args['height'] > 0 ) {
-                  $args['width'] -= round(($args['width']*10/$args['height']),0);
-               } else {
-                  $args['width'] = 0;
-               }
-            }
-            $source = str_replace('&amp;','&',$source);
-            $source = urlencode($source);
-            if ($this->_environment->getCurrentBrowser() == 'MSIE' ) {
-               $image_text .= '<div style="'.$float.' padding:10px;">'.LF;
-               $image_text .= '<embed'.LF;
-               $image_text .= '  src="mediaplayer.swf"'.LF;
-               $image_text .= '  width="'.$args['width'].'"'.LF;
-               $image_text .= '  height="'.$args['height'].'"'.LF;
-               $image_text .= '  allowfullscreen="true"'.LF;
-               $image_text .= '  wmode="opaque"'.LF;
-               $image_text .= '  flashvars="file='.$source.'&autostart='.$play.'&type='.$ext;
-               if ( !$extern ) {
-                  $image_text .= '&showdigits=true';
-               } else {
-                  $image_text .= '&showdigits=false';
-                  $image_text .= '&showicons=false';
-               }
-               if ( !$with_player ) {
-                  $image_text .= '&shownavigation=false';
-               }
-               $image_text .= '" />'.LF;
-               $image_text .= '</div>'.LF;
-            } else {
-               $div_number = $this->_getDivNumber();
-               $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
-               $image_text .= '<script type="text/javascript">'.LF;
-               $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
-               $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;
-               $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
-               $image_text .= '  so.addVariable(\'file\',"'.$source.'");'.LF;
-               $image_text .= '  so.addVariable(\'autostart\',\''.$play.'\');'.LF;
-               $image_text .= '  so.addVariable(\'overstretch\',\'fit\');'.LF;
-               $image_text .= '  so.addVariable(\'showstop\',\'true\');'.LF;
-               if ( !empty($ext) ) {
-                  $image_text .= '  so.addVariable(\'type\',\''.$ext.'\');'.LF;
-               }
-               if ( !$extern ) {
-                  $image_text .= '  so.addVariable(\'showdigits\',\'true\');'.LF;
-               } else {
-                  $image_text .= '  so.addVariable(\'showdigits\',\'false\');'.LF;
-                  $image_text .= '  so.addVariable(\'showicons\',\'false\');'.LF;
-               }
-               if ( !$with_player ) {
-                  $image_text .= '  so.addVariable(\'shownavigation\',\'false\');'.LF;
-               }
-               $image_text .= '  so.write(\'id'.$div_number.'\');'.LF;
-               $image_text .= '</script>'.LF;
-            }
-         }
          $text = str_replace($array[0],$image_text,$text);
       }
       $retour = $text;
@@ -2476,65 +2294,6 @@ class cs_view {
           }
           $image_text = '<a href="'.$source.'"'.$target.'>'.$word.'</a>';
       }
-      if ( !empty($image_text) ) {
-         $text = str_replace($array[0],$image_text,$text);
-      }
-
-      $retour = $text;
-      return $retour;
-   }
-
-   function _format_file ( $text, $array ) {
-      $retour = '';
-      $image_text = '';
-      if ( !empty($array[1]) ) {
-         $file_name_array = $this->_getItemFileListForView();
-         $temp_file_name = htmlentities($array[1], ENT_NOQUOTES, 'UTF-8');
-         $file = $file_name_array[$temp_file_name];
-         if ( isset($file) ) {
-
-            if ( !empty($array[2]) ) {
-               $args = $this->_parseArgs($array[2]);
-            } else {
-               $args = array();
-            }
-
-            if ( empty($args['icon'])
-                 or ( !empty($args['icon'])
-                      and $args['icon'] == 'true'
-                    )
-               ) {
-               $icon = $file->getFileIcon().' ';
-            } else {
-               $icon = '';
-            }
-            if ( empty($args['size'])
-                 or ( !empty($args['size'])
-                      and $args['size'] == 'true'
-                    )
-               ) {
-               $kb = ' ('.$file->getFileSize().' KB)';
-            } else {
-               $kb = '';
-            }
-            if ( !empty($args['text']) ) {
-               $name = $args['text'];
-            } else {
-               $name = $file->getDisplayName();
-            }
-
-            if ( !empty($args['target']) ) {
-               $target = ' target="'.$args['target'].'"';
-            } elseif ( !empty($args['newwin']) ) {
-               $target = ' target=_blank;';
-            } else {
-               $target = '';
-            }
-            $source = $file->getUrl();
-            $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
-         }
-      }
-
       if ( !empty($image_text) ) {
          $text = str_replace($array[0],$image_text,$text);
       }

@@ -32,6 +32,9 @@ if (!empty($_GET['iid'])) {
 
 if (isset($_GET['version_id'])) {
    $current_version_id = $_GET['version_id'];
+   if ( empty($current_version_id) ) {
+      $current_version_id = 0;
+   }
 } else {
    $session->unsetValue('version_index_ids');
 }

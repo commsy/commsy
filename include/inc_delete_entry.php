@@ -146,7 +146,11 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
              $latest_version_item = $material_version_list->getFirst();
              $old_version_item = $material_version_list->getNext();
              while ($old_version_item ) {
-                if ( $_GET['del_version'] == $old_version_item->getVersionID() ) {
+                if ( $_GET['del_version'] == $old_version_item->getVersionID()
+                     or ( empty($_GET['del_version'])
+                          and $old_version_item->getVersionID() == 0
+                        )
+                   ) {
                    $old_version_item->delete();
                    break;
                 }

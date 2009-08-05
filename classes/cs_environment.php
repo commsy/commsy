@@ -95,6 +95,7 @@ class cs_environment {
    private $_db_mysql_connector = NULL;
    private $_cache_on = true;
    private $_output_mode = 'html';
+   private $_misc_text_converter = NULL;
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
@@ -1662,6 +1663,15 @@ class cs_environment {
          $retour = $$var;
       }
       return $retour;
+   }
+
+   public function getTextConverter () {
+      if ( !isset($this->_misc_text_converter) ) {
+         $class_factory = $this->getClassFactory();
+         $this->_misc_text_converter = $class_factory->getClass(MISC_TEXT_CONVERTER,array('environment' => $this));
+         unset($class_factory);
+      }
+      return $this->_misc_text_converter;
    }
 }
 ?>

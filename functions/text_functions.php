@@ -36,20 +36,23 @@ function _text_form2php ($text) {
    $text = trim($text);
 
    // corrections for FCKeditor: create input
-   if ( strstr($text,'<!-- KFC TEXT --><!-- KFC TEXT -->') ) {
-      $text = str_replace('<!-- KFC TEXT -->','',$text);
-      if ( !empty($text) ) {
-         $fck_text = '<!-- KFC TEXT -->';
-         /*
-         global $c_html_textarea;
-         if ( isset($c_html_textarea)
-              and $c_html_textarea
-            ) {
+   global $c_html_textarea;
+   if ( isset($c_html_textarea)
+        and $c_html_textarea
+      ) {
+      if ( strstr($text,'<!-- KFC TEXT --><!-- KFC TEXT -->')
+           or strstr($text,'&lt;!-- KFC TEXT --&gt;&lt;!-- KFC TEXT --&gt;')
+         ) {
+         $text = str_replace('<!-- KFC TEXT -->','',$text);
+         $text = str_replace('&lt;!-- KFC TEXT --&gt;','',$text);
+         if ( !empty($text) ) {
+            $fck_text = '<!-- KFC TEXT -->';
+            /*
             include_once('functions/security_functions.php');
             $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+            */
+            $text = $fck_text.$text.$fck_text;
          }
-         */
-         $text = $fck_text.$text.$fck_text;
       }
    }
 
@@ -364,6 +367,33 @@ function _array_encode ($array, $mode) {
             $retour_array[$key] = _array_encode($value, $mode);
          }
       } else {
+         ###################################################
+         ## FCK corrections - BEGIN
+         ###################################################
+
+         # der Raum muss noch abgefragt werden, ob FCK an ist
+         # geht erst im text_converter
+
+         /*
+         global $c_html_textarea;
+         if ( isset($c_html_textarea)
+              and $c_html_textarea
+              and $mode == FROM_FORM
+              and !strpos($value,'<!-- KFC TEXT -->')
+              and ( $key == 'description'
+                    or $key == 'annotation_description'
+                  )
+            ) {
+            $fck_text = '<!-- KFC TEXT -->';
+            #include_once('functions/security_functions.php');
+            #$fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+            $value = $fck_text.$value.$fck_text;
+         }
+         */
+         ###################################################
+         ## FCK corrections - END
+         ###################################################
+
          $retour_array[$key] = _text_encode($value, $mode);
       }
    }
@@ -799,29 +829,6 @@ function cs_strtoupper ($value) {
 
 function cs_strtolower ($value) {
    return (mb_strtolower(strtr($value, UC_CHARS, LC_CHARS), 'UTF-8'));
-}
-
-/** Translates HTML-Enteties into their ISO8859-1 counterpart
- *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- *
- * It is implemented here, hence the PHP-Version used now (2.7.2003) doesn't...
- * If it is implemented in the PHP version (like it says on php.net), it can be deleted!
- *
- * !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- *
- * @param String containing html-enteties that shall be translated
- *
- * @return String with translated html-enteties
- */
-
-if (!function_exists('html_entity_decode')) {
-   function html_entity_decode ($string) {
-      $trans_tbl = get_html_translation_table(HTML_ENTITIES);
-      $trans_tbl = array_flip($trans_tbl);
-      $ret = strtr($string, $trans_tbl);
-      return $ret;
-   }
 }
 
 /** Formats text in an arrayfield

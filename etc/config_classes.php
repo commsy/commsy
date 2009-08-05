@@ -30,4 +30,14 @@ include_once('etc/config_classes_views.php');
 // forms
 include_once('etc/config_classes_forms.php');
 
+// other classes
+$sub_folder = '';
+
+$class_name = 'misc_text_converter';
+define('MISC_TEXT_CONVERTER',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$sub_folder;
+$class_config[$class_name]['switchable'] = false;
+
 ?>
