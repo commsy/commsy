@@ -109,7 +109,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $check_group = false;
       $add_hidden = false;
       $ref_item = $this->_getRefItem();
-      if ( $ref_item->isA(CS_USER_TYPE) ) {
+      if ( isset($ref_item)
+           and is_object($ref_item)
+           and $ref_item->isA(CS_USER_TYPE)
+         ) {
          if ( $item->isGroupRoomActivated() ) {
             $disable_group = true;
             if ( $item->isMember($ref_item) ) {
