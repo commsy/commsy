@@ -138,10 +138,14 @@ class cs_section_form extends cs_rubric_form {
             $tmpArray['text'] = (string)($i);
             $section_array[] =  $tmpArray;
          }
-         $translator = $this->_environment->getTranslationObject();
-         $other_sections.= $i . '. ';
-         $other_sections.= $translator->getMessage('MATERIAL_NEW_SECTION_INSERT');
-         $other_sections.= '<BR>';
+         if ( empty($this->_item)
+              and empty($this->_form_post['iid'])
+            ) {
+            $translator = $this->_environment->getTranslationObject();
+            $other_sections.= $i . '. ';
+            $other_sections.= $translator->getMessage('MATERIAL_NEW_SECTION_INSERT');
+            $other_sections.= '<BR>';
+         }
       }
       $this->_section_array = $section_array;
       $this->_other_sections = $other_sections;
