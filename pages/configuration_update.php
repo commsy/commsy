@@ -106,8 +106,14 @@ if (!$current_user->isRoot() and !$current_context->mayEdit($current_user)) {
                $current_version_array = explode('_to_',$folder);
                if ( !empty($current_version_array[1])) {
                   $current_version = $current_version_array[1];
-                  $current_context->setDBVersion($current_version);
-                  $current_context->save();
+                  $current_code_version = getCommSyVersion();
+                  if ( !strstr($current_code_version,'beta')
+                       and !strstr($current_code_version,' ')
+                       and substr_count($current_code_version,'.') == 2
+                     ) {
+                     $current_context->setDBVersion($current_version);
+                     $current_context->save();
+                  }
                   unset($form);
                   $form = $class_factory->getClass(CONFIGURATION_UPDATE_FORM,array('environment' => $environment));
                   $form->setItem($current_context);

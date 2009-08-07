@@ -50,41 +50,45 @@ class cs_configuration_update_form extends cs_rubric_form {
          $version = substr($version,0,strrpos($version,'.'));
       }
       $retour = array();
+      $dir_array = array();
       $directory_handle = @opendir($this->_path_to_scripts);
       if ($directory_handle) {
-         $over = false;
          while ( false !== ( $entry = readdir($directory_handle) ) ) {
-            $found = false;
             if ( is_dir($this->_path_to_scripts.'/'.$entry)
                  and strstr($entry,'_to_')
                ) {
-               if ( ( !$found
-                       and ( strstr($entry,$version.'_to_')
-                             or ( strstr($this->_version_code,'beta')
-                                  and strstr($entry,$version)
-                                )
-                           )
-                     ) or $over
+               $dir_array[] = $entry;
+            }
+         }
+         closedir($directory_handle);
+      }
+      if ( !empty($dir_array) ) {
+         sort($dir_array);
+         $over = false;
+         $found = false;
+         foreach ( $dir_array as $entry ) {
+            if ( ( !$found
+                    and strstr($entry,$version.'_to_')
+                 ) or $over
+               ) {
+               $over = true;
+               $folder_array = explode('_to_',$entry);
+               $first_folder = $folder_array[0];
+               $first_folder_array = explode('.',$first_folder);
+               if ( $first_folder_array[0] > 6
+                    or ( $first_folder_array[0] == 6
+                         and $first_folder_array[1] > 3
+                       )
+                    or ( $first_folder_array[0] == 6
+                         and $first_folder_array[1] == 3
+                         and $first_folder_array[2] > 2
+                       )
                   ) {
-                  $over = true;
-                  $folder_array = explode('_to_',$entry);
-                  $first_folder = $folder_array[0];
-                  $first_folder_array = explode('.',$first_folder);
-                  if ( $first_folder_array[0] > 6
-                       or ( $first_folder_array[0] == 6
-                            and $first_folder_array[1] > 3
-                          )
-                       or ( $first_folder_array[0] == 6
-                            and $first_folder_array[1] == 3
-                            and $first_folder_array[2] > 2
-                          )
-                     ) {
-                     $found = true;
-                  }
+                  $found = true;
                }
-               if ( $found ) {
-                  $retour[] = $entry;
-               }
+            }
+            if ( $found ) {
+               $retour[] = $entry;
             }
          }
       }
