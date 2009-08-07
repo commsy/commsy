@@ -60,14 +60,8 @@ if ( isOption($option, $translator->getMessage('ACCOUNT_GET_MEMBERSHIP_BUTTON'))
            or ( $room_item->getCheckNewMemberCode() == $_POST['code'])
          ) {
          $current_user = $environment->getCurrentUserItem();
-         $private_room_user_item = $current_user->getRelatedPrivateRoomUserItem();
-         if ( isset($private_room_user_item) ) {
-            $user_item = $private_room_user_item->cloneData();
-            $picture = $private_room_user_item->getPicture();
-         } else {
-            $user_item = $current_user->cloneData();
-            $picture = $current_user->getPicture();
-         }
+         $user_item = $current_user->cloneData();
+         $picture = $current_user->getPicture();
          $user_item->setContextID($room_item->getItemID());
          if ( !empty($picture) ) {
             $value_array = explode('_',$picture);
