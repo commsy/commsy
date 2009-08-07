@@ -79,12 +79,6 @@ include_once('functions/misc_functions.php');
 // start of execution time
 $time_start = getmicrotime();
 
-// transform POST_VARS and GET_VARS --- move into page object, if exist
-include_once('functions/text_functions.php');
-$_POST = encode(FROM_FORM,$_POST);
-$_GET  = encode(FROM_GET,$_GET);
-$_GET  = encode(FROM_FORM,$_GET);
-
 // setup/check required PHP configuration
 if ( get_magic_quotes_gpc() ) {
    include_once('functions/error_functions.php');
@@ -103,13 +97,16 @@ if ( !empty($ini_reg_globals) and strtolower($ini_reg_globals) != 'off' ) {
    trigger_error('"register_globals" must be switched off for CommSy to work correctly. This must be set in php.ini, .htaccess or httpd.conf.', E_USER_ERROR);
 }
 
-// setup class factory
-include_once('classes/cs_class_factory.php');
-$class_factory = new cs_class_factory();
-
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
+$class_factory = $environment->getClassFactory();
+
+// transform POST_VARS and GET_VARS --- move into page object, if exist
+include_once('functions/text_functions.php');
+$_POST = encode(FROM_FORM,$_POST);
+$_GET  = encode(FROM_GET,$_GET);
+$_GET  = encode(FROM_FORM,$_GET);
 
 // include classes needed for this script
 include_once('classes/cs_session_item.php');
@@ -156,6 +153,9 @@ $environment->setCurrentFunction($current_function);
 unset($current_context);
 #unset($current_module);
 #unset($current_function);
+
+// HTML text area corrections
+$_POST = $environment->getTextConverter()->correctPostValuesForTextEditor($_POST);
 
 // set output mode: default is html
 if ( $environment->getCurrentFunction() == 'index'

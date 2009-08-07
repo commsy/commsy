@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 $server = $environment->getServerItem();
-$text = $server->getOutOfService();
+$text = $environment->getTextConverter()->cleanDataFromTextArea($server->getOutOfService());
 
 $params = array();
 $params['environment'] = $environment;

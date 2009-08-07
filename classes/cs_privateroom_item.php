@@ -450,9 +450,9 @@ class cs_privateroom_item extends cs_room_item {
                                  $params['iid'] = $rubric_item->getItemID();
                                  $title ='';
                                  if ($rubric_item->isA(CS_USER_TYPE)){
-                                    $title .= $rubric_item->getFullname();
+                                    $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getFullname());
                                  } else {
-                                    $title .= $rubric_item->getTitle();
+                                    $title .= $this->_environment->getTextConverter()->text_as_html_short($rubric_item->getTitle());
                                  }
                                  if ( $rubric_item->isA(CS_LABEL_TYPE) ) {
                                     $mod = $rubric_item->getLabelType();

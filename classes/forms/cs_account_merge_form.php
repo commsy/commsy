@@ -57,7 +57,9 @@ class cs_account_merge_form extends cs_rubric_form {
       } else {
          $current_user = $this->_environment->getCurrentUserItem();
       }
-      if ( $current_user->isRoot() ) {
+      if ( isset($current_user)
+           and $current_user->isRoot()
+         ) {
          $this->_show_form = false;
       }
 

@@ -325,13 +325,12 @@ class cs_form_view extends cs_view {
     * @author CommSy Development Group
     */
    function _getTextLineAsHTML ($form_element) {
-      // for AS_HTML_LONG use _getTextAsHTML
       $html  = '';
-      $html .= '<!-- BEGIN OF FORM-ELEMENT: textline -->'."\n";
-      $html .= '   <td colspan="3" style="border-bottom: none;">'."\n";
-      $html .= '      '.$form_element['description']."\n";
+      $html .= '<!-- BEGIN OF FORM-ELEMENT: textline -->'.LF;
+      $html .= '   <td colspan="3" style="border-bottom: none;">'.LF;
+      $html .= '      '.$form_element['description'].LF;
       $html .= '   </td>'."\n";
-      $html .= '<!-- END OF FORM-ELEMENT: textline -->'."\n";
+      $html .= '<!-- END OF FORM-ELEMENT: textline -->'.LF;
       return $html;
    }
 
@@ -346,15 +345,14 @@ class cs_form_view extends cs_view {
     * @author CommSy Development Group
     */
    function _getImageButtonAsHTML ($form_element) {
-      // for AS_HTML_LONG use _getTextAsHTML
       $html  = '';
-      $html .= '<!-- BEGIN OF FORM-ELEMENT: Imagebutton -->'."\n";
+      $html .= '<!-- BEGIN OF FORM-ELEMENT: Imagebutton -->'.LF;
       $html .= '<input type="image"'.LF;
       $html .=' src="'.$form_element['src'].'"'.LF;
       $html .=' name="'.$form_element['name'].'"'.LF;
       $html .=' width="'.$form_element['width'].'" height="'.$form_element['height'].'"'.LF;
       $html .= 'alt="'.$form_element['alt'].'"/>'.LF;
-      $html .= '<!-- END OF FORM-ELEMENT: Imagebutton -->'."\n";
+      $html .= '<!-- END OF FORM-ELEMENT: Imagebutton -->'.LF;
       return $html;
    }
 
@@ -1210,6 +1208,9 @@ class cs_form_view extends cs_view {
                                               $this->_count_form_elements,
                                               $vsize
                                             );
+              // hidden field for HTML editor corrections
+              // to check if a post field is a textarea
+              $html .= LF.$this->_getHiddenFieldasHTML(array('name' => $form_element['name'].'_is_textarea', 'value' => '1'));
            } else {
               $html .= $normal;
            }

@@ -24,9 +24,8 @@
 
 function curl_mailto( $mailaddress, $linktext, $title="" ) {
    if(isset($_GET['mode']) and $_GET['mode']=='print'){
-      return encode(AS_HTML_SHORT,$linktext);
+      return $linktext;
    } else {
-      $linktext = encode(AS_HTML_SHORT,$linktext);
       return "<a href=\"mailto:".$mailaddress."\" title=\"".$title."\">".$linktext."</a>";
    }
 }
@@ -65,9 +64,9 @@ function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $ti
        if ( $id != '' )     $ahref .= ' id="'.$id.'"';
 
 
-       $ahref .= '>'.encode(AS_HTML_SHORT,$linktext).'</a>';
+       $ahref .= '>'.$linktext.'</a>';
        if(isset($_GET['mode']) and $_GET['mode']=='print'){
-          return encode(AS_HTML_SHORT,$linktext);
+          return $linktext;
        }else{
           return $ahref;
        }
@@ -80,9 +79,9 @@ function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $ti
        if ( $id != '' )     $ahref .= ' id="'.$id.'"';
 
 
-       $ahref .= '>'.encode(AS_HTML_SHORT,$linktext).'</a>';
+       $ahref .= '>'.$linktext.'</a>';
        if(isset($_GET['mode']) and $_GET['mode']=='print'){
-          return encode(AS_HTML_SHORT,$linktext);
+          return $linktext;
        }else{
           return $ahref;
        }

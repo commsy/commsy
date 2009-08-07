@@ -2112,7 +2112,9 @@ class cs_page_view extends cs_view {
         $current_portal_item = $this->_environment->getCurrentPortalItem();
         $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
         unset($current_portal_item);
-        if ( $current_auth_source_item->allowChangeUserID() ) {
+        if ( isset($current_auth_source_item)
+             and $current_auth_source_item->allowChangeUserID()
+           ) {
            include_once('classes/cs_account_change_page.php');
            $left_page = new cs_account_change_page($this->_environment);
            $html .= $left_page->execute();

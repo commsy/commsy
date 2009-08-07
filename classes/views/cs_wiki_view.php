@@ -98,7 +98,7 @@ class cs_wiki_view extends cs_view {
       }
 
       if ( !empty($array[3]) ) {
-         $args = $this->_parseArgs($array[3]);
+         $args = $this->_environment->getTextConverter()->parseArgs($array[3]);
       } else {
          $args = array();
       }
@@ -167,7 +167,7 @@ class cs_wiki_view extends cs_view {
       $retour = '';
       $link_text = '';
       if ( !empty($array[2]) ) {
-         $args = $this->_parseArgs($array[2]);
+         $args = $this->_environment->getTextConverter()->parseArgs($array[2]);
       } else {
          $args = array();
       }
@@ -222,7 +222,7 @@ class cs_wiki_view extends cs_view {
          if ( isset($file) ) {
 
             if ( !empty($array[2]) ) {
-               $args = $this->_parseArgs($array[2]);
+               $args = $this->_environment->getTextConverter()->parseArgs($array[2]);
             } else {
                $args = array();
             }
@@ -289,7 +289,7 @@ class cs_wiki_view extends cs_view {
          $extern = true;
       }
       if ( !empty($array[3]) ) {
-         $args = $this->_parseArgs($array[3]);
+         $args = $this->_environment->getTextConverter()->parseArgs($array[3]);
       } else {
          $args = array();
       }

@@ -270,11 +270,7 @@ if ( isset($_GET['cid']) ) {
             $linked_item = $item->getLinkedItem();
             if ( isset($linked_item) ) {
                $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
-               $description = $item->getDescriptionWithoutHTML();
-               if (mb_strlen($description) > $desc_len)
-               {
-                  $description = chunkText($description,$desc_len);
-               }
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
                $email = $user_item->getEmail();
@@ -350,10 +346,7 @@ if ( isset($_GET['cid']) ) {
             $linked_item = $item->getLinkedItem();
             if ( !empty($linked_item) ) {
                $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
-               $description = $item->getDescriptionWithoutHTML();
-               if ( mb_strlen($description) > $desc_len ) {
-                  $description = chunkText($item->getDescription(),$desc_len);
-               }
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
                $email = $user_item->getEmail();
@@ -396,10 +389,7 @@ if ( isset($_GET['cid']) ) {
                $date = '';
             } else {
                $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
-               $description = $item->getDescriptionWithoutHTML();
-               if ( mb_strlen($description) > $desc_len ) {
-                  $description = chunkText($description,$desc_len);
-               }
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
                $email = $user_item->getEmail();
@@ -427,11 +417,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_announcement_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_ANNOUNCEMENT_TITLE',$item->getTitle());
-            $description = $item->getDescriptionWithoutHTML();
-            if(mb_strlen($description) > $desc_len)
-            {
-               $description = chunkText($description,$desc_len);
-            }
+            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
             $user_item = $item->getModificatorItem();
             $fullname = $user_item->getFullName();
             $email = $user_item->getEmail();
@@ -462,10 +448,7 @@ if ( isset($_GET['cid']) ) {
             if ( isset($linked_item) ) {
                $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
             }
-            $description = $item->getDescriptionWithoutHTML();
-            if ( mb_strlen($description) > $desc_len ) {
-               $description = chunkText($description,$desc_len);
-            }
+            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
             $user_item = $item->getModificatorItem();
             $fullname = $user_item->getFullName();
             $email = $user_item->getEmail();
@@ -494,11 +477,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_DATE_TITLE',$item->getTitle());
-            $description = $item->getDescriptionWithoutHTML();
-            if(mb_strlen($description) > $desc_len)
-            {
-               $description = chunkText($description,$desc_len);
-            }
+            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
             $user_item = $item->getModificatorItem();
             $fullname = $user_item->getFullName();
             $email = $user_item->getEmail();
@@ -527,11 +506,7 @@ if ( isset($_GET['cid']) ) {
             switch($item->getLabelType()) {
                case 'group':
                   $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
-                  $description = $item->getDescriptionWithoutHTML();
-                  if(mb_strlen($description) > $desc_len)
-                  {
-                     $description = chunkText($description,$desc_len);
-                  }
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
                   $email = $user_item->getEmail();
@@ -551,11 +526,7 @@ if ( isset($_GET['cid']) ) {
                break;
                case 'institution':
                   $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
-                  $description = $item->getDescriptionWithoutHTML();
-                  if(mb_strlen($description) > $desc_len)
-                  {
-                     $description = chunkText($description,$desc_len);
-                  }
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
                   $email = $user_item->getEmail();
@@ -575,11 +546,7 @@ if ( isset($_GET['cid']) ) {
                break;
                case 'topic':
                   $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
-                  $description = $item->getDescriptionWithoutHTML();
-                  if(mb_strlen($description) > $desc_len)
-                  {
-                     $description = chunkText($description,$desc_len);
-                  }
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                   $user_item = $item->getModificatorItem();
                   $fullname = $user_item->getFullName();
                   $email = $user_item->getEmail();
@@ -608,11 +575,7 @@ if ( isset($_GET['cid']) ) {
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
             $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
-            $description = $item->getDescriptionWithoutHTML();
-            if(mb_strlen($description) > $desc_len)
-            {
-               $description = chunkText($description,$desc_len);
-            }
+            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
             $user_item = $item->getModificatorItem();
             $fullname = $user_item->getFullName();
             $email = $user_item->getEmail();
@@ -654,9 +617,7 @@ if ( isset($_GET['cid']) ) {
       if ( isset($description)
            and !empty($description)
          ) {
-         if ( mb_strlen($description) > $desc_len ) {
-            $description = chunkText($description,$desc_len);
-         } elseif ($description == '0') {
+         if ($description == '0') {
             $description = '';
          }
       } else {

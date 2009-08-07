@@ -130,7 +130,6 @@ define('CS_GRADIENT_32','cs_gradient_32.png');
 
 @include_once('etc/color_constants.php');
 
-
 define('LF'  , "\n");       // line feed
 define('BR'  , "<br />");   // line feed
 define('BRLF', "<br />\n"); // line feed
@@ -157,6 +156,22 @@ define ("RFC1738_CHARS","A-Za-z0-9\?:@&=/;_\.\+!\*'(,%\$~#-");
 //IMPORTANT: for preg-functions: use "§" as delimiters for search-expression!
 //define("RFC2822_CHARS","A-Za-z0-9!#$%&'*+/=?^_`{|}~-");
 define("RFC2822_CHARS","A-Za-z0-9!#\$%&'\*\+/=\?\^_`{\|}~-");
+
+// text functions
+define ("AS_HTML_LONG", 1);
+define ("AS_HTML_SHORT", 2);
+define ("AS_FORM", 4);
+define ("AS_DB", 5);
+define ("AS_FILE", 6);
+define ("AS_MAIL", 7);
+define ("AS_RSS", 8);
+define ("NONE", 10);
+define ("FROM_FORM", 11);
+define ("FROM_DB", 12);
+define ("FROM_FILE", 13);
+define ("FROM_GET", 14);
+define ("HELP_AS_HTML_LONG", 21);
+
 
 // IIS - microsoft compatibility
 /*

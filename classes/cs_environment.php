@@ -96,11 +96,10 @@ class cs_environment {
    private $_cache_on = true;
    private $_output_mode = 'html';
    private $_misc_text_converter = NULL;
+   private $_class_factory = NULL;
 
   /** constructor: cs_environment
    * the only available constructor, initial values for internal variables
-   *
-   * @author CommSy Development Group
    */
 
 
@@ -1629,8 +1628,11 @@ class cs_environment {
    }
 
    public function getClassFactory () {
-      global $class_factory;
-      return $class_factory;
+      if ( !isset($this->_class_factory) ) {
+         include_once('classes/cs_class_factory.php');
+         $this->_class_factory = new cs_class_factory();
+      }
+      return $this->_class_factory;
    }
 
    public function setOutputMode ( $value ) {

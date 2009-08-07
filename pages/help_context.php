@@ -1480,7 +1480,7 @@ if (isset($_GET['context'])){
    $help_links['additional']['en'][] = 'Further information at http://www.commsy.net (german website)';
    $help_links['additional']['en'][] = ahref_curl($environment->getCurrentContextID(), 'mail', 'to_moderator', '', getMessage('HELP_MAIL_TO_MODERATOR_TITLE'), '', '_blank');
 
-   $textbox->addRow("<b>".getMessage('HELP_ADDITIONAL_INFO')."</b>:".BRLF.encode(AS_HTML_LONG,implode(LF,$help_links['additional'][$environment->getSelectedLanguage()])));
+   $textbox->addRow("<b>".getMessage('HELP_ADDITIONAL_INFO')."</b>:".BRLF.encode(HELP_AS_HTML_LONG,implode(LF,$help_links['additional'][$environment->getSelectedLanguage()])));
 }
 
 $page->add($textbox);

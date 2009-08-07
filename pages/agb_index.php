@@ -28,7 +28,7 @@ $language = $commsy->getLanguage();
 if ( $language == 'user' ) {
    $language = getSelectedLanguage();
 }
-$text = $text_array[mb_strtoupper($language, 'UTF-8')];
+$text = $environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($language, 'UTF-8')]);
 
 $params = array();
 $params['environment'] = $environment;

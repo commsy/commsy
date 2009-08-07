@@ -884,7 +884,7 @@ var $_sel_rubric = '';
    function _getEmail($item){
       $email = $item->getEmail();
       $email_text = $this->_compareWithSearchText($email);
-      $email = curl_mailto( $item->getEmail(), $email_text);
+      $email = curl_mailto( $item->getEmail(), $this->_text_as_html_short($email_text) );
       return $email;
    }
 

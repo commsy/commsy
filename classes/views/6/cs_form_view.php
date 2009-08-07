@@ -312,7 +312,6 @@ class cs_form_view extends cs_view {
     * @author CommSy Development Group
     */
    function _getTextLineAsHTML ($form_element) {
-      // for AS_HTML_LONG use _getTextAsHTML
       $html  = '';
       $html .= '<!-- BEGIN OF FORM-ELEMENT: textline -->'."\n";
       $html .= '   <td colspan="3" style="border-bottom: none;">'."\n";
@@ -333,7 +332,6 @@ class cs_form_view extends cs_view {
     * @author CommSy Development Group
     */
    function _getLineAsHTML ($form_element) {
-      // for AS_HTML_LONG use _getTextAsHTML
       $html  = '';
       $html .= '<!-- BEGIN OF FORM-ELEMENT: textline -->'."\n";
       $html .= '   <td colspan="3" style="border-bottom: none;">'."\n";

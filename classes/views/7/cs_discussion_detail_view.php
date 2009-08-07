@@ -934,7 +934,7 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( !empty($pos_number) ) {
          $retour .= $pos_number.'. ';
       }
-      $retour .= $this->_parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
+      $retour .= $this->_environment->getTextConverter()->parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
       return $retour;
    }
 
