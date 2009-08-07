@@ -36,7 +36,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
       $active = true;
       if ($room->isCommunityRoom()) {
          $type = 'Community';
-         $title = $room->getTitle();
+         $title = $environment->getTextConverter()->text_as_html_short($room->getTitle());
          if ( $room->isOpen() ) {
             $active = $room->isActiveDuringLast99Days();
          } else {
@@ -44,7 +44,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
       } elseif ($room->isProjectRoom()) {
          $type = 'Project';
-         $title = $room->getTitle();
+         $title = $environment->getTextConverter()->text_as_html_short($room->getTitle());
          if ( $room->isOpen() ) {
             $active = $room->isActiveDuringLast99Days();
          } else {
@@ -52,7 +52,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
       } elseif ($room->isGroupRoom()) {
          $type = 'Group';
-         $title = $room->getTitle();
+         $title = $environment->getTextConverter()->text_as_html_short($room->getTitle());
          if ( $room->isOpen() ) {
             $active = $room->isActiveDuringLast99Days();
          } else {
@@ -62,7 +62,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          $type = 'Private';
          $user = $room->getOwnerUserItem();
          if (isset($user) and $user->isUser()){
-            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$user->getFullName().' ('.$room->getItemID().')';
+            $title = getMessage('COMMON_PRIVATE_ROOM').': '.$environment->getTextConverter()->text_as_html_short($user->getFullName()).' ('.$room->getItemID().')';
             $portal_user_item = $user->getRelatedCommSyUserItem();
             if ( isset($portal_user_item) and $portal_user_item->isUser() ) {
                $active = $portal_user_item->isActiveDuringLast99Days();
@@ -76,7 +76,7 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
          unset($user);
       }
-      echo('<h4>'.$title.' - '.$type.' - '.$portal_name.'<h4>'.LF);
+      echo('<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
       if ( $active ) {
          displayCronResults($room->runCron());
       } else {
@@ -177,7 +177,7 @@ $server_item = $environment->getServerItem();
 if ( !isset($context_id)
      or ($context_id == $environment->getServerID())
    ) {
-   echo('<h4>'.$server_item->getTitle().' - Server<h4>'.LF);
+   echo('<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
    displayCronResults($server_item->runCron());
    echo('<hr/>'.BRLF);
 }
@@ -197,7 +197,7 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // portal
       $portal = $portal_manager->getItem($portal_id);
-      echo('<h4>'.$portal->getTitle().' - Portal<h4>'.LF);
+      echo('<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
       displayCronResults($portal->runCron());
       echo('<hr/>'.LF);
 
