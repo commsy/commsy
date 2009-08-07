@@ -266,9 +266,9 @@ class misc_text_converter {
       // bold
       //$text = preg_replace('/(^|\n|\t|\s|[ >\/_[{(])\*([^*]+)\*($|\n|\t|[ <\/_.)\]},!?;])/', '$1<span style="font-weight:bold;">$2</span>$3', $text);
       $text = preg_replace('~\*([^*]+)\*~u', '<span style="font-weight:bold;">$1</span>', $text);
+
       // italic
-      #$text = preg_replace('§_([^_]+)_§', '<span style="font-style:italic;">$1</span>', $text);
-      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|[ <\/.)\]},!?;])~u', '$1<span style=font-style:italic;>$2</span>$3', $text);
+      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~u', '$1<span style=font-style:italic;>$2</span>$3', $text);
       return $text;
    }
 
