@@ -638,8 +638,6 @@ class cs_item {
     * this method unsets a value of the extra information
     *
     * @param string key   the key (name) of the value
-    *
-    * @author CommSy Development Group
     */
    function _unsetExtra($key) {
       if ($this->_issetExtra($key)) {
@@ -656,8 +654,6 @@ class cs_item {
     *
     * @return boolean true, if value exists
     *                 false, if not
-    *
-    * @author CommSy Development Group
     */
    function _issetExtra($key) {
       $result = false;
@@ -674,8 +670,6 @@ class cs_item {
     * @param string key the key (name) of the value
     *
     * @return * value of the extra information
-    *
-    * @author CommSy Development Group
     */
    function _getExtra($key) {
       $extras = $this->_getValue('extras');
@@ -688,14 +682,13 @@ class cs_item {
     * this method returns an array with all keys in
     *
     * @return array returns an array with all keys in
-    *
-    * @author CommSy Development Group
     */
    function getExtraKeys () {
       $extras = $this->_getValue('extras');
       return array_keys($extras);
    }
-      /** get extra information of an item
+
+   /** get extra information of an item
     * this method returns the extra information of an item
     *
     * @return string extra information of an item

@@ -221,6 +221,9 @@ class cs_room_item extends cs_context_item {
       }
    }
 
+   public function emptyContactPersonString () {
+      $this->_unsetExtra('CONTACT_PERSONS');
+   }
 
    /** close a room
    * this method sets the status of the room to closed
