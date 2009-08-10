@@ -37,6 +37,10 @@ class cs_plugin {
       $this->_translator = $environment->getTranslationObject();
    }
 
+   public function inStatistics () {
+      return false;
+   }
+
    public function isRubricPlugin () {
       return false;
    }

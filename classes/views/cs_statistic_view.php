@@ -205,6 +205,29 @@ class cs_statistic_view extends cs_view {
          ) {
          $retour['wiki']      = $room->getCountPlugin('pmwiki',$this->_start_date,$this->_end_date);
       }
+
+      global $c_plugin_array;
+      if ( isset($c_plugin_array)
+           and !empty($c_plugin_array)
+           and $room->isPortal()
+         ) {
+         foreach ($c_plugin_array as $plugin) {
+            if ( isset($room) ) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'inStatistics') ) {
+                  if ( $plugin_class->inStatistics() ) {
+                     if ( $room->isPluginOn($plugin) ) {
+                        $retour[$plugin] = $room->getCountPlugin($plugin,$this->_start_date,$this->_end_date);
+                     } else {
+                        $retour[$plugin] = 'n.a.';
+                     }
+                  }
+               }
+            }
+         }
+      }
+
+
       ########################################################################
       # plugins - END
       ########################################################################
@@ -253,6 +276,26 @@ class cs_statistic_view extends cs_view {
                           and $c_pmwiki
                         ) {
                         $temp_array2['wiki']      = $sub_room_item->getCountPluginWithLinkedRooms('pmwiki',$this->_start_date,$this->_end_date);
+                     }
+                     global $c_plugin_array;
+                     if ( isset($c_plugin_array)
+                          and !empty($c_plugin_array)
+                          and $room->isPortal()
+                        ) {
+                        foreach ($c_plugin_array as $plugin) {
+                           if ( isset($room) ) {
+                              $plugin_class = $this->_environment->getPluginClass($plugin);
+                              if ( method_exists($plugin_class,'inStatistics') ) {
+                                 if ( $plugin_class->inStatistics() ) {
+                                    if ( $room->isPluginOn($plugin) ) {
+                                       $temp_array2[$plugin] = $sub_room_item->getCountPluginWithLinkedRooms($plugin,$this->_start_date,$this->_end_date);
+                                    } else {
+                                       $temp_array2[$plugin] = 'n.a.';
+                                    }
+                                 }
+                              }
+                           }
+                        }
                      }
                      ########################################################################
                      # plugins - END
@@ -324,6 +367,26 @@ class cs_statistic_view extends cs_view {
                      ) {
                      $temp_array2['wiki']      = $sub_room_item->getCountPlugin('pmwiki',$this->_start_date,$this->_end_date);
                   }
+                  global $c_plugin_array;
+                  if ( isset($c_plugin_array)
+                       and !empty($c_plugin_array)
+                       and $room->isPortal()
+                     ) {
+                     foreach ($c_plugin_array as $plugin) {
+                        if ( isset($room) ) {
+                           $plugin_class = $this->_environment->getPluginClass($plugin);
+                           if ( method_exists($plugin_class,'inStatistics') ) {
+                              if ( $plugin_class->inStatistics() ) {
+                                 if ( $room->isPluginOn($plugin) ) {
+                                    $temp_array2[$plugin] = $sub_room_item->getCountPlugin($plugin,$this->_start_date,$this->_end_date);
+                                 } else {
+                                    $temp_array2[$plugin] = 'n.a.';
+                                 }
+                              }
+                           }
+                        }
+                     }
+                  }
                   ########################################################################
                   # plugins - END
                   ########################################################################
@@ -366,6 +429,24 @@ class cs_statistic_view extends cs_view {
             $this->_plugin_active['wiki'] = 0;
          }
          $this->_plugin_active['wiki'] = $this->_plugin_active['wiki'] + $retour['wiki'];
+      }
+      global $c_plugin_array;
+      if ( isset($c_plugin_array)
+           and !empty($c_plugin_array)
+         ) {
+         foreach ($c_plugin_array as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,'inStatistics') ) {
+               if ( $plugin_class->inStatistics() ) {
+                  if ( !isset($this->_plugin_active[$plugin]) ) {
+                     $this->_plugin_active[$plugin] = 0;
+                  }
+                  if ( !empty($retour[$plugin]) ) {
+                     $this->_plugin_active[$plugin] = $this->_plugin_active[$plugin] + $retour[$plugin];
+                  }
+               }
+            }
+         }
       }
       ########################################################################
       # plugins - END
@@ -541,6 +622,19 @@ class cs_statistic_view extends cs_view {
             ) {
             $colspan++;
          }
+         global $c_plugin_array;
+         if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
+            ) {
+            foreach ($c_plugin_array as $plugin) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'inStatistics') ) {
+                  if ( $plugin_class->inStatistics() ) {
+                     $colspan++;
+                  }
+               }
+            }
+         }
          $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="'.$colspan.'">';
          $html .= $this->_translator->getMessage('CONFIGURATION_PLUGIN_LINK');
          $html .= '</td>'.LF;
@@ -610,8 +704,15 @@ class cs_statistic_view extends cs_view {
       #################################################################
 
       global $c_etchat_enable;
-      if ( !empty($c_etchat_enable)
-           and $c_etchat_enable
+      global $c_plugin_array;
+      if ( ( !empty($c_etchat_enable)
+             and $c_etchat_enable
+           )
+           or
+           ( !empty($c_pmwiki)
+             and $c_pmwiki
+           )
+           or !empty($c_plugin_array)
          ) {
          $html .= '      <td style="width: 2%;" class="head">';
          $html .= '&nbsp;';
@@ -629,6 +730,20 @@ class cs_statistic_view extends cs_view {
             $html .= '      <td style="text-align:right;" class="head">';
             $html .= $this->_translator->getMessage('COMMON_WIKI_LINK');
             $html .= '</td>'.LF;
+         }
+         if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
+            ) {
+            foreach ($c_plugin_array as $plugin) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'inStatistics') ) {
+                  if ( $plugin_class->inStatistics() ) {
+                     $html .= '      <td style="text-align:right;" class="head">';
+                     $html .= $plugin_class->getTitle();
+                     $html .= '</td>'.LF;
+                  }
+               }
+            }
          }
       }
 
@@ -889,6 +1004,7 @@ class cs_statistic_view extends cs_view {
       #################################################################
       global $c_etchat_enable;
       global $c_pmwiki;
+      global $c_plugin_array;
       if ( ( !empty($c_etchat_enable)
              and $c_etchat_enable
            )
@@ -896,6 +1012,7 @@ class cs_statistic_view extends cs_view {
            ( !empty($c_pmwiki)
              and $c_pmwiki
            )
+           or !empty($c_plugin_array)
          ) {
          $html .= '      <td '.$style.'>&nbsp;</td>'.LF;
          $html .= '      '.$this->_getPlugins($row,$style).''.LF;
@@ -931,6 +1048,7 @@ class cs_statistic_view extends cs_view {
       ########################################################################
       global $c_etchat_enable;
       global $c_pmwiki;
+      global $c_plugin_array;
       if ( ( !empty($c_etchat_enable)
              and $c_etchat_enable
            )
@@ -938,6 +1056,7 @@ class cs_statistic_view extends cs_view {
            ( !empty($c_pmwiki)
              and $c_pmwiki
            )
+           or !empty($c_plugin_array)
          ) {
          $html .= '      <td  class="head">&nbsp;</td>'.LF;
          if ( isset($this->_plugin_active['chat']) ) {
@@ -945,6 +1064,18 @@ class cs_statistic_view extends cs_view {
          }
          if ( isset($this->_plugin_active['wiki']) ) {
             $html .= '      <td  class="head" style="text-align:right;">'.$this->_plugin_active['wiki'].'</td>'.LF;
+         }
+         if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
+            ) {
+            foreach ($c_plugin_array as $plugin) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'inStatistics') ) {
+                  if ( isset($this->_plugin_active[$plugin]) ) {
+                     $html .= '      <td  class="head" style="text-align:right;">'.$this->_plugin_active[$plugin].'</td>'.LF;
+                  }
+               }
+            }
          }
       }
       ########################################################################
@@ -1194,6 +1325,7 @@ class cs_statistic_view extends cs_view {
       ########################################################################
       global $c_etchat_enable;
       global $c_pmwiki;
+      global $c_plugin_array;
       if ( ( !empty($c_etchat_enable)
              and $c_etchat_enable
            )
@@ -1201,12 +1333,25 @@ class cs_statistic_view extends cs_view {
            ( !empty($c_pmwiki)
              and $c_pmwiki
            )
+           or !empty($c_plugin_array)
          ) {
          if ( isset($room['chat']) ) {
             $retour .= BRLF.$this->_translator->getMessage('CHAT_CHAT').': '.$room['chat'].LF;
          }
          if ( isset($room['wiki']) ) {
             $retour .= BRLF.$this->_translator->getMessage('COMMON_WIKI_LINK').': '.$room['wiki'].LF;
+         }
+         if ( isset($c_plugin_array)
+              and !empty($c_plugin_array)
+            ) {
+            foreach ($c_plugin_array as $plugin) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( method_exists($plugin_class,'inStatistics') ) {
+                  if ( isset($room[$plugin]) ) {
+                     $retour .= BRLF.$plugin_class->getTitle().': '.$room[$plugin].LF;
+                  }
+               }
+            }
          }
       }
       ########################################################################
@@ -1270,6 +1415,21 @@ class cs_statistic_view extends cs_view {
          $retour .= '      <td  '.$style.' style="text-align:right;">'.LF;
          $retour .= $item['wiki'].LF;
          $retour .= '      </td>'.LF;
+      }
+      global $c_plugin_array;
+      if ( isset($c_plugin_array)
+           and !empty($c_plugin_array)
+         ) {
+         foreach ($c_plugin_array as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,'inStatistics') ) {
+               if ( isset($item[$plugin]) ) {
+                  $retour .= '      <td  '.$style.' style="text-align:right;">'.LF;
+                  $retour .= $item[$plugin].LF;
+                  $retour .= '      </td>'.LF;
+               }
+            }
+         }
       }
 
       return $retour;
