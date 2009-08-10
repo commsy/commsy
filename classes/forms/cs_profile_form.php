@@ -295,16 +295,17 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),'');
       } elseif ( !empty($_POST['option']) and isOption($_POST['option'],$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON')) ) {
          $current_portal_item = $this->_environment->getCurrentPortalItem();
-         $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
-         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle()));
          if ( !$this->_environment->inPortal()
               and !$this->_environment->inPrivateRoom()
             ) {
             $current_context_item = $this->_environment->getCurrentContextItem();
-            $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM',$current_context_item->getTitle()));
+            $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM',$current_context_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')));
             unset($current_context_item);
             $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM'));
+            $this->_form->addEmptyline(true);
          }
+         $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle()));
          unset($current_portal_item);
       }else{
 

@@ -1476,7 +1476,13 @@ class cs_form_view extends cs_view {
          } elseif ( isset($form_element_array[0]['type'])
                       and $form_element_array[0]['type'] == 'emptyline'
                   ) {
-                  $html .= '      <td class="infoborder" colspan="2" style="width: 100%; ">';
+                  $colspan = 2;
+                  if ( !empty($form_element_array[0]['line_right'])
+                       and $form_element_array[0]['line_right']
+                     ) {
+                     $colspan++;
+                  }
+                  $html .= '      <td class="infoborder" colspan="'.$colspan.'" style="width: 100%; ">';
          } else {
             if (!$this->_display_plain) {
                if ($this->_special_color) {

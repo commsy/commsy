@@ -30,7 +30,7 @@ $message["PREFERENCES_DATE_CONFIGURATIONS"]["de"] = "Termindarstellung";
 $message["PREFERENCES_DATE_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die vorausgewählte Darstellung für die Termine auswählen.";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS"]["de"] = "Voreinstellungen für Räume";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS_DESC"]["de"] = "Wählen Sie zwischen Voreinstellungen für Schule, Wirtschaft oder Hochschule.";
-$message["PREFERENCES_DELETE_BUTTON"]["de"] = "Zugang löschen";
+$message["PREFERENCES_DELETE_BUTTON"]["de"] = "Mitgliedschaft beenden";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS"]["de"] = "Art der Diskussionen";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS_DESC"]["de"] = "Wählen Sie zwischen den unterschiedlichen Diskussions- formen (linear oder verzweigt)";
 $message["PREFERENCES_DISCUSSION_NOTIFICATION"]["de"] = "Wiki-Foren<br/>Benachrichtigung";
@@ -52,13 +52,13 @@ $message["PREFERENCES_PATH_CONFIGURATIONS"]["de"] = "Pfade in %_TOPIC_ART_DEF_DA
 $message["PREFERENCES_PATH_CONFIGURATIONS_DESC"]["de"] = "Hier können Sie die Pfade in %_TOPIC_ART_DEF_DATPL_LOW %_TOPIC_SUB_DATPL_LOW aktivieren.";
 $message["PREFERENCES_REALLY_DELETE_BUTTON"]["de"] = "Teilnahme löschen (%1)";
 $message["PREFERENCES_REALLY_DELETE_BUTTON_ROOM"]["de"] = "Teilnahme löschen in diesem Raum";
-$message["PREFERENCES_REALLY_DELETE_DESC"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für das gesamte Portal gesperrt. Sie haben dann keinen Zutritt mehr zu diesem CommSy [%1] und Ihren Räumen. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
+$message["PREFERENCES_REALLY_DELETE_DESC"]["de"] = "Alternativ können Sie für das gesamte CommSy Portal %1 und alle Räume:
+<ul><li>*%2* oder</li><li>*%3*.</li></ul>";
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["de"] = "Sie haben zwei Möglichkeiten:<ul><li>Wenn Sie <b>%2</b> wählen, wird ihre Kennung für diesen Raum gesperrt. Sie haben dann keinen Zutritt mehr zu dem Raum %1. Ihre Beiträge bleiben aber erhalten. Falls Sie bestimmte Einträge löschen wollen, tun Sie das bitte, bevor Sie ihre Teilnahme beenden.
 
-Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li>
-<li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung in diesem CommSy [%1] und allen Räumen gelöscht. Sie können danach den Raum nicht mehr betreten.
+Ihr Zugang kann bei Bedarf wieder freigeschaltet werden.</li><li>Wenn Sie <b>%3</b> wählen, werden sämtliche ihrer Beiträge und ihre Kennung in dem Raum %1. Sie können danach den Raum nicht mehr betreten.
 
 Achtung: Dies kann nicht rückgängig gemacht werden.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["de"] = "Alternativ können Sie auch nur für diesen Raum [%1] die Teilnahme beenden bzw. löschen.";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["de"] = "Zuordnung von <br/>
 %_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["de"] = "Einstellungen speichern";

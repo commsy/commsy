@@ -30,7 +30,7 @@ $message["PREFERENCES_DATE_CONFIGURATIONS"]["en"] = "Configure events";
 $message["PREFERENCES_DATE_CONFIGURATIONS_DESC"]["en"] = "Configure display type for events.";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS"]["en"] = "Choose workspace preset";
 $message["PREFERENCES_DEFAULT_CONFIGURATIONS_DESC"]["en"] = "Select one of three basic workspace presets (school, university, or business).";
-$message["PREFERENCES_DELETE_BUTTON"]["en"] = "Delete account";
+$message["PREFERENCES_DELETE_BUTTON"]["en"] = "Cancel membership";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS"]["en"] = "Configure discussions";
 $message["PREFERENCES_DISCUSSION_CONFIGURATIONS_DESC"]["en"] = "Configure discussions style for your workspace (flat, threaded, mixed).";
 $message["PREFERENCES_DISCUSSION_NOTIFICATION"]["en"] = "Wiki-forums<br/>notification";
@@ -58,7 +58,11 @@ $message["PREFERENCES_REALLY_DELETE_DESC"]["en"] = "Your choice is between two o
 <li>If you choose <b>%3</b> your account completely, everything you have written in all workspaces of this CommSy [%1] will be deleted. You will not be able to access the workspace with this account.
 
 This is a step of no return.</li></ul>";
-$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["en"] = "You can cancel or delete your membership of this room [%1] alternatively.";
+$message["PREFERENCES_REALLY_DELETE_DESC_ROOM"]["en"] = "Your choice is between two options:
+<ul>
+<li>If you choose <b>%2</b> you quit your commsy workspace [%1] access. The items you entered will not be deleted. It is possible to reactivate your account.</li><li>If you choose <b>%3</b> your account completely, everything you have written in the workspaces %1 will be deleted. You will not be able to access the workspace with this account.
+
+This is a step of no return.</li></ul>";
 $message["PREFERENCES_ROOM_ASSIGMENT"]["en"] = "Association of <br/>
 %_PROJECT_SUB_DATPL_BIG";
 $message["PREFERENCES_SAVE_BUTTON"]["en"] = "Save preferences";

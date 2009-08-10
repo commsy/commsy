@@ -824,11 +824,12 @@ class cs_form {
          *
          * @author CommSy Development Group
          */
-        function addEmptyline() {
+        function addEmptyline( $line_right = false ) {
 
                 $element['type'] = 'emptyline';
                 $element['name'] = 'emptyline';
                 $element['mandatory'] = false;
+                $element['line_right'] = $line_right;
 
                 $this -> _formElements -> addElement($element);
         }
