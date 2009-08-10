@@ -154,7 +154,6 @@ if ( $external_tool == 'homepage' ) {
       ) {
       $portal_user_item = $current_user->getRelatedCommSyUserItem();
       if ( isset($portal_user_item) ) {
-         include_once('functions/date_functions.php');
          $portal_user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
          $portal_user_item->setChangeModificationOnSave(false);
          $portal_user_item->save();

@@ -196,6 +196,12 @@ class cs_statistic_view extends cs_view {
          ) {
          $retour['chat']      = $room->getCountPlugin('etchat',$this->_start_date,$this->_end_date);
       }
+      global $c_pmwiki;
+      if ( !empty($c_pmwiki)
+           and $c_pmwiki
+         ) {
+         $retour['wiki']      = $room->getCountPlugin('pmwiki',$this->_start_date,$this->_end_date);
+      }
       ########################################################################
       # plugins - END
       ########################################################################
@@ -271,6 +277,15 @@ class cs_statistic_view extends cs_view {
             $this->_plugin_active['chat'] = 0;
          }
          $this->_plugin_active['chat'] = $this->_plugin_active['chat'] + $retour['chat'];
+      }
+      global $c_pmwiki;
+      if ( !empty($c_pmwiki)
+           and $c_pmwiki
+         ) {
+         if ( !isset($this->_plugin_active['wiki']) ) {
+            $this->_plugin_active['wiki'] = 0;
+         }
+         $this->_plugin_active['wiki'] = $this->_plugin_active['wiki'] + $retour['wiki'];
       }
       ########################################################################
       # plugins - END
@@ -423,8 +438,14 @@ class cs_statistic_view extends cs_view {
       # plugins - BEGIN
       #################################################################
       global $c_etchat_enable;
-      if ( !empty($c_etchat_enable)
-           and $c_etchat_enable
+      global $c_pmwiki;
+      if ( ( !empty($c_etchat_enable)
+             and $c_etchat_enable
+           )
+           or
+           ( !empty($c_pmwiki)
+             and $c_pmwiki
+           )
          ) {
          $html .= '      <td style="width: 2%;  border-bottom: 1px solid;" class="head">';
          $html .= '&nbsp;';
@@ -433,6 +454,11 @@ class cs_statistic_view extends cs_view {
          $colspan = 0;
          if ( !empty($c_etchat_enable)
               and $c_etchat_enable
+            ) {
+            $colspan++;
+         }
+         if ( !empty($c_pmwiki)
+              and $c_pmwiki
             ) {
             $colspan++;
          }
@@ -516,6 +542,13 @@ class cs_statistic_view extends cs_view {
             ) {
             $html .= '      <td style="text-align:right; border-left: 1px solid;" class="head">';
             $html .= $this->_translator->getMessage('CHAT_CHAT');
+            $html .= '</td>'.LF;
+         }
+         if ( !empty($c_pmwiki)
+              and $c_pmwiki
+            ) {
+            $html .= '      <td style="text-align:right; border-left: 1px solid;" class="head">';
+            $html .= $this->_translator->getMessage('COMMON_WIKI_LINK');
             $html .= '</td>'.LF;
          }
       }
@@ -752,8 +785,14 @@ class cs_statistic_view extends cs_view {
       # plugins - BEGIN
       #################################################################
       global $c_etchat_enable;
-      if ( !empty($c_etchat_enable)
-           and $c_etchat_enable
+      global $c_pmwiki;
+      if ( ( !empty($c_etchat_enable)
+             and $c_etchat_enable
+           )
+           or
+           ( !empty($c_pmwiki)
+             and $c_pmwiki
+           )
          ) {
          $html .= '      <td '.$style.'>&nbsp;</td>'.LF;
          $html .= '      '.$this->_getPlugins($row,$style).''.LF;
@@ -788,12 +827,21 @@ class cs_statistic_view extends cs_view {
       # plugins - BEGIN
       ########################################################################
       global $c_etchat_enable;
-      if ( !empty($c_etchat_enable)
-           and $c_etchat_enable
+      global $c_pmwiki;
+      if ( ( !empty($c_etchat_enable)
+             and $c_etchat_enable
+           )
+           or
+           ( !empty($c_pmwiki)
+             and $c_pmwiki
+           )
          ) {
          $html .= '      <td  class="head">&nbsp;</td>'.LF;
          if ( isset($this->_plugin_active['chat']) ) {
             $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_plugin_active['chat'].'</td>'.LF;
+         }
+         if ( isset($this->_plugin_active['wiki']) ) {
+            $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_plugin_active['wiki'].'</td>'.LF;
          }
       }
       ########################################################################
@@ -1081,6 +1129,11 @@ class cs_statistic_view extends cs_view {
       if ( isset($item['chat']) ) {
          $retour .= '      <td  '.$style.' style="border-left:1px solid black; text-align:right;">'.LF;
          $retour .= $item['chat'].LF;
+         $retour .= '      </td>'.LF;
+      }
+      if ( isset($item['wiki']) ) {
+         $retour .= '      <td  '.$style.' style="text-align:right;">'.LF;
+         $retour .= $item['wiki'].LF;
          $retour .= '      </td>'.LF;
       }
 

@@ -282,6 +282,14 @@
 <message name='changeUserNameOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='updateLastloginIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='tool' type='xsd:string'/>
+  <part name='room_id' type='xsd:integer'/>
+</message>
+<message name='updateLastloginOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -431,6 +439,10 @@
   <operation name='changeUserName'>
     <input message='tns:changeUserNameIN'/>
     <output message='tns:changeUserNameOUT'/>
+  </operation>
+  <operation name='updateLastlogin'>
+    <input message='tns:updateLastloginIN'/>
+    <output message='tns:updateLastloginOUT'/>
   </operation>
 </portType>
 
@@ -836,6 +848,17 @@
   </operation>
   <operation name='changeUserName'>
     <soap:operation soapAction='urn:xmethodsCommSy#changeUserName'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='updateLastlogin'>
+    <soap:operation soapAction='urn:xmethodsCommSy#updateLastlogin'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

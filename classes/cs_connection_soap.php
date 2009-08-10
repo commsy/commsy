@@ -2216,5 +2216,56 @@ class cs_connection_soap {
      fwrite($fd, $str . "\n");
      fclose($fd);
    }
+
+   public function updateLastlogin ($session_id, $tool = 'commsy', $room_id = 0) {
+      $session_id = $this->_encode_input($session_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+         $auth_source_id = $session->getValue('auth_source');
+         $context_id = $session->getValue('commsy_id');
+         $this->_environment->setCurrentContextID($context_id);
+         $user_manager = $this->_environment->getUserManager();
+         if ( !empty($room_id)
+              and $room_id != $context_id
+            ) {
+            $user_manager->setContextLimit($room_id);
+         } else {
+            $user_manager->setContextLimit($context_id);
+         }
+         $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source_id);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         if ( $user_list->getCount() == 1 ) {
+            $user_item = $user_list->getFirst();
+            include_once('functions/date_functions.php');
+            if ( $tool != 'commsy' ) {
+               $user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),$tool);
+               $user_item->setChangeModificationOnSave(false);
+               $user_item->save();
+            }
+            if ( !empty($room_id)
+                 and $room_id != $context_id
+               ) {
+               $portal_user_item = $user_item->getRelatedCommSyUserItem();
+               if ( isset($portal_user_item) ) {
+                  if ( $tool != 'commsy' ) {
+                     $portal_user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),$tool);
+                     $portal_user_item->setChangeModificationOnSave(false);
+                     $portal_user_item->save();
+                     unset($portal_user_item);
+                  }
+               }
+            }
+            return true;
+         } else {
+            return new SoapFault('ERROR: UPDATELASTLOGIN','can not find user ('.$user_id.' | '.$auth_source_id.')!');
+         }
+      } else {
+         return new SoapFault('ERROR: UPDATELASTLOGIN','Session ('.$session_id.') not valid!');
+      }
+   }
 }
 ?>
