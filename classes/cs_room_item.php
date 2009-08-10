@@ -184,13 +184,15 @@ class cs_room_item extends cs_context_item {
    }
 
    function setContactPerson ($fullname) {
-      $value = '';
-      if ($this->_issetExtra('CONTACT_PERSONS')) {
-         $value = $this->_getExtra('CONTACT_PERSONS');
-      }
-      if(!mb_stristr($value,$fullname)){
-         $value .= $fullname.', ';
-         $this->_setExtra('CONTACT_PERSONS',$value);
+      if ( !empty($fullname) ) {
+         $value = '';
+         if ($this->_issetExtra('CONTACT_PERSONS')) {
+            $value = $this->_getExtra('CONTACT_PERSONS');
+         }
+         if(!mb_stristr($value,$fullname)){
+            $value .= $fullname.', ';
+            $this->_setExtra('CONTACT_PERSONS',$value);
+         }
       }
    }
 
@@ -207,14 +209,16 @@ class cs_room_item extends cs_context_item {
 
 
    function unsetContactPerson ($fullname) {
-      $value = '';
-      if ($this->_issetExtra('CONTACT_PERSONS')) {
-         $value = $this->_getExtra('CONTACT_PERSONS');
+      if ( !empty($fullname) ) {
+         $value = '';
+         if ($this->_issetExtra('CONTACT_PERSONS')) {
+            $value = $this->_getExtra('CONTACT_PERSONS');
+         }
+         if(mb_stristr($value,$fullname.', ')){
+            $value = str_replace($fullname.', ','',$value);
+         }
+         $this->_setExtra('CONTACT_PERSONS',$value);
       }
-      if(mb_stristr($value,$fullname.', ')){
-         $value = str_replace($fullname.', ','',$value);
-      }
-      $this->_setExtra('CONTACT_PERSONS',$value);
    }
 
 
