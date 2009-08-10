@@ -1946,5 +1946,28 @@ class cs_user_item extends cs_item {
       }
       return $retour;
    }
+
+   /** get lastlogin from plugin
+    * this method returns the users plugin lastlogin
+    *
+    * @return string timestamp
+    */
+   function getLastLoginPlugin ( $plugin ) {
+      $retour = '';
+      if ( $this->_issetExtra('LASTLOGIN_'.mb_strtoupper($plugin)) ) {
+         $retour = $this->_getExtra('LASTLOGIN_'.mb_strtoupper($plugin));
+      }
+      return $retour;
+   }
+
+   /** set user lastlogin from plugin
+    * this method sets the users users plugin lastlogin
+    *
+    * @param string value timestamp
+    * @param string plugin plugin identifier
+    */
+   function setLastLoginPlugin ($value, $plugin) {
+      $this->_addExtra('LASTLOGIN_'.mb_strtoupper($plugin),(string)$value);
+   }
 }
 ?>

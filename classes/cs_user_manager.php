@@ -1476,7 +1476,40 @@ class cs_user_manager extends cs_manager {
 
       return $retour;
    }
-   
+
+   function getCountPlugin ($plugin, $start, $end) {
+      $retour = 0;
+
+      $query = "SELECT ".$this->_db_table.".email,".$this->_db_table.".extras FROM ".$this->_db_table." WHERE user.context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->_db_table.".extras LIKE '%LASTLOGIN_".mb_strtoupper($plugin)."%' and user.creation_date < '".encode(AS_DB,$end)."'";
+      $result = $this->_db_connector->performQuery($query);
+      if ( !isset($result) ) {
+         include_once('functions/error_functions.php');
+         trigger_error('Problems counting all accounts.',E_USER_WARNING);
+      } else {
+         $retour_array = array();
+         include_once('functions/text_functions.php');
+         foreach ($result as $rs) {
+            $extra_array = array();
+            if ( !empty($rs['extras']) ) {
+               $extra_array = mb_unserialize($rs['extras']);
+               if ( !empty($extra_array['LASTLOGIN_'.mb_strtoupper($plugin)])
+                    and $extra_array['LASTLOGIN_'.mb_strtoupper($plugin)] > $start
+                  ) {
+                  $retour_array[] = $rs['email'];
+               }
+            }
+         }
+         unset($result);
+
+         if ( !empty($retour_array) ) {
+            $retour_array = array_unique($retour_array);
+            $retour = count($retour_array);
+         }
+      }
+
+      return $retour;
+   }
+
    function resetCacheSQL(){
       $this->_cache_sql = array();
    }

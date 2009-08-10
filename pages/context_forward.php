@@ -143,6 +143,25 @@ if ( $external_tool == 'homepage' ) {
    $current_context = $environment->getCurrentContextItem();
    $current_user = $environment->getCurrentUserItem();
 
+   // save last login
+   include_once('functions/date_functions.php');
+   $current_user->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
+   $current_user->setChangeModificationOnSave(false);
+   $current_user->save();
+
+   if ( !$environment->inPortal()
+        and !$environment->inServer()
+      ) {
+      $portal_user_item = $current_user->getRelatedCommSyUserItem();
+      if ( isset($portal_user_item) ) {
+         include_once('functions/date_functions.php');
+         $portal_user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
+         $portal_user_item->setChangeModificationOnSave(false);
+         $portal_user_item->save();
+         unset($portal_user_item);
+      }
+   }
+
    $etchat_manager = $environment->getETChatManager();
    if ( $etchat_manager->insertRoom($current_context) ) {
       $inser_user = $etchat_manager->insertUser($current_user);

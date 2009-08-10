@@ -872,6 +872,18 @@ class cs_portal_item extends cs_guide_item {
       return $retour;
    }
 
+   function getCountPlugin ($plugin, $start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $user_manager->setContextLimit($this->getItemID());
+      $retour = $user_manager->getCountPlugin($plugin,$start,$end);
+      unset($user_manager);
+
+      return $retour;
+   }
+
    #########################################################
    # COMMSY CRON JOBS
    #

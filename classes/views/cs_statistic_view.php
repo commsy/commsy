@@ -68,6 +68,8 @@ class cs_statistic_view extends cs_view {
    var $_ac_open = 0;
    var $_ac_all  = 0;
 
+   private $_plugin_active = array();
+
    var $_statistic_matrix = array();
    var $_sort_by = 'ac_used';
 
@@ -173,32 +175,46 @@ class cs_statistic_view extends cs_view {
       $retour['item_id']       = $room->getItemID();
       $retour['title']         = $room->getTitle();
       $retour['creation_date'] = $room->getCreationDate();
-       $retour['is_open']       = $room->isOpen();
-       $retour['active']        = $room->getCountActiveRooms($this->_start_date,$this->_end_date);
-       $retour['used']          = $room->getCountUsedRooms($this->_start_date,$this->_end_date);
-       $retour['used_closed']   = $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
-       $retour['closed']        = $room->getCountClosedRooms($this->_start_date,$this->_end_date);
-       $retour['open']          = $room->getCountOpenRooms($this->_start_date,$this->_end_date);
-       $retour['all']           = $room->getCountAllRooms($this->_start_date,$this->_end_date);
-       $retour['ac_used']       = $room->getCountUsedAccounts($this->_start_date,$this->_end_date);
-       $retour['ac_open']       = $room->getCountOpenAccounts($this->_start_date,$this->_end_date);
-       $retour['ac_all']        = $room->getCountAllAccounts($this->_start_date,$this->_end_date);
+      $retour['is_open']       = $room->isOpen();
+      $retour['active']        = $room->getCountActiveRooms($this->_start_date,$this->_end_date);
+      $retour['used']          = $room->getCountUsedRooms($this->_start_date,$this->_end_date);
+      #$retour['used_closed']   = $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
+      #$retour['closed']        = $room->getCountClosedRooms($this->_start_date,$this->_end_date);
+      #$retour['open']          = $room->getCountOpenRooms($this->_start_date,$this->_end_date);
+      $retour['used']         += $room->getCountUsedClosedRooms($this->_start_date,$this->_end_date);
+      $retour['all']           = $room->getCountAllRooms($this->_start_date,$this->_end_date);
+      $retour['ac_used']       = $room->getCountUsedAccounts($this->_start_date,$this->_end_date);
+      $retour['ac_open']       = $room->getCountOpenAccounts($this->_start_date,$this->_end_date);
+      $retour['ac_all']        = $room->getCountAllAccounts($this->_start_date,$this->_end_date);
 
-       if ($this->_room_status != 'none') {
-        $temp_array = array();
-          if ($this->_room_status == 'used') {
-             $room_list = $room->getUsedRoomList($this->_start_date,$this->_end_date);
-          } else {
-             $room_list = $room->getActiveRoomList($this->_start_date,$this->_end_date);
-          }
-        if ($room_list->isNotEmpty()) {
-             $temp_array2 = array();
-          $sub_room_item = $room_list->getFirst();
-          while ($sub_room_item) {
-            $temp_array2['type'] = $sub_room_item->getItemType();
-            $temp_array2['title'] = $sub_room_item->getTitle();
-            $temp_array2['is_open'] = $sub_room_item->isOpen();
-            $temp_array2['home_conf'] = $sub_room_item->getHomeConf();
+      ########################################################################
+      # plugins - BEGIN
+      ########################################################################
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $retour['chat']      = $room->getCountPlugin('etchat',$this->_start_date,$this->_end_date);
+      }
+      ########################################################################
+      # plugins - END
+      ########################################################################
+
+      if ($this->_room_status != 'none') {
+         $temp_array = array();
+         if ($this->_room_status == 'used') {
+            $room_list = $room->getUsedRoomList($this->_start_date,$this->_end_date);
+         } else {
+            $room_list = $room->getActiveRoomList($this->_start_date,$this->_end_date);
+         }
+         if ($room_list->isNotEmpty()) {
+            $temp_array2 = array();
+            $sub_room_item = $room_list->getFirst();
+            while ($sub_room_item) {
+               $temp_array2['type'] = $sub_room_item->getItemType();
+               $temp_array2['title'] = $sub_room_item->getTitle();
+               $temp_array2['is_open'] = $sub_room_item->isOpen();
+               $temp_array2['home_conf'] = $sub_room_item->getHomeConf();
                 if ($sub_room_item->withRubric(CS_ANNOUNCEMENT_TYPE)) {
                    $temp_array2[CS_ANNOUNCEMENT_TYPE] = $sub_room_item->getCountAnnouncements($this->_start_date,$this->_end_date);
                 }
@@ -234,15 +250,31 @@ class cs_statistic_view extends cs_view {
         $retour['rooms'] = $temp_array;
       }
 
-       $this->_pr_used = $this->_pr_used + $retour['used'];
-       $this->_pr_used_closed = $this->_pr_used_closed + $retour['used_closed'];
-       $this->_pr_closed = $this->_pr_closed + $retour['closed'];
-       $this->_pr_open = $this->_pr_open + $retour['open'];
-       $this->_pr_all = $this->_pr_all + $retour['all'];
-       $this->_pr_active = $this->_pr_active + $retour['active'];
-       $this->_ac_used = $this->_ac_used + $retour['ac_used'];
-       $this->_ac_open = $this->_ac_open + $retour['ac_open'];
-       $this->_ac_all  = $this->_ac_all  + $retour['ac_all'];
+      $this->_pr_used = $this->_pr_used + $retour['used'];
+      #$this->_pr_used_closed = $this->_pr_used_closed + $retour['used_closed'];
+      #$this->_pr_closed = $this->_pr_closed + $retour['closed'];
+      #$this->_pr_open = $this->_pr_open + $retour['open'];
+      $this->_pr_all = $this->_pr_all + $retour['all'];
+      $this->_pr_active = $this->_pr_active + $retour['active'];
+      $this->_ac_used = $this->_ac_used + $retour['ac_used'];
+      $this->_ac_open = $this->_ac_open + $retour['ac_open'];
+      $this->_ac_all  = $this->_ac_all  + $retour['ac_all'];
+
+      ########################################################################
+      # plugins - BEGIN
+      ########################################################################
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         if ( !isset($this->_plugin_active['chat']) ) {
+            $this->_plugin_active['chat'] = 0;
+         }
+         $this->_plugin_active['chat'] = $this->_plugin_active['chat'] + $retour['chat'];
+      }
+      ########################################################################
+      # plugins - END
+      ########################################################################
 
       return $retour;
    }
@@ -272,22 +304,21 @@ class cs_statistic_view extends cs_view {
    function asHTML () {
 
       $html  = LF.'<!-- BEGIN OF STATISTIC VIEW -->'.LF;
-
-
       $html .= LF.'<div class="indexform" style="padding:3px; font-size:10pt;">'.LF;
 
       $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-          $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-          $this->_translator->getMessage('DATES_MARCH_LONG'),
-          $this->_translator->getMessage('DATES_APRIL_LONG'),
-          $this->_translator->getMessage('DATES_MAY_LONG'),
-          $this->_translator->getMessage('DATES_JUNE_LONG'),
-          $this->_translator->getMessage('DATES_JULY_LONG'),
-          $this->_translator->getMessage('DATES_AUGUST_LONG'),
-          $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-          $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-          $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-          $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+      $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+      $this->_translator->getMessage('DATES_MARCH_LONG'),
+      $this->_translator->getMessage('DATES_APRIL_LONG'),
+      $this->_translator->getMessage('DATES_MAY_LONG'),
+      $this->_translator->getMessage('DATES_JUNE_LONG'),
+      $this->_translator->getMessage('DATES_JULY_LONG'),
+      $this->_translator->getMessage('DATES_AUGUST_LONG'),
+      $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+      $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+      $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+      $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+
       $date = date("Y-m-d");
       $date_array = explode('-',$date);
       $current_time = localtime();
@@ -376,7 +407,7 @@ class cs_statistic_view extends cs_view {
       $html .= '&nbsp;';
       $html .= '</td>'.LF;
 
-      $html .= '      <td style="width: 25%; border-bottom: 1px solid;" class="head" colspan="6">';
+      $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="3">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_ROOMS');
       $html .= '</td>'.LF;
 
@@ -387,6 +418,31 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="3">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_ACCOUNTS');
       $html .= '</td>'.LF;
+
+      #################################################################
+      # plugins - BEGIN
+      #################################################################
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $html .= '      <td style="width: 2%;  border-bottom: 1px solid;" class="head">';
+         $html .= '&nbsp;';
+         $html .= '</td>'.LF;
+
+         $colspan = 0;
+         if ( !empty($c_etchat_enable)
+              and $c_etchat_enable
+            ) {
+            $colspan++;
+         }
+         $html .= '      <td style="width: 25%; border-bottom: 1px solid; border-left: 1px solid;" class="head" colspan="'.$colspan.'">';
+         $html .= $this->_translator->getMessage('CONFIGURATION_PLUGIN_LINK');
+         $html .= '</td>'.LF;
+      }
+      #################################################################
+      # plugins - END
+      #################################################################
 
       $html .= '   </tr>'.LF;
 
@@ -413,11 +469,12 @@ class cs_statistic_view extends cs_view {
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_ALL');
       $html .= '</td>'.LF;
       $html .= '      <td style="width:6%;text-align:right;" class="head">';
-      $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_ACTIVE');
-      $html .= '</td>'.LF;
-      $html .= '      <td style="width:6%;text-align:right;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_USED');
       $html .= '</td>'.LF;
+      $html .= '      <td style="width:6%;text-align:right;" class="head">';
+      $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_ACTIVE');
+      $html .= '</td>'.LF;
+      /*
       $html .= '      <td style="width:6%;text-align:right;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_OPEN');
       $html .= '</td>'.LF;
@@ -427,6 +484,7 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td style="width:6%;text-align:right;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_PROJECTROOMS_CLOSED_USED');
       $html .= '</td>'.LF;
+      */
 
       $html .= '      <td style="width: 2%;" class="head">';
       $html .= '&nbsp;';
@@ -441,6 +499,30 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td style="width: 9%;text-align:right;" class="head">';
       $html .= $this->_translator->getMessage('SERVER_STATISTIC_ACCOUNTS_OPEN');
       $html .= '</td>'.LF;
+
+      #################################################################
+      # plugins - BEGIN
+      #################################################################
+
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $html .= '      <td style="width: 2%;" class="head">';
+         $html .= '&nbsp;';
+         $html .= '</td>'.LF;
+         if ( !empty($c_etchat_enable)
+              and $c_etchat_enable
+            ) {
+            $html .= '      <td style="text-align:right; border-left: 1px solid;" class="head">';
+            $html .= $this->_translator->getMessage('CHAT_CHAT');
+            $html .= '</td>'.LF;
+         }
+      }
+
+      #################################################################
+      # plugins - END
+      #################################################################
 
       $html .= '   </tr>'.LF;
 
@@ -665,6 +747,21 @@ class cs_statistic_view extends cs_view {
       $html .= '      '.$this->_getRooms($row,$style).''.LF;
       $html .= '      <td '.$style.'>&nbsp;</td>'.LF;
       $html .= '      '.$this->_getAccounts($row,$style).''.LF;
+
+      #################################################################
+      # plugins - BEGIN
+      #################################################################
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $html .= '      <td '.$style.'>&nbsp;</td>'.LF;
+         $html .= '      '.$this->_getPlugins($row,$style).''.LF;
+      }
+      #################################################################
+      # plugins - END
+      #################################################################
+
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -677,15 +774,32 @@ class cs_statistic_view extends cs_view {
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_pr_all.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active.'</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_open.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_closed.'</td>'.LF;
-      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_closed.'</td>'.LF;
+      $html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_active.'</td>'.LF;
+      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_open.'</td>'.LF;
+      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_closed.'</td>'.LF;
+      #$html .= '      <td  class="head" style="text-align:right;">'.$this->_pr_used_closed.'</td>'.LF;
       $html .= '      <td  class="head">&nbsp;</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_ac_all.'</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right;">'.$this->_ac_used.'</td>'.LF;
       $html .= '      <td  class="head" style="text-align:right;">'.$this->_ac_open.'</td>'.LF;
+
+      ########################################################################
+      # plugins - BEGIN
+      ########################################################################
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $html .= '      <td  class="head">&nbsp;</td>'.LF;
+         if ( isset($this->_plugin_active['chat']) ) {
+            $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_plugin_active['chat'].'</td>'.LF;
+         }
+      }
+      ########################################################################
+      # plugins - END
+      ########################################################################
+
       $html .= '   </tr>'.LF;
 
       return $html;
@@ -736,11 +850,12 @@ class cs_statistic_view extends cs_view {
       $retour .= $item['all'].LF;
       $retour .= '      </td>'.LF;
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
-      $retour .= $item['active'].LF;
-      $retour .= '      </td>'.LF;
-      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
       $retour .= $item['used'].LF;
       $retour .= '      </td>'.LF;
+      $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
+      $retour .= $item['active'].LF;
+      $retour .= '      </td>'.LF;
+      /*
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
       $retour .= $item['open'].LF;
       $retour .= '      </td>'.LF;
@@ -750,7 +865,7 @@ class cs_statistic_view extends cs_view {
       $retour .= '      <td '.$style.' style="text-align:right;">'.LF;
       $retour .= $item['used_closed'].LF;
       $retour .= '      </td>'.LF;
-
+      */
       return $retour;
    }
 
@@ -958,6 +1073,17 @@ class cs_statistic_view extends cs_view {
          $retour .= '</div>'.LF;
       }
       $retour .= $this->_translator->getMessage('SERVER_STATISTIC_TITLE');
+      return $retour;
+   }
+
+   private function _getPlugins ($item, $style) {
+      $retour  = ''.LF;
+      if ( isset($item['chat']) ) {
+         $retour .= '      <td  '.$style.' style="border-left:1px solid black; text-align:right;">'.LF;
+         $retour .= $item['chat'].LF;
+         $retour .= '      </td>'.LF;
+      }
+
       return $retour;
    }
 }
