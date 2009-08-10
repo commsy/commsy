@@ -953,12 +953,47 @@ class cs_statistic_view extends cs_view {
          $community_id_array = $portal_item->getCommunityIDArray();
       }
 
+      $colspan = 11;
+      $plugin_show = false;
+      global $c_etchat_enable;
+      if ( !empty($c_etchat_enable)
+           and $c_etchat_enable
+         ) {
+         $plugin_show = true;
+         $colspan++;
+      }
+      global $c_pmwiki;
+      if ( !empty($c_pmwiki)
+           and $c_pmwiki
+         ) {
+         $plugin_show = true;
+         $colspan++;
+      }
+      global $c_plugin_array;
+      if ( isset($c_plugin_array)
+           and !empty($c_plugin_array)
+         ) {
+         foreach ($c_plugin_array as $plugin) {
+            $plugin_class = $this->_environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,'inStatistics') ) {
+               if ( $plugin_class->inStatistics() ) {
+                  $plugin_show = true;
+                  $colspan++;
+               }
+            }
+         }
+      }
+      if ( $plugin_show ) {
+         $colspan++;
+      }
+
       $html = '';
       $count = count($value_array);
       if ( $count == 0 ) {
-         $html .= '<tr class="list"><td class="even" style="border-bottom: 0px;"colspan="6">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
+         $html .= '<tr class="list"><td class="even" style="border-bottom: 0px;" colspan="'.$colspan.'">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       } else {
          $i = 1;
+         $row_show = false;
          foreach ($value_array as $row) {
             if ( empty($type)
                  or ( $type == 'community'
@@ -966,7 +1001,11 @@ class cs_statistic_view extends cs_view {
                     )
                ) {
                $html .= $this->_getRowAsHTML($row, $i++);
+               $row_show = true;
             }
+         }
+         if ( !$row_show ) {
+            $html .= '<tr class="list"><td class="even" style="border-bottom: 0px;" colspan="'.$colspan.'">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
          }
          if ( empty($type) ) {
             $html .= $this->_getSumAsHTML();
