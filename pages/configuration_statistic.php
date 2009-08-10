@@ -35,6 +35,9 @@ if (!$current_user->isRoot()) {
    } else {
       $day1 = date('d');
    }
+   if ( strlen($day1) == 1 ) {
+      $day1 = '0'.$day1;
+   }
 
    // initialize month1
    if ( isset($_POST['month1']) ) {
@@ -43,6 +46,9 @@ if (!$current_user->isRoot()) {
       $month1 = $_GET['month1'];
    } else {
       $month1 = date('m');
+   }
+   if ( strlen($month1) == 1 ) {
+      $month1 = '0'.$month1;
    }
 
    // initialize year1
@@ -62,6 +68,9 @@ if (!$current_user->isRoot()) {
    } else {
       $day2 = date('d');
    }
+   if ( strlen($day2) == 1 ) {
+      $day2 = '0'.$day2;
+   }
 
    // initialize month2
    if ( isset($_POST['month2']) ) {
@@ -70,6 +79,9 @@ if (!$current_user->isRoot()) {
       $month2 = $_GET['month2'];
    } else {
       $month2 = date('m');
+   }
+   if ( strlen($month2) == 1 ) {
+      $month2 = '0'.$month2;
    }
 
    // initialize year2

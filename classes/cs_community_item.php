@@ -66,11 +66,18 @@ class cs_community_item extends cs_room_item {
     * this method returns a list of projects which are linked to the project
     *
     * @return object cs_list a list of projects (cs_project_item)
-    *
-    * @author CommSy Development Group
     */
    function getProjectList () {
       return $this->getLinkedItemList(CS_PROJECT_TYPE);
+   }
+
+   /** get project ids of a community
+    * this method returns an array of projects ids which are linked to the community
+    *
+    * @return array an array of projects ids
+    */
+   function getProjectIDArray () {
+      return $this->getLinkedItemIDArray(CS_PROJECT_TYPE);
    }
 
    /** get communitys of a project
@@ -1299,6 +1306,62 @@ class cs_community_item extends cs_room_item {
          unset($current_user);
          unset($mail);
       }
+   }
+
+   function getCountUsedAccounts ($start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $project_id_array = $this->getProjectIDArray();
+      $project_id_array[] = $this->getItemID();
+      $user_manager->setContextArrayLimit($project_id_array);
+      $retour = $user_manager->getCountUsedAccounts($start,$end);
+      unset($user_manager);
+
+      return $retour;
+   }
+
+   function getCountOpenAccounts ($start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $project_id_array = $this->getProjectIDArray();
+      $project_id_array[] = $this->getItemID();
+      $user_manager->setContextArrayLimit($project_id_array);
+      $retour = $user_manager->getCountOpenAccounts($start,$end);
+      unset($user_manager);
+
+      return $retour;
+   }
+
+   function getCountAllAccounts ($start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $project_id_array = $this->getProjectIDArray();
+      $project_id_array[] = $this->getItemID();
+      $user_manager->setContextArrayLimit($project_id_array);
+      $retour = $user_manager->getCountAllAccounts($start,$end);
+      unset($user_manager);
+
+      return $retour;
+   }
+
+   function getCountPluginWithLinkedRooms ($plugin, $start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $project_id_array = $this->getProjectIDArray();
+      $project_id_array[] = $this->getItemID();
+      $user_manager->setContextArrayLimit($project_id_array);
+      $retour = $user_manager->getCountPlugin($plugin,$start,$end);
+      unset($user_manager);
+
+      return $retour;
    }
 }
 ?>

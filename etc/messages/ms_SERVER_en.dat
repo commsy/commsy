@@ -30,6 +30,7 @@ $message["SERVER_STATISTIC_CHOICE_DAY"]["en"] = "Day";
 $message["SERVER_STATISTIC_CHOICE_MONTH"]["en"] = "Month";
 $message["SERVER_STATISTIC_CHOICE_ROOM"]["en"] = "Display";
 $message["SERVER_STATISTIC_CHOICE_ROOM_ACTIVE"]["en"] = "active workspaces";
+$message["SERVER_STATISTIC_CHOICE_ROOM_COMMUNITY"]["en"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["SERVER_STATISTIC_CHOICE_ROOM_NONE"]["en"] = "no workspaces";
 $message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["en"] = "used workspaces";
 $message["SERVER_STATISTIC_CHOICE_YEAR"]["en"] = "Year";

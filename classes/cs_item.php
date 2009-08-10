@@ -1439,7 +1439,6 @@ class cs_item {
       return $result_list;
    }
 
-
    function getAllLinkedItemIDArray() {
       $id_array = array();
       $link_list = $this->getAllLinkItemList();

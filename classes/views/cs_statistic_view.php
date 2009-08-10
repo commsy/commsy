@@ -71,6 +71,8 @@ class cs_statistic_view extends cs_view {
    private $_plugin_active = array();
 
    var $_statistic_matrix = array();
+   private $_community_statistic_matrix = array();
+
    var $_sort_by = 'ac_used';
 
    var $_show_title = true;
@@ -141,8 +143,6 @@ class cs_statistic_view extends cs_view {
     * this method sets the shown description of the statistic view
     *
     * @param int  $this->_description          description of the shown list
-    *
-    * @author CommSy Development Group
     */
     function setDescription ($description) {
        $this->_description = (string)$description;
@@ -158,16 +158,19 @@ class cs_statistic_view extends cs_view {
     }
 
    function _execute () {
-      $list = $this->_list;
-       $current_item = $list->getFirst();
-       while ( $current_item ) {
-        $this->_statistic_matrix[] = $this->_getRow($current_item);
-          $current_item = $list->getNext();
-       }
+      if ( empty($this->_statistic_matrix) ) {
+         $list = $this->_list;
+         $current_item = $list->getFirst();
+         while ( $current_item ) {
+            $row = $this->_getRow($current_item);
+            $this->_statistic_matrix[] = $row;
+            $current_item = $list->getNext();
+         }
 
-      // sort by active user
-      $sort_by = $this->_sort_by;
-      usort($this->_statistic_matrix,create_function('$a,$b','return (-1)*strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+         // sort by active user
+         $sort_by = $this->_sort_by;
+         usort($this->_statistic_matrix,create_function('$a,$b','return (-1)*strnatcasecmp($a[\''.$sort_by.'\'],$b[\''.$sort_by.'\']);'));
+      }
    }
 
    function _getRow ($room) {
@@ -208,7 +211,9 @@ class cs_statistic_view extends cs_view {
 
       if ($this->_room_status != 'none') {
          $temp_array = array();
-         if ($this->_room_status == 'used') {
+         if ( $this->_room_status == 'used'
+              or $this->_room_status == 'community'
+            ) {
             $room_list = $room->getUsedRoomList($this->_start_date,$this->_end_date);
          } else {
             $room_list = $room->getActiveRoomList($this->_start_date,$this->_end_date);
@@ -217,43 +222,118 @@ class cs_statistic_view extends cs_view {
             $temp_array2 = array();
             $sub_room_item = $room_list->getFirst();
             while ($sub_room_item) {
-               $temp_array2['type'] = $sub_room_item->getItemType();
-               $temp_array2['title'] = $sub_room_item->getTitle();
-               $temp_array2['is_open'] = $sub_room_item->isOpen();
-               $temp_array2['home_conf'] = $sub_room_item->getHomeConf();
-                if ($sub_room_item->withRubric(CS_ANNOUNCEMENT_TYPE)) {
-                   $temp_array2[CS_ANNOUNCEMENT_TYPE] = $sub_room_item->getCountAnnouncements($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_DATE_TYPE)) {
-                   $temp_array2[CS_DATE_TYPE] = $sub_room_item->getCountDates($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_DISCUSSION_TYPE)) {
-                   $temp_array2[CS_DISCUSSION_TYPE] = $sub_room_item->getCountDiscussions($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_MATERIAL_TYPE)) {
-                   $temp_array2[CS_MATERIAL_TYPE] = $sub_room_item->getCountMaterials($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_TOPIC_TYPE)) {
-                   $temp_array2[CS_TOPIC_TYPE] = $sub_room_item->getCountTopics($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_GROUP_TYPE)) {
-                   $temp_array2[CS_GROUP_TYPE] = $sub_room_item->getCountGroups($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_USER_TYPE) ) {
-                   $temp_array2[CS_USER_TYPE] = $sub_room_item->getCountUsers($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_PROJECT_TYPE)) {
-                   $temp_array2[CS_PROJECT_TYPE] = $sub_room_item->getCountProjects($this->_start_date,$this->_end_date);
-                }
-                if ($sub_room_item->withRubric(CS_INSTITUTION_TYPE)) {
-                   $temp_array2[CS_INSTITUTION_TYPE] = $sub_room_item->getCountInstitutions($this->_start_date,$this->_end_date);
-                }
-            $temp_array2['moderators'] = $this->_getContactModerators($sub_room_item);
-            $temp_array[] = $temp_array2;
-             $sub_room_item = $room_list->getNext();
-          }
-        }
-        $retour['rooms'] = $temp_array;
+               if ( $this->_room_status == 'community' ) {
+                  if ( $sub_room_item->isCommunityRoom() ) {
+                     $temp_array2['is_open']       = $room->isOpen();
+                     $temp_array2['creation_date'] = $sub_room_item->getCreationDate();
+                     $temp_array2['item_id'] = $sub_room_item->getItemID();
+                     $temp_array2['type'] = $sub_room_item->getItemType();
+                     $temp_array2['title'] = $sub_room_item->getTitle();
+                     $temp_array2['active'] = 0;
+                     if ( $sub_room_item->isActive($this->_start_date,$this->_end_date) ) {
+                        $temp_array2['active']++;
+                     }
+                     $temp_array2['used'] = 1;
+                     $temp_array2['all'] = 0;
+                     $temp_array2['ac_used'] = $sub_room_item->getCountUsedAccounts($this->_start_date,$this->_end_date);
+                     $temp_array2['ac_open'] = $sub_room_item->getCountOpenAccounts($this->_start_date,$this->_end_date);
+                     $temp_array2['ac_all'] = $sub_room_item->getCountAllAccounts($this->_start_date,$this->_end_date);
+
+                     ########################################################################
+                     # plugins - BEGIN
+                     ########################################################################
+                     global $c_etchat_enable;
+                     if ( !empty($c_etchat_enable)
+                          and $c_etchat_enable
+                        ) {
+                        $temp_array2['chat']      = $sub_room_item->getCountPluginWithLinkedRooms('etchat',$this->_start_date,$this->_end_date);
+                     }
+                     global $c_pmwiki;
+                     if ( !empty($c_pmwiki)
+                          and $c_pmwiki
+                        ) {
+                        $temp_array2['wiki']      = $sub_room_item->getCountPluginWithLinkedRooms('pmwiki',$this->_start_date,$this->_end_date);
+                     }
+                     ########################################################################
+                     # plugins - END
+                     ########################################################################
+
+                     $this->_community_statistic_matrix[$sub_room_item->getItemID()] = $temp_array2;
+                  } elseif ( $sub_room_item->isProjectRoom() ) {
+                     $active = $sub_room_item->isActive($this->_start_date,$this->_end_date);
+                     $community_list = $sub_room_item->getCommunityList();
+                     if ( isset($community_list)
+                          and $community_list->isNotEmpty()
+                        ) {
+                        $community_room = $community_list->getFirst();
+                        while ($community_room) {
+                           $this->_community_statistic_matrix[$community_room->getItemID()]['used']++;
+                           if ($active) {
+                              $this->_community_statistic_matrix[$community_room->getItemID()]['active']++;
+                           }
+                           $community_room = $community_list->getNext();
+                        }
+                     }
+                  }
+               } else {
+                  $temp_array2['type'] = $sub_room_item->getItemType();
+                  $temp_array2['title'] = $sub_room_item->getTitle();
+                  $temp_array2['is_open'] = $sub_room_item->isOpen();
+                  $temp_array2['home_conf'] = $sub_room_item->getHomeConf();
+                  if ($sub_room_item->withRubric(CS_ANNOUNCEMENT_TYPE)) {
+                     $temp_array2[CS_ANNOUNCEMENT_TYPE] = $sub_room_item->getCountAnnouncements($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_DATE_TYPE)) {
+                     $temp_array2[CS_DATE_TYPE] = $sub_room_item->getCountDates($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_DISCUSSION_TYPE)) {
+                     $temp_array2[CS_DISCUSSION_TYPE] = $sub_room_item->getCountDiscussions($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_MATERIAL_TYPE)) {
+                     $temp_array2[CS_MATERIAL_TYPE] = $sub_room_item->getCountMaterials($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_TOPIC_TYPE)) {
+                     $temp_array2[CS_TOPIC_TYPE] = $sub_room_item->getCountTopics($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_GROUP_TYPE)) {
+                     $temp_array2[CS_GROUP_TYPE] = $sub_room_item->getCountGroups($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_USER_TYPE) ) {
+                     $temp_array2[CS_USER_TYPE] = $sub_room_item->getCountUsers($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_PROJECT_TYPE)) {
+                     $temp_array2[CS_PROJECT_TYPE] = $sub_room_item->getCountProjects($this->_start_date,$this->_end_date);
+                  }
+                  if ($sub_room_item->withRubric(CS_INSTITUTION_TYPE)) {
+                     $temp_array2[CS_INSTITUTION_TYPE] = $sub_room_item->getCountInstitutions($this->_start_date,$this->_end_date);
+                  }
+                  $temp_array2['moderators'] = $this->_getContactModerators($sub_room_item);
+
+                  ########################################################################
+                  # plugins - BEGIN
+                  ########################################################################
+                  global $c_etchat_enable;
+                  if ( !empty($c_etchat_enable)
+                       and $c_etchat_enable
+                     ) {
+                     $temp_array2['chat']      = $sub_room_item->getCountPlugin('etchat',$this->_start_date,$this->_end_date);
+                  }
+                  global $c_pmwiki;
+                  if ( !empty($c_pmwiki)
+                       and $c_pmwiki
+                     ) {
+                     $temp_array2['wiki']      = $sub_room_item->getCountPlugin('pmwiki',$this->_start_date,$this->_end_date);
+                  }
+                  ########################################################################
+                  # plugins - END
+                  ########################################################################
+
+                  $temp_array[] = $temp_array2;
+               }
+               $sub_room_item = $room_list->getNext();
+            }
+         }
+         $retour['rooms'] = $temp_array;
       }
 
       $this->_pr_used = $this->_pr_used + $retour['used'];
@@ -290,7 +370,6 @@ class cs_statistic_view extends cs_view {
       ########################################################################
       # plugins - END
       ########################################################################
-
       return $retour;
    }
 
@@ -547,7 +626,7 @@ class cs_statistic_view extends cs_view {
          if ( !empty($c_pmwiki)
               and $c_pmwiki
             ) {
-            $html .= '      <td style="text-align:right; border-left: 1px solid;" class="head">';
+            $html .= '      <td style="text-align:right;" class="head">';
             $html .= $this->_translator->getMessage('COMMON_WIKI_LINK');
             $html .= '</td>'.LF;
          }
@@ -686,6 +765,12 @@ class cs_statistic_view extends cs_view {
       $html .= '>'.$this->_translator->getMessage('SERVER_STATISTIC_CHOICE_ROOM_NONE').'</option>'.LF;
 
       $selroomstatus = $this->_room_status;
+      $html .= '      <option value="community"';
+      if ( isset($selroomstatus) and $selroomstatus == "community" ) {
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('SERVER_STATISTIC_CHOICE_ROOM_COMMUNITY').'</option>'.LF;
+
       $html .= '      <option value="active"';
       if ( isset($selroomstatus) and $selroomstatus == "active" ) {
          $html .= ' selected="selected"';
@@ -740,19 +825,37 @@ class cs_statistic_view extends cs_view {
     *
     * @return string $this->_list as HMTL
     */
-   function _getContentAsHTML() {
+   function _getContentAsHTML( $type = '', $portal_id = 0 ) {
+      $this->_execute();
+      if ( empty($type) ) {
+         $value_array = $this->_statistic_matrix;
+      } elseif ( $type == 'community' ) {
+         $value_array = $this->_community_statistic_matrix;
+      }
+      if ( !empty($portal_id) ) {
+         $portal_manager = $this->_environment->getPortalManager();
+         $portal_item = $portal_manager->getItem($portal_id);
+         $community_id_array = $portal_item->getCommunityIDArray();
+      }
 
       $html = '';
-      $this->_execute();
-      $count = count($this->_statistic_matrix);
+      $count = count($value_array);
       if ( $count == 0 ) {
          $html .= '<tr class="list"><td class="even" style="border-bottom: 0px;"colspan="6">'.$this->_translator->getMessage('COMMON_NO_ENTRIES').'</td></tr>';
       } else {
          $i = 1;
-         foreach ($this->_statistic_matrix as $row) {
-            $html .= $this->_getRowAsHTML($row, $i++);
+         foreach ($value_array as $row) {
+            if ( empty($type)
+                 or ( $type == 'community'
+                      and in_array($row['item_id'],$community_id_array)
+                    )
+               ) {
+               $html .= $this->_getRowAsHTML($row, $i++);
+            }
          }
-         $html .= $this->_getSumAsHTML();
+         if ( empty($type) ) {
+            $html .= $this->_getSumAsHTML();
+         }
       }
       return $html;
    }
@@ -841,7 +944,7 @@ class cs_statistic_view extends cs_view {
             $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_plugin_active['chat'].'</td>'.LF;
          }
          if ( isset($this->_plugin_active['wiki']) ) {
-            $html .= '      <td  class="head" style="text-align:right; border-left: 1px solid;">'.$this->_plugin_active['wiki'].'</td>'.LF;
+            $html .= '      <td  class="head" style="text-align:right;">'.$this->_plugin_active['wiki'].'</td>'.LF;
          }
       }
       ########################################################################
@@ -949,15 +1052,22 @@ class cs_statistic_view extends cs_view {
       foreach ($this->_statistic_matrix as $row) {
          $retour .= '<a name="'.$row['item_id'].'"></a>'.LF;
          $retour .= '<br /><hr/><br />'.LF;
-       $title_text = $this->_text_as_html_short($row['title']);
+         $title_text = $this->_text_as_html_short($row['title']);
          if ($row['is_open'] != 1) {
             $title_text .= ' <span class="changed">['.$this->_translator->getMessage('COMMON_CLOSED').']</span>';
          }
          $retour .= '<h2 style="margin-bottom:10px; margin-top:0px;">'.$title_text.'</h2>'.LF;
-         $retour .= '<table class="list" summary="Layout">'.LF;
-         $retour .= $this->_getSubTableHeadAsHTML();
-         $retour .= $this->_getRoomsOfPortalAsHTML($row['rooms']);
-         $retour .= '</table>'.LF;
+         if ( $this->_room_status == 'community' ) {
+            $retour .= '<table class="list" summary="Layout">'.LF;
+            $retour .= $this->_getTableheadAsHTML();
+            $retour .= $this->_getContentAsHTML('community',$row['item_id']);
+            $retour .= '</table>'.LF;
+         } else {
+            $retour .= '<table class="list" summary="Layout">'.LF;
+            $retour .= $this->_getSubTableHeadAsHTML();
+            $retour .= $this->_getRoomsOfPortalAsHTML($row['rooms']);
+            $retour .= '</table>'.LF;
+         }
       }
       return $retour;
    }
@@ -1025,59 +1135,84 @@ class cs_statistic_view extends cs_view {
       $retour .= '</td>'.LF;
 
       $retour .= '      <td  '.$style.' style="vertical-align:top;">';
-     $home_conf_array = explode(',',$room['home_conf']);
-     $temp_text = '';
-     $first = true;
-     foreach ($home_conf_array as $rubric) {
-       $rubric_array = explode('_',$rubric);
-       if (isset($room[$rubric_array[0]])) {
+      $home_conf_array = explode(',',$room['home_conf']);
+      $temp_text = '';
+      $first = true;
+      foreach ($home_conf_array as $rubric) {
+         $rubric_array = explode('_',$rubric);
+         if (isset($room[$rubric_array[0]])) {
             if ($first) {
-            $first = false;
-          } else {
-            $temp_text .= BRLF;
-          }
-          $temp_rubric = mb_strtoupper($rubric_array[0], 'UTF-8');
-          // ---> Remark for testing: Login as root, configure server, server statistics, choose active/used rooms, look at "Rubric activity" <---
-          switch( $temp_rubric )
-          {
-             case 'ANNOUNCEMENT':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_ANNOUNCEMENT');
-                break;
-             case 'DATE':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_DATE');
-                break;
-             case 'DISCUSSION':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_DISCUSSION');
-                break;
-             case 'GROUP':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_GROUP');
-                break;
-             case 'INSTITUTION':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_INSTITUTION');
-                break;
-             case 'MATERIAL':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_MATERIAL');
-                break;
-             case 'PROJECT':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_PROJECT');
-                break;
-             case 'TODO':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_TODO');
-                break;
-             case 'TOPIC':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_TOPIC');
-                break;
-             case 'USER':
-                $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_USER');
-                break;
-             default:                     // "Bitte Messagetag-Fehler melden"
-                $temp_text .= getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.892";
-                break;
-          }
-          $temp_text .= ': ' . $room[$rubric_array[0]];
-       }
-     }
+               $first = false;
+            } else {
+               $temp_text .= BRLF;
+            }
+            $temp_rubric = mb_strtoupper($rubric_array[0], 'UTF-8');
+            // ---> Remark for testing: Login as root, configure server, server statistics, choose active/used rooms, look at "Rubric activity" <---
+            switch( $temp_rubric )
+            {
+                case 'ANNOUNCEMENT':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_ANNOUNCEMENT');
+                   break;
+                case 'DATE':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_DATE');
+                   break;
+                case 'DISCUSSION':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_DISCUSSION');
+                   break;
+                case 'GROUP':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_GROUP');
+                   break;
+                case 'INSTITUTION':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_INSTITUTION');
+                   break;
+                case 'MATERIAL':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_MATERIAL');
+                   break;
+                case 'PROJECT':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_PROJECT');
+                   break;
+                case 'TODO':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_TODO');
+                   break;
+                case 'TOPIC':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_TOPIC');
+                   break;
+                case 'USER':
+                   $temp_text .= $this->_translator->getMessage('SERVER_STATISTIC_RUBRIC_USER');
+                   break;
+                default:                     // "Bitte Messagetag-Fehler melden"
+                   $temp_text .= getMessage('COMMON_MESSAGETAG_ERROR')." cs_statistic_view Zl.892";
+                   break;
+            }
+            $temp_text .= ': ' . $room[$rubric_array[0]];
+         }
+      }
       $retour .= $temp_text;
+
+      ########################################################################
+      # plugins - BEGIN
+      ########################################################################
+      global $c_etchat_enable;
+      global $c_pmwiki;
+      if ( ( !empty($c_etchat_enable)
+             and $c_etchat_enable
+           )
+           or
+           ( !empty($c_pmwiki)
+             and $c_pmwiki
+           )
+         ) {
+         if ( isset($room['chat']) ) {
+            $retour .= BRLF.$this->_translator->getMessage('CHAT_CHAT').': '.$room['chat'].LF;
+         }
+         if ( isset($room['wiki']) ) {
+            $retour .= BRLF.$this->_translator->getMessage('COMMON_WIKI_LINK').': '.$room['wiki'].LF;
+         }
+      }
+      ########################################################################
+      # plugins - END
+      ########################################################################
+
       $retour .= '</td>'.LF;
 
       return $retour;

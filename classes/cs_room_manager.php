@@ -506,7 +506,8 @@ class cs_room_manager extends cs_context_manager {
       $query .= ", ".$this->_db_table.".title";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
-         include_once('functions/error_functions.php');trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
+         include_once('functions/error_functions.php');
+         trigger_error('Problems counting used rooms '.$this->_db_table.' from query: "'.$query.'"',E_USER_WARNING);
       } else {
          foreach ( $result as $rs ) {
             $list->add($this->_buildItem($rs));

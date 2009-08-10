@@ -1026,5 +1026,17 @@ class cs_room_item extends cs_context_item {
       unset($tag_root_item);
       unset($tag_manager);
    }
+
+   function getCountPlugin ($plugin, $start, $end) {
+      $retour = 0;
+
+      $user_manager = $this->_environment->getUserManager();
+      $user_manager->resetLimits();
+      $user_manager->setContextLimit($this->getItemID());
+      $retour = $user_manager->getCountPlugin($plugin,$start,$end);
+      unset($user_manager);
+
+      return $retour;
+   }
 }
 ?>

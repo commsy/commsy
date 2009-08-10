@@ -1423,7 +1423,11 @@ class cs_user_manager extends cs_manager {
       $retour = 0;
 
       $query  = "SELECT count(DISTINCT user.email) as number FROM user WHERE";
-      if (!empty($this->_room_limit)) {
+      if ( !empty($this->_context_array_limit)
+           and count($this->_context_array_limit) > 0
+         ) {
+         $query .= " context_id IN (".implode(',',encode(AS_DB,$this->_context_array_limit)).")";
+      } elseif (!empty($this->_room_limit)) {
          $query .= " context_id = '".encode(AS_DB,$this->_room_limit)."'";
       }
       $query .= " and lastlogin > '".encode(AS_DB,$start)."' and creation_date < '".encode(AS_DB,$end)."'";
@@ -1444,7 +1448,15 @@ class cs_user_manager extends cs_manager {
    function getCountOpenAccounts ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(DISTINCT user.email) as number FROM user WHERE context_id = '".encode(AS_DB,$this->_room_limit)."' and status >= 2 and (deletion_date IS NULL or deletion_date > '".encode(AS_DB,$end)."') and creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(DISTINCT user.email) as number FROM user WHERE";
+      if ( !empty($this->_context_array_limit)
+           and count($this->_context_array_limit) > 0
+         ) {
+         $query .= " context_id IN (".implode(',',encode(AS_DB,$this->_context_array_limit)).")";
+      } elseif (!empty($this->_room_limit)) {
+         $query .= " context_id = '".encode(AS_DB,$this->_room_limit)."'";
+      }
+      $query .= " and status >= 2 and (deletion_date IS NULL or deletion_date > '".encode(AS_DB,$end)."') and creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -1462,7 +1474,15 @@ class cs_user_manager extends cs_manager {
    function getCountAllAccounts ($start, $end) {
       $retour = 0;
 
-      $query = "SELECT count(DISTINCT user.email) as number FROM user WHERE user.context_id = '".encode(AS_DB,$this->_room_limit)."' and user.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT count(DISTINCT user.email) as number FROM user WHERE";
+      if ( !empty($this->_context_array_limit)
+           and count($this->_context_array_limit) > 0
+         ) {
+         $query .= " context_id IN (".implode(',',encode(AS_DB,$this->_context_array_limit)).")";
+      } elseif (!empty($this->_room_limit)) {
+         $query .= " context_id = '".encode(AS_DB,$this->_room_limit)."'";
+      }
+      $query .= " and user.creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');
@@ -1480,7 +1500,15 @@ class cs_user_manager extends cs_manager {
    function getCountPlugin ($plugin, $start, $end) {
       $retour = 0;
 
-      $query = "SELECT ".$this->_db_table.".email,".$this->_db_table.".extras FROM ".$this->_db_table." WHERE user.context_id = '".encode(AS_DB,$this->_room_limit)."' and ".$this->_db_table.".extras LIKE '%LASTLOGIN_".mb_strtoupper($plugin)."%' and user.creation_date < '".encode(AS_DB,$end)."'";
+      $query = "SELECT ".$this->_db_table.".email,".$this->_db_table.".extras FROM ".$this->_db_table." WHERE";
+      if ( !empty($this->_context_array_limit)
+           and count($this->_context_array_limit) > 0
+         ) {
+         $query .= " context_id IN (".implode(',',encode(AS_DB,$this->_context_array_limit)).")";
+      } elseif (!empty($this->_room_limit)) {
+         $query .= " context_id = '".encode(AS_DB,$this->_room_limit)."'";
+      }
+      $query .= " and ".$this->_db_table.".extras LIKE '%LASTLOGIN_".mb_strtoupper($plugin)."%' and user.creation_date < '".encode(AS_DB,$end)."'";
       $result = $this->_db_connector->performQuery($query);
       if ( !isset($result) ) {
          include_once('functions/error_functions.php');

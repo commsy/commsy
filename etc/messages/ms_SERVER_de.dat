@@ -32,6 +32,7 @@ $message["SERVER_STATISTIC_CHOICE_DAY"]["de"] = "Tag";
 $message["SERVER_STATISTIC_CHOICE_MONTH"]["de"] = "Monat";
 $message["SERVER_STATISTIC_CHOICE_ROOM"]["de"] = "Anzeige";
 $message["SERVER_STATISTIC_CHOICE_ROOM_ACTIVE"]["de"] = "aktive Räume";
+$message["SERVER_STATISTIC_CHOICE_ROOM_COMMUNITY"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["SERVER_STATISTIC_CHOICE_ROOM_NONE"]["de"] = "keine Räume";
 $message["SERVER_STATISTIC_CHOICE_ROOM_USED"]["de"] = "benutzte Räume";
 $message["SERVER_STATISTIC_CHOICE_YEAR"]["de"] = "Jahr";
