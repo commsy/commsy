@@ -2733,24 +2733,54 @@ class misc_text_converter {
             $text = str_replace('<!-- KFC TEXT -->','',$text);
             $text = str_replace('&lt;!-- KFC TEXT --&gt;','',$text);
             if ( !empty($text) ) {
-               #$fck_text = '<!-- KFC TEXT -->';
-               // security KFC
-               include_once('functions/security_functions.php');
-               $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
-               $text = $fck_text.$text.$fck_text;
+               $hack = false;
+               if ( !empty($_SERVER['HTTP_REFERER']) ) {
+                  $http_referer = $_SERVER['HTTP_REFERER'];
+                  if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
+                     $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
+                  }
+                  global $c_commsy_domain;
+                  global $c_commsy_url_path;
+                  global $c_single_entry_point;
+                  if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
+                     $hack = true;
+                  }
+               }
+               if ( !$hack ) {
+                  #$fck_text = '<!-- KFC TEXT -->';
+                  // security KFC
+                  include_once('functions/security_functions.php');
+                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+                  $text = $fck_text.$text.$fck_text;
+               }
             }
          }
          if ( strstr($text,'<!-- KFC TEXT') ) {
             if ( substr($text,0,13) != '<!-- KFC TEXT'
                  or substr($text,strlen($text)-3) != '-->'
                ) {
-               $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
-               #$text = preg_replace('~<!-- KFC TEXT -->~u','',$text);
-               #$fck_text = '<!-- KFC TEXT -->';
-               // security KFC
-               include_once('functions/security_functions.php');
-               $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
-               $text = $fck_text.$text.$fck_text;
+               $hack = false;
+               if ( !empty($_SERVER['HTTP_REFERER']) ) {
+                  $http_referer = $_SERVER['HTTP_REFERER'];
+                  if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
+                     $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
+                  }
+                  global $c_commsy_domain;
+                  global $c_commsy_url_path;
+                  global $c_single_entry_point;
+                  if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
+                     $hack = true;
+                  }
+               }
+               if ( !$hack ) {
+                  $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
+                  #$text = preg_replace('~<!-- KFC TEXT -->~u','',$text);
+                  #$fck_text = '<!-- KFC TEXT -->';
+                  // security KFC
+                  include_once('functions/security_functions.php');
+                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+                  $text = $fck_text.$text.$fck_text;
+               }
             }
          }
       }
@@ -2774,11 +2804,26 @@ class misc_text_converter {
                     and !empty($value[$key.'_is_textarea'])
                     and !strstr($data,'<!-- KFC TEXT')
                   ) {
-                  #$fck_text = '<!-- KFC TEXT -->';
-                  // security KFC
-                  include_once('functions/security_functions.php');
-                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($data).' -->';
-                  $data = $fck_text.$data.$fck_text;
+                  $hack = false;
+                  if ( !empty($_SERVER['HTTP_REFERER']) ) {
+                     $http_referer = $_SERVER['HTTP_REFERER'];
+                     if ( strstr($_SERVER['HTTP_REFERER'],'?')) {
+                        $http_referer = substr($_SERVER['HTTP_REFERER'],0,strpos($_SERVER['HTTP_REFERER'],'?'));
+                     }
+                     global $c_commsy_domain;
+                     global $c_commsy_url_path;
+                     global $c_single_entry_point;
+                     if ( $http_referer != $c_commsy_domain.$c_commsy_url_path.'/'.$c_single_entry_point ) {
+                        $hack = true;
+                     }
+                  }
+                  if ( !$hack ) {
+                     #$fck_text = '<!-- KFC TEXT -->';
+                     // security KFC
+                     include_once('functions/security_functions.php');
+                     $fck_text = '<!-- KFC TEXT '.getSecurityHash($data).' -->';
+                     $data = $fck_text.$data.$fck_text;
+                  }
                }
                $retour[$key] = $data;
             }

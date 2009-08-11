@@ -56,8 +56,9 @@ class cs_html_textarea {
             $value = $environment->getTextConverter()->text_as_html_long($temp_text);
             $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
          }
-      } else {
-         $value = '<!-- KFC TEXT -->'.$value.'<!-- KFC TEXT -->';
+      } elseif ( !strstr($value,'<!-- KFC TEXT') ) {
+         include_once('functions/security_functions.php');
+         $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
       }
 
       // this is for migration of texts not insert with FCKeditor
