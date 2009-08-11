@@ -44,23 +44,21 @@ class cs_html_textarea {
       $value = str_replace('<!-- KFC TEXT -->','',$value);
       $temp_text = $value;
 
-      // security
-      /*
+      // security KFC
       $values = array();
       preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$value,$values);
       if ( !empty($values[1]) ) {
          $hash = $values[1];
          $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$value);
          include_once('functions/security_functions.php');
-         if ( getSecurityHash($temp_text) == $hash ) {
-            $text = '<!-- KFC TEXT '.$hash.' -->'.$temp_text.'<!-- KFC TEXT '.$hash.' -->';
+         if ( getSecurityHash($temp_text) != $hash ) {
+            global $environment;
+            $value = $environment->getTextConverter()->text_as_html_long($temp_text);
+            $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
          }
       } else {
-      */
          $value = '<!-- KFC TEXT -->'.$value.'<!-- KFC TEXT -->';
-      /*
       }
-      */
 
       // this is for migration of texts not insert with FCKeditor
       $value = str_replace("\n\n",'<br/><br/>',$value);
@@ -71,19 +69,6 @@ class cs_html_textarea {
       $oFCKeditor->BasePath = $c_fckeditor_url_path.'/';
       $oFCKeditor->Config["CustomConfigurationsPath"] = $c_commsy_url_path.'/javascript/CommSyFCKEditorConfig.js';
       $oFCKeditor->Value    = $value;
-
-      // TBD
-      // das wird doch eh unten überschrieben
-      // kann das nicht weg?
-      // ij 06.03.2009
-      if ( $no_discussion ) {
-         if ( empty($vsize) ) {
-            $oFCKeditor->Width   = '504px';
-         } else {
-            $oFCKeditor->Width   = (string)round($vsize*8.5,0).'px';
-         }
-      }
-      // TBD
 
       global $environment;
       $current_browser = strtolower($environment->getCurrentBrowser());
@@ -111,12 +96,10 @@ class cs_html_textarea {
       }
       $retour = $oFCKeditor->CreateHtml().LF;
 
-      // security
-      /*
+      // security KFC
       $hidden_value = str_replace('"','COMMSY_QUOT',$temp_text);
       $hidden_value = str_replace('&','COMMSY_AMPERSEND',$hidden_value);
       $retour .= '<input type="hidden" name="'.$name.'_fck_hidden" value="'.$hidden_value.'" />';
-      */
 
       return LF.$retour.LF;
    }

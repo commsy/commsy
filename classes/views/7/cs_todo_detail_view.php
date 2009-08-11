@@ -741,6 +741,7 @@ class cs_todo_detail_view extends cs_detail_view {
                                               '',
                                               false
                                             );
+                     $html .= '<input type="hidden" name="description_is_textarea" value="1" />';
                   } else {
                      $html .= $normal;
                   }

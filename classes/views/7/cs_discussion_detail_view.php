@@ -169,6 +169,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                                               '',
                                               false
                                             );
+                     $html .= '<input type="hidden" name="description_is_textarea" value="1" />';
                      $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
                      $html .= '<div style="padding-top:0px;">';
                      $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';

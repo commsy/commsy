@@ -364,17 +364,4 @@ function cs_utf8_encode ($value) {
       return utf8_encode($value);
    }
 }
-
-/**
- * Corrects texts from the FCKEditor where the closing '<!-- KFC TEXT -->'
- * is not at the end of the text but somewhere in the middle, which would lead to
- * an incorrect display of the safed text.
- */
-/*
-function correctFCKTags($value){
-   $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
-   $value = '<!-- KFC TEXT -->' . $value . '<!-- KFC TEXT -->';
-   return $value;
-}
-*/
 ?>

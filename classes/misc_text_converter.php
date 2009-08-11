@@ -68,6 +68,8 @@ class misc_text_converter {
       $replace[] = '&lt;$1';
       $search[]  = '~<([/]{0,1}[o|O][b|B][j|J][e|E][c|C][t|T])~u';
       $replace[] = '&lt;$1';
+      $search[]  = '~<([/]{0,1}[i|I][f|F][r|R][a|A][m|M][e|E])~u';
+      $replace[] = '&lt;$1';
 
       $text = preg_replace($search,$replace,$text);
 
@@ -84,8 +86,9 @@ class misc_text_converter {
       $text = str_replace('<!-- KFC TEXT --><br type="_moz" />','<!-- KFC TEXT -->COMMSY_BR',$text);
       ### hack ###
 
-      #preg_match('~<!-- KFC TEXT [a-z0-9 ]*-->[\S|\s]*<!-- KFC TEXT [a-z0-9 ]*-->~u',$text,$values);
-      preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
+      // security KFC
+      preg_match('~<!-- KFC TEXT [a-z0-9 ]*-->[\S|\s]*<!-- KFC TEXT [a-z0-9 ]*-->~u',$text,$values);
+      #preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
       }
@@ -111,8 +114,8 @@ class misc_text_converter {
    }
 
    private function _cleanDataFromTextAreaFromFCK ( $text ) {
-      /*
       $values = array();
+      // security KFC
       preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$text,$values);
       if ( !empty($values[1]) ) {
          $hash = $values[1];
@@ -122,9 +125,8 @@ class misc_text_converter {
             $text = '<!-- KFC TEXT '.$hash.' -->'.$this->_cleanDataFromTextAreaNotFromFCK($temp_text).'<!-- KFC TEXT '.$hash.' -->';
          }
       } else {
-         #$text = $this->_cleanDataFromTextAreaNotFromFCK($text);
+         $text = $this->_cleanDataFromTextAreaNotFromFCK($text);
       }
-      */
       return $text;
    }
 
@@ -155,7 +157,9 @@ class misc_text_converter {
    }
 
    public function text_as_html_long ($text,$htmlTextArea=true) {
-      preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
+      #preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
+      // security KFC
+      preg_match('~<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
       }
@@ -2517,11 +2521,10 @@ class misc_text_converter {
    }
 
    private function _array_encode ($array, $mode) {
-      /*
       if ( $mode == FROM_FORM ) {
+         // security KFC
          $array = $this->_array_encode_fck_security($array);
       }
-      */
       $retour_array = array();
       foreach ($array as $key => $value) {
          if (is_array($value)) {    // nicht in eine if-Anweisung, sonst
@@ -2535,6 +2538,7 @@ class misc_text_converter {
       return $retour_array;
    }
 
+   // security KFC
    private function _array_encode_fck_security ($array) {
       $retour = array();
       $fck_array = array();
@@ -2568,12 +2572,13 @@ class misc_text_converter {
                      $new_hash = getSecurityHash($temp_text);
                      $retour[$key] = '<!-- KFC TEXT '.$new_hash.' -->'.$temp_text.'<!-- KFC TEXT '.$new_hash.' -->';
                   } else {
-                     # $retour[$key] = $value; ???
-                     # trigger error ???
+                     $retour[$key] = $value;
                   }
                } else {
                   $retour[$key] = $value;
                }
+            } else {
+               $retour[$key] = $value;
             }
          }
       }
@@ -2728,11 +2733,10 @@ class misc_text_converter {
             $text = str_replace('<!-- KFC TEXT -->','',$text);
             $text = str_replace('&lt;!-- KFC TEXT --&gt;','',$text);
             if ( !empty($text) ) {
-               $fck_text = '<!-- KFC TEXT -->';
-               /*
+               #$fck_text = '<!-- KFC TEXT -->';
+               // security KFC
                include_once('functions/security_functions.php');
                $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
-               */
                $text = $fck_text.$text.$fck_text;
             }
          }
@@ -2740,10 +2744,12 @@ class misc_text_converter {
             if ( substr($text,0,13) != '<!-- KFC TEXT'
                  or substr($text,strlen($text)-3) != '-->'
                ) {
-               $text = preg_replace('~<!-- KFC TEXT -->~u','',$text); // security hash ???
-               $fck_text = '<!-- KFC TEXT -->';
-               #include_once('functions/security_functions.php');
-               #$fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+               $text = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$text);
+               #$text = preg_replace('~<!-- KFC TEXT -->~u','',$text);
+               #$fck_text = '<!-- KFC TEXT -->';
+               // security KFC
+               include_once('functions/security_functions.php');
+               $fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
                $text = $fck_text.$text.$fck_text;
             }
          }
@@ -2766,11 +2772,12 @@ class misc_text_converter {
             foreach ( $value as $key => $data ) {
                if ( !strstr($key,'_is_textarea')
                     and !empty($value[$key.'_is_textarea'])
-                    and !strstr($data,'<!-- KFC TEXT -->')
+                    and !strstr($data,'<!-- KFC TEXT')
                   ) {
-                  $fck_text = '<!-- KFC TEXT -->';
-                  #include_once('functions/security_functions.php');
-                  #$fck_text = '<!-- KFC TEXT '.getSecurityHash($text).' -->';
+                  #$fck_text = '<!-- KFC TEXT -->';
+                  // security KFC
+                  include_once('functions/security_functions.php');
+                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($data).' -->';
                   $data = $fck_text.$data.$fck_text;
                }
                $retour[$key] = $data;
