@@ -642,6 +642,7 @@ class cs_index_view extends cs_view {
          $html .= '<span class="disabled" style="font-size:8pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
       $params = $this->_environment->getCurrentParameterArray();
+      unset($params['from']);
       $selected_id = '';
       if ( isset($params['selbuzzword']) and !empty($params['selbuzzword']) ){
          $selected_id = $params['selbuzzword'];
@@ -802,6 +803,7 @@ class cs_index_view extends cs_view {
    function _getTagContentAsHTML($item = NULL, $ebene = 0,$selected_id = 0, $father_id_array, $distance = 0) {
       $html = '';
       $params = $this->_environment->getCurrentParameterArray();
+      unset($params['from']);
       $i = 0;
       while($i <= count($father_id_array)){
         if (isset($params['seltag_'.$i])){
