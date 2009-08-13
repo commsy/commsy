@@ -5031,9 +5031,14 @@ class cs_context_item extends cs_item {
    }
 
    private function _getDesign() {
+      global $only_design_7_array;
+      $current_portal_item = $this->_environment->getCurrentPortalItem();
       $retour = '';
       if ( $this->_issetExtra('DESIGN')) {
          $retour = $this->_getExtra('DESIGN');
+      }
+      if (isset($only_design_7_array) and in_array($current_portal_item->getItemID(),$only_design_7_array)){
+         $retour = '7';
       }
       return $retour;
    }

@@ -83,4 +83,6 @@ $c_annonymous_account_array = array();
 
 // only read accounts: USERID_AUTHSOURCEID
 $c_read_account_array = array();
+
+$only_design_7_array = array();
 ?>
