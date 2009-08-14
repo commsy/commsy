@@ -42,7 +42,7 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $this->_headline = getMessage('CONFIGURATION_ROOM_OPENING_LINK');
+      $this->_headline = getMessage('CONFIGURATION_PORTAL_HOME');
       $this->setHeadline($this->_headline);
    }
 
