@@ -282,59 +282,30 @@ class cs_ftsearch_manager extends cs_manager {
          $return = '';
          $cmdline = $this->_getCMDLine2($index_base);
          exec($cmdline, $index_result, $return);
+      }
+   }
 
-         /*
-         // set command line
-         // economy mode with option '-e'
-         if ( $this->_incremental and file_exists($index_base . 'ft.index')) {
-            // perhaps we want a incremental re-index process?
-            // if so - rename ft.index-dummy --> ft.index ... etc. ...
-            // $index_opt = ... has to be defined
-            //
-            // -N ft.index so werden nur Dateien neuer als der ft.index geprÃ¼ft
-            // das ist nicht ganz sauber, weil in der Zwischenzeit ja Dateien von anderen hochgeladen ...
-            //
-            // -u update - hier wird nachgeschaut, ob die Datei schon im index ist, oder nicht
-            // geht nur mit einem --configure-flag beim builden
-            // Quelle: http://swish-e.org/docs/swish-run.html
-            $index_opt = ' -e -N '.$index_base.'ft.index -c etc/ft_config/ft.config -i '.$index_base.' -f '.$index_base.'ft.temp';
-               $cmdline = $this->_getCMDLine($index_opt,$index_base);
-               $index_result = array();
-               $return = '';
-            exec($cmdline, $index_result, $return);
-            while ( !file_exists($index_base.'ft.temp') and !file_exists($index_base.'ft.temp.temp') ) {
-               sleep(1);
-            }
-            if ( file_exists($index_base.'ft.temp.temp') ) {
-               unlink($index_base.'ft.temp.temp');
-               unlink($index_base.'ft.temp.prop.temp');
-            } else {
-               $cwd = getcwd();
-               chdir($index_base);
-               $index_opt = ' -e -M ft.index ft.temp ft.merge';
-                  $cmdline = $this->_getCMDLine($index_opt,'');
-               exec($cmdline, $index_result, $return);
-               while (!file_exists('ft.merge')) {
-                  sleep(1);
-               }
-               unlink('ft.temp');
-               unlink('ft.temp.prop');
-               unlink('ft.index');
-               unlink('ft.index.prop');
-               copy('ft.merge','ft.index');
-               unlink('ft.merge');
-               unlink('ft.merge.prop');
-               chdir($cwd);
-            }
-         } else {
-            $index_opt = ' -e -c etc/ft_config/ft.config -i ' . $index_base . ' -f ' . $index_base . 'ft.index';
-               $cmdline = $this->_getCMDLine($index_opt,$index_base);
-            //send shell command
-            $index_result = array();
-            $return = '';
-            exec($cmdline, $index_result, $return);
+   function buildFTIndexForIndexBase ( $index_base ) {
+
+      // create new or update existing fulltext index
+      global $ftsearch_enabled;
+      if ( !isset($ftsearch_enabled) ) {
+         $ftsearch_enabled = false;
+      }
+      if ($ftsearch_enabled) {
+
+         $folder_string = '/tmp/swish-e';
+         $folder = @opendir($folder_string);
+         if (!$folder) {
+            #mkdir($folder_string);
          }
-         */
+
+         $index_result = array();
+         $return = '';
+         $cmdline = $this->_getCMDLine2($index_base);
+         pr($cmdline);
+         exit();
+         exec($cmdline, $index_result, $return);
       }
    }
 
