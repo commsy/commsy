@@ -31,97 +31,104 @@ if ( !isset($environment) and isset($this->_environment) ) {
    $environment = $this->_environment;
 }
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
-      $link_item = new cs_link();
-      $link_item->setDescription(getMessage('ROOM_MEMBER_ADMIN_DESC'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/account.png');
-      }
-      $link_item->setTitle(getMessage('ROOM_MEMBER_ADMIN'));
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('account');
-      $link_item->setFunction('index');
-      $link_item->setParameter(array());
-      $usage_link_list->add($link_item);
+if ( !$environment->inServer() and !$environment->inPrivateRoom()) {
+   $link_item = new cs_link();
+   $link_item->setDescription(getMessage('ROOM_MEMBER_ADMIN_DESC'));
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/account.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/account.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/account.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/account.png');
    }
+   $link_item->setTitle(getMessage('ROOM_MEMBER_ADMIN'));
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('account');
+   $link_item->setFunction('index');
+   $link_item->setParameter(array());
+   $usage_link_list->add($link_item);
+}
 
-   if ( !$environment->inServer()
-        #and !$environment->inPrivateRoom()
-        and !$environment->inPortal()
-      ) {
-      $link_item = new cs_link();
-      $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
-      $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
-      $link_item->setDescription(getMessage('COMMON_INFORMATION_BOX_DESC'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/informationbox.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/informationbox.png');
-      }
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('informationbox');
-      $link_item->setParameter('');
-      $usage_link_list->add($link_item);
+if ( !$environment->inServer()
+     and !$environment->inPortal()
+   ) {
+   $link_item = new cs_link();
+   $link_item->setTitle(getMessage('COMMON_INFORMATION_BOX'));
+   $link_item->setShortTitle(getMessage('COMMON_INFORMATION_BOX_SHORT'));
+   $link_item->setDescription(getMessage('COMMON_INFORMATION_BOX_DESC'));
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/informationbox.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/informationbox.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/informationbox.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/informationbox.png');
    }
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('configuration');
+   $link_item->setFunction('informationbox');
+   $link_item->setParameter('');
+   $usage_link_list->add($link_item);
+}
 
-
-   $context_item = $environment->getCurrentContextItem();
-   if ( $context_item->isCommunityRoom()
-        and $context_item->isOpenForGuests()
-        and $context_item->withRubric(CS_MATERIAL_TYPE)
-      ) {
-      $link_item = new cs_link();
-      $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
-      $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/material_admin.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/material_admin.png');
-      }
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('material_admin');
-      $link_item->setFunction('index');
-      $link_item->setParameter(array());
-      $usage_link_list->add($link_item);
+$context_item = $environment->getCurrentContextItem();
+if ( $context_item->isCommunityRoom()
+     and $context_item->isOpenForGuests()
+     and $context_item->withRubric(CS_MATERIAL_TYPE)
+   ) {
+   $link_item = new cs_link();
+   $link_item->setTitle(getMessage('MATERIAL_ADMIN_TINY_HEADER_CONFIGURATION'));
+   $link_item->setDescription(getMessage('MATERIAL_ADMIN_TINY_DESCRIPTION'));
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/material_admin.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/material_admin.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/material_admin.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/material_admin.png');
    }
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('material_admin');
+   $link_item->setFunction('index');
+   $link_item->setParameter(array());
+   $usage_link_list->add($link_item);
+}
 
-   if ( $environment->inProjectRoom()
-        or $environment->inCommunityRoom()
-        or $environment->inPrivateRoom()
-        or $environment->inGroupRoom()
-      ) {
-      $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_USAGE_INFOS'));
-      $link_item->setDescription(getMessage('PREFERENCES_USAGE_INFOS_DESC'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/usage_info_options.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/usage_info_options.png');
-      }
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('usageinfo');
-      $link_item->setParameter('');
-      $usage_link_list->add($link_item);
+if ( $environment->inProjectRoom()
+     or $environment->inCommunityRoom()
+     or $environment->inPrivateRoom()
+     or $environment->inGroupRoom()
+   ) {
+   $link_item = new cs_link();
+   $link_item->setTitle(getMessage('PREFERENCES_USAGE_INFOS'));
+   $link_item->setDescription(getMessage('PREFERENCES_USAGE_INFOS_DESC'));
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/usage_info_options.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/usage_info_options.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/usage_info_options.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/usage_info_options.png');
    }
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('configuration');
+   $link_item->setFunction('usageinfo');
+   $link_item->setParameter('');
+   $usage_link_list->add($link_item);
+}
 
-   if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
-      $link_item = new cs_link();
-      $link_item->setTitle(getMessage('PREFERENCES_MAIL_LINK'));
-      $link_item->setDescription(getMessage('PREFERENCES_MAIL_DESC'));
-      if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/mail_options.gif');
-      } else {
-         $link_item->setIconPath('images/commsyicons/48x48/config/mail_options.png');
-      }
-      $link_item->setContextID($environment->getCurrentContextID());
-      $link_item->setModule('configuration');
-      $link_item->setFunction('mail');
-      $link_item->setParameter(array());
-      $usage_link_list->add($link_item);
+if ( !$environment->inServer() and !$environment->inPrivateRoom() ) {
+   $link_item = new cs_link();
+   $link_item->setTitle(getMessage('PREFERENCES_MAIL_LINK'));
+   $link_item->setDescription(getMessage('PREFERENCES_MAIL_DESC'));
+   if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
+      $link_item->setIconPath('images/commsyicons_msie6/48x48/config/mail_options.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/mail_options.gif');
+   } else {
+      $link_item->setIconPath('images/commsyicons/48x48/config/mail_options.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/mail_options.png');
    }
-
+   $link_item->setContextID($environment->getCurrentContextID());
+   $link_item->setModule('configuration');
+   $link_item->setFunction('mail');
+   $link_item->setParameter(array());
+   $usage_link_list->add($link_item);
+}
 ?>
