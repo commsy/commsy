@@ -1669,7 +1669,144 @@ class cs_context_item extends cs_item {
       $this->_addExtra('HOMECONF', (string)$value);
    }
 
+   ##########################################
+   # plugin configuration
+   ############## BEGIN #####################
 
+   /** get part of the plugin config array, INTERNAL
+    *
+    * @param string part: identifier of the plugin
+    *                     whole for the whole array
+    *
+    * @return int 1 = true / -1 = false
+    */
+   function _getPluginConfig ($identifier) {
+      if ( $identifier == 'whole' ) {
+         $retour = array();
+      } else {
+         $retour = '';
+      }
+      if ( $this->_issetExtra('PLUGIN_CONFIG') ) {
+         $plugin_config_array = $this->_getExtra('PLUGIN_CONFIG');
+         if ( $identifier == 'whole' ) {
+            $retour = $plugin_config_array;
+         } elseif ( isset($plugin_config_array[mb_strtoupper($identifier, 'UTF-8')]) ) {
+            $retour = $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')];
+         }
+      }
+      return $retour;
+   }
+
+   /** set part of the plugin config array, INTERNAL
+    *
+    * @param string part: identifier of the plugin
+    *                     whole for the whole array
+    * @param array
+    */
+   function _setPluginConfig ($identifier, $value) {
+      if ($identifier == 'whole') {
+         $this->_addExtra('PLUGIN_CONFIG',$value);
+      } else {
+         $plugin_config_array = $this->_getPluginConfig('whole');
+         $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')] = (int)$value;
+         $this->_setPluginConfig('whole',$plugin_config_array);
+      }
+   }
+
+   function getPluginConfig () {
+      return $this->_getPluginConfig('whole');
+   }
+
+   function setPluginConfig ($value) {
+      $this->_setPluginConfig('whole',$value);
+   }
+
+   /** is Plugin on / active
+    *
+    * @param string identifier of the plugin
+    *
+    * @return boolean true or false
+    */
+   function isPluginOn ($identifier) {
+      $retour = false;
+      $plugin_config = $this->_getPluginConfig($identifier);
+      if ($plugin_config == 1) {
+         $retour = true;
+         global $c_plugin_array;
+         if ( !in_array($identifier,$c_plugin_array) ) {
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
+   /** set Plugin on
+    *
+    * @param string identifier of the plugin
+    */
+   function setPluginOn ($identifier) {
+      $this->_setPluginConfig($identifier,1);
+   }
+
+   /** set Plugin off
+    *
+    * @param string identifier of the plugin
+    */
+   function setPluginOff ($identifier) {
+      $this->_setPluginConfig($identifier,-1);
+   }
+
+   /** get part of the plugin config array, INTERNAL
+    *
+    * @param string type: PLUGIN for the plugin
+    *                     whole for the whole array
+    *
+    * @return string the configuration
+    */
+   public function getPluginConfigForPlugin ($type) {
+      if ( $type == 'whole' ) {
+         $retour = array();
+      } else {
+         $retour = '';
+      }
+      if ( $this->_issetExtra('PLUGIN_CONFIG_DATA') ) {
+         $config_array = $this->_getExtra('PLUGIN_CONFIG_DATA');
+         if ( $type == 'whole' ) {
+            $retour = $config_array;
+         } elseif ( isset($config_array[mb_strtoupper($type, 'UTF-8')]) ) {
+            $retour = $config_array[mb_strtoupper($type, 'UTF-8')];
+         }
+      }
+      return $retour;
+   }
+
+   /** set part of the plugin config array, INTERNAL
+    *
+    * @param string part: PLUGIN for the plugin
+    *                     whole for the whole array
+    * @param array or string value the configuration
+    */
+   public function setPluginConfigForPlugin ($type, $value) {
+      if ($type == 'whole') {
+         $this->_addExtra('PLUGIN_CONFIG_DATA',$value);
+      } else {
+         $config_array = $this->_getPluginConfig('whole');
+         $config_array[mb_strtoupper($type, 'UTF-8')] = $value;
+         $this->setPluginConfigForPlugin('whole',$config_array);
+      }
+   }
+
+   public function getPluginConfigData () {
+      return $this->getPluginConfigForPlugin('whole');
+   }
+
+   public function setPluginConfigData ($value) {
+      $this->setPluginConfigForPlugin('whole',$value);
+   }
+
+   ############### END ######################
+   # plugin configuration
+   ##########################################
 
    ##########################################
    # extras (add-ons) configuration
@@ -1722,7 +1859,6 @@ class cs_context_item extends cs_item {
    function setExtraConfig ($value) {
       $this->_setExtraConfig('whole',$value);
    }
-
 
    ##########################################
    # log-archive flag
@@ -5032,7 +5168,13 @@ class cs_context_item extends cs_item {
 
    private function _getDesign() {
       global $only_design_7_array;
-      $current_portal_item = $this->_environment->getCurrentPortalItem();
+      if ( $this->isPortal()
+           or $this->isServer()
+         ) {
+         $current_portal_item = $this;
+      } else {
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+      }
       $retour = '';
       if ( $this->_issetExtra('DESIGN')) {
          $retour = $this->_getExtra('DESIGN');

@@ -303,8 +303,6 @@ class cs_ftsearch_manager extends cs_manager {
          $index_result = array();
          $return = '';
          $cmdline = $this->_getCMDLine2($index_base);
-         pr($cmdline);
-         exit();
          exec($cmdline, $index_result, $return);
       }
    }
