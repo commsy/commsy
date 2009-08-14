@@ -53,8 +53,6 @@ function _rm_swishe_index($dirname) {
       closedir($dirHandle);
       chdir($old_cwd);
       return true;
-   } else {
-      return false;
    }
 }
 
