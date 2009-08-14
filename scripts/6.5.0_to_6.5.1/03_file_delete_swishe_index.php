@@ -31,7 +31,7 @@ function _rm_swishe_index($dirname) {
       chdir($dirname);
 
       while ($file = readdir($dirHandle)){
-         if ($file == '.' || $file == '..') continue;
+         if ($file == '.' or $file == '..' or $file == 'CVS') continue;
          if ( is_dir($file) ) {
             if ( !_rm_swishe_index($file) ) {
                chdir($old_cwd);
