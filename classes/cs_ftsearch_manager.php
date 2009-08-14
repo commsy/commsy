@@ -187,51 +187,38 @@ class cs_ftsearch_manager extends cs_manager {
             if (mb_substr($r_entry, 0, 1) == "#") {
                // e-swish result header - version info...
             } else {
-//               // *** split string
-//               // get file rank
-//               $f_rank = substr($r_entry, 0, strpos($r_entry, " "));
-//               $r_entry = substr($r_entry, strpos($r_entry, " ") + 1, strlen($r_entry));
-//               // get file size
-//               $f_size = number_format(intval(substr($r_entry, strrpos($r_entry, " ") + 1, strlen($r_entry))) / 1024, 0, ',', '.');
-//               $r_entry = substr($r_entry, 0, strrpos($r_entry, " "));
-//               // get file url
-//               $f_url = substr($r_entry, 0, strpos($r_entry, " \""));
-//               $r_entry = substr($r_entry, strpos($r_entry, " \"") + 1, strlen($r_entry));
-//               // get file name
-//               $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
-//
-//               $ft_cid = substr($f_name, 3, strpos($f_name, "_") - 3);
-//               $r_entry = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
-//
-//               $ft_fid = substr($r_entry, 0, strpos($r_entry, "_"));
-//
-//               // append iid
-//               $ft_fids[] = $ft_fid;
-
                // *** split string
                // get file rank
                $f_rank = mb_substr($r_entry, 0, mb_strpos($r_entry, " "));
                $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " ") + 1, mb_strlen($r_entry));
+
                // get file size
                $f_size = number_format(intval(mb_substr($r_entry, mb_strrpos($r_entry, " ") + 1, mb_strlen($r_entry))) / 1024, 0, ',', '.');
                $r_entry = mb_substr($r_entry, 0, mb_strrpos($r_entry, " "));
                // get file url
                $f_url = mb_substr($r_entry, 0, mb_strpos($r_entry, " \""));
                $r_entry = mb_substr($r_entry, mb_strpos($r_entry, " \"") + 1, mb_strlen($r_entry));
-               // get file name
-               $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
-//               $ft_cid = substr($f_name, 3, mb_strpos($f_name, "_") - 3);
-               $ft_cid = $this->_environment->getCurrentContextID();
-//               $r_entry = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
-//               $ft_fid = substr($r_entry, 0, strpos($r_entry, "_"));
-               $ft_fid = $f_name;
+
+               // get file id
+               if ( !strstr($r_entry,'cid')  ) {
+                  $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
+               } else {
+                  $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
+                  $f_name = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
+                  $f_name = substr($f_name, 0, strpos($f_name, "_"));
+               }
+               if ( !empty($f_name) ) {
+                  $ft_fid = $f_name;
+               }
                // append iid
-               $ft_fids[] = $ft_fid;
+               if ( is_numeric($ft_fid) ) {
+                  $ft_fids[] = $ft_fid;
+               }
             }
          }
          // set file item ids for cs_file_item (file icon with border)
+         $ft_fids = array_unique($ft_fids);
          $this->_ft_file_ids = $ft_fids;
-
          return $ft_fids;
       }
    }
