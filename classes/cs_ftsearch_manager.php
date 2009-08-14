@@ -202,6 +202,7 @@ class cs_ftsearch_manager extends cs_manager {
                // get file id
                if ( !strstr($r_entry,'cid')  ) {
                   $f_name = mb_substr($r_entry, 1, mb_strlen($r_entry) - 2);
+                  $f_name = substr($f_name,0,strpos($f_name,'.'));
                } else {
                   $f_name = substr($r_entry, 1, strlen($r_entry) - 2);
                   $f_name = substr($f_name, strpos($f_name, "_") + 1, strlen($f_name));
