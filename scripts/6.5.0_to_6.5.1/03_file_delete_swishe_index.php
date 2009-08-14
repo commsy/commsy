@@ -79,8 +79,6 @@ function _get_folder_array ($dirname) {
          $retour = '';
       }
       return $retour;
-   } else {
-      return false;
    }
 }
 
@@ -117,5 +115,4 @@ if ( isset($c_indexing) and $c_indexing ) {
       }
    }
 }
-
 ?>
