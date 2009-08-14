@@ -79,13 +79,31 @@ else {
             foreach ($c_plugin_array as $plugin) {
                $plugin_class = $environment->getPluginClass($plugin);
                if ( method_exists($plugin_class,'isConfigurableInPortal') ) {
-                  if ( $plugin_class->isConfigurableInPortal() ) {
+                  if ( ( $environment->inPortal()
+                         and $plugin_class->isConfigurableInPortal()
+                       )
+                       or
+                       ( !$environment->inServer()
+                         and $plugin_class->isConfigurableInRoom()
+                       )
+                     ) {
                      if ( !empty($_POST[$plugin])
                           and $_POST[$plugin] == 1
                         ) {
                         $current_context_item->setPluginOn($plugin);
                      } else {
                         $current_context_item->setPluginOff($plugin);
+                     }
+                     $values = $_POST;
+                     $values['current_context_item'] = $current_context_item;
+                     if ( $environment->inPortal()
+                         and method_exists($plugin_class,'configurationAtPortal')
+                        ) {
+                        $plugin_class->configurationAtPortal('save_config',$values);
+                     } elseif ( !$environment->inServer()
+                                and method_exists($plugin_class,'configurationAtRoom')
+                               ) {
+                        $plugin_class->configurationAtRoom('save_config',$values);
                      }
                   }
                }

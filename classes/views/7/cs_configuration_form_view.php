@@ -198,205 +198,212 @@ class cs_configuration_form_view extends cs_form_view {
          $html .= '<div style="padding-bottom:0px; ">';
          $temp_mod_func = mb_strtoupper($this->_environment->getCurrentModule(), 'UTF-8') . '_' . mb_strtoupper($this->_environment->getCurrentFunction(), 'UTF-8');
          $tempMessage = "";
-         switch( $temp_mod_func  )
-         {
-            case 'ACCOUNT_STATUS':
-               $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ändern (Portal)
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-               } else {
-                  $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
-               }
-               break;
-            case 'CONFIGURATION_AGB':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');	// Nutzungsvereinbarungen OK
-               break;
-            case 'CONFIGURATION_AUTHENTICATION':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');	// Authentifizierung einstellen (Portal)
-               break;
-            case 'CONFIGURATION_BACKUP':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');	// Backup eines Raumes einspielen (Server)
-               break;
-            case 'CONFIGURATION_CHAT':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
-               break;
-            case 'CONFIGURATION_COLOR':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');	// Farbkonfiguration OK
-               break;
-            case 'CONFIGURATION_DATES':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');	// Termindarstellung OK
-               break;
-            case 'CONFIGURATION_DEFAULTS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen für Räume OK
-               break;
-            case 'CONFIGURATION_DISCUSSION':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');	// Art der Diskussion OK
-               break;
-            case 'CONFIGURATION_EXTRA':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');	// Extras einstellen (Server)
-               break;
-            case 'CONFIGURATION_GROUPROOM':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');	//
-               break;
-            case 'CONFIGURATION_HOMEPAGE':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');	// Raum-Webseite einstellen
-               break;
-            case 'CONFIGURATION_HOME':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');	// Konfiguration der Home OK
-               break;
-            case 'CONFIGURATION_PATH':
-               $tempMessage = getMessage('CONFIGURATION_PATH_FORM_TITLE');	// Konfiguration der Pfade OK
-               break;
-            case 'CONFIGURATION_TAGS':
-               $tempMessage = getMessage('CONFIGURATION_TAGS_FORM_TITLE');	// Konfiguration der Tags OK
-               break;
-            case 'CONFIGURATION_LISTVIEWS':
-               $tempMessage = getMessage('CONFIGURATION_LISTVIEWS_FORM_TITLE');	// Konfiguration der Tags OK
-               break;
-            case 'CONFIGURATION_HTMLTEXTAREA':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');                break;
-            case 'CONFIGURATION_IMS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');	// IMS-Account Einstellungen (Server)
-               break;
-            case 'CONFIGURATION_LANGUAGE':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// Verfügbare Sprachen (Server)
-               break;
-            case 'CONFIGURATION_MAIL':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/mail_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
-               break;
-            case 'CONFIGURATION_NEWS':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// Ankündigungen bearbeiten (Portal)
-               break;
-            case 'CONFIGURATION_PLUGIN':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');	// Sponsoren und Werbung
-               break;
-            case 'CONFIGURATION_PORTALHOME':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumübersicht (Portal)
-               break;
-            case 'CONFIGURATION_PREFERENCES':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');	// Allgemeine Einstellungen bearbeiten (pers. Raum)
-               break;
-            case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');	// E-Mail-Newsletter (priv.)
-               break;
-            case 'CONFIGURATION_ROOM_OPENING':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// Raumeröffnungen (Portal)
-               break;
-            case 'CONFIGURATION_RUBRIC':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');	// Auswahl der Rubriken OK
-               break;
-            case 'CONFIGURATION_SERVICE':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');	// Handhabungssupport einstellen
-               break;
-            case 'CONFIGURATION_TIME':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');	// Zeittakte bearbeiten (Portal)
-               break;
-            case 'CONFIGURATION_USAGEINFO':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/usage_info_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
-               break;
-            case 'CONFIGURATION_WIKI':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');                break;
-               break;
-            case 'CONFIGURATION_OUTOFSERVICE':
-               $tempMessage = getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE');	// Wartungsseite OK
-               break;
-            case 'ACCOUNT_ACTION':
-               $tempMessage = getMessage('COMMON_ACCOUNT_ACTION_FORM_TITLE');   // Nutzungshinweise bearbeiten OK
-               break;
-            case 'CONFIGURATION_INFORMATIONBOX':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/informationbox.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('COMMON_INFORMATION_BOX');
-               break;
-            case 'CONFIGURATION_ARCHIVE':
-               $tempMessage = getMessage('COMMON_CONFINGURATION_ARCHIVE');
-               break;
-            case 'CONFIGURATION_SCRIBD':
-               $tempMessage = getMessage('COMMON_CONFIGURATION_SCRIBD_FORM_TITLE');
-               break;
-            case 'CONFIGURATION_STRUCTURE_OPTIONS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/structure_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/structure_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE');
-               break;
-            case 'CONFIGURATION_RUBRIC_OPTIONS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/rubric_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE');
-               break;
-            case 'CONFIGURATION_ROOM_OPTIONS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/room_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/room_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_ROOM_OPTIONS_TITLE');
-               break;
-            case 'CONFIGURATION_ACCOUNT_OPTIONS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/account_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE');
-               break;
-            case 'CONFIGURATION_RUBRIC_EXTRAS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
-               }
-               $tempMessage = $image.' '.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
-               break;
-            case 'CONFIGURATION_TEMPLATE_OPTIONS':
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/32x32/config/template_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-               } else {
-                  $image = '<img src="images/commsyicons/32x32/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-               }
-               if ( $this->_environment->inPrivateRoom() ) {
-                  $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE');
-               } else {
-                  $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
-               }
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view";	// "Bitte Messagetag-Fehler melden"
-               break;
+         $form_headline = $this->_form->getHeadline();
+         if ( !empty($form_headline) ) {
+            $tempMessage = $form_headline;
+         }
+
+         if ( empty($tempMessage) ) {
+            switch( $temp_mod_func  )
+            {
+               case 'ACCOUNT_STATUS':
+                  $tempMessage = getMessage('COMMON_ACCOUNT_STATUS_FORM_TITLE');		// Status ändern (Portal)
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/config/account.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
+                  break;
+               case 'CONFIGURATION_AGB':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_AGB_FORM_TITLE');	// Nutzungsvereinbarungen OK
+                  break;
+               case 'CONFIGURATION_AUTHENTICATION':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_AUTHENTICATION_FORM_TITLE');	// Authentifizierung einstellen (Portal)
+                  break;
+               case 'CONFIGURATION_BACKUP':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_BACKUP_FORM_TITLE');	// Backup eines Raumes einspielen (Server)
+                  break;
+               case 'CONFIGURATION_CHAT':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_CHAT_FORM_TITLE');
+                  break;
+               case 'CONFIGURATION_COLOR':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_COLOR_FORM_TITLE');	// Farbkonfiguration OK
+                  break;
+               case 'CONFIGURATION_DATES':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_DATES_FORM_TITLE');	// Termindarstellung OK
+                  break;
+               case 'CONFIGURATION_DEFAULTS':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_DEFAULTS_FORM_TITLE');	// Voreinstellungen für Räume OK
+                  break;
+               case 'CONFIGURATION_DISCUSSION':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_DISCUSSION_FORM_TITLE');	// Art der Diskussion OK
+                  break;
+               case 'CONFIGURATION_EXTRA':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_EXTRA_FORM_TITLE');	// Extras einstellen (Server)
+                  break;
+               case 'CONFIGURATION_GROUPROOM':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_GROUPROOM_FORM_TITLE');	//
+                  break;
+               case 'CONFIGURATION_HOMEPAGE':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOMEPAGE_FORM_TITLE');	// Raum-Webseite einstellen
+                  break;
+               case 'CONFIGURATION_HOME':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_HOME_FORM_TITLE');	// Konfiguration der Home OK
+                  break;
+               case 'CONFIGURATION_PATH':
+                  $tempMessage = getMessage('CONFIGURATION_PATH_FORM_TITLE');	// Konfiguration der Pfade OK
+                  break;
+               case 'CONFIGURATION_TAGS':
+                  $tempMessage = getMessage('CONFIGURATION_TAGS_FORM_TITLE');	// Konfiguration der Tags OK
+                  break;
+               case 'CONFIGURATION_LISTVIEWS':
+                  $tempMessage = getMessage('CONFIGURATION_LISTVIEWS_FORM_TITLE');	// Konfiguration der Tags OK
+                  break;
+               case 'CONFIGURATION_HTMLTEXTAREA':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE');                break;
+               case 'CONFIGURATION_IMS':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_IMS_FORM_TITLE');	// IMS-Account Einstellungen (Server)
+                  break;
+               case 'CONFIGURATION_LANGUAGE':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_LANGUAGE_FORM_TITLE');	// Verfügbare Sprachen (Server)
+                  break;
+               case 'CONFIGURATION_MAIL':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/mail_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/mail_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE');
+                  break;
+               case 'CONFIGURATION_NEWS':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_NEWS_FORM_TITLE');      	// Ankündigungen bearbeiten (Portal)
+                  break;
+               case 'CONFIGURATION_PLUGIN':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_PLUGIN_FORM_TITLE');	// Sponsoren und Werbung
+                  break;
+               case 'CONFIGURATION_PORTALHOME':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_PORTALHOME_FORM_TITLE');	// Gestaltung der Raumübersicht (Portal)
+                  break;
+               case 'CONFIGURATION_PREFERENCES':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_PREFERENCES_FORM_TITLE');	// Allgemeine Einstellungen bearbeiten (pers. Raum)
+                  break;
+               case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM_TITLE');	// E-Mail-Newsletter (priv.)
+                  break;
+               case 'CONFIGURATION_ROOM_OPENING':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');	// Raumeröffnungen (Portal)
+                  break;
+               case 'CONFIGURATION_RUBRIC':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_RUBRIC_FORM_TITLE');	// Auswahl der Rubriken OK
+                  break;
+               case 'CONFIGURATION_SERVICE':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_SERVICE_FORM_TITLE');	// Handhabungssupport einstellen
+                  break;
+               case 'CONFIGURATION_TIME':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_TIME_FORM_TITLE');	// Zeittakte bearbeiten (Portal)
+                  break;
+               case 'CONFIGURATION_USAGEINFO':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/usage_info_options.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/usage_info_options.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_USAGEINFO_FORM_TITLE');
+                  break;
+               case 'CONFIGURATION_WIKI':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_CONFIGURATION_WIKI_FORM_TITLE');                break;
+                  break;
+               case 'CONFIGURATION_OUTOFSERVICE':
+                  $tempMessage = getMessage('CONFIGURATION_OUTOFSERVICE_FORM_TITLE');	// Wartungsseite OK
+                  break;
+               case 'ACCOUNT_ACTION':
+                  $tempMessage = getMessage('COMMON_ACCOUNT_ACTION_FORM_TITLE');   // Nutzungshinweise bearbeiten OK
+                  break;
+               case 'CONFIGURATION_INFORMATIONBOX':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/informationbox.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/informationbox.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_INFORMATION_BOX').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('COMMON_INFORMATION_BOX');
+                  break;
+               case 'CONFIGURATION_ARCHIVE':
+                  $tempMessage = getMessage('COMMON_CONFINGURATION_ARCHIVE');
+                  break;
+               case 'CONFIGURATION_SCRIBD':
+                  $tempMessage = getMessage('COMMON_CONFIGURATION_SCRIBD_FORM_TITLE');
+                  break;
+               case 'CONFIGURATION_STRUCTURE_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/structure_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/structure_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_STRUCTURE_OPTIONS_TITLE');
+                  break;
+               case 'CONFIGURATION_RUBRIC_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/rubric_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE');
+                  break;
+               case 'CONFIGURATION_ROOM_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/room_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/room_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_ROOM_OPTIONS_TITLE');
+                  break;
+               case 'CONFIGURATION_ACCOUNT_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/account_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/account_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_OPTIONS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_ACCOUNT_OPTIONS_TITLE');
+                  break;
+               case 'CONFIGURATION_RUBRIC_EXTRAS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+                  }
+                  $tempMessage = $image.' '.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
+                  break;
+               case 'CONFIGURATION_TEMPLATE_OPTIONS':
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $image = '<img src="images/commsyicons_msie6/32x32/config/template_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+                  } else {
+                     $image = '<img src="images/commsyicons/32x32/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
+                  }
+                  if ( $this->_environment->inPrivateRoom() ) {
+                     $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE');
+                  } else {
+                     $tempMessage = $image.' '.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
+                  }
+                  break;
+               default:
+                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_configuration_form_view (".__LINE__.")";
+                  break;
+            }
          }
          $html .= '<h2 class="pagetitle">' . $tempMessage . '</h2>';
       }
@@ -699,108 +706,49 @@ class cs_configuration_form_view extends cs_form_view {
         $html .= '         </tr>'.LF;
         $html .= '         </table>'.LF;
 
-        $html .='<div class="listinfoborder">'.LF;
-        $html .='</div>'.LF;
-
-        $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
-        $html .= '         <tr>'.LF;
-        $html .= '         <td style="font-size:10pt; white-space:nowrap;" class="infocolor">'.LF;
-        $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADDON_OPTIONS').': ';
-        $html .= '         </td>'.LF;
-        $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
-        global $c_html_textarea;
-        if ( $c_html_textarea ) {
-           if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
-           } else {
-              $image = '<img src="images/commsyicons/22x22/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEXTAREA_TITLE').'"/>';
-           }
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'htmltextarea',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_TEXTAREA_TITLE')).LF;
-        }
-        $context_item = $this->_environment->getCurrentContextItem();
-        if ( $context_item->withWikiFunctions() and !$context_item->isServer() and !$context_item->isGrouproom()) {
-           if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/pmwiki.gif" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
-           } else {
-              $image = '<img src="images/commsyicons/22x22/config/pmwiki.png" style="vertical-align:bottom;" alt="'.getMessage('WIKI_CONFIGURATION_LINK').'"/>';
-           }
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'wiki',
-                                       '',
-                                       $image,
-                                       getMessage('WIKI_CONFIGURATION_LINK')).LF;
-        }
-        if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateRoom() and !$context_item->isGrouproom()) {
-        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/etchat.gif" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
-        } else {
-           $image = '<img src="images/commsyicons/22x22/config/etchat.png" style="vertical-align:bottom;" alt="'.getMessage('CHAT_CONFIGURATION_LINK').'"/>';
-        }
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'chat',
-                                       array('iid' => $this->_environment->getCurrentContextID()),
-                                       $image,
-                                       getMessage('CHAT_CONFIGURATION_LINK')).LF;
-        }
-        if ( !$context_item->isGrouproom()
-             #and !$context_item->isPrivateRoom()
-           ) {
-           if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-              $image = '<img src="images/commsyicons_msie6/22x22/config/template_options.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-           } else {
-              $image = '<img src="images/commsyicons/22x22/config/template_options.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE').'"/>';
-           }
-           $alt = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE');
-           if ( $context_item->isPrivateRoom() ) {
-              $alt = $this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_SHORT_TITLE');
-           }
-           $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'template_options',
-                                       '',
-                                       $image,
-                                       $alt).LF;
-        }
-        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
-        } else {
-           $image = '<img src="images/commsyicons/22x22/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
-        }
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'rubric_extras',
-                                       '',
-                                       $image,
-                                       getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE')).LF;
-
-        if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/config/service.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_SERVICE_LINK').'"/>';
-        } else {
-           $image = '<img src="images/commsyicons/22x22/config/service.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_SERVICE_LINK').'"/>';
-        }
-        $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'configuration',
-                                       'service',
-                                       '',
-                                       $image,
-                                       $this->_translator->getMessage('CONFIGURATION_SERVICE_LINK')).LF;
-
-
-        $html .= '         </td>'.LF;
-        $html .= '         </tr>'.LF;
-        $html .= '         </table>'.LF;
-
+        $html .= $this->_getConfigurationRowAsHTML($this->getConfigurationListRubricExtra());
 
         $html .= '</div>'.LF;
-        $html .='</div>'.LF;
         $html .= '</div>'.LF;
+        $html .= '</div>'.LF;
+        return $html;
+     }
+
+     private function _getConfigurationRowAsHTML ( $list, $sep = true ) {
+        $html = '';
+        if ( !empty($list) and $list->isNotEmpty() ) {
+           if ( $sep ) {
+              $html .='<div class="listinfoborder">'.LF;
+              $html .='</div>'.LF;
+           }
+
+           $html .= '         <table style="width:100%; border-collapse:collapse;" summary="Layout" >'.LF;
+           $html .= '         <tr>'.LF;
+           $html .= '         <td style="font-size:10pt; white-space:nowrap;" class="infocolor">'.LF;
+           $html .= $this->_translator->getMessage('COMMON_CONFIGURATION_ADDON_OPTIONS').': ';
+           $html .= '         </td>'.LF;
+           $html .= '         <td style="text-align:right; font-size:10pt;" class="right_box_main">'.LF;
+           if ( $list->isNotEmpty() ) {
+              $item = $list->getFirst();
+              while ( $item ) {
+                 $icon_path_for_navi = $item->getIconPathForNavigation();
+                 if ( !empty($icon_path_for_navi) ) {
+                    $image = '<img src="'.$item->getIconPathForNavigation().'" style="vertical-align:bottom;" alt="'.$item->getTitle().'"/>';
+                    $params = array();
+                    $html .= ahref_curl( $item->getContextID(),
+                                         $item->getModule(),
+                                         $item->getFunction(),
+                                         $params,
+                                         $image,
+                                         $item->getTitle()).LF;
+                 }
+                 $item = $list->getNext();
+              }
+           }
+           $html .= '         </td>'.LF;
+           $html .= '         </tr>'.LF;
+           $html .= '         </table>'.LF;
+        }
         return $html;
      }
 
@@ -1156,6 +1104,12 @@ class cs_configuration_form_view extends cs_form_view {
       // addon configuration options
       include_once('include/inc_configuration_links_addon.php');
       return $addon_link_list;
+   }
+
+   function getConfigurationListRubricExtra () {
+      $configuration_rubric_extras_link_list = '';
+      include_once('include/inc_configuration_rubric_extras_links.php');
+      return $configuration_rubric_extras_link_list;
    }
 }
 ?>

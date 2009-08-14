@@ -39,8 +39,10 @@ $translator = $environment->getTranslationObject();
       $link_item->setDescription(getMessage('CONFIGURATION_TEXTAREA_TITLE_DESC'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/htmltextarea.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/htmltextarea.gif');
       } else {
          $link_item->setIconPath('images/commsyicons/48x48/config/htmltextarea.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/htmltextarea.png');
       }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -58,8 +60,10 @@ $translator = $environment->getTranslationObject();
       $link_item->setTitle(getMessage('WIKI_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/pmwiki.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/pmwiki.gif');
       } else {
          $link_item->setIconPath('images/commsyicons/48x48/config/pmwiki.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/pmwiki.png');
       }
       $link_item->setDescription(getMessage('WIKI_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
@@ -78,8 +82,10 @@ $translator = $environment->getTranslationObject();
       $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/etchat.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/etchat.gif');
       } else {
          $link_item->setIconPath('images/commsyicons/48x48/config/etchat.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/etchat.png');
       }
       $link_item->setDescription(getMessage('CHAT_CONFIGURATION_DESC'));
       $link_item->setContextID($environment->getCurrentContextID());
@@ -106,8 +112,10 @@ $translator = $environment->getTranslationObject();
       }
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
          $link_item->setIconPath('images/commsyicons_msie6/48x48/config/template_options.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/template_options.gif');
       } else {
          $link_item->setIconPath('images/commsyicons/48x48/config/template_options.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/template_options.png');
       }
       $link_item->setContextID($environment->getCurrentContextID());
       $link_item->setModule('configuration');
@@ -121,8 +129,10 @@ $translator = $environment->getTranslationObject();
    $current_context = $environment->getCurrentContextItem();
    if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/rubric_extras.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/rubric_extras.gif');
    } else {
       $link_item->setIconPath('images/commsyicons/48x48/config/rubric_extras.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/rubric_extras.png');
    }
    $link_item->setDescription(getMessage('CONFIGURATION_RUBRIC_EXTRAS_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
@@ -138,8 +148,10 @@ $translator = $environment->getTranslationObject();
         and ( mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6' )
       ) {
       $link_item->setIconPath('images/commsyicons_msie6/48x48/config/service.gif');
+      $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/service.gif');
    } else {
       $link_item->setIconPath('images/commsyicons/48x48/config/service.png');
+      $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/service.png');
    }
    $link_item->setDescription($translator->getMessage('CONFIGURATION_SERVICE_DESC'));
    $link_item->setContextID($environment->getCurrentContextID());
@@ -147,4 +159,45 @@ $translator = $environment->getTranslationObject();
    $link_item->setFunction('service');
    #$link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
    $configuration_rubric_extras_link_list->add($link_item);
+
+#############################################
+# plugins - active and deactivate plugins
+#############################################
+global $c_plugin_array;
+if ( !empty($c_plugin_array) ) {
+   $show_link = false;
+
+   $current_portal = $environment->getCurrentPortalItem();
+   foreach ( $c_plugin_array as $plugin) {
+      if ( $current_portal->isPluginOn($plugin) ) {
+         $plugin_class = $environment->getPluginClass($plugin);
+         if ( method_exists($plugin_class,'isConfigurableInRoom') ) {
+            $current_context_item = $environment->getCurrentContextItem();
+            if ($plugin_class->isConfigurableInRoom($current_context_item->getItemType())) {
+               $show_link = true;
+               break;
+            }
+         }
+      }
+   }
+   if ($show_link) {
+      $link_item = new cs_link();
+      $link_item->setTitle($translator->getMessage('CONFIGURATION_PLUGIN_LINK'));
+      if ( ( $environment->getCurrentBrowser() == 'MSIE' )
+           and ( mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6' )
+         ) {
+         $link_item->setIconPath('images/commsyicons_msie6/48x48/config/plugin.gif');
+         $link_item->setIconPathForNavigation('images/commsyicons_msie6/22x22/config/plugin.gif');
+      } else {
+         $link_item->setIconPath('images/commsyicons/48x48/config/plugin.png');
+         $link_item->setIconPathForNavigation('images/commsyicons/22x22/config/plugin.png');
+      }
+      $link_item->setDescription($translator->getMessage('CONFIGURATION_PLUGIN_DESC'));
+      $link_item->setContextID($environment->getCurrentContextID());
+      $link_item->setModule('configuration');
+      $link_item->setFunction('plugins');
+      $link_item->setParameter(array('iid' => $environment->getCurrentContextID()));
+      $configuration_rubric_extras_link_list->add($link_item);
+   }
+}
 ?>

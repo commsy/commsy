@@ -1697,95 +1697,15 @@ class cs_portal_item extends cs_guide_item {
       return $this->_getServerNews('show_news_form_server');
    }
 
-   ##########################################
-   # plugins configuration
-   ############## BEGIN #####################
-
-   /** get part of the plugin config array, INTERNAL
-    *
-    * @param string part: identifier of the plugin
-    *                     whole for the whole array
-    *
-    * @return int 1 = true / -1 = false
-    */
-   function _getPluginConfig ($identifier) {
-      if ( $identifier == 'whole' ) {
-         $retour = array();
-      } else {
-         $retour = '';
-      }
-      if ( $this->_issetExtra('PLUGIN_CONFIG') ) {
-         $plugin_config_array = $this->_getExtra('PLUGIN_CONFIG');
-         if ( $identifier == 'whole' ) {
-            $retour = $plugin_config_array;
-         } elseif ( isset($plugin_config_array[mb_strtoupper($identifier, 'UTF-8')]) ) {
-            $retour = $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')];
-         }
-      }
-      return $retour;
-   }
-
-   /** set part of the plugin config array, INTERNAL
-    *
-    * @param string part: identifier of the plugin
-    *                     whole for the whole array
-    * @param array
-    */
-   function _setPluginConfig ($identifier, $value) {
-      if ($identifier == 'whole') {
-         $this->_addExtra('PLUGIN_CONFIG',$value);
-      } else {
-         $plugin_config_array = $this->_getPluginConfig('whole');
-         $plugin_config_array[mb_strtoupper($identifier, 'UTF-8')] = (int)$value;
-         $this->_setPluginConfig('whole',$plugin_config_array);
-      }
-   }
-
-   function getPluginConfig () {
-      return $this->_getPluginConfig('whole');
-   }
-
-   function setPluginConfig ($value) {
-      $this->_setPluginConfig('whole',$value);
-   }
-
-   /** is Plugin on / active
-    *
-    * @param string identifier of the plugin
-    *
-    * @return boolean true or false
-    */
-   function isPluginOn ($identifier) {
+   public function isPluginActive ( $plugin ) {
       $retour = false;
-      $plugin_config = $this->_getPluginConfig($identifier);
-      if ($plugin_config == 1) {
-         $retour = true;
-         global $c_plugin_array;
-         if ( !in_array($identifier,$c_plugin_array) ) {
-            $retour = false;
-         }
+      if ( $this->isPluginOn($plugin) ) {
+         #$server_item = $this->_environment->getServerItem();
+         #if ( $server_item->isPluginActive($plugin) ) {
+            $retour = true;
+         #}
       }
       return $retour;
    }
-
-   /** set Plugin on
-    *
-    * @param string identifier of the plugin
-    */
-   function setPluginOn ($identifier) {
-      $this->_setPluginConfig($identifier,1);
-   }
-
-   /** set Plugin off
-    *
-    * @param string identifier of the plugin
-    */
-   function setPluginOff ($identifier) {
-      $this->_setPluginConfig($identifier,-1);
-   }
-
-   ############### END ######################
-   # plugins configuration
-   ##########################################
 }
 ?>

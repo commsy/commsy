@@ -1,0 +1,5 @@
+<?php
+$message["VOYEUR_CONFIG_FORM_TITLE_CONFIG"]["en"] = "configuration";
+$message["VOYEUR_CONFIG_FORM_TITLE_CONFIG_DESC"]["en"] = "configuration options for the plugin %1";
+$message["VOYEUR_CONFIG_FORM_TITLE_URL"]["en"] = "server";
+?>

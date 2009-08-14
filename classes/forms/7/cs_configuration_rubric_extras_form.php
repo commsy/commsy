@@ -47,8 +47,16 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-       $this->_headline = $this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
-       $this->setHeadline($this->_headline);
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/32x32/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+      }
+      if ( !empty($image) ) {
+         $this->_headline = $image.' '.$this->_headline;
+      }
+      $this->setHeadline($this->_headline);
    }
 
    /** create the form, INTERNAL

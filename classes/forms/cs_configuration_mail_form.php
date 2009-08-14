@@ -60,7 +60,15 @@ class cs_configuration_mail_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->_headline = getMessage('CONFIGURATION_MAIL_FORM_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_MAIL_FORM_HEADLINE');
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/32x32/config/mail_options.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/32x32/config/mail_options.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_MAIL_FORM_TITLE').'"/>';
+      }
+      if ( !empty($image) ) {
+         $this->_headline = $image.' '.$this->_headline;
+      }
 
       // mail text choice
       $this->_array_mail_text[0]['text']  = '*'.getMessage('MAIL_CHOICE_CHOOSE_TEXT');

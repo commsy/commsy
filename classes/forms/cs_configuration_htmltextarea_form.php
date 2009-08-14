@@ -50,10 +50,16 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-       $this->_headline = getMessage('CONFIGURATION_HTMLTEXTAREA_CHANGE');
-       $this->setHeadline($this->_headline);
-       $current_user = $this->_environment->getCurrentUser();
-       $fullname = $current_user->getFullname();
+      $this->_headline = getMessage('CONFIGURATION_HTMLTEXTAREA_CHANGE');
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/32x32/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+      }
+      if ( !empty($image) ) {
+         $this->_headline = $image.' '.$this->_headline;
+      }
+      $this->setHeadline($this->_headline);
    }
 
 

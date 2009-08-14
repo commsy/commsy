@@ -585,7 +585,8 @@ class cs_rubric_form {
    }
 
    function getHeadline () {
-      return $this->_headline_form;
+      $retour = $this->_headline_form;
+      return $retour;
    }
 
    function translatorChangeToPortal () {

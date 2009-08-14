@@ -55,31 +55,62 @@ class cs_configuration_plugins_form extends cs_rubric_form {
 
       // headline
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_PLUGIN_LINK');
+      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+         $image = '<img src="images/commsyicons_msie6/32x32/config/plugin.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/32x32/config/plugin.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+      }
+      if ( !empty($image) ) {
+         $this->_headline = $image.' '.$this->_headline;
+      }
 
       // plugins
       global $c_plugin_array;
       if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
          foreach ($c_plugin_array as $plugin) {
             $plugin_class = $this->_environment->getPluginClass($plugin);
-            if ( method_exists($plugin_class,'isConfigurableInPortal') ) {
-               if ( $plugin_class->isConfigurableInPortal() ) {
-                  $temp_array = array();
-                  $temp_array2 = array();
-                  $temp_array2['text']  = getMessage('COMMON_ON');
-                  $temp_array2['value'] = 1;
-                  $temp_array[] = $temp_array2;
-                  $temp_array2 = array();
-                  $temp_array2['text']  = getMessage('COMMON_OFF');
-                  $temp_array2['value'] = -1;
-                  $temp_array[] = $temp_array2;
+            if ( (
+                   $this->_environment->inPortal()
+                   and method_exists($plugin_class,'isConfigurableInPortal')
+                   and $plugin_class->isConfigurableInPortal()
+                 )
+                 or
+                 (
+                   !$this->_environment->inServer()
+                   and $current_portal_item->isPluginOn($plugin)
+                   and method_exists($plugin_class,'isConfigurableInRoom')
+                   and $plugin_class->isConfigurableInRoom()
+                 )
+               ) {
+               $temp_array = array();
+               $temp_array2 = array();
+               $temp_array2['text']  = getMessage('COMMON_ON');
+               $temp_array2['value'] = 1;
+               $temp_array[] = $temp_array2;
+               $temp_array2 = array();
+               $temp_array2['text']  = getMessage('COMMON_OFF');
+               $temp_array2['value'] = -1;
+               $temp_array[] = $temp_array2;
 
-                  $this->_array_plugins[$plugin_class->getIdentifier()]['values'] = $temp_array;
-                  $this->_array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();
+               $this->_array_plugins[$plugin_class->getIdentifier()]['values'] = $temp_array;
+               $this->_array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();
+
+               if ( $this->_environment->inPortal()
+                    and method_exists($plugin_class,'configurationAtPortal')
+                  ) {
+                  $this->_array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtPortal('change_form');
+               } elseif ( !$this->_environment->inServer()
+                          and method_exists($plugin_class,'configurationAtRoom')
+                        ) {
+                  $this->_array_plugins[$plugin_class->getIdentifier()]['change_form'] = $plugin_class->configurationAtRoom('change_form');
                }
             }
          }
       }
-      ksort($this->_array_plugins);
+      if ( !empty($this->_array_plugins) ) {
+         ksort($this->_array_plugins);
+      }
    }
 
    /** create the form, INTERNAL
@@ -92,8 +123,25 @@ class cs_configuration_plugins_form extends cs_rubric_form {
       // plugins
       if ( !empty($this->_array_plugins ) ) {
          foreach ( $this->_array_plugins as $plugin => $plugin_data) {
+            $this->_form->addEmptyLine();
             $this->_form->addRadioGroup($plugin,$plugin_data['title'],'',$plugin_data['values'],'',true,true);
+            if ( !empty($plugin_data['change_form']) ) {
+               $plugin_class = $this->_environment->getPluginClass($plugin);
+               if ( $this->_environment->inPortal() ) {
+                  if ( method_exists($plugin_class,'configurationAtPortal') ) {
+                     $plugin_class->configurationAtPortal('create_form',array('form' => $this->_form));
+                  }
+               } elseif ( !$this->_environment->inServer() ) {
+                  $current_portal_item = $this->_environment->getCurrentPortalItem();
+                  if ( method_exists($plugin_class,'configurationAtRoom')
+                      and $current_portal_item->isPluginOn($plugin)
+                     ) {
+                     $plugin_class->configurationAtRoom('create_form',array('form' => $this->_form));
+                  }
+               }
+            }
          }
+
          // buttons
          $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'','','','','','');
       } else {
@@ -112,15 +160,35 @@ class cs_configuration_plugins_form extends cs_rubric_form {
          $current_context_item = $this->_environment->getCurrentContextItem();
          global $c_plugin_array;
          if (isset($c_plugin_array) and !empty($c_plugin_array)) {
+            $current_portal_item = $this->_environment->getCurrentPortalItem();
             foreach ($c_plugin_array as $plugin) {
                $plugin_class = $this->_environment->getPluginClass($plugin);
-               if ( method_exists($plugin_class,'isConfigurableInPortal') ) {
-                  if ( $plugin_class->isConfigurableInPortal() ) {
-                     if ( $current_context_item->isPluginOn($plugin) ) {
-                        $this->_values[$plugin] = 1;
-                     } else {
-                        $this->_values[$plugin] = -1;
-                     }
+               if ( ( $this->_environment->inPortal()
+                      and method_exists($plugin_class,'isConfigurableInPortal')
+                      and $plugin_class->isConfigurableInPortal()
+                    )
+                    or
+                    ( !$this->_environment->inServer()
+                      and $current_portal_item->isPluginOn($plugin)
+                      and method_exists($plugin_class,'isConfigurableInRoom')
+                      and $plugin_class->isConfigurableInRoom($current_context_item->getItemType())
+                    )
+                  ) {
+                  if ( $current_context_item->isPluginOn($plugin) ) {
+                     $this->_values[$plugin] = 1;
+                  } else {
+                     $this->_values[$plugin] = -1;
+                  }
+                  $values = array();
+                  $values['current_context_item'] = $current_context_item;
+                  if ( $this->_environment->inPortal()
+                       and method_exists($plugin_class,'configurationAtPortal')
+                     ) {
+                     $this->_values = array_merge($plugin_class->configurationAtPortal('load_values_item',$values),$this->_values);
+                  } elseif ( !$this->_environment->inServer()
+                             and method_exists($plugin_class,'configurationAtRoom')
+                           ) {
+                     $this->_values = array_merge($plugin_class->configurationAtRoom('load_values_item',$values),$this->_values);
                   }
                }
             }

@@ -47,8 +47,6 @@ var $_with_tags = false;
     */
    function _initForm () {
       $current_context = $this->_environment->getCurrentContextItem();
-      $this->_headline = getMessage('CONFIGURATION_TAGS_LINK');
-      $this->setHeadline($this->_headline);
    }
 
    /** create the form, INTERNAL

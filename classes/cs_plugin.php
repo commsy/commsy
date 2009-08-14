@@ -66,5 +66,9 @@ class cs_plugin {
    public function isConfigurableInPortal () {
       return false;
    }
+
+   public function isConfigurableInRoom ( $room_type = '' ) {
+      return false;
+   }
 }
 ?>

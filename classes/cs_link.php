@@ -143,10 +143,8 @@ class cs_link {
    }
 
    /** sets the path to an icon for the item
-   * @param string Path where the icon can be found
-      *
-      * @author CommSy Development Group
-   */
+    * @param string Path where the icon can be found
+    */
    function setIconPath($icon_path) {
       $this->_data['icon_path'] = $icon_path;
    }
@@ -160,6 +158,20 @@ class cs_link {
       return $this->_getValue('icon_path');
    }
 
+   /** sets the path to an icon for the item
+    * @param string Path where the icon can be found
+    */
+   function setIconPathForNavigation($icon_path) {
+      $this->_data['icon_path_navi'] = $icon_path;
+   }
+
+   /** sets the path to an icon for the item
+    * @param string Path where the icon can be found
+    */
+   function getIconPathForNavigation() {
+      return $this->_getValue('icon_path_navi');
+   }
+
    /** set the context id of the link
     * this method sets the context id of the link
     *
@@ -167,6 +179,15 @@ class cs_link {
     */
    function setContextID ($value) {
       $this->_data['context_id'] = (int)$value;
+   }
+
+   /** return the context id of the link
+    * this method returns the context id of the link
+    *
+    * @return string context id of the link
+    */
+   public function getContextID () {
+      return $this->_getContextID();
    }
 
    /** return the context id of the link, INTERNAL

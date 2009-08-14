@@ -121,7 +121,7 @@ if ( !isset($translator) and isset($this->_translator) ) {
    }
 
    #############################################
-   # plugins - active and deactivate pluguins
+   # plugins - active and deactivate plugins
    #############################################
    $context_item = $environment->getCurrentContextItem();
    global $c_plugin_array;
