@@ -69,6 +69,8 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          $radio_values[2]['value'] = '3';
          $radio_values[3]['text'] = getMessage('CONFIGURATION_ONLY_PROJECT_ROOMS');
          $radio_values[3]['value'] = '4';
+         $radio_values[4]['text'] = $this->_translator->getMessage('CONFIGURATION_PRESELECT_MY_ROOMS');
+         $radio_values[4]['value'] = '5';
          $this->_form->addRadioGroup('preselection',getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
 
          $radio_values = array();
@@ -120,6 +122,8 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
             $this->_values['preselection'] ='3';
          }elseif ($show_only_community_rooms =='onlyprojectrooms'){
             $this->_values['preselection'] ='4';
+         }elseif ($show_only_community_rooms =='preselectmyrooms'){
+            $this->_values['preselection'] ='5';
          }else{
             $this->_values['preselection'] ='1';
          }

@@ -80,6 +80,8 @@ else {
             $room_item->setShowRoomsOnHome('onlyprojectrooms');
          } elseif ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 2 ) {
             $room_item->setShowRoomsOnHome('preselectcommunityrooms');
+         } elseif ( isset($_POST['preselection']) and !empty($_POST['preselection']) and $_POST['preselection'] == 5 ) {
+            $room_item->setShowRoomsOnHome('preselectmyrooms');
          }else {
             $room_item->setShowRoomsOnHome('normal');
          }

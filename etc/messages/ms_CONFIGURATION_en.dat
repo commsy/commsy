@@ -143,6 +143,7 @@ $message["CONFIGURATION_PLUGIN_LINK"]["en"] = "Plugins";
 $message["CONFIGURATION_PORTAL_HOME"]["en"] = "Configure portal start page";
 $message["CONFIGURATION_PORTAL_HOME_DESC"]["en"] = "Configure the portal start page, incl. workspace teaser and announcements.";
 $message["CONFIGURATION_PRESELECT_COMMUNITY_ROOMS"]["en"] = "Selection of %_COMMUNITY_SUB_AKKPL_BIG";
+$message["CONFIGURATION_PRESELECT_MY_ROOMS"]["en"] = "my rooms (if user is logged in)";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DAILY"]["en"] = "day";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC"]["en"] = "Define default time span for &quot;current&quot; items on Home / notice board page.";
 $message["CONFIGURATION_PRIVATEROOM_HOME_DESC_1"]["en"] = "normal";

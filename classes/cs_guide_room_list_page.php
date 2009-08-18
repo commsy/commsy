@@ -90,6 +90,13 @@ class cs_guide_room_list_page extends cs_page {
          $manager = $this->_environment->getRoomManager();
          $manager->setContextLimit($this->_environment->getCurrentContextID());
          $show_rooms = $current_context->getShowRoomsOnHome();
+         if ( empty($selroom)
+              and !empty($show_rooms)
+              and $show_rooms == 'preselectmyrooms'
+              and $this->_environment->getCurrentUserItem()->isUser()
+            ) {
+            $selroom = 5;
+         }
          if ($show_rooms == 'onlycommunityrooms'){
             $manager->setRoomTypeLimit(CS_COMMUNITY_TYPE);
          } elseif ($show_rooms == 'onlyprojectrooms'){
@@ -146,7 +153,7 @@ class cs_guide_room_list_page extends cs_page {
                $item = $manager->getItem($ids[$i]);
                $list->add($item);
             }
-         } 
+         }
          $count_all_shown = count($ids);
       } elseif ($this->_environment->inServer()) {
          $context_item = $this->_environment->getCurrentContextItem();

@@ -475,7 +475,7 @@ class cs_guide_list_view extends cs_list_view_plain {
         $html .= '<span class="small_font">'.$this->_translator->getMessage('COMMON_NO_CONTACT_MODERATOR').'</span>'.LF;
       }*/
       $html = '<span class="small_font">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getContactPersonString())).'</span>';
-            
+
       //$html = $item->getContactPersonString();
 
       return $html;
@@ -612,6 +612,13 @@ class cs_guide_list_view extends cs_list_view_plain {
       }
 
       $selroom = $this->getSelectedRoom();
+      if ( empty($selroom)
+           and !empty($show_rooms)
+           and $show_rooms == 'preselectmyrooms'
+           and $this->_environment->getCurrentUserItem()->isUser()
+         ) {
+         $selroom = 5;
+      }
       $sel_archive_room = $this->getSelectedArchiveRoom();
       if (!empty($this->_selected_iid)) {
          $html .= '   <input type="hidden" name="iid" value="'.$this->_text_as_form($this->_selected_iid).'"/>'.LF;
