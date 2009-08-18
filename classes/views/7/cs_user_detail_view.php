@@ -1600,21 +1600,25 @@ class cs_user_detail_view extends cs_detail_view {
 
 
    function _getSubItemsAsHTML($item){
-      $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
-      $current_item = $item;
-      $html .='<div class="detail_annotation_headline" style="margin-top:60px;">'.LF;
-      $html .= '<div style="float:right">';
-      $html .= $this->getAccountActionsAsHTML($item);
-      $html .= '</div>';
-      $html .= '<h3 class="annotationtitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
-      $html .= '</h3>'.LF;
-      $html .='</div>'.LF;
-      $html .='<div class="detail_content" style=" margin-top: 5px; border-top:1px solid #B0B0B0; border-left:0px solid #B0B0B0; border-right:0px solid #B0B0B0; border-bottom:0px solid #B0B0B0;">'.LF;
-      $html .= $this->_getSubItemAsHTML($current_item,1).LF;
-      $html .='</div>'.LF;
-      $html .='<div style="clear:both;">'.LF;
-      $html .='</div>'.LF;
-      $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
+      $current_user = $this->_environment->getCurrentUserItem();
+      $html ='';
+      if ($current_user->isModerator() or $current_user->isRoot() or ($current_user->getItemID() == $item->getItemID()) ){
+         $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
+         $current_item = $item;
+         $html .='<div class="detail_annotation_headline" style="margin-top:60px;">'.LF;
+         $html .= '<div style="float:right">';
+         $html .= $this->getAccountActionsAsHTML($item);
+         $html .= '</div>';
+         $html .= '<h3 class="annotationtitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
+         $html .= '</h3>'.LF;
+         $html .='</div>'.LF;
+         $html .='<div class="detail_content" style=" margin-top: 5px; border-top:1px solid #B0B0B0; border-left:0px solid #B0B0B0; border-right:0px solid #B0B0B0; border-bottom:0px solid #B0B0B0;">'.LF;
+         $html .= $this->_getSubItemAsHTML($current_item,1).LF;
+         $html .='</div>'.LF;
+         $html .='<div style="clear:both;">'.LF;
+         $html .='</div>'.LF;
+         $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
+      }
       return $html;
    }
 
