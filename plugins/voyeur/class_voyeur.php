@@ -33,6 +33,7 @@ class class_voyeur extends cs_plugin {
       $this->_translator->addMessageDatFolder('plugins/voyeur/messages');
       $this->_identifier = 'voyeur';
       $this->_title      = 'Voyeur';
+      $this->_image_path = 'plugins/'.$this->getIdentifier();
    }
 
    public function isConfigurableInPortal () {
@@ -85,6 +86,35 @@ class class_voyeur extends cs_plugin {
 
    public function isConfigurableInRoom ( $room_type = '' ) {
       $retour = true;
+      return $retour;
+   }
+
+   public function getDetailActionAsHTML () {
+      $retour = '';
+      $title = $this->_translator->getMessage('VOYEUR_ACTION_ICON_TITLE');
+      $img =  '<img src="'.$this->_image_path.'/voyeur_icon_22x22.png" style="vertical-align:bottom;" title="'.$title.'"/>';
+      $url = $this->_getConfigValueFor($this->_identifier.'_server_url');
+      if ( !empty($url) ) {
+         $url_params = array();
+         $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
+         $url_params['download'] = 'zip';
+         $url_params['mode'] = 'print';
+         $session_item = $this->_environment->getSessionItem();
+         if ( isset($session_item) ) {
+            $url_params['SID'] = $session_item->getSessionID();
+         }
+
+         global $c_commsy_domain, $c_commsy_url_path;
+         $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
+         $url_to_zip .= '/'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$url_params);
+         if ( strstr($url,'?') ) {
+            $url .= '&';
+         } else {
+            $url .= '?';
+         }
+         $url .= 'archive='.urlencode($url_to_zip);
+         $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
+      }
       return $retour;
    }
 }

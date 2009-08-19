@@ -970,6 +970,7 @@ function plugin_hook_output_all ($hook_function, $params = null, $separator = ''
         and !empty($c_plugin_array)
       ) {
       $first = true;
+      $current_context_item = $environment->getCurrentContextItem();
       foreach ($c_plugin_array as $plugin) {
          $output = plugin_hook_output($plugin,$hook_function,$params);
          if ( !empty($output) ) {
@@ -989,13 +990,25 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
    $retour = '';
    global $environment;
    global $c_plugin_array;
-   $current_context_item = $environment->getCurrentPortalItem();
-   if ( in_array($plugin,$c_plugin_array)
-        and isset($current_context_item)
-        and $current_context_item->isPluginOn($plugin)
-      ) {
+   if ( in_array($plugin,$c_plugin_array) ) {
+      $do_it = false;
       $plugin_class = $environment->getPluginClass($plugin);
-      if ( isset($plugin_class)
+      if ( method_exists($plugin_class,'isConfigurableInRoom')
+           and $plugin_class->isConfigurableInRoom()
+         ) {
+         $current_context_item = $environment->getCurrentContextItem();
+      } elseif ( method_exists($plugin_class,'isConfigurableInPortal')
+                 and $plugin_class->isConfigurableInPortal()
+               ) {
+         $current_context_item = $environment->getCurrentPortalItem();
+      }
+      if ( isset($current_context_item)
+           and $current_context_item->isPluginActive($plugin)
+         ) {
+         $do_it = true;
+      }
+      if ( $do_it
+           and isset($plugin_class)
            and method_exists($plugin_class,$hook_function)
          ) {
          $retour = $plugin_class->$hook_function($params);

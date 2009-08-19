@@ -1,4 +1,5 @@
 <?php
+$message["VOYEUR_ACTION_ICON_TITLE"]["de"] = "Eintrag einer Textanalyse übergeben";
 $message["VOYEUR_CONFIG_FORM_TITLE_CONFIG"]["de"] = "Konfiguration";
 $message["VOYEUR_CONFIG_FORM_TITLE_CONFIG_DESC"]["de"] = "Einstellungen zum Plugin %1";
 $message["VOYEUR_CONFIG_FORM_TITLE_URL"]["de"] = "Server";

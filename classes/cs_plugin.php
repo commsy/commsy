@@ -70,5 +70,28 @@ class cs_plugin {
    public function isConfigurableInRoom ( $room_type = '' ) {
       return false;
    }
+
+   public function _getConfigValueFor ( $option ) {
+      $retour = '';
+      $identifier = $this->getIdentifier();
+      if ( !empty($option)
+           and !empty($identifier)
+         ) {
+         $current_context_item = $this->_environment->getCurrentContextItem();
+         $config_array = $current_context_item->getPluginConfigForPlugin($identifier);
+         if ( empty($config_array[$option])
+              and !$current_context_item->isPortal()
+            ) {
+            $current_context_item = $this->_environment->getCurrentPortalItem();
+            $config_array = $current_context_item->getPluginConfigForPlugin($identifier);
+         }
+         if ( !empty($config_array)
+              and !empty($config_array[$option])
+            ) {
+            $retour = $config_array[$option];
+         }
+      }
+      return $retour;
+   }
 }
 ?>
