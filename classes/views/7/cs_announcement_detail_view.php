@@ -79,7 +79,7 @@ class cs_announcement_detail_view extends cs_detail_view {
       }
       $desc = $this->_item->getDescription();
       if ( !empty($desc) ) {
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+         $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
          $desc = $this->_show_images($desc,$item,true);
          $html .= $this->getScrollableContent($desc,$item,'',true);
       }

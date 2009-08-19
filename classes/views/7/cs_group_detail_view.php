@@ -264,7 +264,7 @@ class cs_group_detail_view extends cs_detail_view {
             // Description
             $desc = $this->_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+               $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
                $html .= $this->getScrollableContent($desc,$item,'',true).LF;
             }
 
@@ -277,7 +277,7 @@ class cs_group_detail_view extends cs_detail_view {
             if ( isset($grouproom_item) and !empty($grouproom_item) ) {
                $desc = $grouproom_item->getDescription();
                if ( !empty($desc) ) {
-                  $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+                  $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
                   $html .= $desc.LF;
                }
             }
@@ -925,7 +925,7 @@ class cs_group_detail_view extends cs_detail_view {
             $html .= '<div style="padding-bottom: 10px;">'.LF;
             $desc = $group_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+               $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
                $html .= $desc.LF;
             }
             $html .= '</div>'.LF;

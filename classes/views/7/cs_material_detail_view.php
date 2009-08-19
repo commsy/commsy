@@ -442,7 +442,7 @@ class cs_material_detail_view extends cs_detail_view {
          $pub_date = $item->getPublishingDate();
          if (!empty($pub_date)){
             $temp_array[0]  = $this->_translator->getMessage('MATERIAL_PUBLISHING_DATE');
-            $temp_array[1]  = $this->_text_as_html_long($this->_compareWithSearchText($item->getPublishingDate()));
+            $temp_array[1]  = $this->_text_as_html_short($this->_compareWithSearchText($item->getPublishingDate()));
             $formal_data1[] = $temp_array;
          }
          if ( !empty($formal_data1) ) {
@@ -661,7 +661,7 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array = array();
          $temp_array[]  = $this->_translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
          if ( !empty($biblio) ) {
-            $temp_array[]  = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($biblio)));
+            $temp_array[]  = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($biblio)));
          } else {
             $temp_array[] = '<span class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</span>';
          }
@@ -845,7 +845,7 @@ class cs_material_detail_view extends cs_detail_view {
          // Description
          $desc = $item->getDescription();
          if ( !empty($desc) ) {
-            $temp_string = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+            $temp_string = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
             $html .= $this->getScrollableContent($temp_string,$item,'',$with_links);
          }
       }

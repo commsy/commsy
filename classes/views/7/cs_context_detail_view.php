@@ -67,7 +67,7 @@ var $_room_type = 'context';
          // description
          $desc = $this->_item->getDescription();
          if ( !empty($desc) ) {
-            $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+            $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
             $html .= $desc.LF;
          }
          $html .= '<div style="width:100%; padding-left:15%; padding-bottom:20px; vertical-align:center;">'.$this->_getRoomWindowAsHTML($item,$this->getAccountMode()).'</div>';
@@ -357,7 +357,7 @@ var $_room_type = 'context';
             $html .= '<div style="padding-bottom: 10px;">'.LF;
             $desc = $this->_item->getDescription();
             if ( !empty($desc) ) {
-               $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+               $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
                $html .= $desc.LF;
             }
             $html .= '</div>'.LF;

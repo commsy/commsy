@@ -3316,7 +3316,7 @@ class cs_detail_view extends cs_view {
                if ( !$bold ) {
                   $replace = '_$0_';
                }
-               if ( stristr($value,'<!-- KFC TEXT -->') ) {
+               if ( stristr($value,'<!-- KFC TEXT') ) {
                   $replace = '<span class="bold">$0</span>';
                   if ( !$bold ) {
                      $replace = '<span class="italic" style="font-style: italic;">$0</span>';
