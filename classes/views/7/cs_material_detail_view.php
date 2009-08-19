@@ -863,7 +863,7 @@ class cs_material_detail_view extends cs_detail_view {
       $html = '';
       $section_description = $item->getDescription();
       if ( !empty($section_description) ) {
-         $section_description = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($section_description)));
+         $section_description = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($section_description)));
          $section_description = $this->_show_images($section_description, $item, $with_links);
          $html .= $this->getScrollableContent($section_description,$item,'',$with_links);
       }
