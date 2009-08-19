@@ -5179,7 +5179,10 @@ class cs_context_item extends cs_item {
       if ( $this->_issetExtra('DESIGN')) {
          $retour = $this->_getExtra('DESIGN');
       }
-      if (isset($only_design_7_array) and in_array($current_portal_item->getItemID(),$only_design_7_array)){
+      if ( isset($current_portal_item)
+           and isset($only_design_7_array)
+           and in_array($current_portal_item->getItemID(),$only_design_7_array)
+         ) {
          $retour = '7';
       }
       return $retour;

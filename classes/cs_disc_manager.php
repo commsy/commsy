@@ -212,6 +212,21 @@ class cs_disc_manager {
       }
    }
 
+   public function makeDirectory ( $dir ) {
+      $retour = true;
+      $folder = @opendir($dir);
+      if ( !$folder ) {
+         @mkdir($dir);
+         $folder = @opendir($dir);
+         if ( !$folder ) {
+            include_once('functions/error_functions.php');
+            trigger_error('can not make directory '.$dir,E_USER_WARNING);
+            $retour = false;
+         }
+      }
+      return $retour;
+   }
+
    function moveFiles ($second_folder, $old_first_folder, $new_first_folder) {
       $retour = true;
       $folder_new = $this->_file_path_basic.$new_first_folder.'/'.$second_folder;
@@ -262,6 +277,10 @@ class cs_disc_manager {
       } else {
          return false;
       }
+   }
+
+   public function removeDirectory ( $dir ) {
+      return $this->_full_rmdir($dir);
    }
 
    function _moveFile ($source, $dest) {
