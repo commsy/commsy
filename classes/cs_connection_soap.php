@@ -1871,8 +1871,7 @@ class cs_connection_soap {
             $user_item = $user_list->getFirst();
             if ( $user_item->isModerator() ){
                $result = 'moderator';
-            }
-            if ( $user_item->isUser() ) {
+            } elseif ( $user_item->isUser() ) {
                if ( $context_item->isWikiRoomModWriteAccess() ) {
                   $result = 'read';
                } else {
