@@ -1699,8 +1699,6 @@ class cs_connection_soap {
          $info_text = 'session id ('.$session_id.') is not valid';
          $result = new SoapFault($info,$info_text);
       }
-      // ???
-      $project_manager = $this->_environment->getProjectManager;
       return $result;
    }
 
@@ -1859,12 +1857,16 @@ class cs_connection_soap {
       $result = 'notAuthenticated';
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $auth_source = $session->getValue('auth_source');
          $this->_environment->setCurrentContextID($context_id);
          $context_item = $this->_environment->getCurrentContextItem();
 
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
+         $user_manager->setAuthSourceLimit($auth_source);
          $user_manager->select();
          $user_list = $user_manager->get();
          if ( $user_list->getCount() >= 1 ) {
@@ -1879,10 +1881,27 @@ class cs_connection_soap {
                }
             }
          } else {
-            if ( $context_item->isWikiPortalReadAccess() ) {
-               $result = 'read';
+            if ( $context_item->isWikiPortalReadAccess()
+                 and !empty($auth_source)
+                 and !empty($user_id)
+               ) {
+               $portal_id = $session->getValue('commsy_id');
+               $user_manager->setContextLimit($portal_id);
+               $user_manager->setUserIDLimit($user_id);
+               $user_manager->setAuthSourceLimit($auth_source);
+               $user_manager->select();
+               $user_list = $user_manager->get();
+               if ( $user_list->getCount() == 1 ) {
+                  $user_item = $user_list->getFirst();
+                  if ( $user_item->isUser() ) {
+                     $result = 'read';
+                  }
+               }
             }
          }
+         unset($user_manager);
+         unset($user_list);
+         unset($user_item);
       } else {
          $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
          $info_text = 'session id ('.$session_id.') is not valid';
