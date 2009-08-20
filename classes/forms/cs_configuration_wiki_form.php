@@ -138,16 +138,20 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       $this->_form->addEmptyline();
 
       $this->_form->addCheckbox('use_commsy_login',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE'),$this->_translator->getMessage('COMMON_CONFIGURATION_COMMSY_ACCOUNTS_WIKI_DESC'),false,false,'','',true,false);
-     //$this->_form->combine();
-      //$this->_form->addText('wiki_space2','',' ');
-      //$this->_form->combine();
-      //$this->_form->addCheckbox('community_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
-     //$this->_form->combine();
-      //$this->_form->addCheckbox('community_write_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
-     //$this->_form->combine();
-      //$this->_form->addText('wiki_space2','',' ');
-     //$this->_form->combine();
-      //$this->_form->addCheckbox('portal_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
+      $this->_form->combine();
+      $this->_form->addCheckbox('room_mod_write_access',0,'','',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_ROOM_MOD_WRITE_ACCESS_VALUE'),'');
+      $this->_form->combine();
+      $this->_form->addText('wiki_space2','',' ');
+      /*
+      $this->_form->combine();
+      $this->_form->addCheckbox('community_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_READ_ACCESS_VALUE'),'');
+      $this->_form->combine();
+      $this->_form->addCheckbox('community_write_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_COMMUNITY_WRITE_ACCESS_VALUE'),'');
+      $this->_form->combine();
+      $this->_form->addText('wiki_space2','',' ');
+      */
+      $this->_form->combine();
+      $this->_form->addCheckbox('portal_read_access',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI'),$this->_translator->getMessage('COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE'),'');
 
       $this->_form->addEmptyline();
       if (!$this->_item->isPortal()){
@@ -431,6 +435,9 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          }
          if ($this->_item->WikiPortalReadAccess() == "1"){
             $this->_values['portal_read_access'] = 1;
+         }
+         if ( $this->_item->isWikiRoomModWriteAccess() ) {
+            $this->_values['room_mod_write_access'] = 1;
          }
          $this->_values['new_discussion'] = '';
          // /new features

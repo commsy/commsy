@@ -562,6 +562,14 @@ class cs_wiki_manager extends cs_manager {
            if($item->getWikiReadPW() != ''){
               $str .= '$DefaultPasswords[\'read\'] = \'@readers @editors\';'.LF;
            }
+           /*
+           if ( $item->isWikiPortalReadAccess() ) {
+              $str .= '$COMMSY_AUTH_READ_ACCESS_PORTAL = 1;'.LF;
+           }
+           if ( $item->isWikiRoomModWriteAccess() ) {
+              $str .= '$COMMSY_AUTH_WRITE_ACCESS_ROOM_MOD = 1;'.LF;
+           }
+           */
        } else {
           $str .= 'if ( !empty($COMMSY_ADMIN_PASSWD) ) {'.LF;
          $str .= '   $DefaultPasswords[\'admin\'] = crypt($COMMSY_ADMIN_PASSWD);'.LF;
@@ -834,6 +842,11 @@ class cs_wiki_manager extends cs_manager {
          $new_room->setWikiPortalReadAccess();
       } else {
          $new_room->unsetWikiPortalReadAccess();
+      }
+      if ( $old_room->WikiRoomModWriteAccess() != -1 ) {
+         $new_room->setWikiRoomModWriteAccess();
+      } else {
+         $new_room->unsetWikiRoomModWriteAccess();
       }
    }
 

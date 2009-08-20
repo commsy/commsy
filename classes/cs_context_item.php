@@ -2969,6 +2969,39 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
+   function isWikiPortalReadAccess () {
+      $retour = false;
+      if ( $this->WikiPortalReadAccess() == 1 ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
+   function setWikiRoomModWriteAccess(){
+      $this->_addExtra('WIKIROOMWRITEMODACCESS','1');
+   }
+
+   function unsetWikiRoomModWriteAccess(){
+      $this->_addExtra('WIKIROOMWRITEMODACCESS','-1');
+   }
+
+   function WikiRoomModWriteAccess(){
+      if ( $this->_issetExtra('WIKIROOMWRITEMODACCESS') ) {
+         $retour = $this->_getExtra('WIKIROOMWRITEMODACCESS');
+      } else {
+         $retour ='-1';
+      }
+      return $retour;
+   }
+
+   function isWikiRoomModWriteAccess () {
+      $retour = false;
+      if ( $this->WikiRoomModWriteAccess() == 1 ) {
+         $retour = true;
+      }
+      return $retour;
+   }
+
    ##########################################
    # Pfad
    ##########################################

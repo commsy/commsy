@@ -263,6 +263,12 @@ else {
             $item->unsetWikiPortalReadAccess();
          }
 
+         if ( isset($_POST['room_mod_write_access']) ) {
+            $item->setWikiRoomModWriteAccess();
+         } else {
+            $item->unsetWikiRoomModWriteAccess();
+         }
+
          if ( isset($_POST['show_login_box']) ) {
             $item->setWikiShowCommSyLogin();
          } else {

@@ -236,6 +236,7 @@ $message["COMMON_CONFIGURATION_WIKI_FORM_TITLE"]["en"] = "Wiki settings";
 $message["COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE"]["en"] = "Show link on the home of this workspace";
 $message["COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE"]["en"] = "Show link in commsy portal description";
 $message["COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE"]["en"] = "Users of the portal may log in with their CommSy-accout to read the wiki.";
+$message["COMMON_CONFIGURATION_WIKI_ROOM_MOD_WRITE_ACCESS_VALUE"]["en"] = "only moderator can edit, normal user can only read";
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX"]["en"] = "Login-box";
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE"]["en"] = "Display a CommSy login-box on the wiki navigation";
 $message["COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE"]["en"] = "Also use the CommSy-Accounts of this room to log in to the wiki. The wiki-account &quot;admin&quot;, &quot;edit&quot; and &quot;read&quot; will be created. They will use the passwords set above.";

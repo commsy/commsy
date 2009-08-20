@@ -244,6 +244,7 @@ $message["COMMON_CONFIGURATION_WIKI_FORM_TITLE"]["de"] = "Einstellungen Raum-Wik
 $message["COMMON_CONFIGURATION_WIKI_HOMELINK_VALUE"]["de"] = "Link auf der Home des CommSy-Projektraumes anzeigen";
 $message["COMMON_CONFIGURATION_WIKI_PORTALLINK_VALUE"]["de"] = "Link in der Beschreibung auf dem CommSy-Portal anzeigen";
 $message["COMMON_CONFIGURATION_WIKI_PORTAL_READ_ACCESS_VALUE"]["de"] = "Mitglieder des Portals dürfen sich mit ihrer CommSy-Kennung zum Lesen am Wiki anmelden.";
+$message["COMMON_CONFIGURATION_WIKI_ROOM_MOD_WRITE_ACCESS_VALUE"]["de"] = "nur Moderatoren dürfen schreiben, normale Teilnehmende dürfen nur lesen";
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX"]["de"] = "Login-Box";
 $message["COMMON_CONFIGURATION_WIKI_SHOW_LOGIN_BOX_VALUE"]["de"] = "Die CommSy Login-Box im Wiki anzeigen";
 $message["COMMON_CONFIGURATION_WIKI_USE_COMMSY_LOGIN_VALUE"]["de"] = "Zusätzlich die CommSy-Kennungen dieses Raumes zum Anmelden am Wiki verwenden. Es werden außerdem die Wiki-Benutzer &quot;admin&quot;, &quot;edit&quot; und &quot;read&quot; mit den oben gesetzten Passwörten angelegt.";

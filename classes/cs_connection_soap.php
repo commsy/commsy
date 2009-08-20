@@ -1859,6 +1859,9 @@ class cs_connection_soap {
       $result = 'notAuthenticated';
       $session_id = $this->_encode_input($session_id);
       if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setCurrentContextID($context_id);
+         $context_item = $this->_environment->getCurrentContextItem();
+
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
@@ -1866,23 +1869,21 @@ class cs_connection_soap {
          $user_list = $user_manager->get();
          if ( $user_list->getCount() >= 1 ) {
             $user_item = $user_list->getFirst();
-            if ( $user_item->getStatus() == 3 ){
+            if ( $user_item->isModerator() ){
                $result = 'moderator';
             }
-            if ( $user_item->getStatus() == 2 ) {
-               $result = 'user';
+            if ( $user_item->isUser() ) {
+               if ( $context_item->isWikiRoomModWriteAccess() ) {
+                  $result = 'read';
+               } else {
+                  $result = 'user';
+               }
             }
-            if ( $user_item->getStatus() == 1 ) {
-               $result = 'notAuthenticated';
+         } else {
+            if ( $context_item->isWikiPortalReadAccess() ) {
+               $result = 'read';
             }
          }
-//	        else {
-//				$this->_environment->setCurrentContextID($context_id);
-//				$context_item = $this->_environment->getCurrentContextItem();
-//				if($context_item->WikiPortalReadAccess() == '1'){
-//					$result = 'read';
-//	            }
-//	        }
       } else {
          $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
          $info_text = 'session id ('.$session_id.') is not valid';
