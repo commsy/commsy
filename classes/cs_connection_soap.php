@@ -1864,45 +1864,46 @@ class cs_connection_soap {
          $this->_environment->setCurrentContextID($context_id);
          $context_item = $this->_environment->getCurrentContextItem();
 
-         $user_manager = $this->_environment->getUserManager();
-         $user_manager->setContextLimit($context_id);
-         $user_manager->setUserIDLimit($user_id);
-         $user_manager->setAuthSourceLimit($auth_source);
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         if ( $user_list->getCount() >= 1 ) {
-            $user_item = $user_list->getFirst();
-            if ( $user_item->isModerator() ){
-               $result = 'moderator';
-            } elseif ( $user_item->isUser() ) {
-               if ( $context_item->isWikiRoomModWriteAccess() ) {
-                  $result = 'read';
-               } else {
-                  $result = 'user';
-               }
-            }
-         } else {
-            if ( $context_item->isWikiPortalReadAccess()
-                 and !empty($auth_source)
-                 and !empty($user_id)
-               ) {
-               $portal_id = $session->getValue('commsy_id');
-               $user_manager->setContextLimit($portal_id);
-               $user_manager->setUserIDLimit($user_id);
-               $user_manager->setAuthSourceLimit($auth_source);
-               $user_manager->select();
-               $user_list = $user_manager->get();
-               if ( $user_list->getCount() == 1 ) {
-                  $user_item = $user_list->getFirst();
-                  if ( $user_item->isUser() ) {
+         if ( !empty($auth_source)
+              and !empty($user_id)
+            ) {
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setContextLimit($context_id);
+            $user_manager->setUserIDLimit($user_id);
+            $user_manager->setAuthSourceLimit($auth_source);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if ( $user_list->getCount() >= 1 ) {
+               $user_item = $user_list->getFirst();
+               if ( $user_item->isModerator() ){
+                  $result = 'moderator';
+               } elseif ( $user_item->isUser() ) {
+                  if ( $context_item->isWikiRoomModWriteAccess() ) {
                      $result = 'read';
+                  } else {
+                     $result = 'user';
+                  }
+               }
+            } elseif ( $context_item->isWikiPortalReadAccess() ) {
+               $portal_id = $session->getValue('commsy_id');
+               if ( !empty($portal_id) ) {
+                  $user_manager->setContextLimit($portal_id);
+                  $user_manager->setUserIDLimit($user_id);
+                  $user_manager->setAuthSourceLimit($auth_source);
+                  $user_manager->select();
+                  $user_list = $user_manager->get();
+                  if ( $user_list->getCount() == 1 ) {
+                     $user_item = $user_list->getFirst();
+                     if ( $user_item->isUser() ) {
+                        $result = 'read';
+                     }
                   }
                }
             }
+            unset($user_manager);
+            unset($user_list);
+            unset($user_item);
          }
-         unset($user_manager);
-         unset($user_list);
-         unset($user_item);
       } else {
          $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
          $info_text = 'session id ('.$session_id.') is not valid';
