@@ -266,7 +266,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $check_user = false;
       $add_hidden = false;
       $ref_item = $this->_getRefItem();
-      if ( $ref_item->isA(CS_LABEL_TYPE)
+      if ( is_object($ref_item) and $ref_item->isA(CS_LABEL_TYPE)
            and $ref_item->getLabelType() == CS_GROUP_TYPE
          ) {
          if ( $ref_item->isGroupRoomActivated() ) {
