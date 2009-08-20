@@ -1859,6 +1859,7 @@ class cs_connection_soap {
       if ($this->_isSessionValid($session_id)) {
          $this->_environment->setSessionID($session_id);
          $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
          $auth_source = $session->getValue('auth_source');
          $this->_environment->setCurrentContextID($context_id);
          $context_item = $this->_environment->getCurrentContextItem();
