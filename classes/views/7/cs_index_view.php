@@ -1332,7 +1332,7 @@ EOD;
             $html_text .= '<span class="infocolor">'.getMessage('COMMON_USER').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            if ($params['selgroup'] == '-1'){
+            if ($params['seluser'] == '-1'){
                $html_text .= '<span><a title="'.getMessage('COMMON_NOT_LINKED').'">'.getMessage('COMMON_NOT_LINKED').'</a></span>';
             }else{
                $user_manager = $this->_environment->getUserManager();
