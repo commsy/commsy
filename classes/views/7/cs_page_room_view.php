@@ -1071,6 +1071,27 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</h2>'.LF;
          $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('USER_DELETE_FORM_DESCRIPTION');
          $html .= '</p>'.LF;
+      } elseif ( $this->_environment->getCurrentModule() == 'group'
+                 and $this->_environment->getCurrentFunction() == 'detail'
+               ) {
+         $iid = $this->_environment->getValueOfParameter('iid');
+         $group_manager = $this->_environment->getGroupManager();
+         $group_item = $group_manager->getItem($iid);
+         if ( $group_item->isGroupRoomActivated() ) {
+            $title = $this->_translator->getMessage('COMMON_DELETE_GROUP_WITH_ROOM_TITLE');
+            $desc = $this->_translator->getMessage('COMMON_DELETE_GROUP_WITH_ROOM_DESC');
+            $desc .= BRLF.BRLF.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION');
+         } else {
+            $title = $this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');
+            $desc = $this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION');
+         }
+         $html .= '<h2>'.$title.'</h2>'.LF;
+         $html .= '<p style="text-align:left;">'.$desc.'</p>'.LF;
+         $user_item = $this->_environment->getCurrentUserItem();
+         if( $user_item->isModerator() ) {
+            $html .= '<p style="text-align:left;">'.$this->_translator->getMessage('COMMON_DELETE_BOX_DESCRIPTION_MODERATOR');
+            $html .= '</p>'.LF;
+         }
       }else{
          $user_item = $this->_environment->getCurrentUserItem();
          $html .= '<h2>'.$this->_translator->getMessage('COMMON_DELETE_BOX_TITLE');

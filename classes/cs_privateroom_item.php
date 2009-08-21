@@ -1177,6 +1177,36 @@ class cs_privateroom_item extends cs_room_item {
          unset($room_manager);
          unset($current_user_item);
       }
+
+      // remove first ---- and clean grouprooms
+      if ( !empty( $retour ) ) {
+         $retour2 = new cs_list();
+         $room_item = $retour->getFirst();
+         $room_id = 0;
+
+         $sep = true;
+         while ($room_item) {
+            if ( $room_item->getItemID() == -1 ) {
+               if ( !$sep ) {
+                  $retour2->add($room_item);
+               }
+            } else {
+               if ( !$room_item->isGroupRoom() ) {
+                  $sep = false;
+                  $room_id = $room_item->getItemID();
+                  $retour2->add($room_item);
+               } elseif ( $room_id == $room_item->getLinkedProjectItemID() ) {
+                  $sep = false;
+                  $retour2->add($room_item);
+               }
+            }
+            $room_item = $retour->getNext();
+         }
+         $retour = $retour2;
+         unset($retour2);
+      }
+      // remove first ---- and clean grouprooms
+
       return $retour;
    }
 

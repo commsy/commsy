@@ -582,9 +582,6 @@ class cs_labels_manager extends cs_manager {
            trigger_error('Problems selecting one label.',E_USER_WARNING);
         } elseif ( !empty($result[0]) ) {
            $label = $this->_buildItem($result[0]);
-        } else {
-           include_once('functions/error_functions.php');
-           trigger_error('Label ['.$label_id.'] does not exists.',E_USER_WARNING);
         }
      }
      return $label;

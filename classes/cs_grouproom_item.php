@@ -1318,6 +1318,9 @@ class cs_grouproom_item extends cs_room_item {
          $default_sender_address = '@';
       }
       $current_portal = $this->_environment->getCurrentPortalItem();
+      if ( !isset($current_portal) ) {
+         $current_portal = $this->_environment->getServerItem();
+      }
       $current_user = $this->_environment->getCurrentUserItem();
       $moderator_list = $room_item->getModeratorList();
 
