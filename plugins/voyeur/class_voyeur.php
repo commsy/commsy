@@ -106,7 +106,7 @@ class class_voyeur extends cs_plugin {
 
          global $c_commsy_domain, $c_commsy_url_path;
          $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
-         $url_to_zip .= '/'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$url_params);
+         $url_to_zip .= '/'._curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$url_params);
          if ( strstr($url,'?') ) {
             $url .= '&';
          } else {
