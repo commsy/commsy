@@ -1293,6 +1293,7 @@ EOD;
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             unset($new_params['search']);
+            unset($new_params['selrestriction']);
             $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
             $html_text .='</td>'.LF;
             $html_text .='</tr>'.LF;

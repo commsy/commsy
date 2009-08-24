@@ -63,16 +63,20 @@ class cs_material_index_view extends cs_index_view {
    }
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
+      $html = '';
+      /*
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
       $selected_value = $this->_attribute_limit;
       $width = '235';
       $context_item = $this->_environment->getCurrentContextItem();
-      $html = '';
-/*      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
+      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
       $html .= $this->_translator->getMessage('COMMON_RESTRICT_SEARCH').'<br />'.LF;
-      if (isset($this->_search_text) and !empty($this->_search_text) ){
+      if ( isset($this->_search_text)
+           and !empty($this->_search_text)
+           and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
+         ) {
          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       }else{
          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1">'.LF;
@@ -94,7 +98,8 @@ class cs_material_index_view extends cs_index_view {
       }
       $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
       $html .= '   </select>'.LF;
-      $html .='</div>';*/
+      $html .='</div>';
+      */
       return $html;
    }
 

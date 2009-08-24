@@ -1553,12 +1553,16 @@ var $_sel_rubric = '';
          $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
          $new_params = $params;
          $new_params['selrubric'] = 'all';
+         unset($new_params['selrestriction']);
          $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;
       }
-      if ( isset($params['selrestriction']) and !empty($params['selrestriction']) and $params['selrestriction'] != 'all'  ){
+      if ( isset($params['selrestriction'])
+           and !empty($params['selrestriction'])
+           and $params['selrestriction'] != 'all'
+         ) {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
@@ -1582,6 +1586,27 @@ var $_sel_rubric = '';
          $new_params = $params;
          $new_params['selrestriction'] = 'all';
          $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
+      } elseif ( mb_strtoupper($params['selrubric'], 'UTF-8') == mb_strtoupper(type2module(CS_MATERIAL_TYPE), 'UTF-8') ) {
+         $width = '150';
+         $html_text = '<tr>'.LF;
+         $html_text .='<td>'.LF;
+         $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.$this->_translator->getMessage('SEARCH_FIELD_RESTRICTION').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         $html_text .= '   <select style="width: '.$width.'px; font-size:10pt; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" name="selrestriction" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html_text .= '      <option value="0"';
+         $html_text .= ' selected="selected"';
+         $html_text .= '>*'.$this->_translator->getMessage('MATERIAL_FULL_SEARCH').'</option>'.LF;
+         $html_text .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
+         $html_text .= '      <option value="1"';
+         $html_text .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_TITLE').'</option>'.LF;
+         $html_text .= '      <option value="2"';
+         $html_text .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
+         $html_text .= '   </select>'.LF;
+         $html_text .= '   <input type="hidden" name="selrubric" value="material" />'.LF;
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;

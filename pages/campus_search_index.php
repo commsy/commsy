@@ -129,8 +129,6 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $seltag_array = array();
    }
 
-
-
    // Find current restriction selection
    if ( isset($_POST['selrestriction']) ) {
       if ($_POST['selrestriction'] == 1){
@@ -162,6 +160,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
       $selfiles = '';
    }
 }
+
 $context_item = $environment->getCurrentContextItem();
 $current_room_modules = $context_item->getHomeConf();
 if ( !empty($current_room_modules) ){
@@ -230,8 +229,6 @@ if ( !empty($selrubric) and $selrubric != 'all' and $selrubric != 'campus_search
    $rubric_array = array();
    $rubric_array[] = $selrubric;
 }
-
-
 
 // Find current sel_activating_status selection
 if ( isset($_GET['selactivatingstatus']) and $_GET['selactivatingstatus'] !='-2') {
