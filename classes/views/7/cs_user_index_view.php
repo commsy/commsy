@@ -268,7 +268,7 @@ class cs_user_index_view extends cs_room_index_view {
 
 
    function _getItemPicture($item){
-       $html = '';
+      $html = '';
       $picture = $item->getPicture();
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
