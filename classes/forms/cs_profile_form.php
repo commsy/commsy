@@ -238,17 +238,17 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addTextField('homepage','',$this->_translator->getMessageInLang($this->_language,'USER_HOMEPAGE'),'','','30',false);
          $this->_form->combine('horizontal');
          $this->_form->addCheckbox('homepage_change_all',$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),false,$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),$this->_translator->getMessageInLang($this->_language,'USER_CHANGE_IN_ALL_ROOMS'),'');
-         $this->_form->addTextField('icq','',$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS'),'','','18',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_ICQ').':&nbsp;&nbsp;&nbsp;<span style="font-size: 13px;">&nbsp;</span>','',false,'');
+         $this->_form->addTextField('icq','',$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS'),'','','15',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_ICQ').':&nbsp;&nbsp;&nbsp;<span style="font-size: 13px;">&nbsp;</span>','',false,'');
          $this->_form->combine('horizontal');
          /*
          $this->_form->addTextField('jabber','',$this->_translator->getMessageInLang($this->_language,'USER_JABBER'),'','','19',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessage('USER_JABBER').':','',false,'');
          $this->_form->combine();
          */
-         $this->_form->addTextField('msn','',$this->_translator->getMessageInLang($this->_language,'USER_MSN'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_MSN').':','',false,'');
+         $this->_form->addTextField('msn','',$this->_translator->getMessageInLang($this->_language,'USER_MSN'),'','','15',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_MSN').':','',false,'');
          $this->_form->combine();
-         $this->_form->addTextField('skype','',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE'),'','','18',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE').':<span style="font-size: 1px;">&nbsp;</span>','',false,'');
+         $this->_form->addTextField('skype','',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE'),'','','15',false,'','','','left',$this->_translator->getMessageInLang($this->_language,'USER_SKYPE').':<span style="font-size: 1px;">&nbsp;</span>','',false,'');
          $this->_form->combine('horizontal');
-         $this->_form->addTextField('yahoo','',$this->_translator->getMessageInLang($this->_language,'USER_YAHOO'),'','','18',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_YAHOO').':','',false,'');
+         $this->_form->addTextField('yahoo','',$this->_translator->getMessageInLang($this->_language,'USER_YAHOO'),'','','15',false,'','','','left','&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$this->_translator->getMessageInLang($this->_language,'USER_YAHOO').':','',false,'');
          $this->_form->combine();
          $this->_form->addText('messenger_text',$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS'),$this->_translator->getMessageInLang($this->_language,'USER_MESSENGER_NUMBERS_TEXT'));
          $this->_form->combine('horizontal');
@@ -301,11 +301,13 @@ class cs_profile_form extends cs_rubric_form {
             $current_context_item = $this->_environment->getCurrentContextItem();
             $this->_form->addText('delete_text_room','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_ROOM',$current_context_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM')));
             unset($current_context_item);
-            $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM'));
+            $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON_ROOM'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON_ROOM'));
             $this->_form->addEmptyline(true);
+            $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
+         } else {
+            $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC_PORTAL',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
          }
-         $this->_form->addText('delete_text','',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_DESC',$current_portal_item->getTitle(),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle())));
-         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle()));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_LOCK_BUTTON',$current_portal_item->getTitle()),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_REALLY_DELETE_BUTTON',$current_portal_item->getTitle()));
          unset($current_portal_item);
       }else{
 
@@ -349,7 +351,7 @@ class cs_profile_form extends cs_rubric_form {
 
          // buttons
          $this->_form->addEmptyline();
-         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),'',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON'));
       }
    }
 

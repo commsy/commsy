@@ -326,7 +326,7 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentModule() == 'material_admin'
                or (isset($_GET['show_profile']) and $_GET['show_profile'] == 'yes'))
                and !$this->_is_print_page
-      ){
+         ){
          $retour .= '   <link media="screen" rel="stylesheet" type="text/css" href="css/commsy_form_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
       }
 
@@ -1936,16 +1936,6 @@ class cs_page_view extends cs_view {
                   }
                   $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                   unset($current_portal_item);
-                  if ((isset($current_auth_source_item) and $current_auth_source_item->allowChangePassword()) or $this->_current_user->isRoot()
-                     ) {
-                      $params = array();
-                      $params = $this->_environment->getCurrentParameterArray();
-                      $params['cs_modus'] = 'password_change';
-                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                  } else {
-                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_AUTH_PASSWORD_SET').'</span>'.BRLF;
-                  }
-                  unset($params['cs_modus']);
 
                   // @segment-end 89153
                   // @segment-begin 42457 no-cs_modus/user-status><0:links-change_account/my_profile

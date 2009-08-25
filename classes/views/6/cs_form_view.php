@@ -484,7 +484,9 @@ class cs_form_view extends cs_view {
             }
          }
          $html .= '                   '.$this->_getButtonAsHTML($form_element['labelDelete'],$form_element['name'],'',$form_element['is_disabled'],$style).'&nbsp;'."\n";
-      }else{
+      }elseif ( empty($_GET['show_profile'])
+                or $_GET['show_profile'] != 'yes'
+              ) {
          if ($this->_special_color) {
             $html .= '                <td  style="padding-top:2px; border-bottom: none; text-align: right;">'."\n";
          } else {
