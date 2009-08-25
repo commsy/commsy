@@ -197,6 +197,7 @@ div.sub_item_main{
    padding:0px;
    background-color: #FFFFFF;
    border: 1px solid <?php echo($color['tabs_background'])?>;
+   width: 100%;
 }
 
 #detail_headline{

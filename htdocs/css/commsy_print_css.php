@@ -108,6 +108,7 @@ img {
    padding:0px;
    background-color: #FFFFFF;
    border: 1px solid #7E7E7E;
+   width: 100%;
 }
 
 #detail_annotation_headline{

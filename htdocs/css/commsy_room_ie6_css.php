@@ -57,7 +57,8 @@ div.right_box_main{
 }
 
 #detail_annotations .annotation_creator_information{
-	font-size: 10pt;
+   font-size: 10pt;
+   width: 100%;
 }
 
 #detail_annotations a{
@@ -65,7 +66,7 @@ div.right_box_main{
 }
 
 #creator_information_read_text{
-	font-size: 10pt;
+   font-size: 10pt;
 }
 
 #list_info_table{
@@ -79,11 +80,11 @@ div.right_box_main{
 }
 
 #detail_content td.key, #detail_content td.value{
-	font-size:10pt;
+   font-size:10pt;
 }
 
 #commsy_panels span.infocolor{
-	font-size:10pt;
+   font-size:10pt;
 }
 
 #discussionSummary td{
@@ -91,7 +92,7 @@ div.right_box_main{
 }
 
 a.discarticleCreatorInformation{
-	font-size:10pt;
+   font-size:10pt;
 }
 
 #configuration_form{
@@ -103,5 +104,5 @@ a.discarticleCreatorInformation{
 }
 
 .handle_width{
-	font-size:10pt;
+   font-size:10pt;
 }
