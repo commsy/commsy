@@ -774,7 +774,20 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .='<table style="width:100%;" summary="Layout">'.LF;
                $html .='<tr>'.LF;
                $position_length =  count(explode('.',$current_item->getPosition()));
-               $px = ($position_length-1)*20;
+               if ( $position_length < 6 ) {
+                  $px = ($position_length-1)*20;
+               } elseif ( $position_length < 11 ) {
+                  $px = 5*20;
+                  $px += ($position_length-6)*15;
+               } elseif ( $position_length < 14 ) {
+                  $px = 5*20;
+                  $px += 5*15;
+                  $px += ($position_length-11)*10;
+               } else {
+                  $px = 5*20;
+                  $px += 5*15;
+                  $px += 3*10;
+               }
                if ($px > 0) {
                   $html .='<td style="width:'.$px.'px;">&nbsp;'.LF;
                   $html .='</td>'.LF;
@@ -808,6 +821,25 @@ class cs_discussion_detail_view extends cs_detail_view {
                   }
                }
                $number = substr($number,2);
+               if ( $position_length > 10 and !empty($number) ) {
+                  $range = floor($position_length/3.5)-1;
+                  $number_array = explode('.',$number);
+                  $middle = count($number_array)/2;
+                  if ( $middle % 2 ) {
+                     $middle -= 0.5;
+                  }
+                  $number = '';
+                  $print = false;
+                  foreach ($number_array as $key => $value) {
+                     if ( $key < $middle-$range or $key > $middle+$range ) {
+                        $number .= $value.'.';
+                     } elseif ( !$print ) {
+                        $number .= '...';
+                        $print = true;
+                     }
+                  }
+                  $number = substr($number,0,strlen($number)-1);
+               }
                $html .= '<h3 class="subitemtitle">'.$this->_getSubItemTitleAsHTML($current_item, $number);
                $html .= '</h3>'.LF;
                $html .='</div>'.LF;

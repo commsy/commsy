@@ -69,15 +69,15 @@ class cs_discarticle_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('DISCARTICLE_EDIT');
+         $this->_headline = $this->_translator->getMessage('DISCARTICLE_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('DISCARTICLE_EDIT');
+            $this->_headline = $this->_translator->getMessage('DISCARTICLE_EDIT');
          } else {
-            $this->_headline = getMessage('DISCARTICLE_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('DISCARTICLE_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('DISCARTICLE_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('DISCARTICLE_ENTER_NEW');
       }
 
       // files
@@ -114,12 +114,8 @@ class cs_discarticle_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('discussion_id','');
       $this->_form->addHidden('ref_position','');
-      $this->_form->addTitleField('subject','',getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,45,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('DISCUSSION_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),59);
+      $this->_form->addTitleField('subject','',$this->_translator->getMessage('COMMON_SUBJECT'),'',200,45,true);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('DISCUSSION_ARTICLE'),'',59);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
@@ -141,11 +137,11 @@ class cs_discarticle_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -174,10 +170,10 @@ class cs_discarticle_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
       // buttons
       $id = 0;
@@ -189,9 +185,9 @@ class cs_discarticle_form extends cs_rubric_form {
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('DISCARTICLE_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('DISCARTICLE_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('DISCARTICLE_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('DISCARTICLE_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 

@@ -2233,7 +2233,10 @@ class cs_form_view extends cs_view {
       $html .= '<!-- BEGIN OF FORM-VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       foreach ($form_element_array as $form_element) {
-         if ( isset($form_element['type']) and $form_element['type'] == 'titlefield' and $form_element['display']) {
+         if ( isset($form_element['type'])
+              and $form_element['type'] == 'titlefield'
+              and $form_element['display']
+            ) {
             $html .= '<div id="form_title">';
             if (isset($form_element_array[0]['label'])) {
                if (isset($form_element_array[0]['failure'])) {

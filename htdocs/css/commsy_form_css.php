@@ -181,7 +181,7 @@ span.key {
 }
 
 #form table{
-	border-collapse:collapse;
+   border-collapse:collapse;
 }
 
 #form tr.textarea, td {
@@ -273,7 +273,7 @@ span.formcounter{
 }
 
 #MySortable{
-	 list-style: none;
+    list-style: none;
     padding-left:0px;
     margin-left:0px;
     width:400px;
