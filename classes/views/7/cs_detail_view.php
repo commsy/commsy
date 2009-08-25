@@ -1509,7 +1509,8 @@ class cs_detail_view extends cs_view {
    }
 
    function _getItemPicture($item){
-    $picture = $item->getPicture();
+      $picture = $item->getPicture();
+      $linktext = '';
       if ( !empty($picture) ) {
          $disc_manager = $this->_environment->getDiscManager();
          if ($disc_manager->existsFile($picture)){
@@ -1531,6 +1532,11 @@ class cs_detail_view extends cs_view {
          $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
       }else{
          $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" style="vertical-align:middle;  width: 60px;"/>'.LF;
+         if ($item->isA(CS_USER_TYPE)) {
+            $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
+         } else {
+            $linktext = $this->_translator->getMessage('USER_PICTURE_UPLOADFILE');
+         }
       }
       $params = array();
       $params['iid'] = $item->getItemID();
@@ -1539,7 +1545,7 @@ class cs_detail_view extends cs_view {
                            'detail',
                            $params,
                            $html,
-                           '','', '', '', '', '', '', '',
+                           $linktext,'', '', '', '', '', '', '',
                            '');
       return $html;
    }

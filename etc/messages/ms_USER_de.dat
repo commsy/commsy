@@ -170,6 +170,7 @@ $message["USER_PASSWORD_NEW"]["de"] = "neues Passwort";
 $message["USER_PASSWORD_NEW2"]["de"] = "neues Passwort wiederholen";
 $message["USER_PASSWORD_OLD"]["de"] = "aktuelles Passwort";
 $message["USER_PICTURE_FILE_DESC"]["de"] = "Hier können Sie ein persönliches Bild hinzufügen.";
+$message["USER_PICTURE_NO_PICTURE"]["de"] = "%1 hat leider kein Bild in seinem/ihren persönlichen Profil hinterlegt.";
 $message["USER_PICTURE_UPLOADFILE"]["de"] = "Bild";
 $message["USER_POSITION"]["de"] = "Position/Funktion";
 $message["USER_PREFERENCES"]["de"] = "Einstellungen";

@@ -212,7 +212,8 @@ class cs_user_detail_view extends cs_detail_view {
          $html .='</td>'.LF;
       }else{
          $html .='<td style="vertical-align:top; width: 150px;">'.LF;
-         $html .= '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" class="portrait2" />'.LF;
+         $linktext = $this->_translator->getMessage('USER_PICTURE_NO_PICTURE',str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName())));
+         $html .= '<img alt="'.getMessage('USER_PICTURE_UPLOADFILE').'" src="images/commsyicons/common/user_unknown.gif" class="portrait2" title="'.$linktext.'"/>'.LF;
          $html .='</td>'.LF;
       }
       $html .='</tr>'.LF;
