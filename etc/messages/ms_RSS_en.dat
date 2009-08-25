@@ -13,6 +13,7 @@ $message["RSS_NEW_MATERIAL_TITLE"]["en"] = "Material: %1";
 $message["RSS_NEW_PERSON_DESCRIPTION"]["en"] = "The information about %1 has been changed.";
 $message["RSS_NEW_PERSON_TITLE"]["en"] = "Person: %1";
 $message["RSS_NEW_SECTION_TITLE"]["en"] = "Section &quot;%1&quot; to material &quot;%2&quot;";
+$message["RSS_NEW_STEP_TITLE"]["en"] = "Step &quot;%1&quot; to todo &quot;%2&quot;";
 $message["RSS_NEW_TODO_TITLE"]["en"] = "Task: %1 (due date %2)";
 $message["RSS_NEW_TOPIC_TITLE"]["en"] = "%_TOPIC_SUB_NOMS_BIG: %1";
 $message["RSS_NOT_ALLOWED"]["en"] = "Please login with your CommSy user ID!";

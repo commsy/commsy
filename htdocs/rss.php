@@ -597,6 +597,38 @@ if ( isset($_GET['cid']) ) {
             unset($item);
             unset($user_item);
             break;
+      case 'step':
+            $manager = $environment->getManager(CS_STEP_TYPE);
+            $item = $manager->getItem($row['item_id']);
+            $linked_item = $item->getLinkedItem();
+            $title = '';
+            if ( isset($linked_item) ) {
+               $title = $translator->getMessage('RSS_NEW_STEP_TITLE',$item->getTitle(),$linked_item->getTitle());
+            }
+            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+            $user_item = $item->getModificatorItem();
+            $fullname = $user_item->getFullName();
+            $email = $user_item->getEmail();
+            if ( $context_item->isCommunityRoom() ) {
+               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               }
+            }
+            if ( !$user_item->isEmailVisible() ) {
+               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            }
+            $author = $email.' ('.$fullname.')';
+            unset($email);
+            unset($fullname);
+            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$item->getToDoID().'#anchor'.$item->getItemID();
+            $date = date('r',strtotime($item->getModificationDate()));
+            unset($manager);
+            $last_section_item = $item;
+            unset($item);
+            unset($user_item);
+            unset($linked_item);
+            break;
       default:
             $title = '';
             $description = '';

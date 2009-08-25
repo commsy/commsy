@@ -13,6 +13,7 @@ $message["RSS_NEW_MATERIAL_TITLE"]["de"] = "Material: %1";
 $message["RSS_NEW_PERSON_DESCRIPTION"]["de"] = "Die Daten der Person %1 wurden verändert.";
 $message["RSS_NEW_PERSON_TITLE"]["de"] = "Person: %1";
 $message["RSS_NEW_SECTION_TITLE"]["de"] = "Abschnitt &quot;%1&quot; zum Material &quot;%2&quot;";
+$message["RSS_NEW_STEP_TITLE"]["de"] = "Arbeitsschritt &quot;%1&quot; zur Aufgabe &quot;%2&quot;";
 $message["RSS_NEW_TODO_TITLE"]["de"] = "Aufgabe: %1 (fällig am %2)";
 $message["RSS_NEW_TOPIC_TITLE"]["de"] = "%_TOPIC_SUB_NOMS_BIG: %1";
 $message["RSS_NOT_ALLOWED"]["de"] = "Bitte melden Sie sich mit Ihrer CommSy-Kennung an!";
