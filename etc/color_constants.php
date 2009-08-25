@@ -849,4 +849,76 @@ $cs_color['SCHEMA_23']['repeat_background']          = 'xy';
 /*****************************************************************/
 
 
+//SCHEMA 24: Eiszeit
+/*****************************************************************/
+$cs_color['SCHEMA_24']['schema']                     = 'SCHEMA_24';
+$cs_color['SCHEMA_24']['tabs_background']            = '#72B1EF';
+$cs_color['SCHEMA_24']['tabs_focus']                 = '#9AE9F3';
+$cs_color['SCHEMA_24']['tabs_title']                 = '#FBFDFD';
+$cs_color['SCHEMA_24']['content_background']         = '#72B1EF';
+$cs_color['SCHEMA_24']['boxes_background']           = '#9AE9F3';
+$cs_color['SCHEMA_24']['hyperlink']                  = '#FAFCFE';
+$cs_color['SCHEMA_24']['list_entry_even']            = '#9AE9F3';
+
+$cs_color['SCHEMA_24']['table_background']           = $cs_color['SCHEMA_24']['content_background'];
+$cs_color['SCHEMA_24']['headline_text']              = $cs_color['SCHEMA_24']['tabs_title'];
+$cs_color['SCHEMA_24']['help_background']            = $cs_color['SCHEMA_24']['content_background'];
+$cs_color['SCHEMA_24']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_24']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_24']['date_title']                 = '#666699';
+$cs_color['SCHEMA_24']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_24']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_24']['warning']                    = 'red';
+
+$cs_color['SCHEMA_24']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_24']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_24']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_24']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_24']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_24']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_24']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_24']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_24']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_24']['index_td_head_title']        = 'white';
+$cs_color['SCHEMA_24']['repeat_background']          = 'xy';
+/*****************************************************************/
+
+//SCHEMA 25: Ruhiges Grün
+/*****************************************************************/
+$cs_color['SCHEMA_25']['schema']                     = 'SCHEMA_25';
+$cs_color['SCHEMA_25']['tabs_background']            = '#aabf0a';
+$cs_color['SCHEMA_25']['tabs_focus']                 = '#65710c';
+$cs_color['SCHEMA_25']['tabs_title']                 = '#ffffff';
+$cs_color['SCHEMA_25']['content_background']         = '#efece2';
+$cs_color['SCHEMA_25']['boxes_background']           = '#ffffff';
+$cs_color['SCHEMA_25']['hyperlink']                  = '#333a00';
+$cs_color['SCHEMA_25']['list_entry_even']            = '#f7f7f7';
+
+$cs_color['SCHEMA_25']['table_background']           = $cs_color['SCHEMA_25']['content_background'];
+$cs_color['SCHEMA_25']['headline_text']              = $cs_color['SCHEMA_25']['tabs_title'];
+$cs_color['SCHEMA_25']['help_background']            = $cs_color['SCHEMA_25']['content_background'];
+$cs_color['SCHEMA_25']['list_entry_odd']             = '#FFFFFF';
+$cs_color['SCHEMA_25']['page_title']                 = '#000000';
+
+$cs_color['SCHEMA_25']['date_title']                 = '#666699';
+$cs_color['SCHEMA_25']['info_color']                 = '#7E7D7B';
+$cs_color['SCHEMA_25']['disabled']                   = '#B0B0B0';
+$cs_color['SCHEMA_25']['warning']                    = 'red';
+
+$cs_color['SCHEMA_25']['myarea_headline_background'] = '#CDCBC2';
+$cs_color['SCHEMA_25']['myarea_headline_title']      = 'white';
+$cs_color['SCHEMA_25']['myarea_title_backround']     = '#F7F7F7';
+$cs_color['SCHEMA_25']['myarea_content_backround']   = '#EFECE2';
+$cs_color['SCHEMA_25']['myarea_section_title']       = '#666666';
+$cs_color['SCHEMA_25']['portal_tabs_background']     = 'blue';
+$cs_color['SCHEMA_25']['portal_tabs_title']          = 'white';
+$cs_color['SCHEMA_25']['portal_tabs_focus']          = '#EC930D';
+$cs_color['SCHEMA_25']['portal_td_head_background']  = '#F7F7F7';
+$cs_color['SCHEMA_25']['index_td_head_title']        = 'white';
+#$cs_color['SCHEMA_25']['repeat_background']          = 'xy';
+/*****************************************************************/
+
+
+
 ?>
