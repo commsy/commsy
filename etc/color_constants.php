@@ -857,7 +857,7 @@ $cs_color['SCHEMA_24']['tabs_focus']                 = '#9AE9F3';
 $cs_color['SCHEMA_24']['tabs_title']                 = '#FBFDFD';
 $cs_color['SCHEMA_24']['content_background']         = '#72B1EF';
 $cs_color['SCHEMA_24']['boxes_background']           = '#9AE9F3';
-$cs_color['SCHEMA_24']['hyperlink']                  = '#FAFCFE';
+$cs_color['SCHEMA_24']['hyperlink']                  = '#3D8B8E';
 $cs_color['SCHEMA_24']['list_entry_even']            = '#9AE9F3';
 
 $cs_color['SCHEMA_24']['table_background']           = $cs_color['SCHEMA_24']['content_background'];
