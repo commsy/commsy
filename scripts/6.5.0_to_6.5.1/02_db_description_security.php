@@ -44,7 +44,6 @@ $table_array[] = 'section';
 $table_array[] = 'step';
 $table_array[] = 'todos';
 $table_array[] = 'user';
-
 include_once('functions/security_functions.php');
 
 foreach ( $table_array as $table ) {
@@ -85,6 +84,80 @@ foreach ( $table_array as $table ) {
                   $sql = 'UPDATE '.$table.' SET description = "'.addslashes($desc).'" WHERE item_id = "'.$row['item_id'].'";';
                   $success1 = $this->_select($sql);
                   $success = $success and $success1;
+                  $counter++;
+               }
+               $this->_updateProgressBar($count);
+            }
+         }
+      }
+      $this->_flushHTML(BRLF);
+   }
+   $this->_flushHTML('Changed '.$counter.' items.'.BRLF);
+   $this->_flushHTML(BRLF);
+}
+
+$table_array = array();
+$table_array[] = 'room';
+$table_array[] = 'room_privat';
+$table_array[] = 'portal';
+$table_array[] = 'server';
+foreach ( $table_array as $table ) {
+   $counter = 0;
+   $this->_flushHTML($table.BRLF);
+   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   if ( !empty($result[0]['count']) ) {
+      $count = $result[0]['count'];
+   } else {
+      $count = 0;
+   }
+   if ($count < 1) {
+      // nothing to do
+      $this->_flushHTML('nothing to do.'.BRLF);
+   } else {
+      // something to do
+      $this->_initProgressBar($count);
+      $interval = 100;
+      $i = 0;
+
+      while ( $i<$count ) {
+         $sql = 'SELECT item_id, extras FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         $i = $i + $interval;
+         $result = $this->_select($sql);
+         if ( !empty($result) ) {
+            foreach ( $result as $row ) {
+               $changed = false;
+               if ( !empty($row)
+                    and !empty($row['item_id'])
+                    and !empty($row['extras'])
+                  ) {
+                  $extra_array = mb_unserialize($row['extras']);
+                  $key_array = array();
+                  $key_array[] = 'DESCRIPTION';
+                  $key_array[] = 'AGBTEXTARRAY';
+                  $key_array[] = 'USAGE_INFO_TEXT';
+                  $key_array[] = 'USAGE_INFO_FORM';
+                  foreach ($key_array as $field) {
+                     if ( !empty($extra_array[$field])
+                          and is_array($extra_array[$field])
+                        ) {
+                        foreach ( $extra_array[$field] as $key => $value ) {
+                           if ( strstr($value,'<!-- KFC TEXT') ) {
+                              $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+                              $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+                              $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+                              $value = $fck_text.$value.$fck_text;
+                              $extra_array[$field][$key] = $value;
+                              $changed = true;
+                           }
+                        }
+                     }
+                  }
+                  if ($changed) {
+                     $extras = serialize($extra_array);
+                     $sql = 'UPDATE '.$table.' SET extras = "'.addslashes($extras).'" WHERE item_id = "'.$row['item_id'].'";';
+                     $success1 = $this->_select($sql);
+                     $success = $success and $success1;
+                  }
                   $counter++;
                }
                $this->_updateProgressBar($count);
