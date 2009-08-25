@@ -362,6 +362,16 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $environment->unsetSelectedLanguage();
             }
          }
+         $languages = $environment->getAvailableLanguageArray();
+         $description = $context_item->getDescriptionArray();
+         foreach ($languages as $language) {
+            if (!empty($_POST['description_'.$language])) {
+               $description[mb_strtoupper($language, 'UTF-8')] = $_POST['description_'.$language];
+            } else {
+               $description[mb_strtoupper($language, 'UTF-8')] = '';
+            }
+         }
+         $context_item->setDescriptionArray($description);
          $redirect = false;
          if ( !empty($_POST['design']) ) {
             if ( $_POST['design'] == 7 ) {
