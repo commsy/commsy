@@ -500,8 +500,13 @@ class cs_page_room_view extends cs_page_view {
       unset($session);
       $html .= '<div id="tabs_frame" >'.LF;
       $html .= '<div class="tabs">'.LF;
-      $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
-
+      if ( $this->_environment->getCurrentModule() == 'agb'
+           and $this->_environment->getCurrentFunction() == 'index'
+         ) {
+         $html .= '<div style="float:right; margin:0px; padding: 0px 2px 0px 0px;">'.LF;
+      } else {
+         $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
+      }
 
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();
@@ -528,6 +533,7 @@ class cs_page_room_view extends cs_page_view {
       unset($current_context_item);
 
       // Always show context sensitive help
+      /*
       $params = array();
       $params['module'] = $this->_module;
       $params['function'] = $this->_function;
@@ -536,18 +542,19 @@ class cs_page_room_view extends cs_page_view {
                              '?', '', 'help', '', '',
                              'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
       unset($params);
+      */
       $html .= '</div>'.LF;
-      $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $text = '&nbsp;';
       if ( $this->_environment->getCurrentModule() == 'agb'
            and $this->_environment->getCurrentFunction() == 'index'
          ) {
          $text .= $this->_translator->getMessage('AGB_CONFIRMATION');
+         $html .= '<div style="margin:0px; padding: 2px 0px 2px 0px;">'.LF;
+      } else {
+         $html .= '<div style="margin:0px; padding:0px;">'.LF;
       }
       $html .= '<span class="navlist">'.$text.'</span>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '<!-- END TABS -->'.LF;
@@ -605,53 +612,51 @@ class cs_page_room_view extends cs_page_view {
       }
       if ($context_item->showTitle()){
          $html .= '<h1 '.$size.'>'.$this->_text_as_html_short($title).'</h1>'.LF;
-         $html .= '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">';
       }else{
          $html .= '<h1 '.$size.'>'.'&nbsp;'.'</h1>'.LF;
-         $html .= '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">';
       }
-
-      $breadcrump = '';
-      $params = array();
-      if ($current_user->isRoot()){
-         $server_item = $this->_environment->getServerItem();
-         $breadcrump.= ahref_curl($server_item->getItemID(),'home','index',$params,$this->_text_as_html_short($server_item->getTitle()),'','','','','','','style="color:#800000"');
-         $breadcrump .= ' &gt; ';
-      }
-      $portal_item = $this->_environment->getCurrentPortalItem();
-
-      if ($this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()){
-         $params['room_id'] = $context_item->getItemID();
-      }
-      $breadcrump.= ahref_curl($portal_item->getItemID(),'home','index',$params,$this->_text_as_html_short($portal_item->getTitle()),'','','','','','','style="color:#800000"');
-      if ($this->_environment->inProjectRoom()){
-         $community_list = $context_item->getCommunityList();
-         $community_item = $community_list->getFirst();
-         if (!empty($community_item)){
-            $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
-         }
-         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
-      }elseif($this->_environment->inGroupRoom()){
-         $project_item = $context_item->getLinkedProjectItem();
-         $community_list = $project_item->getCommunityList();
-         $community_item = $community_list->getFirst();
-         if (!empty($community_item)){
-             $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
-         }
-         $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$this->_text_as_html_short($project_item->getTitle()),'','','','','','','style="color:#800000"');
-         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
-      }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
-         $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
-      }
-      $html .= '<span style="height: 20px;font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
       $html .= '</td>';
       $html .= '</tr>';
+
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+         $html .= '<tr>';
+         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">';
+         $breadcrump = '';
+         $params = array();
+         if ($current_user->isRoot()){
+            $server_item = $this->_environment->getServerItem();
+            $breadcrump.= ahref_curl($server_item->getItemID(),'home','index',$params,$this->_text_as_html_short($server_item->getTitle()),'','','','','','','style="color:#800000"');
+            $breadcrump .= ' &gt; ';
+         }
+         $portal_item = $this->_environment->getCurrentPortalItem();
+
+         if ($this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()){
+            $params['room_id'] = $context_item->getItemID();
+         }
+         $breadcrump.= ahref_curl($portal_item->getItemID(),'home','index',$params,$this->_text_as_html_short($portal_item->getTitle()),'','','','','','','style="color:#800000"');
+         if ($this->_environment->inProjectRoom()){
+            $community_list = $context_item->getCommunityList();
+            $community_item = $community_list->getFirst();
+            if (!empty($community_item)){
+               $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
+            }
+            $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
+         }elseif($this->_environment->inGroupRoom()){
+            $project_item = $context_item->getLinkedProjectItem();
+            $community_list = $project_item->getCommunityList();
+            $community_item = $community_list->getFirst();
+            if (!empty($community_item)){
+                $breadcrump.= ' &gt; '.ahref_curl($community_item->getItemID(),'home','index','',$this->_text_as_html_short($community_item->getTitle()),'','','','','','','style="color:#800000"');
+            }
+            $breadcrump.= ' &gt; '.ahref_curl($project_item->getItemID(),'home','index','',$this->_text_as_html_short($project_item->getTitle()),'','','','','','','style="color:#800000"');
+            $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
+         }elseif($this->_environment->inCommunityRoom() or $this->_environment->inPrivateRoom()){
+            $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
+         }
+         $html .= '<span style="height: 20px;font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
+         $html .= '</td>';
+         $html .= '</tr>';
+      }
       $html .= '</table>';
       return $html;
    }
@@ -744,47 +749,56 @@ class cs_page_room_view extends cs_page_view {
          if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
             $html_id = 'id="ie"';
          }
-         $html .= '<div '.$html_id.' class="commsy_body" style="padding:0px; margin:0px;">'.LF;
+         $style = '';
+         if ( $this->_environment->getCurrentModule() == 'agb'
+              and $this->_environment->getCurrentFunction() == 'index'
+            ) {
+            $style = ' width: 550px;';
+         }
+         $html .= '<div '.$html_id.' class="commsy_body" style="padding:0px; margin:0px;'.$style.'">'.LF;
 
       }
-      $this->_send_first_html_part = true;
+
       $html .= '<div id="page_header">';
-      $html .= '<div class="page_header_personal_area">';
-      $html .= '<div style="float:right;">';
-      $html .= $this->getMyAreaAsHTML();
-      $html .= '</div>';
-      $html .= '<div style="clear:both;">';
-      $html .= '</div>';
-      $browser = $this->_environment->getCurrentBrowser();
-      $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-      $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-      if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-         $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
-      }elseif ($current_browser == 'msie') {
-         $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
-      }else{
-         $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">';
+      if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
+         $html .= '<div class="page_header_personal_area">';
+         $html .= '<div style="float:right;">';
+         $html .= $this->getMyAreaAsHTML();
+         $html .= '</div>';
+         $html .= '<div style="clear:both;">';
+         $html .= '</div>';
+         $browser = $this->_environment->getCurrentBrowser();
+         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
+         }elseif ($current_browser == 'msie') {
+            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
+         }else{
+            $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">';
+         }
+         $html .= '<div style="float:right; vertical-align:bottom;">';
+         $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
+         $html .= '<tr>';
+         $html .= '<td style="vertical-align:middle;">';
+         $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
+         $html .= '</td>';
+         $html .= '<td>';
+         $html .= $this->_getUserPersonalAreaAsHTML().LF;
+         $html .= '</td>';
+         $html .= '</tr>';
+         $html .= '</table>';
+         $html .= '</div>';
+         $html .= '</div>';
+         $html .= '<div style="clear:both;">';
+         $html .= '</div>';
+         $html .= '</div>';
       }
-      $html .= '<div style="float:right; vertical-align:bottom;">';
-      $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
-      $html .= '<tr>';
-      $html .= '<td style="vertical-align:middle;">';
-      $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
-      $html .= '</td>';
-      $html .= '<td>';
-      $html .= $this->_getUserPersonalAreaAsHTML().LF;
-      $html .= '</td>';
-      $html .= '</tr>';
-      $html .= '</table>';
-      $html .= '</div>';
-      $html .= '</div>';
-      $html .= '<div style="clear:both;">';
-      $html .= '</div>';
-      $html .= '</div>';
       $html .= '<div id="page_header_logo">';
       $html .= $this->_getLogoAsHTML().LF;
       $html .= '</div>';
       $html .= '</div>';
+      $this->_send_first_html_part = true;
       return $html;
    }
 
@@ -1456,8 +1470,7 @@ class cs_page_room_view extends cs_page_view {
                $html .= '</table>'.LF;
             }
          }
-         // @segment-end 45532
-         // @segment-begin 13258 asHTML():display-date,month,time-right_bottom_corner-of-the-page
+
          $html .= '<div class="top_of_page">'.LF;
          $html .= '<div style="float:right; padding-right:0px;">'.LF;
          $date = date("Y-m-d");
@@ -1479,8 +1492,6 @@ class cs_page_room_view extends cs_page_view {
          $html .= '<span>'.$text.'</span>'.LF;
          $html .= '</div>'.LF;
 
-         // @segment-end 13258
-         // @segment-begin 38811 asHTML():image+link-to page_top
          $html .= '<div class="footer">'.LF;
          $html .= '<a href="#top">'.'<img src="images/browse_left2.gif" alt="&lt;" border="0"/></a>&nbsp;<a href="#top">'.$this->_translator->getMessage('COMMON_TOP_OF_PAGE').'</a>';
          $html .= '</div>'.LF;
@@ -1552,7 +1563,13 @@ class cs_page_room_view extends cs_page_view {
          }
          $html .= $this->_getPluginInfosForAfterContentAsHTML();
 
-         $html .= '<div id="ie_footer" class="commsy_footer">'.LF;
+         if ( $this->_environment->getCurrentModule() == 'agb'
+              and $this->_environment->getCurrentFunction() == 'index'
+            ) {
+            $html .= '<div id="ie_footer" class="commsy_footer" style="width: 550px;">'.LF;
+         } else {
+            $html .= '<div id="ie_footer" class="commsy_footer">'.LF;
+         }
          $html .= '<div class="footer" style="float:right; text-align:right; padding-left:20px; padding-right:12px; padding-top:5px; padding-bottom:10px; ">'.LF;
          $email_to_moderators = '';
          $current_user = $this->_environment->getCurrentUserItem();

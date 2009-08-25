@@ -854,27 +854,7 @@ if ( $show_agb_again ) {
       $plugin_function = $environment->getCurrentFunction();
    }
 
-   // JCommSy delegation
-   if ( isset($jcommsy)
-        and array_key_exists($current_module,$jcommsy)
-        and $jcommsy[$current_module]
-        and ( !isset($_GET['mode']) or ( isset($_GET['mode']) and $_GET['mode']!='detailattach' ) )
-        and ( !isset($_POST['mode']) or ( isset($_POST['mode']) and $_POST['mode']!='detailattach' ) )
-
-        // attach announcement to announcement
-        and ( !isset($_GET['mode']) or ( isset($_GET['mode']) and $_GET['mode']!='formattach' ) )
-        and ( !isset($_POST['mode']) or ( isset($_POST['mode']) and $_POST['mode']!='formattach' ) )
-
-        and ( !isset($_GET['mode']) or ( isset($_GET['mode']) and $_GET['mode']!='print' ) )
-        and ( !isset($_POST['mode']) or ( isset($_POST['mode']) and $_POST['mode']!='print' ) )
-        and ( !isset($_GET['fct']) or ( isset($_GET['fct']) and $_GET['fct']!='clipboard_index' ) )
-        and ( !isset($_POST['fct']) or ( isset($_POST['fct']) and $_POST['fct']!='clipboard_index' ) )
-        and isset($java_enabled_for)
-        and (in_array($environment->getCurrentContextId(),$java_enabled_for) or in_array($environment->getCurrentPortalId(),$java_enabled_for)))
-   {
-      $param = parameterString($_GET,$_POST);
-      header("Location: http://".$jcommsy['Servlet-URL'].'?mod='.$current_module.'&fct='.$current_function.$param);
-   } elseif ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
+   if ( !file_exists('pages/'.$current_module.'_'.$current_function.'.php') ) {
       $params = array();
       $params['environment'] = $environment;
       $params['with_modifying_actions'] = $with_modifying_actions;
