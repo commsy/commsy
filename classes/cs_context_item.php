@@ -4283,7 +4283,13 @@ class cs_context_item extends cs_item {
     *                 false, if a room is not open
     */
    function isOpen () {
-      return $this->_data['status'] == CS_ROOM_OPEN;
+      $retour = false;
+      if ( !empty($this->_data['status'])
+           and $this->_data['status'] == CS_ROOM_OPEN
+         ) {
+         $retour = false;
+      }
+      return $retour;
    }
 
    /** is a room closed ?
@@ -4293,7 +4299,13 @@ class cs_context_item extends cs_item {
     *                 false, if a room is not closed
     */
    function isClosed () {
-      return $this->_data['status'] == CS_ROOM_CLOSED;
+      $retour = false;
+      if ( !empty($this->_data['status'])
+           and $this->_data['status'] == CS_ROOM_CLOSED
+         ) {
+         $retour = false;
+      }
+      return $retour;
    }
 
    /** is a room locked?
@@ -4303,7 +4315,13 @@ class cs_context_item extends cs_item {
     *                 false, if a room is not locked
     */
    function isLocked () {
-      return $this->_data['status'] == CS_ROOM_LOCK;
+      $retour = false;
+      if ( !empty($this->_data['status'])
+           and $this->_data['status'] == CS_ROOM_LOCK
+         ) {
+         $retour = false;
+      }
+      return $retour;
    }
 
    function lockForMoveWithLinkedRooms () {
