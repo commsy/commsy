@@ -945,15 +945,17 @@ class cs_page_room_view extends cs_page_view {
 
   function getProfileBoxAsHTML(){
      $html = '';
-     $environment = $this->_environment;
-     $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
-     $html .= '<div style="z-index:1000; margin-top:40px; margin-bottom:0px; margin-left: 20%; width:60%; text-align:left; background-color:#FFFFFF;">';
      global $profile_view;
-     $html .= $profile_view->asHTML();
-     $html .= '</div>';
-     $html .= '</div>';
-     $html .= '<div id="profile" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
-     $html .= '</div>';
+     if ( !empty($profile_view) ) {
+        $environment = $this->_environment;
+        $html  = '<div style="position:absolute; left:0px; top:0px; z-index:1000; width:100%; height: 100%;">'.LF;
+        $html .= '<div style="z-index:1000; margin-top:40px; margin-bottom:0px; margin-left: 20%; width:60%; text-align:left; background-color:#FFFFFF;">';
+        $html .= $profile_view->asHTML();
+        $html .= '</div>';
+        $html .= '</div>';
+        $html .= '<div id="profile" style="position: absolute; left:0px; top:0px; z-index:900; width:100%; height: 850px; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">'.LF;
+        $html .= '</div>';
+     }
      return $html;
   }
 

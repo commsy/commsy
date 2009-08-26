@@ -4287,7 +4287,7 @@ class cs_context_item extends cs_item {
       if ( !empty($this->_data['status'])
            and $this->_data['status'] == CS_ROOM_OPEN
          ) {
-         $retour = false;
+         $retour = true;
       }
       return $retour;
    }
@@ -4303,7 +4303,7 @@ class cs_context_item extends cs_item {
       if ( !empty($this->_data['status'])
            and $this->_data['status'] == CS_ROOM_CLOSED
          ) {
-         $retour = false;
+         $retour = true;
       }
       return $retour;
    }
@@ -4319,7 +4319,7 @@ class cs_context_item extends cs_item {
       if ( !empty($this->_data['status'])
            and $this->_data['status'] == CS_ROOM_LOCK
          ) {
-         $retour = false;
+         $retour = true;
       }
       return $retour;
    }
