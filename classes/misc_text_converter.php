@@ -272,7 +272,11 @@ class misc_text_converter {
       $text = preg_replace('~\*([^*]+)\*~u', '<span style="font-weight:bold;">$1</span>', $text);
 
       // italic
-      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~u', '$1<span style=font-style:italic;>$2</span>$3', $text);
+      $text = preg_replace('~(^|\n|\t|\s|[ >\/[{(])_([^_]+)_($|\n|\t|:|[ <\/.)\]},!?;])~u', '$1<span style="font-style:italic;">$2</span>$3', $text);
+
+      // search
+      // maybe with yellow or orange background ???
+      $text = preg_replace('~\(:search:\)(.+)\(:search_end:\)~u', '<span style="font-style:italic;">$1</span>', $text);
       return $text;
    }
 

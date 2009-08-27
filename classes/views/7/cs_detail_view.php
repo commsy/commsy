@@ -293,7 +293,7 @@ class cs_detail_view extends cs_view {
          } else {
             $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions) {
          $params = $this->_environment->getCurrentParameterArray();
@@ -316,7 +316,7 @@ class cs_detail_view extends cs_view {
          } else {
             $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
       $html .='&nbsp;&nbsp;&nbsp;';
       return $html;
@@ -365,7 +365,7 @@ class cs_detail_view extends cs_view {
             } else {
                $image = '<img src="images/commsyicons/22x22/mail_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EMAIL_TO').'"/>';
             }
-            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EMAIL_TO')).' "class="disabled">'.$image.'</a>'.LF;
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
@@ -399,7 +399,7 @@ class cs_detail_view extends cs_view {
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
+                                    $this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
@@ -407,7 +407,7 @@ class cs_detail_view extends cs_view {
          } else {
             $image = '<img src="images/commsyicons/22x22/copy_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_ITEM_COPY_TO_CLIPBOARD')).' "class="disabled">'.$image.'</a>'.LF;
       }
 
       // actions from rubric plugins
@@ -417,24 +417,24 @@ class cs_detail_view extends cs_view {
          $params = array();
          $params['iid'] = 'NEW';
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
          }
          $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
                                     $this->_environment->getCurrentModule(),
                                     'edit',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_NEW_ITEM')).LF;
+                                    $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NEW_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
          }
-         $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
    }
@@ -1311,7 +1311,7 @@ class cs_detail_view extends cs_view {
          $html .='<div id="detail_headline">'.LF;
          $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
          if($rubric == CS_DISCUSSION_TYPE){
-            $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
+            $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($this->_getTitleAsHTML(),false));
          }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
             $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
          }elseif ($rubric == 'account' ){
@@ -3320,7 +3320,7 @@ class cs_detail_view extends cs_view {
             if ( mb_stristr($value,$search_text) ) {
                $replace = '*$0*';
                if ( !$bold ) {
-                  $replace = '_$0_';
+                  $replace = '(:search:)$0(:search_end:)';
                }
                if ( stristr($value,'<!-- KFC TEXT') ) {
                   $replace = '<span class="bold">$0</span>';

@@ -96,12 +96,11 @@ class cs_user_detail_view extends cs_detail_view {
 
       $email = $item->getEmail();
       $email_text = $this->_text_as_html_short($this->_compareWithSearchText($email));
-      $email_short = chunkText($email_text,45);
       if ( !empty($email) and ( $item->isEmailVisible() or $this->_display_mod == 'admin') ) {
          if (isset($_GET['mode']) and $_GET['mode']=='print'){
-            $emailDisplay = $email_short;
+            $emailDisplay = $email_text;
          }else{
-            $emailDisplay = '<a title="'.$email_text.'" href="mailto:'.$email.'">'.$email_short.'</a>';
+            $emailDisplay = '<a title="'.$email.'" href="mailto:'.$email.'">'.$email_text.'</a>';
          }
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('USER_EMAIL');
@@ -362,7 +361,7 @@ class cs_user_detail_view extends cs_detail_view {
       $desc = $item->getDescription();
       if ( !empty($desc) ) {
          $html .='<div style="padding-top:10px; vertical-align:top;"></div>'.LF;
-         $desc = $this->_text_as_html_long($this->_cleanDataFromTextArea($this->_compareWithSearchText($desc)));
+         $desc = $this->_text_as_html_long($this->_compareWithSearchText($this->_cleanDataFromTextArea($desc)));
          $html .= $desc.LF;
       }
       $html  .= '<!-- END OF USER ITEM DETAIL -->'."\n\n";

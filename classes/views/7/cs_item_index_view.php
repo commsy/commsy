@@ -1589,7 +1589,9 @@ var $_sel_rubric = '';
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;
-      } elseif ( mb_strtoupper($params['selrubric'], 'UTF-8') == mb_strtoupper(type2module(CS_MATERIAL_TYPE), 'UTF-8') ) {
+      } elseif ( !empty($params['selrubric'])
+                 and mb_strtoupper($params['selrubric'], 'UTF-8') == mb_strtoupper(type2module(CS_MATERIAL_TYPE), 'UTF-8')
+               ) {
          $width = '150';
          $html_text = '<tr>'.LF;
          $html_text .='<td>'.LF;
