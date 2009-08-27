@@ -629,7 +629,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             ) {
             $this->_form->addHidden('show_title','');
          } else {
-            $this->_form->combine('vertical');
 
             //PREFERENCES_SHOW_TITLE_OPTION
             $this->_form->addCheckbox('show_title',

@@ -2119,6 +2119,14 @@ class cs_form_view extends cs_view {
                      $tempMessage = '<img src="images/commsyicons/32x32/config/account.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   }
                   break;
+               case 'MYROOM_EDIT': // room edit in myroom
+                  $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+                     $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  } else {
+                     $tempMessage = '<img src="images/commsyicons/32x32/room.png" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
+                  }
+                  break;
                default:                      // "Bitte Messagetag-Fehler melden ..."
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_form_view(".__LINE__.") ";
                   break;
@@ -2195,6 +2203,7 @@ class cs_form_view extends cs_view {
                 $this->_environment->getCurrentModule() != CS_DISCARTICLE_TYPE and
                 $this->_environment->getCurrentModule() != CS_STEP_TYPE and
                 $this->_environment->getCurrentModule() != CS_SECTION_TYPE and
+                $this->_environment->getCurrentModule() != CS_MYROOM_TYPE and
                 $room->withNetnavigation() and
                 $this->_environment->getCurrentFunction() == 'edit'
 

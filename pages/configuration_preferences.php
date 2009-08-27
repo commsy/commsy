@@ -981,29 +981,29 @@ if ($current_user->isGuest()) {
                      $item->save();
                   }
 
-       // template select
-       if ( isset($_POST['template_select'])
-          and $_POST['template_select'] > 99
-          and $_POST['template_select'] != 'disabled'
-          and ( $item->isProjectRoom()
-                or $item->isCommunityRoom()
-              )
-          and $new_flag
-       ) {
-          // copy all entries from the template into the new room
-          include_once('include/inc_room_copy.php');
-       }
+               // template select
+               if ( isset($_POST['template_select'])
+                    and $_POST['template_select'] > 99
+                    and $_POST['template_select'] != 'disabled'
+                    and ( $item->isProjectRoom()
+                          or $item->isCommunityRoom()
+                        )
+                    and $new_flag
+                  ) {
+                  // copy all entries from the template into the new room
+                  include_once('include/inc_room_copy.php');
+               }
 
-       // template select (private room)
-       elseif ($template_copy) {
-          if ( $item->isPrivateRoom()
-               and ( $_POST['template_select'] > 99
-                     or $_POST['template_select'] == -1
-                   )
-             ) {
-             include_once('include/inc_room_copy_private.php');
-          }
-       }
+               // template select (private room)
+               elseif ($template_copy) {
+                  if ( $item->isPrivateRoom()
+                       and ( $_POST['template_select'] > 99
+                             or $_POST['template_select'] == -1
+                           )
+                     ) {
+                     include_once('include/inc_room_copy_private.php');
+                  }
+               }
 
                if ( !isset($_GET['option'])
                     and !($new_flag)
@@ -1019,33 +1019,33 @@ if ($current_user->isGuest()) {
 
                // Redirect
                if (!$new_flag or !empty($_GET['type'])) {
-       if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
-            or $environment->getCurrentModule() == CS_MYROOM_TYPE
-                  ) {
-          $params = array();
-          $params['iid'] = $item->getItemID();
-          redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'detail',$params);
-          unset($params);
-       }
+                  if ( $environment->getCurrentModule() == CS_PROJECT_TYPE
+                        or $environment->getCurrentModule() == CS_MYROOM_TYPE
+                     ) {
+                     $params = array();
+                     $params['iid'] = $item->getItemID();
+                     redirect($environment->getCurrentContextID(),$environment->getCurrentModule(),'detail',$params);
+                     unset($params);
+                  }
                } else {
-       if ($environment->inPortal()) {
-          $params = array();
-          $params['room_id'] = $item->getItemID();
-          redirect($environment->getCurrentContextID(),'home','index',$params);
-          unset($params);
-       } elseif ($environment->inServer()) {
-          redirect($item->getItemID(),'home','index','');
-       } elseif ( $environment->inPrivateRoom() ) {
-          $params = array();
-          $params['iid'] = $item->getItemID();
-          redirect($environment->getCurrentContextID(),'myroom','detail',$params);
-          unset($params);
-       } else {
-          $params = array();
-          $params['iid'] = $item->getItemID();
-          redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
-          unset($params);
-       }
+                  if ($environment->inPortal()) {
+                     $params = array();
+                     $params['room_id'] = $item->getItemID();
+                     redirect($environment->getCurrentContextID(),'home','index',$params);
+                     unset($params);
+                  } elseif ($environment->inServer()) {
+                     redirect($item->getItemID(),'home','index','');
+                  } elseif ( $environment->inPrivateRoom() ) {
+                     $params = array();
+                     $params['iid'] = $item->getItemID();
+                     redirect($environment->getCurrentContextID(),'myroom','detail',$params);
+                     unset($params);
+                  } else {
+                     $params = array();
+                     $params['iid'] = $item->getItemID();
+                     redirect($environment->getCurrentContextID(),CS_PROJECT_TYPE,'detail',$params);
+                     unset($params);
+                  }
                }
             }
          }
@@ -1065,13 +1065,13 @@ if ($current_user->isGuest()) {
             $form_view->setItemIsSaved();
          }
 
-   include_once('functions/curl_functions.php');
-   $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
-   $form_view->setForm($form);
+         include_once('functions/curl_functions.php');
+         $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
+         $form_view->setForm($form);
          if ( $environment->inPortal() or $environment->inServer() ) {
-      $page->addForm($form_view);
+            $page->addForm($form_view);
          } else {
-      $page->add($form_view);
+            $page->add($form_view);
          }
       }
    }
