@@ -500,6 +500,7 @@ $message["COMMON_NOT_ACCESSIBLE"]["en"] = "private event - detail view is not ac
 $message["COMMON_NOT_ACTIVATED"]["en"] = "not accessible yet";
 $message["COMMON_NOT_LINKED"]["en"] = "Not linked";
 $message["COMMON_NO_ACTION"]["en"] = "No permission";
+$message["COMMON_NO_ACTION_NEW"]["en"] = "%1 (no permission)";
 $message["COMMON_NO_ANNOTATIONS"]["en"] = "No comments";
 $message["COMMON_NO_AUTHOR"]["en"] = "no author";
 $message["COMMON_NO_BUZZWORDS"]["en"] = "Select tag from list";

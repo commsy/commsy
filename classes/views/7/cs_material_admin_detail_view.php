@@ -44,58 +44,45 @@ class cs_material_admin_detail_view extends cs_material_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      $params = $this->_environment->getCurrentParameterArray();
-      $params['mode']='print';
-      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-      } else {
-         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
-      }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                    $this->_environment->getCurrentModule(),
-                                    'detail',
-                                    $params,
-                                    $image,
-                                    getMessage('COMMON_LIST_PRINTVIEW')).LF;
-      unset($params['mode']);
+      $html .= $this->_getPrintAction($item,$current_user);
       if ( $item->getWorldPublic() != 2 ) {
          $params = array();
          $params['id'] = $item->getItemID();
          $params['material_mode'] = 'public';
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/material_admin_public.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/material_admin_public.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/material_admin_public.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
+            $image = '<img src="images/commsyicons/22x22/material_admin_public.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
          }
          $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'material_admin',
                                     'index',
                                     $params,
                                     $image,
-                                    getMessage('MATERIAL_MAKE_PUBLIC')).LF;
+                                    $this->_translator->getMessage('MATERIAL_MAKE_PUBLIC')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/material_admin_public_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/material_admin_public_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/material_admin_public_grey.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
+            $image = '<img src="images/commsyicons/22x22/material_admin_public_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_PUBLIC').'"/>';
          }
-         $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('MATERIAL_MAKE_PUBLIC')).' "class="disabled">'.$image.'</a>'.LF;
       }
       $params = array();
       $params['id'] = $item->getItemID();
       $params['material_mode'] = 'not_public';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/material_admin_not_public.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_NOT_PUBLIC').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/material_admin_not_public.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_NOT_PUBLIC').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/material_admin_not_public.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_MAKE_NOT_PUBLIC').'"/>';
+         $image = '<img src="images/commsyicons/22x22/material_admin_not_public.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_MAKE_NOT_PUBLIC').'"/>';
       }
       $html .= '&nbsp;&nbsp;&nbsp;'.ahref_curl(  $this->_environment->getCurrentContextID(),
                                  'material_admin',
                                  'index',
                                  $params,
                                  $image,
-                                 getMessage('MATERIAL_MAKE_NOT_PUBLIC')).LF;
+                                 $this->_translator->getMessage('MATERIAL_MAKE_NOT_PUBLIC')).LF;
       unset($params);
       return $html;
    }

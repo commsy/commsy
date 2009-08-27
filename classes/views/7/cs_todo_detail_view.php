@@ -333,8 +333,6 @@ class cs_todo_detail_view extends cs_detail_view {
     * this method returns the actions in HTML-Code. It checks the access rights!
     *
     * @return string navigation as HMTL
-    *
-    * @author CommSy Development Group
     */
    function _getDetailItemActionsAsHTML ($item) {
       $current_context = $this->_environment->getCurrentContextItem();
@@ -345,38 +343,19 @@ class cs_todo_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = $item->getItemID();
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $this->_environment->getCurrentModule(),
-                                          'edit',
-                                          $params,
-                                          $image,
-                                          getMessage('COMMON_EDIT_ITEM')).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
+
+      // edit
+      $html .= $this->_getEditAction($item,$current_user);
+
       // Enter or leave the topic
       if ( $item->isProcessor($current_user) ) {
          if ($mod) {
             $params['iid'] = $item->getItemID();
             $params['todo_option'] = '2';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_LEAVE').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/group_leave.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_LEAVE').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_LEAVE').'"/>';
+               $image = '<img src="images/commsyicons/22x22/group_leave.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_LEAVE').'"/>';
             }
             $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                        'todo',
@@ -386,20 +365,20 @@ class cs_todo_detail_view extends cs_detail_view {
                                        $this->_translator->getMessage('TODO_LEAVE')).LF;
          } else {
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/group_leave_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_LEAVE').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+               $image = '<img src="images/commsyicons/22x22/group_leave_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_LEAVE').'"/>';
             }
-            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('TODO_LEAVE')).' "class="disabled">'.$image.'</a>'.LF;
          }
       } else {
          if ($current_user->isUser() and $mod ) {
             $params['iid'] = $item->getItemID();
             $params['todo_option'] = '1';
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.getMessage('TODO_ENTER').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/group_enter.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ENTER').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.getMessage('TODO_ENTER').'"/>';
+               $image = '<img src="images/commsyicons/22x22/group_enter.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ENTER').'"/>';
             }
             $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                        'todo',
@@ -409,37 +388,16 @@ class cs_todo_detail_view extends cs_detail_view {
                                        $this->_translator->getMessage('TODO_ENTER')).LF;
          } else {
             if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+               $image = '<img src="images/commsyicons_msie6/22x22/group_enter_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ENTER').'"/>';
             } else {
-               $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+               $image = '<img src="images/commsyicons/22x22/group_enter_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('TODO_ENTER').'"/>';
             }
-            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+            $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('TODO_ENTER')).' "class="disabled">'.$image.'</a>'.LF;
          }
-      }
-      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['action'] = 'delete';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                     $this->_environment->getCurrentModule(),
-                                     'detail',
-                                     $params,
-                                     $image,
-                                     getMessage('COMMON_DELETE_ITEM')).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
       }
 
+      // delete
+      $html .= $this->_getDeleteAction($item,$current_user);
 
       return $html.'&nbsp;&nbsp;&nbsp;';
    }
@@ -453,28 +411,10 @@ class cs_todo_detail_view extends cs_detail_view {
       $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      if ( $subitem->mayEdit($user) and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = $subitem->getItemID();
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
-                                    'step',
-                                    'edit',
-                                    $params,
-                                    $image).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
+
+      // edit
+      $html .= $this->_getEditAction($subitem,$current_user,'step');
+
       if ( $subitem->mayEdit($user) and $this->_with_modifying_actions  ) {
         $params = $this->_environment->getCurrentParameterArray();
         $params['action'] = 'delete';
@@ -482,9 +422,9 @@ class cs_todo_detail_view extends cs_detail_view {
         $params['iid'] = $item->getItemID();
         $params['step_action'] = 'delete';
         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-           $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+           $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
         } else {
-           $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+           $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
         }
         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $this->_environment->getCurrentModule(),
@@ -497,11 +437,11 @@ class cs_todo_detail_view extends cs_detail_view {
         unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
       return $html;
    }

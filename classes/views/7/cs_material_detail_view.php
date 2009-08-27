@@ -112,77 +112,38 @@ class cs_material_detail_view extends cs_detail_view {
     $current_context = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
-      if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = $item->getItemID();
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                          $this->_environment->getCurrentModule(),
-                                          'edit',
-                                          $params,
-                                          $image,
-                                          getMessage('COMMON_EDIT_ITEM')).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
+
+      // edit
+      $html .= $this->_getEditAction($item,$current_user);
+
       if ( $item->mayEdit($current_user) and $this->_with_modifying_actions ) {
          $params['iid'] = 'NEW';
          $params['ref_iid'] = $item->getItemID();
          $params['ref_vid'] = $item->getVersionID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    'section',
                                    'edit',
                                    $params,
-                                   $image,getMessage('MATERIAL_SECTION_ADD')).LF;
+                                   $image,$this->_translator->getMessage('MATERIAL_SECTION_ADD')).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('MATERIAL_SECTION_ADD')).' "class="disabled">'.$image.'</a>'.LF;
       }
-      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['action'] = 'delete';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                     $this->_environment->getCurrentModule(),
-                                     'detail',
-                                     $params,
-                                     $image,
-                                     getMessage('COMMON_DELETE_ITEM')).LF;
-         unset($params);
-      } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
-      return $html.'&nbsp;&nbsp;&nbsp;';
 
+      // delete
+      $html .= $this->_getDeleteAction($item,$current_user);
+
+      return $html.'&nbsp;&nbsp;&nbsp;';
    }
 
 
@@ -191,33 +152,11 @@ class cs_material_detail_view extends cs_detail_view {
       $current_user = $this->_environment->getCurrentUserItem();
       $html  = '';
 
-      if ( $item->mayEdit($current_user) and $current_context->isWikiActive()  and $this->_with_modifying_actions ) {
-         $params = array();
-         $params['iid'] = $item->getItemID();
-         $params['export_to_wiki'] = 'true';
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/export_wiki.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/export_wiki.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
-         }
-         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                   'material',
-                                   'detail',
-                                   $params,
-                                   $image,
-                                   $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI')).LF;
-         unset($params);
-      } elseif($current_context->isWikiActive()) {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/export_wiki_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/export_wiki_grey.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_EXPORT_TO_WIKI').'"/>';
-         }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
-      }
+      // wiki
+      $html .= $this->_getWikiAction($item,$current_user,$current_context);
+
       return $html;
    }
-
 
    function _getBrowsingIconsAsHTML($current_item, $pos_number, $count){
       $html ='';
@@ -276,14 +215,14 @@ class cs_material_detail_view extends cs_detail_view {
       $version_of_current_material = $current_material->getVersionID();
       $html = '';
       if ( $version_of_current_material == $subitem->getVersionID() and // showing the current version
-           $item->mayEdit($user) and $this->_with_modifying_actions ) {
+         $item->mayEdit($user) and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $subitem->getItemID();
          $params['ref_vid'] = $item->getVersionID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/edit.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_EDIT_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/edit.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_EDIT_ITEM').'"/>';
          }
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'section',
@@ -294,20 +233,20 @@ class cs_material_detail_view extends cs_detail_view {
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/edit_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_SECTION_EDIT').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $image = '<img src="images/commsyicons/22x22/edit_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_SECTION_EDIT').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_SECTION_EDIT')).' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $item->mayEdit($user) and $this->_with_modifying_actions ) {
          $params['iid'] = 'NEW';
          $params['ref_iid'] = $item->getItemID();
          $params['ref_vid'] = $item->getVersionID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    'section',
@@ -317,11 +256,11 @@ class cs_material_detail_view extends cs_detail_view {
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('MATERIAL_SECTION_ADD')).' "class="disabled">'.$image.'</a>'.LF;
       }
       if ( $version_of_current_material == $subitem->getVersionID() and // showing the current version
            $item->mayEdit($user) and $this->_with_modifying_actions ) {
@@ -332,26 +271,26 @@ class cs_material_detail_view extends cs_detail_view {
          $params['ref_vid'] = $item->getVersionID();
          $params['section_action'] = 'delete';
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/delete.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/delete.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
          $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                           $this->_environment->getCurrentModule(),
                                           'detail',
                                           $params,
                                           $image,
-                                          getMessage('SECTION_DELETE'),
+                                          $this->_translator->getMessage('SECTION_DELETE'),
                                           '',
                                           'anchor'.$subitem->getItemID()).LF;
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/delete_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
+            $image = '<img src="images/commsyicons/22x22/delete_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_DELETE_ITEM').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW').' "class="disabled">'.$image.'</a>'.LF;
       }
 /*      if ( $version_of_current_material == $subitem->getVersionID() and // showing the current version
            $item->mayEdit($user) and $this->_with_modifying_actions ) {
@@ -359,18 +298,18 @@ class cs_material_detail_view extends cs_detail_view {
          $params['iid'] = 'NEW';
          $params['ref_iid'] = $item->getItemID();
          $params['ref_vid'] = $item->getVersionID();
-         $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('MATERIAL_SECTION_ADD').'"/>';
+         $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
          $actionCurl = ahref_curl( $this->_environment->getCurrentContextID(),
                                    'section',
                                    'edit',
                                    $params,
                                    $image,
-                                   getMessage('MATERIAL_SECTION_ADD'));
+                                   $this->_translator->getMessage('MATERIAL_SECTION_ADD'));
          $html .= $actionCurl.LF;
          unset($params);
       } else {
-         $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_DELETE_ITEM').'"/>';
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('MATERIAL_SECTION_ADD').'"/>';
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('MATERIAL_SECTION_ADD')).' "class="disabled">'.$image.'</a>'.LF;
       }*/
       return $html;
    }

@@ -56,9 +56,9 @@ class cs_user_index_view extends cs_room_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       $params['mode']='print';
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+         $image = '<img src="images/commsyicons_msie6/22x22/print.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_LIST_PRINTVIEW').'"/>';
+         $image = '<img src="images/commsyicons/22x22/print.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_LIST_PRINTVIEW').'"/>';
       }
       $html .= ahref_curl($this->_environment->getCurrentContextID(),
                          CS_USER_TYPE,
@@ -70,9 +70,9 @@ class cs_user_index_view extends cs_room_index_view {
          $params = array();
          $params['iid'] = $current_user->getItemID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/user_own.gif" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/user_own.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_OWN_INFORMATION').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/user_own.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+            $image = '<img src="images/commsyicons/22x22/user_own.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_OWN_INFORMATION').'"/>';
          }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                             CS_USER_TYPE,
@@ -83,17 +83,17 @@ class cs_user_index_view extends cs_room_index_view {
          unset($params);
       } else {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/user_own_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/user_own_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_OWN_INFORMATION').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="vertical-align:bottom;" alt="'.getMessage('USER_OWN_INFORMATION').'"/>';
+            $image = '<img src="images/commsyicons/22x22/user_own_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('USER_OWN_INFORMATION').'"/>';
          }
-         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('USER_OWN_INFORMATION')).' "class="disabled">'.$image.'</a>'.LF;
       }
        if ($current_user->isModerator() and $this->_with_modifying_actions ) {
           if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-             $image = '<img src="images/commsyicons_msie6/22x22/config_account.gif" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_INDEX').'"/>';
+             $image = '<img src="images/commsyicons_msie6/22x22/config_account.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_INDEX').'"/>';
           } else {
-             $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.getMessage('ACCOUNT_INDEX').'"/>';
+             $image = '<img src="images/commsyicons/22x22/config_account.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('ACCOUNT_INDEX').'"/>';
           }
           $html .= '&nbsp;&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),
                                        'account',
@@ -104,11 +104,11 @@ class cs_user_index_view extends cs_room_index_view {
 
       }else{
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/config_account_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/config_account_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NO_ACTION').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/config_account_grey.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_NO_ACTION').'"/>';
+            $image = '<img src="images/commsyicons/22x22/config_account_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NO_ACTION').'"/>';
          }
-         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION').' "class="disabled">'.$image.'</a>'.LF;
+         $html .= '&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NO_ACTION')).' "class="disabled">'.$image.'</a>'.LF;
       }
       $html .= '</div>'.LF;
       return $html;
