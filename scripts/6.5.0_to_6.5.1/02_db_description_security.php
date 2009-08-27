@@ -101,6 +101,7 @@ $table_array[] = 'room';
 $table_array[] = 'room_privat';
 $table_array[] = 'portal';
 $table_array[] = 'server';
+$table_array[] = 'materials';
 foreach ( $table_array as $table ) {
    $counter = 0;
    $this->_flushHTML($table.BRLF);
@@ -136,6 +137,7 @@ foreach ( $table_array as $table ) {
                   $key_array[] = 'AGBTEXTARRAY';
                   $key_array[] = 'USAGE_INFO_TEXT';
                   $key_array[] = 'USAGE_INFO_FORM';
+                  $key_array[] = 'BIBLIOGRAPHIC';
                   foreach ($key_array as $field) {
                      if ( !empty($extra_array[$field])
                           and is_array($extra_array[$field])
@@ -149,6 +151,16 @@ foreach ( $table_array as $table ) {
                               $extra_array[$field][$key] = $value;
                               $changed = true;
                            }
+                        }
+                     } elseif ( !empty($extra_array[$field]) ) {
+                        $value = $extra_array[$field];
+                        if ( strstr($value,'<!-- KFC TEXT') ) {
+                           $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+                           $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+                           $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+                           $value = $fck_text.$value.$fck_text;
+                           $extra_array[$field] = $value;
+                           $changed = true;
                         }
                      }
                   }
