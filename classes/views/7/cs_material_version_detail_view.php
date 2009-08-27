@@ -72,6 +72,34 @@ class cs_material_version_detail_view extends cs_material_detail_view {
          }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_EDIT_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
+
+      if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
+         $params = $this->_environment->getCurrentParameterArray();
+         $params = array();
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['iid'] = $this->_item->getItemID();
+         $params['act_version'] = $this->_item->getVersionID();
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/material_version_current.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('VERSION_MAKE_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/material_version_current.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('VERSION_MAKE_NEW').'"/>';
+         }
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                     $this->_environment->getCurrentModule(),
+                                     'detail',
+                                     $params,
+                                     $image,
+                                     $this->_translator->getMessage('VERSION_MAKE_NEW')).LF;
+         unset($params);
+      } else {
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/material_version_current_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('VERSION_MAKE_NEW').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/material_version_current_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('VERSION_MAKE_NEW').'"/>';
+         }
+         $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('VERSION_MAKE_NEW')).' "class="disabled">'.$image.'</a>'.LF;
+      }
+
       if ( $item->mayEdit($current_user)  and $this->_with_modifying_actions ) {
          $params = $this->_environment->getCurrentParameterArray();
          $params = array();
@@ -99,21 +127,6 @@ class cs_material_version_detail_view extends cs_material_detail_view {
          }
          $html .= '<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_DELETE_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
       }
-
-// TBD (27.08.2009 ij)
-//      if ( $item->mayEdit($current_user) ) {
-//         $params = array();
-//         $params['iid'] = $this->_item->getItemID();
-//         $params['act_version'] = $this->_item->getVersionID();
-//         $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
-//                                    'material',
-//                                    'detail',
-//                                    $params,
-//                                    $this->_translator->getMessage('VERSION_MAKE_NEW')).BRLF;
-//         unset($params);
-//      } else {
-//         $html .= '<div class="disabled">'.'> '.$this->_translator->getMessage('VERSION_MAKE_NEW').'</div>'.BRLF;
-//      }
 
       return $html;
    }
