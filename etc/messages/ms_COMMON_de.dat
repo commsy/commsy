@@ -517,6 +517,7 @@ $message["COMMON_NO_FORUM_ENTRIES"]["de"] = "keine Foren vorhanden";
 $message["COMMON_NO_GROUPS"]["de"] = "Keine Gruppen vorhanden";
 $message["COMMON_NO_INSTITUTIONS"]["de"] = "Keine %_INSTITUTION_SUB_NOMPL_LOW vorhanden";
 $message["COMMON_NO_NEW_ENTRIES"]["de"] = "Keine neuen Einträge vorhanden";
+$message["COMMON_NO_RESTRICTION"]["de"] = "keine Begrenzung";
 $message["COMMON_NO_SELECTION"]["de"] = "Alle";
 $message["COMMON_NO_SORTING"]["de"] = "*keine";
 $message["COMMON_NO_TAGS"]["de"] = "Keine weitere Kategorie";

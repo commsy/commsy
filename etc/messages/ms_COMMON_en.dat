@@ -516,6 +516,7 @@ $message["COMMON_NO_FORUM_ENTRIES"]["en"] = "no forums used";
 $message["COMMON_NO_GROUPS"]["en"] = "No Groups available";
 $message["COMMON_NO_INSTITUTIONS"]["en"] = "No %_INSTITUTION_SUB_NOMPL_LOW available";
 $message["COMMON_NO_NEW_ENTRIES"]["en"] = "No new items";
+$message["COMMON_NO_RESTRICTION"]["en"] = "no restriction";
 $message["COMMON_NO_SELECTION"]["en"] = "Please select";
 $message["COMMON_NO_SORTING"]["en"] = "*clear";
 $message["COMMON_NO_TAGS"]["en"] = "Select category from list";
