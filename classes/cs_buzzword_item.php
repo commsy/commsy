@@ -48,9 +48,76 @@ class cs_buzzword_item extends cs_label_item {
       $links_manager = $this->_environment->getLinkManager();
       $links_manager->saveLinksMaterialToBuzzword($array,$this->getItemID());
    }
+
    function saveRubricLinksByIDArray($array,$rubric) {
       $links_manager = $this->_environment->getLinkManager();
       $links_manager->saveLinksRubricToBuzzword($array,$this->getItemID(),$rubric);
+   }
+
+   function saveLinksByIDArray($array) {
+      if ( !empty($array) ) {
+         $item_manager = $this->_environment->getItemManager();
+         $item_list = $item_manager->getItemList($array);
+         if ( isset($item_list)
+              and $item_list->isNotEmpty()
+            ) {
+            $rubric_item_id_array = array();
+            $item = $item_list->getFirst();
+            while ( $item ) {
+               $rubric_item_id_array[$item->getItemType()][] = $item->getItemID();
+               unset($item);
+               $item = $item_list->getNext();
+            }
+         }
+         unset($item_list);
+         unset($item_manager);
+
+         // transfer "label" to real module
+         if ( !empty($rubric_item_id_array['label']) ) {
+            $label_manager = $this->_environment->getLabelManager();
+            $label_manager->setIdArrayLimit($rubric_item_id_array['label']);
+            $label_manager->select();
+            $label_list = $label_manager->get();
+            if ( isset($label_list)
+                 and $label_list->isNotEmpty()
+               ) {
+               $item = $label_list->getFirst();
+               while ( $item ) {
+                  $rubric_item_id_array[$item->getLabelType()][] = $item->getItemID();
+                  unset($item);
+                  $item = $label_list->getNext();
+               }
+            }
+            unset($rubric_item_id_array['label']);
+         }
+
+         // now save links
+         if ( !empty($rubric_item_id_array) ) {
+            foreach ( $rubric_item_id_array as $rubric => $id_array ) {
+               $this->saveRubricLinksByIDArray($id_array,$rubric);
+            }
+         }
+      }
+   }
+
+   public function getAllLinkedItemIDArrayLabelVersion () {
+      $retour = array();
+      $manager = $this->_environment->getLinkManager();
+      $links = $manager->getLinks('buzzword_for',$this);
+      if ( !empty($links) ) {
+         foreach ( $links as $link ) {
+            if ( !empty($link['from_item_id'])
+                 and !empty($link['to_item_id'])
+               ) {
+               if ($link['from_item_id'] == $this->getItemID() ) {
+                  $retour[] = $link['to_item_id'];
+               } else {
+                  $retour[] = $link['from_item_id'];
+               }
+            }
+         }
+      }
+      return $retour;
    }
 }
 ?>

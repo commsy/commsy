@@ -113,16 +113,6 @@ class cs_tag_form extends cs_rubric_form {
    }
 
    private function _createFormForChildren ( $item, $depth ) {
-      $session = $this->_environment->getSession();
-      if ( !empty($_GET['module']) ) {
-         $linked_rubric = $_GET['module'];
-         $session->setValue($this->_environment->getCurrentModule().'_linked_rubric',$linked_rubric);
-      } elseif ( $session->issetValue($this->_environment->getCurrentModule().'_linked_rubric') ) {
-         $linked_rubric = $session->getValue($this->_environment->getCurrentModule().'_linked_rubric');
-      } else {
-         $linked_rubric = '';
-      }
-      unset($session);
       if ( isset($item) ) {
          $children_list = $item->getChildrenList();
          if ( isset($children_list) and $children_list->isNotEmpty() ) {
@@ -140,10 +130,8 @@ class cs_tag_form extends cs_rubric_form {
             while ( $child ) {
                $this->_form->addTextField('tag'.'#'.$child->getItemID(),$child->getTitle(),'','','',$len_text_field,false,$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'),'option'.'#'.$child->getItemID(),'','',$arrows);
                $this->_form->combine('horizontal');
-               if ($linked_rubric != 'home'){
-                  $this->_form->addButton('option'.'#'.$child->getItemID(),getMessage('BUZZWORDS_ASSIGN_ENTRIES'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES'))*7));
-                  $this->_form->combine('horizontal');
-               }
+               $this->_form->addButton('right_box_option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'),'','',(mb_strlen($this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'))*7));
+               $this->_form->combine('horizontal');
                $this->_form->addButton('option'.'#'.$child->getItemID(),$this->_translator->getMessage('COMMON_DELETE_BUTTON'));
                $this->_createFormForChildren($child,$depth+1);
                unset($child);
@@ -182,12 +170,18 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->addButton('option',$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON'));
       $this->_form->addEmptyline();
 
-
-
       if ( isset($this->_root_tag) ) {
          $this->_form->addSubHeadline('headline4',cs_ucfirst($this->_translator->getMessage('COMMON_EDIT')),'','',3);
          $this->_createFormForChildren($this->_root_tag,0);
       }
+
+      $session = $this->_environment->getSession();
+      if ( !empty($_GET['module']) ) {
+         $linked_rubric = $_GET['module'];
+         $this->_form->addHidden('module',$linked_rubric);
+         $session->setValue($this->_environment->getCurrentModule().'_linked_rubric',$linked_rubric);
+      }
+      unset($session);
    }
 
    /** loads the selected and given values to the form

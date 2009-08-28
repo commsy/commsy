@@ -28,8 +28,6 @@ include_once('classes/cs_item.php');
 
 /** class for a label
  * this class implements a commsy label. A label can be a group, a topic, a label, ...
- *
- * @author CommSy Development Group
  */
 class cs_label_item extends cs_item {
 
@@ -133,8 +131,6 @@ class cs_label_item extends cs_item {
     * this method returns a list of topics which are linked to the label_item
     *
     * @return object cs_list a list of topics (cs_label_item)
-    *
-    * @author CommSy Development Group
     */
    function getTopicList() {
       $topic_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_TOPIC_TYPE);
@@ -146,8 +142,6 @@ class cs_label_item extends cs_item {
    * this method sets a list of topic item_ids which are linked to the label_item
    *
    * @param array of topic ids
-   *
-   * @author CommSy Development Group
    */
    function setTopicListByID ($value) {
       $topic_array = array();
@@ -163,8 +157,6 @@ class cs_label_item extends cs_item {
     * this method sets a list of topics which are linked to the label_item
     *
     * @param object cs_list value list of topics (cs_label_item)
-    *
-    * @author CommSy Development Group
     */
    function setTopicList($value) {
       $this->_setObject(CS_TOPIC_TYPE, $value, FALSE);
@@ -174,8 +166,6 @@ class cs_label_item extends cs_item {
     * this method returns a list of institutions which are linked to the label_item
     *
     * @return object cs_list a list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
     */
    function getInstitutionList() {
       $institution_list = $this->_getLinkedItems($this->_environment->getLabelManager(), CS_INSTITUTION_TYPE);
@@ -187,8 +177,6 @@ class cs_label_item extends cs_item {
    * this method sets a list of institution item_ids which are linked to the label_item
    *
    * @param array of institution ids
-   *
-   * @author CommSy Development Group
    */
    function setInstitutionListByID ($value) {
       $institution_array = array();
@@ -204,8 +192,6 @@ class cs_label_item extends cs_item {
     * this method sets a list of institutions which are linked to the label_item
     *
     * @param object cs_list value list of institutions (cs_label_item)
-    *
-    * @author CommSy Development Group
     */
    function setInstitutionList($value) {
       $this->_setObject(CS_INSTITUTION_TYPE, $value, FALSE);
@@ -216,8 +202,6 @@ class cs_label_item extends cs_item {
     * this method returns a list of materials which are linked to the label_item
     *
     * @return object cs_list a list of materials (cs_material_item)
-    *
-    * @author CommSy Development Group
     */
    function getMaterialList () {
       return $this->_getLinkedItems($this->_environment->getMaterialManager(), CS_MATERIAL_TYPE);
@@ -229,8 +213,6 @@ class cs_label_item extends cs_item {
    * @param array of material ids, index of id must be 'iid', index of version must be 'vid'
    * Example:
    * array(array('iid' => id1, 'vid' => version1), array('iid' => id2, 'vid' => version2))
-   *
-   * @author CommSy Development Group
    */
    function setMaterialListByID ($value) {
       $this->_setValue(CS_MATERIAL_TYPE, $value, FALSE);
@@ -240,8 +222,6 @@ class cs_label_item extends cs_item {
     * this method sets a list of materials which are linked to the label_item
     *
     * @param string value title of the label_item
-    *
-    * @author CommSy Development Group
     */
    function setMaterialList ($value) {
       $this->_setObject(CS_MATERIAL_TYPE, $value, FALSE);

@@ -1144,6 +1144,8 @@ class cs_environment {
             return $this->getTagManager();
          } elseif ($type == CS_TAG2TAG_TYPE) {
             return $this->getTag2TagManager();
+         } elseif ($type == CS_BUZZWORD_TYPE) {
+            return $this->getBuzzwordManager();
          } elseif ( !$this->isPlugin($type) ) {
             include_once('functions/error_functions.php');
             trigger_error('do not know this type ['.$type.']',E_USER_ERROR);

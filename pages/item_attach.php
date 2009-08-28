@@ -100,6 +100,12 @@ if ( $item->isA(CS_LABEL_TYPE)
    $group_manager = $environment->getGroupManager();
    $item = $group_manager->getItem($ref_iid);
    unset($group_manager);
+} elseif ( $item->isA(CS_LABEL_TYPE)
+     and $item->getLabelType() == CS_BUZZWORD_TYPE
+   ) {
+   $buzzword_manager = $environment->getBuzzwordManager();
+   $item = $buzzword_manager->getItem($ref_iid);
+   unset($buzzword_manager);
 }
 
 if ($environment->getCurrentModule() == CS_USER_TYPE){
@@ -108,7 +114,11 @@ if ($environment->getCurrentModule() == CS_USER_TYPE){
    }else{
       $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
    }
-}else{
+} elseif ( $item->isA(CS_LABEL_TYPE)
+           and $item->getLabelType() == CS_BUZZWORD_TYPE
+         ) {
+   $selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+} else {
    $selected_ids = $item->getAllLinkedItemIDArray();
 }
 
@@ -256,9 +266,14 @@ if ( !empty($option)
     }
     $entry_array = array_merge($entry_array,$entry_new_array);
     $entry_array = array_unique($entry_array);
-
-    $item->setLinkedItemsByIDArray($entry_array);
-    $item->save();
+    if ( $item->isA(CS_LABEL_TYPE)
+         and $item->getLabelType() == CS_BUZZWORD_TYPE
+       ) {
+       $item->saveLinksByIDArray($entry_array);
+    } else {
+       $item->setLinkedItemsByIDArray($entry_array);
+       $item->save();
+    }
     $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
     $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
     unset($params['attach_view']);
@@ -382,6 +397,7 @@ foreach ($rubric_array as $rubric) {
 
 $sublist = $item_list->getSubList($from-1,$interval);
 $item_attach_index_view->setList($sublist);
+
 $item_attach_index_view->setLinkedItemIDArray($selected_ids);
 $item_attach_index_view->setRefItemID($ref_iid);
 $item_attach_index_view->setRefItem($item);

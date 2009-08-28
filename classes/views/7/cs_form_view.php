@@ -2204,6 +2204,7 @@ class cs_form_view extends cs_view {
                 $this->_environment->getCurrentModule() != CS_STEP_TYPE and
                 $this->_environment->getCurrentModule() != CS_SECTION_TYPE and
                 $this->_environment->getCurrentModule() != CS_MYROOM_TYPE and
+                $this->_environment->getCurrentModule() != CS_TAG_TYPE and
                 $room->withNetnavigation() and
                 $this->_environment->getCurrentFunction() == 'edit'
 

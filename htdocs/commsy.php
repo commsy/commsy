@@ -879,6 +879,9 @@ if ( $show_agb_again ) {
                  or $current_module == CS_TODO_TYPE
                  or $current_module == CS_TOPIC_TYPE
                  or $current_module == CS_INSTITUTION_TYPE
+                 or $current_module == CS_TAG_TYPE
+                 or $current_module == CS_BUZZWORD_TYPE
+                 or $current_module == 'buzzwords'
                )
          ) {
          include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
@@ -1008,7 +1011,7 @@ if ( $environment->isOutputModeNot('XML') ) {
          case 'item':
             include_once('pages/item_attach.php');
             break;
-     }
+      }
    }
 }
 

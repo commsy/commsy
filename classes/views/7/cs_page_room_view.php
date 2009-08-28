@@ -1546,14 +1546,15 @@ class cs_page_room_view extends cs_page_view {
             ) {
             $html .= $this->getTagBoxAsHTML();
          }
-         if ( (isset($_GET['attach_view'])
-              and ($_GET['attach_view'] == 'yes')
-              and isset($_GET['attach_type'])
-              and !empty($_GET['attach_type'])
-              and $_GET['attach_type'] == 'item')
-              or(
-                 isset($_POST['right_box_option'])
-                 and (
+         if ( ( isset($_GET['attach_view'])
+                and ($_GET['attach_view'] == 'yes')
+                and isset($_GET['attach_type'])
+                and !empty($_GET['attach_type'])
+                and $_GET['attach_type'] == 'item'
+              )
+              or
+              ( isset($_POST['right_box_option'])
+                and (
                      isOption($_POST['right_box_option'], getMessage('COMMON_ITEM_NEW_ATTACH')) or
                      isOption($_POST['right_box_option'], getMessage('COMMON_GROUP_ATTACH')) or
                      isOption($_POST['right_box_option'], getMessage('COMMON_INSTITUTION_ATTACH'))
