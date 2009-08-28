@@ -92,6 +92,7 @@ var $_room_type = 'context';
          $html .= $this->_getMailAction($item,$current_user);
       }
       if ( $this->_environment->inPrivateRoom() ) {
+         /*
          $portal_user = $current_user->getRelatedCommSyUserItem();
          $current_portal_item = $this->_environment->getCurrentPortalItem();
          if ( isset($current_portal_item)
@@ -104,6 +105,7 @@ var $_room_type = 'context';
          } else {
             $html .= $this->_getNewAction($item,$current_user);
          }
+         */
       } else {
          $html .= $this->_getNewAction($item,$current_user);
       }
