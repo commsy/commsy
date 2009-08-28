@@ -534,10 +534,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       // room templates 3 - select
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ( ( empty($this->_type) or empty($_GET['iid']) )
-             and isset($current_portal)
-               and ( $this->_environment->inPortal()
-                           and $this->_environment->getCurrentModule() == CS_COMMUNITY_TYPE
-                   )
+           and isset($current_portal)
+           and $this->_environment->inPortal()
+           and $this->_environment->getCurrentModule() == CS_COMMUNITY_TYPE
          ) {
          $room_manager = $this->_environment->getCommunityManager();
          $room_manager->setContextLimit($current_portal->getItemID());
@@ -675,21 +674,48 @@ class cs_configuration_preferences_form extends cs_rubric_form {
             $this->_form->addHidden('type',$this->_type);
          } else { // enter new room
             $radio_values = array();
-            $radio_values[0]['text'] = getMessage('ROOM_TYPE_PROJECT');
-            $radio_values[0]['value'] = CS_PROJECT_TYPE;
-            $radio_values[0]['extention'] = 'onclick="enable()"';
-            $radio_values[1]['text'] = getMessage('ROOM_TYPE_COMMUNITY');
-            $radio_values[1]['value'] = CS_COMMUNITY_TYPE;
-            $radio_values[1]['extention'] = 'onclick="disable()"';
-            $this->_form->addRadioGroup('type',
-                                        getMessage('ROOM_TYPE'),
-                                        getMessage('ROOM_TYPE_DESC'),
-                                        $radio_values,
-                                        '',
-                                        true,
-                                        false
-                                       );
-            unset($radio_values);
+            $with_project = true;
+            $with_community = true;
+            if ( $this->_environment->inPrivateRoom() ) {
+               $current_portal_item = $this->_environment->getCurrentPortalItem();
+               if ( $current_portal_item->openProjectRoomOnlyInCommunityRoom() ) {
+                  $with_project = false;
+               }
+            }
+            if ( $this->_environment->inPrivateRoom() ) {
+               $current_portal_item = $this->_environment->getCurrentPortalItem();
+               $current_user = $this->_environment->getCurrentUserItem();
+               $portal_user = $current_user->getRelatedCommSyUserItem();
+               if ( $current_portal_item->openCommunityRoomOnlyByModeration()
+                    and isset($portal_user)
+                    and !$portal_user->isModerator()
+                  ) {
+                  $with_community = false;
+               }
+            }
+            if ( $with_project and $with_community ) {
+               $radio_values[0]['text'] = $this->_translator->getMessage('ROOM_TYPE_PROJECT');
+               $radio_values[0]['value'] = CS_PROJECT_TYPE;
+               $radio_values[0]['extention'] = 'onclick="enable()"';
+               $radio_values[1]['text'] = $this->_translator->getMessage('ROOM_TYPE_COMMUNITY');
+               $radio_values[1]['value'] = CS_COMMUNITY_TYPE;
+               $radio_values[1]['extention'] = 'onclick="disable()"';
+               $this->_form->addRadioGroup('type',
+                                           $this->_translator->getMessage('ROOM_TYPE'),
+                                           $this->_translator->getMessage('ROOM_TYPE_DESC'),
+                                           $radio_values,
+                                           '',
+                                           true,
+                                           false
+                                          );
+               unset($radio_values);
+            } elseif ( !$with_project ) {
+               $this->_form->addText('type_text',$this->_translator->getMessage('ROOM_TYPE'),$this->_translator->getMessage('ROOM_TYPE_COMMUNITY'));
+               $this->_form->addHidden('type',CS_COMMUNITY_TYPE);
+            } elseif ( !$with_community ) {
+               $this->_form->addText('type_text',$this->_translator->getMessage('ROOM_TYPE'),$this->_translator->getMessage('ROOM_TYPE_PROJECT'));
+               $this->_form->addHidden('type',CS_PROJECT_TYPE);
+            }
          }
 
 
@@ -762,6 +788,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
       // template
       if ( $this->_environment->inPrivateRoom()
            and $this->_with_template_form_element
+           and $this->_environment->getCurrentModule() != type2Module(CS_MYROOM_TYPE)
          ) {
          $this->_form->addSelect('template_select',
                                  $this->_template_array,
@@ -804,7 +831,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          $languageArray[$zaehler]['text']  = '-------';
          $languageArray[$zaehler]['value'] = 'disabled';
          $zaehler++;
-              $tmpArray = $this->_environment->getAvailableLanguageArray();
+         $tmpArray = $this->_environment->getAvailableLanguageArray();
          foreach ($tmpArray as $item){
             switch ( mb_strtoupper($item, 'UTF-8') ){
                case 'DE':
@@ -812,9 +839,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                   break;
                case 'EN':
                   $languageArray[$zaehler]['text']= getMessage('EN');
-                  break;
-               case 'RU':
-                  $languageArray[$zaehler]['text']= getMessage('RU');
                   break;
                default:
                   // $languageArray[$zaehler]['text']= getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_preferenes_form(533) ');
@@ -1362,7 +1386,6 @@ class cs_configuration_preferences_form extends cs_rubric_form {
            }
            unset($current_portal_item);
         }
-
 
          // default language of room
          $current_user = $this->_environment->getCurrentUserItem();

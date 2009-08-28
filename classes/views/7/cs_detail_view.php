@@ -3420,13 +3420,25 @@ class cs_detail_view extends cs_view {
                                     $this->_translator->getMessage('COMMON_NEW_ITEM')).LF;
          unset($params);
       } else {
-         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
-         } else {
-            $image = '<img src="images/commsyicons/22x22/new_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_NEW_ITEM').'"/>';
-         }
-         $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')).' "class="disabled">'.$image.'</a>'.LF;
+         $html .= $this->_getNewActionDisabled();
       }
+      return $html;
+   }
+
+   function _getNewActionDisabled () {
+      return $this->_getActionDisabled('new',$this->_translator->getMessage('COMMON_NEW_ITEM'));
+   }
+
+   function _getActionDisabled ( $file_name, $text ) {
+      $html = '';
+      if ( $this->_environment->getCurrentBrowser() == 'MSIE'
+           and mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'
+         ) {
+         $image = '<img src="images/commsyicons_msie6/22x22/'.$file_name.'_grey.gif" style="vertical-align:bottom;" alt="'.$text.'"/>';
+      } else {
+         $image = '<img src="images/commsyicons/22x22/'.$file_name.'_grey.png" style="vertical-align:bottom;" alt="'.$text.'"/>';
+      }
+      $html .= '&nbsp;&nbsp;&nbsp;<a title="'.$this->_translator->getMessage('COMMON_NO_ACTION_NEW',$text).' "class="disabled">'.$image.'</a>'.LF;
       return $html;
    }
 }

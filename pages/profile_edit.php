@@ -774,6 +774,12 @@ if ($command != 'error') { // only if user is allowed to edit user
                   if (!empty($_POST['language']) and $_POST['language'] != $portal_user->getLanguage()) {
                      $portal_user->setLanguage($_POST['language']);
                      $save = true;
+                     if ( $environment->inPrivateRoom() ) {
+                        $current_user_item = $environment->getCurrentUserItem();
+                        $current_user_item->setLanguage($_POST['language']);
+                        $current_user_item->save();
+                        unset($current_user_item);
+                     }
                   }
                   if (!empty($_POST['email_account_want'])) {
                      if ($portal_user->getAccountWantMail() == 'no') {

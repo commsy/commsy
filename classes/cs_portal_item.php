@@ -127,6 +127,15 @@ class cs_portal_item extends cs_guide_item {
        $this->_addExtra('COMMUNITYROOMCREATIONSTATUS',$value);
     }
 
+    public function openCommunityRoomOnlyByModeration () {
+       $retour = false;
+       $status = $this->getCommunityRoomCreationStatus();
+       if ( $status == 'moderator' ) {
+          $retour = true;
+       }
+       return $retour;
+    }
+
     /** get community room creation status
     *
     * @return room creation status status "portal"= on portal, too, "communityroom"= only in communityrooms
@@ -145,6 +154,15 @@ class cs_portal_item extends cs_guide_item {
     */
     function setProjectRoomCreationStatus ($value) {
        $this->_addExtra('PROJECTCREATIONSTATUS',$value);
+    }
+
+    public function openProjectRoomOnlyInCommunityRoom () {
+       $retour = false;
+       $status = $this->getProjectRoomCreationStatus();
+       if ( $status == 'communityroom' ) {
+          $retour = true;
+       }
+       return $retour;
     }
 
    /** set authentication connection information

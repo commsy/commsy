@@ -91,7 +91,22 @@ var $_room_type = 'context';
       if ( !$this->_environment->inPrivateRoom() ) {
          $html .= $this->_getMailAction($item,$current_user);
       }
-      $html .= $this->_getNewAction($item,$current_user);
+      if ( $this->_environment->inPrivateRoom() ) {
+         $portal_user = $current_user->getRelatedCommSyUserItem();
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         if ( isset($current_portal_item)
+              and $current_portal_item->openProjectRoomOnlyInCommunityRoom()
+              and $current_portal_item->openCommunityRoomOnlyByModeration()
+              and isset($portal_user)
+              and !$portal_user->isModerator()
+            ) {
+            $html .= $this->_getNewActionDisabled();
+         } else {
+            $html .= $this->_getNewAction($item,$current_user);
+         }
+      } else {
+         $html .= $this->_getNewAction($item,$current_user);
+      }
       return $html;
    }
 
