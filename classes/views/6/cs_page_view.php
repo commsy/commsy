@@ -1793,8 +1793,7 @@ class cs_page_view extends cs_view {
                   $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                   unset($current_portal_item);
 
-                  // @segment-end 89153
-                  // @segment-begin 42457 no-cs_modus/user-status><0:links-change_account/my_profile
+                  /*
                   if (!$this->_environment->inServer() ) {
                   // auth source
                      if ( ( isset($current_auth_source_item)
@@ -1811,6 +1810,7 @@ class cs_page_view extends cs_view {
                         $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
                       }
                   }
+                  */
                }
             } else {
                // @segment-end 1467
@@ -1941,6 +1941,7 @@ class cs_page_view extends cs_view {
       }
 
      // change account
+     /*
      elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
         } else {
@@ -1972,7 +1973,8 @@ class cs_page_view extends cs_view {
         $html .= $left_page->execute();
         unset($left_page);
         $html .= '</div>'.LF;
-      }
+     }
+     */
 
      // forget account
       elseif (!empty($cs_mod) and $cs_mod == 'account_forget') {

@@ -1595,7 +1595,6 @@ class cs_page_view extends cs_view {
    }*/
 
    function getMyAreaAsHTML() {
-      // @segment-begin 47891 read cs_mode-from-GET/POST(values_user_logged_in=password_change/account_change/become_member;values_user_logged_out=portalmember/account_forget/passwort_forget)
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
       $current_context = $this->_environment->getCurrentContextItem();
@@ -1609,8 +1608,6 @@ class cs_page_view extends cs_view {
       }
       unset($get_vars);
       unset($post_vars);
-      // @segment-end 47891
-      // @segment-begin 65267 titel-of-my_area_box/upper_corner_pictures
       $html  = LF;
       $html .= '<div class="myarea_frame">'.LF;
       $html .= '<div class="myarea_headline">'.LF;
@@ -1618,15 +1615,11 @@ class cs_page_view extends cs_view {
       if ( $this->_with_personal_area) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
             $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
-            // @segment-end 77327
-            // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest
          } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
                $params = array();
                $params['iid'] = $this->_current_user->getItemID();
                $fullname = $this->_current_user->getFullname();
 
-          // @segment-end 70706
-          // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
                $length = mb_strlen($fullname);
                if ($length < 20) {
                   $html .= $fullname;
@@ -1647,9 +1640,8 @@ class cs_page_view extends cs_view {
                $html .= $this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST');
          $html .= '</div >'.LF;
             }
-      // @segment-end 65267
+
       // personal area
-      // @segment-begin 77327 no-cs_modus/user=guest:no-user-logged-in-message
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
             if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
@@ -1927,8 +1919,7 @@ class cs_page_view extends cs_view {
                      $params['cs_modus'] = 'become_member';
                      $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_environment->getCurrentModule(), $this->_environment->getCurrentFunction(), $params,$this->_translator->getMessage('MYAREA_CONTEXT_JOIN'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
                   }
-                  // @segment-end 1467
-                  // @segment-begin 89153 no-cs_modus/user-status><0:links-change_password
+
                   // auth source
                   $current_portal_item = $this->_environment->getCurrentPortalItem();
                   if ( !isset($current_portal_item) ) {
@@ -1937,8 +1928,7 @@ class cs_page_view extends cs_view {
                   $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                   unset($current_portal_item);
 
-                  // @segment-end 89153
-                  // @segment-begin 42457 no-cs_modus/user-status><0:links-change_account/my_profile
+                  /*
                   if (!$this->_environment->inServer() ) {
                   // auth source
                      if ( ( isset($current_auth_source_item)
@@ -1955,6 +1945,7 @@ class cs_page_view extends cs_view {
                         $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
                       }
                   }
+                  */
                }
             } else {
                // @segment-end 1467
@@ -2085,6 +2076,7 @@ class cs_page_view extends cs_view {
       }
 
      // change account
+     /*
      elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
         } else {
@@ -2116,7 +2108,8 @@ class cs_page_view extends cs_view {
         $html .= $left_page->execute();
         unset($left_page);
         $html .= '</div>'.LF;
-      }
+     }
+     */
 
      // forget account
       elseif (!empty($cs_mod) and $cs_mod == 'account_forget') {

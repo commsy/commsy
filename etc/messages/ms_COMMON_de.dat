@@ -340,6 +340,7 @@ $message["COMMON_DISCUSSION"]["de"] = "Diskussion";
 $message["COMMON_DISCUSSIONS"]["de"] = "Diskussionen";
 $message["COMMON_DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
 $message["COMMON_DISCUSSION_INDEX"]["de"] = "Diskussionen";
+$message["COMMON_DONT_STOP"]["de"] = "Dieser Vorgang kann etwas dauern. Brechen Sie ihn nicht ab!";
 $message["COMMON_DOWNLOAD"]["de"] = "Seite speichern";
 $message["COMMON_EDIT"]["de"] = "bearbeiten";
 $message["COMMON_EDIT_AS_MODERATOR"]["de"] = "Bitte beachten Sie, dass dieser Eintrag nicht zur Bearbeitung durch alle freigegeben ist. Sie dürfen nur aufgrund Ihrer Rechte als ModeratorIn diesen Eintrag bearbeiten und verletzen dadurch eventuell Urheberrechte.";

@@ -65,6 +65,11 @@ class cs_profile_form extends cs_rubric_form {
 
    private $_language = NULL;
 
+   private $_show_merge_form = true;
+   private $_show_auth_source = true;
+   private $_auth_source_list = NULL;
+   private $_array_sources_allow_delete = array();
+
   /** constructor
     * the only available constructor
     *
@@ -176,6 +181,42 @@ class cs_profile_form extends cs_rubric_form {
       }else{
          $this->_user = $this->_environment->getPortalUserItem();
       }
+
+      if ( $this->getProfilePageName() == 'account' ) {
+         if ( $this->_environment->inCommunityRoom()
+              or $this->_environment->inProjectRoom() ) {
+            $current_user = $this->_environment->getPortalUserItem();
+         } else {
+            $current_user = $this->_environment->getCurrentUserItem();
+         }
+         if ( isset($current_user)
+              and $current_user->isRoot()
+            ) {
+            $this->_show_merge_form = false;
+         }
+
+         // auth source
+         $current_portal = $this->_environment->getCurrentPortalItem();
+         #$this->_show_auth_source = $current_portal->showAuthAtLogin();
+         # muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
+         # keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
+         # zusammengelegt werden
+         $this->_show_auth_source = true;
+         $auth_source_list = $current_portal->getAuthSourceListEnabled();
+         if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
+            $auth_source_item = $auth_source_list->getFirst();
+            while ($auth_source_item) {
+               $temp_array = array();
+               $temp_array['value'] = $auth_source_item->getItemID();
+               $temp_array['text'] = $auth_source_item->getTitle();
+               $this->_auth_source_array[] = $temp_array;
+               unset($temp_array);
+               $auth_source_item = $auth_source_list->getNext();
+            }
+         }
+         $this->_default_auth_source_entry = $current_portal->getAuthDefault();
+      }
+
    }
 
    /** create the form, INTERNAL
@@ -320,9 +361,8 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addTextField('lastname','',$this->_translator->getMessageInLang($this->_language,'USER_LASTNAME'),'','','30',true);
          $this->_form->addHidden('lastname_hidden','');
          $this->_form->addHidden('firstname_hidden','');
-
-
          $this->_form->addHidden('user_id','');
+
          // content form fields
          $this->_form->addTextField('user_id','',$this->_translator->getMessageInLang($this->_language,'USER_USER_ID'),'',100,'30',true);
          $this->_form->addPassword('password_old','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD_OLD'),'','','20',false);
@@ -350,15 +390,32 @@ class cs_profile_form extends cs_rubric_form {
          }
 
          // buttons
-         $this->_form->addEmptyline();
          $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'PREFERENCES_SAVE_BUTTON'),$this->_translator->getMessageInLang($this->_language,'PREFERENCES_DELETE_BUTTON'));
+
+         if ($this->_show_merge_form) {
+            $this->_form->addEmptyline();
+            $delete_source_number = count($this->_array_sources_allow_delete);
+            $current_portal = $this->_environment->getCurrentPortalItem();
+            $current_user = $this->_environment->getCurrentUserItem();
+
+            // text and options
+            // auth source
+            $this->_form->addSubHeadline('subheadline',$this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE'));
+            if ( count($this->_auth_source_array) == 1 ) {
+               $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
+            } elseif( $this->_show_auth_source ) {
+               $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 12);
+            }
+            $this->_form->addTextfield('user_id_merge','',$this->_translator->getMessageInLang($this->_language,'COMMON_ACCOUNT'),'','',21,false);
+            $this->_form->addPassword('password_merge','',$this->_translator->getMessageInLang($this->_language,'USER_PASSWORD'),'','',21,false);
+            $this->_form->addText('merge_desc',$this->_translator->getMessageInLang($this->_language,'COMMON_ATTENTION'),$this->_translator->getMessageInLang($this->_language,'COMMON_DONT_STOP'));
+            $this->_form->addButtonBar('option',$this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_BUTTON'));
+         }
       }
    }
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
-    *
-    * @author CommSy Development Group
     */
    function _prepareValues () {
       if ($this->getProfilePageName() == 'user'){
@@ -463,25 +520,79 @@ class cs_profile_form extends cs_rubric_form {
 
    function _checkValues () {
       if ($this->getProfilePageName() == 'account'){
-         if ( !empty($this->_form_post['password_old']) ) {
-            $current_user = $this->_environment->getCurrentUserItem();
-            $authentication = $this->_environment->getAuthenticationObject();
-            if ( !$authentication->isAccountGranted($current_user->getUserID(),$this->_form_post['password_old'],$current_user->getAuthSource()) ) {
-               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR');
+         if ( !empty($this->_form_post['option'])
+              and isOption($this->_form_post['option'],$this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_BUTTON'))
+            ) {
+            if ( empty($this->_form_post['user_id_merge']) ) {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'COMMON_ERROR_SELECT',$this->_translator->getMessage('COMMON_ACCOUNT'));
+               $this->_form->setFailure('user_id_merge');
+            }
+            if ( empty($this->_form_post['password_merge']) ) {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'COMMON_ERROR_SELECT',$this->_translator->getMessage('USER_PASSWORD'));
+               $this->_form->setFailure('password_merge');
+            }
+            if ( !empty($this->_form_post['user_id_merge'])
+                 and !empty($this->_form_post['password_merge'])
+               ) {
+               global $c_annonymous_account_array;
+               $current_user = $this->_environment->getCurrentUserItem();
+               if ( !empty($c_annonymous_account_array[mb_strtolower($current_user->getUserID(), 'UTF-8').'_'.$current_user->getAuthSource()])
+                    and $current_user->isOnlyReadUser()
+                  ) {
+                  $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_ERROR_ANNONYMOUS',$current_user->getUserID());
+               } elseif ( !empty($c_annonymous_account_array[mb_strtolower($this->_form_post['user_id_merge'], 'UTF-8').'_'.$this->_form_post['auth_source']])
+                          and !empty($c_read_account_array[mb_strtolower($this->_form_post['user_id_merge'], 'UTF-8').'_'.$this->_form_post['auth_source']])
+                        ) {
+                  $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_ERROR_ANNONYMOUS',$this->_form_post['user_id_merge']);
+               } elseif ( !empty($this->_form_post['user_id_merge'])
+                    and !empty($this->_form_post['password_merge'])
+                  ) {
+                  if ( $current_user->getUserID() == $this->_form_post['user_id_merge']
+                       and ( empty($this->_form_post['auth_source'])
+                             or ( $current_user->getAuthSource() == $this->_form_post['auth_source'] )
+                           )
+                     ) {
+                     $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_ERROR_USER_ID',$this->_form_post['user_id_merge']);
+                     $this->_form->setFailure('user_id_merge','');
+                  } elseif ( !empty($this->_form_post['auth_source']) ) {
+                     $authentication = $this->_environment->getAuthenticationObject();
+                     $auth_manager = $authentication->getAuthManager($this->_form_post['auth_source']);
+                     if ( !$auth_manager->checkAccount($this->_form_post['user_id_merge'],$this->_form_post['password_merge']) ) {
+                        $this->_error_array = array_merge($this->_error_array,$auth_manager->getErrorArray());
+                        $this->_form->setFailure('user_id_merge','');
+                        $this->_form->setFailure('password_merge','');
+                     }
+                  } else {
+                     $authentication = $this->_environment->getAuthenticationObject();
+                     if ( !$authentication->checkAccount($this->_form_post['user_id_merge'],$this->_form_post['password_merge']) ) {
+                        $this->_error_array = array_merge($this->_error_array,$authentication->getErrorArray());
+                        $this->_form->setFailure('user_id_merge','');
+                        $this->_form->setFailure('password_merge','');
+                     }
+                  }
+               }
+            }
+         } else {
+            if ( !empty($this->_form_post['password_old']) ) {
+               $current_user = $this->_environment->getCurrentUserItem();
+               $authentication = $this->_environment->getAuthenticationObject();
+               if ( !$authentication->isAccountGranted($current_user->getUserID(),$this->_form_post['password_old'],$current_user->getAuthSource()) ) {
+                  $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR');
+                  $this->_form->setFailure('password_old');
+               }
+            }
+            if ( empty($this->_form_post['password_old'])
+                 and !empty($this->_form_post['password'])
+                 and !empty($this->_form_post['password2'])
+               ) {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR2');
                $this->_form->setFailure('password_old');
             }
-         }
-         if ( empty($this->_form_post['password_old'])
-              and !empty($this->_form_post['password'])
-              and !empty($this->_form_post['password2'])
-            ) {
-            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_OLD_PASSWORD_ERROR2');
-            $this->_form->setFailure('password_old');
-         }
-         if (isset($this->_form_post['password']) and $this->_form_post['password'] != $this->_form_post['password2']) {
-            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_ERROR');
-            $this->_form->setFailure('password');
-            $this->_form->setFailure('password2');
+            if (isset($this->_form_post['password']) and $this->_form_post['password'] != $this->_form_post['password2']) {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_PASSWORD_ERROR');
+               $this->_form->setFailure('password');
+               $this->_form->setFailure('password2');
+            }
          }
       }
 

@@ -49,10 +49,10 @@ class cs_account_merge_page extends cs_left_page {
       if ( !empty($this->_command)
            and isOption($this->_command, $this->_translator->getMessage('ACCOUNT_MERGE_BUTTON'))
          ) {
-           $correct = $form->check();
-           if ( $correct ) {
-              $authentication = $this->_environment->getAuthenticationObject();
-              $current_user = $this->_environment->getCurrentUserItem();
+         $correct = $form->check();
+         if ( $correct ) {
+            $authentication = $this->_environment->getAuthenticationObject();
+            $current_user = $this->_environment->getCurrentUserItem();
             if ( isset($this->_post_vars['auth_source']) and !empty($this->_post_vars['auth_source']) ) {
                $auth_source_old = $this->_post_vars['auth_source'];
             } else {

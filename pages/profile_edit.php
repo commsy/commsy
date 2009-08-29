@@ -849,7 +849,31 @@ if ($command != 'error') { // only if user is allowed to edit user
                }
                redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
             }
-         } elseif (!empty($iid) ) { // change existing user
+         }
+
+         // merge accounts
+         elseif ( isOption($command,$translator->getMessageInLang($portal_language,'ACCOUNT_MERGE_BUTTON')) ) {
+            $form->setFormPost($_POST);
+            $form->prepareForm();
+            $form->loadValues();
+            if ( $form->check() ) {
+               $authentication = $environment->getAuthenticationObject();
+               $current_user = $environment->getCurrentUserItem();
+               if ( isset($_POST['auth_source']) and !empty($_POST['auth_source']) ) {
+                  $auth_source_old = $_POST['auth_source'];
+               } else {
+                  $current_context = $environment->getCurrentContextItem();
+                  $auth_source_old = $current_context->getAuthDefault();
+               }
+               $authentication->mergeAccount($current_user->getUserID(),$current_user->getAuthSource(),$_POST['user_id_merge'],$auth_source_old);
+               $params = $environment->getCurrentParameterArray();
+               $params['is_saved'] = true;
+               redirect($environment->getCurrentContextID(), $environment->getCurrentModule(),$environment->getCurrentFunction(), $params);
+            }
+         }
+
+         // change existing user
+         elseif (!empty($iid) ) {
             $user_manager = $environment->getUserManager();
             $user_item = $user_manager->getItem($iid);
             $form->setItem($user_item);
