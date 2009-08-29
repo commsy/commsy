@@ -69,6 +69,8 @@ class cs_profile_form extends cs_rubric_form {
    private $_show_auth_source = true;
    private $_auth_source_list = NULL;
    private $_array_sources_allow_delete = array();
+   private $_show_password_change_form = false;
+   private $_show_account_change_form = false;
 
   /** constructor
     * the only available constructor
@@ -196,13 +198,16 @@ class cs_profile_form extends cs_rubric_form {
          }
 
          // auth source
-         $current_portal = $this->_environment->getCurrentPortalItem();
-         #$this->_show_auth_source = $current_portal->showAuthAtLogin();
+         $current_portal_item = $this->_environment->getCurrentPortalItem();
+         if ( !isset($current_portal_item) ) {
+            $current_portal_item = $this->_environment->getServerItem();
+         }
+         #$this->_show_auth_source = $current_portal_item->showAuthAtLogin();
          # muss angezeigt werden, sonst koennen mit der aktuellen Programmierung
          # keine Acounts mit gleichen Kennungen aber unterschiedlichen Quellen
          # zusammengelegt werden
          $this->_show_auth_source = true;
-         $auth_source_list = $current_portal->getAuthSourceListEnabled();
+         $auth_source_list = $current_portal_item->getAuthSourceListEnabled();
          if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
             $auth_source_item = $auth_source_list->getFirst();
             while ($auth_source_item) {
@@ -214,9 +219,25 @@ class cs_profile_form extends cs_rubric_form {
                $auth_source_item = $auth_source_list->getNext();
             }
          }
-         $this->_default_auth_source_entry = $current_portal->getAuthDefault();
-      }
+         $this->_default_auth_source_entry = $current_portal_item->getAuthDefault();
 
+         $current_auth_source_item = $current_portal_item->getAuthSource($current_user->getAuthSource());
+         unset($current_portal_item);
+         if ( ( isset($current_auth_source_item)
+                and $current_auth_source_item->allowChangePassword()
+              )
+              or $current_user->isRoot()
+            ) {
+            $this->_show_password_change_form = true;
+         }
+         if ( ( isset($current_auth_source_item)
+                and $current_auth_source_item->allowChangeUserID()
+              )
+              or $current_user->isRoot()
+            ) {
+            $this->_show_account_change_form = true;
+         }
+      }
    }
 
    /** create the form, INTERNAL
@@ -361,13 +382,19 @@ class cs_profile_form extends cs_rubric_form {
          $this->_form->addTextField('lastname','',$this->_translator->getMessageInLang($this->_language,'USER_LASTNAME'),'','','30',true);
          $this->_form->addHidden('lastname_hidden','');
          $this->_form->addHidden('firstname_hidden','');
-         $this->_form->addHidden('user_id','');
 
          // content form fields
-         $this->_form->addTextField('user_id','',$this->_translator->getMessageInLang($this->_language,'USER_USER_ID'),'',100,'30',true);
-         $this->_form->addPassword('password_old','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD_OLD'),'','','20',false);
-         $this->_form->addPassword('password','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD'),'','','20',false);
-         $this->_form->addPassword('password2','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD2'),'','','20',false);
+         if ( $this->_show_account_change_form ) {
+            $this->_form->addTextField('user_id','',$this->_translator->getMessageInLang($this->_language,'USER_USER_ID'),'',100,'30',true);
+         } else {
+            $this->_form->addHidden('user_id','');
+            $this->_form->addText('user_id',$this->_translator->getMessageInLang($this->_language,'USER_USER_ID'),'');
+         }
+         if ( $this->_show_password_change_form ) {
+            $this->_form->addPassword('password_old','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD_OLD'),'','','20',false);
+            $this->_form->addPassword('password','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD'),'','','20',false);
+            $this->_form->addPassword('password2','',$this->_translator->getMessageInLang($this->_language,'PROFILE_USER_PASSWORD2'),'','','20',false);
+         }
 
          $i=0;
          $options = array();

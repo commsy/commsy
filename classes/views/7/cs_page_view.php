@@ -1948,8 +1948,7 @@ class cs_page_view extends cs_view {
                   */
                }
             } else {
-               // @segment-end 1467
-               // @segment-begin 89153 no-cs_modus/user-status><0:links-change_password
+
                // auth source
                if (!$this->_environment->inServer() ) {
                   $html .= '</div>'.LF;
