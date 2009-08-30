@@ -138,6 +138,8 @@ foreach ( $table_array as $table ) {
                   $key_array[] = 'USAGE_INFO_TEXT';
                   $key_array[] = 'USAGE_INFO_FORM';
                   $key_array[] = 'BIBLIOGRAPHIC';
+                  $key_array[] = 'OUTOFSERVICE';
+                  $key_array[] = 'SERVER_NEWS';
                   foreach ($key_array as $field) {
                      if ( !empty($extra_array[$field])
                           and is_array($extra_array[$field])
