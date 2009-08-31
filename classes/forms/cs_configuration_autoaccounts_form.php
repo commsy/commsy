@@ -65,6 +65,8 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addImage('dates_upload','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOADFILE'),'');
+      $seperators = array(array('text' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
+      $this->_form->addSelect('autoaccounts_seperator',$seperators,$seperators[0],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
       $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
       $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES'));
    }
@@ -75,6 +77,10 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _prepareValues () {
+      if(isset($_GET['seperator_not_found'])){
+         $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_NOT_FOUND');
+         $this->_form->setFailure('autoaccounts_seperator','');
+      }
    }
 
 

@@ -185,13 +185,38 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                $dates_data_array = array();
+               if($_POST[autoaccounts_seperator] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
+                  $found_comma = false;
+                  $found_semicolon = false;
+                  for ($i = 0; $i < count($data_array); $i++){
+                     $temp_string = $data_array[$i];
+                     if(stristr($temp_string, ',')){
+                        $found_comma = true;
+                     }
+                     if(stristr($temp_string, ';')){
+                        $found_semicolon = true;
+                     }
+                  }
+                  if($found_comma and !$found_semicolon){
+                     $seperator = ',';
+                  } else if (!$found_comma and $found_semicolon){
+                     $seperator = ';';
+                  }
+                  else {
+                     $params = array();
+                     $params['seperator_not_found'] = true;
+                     redirect($environment->getCurrentContextID(),'configuration','autoaccounts',$params);
+                  }
+               } else {
+                  $seperator = $_POST[autoaccounts_seperator];
+               }
                for ($i = 0; $i < count($data_array); $i++){
                   if ($i == 0){
                      $temp_data = str_replace('"','',$data_array[$i]);
-                     $data_header_array = explode(',',$temp_data);
+                     $data_header_array = explode($seperator,$temp_data);
                   }else{
                      $temp_data = str_replace('"','',$data_array[$i]);
-                     $temp_data_array = explode(',',$temp_data);
+                     $temp_data_array = explode($seperator,$temp_data);
                      for ($j = 0; $j < count($data_header_array); $j++){
                         if ( isset($temp_data_array[$j]) ){
                            include_once('functions/text_functions.php');
@@ -228,6 +253,11 @@ function auto_create_accounts($date_array){
       $temp_account_firstname = $account[$_POST['autoaccounts_firstname']];
       $temp_account_email = $account[$_POST['autoaccounts_email']];
       $temp_account_account = $account[$_POST['autoaccounts_account']];
+      $account_length = strlen($temp_account_account);
+      if($account_length == 0){
+         $temp_account_account = strtolower($temp_account_lastname);
+         $account_generated = true;
+      }
       $temp_account_account = get_free_account($temp_account_account);
       $temp_account_password = $account[$_POST['autoaccounts_password']];
       $password_length = strlen($temp_account_password);
@@ -238,7 +268,7 @@ function auto_create_accounts($date_array){
          $password_generated = false;
       }
       $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
-      $temp_account_rooms_array = explode(';', $temp_account_rooms);
+      $temp_account_rooms_array = explode(' ', $temp_account_rooms);
 
       $found_user_by_email = false;
       $most_recent_account = null;
@@ -304,7 +334,11 @@ function auto_create_accounts($date_array){
          $temp_account_array['account'] = $temp_account_account;
          if($temp_account_account != $account[$_POST['autoaccounts_account']]){
             $temp_account_array['account_changed'] = true;
-            $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+            if(!$account_generated){
+               $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+            } else {
+               $temp_account_array['account_csv'] = strtolower($temp_account_lastname);
+            }
          } else {
             $temp_account_array['account_changed'] = false;
          }

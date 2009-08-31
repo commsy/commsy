@@ -73,12 +73,12 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      $this->_form->addSelect('autoaccounts_lastname',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_LASTNAME'),getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_firstname',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_FIRSTNAME'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_email',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_EMAIL'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_account',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ACCOUNT'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_password',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_PASSWORD'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_rooms',$this->_array,'',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ROOMS'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_lastname',$this->_array,$this->_array[0]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_LASTNAME'),getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_firstname',$this->_array,$this->_array[1]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_FIRSTNAME'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_email',$this->_array,$this->_array[2]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_EMAIL'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_account',$this->_array,$this->_array[3]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ACCOUNT'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_password',$this->_array,$this->_array[4]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_PASSWORD'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_rooms',$this->_array,$this->_array[5]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ROOMS'),'', 1, false,false,false,'','','','',15.3);
       $this->_form->addEmptyline();
 
       $this->_form->addCheckbox('autoaccount_no_new_account_when_email_exists',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
