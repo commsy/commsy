@@ -217,7 +217,7 @@ if ($type != CS_MATERIAL_TYPE) {
          $room_modules =  $default_room_modules;
       }
       $first = array();
-      $secon = array();
+      $second = array();
       foreach ( $room_modules as $module ) {
          $link_name = explode('_', $module);
          if ( $link_name[1] != 'none' and $link_name[0] !=$_GET['mod']) {
