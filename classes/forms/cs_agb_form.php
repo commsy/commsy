@@ -60,7 +60,9 @@ class cs_agb_form extends cs_rubric_form {
       if ( $language == 'user' ) {
          $language = getSelectedLanguage();
       }
-      $this->_agb_text = $this->_environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($language, 'UTF-8')]);
+      if ( !empty($text_array[mb_strtoupper($language, 'UTF-8')]) ) {
+         $this->_agb_text = $this->_environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($language, 'UTF-8')]);
+      }
    }
 
    /** create the form, INTERNAL
