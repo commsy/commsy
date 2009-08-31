@@ -51,8 +51,8 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       $temp_array = array();
       foreach($this->_array as $key =>  $data){
         $new_array= array();
-        $new_array['text']= $key;
-        $new_array['value']= $key;
+        $new_array['text']  = trim($key);
+        $new_array['value'] = trim($key);
         $temp_array[]= $new_array;
       }
       $this->_array = $temp_array;
@@ -102,7 +102,7 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
                                  );
 
       $this->_form->addTextField('autoaccount_email_subject','',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_SUBJECT'),'',150,50,false,'','','','left','','',false,'','',false,false);
-      
+
       $this->_form->addTextArea('autoaccount_email_text','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_TEXT'),'','60','20','',false);
 
       $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
@@ -140,7 +140,7 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          $this->_form->setFailure('autoaccount_email_text','');
       }
    }
-   
+
    function show_account_array($account_array){
       $this->_form->reset();
       $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER') . ':');

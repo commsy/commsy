@@ -63,7 +63,7 @@ else {
       } else {
          $command = '';
       }
-   
+
       // Cancel editing
       if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),'configuration', 'index','');
@@ -81,7 +81,7 @@ else {
             $values = $_POST;
             $form->setFormPost($values);
          }
-   
+
          $form->prepareForm();
          $form->loadValues();
          if ( !empty($command) and
@@ -104,7 +104,7 @@ else {
          $form_view->setAction(curl($environment->getCurrentContextID(),'configuration','autoaccounts',$params));
          $form_view->setForm($form);
          $page->addForm($form_view);
-   
+
       }
    } elseif( isset($_GET['show_list']) ){
       pr('Ergebniss');
@@ -114,8 +114,8 @@ else {
       if (isset($c_virus_scan) and $c_virus_scan) {
          include_once('functions/page_edit_functions.php');
       }
-   
-   
+
+
       // Find out what to do
       if ( isset($_POST['option']) ) {
          $command = $_POST['option'];
@@ -126,9 +126,9 @@ else {
       if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),'configuration','index',$params);
       }
-   
+
       // Show form and/or save item
-      else { 
+      else {
          // Initialize the form
          $class_params= array();
          $class_params['environment'] = $environment;
@@ -157,14 +157,14 @@ else {
 
          $form->prepareForm();
          $form->loadValues();
-   
+
          // Save item
          if ( !empty($command)
               and isOption($command, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'))
             ) {
-   
+
             $correct = $form->check();
-   
+
             if ( $correct
                  and empty($_FILES['dates_upload']['tmp_name'])
                  and !empty($_POST['hidden_dates_upload_name'])
@@ -178,7 +178,7 @@ else {
                   $session_item->unsetValue($environment->getCurrentContextID().'_dates_'.$current_iid.'_upload_name');
                }
             }
-   
+
             if ( $correct
                and ( !isset($c_virus_scan)
                or !$c_virus_scan
@@ -195,7 +195,7 @@ else {
                      for ($j = 0; $j < count($data_header_array); $j++){
                         if ( isset($temp_data_array[$j]) ){
                            include_once('functions/text_functions.php');
-                           $dates_data_array[$i-1][$data_header_array[$j]] = cs_utf8_encode($temp_data_array[$j]);
+                           $dates_data_array[$i-1][trim($data_header_array[$j])] = cs_utf8_encode($temp_data_array[$j]);
                         }
                      }
                   }
@@ -205,7 +205,7 @@ else {
                redirect($environment->getCurrentContextID(),'configuration','autoaccounts',$params);
             }
          }
-   
+
          // display form
          $class_params = array();
          $class_params['environment'] = $environment;
@@ -242,7 +242,7 @@ function auto_create_accounts($date_array){
 
       $found_user_by_email = false;
       $most_recent_account = null;
-      
+
       if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
          //Test auf E-Mail-Adresse...
          $user_manager = $environment->getUserManager();
@@ -296,7 +296,7 @@ function auto_create_accounts($date_array){
          $temp_user = $authentication->getUserItem();
          $temp_user->makeUser();
          $temp_user->save();
-         
+
          $temp_account_array = array();
          $temp_account_array['lastname'] = $temp_account_lastname;
          $temp_account_array['firstname'] = $temp_account_firstname;
@@ -306,16 +306,16 @@ function auto_create_accounts($date_array){
             $temp_account_array['account_changed'] = true;
             $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
          } else {
-            $temp_account_array['account_changed'] = false;      
+            $temp_account_array['account_changed'] = false;
          }
          $temp_account_array['password'] = $temp_account_password;
          if($password_generated){
             $temp_account_array['password_generated'] = true;
          } else {
-            $temp_account_array['password_generated'] = false;      
+            $temp_account_array['password_generated'] = false;
          }
          $temp_account_array['found_account_by_email'] = false;
-         
+
          add_user_to_rooms($temp_user, $temp_account_rooms_array, $password_generated, $temp_account_password);
       } else {
          $temp_account_array = array();
@@ -323,11 +323,11 @@ function auto_create_accounts($date_array){
          $temp_account_array['firstname'] = $most_recent_account->getLastname();
          $temp_account_array['email'] = $most_recent_account->getEmail();
          $temp_account_array['account'] = $most_recent_account->getUserID();
-         $temp_account_array['account_changed'] = false;      
+         $temp_account_array['account_changed'] = false;
          $temp_account_array['password'] = '';
-         $temp_account_array['password_generated'] = false;      
+         $temp_account_array['password_generated'] = false;
          $temp_account_array['found_account_by_email'] = true;
-         
+
          add_user_to_rooms($most_recent_account, $temp_account_rooms_array);
       }
       $account_array[] = $temp_account_array;
@@ -366,7 +366,7 @@ function generate_password(){
       $password .= chr(rand(49,57));
       $password .= chr(rand(65,90));
    }
-   return $password;  
+   return $password;
 }
 
 function add_user_to_rooms($user, $room_array, $password_generated = false, $temp_account_password = ''){
@@ -417,7 +417,7 @@ function write_email_to_moderators($user_item, $room){
    global $environment;
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($room);
-   
+
    $user_manager = $environment->getUserManager();
    $user_manager->resetLimits();
    $user_manager->setModeratorLimit();
@@ -502,11 +502,11 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    global $environment;
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($room);
-   
+
    // get contact moderator (TBD) now first moderator
    $user_list = $room_item->getModeratorList();
    $contact_moderator = $user_list->getFirst();
-   
+
    // change context
    $translator = $environment->getTranslationObject();
    $translator->setEmailTextArray($room_item->getEmailTextArray());
@@ -517,7 +517,7 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    }
    $save_language = $translator->getSelectedLanguage();
    $translator->setSelectedLanguage($room_item->getLanguage());
-   
+
    // email texts
    $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle());
    $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
@@ -533,7 +533,7 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
    $body .= LF.LF;
    $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
-   
+
    // send mail to user
    include_once('classes/cs_mail.php');
    $mail = new cs_mail();
