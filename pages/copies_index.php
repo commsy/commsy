@@ -305,7 +305,7 @@ while ($room_sort) {
                $item = $item_manager->getItem($item->getItemId());
                $new_item_list->add($item);
                $current_context = $environment->getCurrentContextID();
-               if ($item->getContextID() != $current_context){
+               if ( isset($item) and $item->getContextID() != $current_context){
                   $checkedIds[] = $item->getItemID();
                }
                break;

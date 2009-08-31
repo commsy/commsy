@@ -883,7 +883,13 @@ class cs_discussion_detail_view extends cs_detail_view {
       if ( !empty($pos_number) ) {
          $retour .= $pos_number.'. ';
       }
-      $retour .= $this->_environment->getTextConverter()->parseText2ID($this->_text_as_html_short($this->_compareWithSearchText($item->getSubject())));
+      $title = $this->_text_as_html_short($this->_compareWithSearchText($item->getSubject()));
+      $text_converter = $this->_environment->getTextConverter();
+      if ( isset($text_converter) ) {
+         $title = $text_converter->parseText2ID($title);
+         unset($text_converter);
+      }
+      $retour .= $title;
       return $retour;
    }
 

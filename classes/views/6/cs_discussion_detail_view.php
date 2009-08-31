@@ -1251,7 +1251,13 @@ class cs_discussion_detail_view extends cs_detail_view {
 
 
    function _getSubItemTitleAsHTML ($item, $pos_number) {
-      return $pos_number.'. '.$this->_environment->getTextConverter->parseText2ID($this->_text_as_html_short($item->getSubject()));
+      $title = $this->_text_as_html_short($item->getSubject());
+      $text_converter = $this->_environment->getTextConverter();
+      if ( isset($text_converter) ) {
+         $title = $text_converter->parseText2ID($title);
+         unset($text_converter);
+      }
+      return $pos_number.'. '.$title;
    }
 
    function _getSubItemTitleWithOutNumberAsHTML ($item) {
