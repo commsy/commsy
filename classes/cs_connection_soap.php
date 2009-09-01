@@ -45,20 +45,30 @@ class cs_connection_soap {
       $this->_environment = $environment;
    }
 
-   // ------------
-   // --->UTF8<---
-   // Kann  beides entfallen, sobald die Umstellung intern durch ist.
    private function _encode_input ($value) {
-      //return utf8_decode($value);
       return $value;
    }
 
    private function _encode_output ($value) {
-      //return utf8_encode($value);
       return $value;
    }
-   // --->UTF8<---
-   // ------------
+
+   private function _htmlTextareaSecurity ( $value ) {
+      if ( strlen($value) != strlen(strip_tags($value)) ) {
+         $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+         $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+         if ( strlen($value) != strlen(strip_tags($value)) ) {
+            $text_converter = $this->_environment->getTextConverter();
+            if ( isset($text_converter) ) {
+               $value = $text_converter->cleanBadCode($value);
+            }
+         }
+         include_once('functions/security_functions.php');
+         $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+         $value = $fck_text.$value.$fck_text;
+      }
+      return $value;
+   }
 
    public function getGuestSession($portal_id) {
       if ( empty($portal_id) ) {
@@ -1032,6 +1042,7 @@ class cs_connection_soap {
          $room_manager = $this->_environment->getPrivateRoomManager();
          $room_item_id = $room_manager->getItemIDOfRelatedOwnRoomForUser($user_id,$auth_source,$portal_id);
          if ( isset($room_item_id) and !empty($room_item_id) ) {
+            $this->_environment->setCurrentContextID($room_item_id);
             $material_xml_object = simplexml_load_string($material_list_xml);
             $user_manager = $this->_environment->getUserManager();
             $user_manager->setContextLimit($room_item_id);
@@ -1091,6 +1102,7 @@ class cs_connection_soap {
                   // bib stuff
                   $value = $this->_encode_input((string)$material_xml_item->description);
                   if ( isset($value) and !empty($value) ) {
+                     $value = $this->_htmlTextareaSecurity($value);
                      $material_item->setDescription($value);
                   }
                   $value = $this->_encode_input((string)$material_xml_item->label);
@@ -1103,6 +1115,7 @@ class cs_connection_soap {
                   }
                   $value = $this->_encode_input((string)$material_xml_item->common);
                   if ( isset($value) and !empty($value) ) {
+                     $value = $this->_htmlTextareaSecurity($value);
                      $material_item->setBibliographicValues($value);
                   }
                   if ( isset($material_xml_item->editor_list) and !empty($material_xml_item->editor_list) ) {

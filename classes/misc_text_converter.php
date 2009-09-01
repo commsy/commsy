@@ -49,8 +49,11 @@ class misc_text_converter {
       return $thumb_name;
    }
 
-   #private function _cleanBadCode ( $text ) {
-   public function _cleanBadCode ( $text ) {
+   public function cleanBadCode ( $text ) {
+      return $this->_cleanBadCode($text);
+   }
+
+   private function _cleanBadCode ( $text ) {
       $search = array();
       $replace = array();
 

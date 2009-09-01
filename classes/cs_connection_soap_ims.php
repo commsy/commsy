@@ -41,6 +41,23 @@ class cs_connection_soap_ims {
       return utf8_encode($value);
    }
 
+   private function _htmlTextareaSecurity ( $value ) {
+      if ( strlen($value) != strlen(strip_tags($value)) ) {
+         $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+         $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+         if ( strlen($value) != strlen(strip_tags($value)) ) {
+            $text_converter = $this->_environment->getTextConverter();
+            if ( isset($text_converter) ) {
+               $value = $text_converter->cleanBadCode($value);
+            }
+         }
+         include_once('functions/security_functions.php');
+         $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+         $value = $fck_text.$value.$fck_text;
+      }
+      return $value;
+   }
+
    public function _log ($mod,$fct,$params) {
       $array = array();
       $array['iid'] = -1;
@@ -615,6 +632,7 @@ class cs_connection_soap_ims {
             if ($room_info->getDescriptionFull() != "") {
                $descriptionArray = $room_item->getDescriptionArray();
                $descriptionArray['DE'] = $room_info->getDescriptionFull();
+               $descriptionArray['DE'] = $this->_htmlTextareaSecurity($descriptionArray['DE']);
                $room_item->setDescriptionArray($descriptionArray);
             }
             $room_item->save();
@@ -666,6 +684,7 @@ class cs_connection_soap_ims {
                   if ($room_info->getDescriptionFull() != "") {
                      $descriptionArray = $room_item->getDescriptionArray();
                      $descriptionArray['DE'] = $room_info->getDescriptionFull();
+                     $descriptionArray['DE'] = $this->_htmlTextareaSecurity($descriptionArray['DE']);
                      $room_item->setDescriptionArray($descriptionArray);
                   }
                   $room_item->setContextId($commsy_portal_id);
