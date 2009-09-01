@@ -118,7 +118,9 @@ class cs_section_form extends cs_rubric_form {
       //sections
       $material_manager =  $this->_environment->getMaterialManager();
       $material_item = $material_manager->getItem($this->_material_id);
-      $this->_section_list = $material_item->getSectionList();
+      if ( isset($material_item) ) {
+         $this->_section_list = $material_item->getSectionList();
+      }
       $section_array = array();
       $other_sections='';
       if (!empty($this->_section_list)){
@@ -306,7 +308,9 @@ class cs_section_form extends cs_rubric_form {
          // Material Modification date
          $material_manager =  $this->_environment->getMaterialManager();
          $material_item = $material_manager->getItem($this->_material_id);
-         $this->_values['material_modification_date'] = $material_item->getModificationDate();
+         if ( isset($material_item) ) {
+            $this->_values['material_modification_date'] = $material_item->getModificationDate();
+         }
      }
    }
 
