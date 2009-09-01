@@ -129,7 +129,7 @@ if ($command != 'error') { // only if user is allowed to edit colors
    }
 
    if ( !empty($_POST)) {
-      if ($_POST['color_choice']=='-1'){
+      if ( !empty($_POST['color_choice']) and $_POST['color_choice']=='-1'){
          $_POST['color_choice'] = '';
       }
       $values = $_POST;

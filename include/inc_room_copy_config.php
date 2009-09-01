@@ -50,7 +50,6 @@ $new_room->setColorArray($old_room->getColorArray());
 $new_room->setUsageInfoArray($old_room->getUsageInfoArray());
 $new_room->setUsageInfoHeaderArray($old_room->getUsageInfoHeaderArray());
 $new_room->setUsageInfoTextArray($old_room->getUsageInfoTextArray());
-
 $new_room->setUsageInfoFormArray($old_room->getUsageInfoFormArray());
 $new_room->setUsageInfoFormHeaderArray($old_room->getUsageInfoFormHeaderArray());
 $new_room->setUsageInfoFormTextArray($old_room->getUsageInfoFormTextArray());

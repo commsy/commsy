@@ -1242,6 +1242,7 @@ class cs_manager {
          trigger_error('Problems getting data "'.$this->_db_table.'".',E_USER_WARNING);
       } else {
          foreach ($result as $query_result) {
+            $replace = false;
             $item_id = $query_result['item_id'];
             $desc = $query_result['description'];
             preg_match_all('~\[[0-9]*(\]|\|)~u', $query_result['description'], $matches);
@@ -1252,6 +1253,7 @@ class cs_manager {
                   $id = mb_substr($id,0,mb_strlen($id)-1);
                   if ( isset($id_array[$id]) ) {
                      $desc = str_replace('['.$id.$last_char,'['.$id_array[$id].$last_char,$desc);
+                     $replace = true;
                   }
                }
             }
@@ -1263,8 +1265,15 @@ class cs_manager {
                   $id = $match;
                   if ( isset($id_array[$id]) ) {
                      $desc = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+                     $replace = true;
                   }
                }
+            }
+            if ( strstr($desc,'<!-- KFC TEXT')
+                 and $replace
+               ) {
+               include_once('functions/security_functions.php');
+               $desc = renewSecurityHash($desc);
             }
             $query = 'UPDATE '.$this->_db_table.' SET description="'.encode(AS_DB,$desc).'" WHERE item_id='.encode(AS_DB,$item_id);
             $result_update = $this->_db_connector->performQuery($query);

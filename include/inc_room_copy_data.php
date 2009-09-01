@@ -113,6 +113,7 @@ unset($data_type_array);
 $array = $new_room->getUsageInfoTextArray();
 $new_array = array();
 foreach ( $array as $key => $value ) {
+   $replace = false;
    preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
    if ( isset($matches[0]) ) {
       foreach ($matches[0] as $match) {
@@ -121,6 +122,7 @@ foreach ( $array as $key => $value ) {
          $id = mb_substr($id,0,mb_strlen($id)-1);
          if ( isset($new_id_array[$id]) ) {
             $value = str_replace('['.$id.$last_char,'['.$new_id_array[$id].$last_char,$value);
+            $replace = true;
          }
       }
       $new_array[$key] = $value;
@@ -133,9 +135,20 @@ foreach ( $array as $key => $value ) {
          $id = $match;
          if ( isset($id_array[$id]) ) {
             $value = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+            $replace = true;
          }
       }
       $new_array[$key] = $value;
+   }
+
+   // html textarea security
+   if ( !empty($new_array[$key])
+        and $replace
+      ) {
+      if ( strstr($new_array[$key],'<!-- KFC TEXT') ) {
+         include_once('functions/security_functions.php');
+         $new_array[$key] = renewSecurityHash($new_array[$key]);
+      }
    }
 }
 
@@ -144,8 +157,8 @@ $new_room->setUsageInfoTextArray($new_array);
 $array = $new_room->getUsageInfoFormTextArray();
 $new_array = array();
 foreach ( $array as $key => $value ) {
+   $replace = false;
    preg_match_all('~\[[0-9]*(\]|\|)~u', $value, $matches);
-   // (:item 12345:) fehlt
    if ( isset($matches[0]) ) {
       foreach ($matches[0] as $match) {
          $id = mb_substr($match,1);
@@ -153,9 +166,33 @@ foreach ( $array as $key => $value ) {
          $id = mb_substr($id,0,mb_strlen($id)-1);
          if ( isset($new_id_array[$id]) ) {
             $value = str_replace('['.$id.$last_char,'['.$new_id_array[$id].$last_char,$value);
+            $replace = true;
          }
       }
       $new_array[$key] = $value;
+   }
+   preg_match_all('~\(:item ([0-9]*) ~u', $value, $matches);
+   if ( isset($matches[1])
+        and !empty($matches[1])
+      ) {
+      foreach ($matches[1] as $match) {
+         $id = $match;
+         if ( isset($id_array[$id]) ) {
+            $value = str_replace('(:item '.$id,'(:item '.$id_array[$id],$desc);
+            $replace = true;
+         }
+      }
+      $new_array[$key] = $value;
+   }
+
+   // html textarea security
+   if ( !empty($new_array[$key])
+        and $replace
+      ) {
+      if ( strstr($new_array[$key],'<!-- KFC TEXT') ) {
+         include_once('functions/security_functions.php');
+         $new_array[$key] = renewSecurityHash($new_array[$key]);
+      }
    }
 }
 $new_room->setUsageInfoFormTextArray($new_array);

@@ -60,4 +60,12 @@ function getSecurityHash ( $value ) {
    $retour = md5($c_security_key.$value.$c_security_key);
    return $retour;
 }
+
+function renewSecurityHash ( $value ) {
+   $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
+   $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
+   $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
+   $value = $fck_text.$value.$fck_text;
+   return $value;
+}
 ?>

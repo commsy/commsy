@@ -47,4 +47,7 @@ $c_show_debug_infos = false;
 // enable and configure logging to file
 $c_enable_logging_to_file = false;
 $c_logging_file = '';
+
+// enable security for HTML textarea
+$c_enable_htmltextarea_security = true;
 ?>
