@@ -31,18 +31,27 @@ set_time_limit(0);
 $success = true;
 
 // headline
-$this->_flushHTML('extras: clean HTML-Tags'.BRLF);
+$this->_flushHTML('description: security FCK editor'.BRLF);
 
 $table_array = array();
-$table_array[] = 'room';
-$table_array[] = 'room_privat';
-$table_array[] = 'portal';
-$table_array[] = 'server';
+$table_array[] = 'annotations';
+$table_array[] = 'announcement';
+$table_array[] = 'dates';
+$table_array[] = 'discussionarticles';
+$table_array[] = 'labels';
 $table_array[] = 'materials';
+$table_array[] = 'section';
+$table_array[] = 'step';
+$table_array[] = 'todos';
+$table_array[] = 'user';
+include_once('functions/security_functions.php');
+
 foreach ( $table_array as $table ) {
    $counter = 0;
    $this->_flushHTML($table.BRLF);
-   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE deletion_date IS NULL and deleter_id IS NULL;');
+
+   // count entries
+   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
    if ( !empty($result[0]['count']) ) {
       $count = $result[0]['count'];
    } else {
@@ -58,7 +67,61 @@ foreach ( $table_array as $table ) {
       $i = 0;
 
       while ( $i<$count ) {
-         $sql = 'SELECT item_id, extras FROM '.$table.' WHERE deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         $sql = 'SELECT item_id, description FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         $i = $i + $interval;
+         $result = $this->_select($sql);
+         if ( !empty($result) ) {
+            foreach ( $result as $row ) {
+               if ( !empty($row)
+                    and !empty($row['item_id'])
+                    and !empty($row['description'])
+                  ) {
+                  $desc = $row['description'];
+                  $desc = preg_replace('~<!-- KFC TEXT -->~u','',$desc);
+                  $desc = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$desc);
+                  $fck_text = '<!-- KFC TEXT '.getSecurityHash($desc).' -->';
+                  $desc = $fck_text.$desc.$fck_text;
+                  $sql = 'UPDATE '.$table.' SET description = "'.addslashes($desc).'" WHERE item_id = "'.$row['item_id'].'";';
+                  $success1 = $this->_select($sql);
+                  $success = $success and $success1;
+                  $counter++;
+               }
+               $this->_updateProgressBar($count);
+            }
+         }
+      }
+      $this->_flushHTML(BRLF);
+   }
+   $this->_flushHTML('Changed '.$counter.' items.'.BRLF);
+   $this->_flushHTML(BRLF);
+}
+
+$table_array = array();
+$table_array[] = 'room';
+$table_array[] = 'room_privat';
+$table_array[] = 'portal';
+$table_array[] = 'server';
+$table_array[] = 'materials';
+foreach ( $table_array as $table ) {
+   $counter = 0;
+   $this->_flushHTML($table.BRLF);
+   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   if ( !empty($result[0]['count']) ) {
+      $count = $result[0]['count'];
+   } else {
+      $count = 0;
+   }
+   if ($count < 1) {
+      // nothing to do
+      $this->_flushHTML('nothing to do.'.BRLF);
+   } else {
+      // something to do
+      $this->_initProgressBar($count);
+      $interval = 100;
+      $i = 0;
+
+      while ( $i<$count ) {
+         $sql = 'SELECT item_id, extras FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
          $i = $i + $interval;
          $result = $this->_select($sql);
          if ( !empty($result) ) {
@@ -82,13 +145,7 @@ foreach ( $table_array as $table ) {
                           and is_array($extra_array[$field])
                         ) {
                         foreach ( $extra_array[$field] as $key => $value ) {
-                           $kfc_text = strstr($value,'<!-- KFC TEXT');
-                           if ( empty($kfc_text)
-                                and strlen($value) != strlen(strip_tags($value))
-                                and ( $field != 'SERVER_NEWS'
-                                      or $key == 'TEXT'
-                                    )
-                              ) {
+                           if ( strstr($value,'<!-- KFC TEXT') ) {
                               $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
                               $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
                               $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
@@ -99,10 +156,7 @@ foreach ( $table_array as $table ) {
                         }
                      } elseif ( !empty($extra_array[$field]) ) {
                         $value = $extra_array[$field];
-                        $kfc_text = strstr($value,'<!-- KFC TEXT');
-                        if ( empty($kfc_text)
-                             and strlen($value) != strlen(strip_tags($value))
-                           ) {
+                        if ( strstr($value,'<!-- KFC TEXT') ) {
                            $value = preg_replace('~<!-- KFC TEXT -->~u','',$value);
                            $value = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$value);
                            $fck_text = '<!-- KFC TEXT '.getSecurityHash($value).' -->';
