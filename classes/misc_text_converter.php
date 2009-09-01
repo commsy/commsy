@@ -90,7 +90,9 @@ class misc_text_converter {
       ### hack ###
 
       // security KFC
-      preg_match('~<!-- KFC TEXT [a-z0-9 ]*-->[\S|\s]*<!-- KFC TEXT [a-z0-9 ]*-->~u',$text,$values);
+      $values = array();
+      $pattern = '<!-- KFC TEXT [a-z0-9]* -->[\S|\s]*<!-- KFC TEXT [a-z0-9]* -->';
+      preg_match('~'.$pattern.'~',$text,$values); // nicht ~u, das geht nicht
       #preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u',$text,$values);
       foreach ($values as $key => $value) {
          $text = str_replace($value,'COMMSY_FCKEDITOR'.$key,$text);
