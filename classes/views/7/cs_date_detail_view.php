@@ -294,6 +294,7 @@ var $_clipboard_id_array=array();
             if ( $member->isUser() ){
                $linktext = $member->getFullname();
                $linktext = $this->_compareWithSearchText($linktext);
+               $linktext = $this->_text_converter->text_as_html_short($linktext);
                if ( $member->maySee($user) ) {
                   $params = array();
                   $params['iid'] = $member->getItemID();
@@ -312,6 +313,7 @@ var $_clipboard_id_array=array();
             }else{
                $link_title = chunkText($member->getFullName(),35);
                $link_title = $this->_compareWithSearchText($link_title);
+               $link_title = $this->_text_converter->text_as_html_short($link_title);
                $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                    $this->_environment->getCurrentModule(),
                                    $this->_environment->getCurrentFunction(),
