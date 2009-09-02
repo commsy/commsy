@@ -110,6 +110,8 @@ else {
       if ( !$link_items
            and !empty($_POST)
            and empty($_POST['option'])
+           and empty($change_id)
+           and empty($delete_id)
          ) {
          $_GET['attach_view'] = 'yes';
          $_GET['attach_type'] = 'item';
@@ -127,6 +129,7 @@ else {
 
    // Show form and/or save item
    else {
+
       // Initialize the form
       $class_params= array();
       $class_params['environment'] = $environment;
@@ -196,7 +199,7 @@ else {
          if ( empty($delete_id) ) {
             $params['focus_element_onload'] = $change_id;
          }
-         #redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
+         redirect($environment->getCurrentContextID(),'tag', 'edit', $params);
 
       } elseif (!empty($command) and isOption($command, getMessage('COMMON_ADD_BUTTON'))){
           if ( isset($_POST['new_tag'])

@@ -115,6 +115,8 @@ else {
       if ( !$link_items
            and !empty($_POST)
            and empty($_POST['option'])
+           and empty($change_id)
+           and empty($delete_id)
          ) {
          $_GET['attach_view'] = 'yes';
          $_GET['attach_type'] = 'item';
