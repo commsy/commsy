@@ -92,34 +92,41 @@ if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
 $params = $environment->getCurrentParameterArray();
 $item_manager = $environment->getItemManager();
 $tmp_item = $item_manager->getItem($ref_iid);
-$manager = $environment->getManager($tmp_item->getItemType());
-$item = $manager->getItem($ref_iid);
-if ( $item->isA(CS_LABEL_TYPE)
-     and $item->getLabelType() == CS_GROUP_TYPE
-   ) {
-   $group_manager = $environment->getGroupManager();
-   $item = $group_manager->getItem($ref_iid);
-   unset($group_manager);
-} elseif ( $item->isA(CS_LABEL_TYPE)
-     and $item->getLabelType() == CS_BUZZWORD_TYPE
-   ) {
-   $buzzword_manager = $environment->getBuzzwordManager();
-   $item = $buzzword_manager->getItem($ref_iid);
-   unset($buzzword_manager);
+if ( isset($tmp_item) ) {
+   $manager = $environment->getManager($tmp_item->getItemType());
+   $item = $manager->getItem($ref_iid);
 }
-
-if ($environment->getCurrentModule() == CS_USER_TYPE){
-   if ($environment->inCommunityRoom()){
-      $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
-   }else{
-      $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+if ( isset($item) ) {
+   if ( $item->isA(CS_LABEL_TYPE)
+        and $item->getLabelType() == CS_GROUP_TYPE
+      ) {
+      $group_manager = $environment->getGroupManager();
+      $item = $group_manager->getItem($ref_iid);
+      unset($group_manager);
+   } elseif ( $item->isA(CS_LABEL_TYPE)
+        and $item->getLabelType() == CS_BUZZWORD_TYPE
+      ) {
+      $buzzword_manager = $environment->getBuzzwordManager();
+      $item = $buzzword_manager->getItem($ref_iid);
+      unset($buzzword_manager);
    }
-} elseif ( $item->isA(CS_LABEL_TYPE)
-           and $item->getLabelType() == CS_BUZZWORD_TYPE
-         ) {
-   $selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
-} else {
-   $selected_ids = $item->getAllLinkedItemIDArray();
+
+   if ($environment->getCurrentModule() == CS_USER_TYPE){
+      if ($environment->inCommunityRoom()){
+         $selected_ids = $item->getLinkedItemIDArray(CS_INSTITUTION_TYPE);
+      }else{
+         $selected_ids = $item->getLinkedItemIDArray(CS_GROUP_TYPE);
+      }
+   } elseif ( $item->isA(CS_LABEL_TYPE)
+              and $item->getLabelType() == CS_BUZZWORD_TYPE
+            ) {
+      $selected_ids = $item->getAllLinkedItemIDArrayLabelVersion();
+   } else {
+      $selected_ids = $item->getAllLinkedItemIDArray();
+   }
+}
+if ( !isset($selected_ids) ) {
+   $selected_ids = array();
 }
 
 // initial
@@ -266,11 +273,12 @@ if ( !empty($option)
     }
     $entry_array = array_merge($entry_array,$entry_new_array);
     $entry_array = array_unique($entry_array);
-    if ( $item->isA(CS_LABEL_TYPE)
+    if ( isset($item)
+         and $item->isA(CS_LABEL_TYPE)
          and $item->getLabelType() == CS_BUZZWORD_TYPE
        ) {
        $item->saveLinksByIDArray($entry_array);
-    } else {
+    } elseif ( isset($item) )  {
        $item->setLinkedItemsByIDArray($entry_array);
        $item->save();
     }
