@@ -1250,7 +1250,9 @@ function exportItemToWiki($current_item_id,$rubric){
       $informations .= '(:cell:)\'\'\'AutorInnen:\'\'\' %0a(:cell:)' . $author . ' %0a';
       // Kurzfassung fuer Wiki vorbereiten
       if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
-         $description = _text_php2html_long($description);
+         $text_converter = $this->_environment->getTextConverter();
+         $description = $text_converter->text_for_wiki_export($description);
+         //$description = _text_php2html_long($description);
       }
    }elseif($rubric == CS_DISCUSSION_TYPE){
       // Discussion Item
@@ -1348,7 +1350,9 @@ function exportItemToWiki($current_item_id,$rubric){
              // Abschnitt fuer Wiki vorbereiten
              $description = $sub_item->getDescription();
              if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
-                $description = _text_php2html_long($sub_item->getDescription());
+                $text_converter = $this->_environment->getTextConverter();
+                $description = $text_converter->text_for_wiki_export($description);
+                //$description = _text_php2html_long($sub_item->getDescription());
              }
              $params = array();
              $params['environment'] = $this->_environment;

@@ -228,6 +228,18 @@ class misc_text_converter {
       return $text;
    }
 
+   public function text_for_wiki_export ($text) {
+      $text = nl2br($text);
+      $text = $this->_emphasize_text($text);
+      $text = $this->_activate_urls($text);
+      $text = $this->_display_headers($text);
+      $text = $this->_format_html_long($text);
+      $text = $this->parseText2ID($text);
+      $text = $this->_decode_backslashes($text);
+      $text = $this->_br_with_nl($text);
+      return $text;
+   }
+
    public function text_as_html_short ($text) {
       $text = htmlspecialchars($text, ENT_NOQUOTES, 'UTF-8');
       $text = $this->_emphasize_text($text);
