@@ -285,6 +285,8 @@ class cs_view {
                $file_list = $this->_item->getFileListWithFilesFromSections();
             } elseif ( $this->_item->isA(CS_DISCUSSION_TYPE) ) {
                $file_list = $this->_item->getFileListWithFilesFromArticles();
+            } elseif ( $this->_item->isA(CS_TODO_TYPE) ) {
+               $file_list = $this->_item->getFileListWithFilesFromSteps();
             } else {
                $file_list = $this->_item->getFileList();
             }

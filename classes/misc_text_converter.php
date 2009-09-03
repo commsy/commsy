@@ -2680,7 +2680,7 @@ class misc_text_converter {
          }
       }
 
-      $text = preg_replace('~\\\(?!\*|_|!|-|#|\(:|n)~u', '', $text);
+      #$text = preg_replace('~\\\(?!\*|_|!|-|#|\(:|n)~u', '', $text);
 
       // jsMath for latex math fonts
       // see http://www.math.union.edu/~dpvc/jsMath/

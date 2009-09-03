@@ -130,10 +130,7 @@ class cs_step_item extends cs_item {
    */
    function setDescription($description) {
       $this->_setValue('description', $description);
-
    }
-
-
 
    /** set materials of the step item
    * this method sets a list of materials which are linked to the step item
