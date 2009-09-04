@@ -365,6 +365,9 @@ class cs_file_manager extends cs_manager {
             $result = $r;
          }
       }
+      if ( empty($result) ) {
+         $result = array();
+      }
       return $result;
    }
 
