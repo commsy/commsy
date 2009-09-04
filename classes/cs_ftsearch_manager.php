@@ -212,13 +212,19 @@ class cs_ftsearch_manager extends cs_manager {
                   $ft_fid = $f_name;
                }
                // append iid
-               if ( is_numeric($ft_fid) ) {
+               if ( isset($ft_fid)
+                    and !empty($ft_fid)
+                    and is_numeric($ft_fid) ) {
                   $ft_fids[] = $ft_fid;
                }
             }
          }
          // set file item ids for cs_file_item (file icon with border)
-         $ft_fids = array_unique($ft_fids);
+         if ( !empty($ft_fids) ) {
+            $ft_fids = array_unique($ft_fids);
+         } else {
+            $ft_fids = array();
+         }
          $this->_ft_file_ids = $ft_fids;
          return $ft_fids;
       }

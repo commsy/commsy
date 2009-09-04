@@ -1686,6 +1686,7 @@ class cs_page_view extends cs_view {
                foreach ( $params as $key => $value ) {
                   $html .= '<input type="hidden" name="login_redirect['.$key.']" value="'.$value.'"/>'.LF;
                }
+               $session_item->unsetValue('login_redirect');
             }
 
             // login form

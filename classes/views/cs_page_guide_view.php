@@ -835,7 +835,6 @@ class cs_page_guide_view extends cs_page_view {
                      unset($current_user_item);
                   }
                   $html .= '</p></div>'.LF;
-                  $session_item->unsetValue('login_redirect');
                   unset($session_item);
                } elseif ( !$item->isPrivateRoom() and !$item->isGroupRoom() ) {
                   $html .= '<div style="padding-top:5px;">'.'> <a class="room_window" href="'.$actionCurl.'">'.$this->_translator->getMessage('CONTEXT_JOIN').'</a></div>'.LF;
