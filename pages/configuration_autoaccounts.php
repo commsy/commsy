@@ -351,11 +351,12 @@ function auto_create_accounts($date_array){
             $temp_account_array['email'] = $temp_account_email;
             $temp_account_array['account'] = $temp_account_account;
             if($temp_account_account != $account[$_POST['autoaccounts_account']]){
-               $temp_account_array['account_changed'] = true;
                if(!$account_generated){
                   $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+                  $temp_account_array['account_changed'] = 'changed';
                } else {
                   $temp_account_array['account_csv'] = strtolower($temp_account_lastname);
+                  $temp_account_array['account_changed'] = 'generated';
                }
             } else {
                $temp_account_array['account_changed'] = false;

@@ -166,9 +166,12 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          $account_string .= '&nbsp;&nbsp;&nbsp;&nbsp;';
          $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
          if(!$account['found_account_by_email']){
-            if($account['account_changed']){
+            if($account['account_changed'] == 'changed'){
                $account_string .= $account['account'];
                $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS'). ': <i>' . $account['account_csv'] . '</i>' . ')';
+            } else if($account['account_changed'] == 'generated'){
+               $account_string .= $account['account'];
+               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_GENERATED'). ')';
             } else {
                $account_string .= $account['account'];
             }
