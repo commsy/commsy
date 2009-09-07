@@ -2374,6 +2374,7 @@ EOD;
           or $module == CS_USER_TYPE
           or $module == CS_MATERIAL_TYPE
           or $module == CS_TODO_TYPE
+          or $module == CS_DISCUSSION_TYPE
           or $module == 'campus_search'
       ){
          $width = '235';
