@@ -182,12 +182,28 @@ class cs_mail extends Mail
 
          $multipart_header =  $this->mime_mail->headers();
          if ( isset($this->from_name) ) {
-            $multipart_header["From"] = $this->from_name."<".$this->from_email.">";
+            $from_name_temp = $this->from_name;
+            if ( !empty($multipart_header['Content-Type'])
+                 and stristr($multipart_header['Content-Type'],'utf')
+               ) {
+              mb_language('uni');
+              mb_internal_encoding("UTF-8");
+              $from_name_temp = mb_encode_mimeheader($from_name_temp,"UTF-8");
+            }
+            $multipart_header["From"] = $from_name_temp."<".$this->from_email.">";
          } else {
             $multipart_header["From"] = $this->from_email;
          }
          if ( isset($this->reply_to_name) ) {
-            $multipart_header["Reply-To"] = $this->reply_to_name."<".$this->reply_to_email.">";
+            $reply_to_name_temp = $this->reply_to_name;
+            if ( !empty($multipart_header['Content-Type'])
+                 and stristr($multipart_header['Content-Type'],'utf')
+               ) {
+              mb_language('uni');
+              mb_internal_encoding("UTF-8");
+              $reply_to_name_temp = mb_encode_mimeheader($reply_to_name_temp,"UTF-8");
+            }
+            $multipart_header["Reply-To"] = $reply_to_name_temp."<".$this->reply_to_email.">";
          } elseif ( isset($this->reply_to_email) ) {
             $multipart_header["Reply-To"] = $this->reply_to_email;
          } else {
