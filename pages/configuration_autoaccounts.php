@@ -268,7 +268,13 @@ function auto_create_accounts($date_array){
          $password_generated = false;
       }
       $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
-      $temp_account_rooms_array = explode(' ', $temp_account_rooms);
+      if(stristr($temp_account_rooms, ' ')){
+         $temp_account_rooms_array = explode(' ', $temp_account_rooms);
+      } else if(stristr($temp_account_rooms, ';')){
+         $temp_account_rooms_array = explode(';', $temp_account_rooms);
+      } else if(stristr($temp_account_rooms, ',')){
+         $temp_account_rooms_array = explode(',', $temp_account_rooms);
+      }
 
       $found_user_by_email = false;
       $most_recent_account = null;
