@@ -107,7 +107,7 @@ else {
 
       }
    } elseif( isset($_GET['show_list']) ){
-      pr('Ergebniss');
+      //pr('Ergebniss');
    }else{
       // function for page edit
       // - to check files for virus
@@ -252,6 +252,13 @@ function auto_create_accounts($date_array){
       $temp_account_lastname = $account[$_POST['autoaccounts_lastname']];
       $temp_account_firstname = $account[$_POST['autoaccounts_firstname']];
       $temp_account_email = $account[$_POST['autoaccounts_email']];
+      $lastname_length = strlen($temp_account_lastname);
+      $firstname_length = strlen($temp_account_firstname);
+      $email_length = strlen($temp_account_email);
+      $account_info_missing = false;
+      if(($lastname_length == 0) or ($firstname_length == 0) or ($email_length == 0)){
+         $account_info_missing = true;
+      }
       $temp_account_account = $account[$_POST['autoaccounts_account']];
       $account_length = strlen($temp_account_account);
       if($account_length == 0){
@@ -268,6 +275,7 @@ function auto_create_accounts($date_array){
          $password_generated = false;
       }
       $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
+      $temp_account_rooms = trim($temp_account_rooms);
       if(stristr($temp_account_rooms, ' ')){
          $temp_account_rooms_array = explode(' ', $temp_account_rooms);
       } else if(stristr($temp_account_rooms, ';')){
@@ -275,102 +283,136 @@ function auto_create_accounts($date_array){
       } else if(stristr($temp_account_rooms, ',')){
          $temp_account_rooms_array = explode(',', $temp_account_rooms);
       }
-
-      $found_user_by_email = false;
-      $most_recent_account = null;
-
-      if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
-         //Test auf E-Mail-Adresse...
-         $user_manager = $environment->getUserManager();
-         $user_manager->resetCacheSQL();
-         $user_manager->resetLimits();
-         $user_manager->setContextLimit($environment->getCurrentContextID());
-         $user_manager->setEmailLimit($temp_account_email);
-         $user_manager->select();
-         $user_list = $user_manager->get();
-         if (!$user_list->isEmpty()) {
-            if ($user_list->getCount() > 0) {
-               $found_user_by_email = true;
-               $temp_acount = $user_list->getFirst();
-               while($temp_acount){
-                  if($most_recent_account == null){
-                     $most_recent_account = $temp_acount;
-                  } else {
-                     if($temp_acount->getLastLogin > $most_recent_account->getLastLogin){
+      $room_length = strlen($temp_account_rooms);
+      if($room_length != 0 and empty($temp_account_rooms_array)){
+         $temp_account_rooms_array = array($temp_account_rooms);
+      }
+      if(!$account_info_missing){
+         $found_user_by_email = false;
+         $most_recent_account = null;
+   
+         if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
+            //Test auf E-Mail-Adresse...
+            $user_manager = $environment->getUserManager();
+            $user_manager->resetCacheSQL();
+            $user_manager->resetLimits();
+            $user_manager->setContextLimit($environment->getCurrentContextID());
+            $user_manager->setEmailLimit($temp_account_email);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if (!$user_list->isEmpty()) {
+               if ($user_list->getCount() > 0) {
+                  $found_user_by_email = true;
+                  $temp_acount = $user_list->getFirst();
+                  while($temp_acount){
+                     if($most_recent_account == null){
                         $most_recent_account = $temp_acount;
+                     } else {
+                        if($temp_acount->getLastLogin > $most_recent_account->getLastLogin){
+                           $most_recent_account = $temp_acount;
+                        }
                      }
+                     $temp_acount = $user_list->getNext();
                   }
-                  $temp_acount = $user_list->getNext();
                }
             }
          }
-      }
-
-      if(!$found_user_by_email){
-         $authentication = $environment->getAuthenticationObject();
-         $current_portal = $environment->getCurrentPortalItem();
-         $current_portal_id = $environment->getCurrentPortalID();
-         $auth_source_id = $current_portal->getAuthDefault();
-
-         $new_account = $authentication->getNewItem();
-         $new_account->setUserID($temp_account_account);
-         $new_account->setPassword($temp_account_password);
-         $new_account->setFirstname($temp_account_firstname);
-         $new_account->setLastname($temp_account_lastname);
-         $new_account->setEmail($temp_account_email);
-         $new_account->setPortalID($current_portal_id);
-         if ( !empty($auth_source_id) ) {
-            $new_account->setAuthSourceID($auth_source_id);
-         } else {
-            $current_portal = $this->_environment->getCurrentPortalItem();
-            $new_account->setAuthSourceID($current_portal->getAuthDefault());
+   
+         if(!$found_user_by_email){
+            $authentication = $environment->getAuthenticationObject();
+            $current_portal = $environment->getCurrentPortalItem();
+            $current_portal_id = $environment->getCurrentPortalID();
             $auth_source_id = $current_portal->getAuthDefault();
-            unset($current_portal);
-         }
-         $save_only_user = false;
-         $authentication->save($new_account,$save_only_user);
-         $temp_user = $authentication->getUserItem();
-         $temp_user->makeUser();
-         $temp_user->save();
-
-         $temp_account_array = array();
-         $temp_account_array['lastname'] = $temp_account_lastname;
-         $temp_account_array['firstname'] = $temp_account_firstname;
-         $temp_account_array['email'] = $temp_account_email;
-         $temp_account_array['account'] = $temp_account_account;
-         if($temp_account_account != $account[$_POST['autoaccounts_account']]){
-            $temp_account_array['account_changed'] = true;
-            if(!$account_generated){
-               $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+   
+            $new_account = $authentication->getNewItem();
+            $new_account->setUserID($temp_account_account);
+            $new_account->setPassword($temp_account_password);
+            $new_account->setFirstname($temp_account_firstname);
+            $new_account->setLastname($temp_account_lastname);
+            $new_account->setEmail($temp_account_email);
+            $new_account->setPortalID($current_portal_id);
+            if ( !empty($auth_source_id) ) {
+               $new_account->setAuthSourceID($auth_source_id);
             } else {
-               $temp_account_array['account_csv'] = strtolower($temp_account_lastname);
+               $current_portal = $this->_environment->getCurrentPortalItem();
+               $new_account->setAuthSourceID($current_portal->getAuthDefault());
+               $auth_source_id = $current_portal->getAuthDefault();
+               unset($current_portal);
             }
+            $save_only_user = false;
+            $authentication->save($new_account,$save_only_user);
+            $temp_user = $authentication->getUserItem();
+            $temp_user->makeUser();
+            $temp_user->save();
+   
+            $temp_account_array = array();
+            $temp_account_array['lastname'] = $temp_account_lastname;
+            $temp_account_array['firstname'] = $temp_account_firstname;
+            $temp_account_array['email'] = $temp_account_email;
+            $temp_account_array['account'] = $temp_account_account;
+            if($temp_account_account != $account[$_POST['autoaccounts_account']]){
+               $temp_account_array['account_changed'] = true;
+               if(!$account_generated){
+                  $temp_account_array['account_csv'] = $account[$_POST['autoaccounts_account']];
+               } else {
+                  $temp_account_array['account_csv'] = strtolower($temp_account_lastname);
+               }
+            } else {
+               $temp_account_array['account_changed'] = false;
+            }
+            $temp_account_array['password'] = $temp_account_password;
+            if($password_generated){
+               $temp_account_array['password_generated'] = true;
+            } else {
+               $temp_account_array['password_generated'] = false;
+            }
+            $temp_account_array['found_account_by_email'] = false;
+            
+            $rooms_added_to = add_user_to_rooms($temp_user, $temp_account_rooms_array, $password_generated, $temp_account_password);
+            $temp_account_array['rooms_added'] = $rooms_added_to;
+            $temp_account_array['rooms'] = $temp_account_rooms_array;
          } else {
+            $temp_account_array = array();
+            $temp_account_array['lastname'] = $most_recent_account->getFirstname();
+            $temp_account_array['firstname'] = $most_recent_account->getLastname();
+            $temp_account_array['email'] = $most_recent_account->getEmail();
+            $temp_account_array['account'] = $most_recent_account->getUserID();
             $temp_account_array['account_changed'] = false;
-         }
-         $temp_account_array['password'] = $temp_account_password;
-         if($password_generated){
-            $temp_account_array['password_generated'] = true;
-         } else {
+            $temp_account_array['password'] = '';
             $temp_account_array['password_generated'] = false;
+            $temp_account_array['found_account_by_email'] = true;
+            
+            $rooms_added_to = add_user_to_rooms($most_recent_account, $temp_account_rooms_array);
+            $temp_account_array['rooms_added'] = $rooms_added_to;
+            $temp_account_array['rooms'] = $temp_account_rooms_array;
          }
-         $temp_account_array['found_account_by_email'] = false;
-
-         add_user_to_rooms($temp_user, $temp_account_rooms_array, $password_generated, $temp_account_password);
+         $account_array[] = $temp_account_array;
       } else {
          $temp_account_array = array();
-         $temp_account_array['lastname'] = $most_recent_account->getFirstname();
-         $temp_account_array['firstname'] = $most_recent_account->getLastname();
-         $temp_account_array['email'] = $most_recent_account->getEmail();
-         $temp_account_array['account'] = $most_recent_account->getUserID();
+         if($lastname_length == 0){
+            $temp_account_array['lastname'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+         } else {
+            $temp_account_array['lastname'] = $temp_account_lastname;
+         }
+         if($firstname_length == 0){
+            $temp_account_array['firstname'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+         } else {
+            $temp_account_array['firstname'] = $temp_account_firstname;
+         }
+         if($email_length == 0){
+            $temp_account_array['email'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+         } else {
+            $temp_account_array['email'] = $temp_account_email;
+         }
+         $temp_account_array['account'] = $account[$_POST['autoaccounts_account']];
          $temp_account_array['account_changed'] = false;
          $temp_account_array['password'] = '';
          $temp_account_array['password_generated'] = false;
-         $temp_account_array['found_account_by_email'] = true;
-
-         add_user_to_rooms($most_recent_account, $temp_account_rooms_array);
+         $temp_account_array['found_account_by_email'] = false;
+         $temp_account_array['account_not_created'] = true;
+         $temp_account_array['rooms'] = array();
+         $account_array[] = $temp_account_array;
       }
-      $account_array[] = $temp_account_array;
    }
    return $account_array;
 }
@@ -411,6 +453,9 @@ function generate_password(){
 
 function add_user_to_rooms($user, $room_array, $password_generated = false, $temp_account_password = ''){
    global $environment;
+   $rooms_added_to = array();
+   $rooms_added_to['added'] = array();
+   $rooms_added_to['not_existing'] = array();
    $room_manager = $environment->getRoomManager();
    $private_room_user_item = $user->getRelatedPrivateRoomUserItem();
    foreach($room_array as $room){
@@ -436,8 +481,11 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
                $user_item->setStatus(1);
             }
             $user_item->save();
+            $rooms_added_to['added'][] = $room;
             write_email_to_moderators($user_item, $room);
          }
+      } else {
+         $rooms_added_to['not_existing'][] = $room;
       }
    }
    if($_POST['autoaccount_send_email'] == 'autoaccount_send_email_form'){
@@ -451,6 +499,7 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
       $mail->set_message($_POST['autoaccount_email_text']);
       $mail->send();
    }
+   return $rooms_added_to;
 }
 
 function write_email_to_moderators($user_item, $room){

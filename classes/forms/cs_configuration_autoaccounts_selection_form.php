@@ -146,11 +146,23 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER') . ':');
       foreach($account_array as $account){
          $account_string = '';
-         $account_string .= $account['lastname'] . ', ';
-         $account_string .= $account['firstname'] . '<br/>';
+         if($account['lastname'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+            $account_string .= '<font style="color:red">' . $account['lastname'] . '</font>, ';
+         } else {
+            $account_string .= $account['lastname'] . ', ';
+         }
+         if($account['firstname'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+            $account_string .= '<font style="color:red">' . $account['firstname'] . '</font><br/>';
+         } else {
+            $account_string .= $account['firstname'] . '<br/>';
+         }
          $account_string .= '&nbsp;&nbsp;&nbsp;' . ' ';
          $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_EMAIL') . '</b>: ';
-         $account_string .= $account['email'] . '<br/>';
+         if($account['email'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+            $account_string .= '<font style="color:red">' . $account['email'] . '</font><br/>';
+         } else {
+            $account_string .= $account['email'] . '<br/>';
+         }
          $account_string .= '&nbsp;&nbsp;&nbsp;&nbsp;';
          $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
          if(!$account['found_account_by_email']){
@@ -169,6 +181,26 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          } else {
             $account_string .= '<b>' . $account['account'] . '</b> ';
             $account_string .= '(' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
+         }
+         $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS') . '</b>: ';
+         if(!empty($account['rooms'])){
+            foreach($account['rooms'] as $room){
+               if(in_array($room, $account['rooms_added']['added'])){
+                  $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_ADDED');
+               } else if (in_array($room, $account['rooms_added']['not_existing'])) {
+                  $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+                  $account_string .= $room . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_EXISTING');
+               }  else {
+                  $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_ADDED');
+               }
+            }
+         }
+         if($account['account_not_created']){
+            $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+            $account_string .= '<font style="color:red"><b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED') . '</b></font> ';
          }
          $this->_form->addText(null, null, $account_string);
       }
