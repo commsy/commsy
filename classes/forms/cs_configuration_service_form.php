@@ -156,6 +156,7 @@ class cs_configuration_service_form extends cs_rubric_form {
                $context = $context->getContextItem();
                $this->_values['serviceemail'] = $context->getServiceEmail();
                if ( empty($this->_values['serviceemail'])
+                    and isset($context)
                     and !$context->isServer() ) {
                   $context = $context->getContextItem();
                   $this->_values['serviceemail'] = $context->getServiceEmail();

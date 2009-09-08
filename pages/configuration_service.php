@@ -109,9 +109,11 @@ else {
 
          $item2 = $item;
          $temp_service_mail = '';
-         while ( !$item2->isServer() and empty($temp_service_mail) ) {
+         while ( isset($item2) and !$item2->isServer() and empty($temp_service_mail) ) {
             $item2 = $item2->getContextItem();
-            $temp_service_mail = $item2->getServiceEmail();
+            if ( isset($item2) ) {
+               $temp_service_mail = $item2->getServiceEmail();
+            }
          }
 
          // mail to moderator link

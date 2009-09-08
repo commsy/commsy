@@ -1375,6 +1375,9 @@ class cs_portal_item extends cs_guide_item {
                case 'CONFIGURATION_PLUGINS':    // getestet Einstellungen Plugins
                   $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGINS_FORM',$link);
                   break;
+               case 'CONFIGURATION_LANGUAGE':
+                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM',$link);
+                  break;
                default:
                   $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;

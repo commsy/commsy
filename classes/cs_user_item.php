@@ -1507,19 +1507,21 @@ class cs_user_item extends cs_item {
          $item_manager = $this->_environment->getItemManager();
          $item = $item_manager->getItem($this->getContextID());
 
-         if ( $item->getItemType() == CS_COMMUNITY_TYPE
-              or $item->getItemType() == CS_PROJECT_TYPE
-              or $item->getItemType() == CS_GROUPROOM_TYPE
-            ) {
-            $room_manager = $this->_environment->getManager(CS_ROOM_TYPE);
-            $room = $room_manager->getItem($this->getContextID());
-            $portal_id = $room->getContextID();
-         } elseif ( $item->getItemType() == CS_PRIVATEROOM_TYPE ) {
-            $room_manager = $this->_environment->getManager(CS_PRIVATEROOM_TYPE);
-            $room = $room_manager->getItem($this->getContextID());
-            $portal_id = $room->getContextID();
-         } elseif ( $item->getItemType() == CS_PORTAL_TYPE ) {
-            $portal_id = $this->getContextID();
+         if ( isset($item) ) {
+            if ( $item->getItemType() == CS_COMMUNITY_TYPE
+                 or $item->getItemType() == CS_PROJECT_TYPE
+                 or $item->getItemType() == CS_GROUPROOM_TYPE
+               ) {
+               $room_manager = $this->_environment->getManager(CS_ROOM_TYPE);
+               $room = $room_manager->getItem($this->getContextID());
+               $portal_id = $room->getContextID();
+            } elseif ( $item->getItemType() == CS_PRIVATEROOM_TYPE ) {
+               $room_manager = $this->_environment->getManager(CS_PRIVATEROOM_TYPE);
+               $room = $room_manager->getItem($this->getContextID());
+               $portal_id = $room->getContextID();
+            } elseif ( $item->getItemType() == CS_PORTAL_TYPE ) {
+               $portal_id = $this->getContextID();
+            }
          }
 
          $retour = NULL;
