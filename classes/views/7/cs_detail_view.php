@@ -1173,7 +1173,7 @@ class cs_detail_view extends cs_view {
          $html .='<div id="detail_headline">'.LF;
          $html .= '<div style="padding:3px 5px 4px 5px;">'.LF;
          if($rubric == CS_DISCUSSION_TYPE){
-            $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($this->_getTitleAsHTML(),false));
+            $html .= '<h2 class="contenttitle">'.$this->_getTitleAsHTML();
          }elseif ($rubric != CS_USER_TYPE and $rubric != 'account'){
             $html .= '<h2 class="contenttitle">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getTitle(),false));
          }elseif ($rubric == 'account' ){
