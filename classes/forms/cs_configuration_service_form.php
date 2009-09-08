@@ -131,15 +131,17 @@ class cs_configuration_service_form extends cs_rubric_form {
          $this->_values['serviceemail'] = $this->_item->getServiceEmail();
          if ( empty($this->_values['serviceemail']) and !$this->_item->isServer() ) {
             $current_context_item = $this->_item->getContextItem();
-            $this->_values['serviceemail'] = $current_context_item->getServiceEmail();
-            if ( empty($this->_values['serviceemail']) and !$current_context_item->isServer()) {
-               $server_item = $current_context_item->getContextItem();
-               if ( isset($server_item) ) {
-                  $this->_values['serviceemail'] = $server_item->getServiceEmail();
+            if ( isset($current_context_item) ) {
+               $this->_values['serviceemail'] = $current_context_item->getServiceEmail();
+               if ( empty($this->_values['serviceemail']) and !$current_context_item->isServer()) {
+                  $server_item = $current_context_item->getContextItem();
+                  if ( isset($server_item) ) {
+                     $this->_values['serviceemail'] = $server_item->getServiceEmail();
+                  }
+                  unset($server_item);
                }
-               unset($server_item);
+               unset($current_context_item);
             }
-            unset($current_context_item);
          }
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
