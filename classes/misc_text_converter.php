@@ -1191,8 +1191,8 @@ class misc_text_converter {
          // der IE7 unter Windows Vista verkleinert das Flash-Fenster von unten
          // so dass die Steuerelemente nicht mehr zu sehen sind
          // daher wird hier auf den Mediaplayer ausgewichen
-         return $this->_format_wmplayer($text, $array);
-//         return $this->_format_quicktime($text, $array); Alte Ausweichoption, die nicht funktioniert hat.
+         return $this->_formatWmplayer($text, $array, $file_name_array);
+//         return $this->_format_quicktime($text, $array, $file_name_array); Alte Ausweichoption, die nicht funktioniert hat.
       }
 
       $retour = '';
