@@ -457,12 +457,14 @@ class misc_text_converter {
                if($this->_environment->getCurrentModule() == 'discussion'){
                   $params = array();
                   $params['iid'] = $this->_environment->getValueOfParameter('iid');
+                  include_once('functions/curl_functions.php');
                   $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, $word, $word, '', 'anchor'.$reference), $result);
                   unset($params);
                }
             } else {
                $params = array();
                $params['iid'] = $reference;
+               include_once('functions/curl_functions.php');
                $result = preg_replace('~'.$word.'\['.$reference.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', '', ''), $result);
                unset($params);
             }
@@ -528,6 +530,7 @@ class misc_text_converter {
                $search = '['.$http.'|'.$word.']';
                $params = array();
                $params['iid'] = $http;
+               include_once('functions/curl_functions.php');
                $replace = ahref_curl($this->_environment->getCurrentContextID(),'content','detail',$params,$word);
                $result = str_replace ( $search, $replace, $result);
             }
@@ -545,6 +548,7 @@ class misc_text_converter {
                if($this->_environment->getCurrentModule() == 'discussion'){
                   $params = array();
                   $params['iid'] = $this->_environment->getValueOfParameter('iid');
+                  include_once('functions/curl_functions.php');
                   $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'discussion', 'detail', $params, "[".$item."]", "[".$item."]", '', 'anchor'.$item), $result);
                   unset($params);
                }
@@ -552,6 +556,7 @@ class misc_text_converter {
             else {
                $params = array();
                $params['iid'] = $item;
+               include_once('functions/curl_functions.php');
                $result = preg_replace('~\['.$item.'\]~iu', ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, "[".$item."]", '', '', ''), $result);
                unset($params);
             }
@@ -2046,6 +2051,7 @@ class misc_text_converter {
           if ( empty($word) ) {
              $word = $array[1];
           }
+          include_once('functions/curl_functions.php');
           $image_text = ahref_curl($this->_environment->getCurrentContextID(), 'content', 'detail', $params, $word, '', $target, '');
       }
       if ( !empty($image_text) ) {
