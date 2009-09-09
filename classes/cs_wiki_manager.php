@@ -1040,6 +1040,65 @@ function updateWikiProfileFile($user){
       chdir($old_dir);
 }
 
+function updateWikiProfileFile_soap($user){
+      global $c_commsy_path_file;
+      global $c_pmwiki_path_file;
+
+      $old_dir = getcwd();
+      chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID());
+
+      // The Profiles-File has to be named Profiles.FirstnameLastname with capital 'F' and 'L'
+      $firstnameFirstLetter = mb_substr($user->getFirstname(), 0, 1);
+      if(mb_ereg_match('[a-z]', $firstnameFirstLetter)){
+         $firstnameRest = mb_substr($user->getFirstname(), 1);
+         $firstname = mb_strtoupper($firstnameFirstLetter, 'UTF-8') . $firstnameRest;
+      } else {
+         $firstname = $user->getFirstname();
+      }
+      $lastnameFirstLetter = mb_substr($user->getLastname(), 0, 1);
+      if(mb_ereg_match('[a-z]', $lastnameFirstLetter)){
+         $lastnameRest = mb_substr($user->getLastname(), 1);
+         $lastname = mb_strtoupper($lastnameFirstLetter, 'UTF-8') . $lastnameRest;
+      } else {
+         $lastname = $user->getLastname();
+      }
+      $firstname = str_replace(' ', '', $firstname);
+      $lastname = str_replace(' ', '', $lastname);
+      $name_for_profile = $firstname . $lastname;
+
+      // Get the SOAP-client
+      $client = $this->getSoapClient();
+      
+      // remove the old file
+      
+      
+      // create and save the new file
+      $profiles_source = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Profiles.Profile');
+      $file_contents_array = explode("\n", $profiles_source);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+          if(stripos($file_contents_array[$index], 'author=') !== false){
+              $file_contents_array[$index] = 'author=' . $firstname . ' ' . $lastname;
+          } else if (stripos($file_contents_array[$index], 'name=') !== false){
+              $file_contents_array[$index] = 'name=Profiles.' . $name_for_profile;
+          } else if (stripos($file_contents_array[$index], 'text=') !== false){
+              //my personal info:%0a(:email: Mail:[[mailto:<<EMAIL>>|<<EMAIL>>]] , Telefon: <<PHONE>>:)%0a(:info:%0aAttach:Profiles.<<PROFILE>>/<<IMAGE>>%0a<<DESCRIPTION>>%0a:)
+              $tempString =  'text=my personal info:%0a(:email: Mail:[[mailto:' . $user->getEmail() . '|' . $user->getEmail() . ']] , Telefon: ' . $user->getTelephone() . ':)%0a(:info:%0aAttach:Profiles.' . $name_for_profile . '/';
+              if($user->getPicture() != '' and file_exists($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture())){
+                    $tempString .= $user->getPicture() . '%0a';
+                    copy($c_commsy_path_file . '/var/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/' . $user->getPicture(),'uploads/Profiles/' . $user->getPicture());
+              } else {
+                    $tempString .= 'nobody_m.gif%0a';
+              }
+              $tempString .= '%0a:)'; //$user->getDescription() . '%0a:)';
+              $file_contents_array[$index] = $tempString;
+          }
+      }
+      
+      $file_contents = implode("\n", $file_contents_array);
+      $client->createPage('Profiles.' . $name_for_profile, $file_contents);
+      chdir($old_dir);
+}
+
 // Entscheidung 30.09.2008 - Eintraege bleiben unveraendert im Forum
 //function updateWikiRemoveUser($user){
 //    //updateNotification();
@@ -1080,6 +1139,62 @@ function updateNotificationFile($discussion, $user_array){
         file_put_contents('wiki.d/FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
     }
     chdir($old_dir);
+}
+
+function updateNotificationFile_soap($discussion, $user_array){
+    global $c_commsy_path_file;
+    global $c_pmwiki_path_file;
+
+    $discussion = $this->getDiscussionWikiName($discussion);
+
+    // Client holen
+    $client = $this->getSoapClient();
+    // Datei vorhanden?
+    $exists_file = $client->getPageExists('FoxNotifyLists.' . $discussion . 'Forum');
+    if($exists_file){
+      // Source holen
+      $wiki_source = $client->getReadPage('FoxNotifyLists.' . $discussion . 'Forum');
+      // Source bearbeiten
+      $wiki_source_array = explode("\n", $wiki_source);
+      for ($index = 0; $index < sizeof($wiki_source_array); $index++) {
+          if(stripos($wiki_source_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+              $wiki_source_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+          }
+          if(stripos($wiki_source_array[$index], 'text=') !== false){
+              $notify = 'text=';
+              foreach($user_array as $user){
+                  //$notify .= 'notify=' . $user->getEmail() . '%0a';
+                  $notify .= 'notify=' . $user->getEmail() . ' ';
+                  pr($notify);
+              }
+              $wiki_source_array[$index] = $notify;
+          }
+      }
+      $wiki_source = implode("\n", $wiki_source_array);
+      // Datei speichern
+      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $wiki_source);
+    } else {
+      // Datei nicht vorhanden
+      // Source generieren
+      $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/FoxNotifyLists.Forum');
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+          if(stripos($file_contents_array[$index], 'name=FoxNotifyLists.Forum') !== false){
+              $file_contents_array[$index] = 'name=FoxNotifyLists.' . $discussion . 'Forum';
+          }
+          if(stripos($file_contents_array[$index], 'text=') !== false){
+              $notify = 'text=';
+              foreach($user_array as $user){
+                  //$notify .= 'notify=' . $user->getEmail() . '%0a';
+                  $notify .= 'notify=' . $user->getEmail() . ' ';
+              }
+              $file_contents_array[$index] = $notify;
+          }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      // Datei speichern
+      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+    }
 }
 
 function deleteDiscussion($discussion){
@@ -1133,9 +1248,7 @@ function removeNotification(){
 
 function updateNotification(){
    $this->removeNotification();
-
    $context_item = $this->_environment->getCurrentContextItem();
-
    global $c_commsy_path_file;
    $old_dir = getcwd();
    chdir($c_commsy_path_file);
@@ -1152,6 +1265,7 @@ function updateNotification(){
             $user_list = $user_manager->get();
             $user_array = $user_list->to_array();
             $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
+            //$this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $user_array);
          }
       }
    } else {
@@ -1183,6 +1297,7 @@ function updateNotification(){
                 }
             }
             $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
+            //$this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $discussion_member);
          }
       }
    }
@@ -1817,8 +1932,12 @@ function getSoapWsdlUrl(){
 
 }
 
+function getSoapClient(){
+   return new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+}
+
 function getGroupsForWiki_soap($complete){
-   $client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
+   $client = $this->getSoapClient();
    $groups = $client->getGroupNames();
    $result = array('groups' => array(), 'public' => array());
    foreach($groups as $group){
