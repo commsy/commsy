@@ -56,6 +56,33 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
    function _initForm () {
       $this->_headline = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
       $this->setHeadline($this->_headline);
+      $this->seperators = array(array('text' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
+      $this->auth_source = array();
+      $portal = $this->_environment->getCurrentPortalItem();
+      $auth_source_list = $portal->getAuthSourceList();
+      $temp_auth_source = $auth_source_list->getFirst();
+      $selected_auth_id = '';
+      $auth_default = $portal->getAuthDefault();
+      while($temp_auth_source){
+         if($temp_auth_source->getItemID() == $auth_default){
+            //$text = $temp_auth_source->getTitle() . ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT') . ')';
+            $text = $temp_auth_source->getTitle();
+
+            $this->auth_source[] = array('text' => $text, 'value' => $temp_auth_source->getItemID());
+            $selected_auth_id = $temp_auth_source->getItemID();
+         } else {
+            $this->auth_source[] = array('text' => $temp_auth_source->getTitle(), 'value' => $temp_auth_source->getItemID());
+         }
+         $temp_auth_source = $auth_source_list->getNext();
+      }
+      $index = 0;
+      $this->selected_auth_entry = 0;
+      foreach($this->auth_source as $auth_source){
+         if($auth_source['value'] == $selected_auth_id){
+            $this->selected_auth_entry = $index;
+         }
+         $index++;
+      }
    }
 
    /** create the form, INTERNAL
@@ -65,8 +92,8 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addImage('dates_upload','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOADFILE'),'');
-      $seperators = array(array('text' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
-      $this->_form->addSelect('autoaccounts_seperator',$seperators,$seperators[0],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_seperator',$this->seperators,$this->seperators[0],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_auth_source',$this->auth_source,$this->auth_source[$this->selected_auth_entry],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
       $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
       $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES'));
    }
@@ -93,7 +120,7 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
 
    function _check_file_format() {
       $error = false;
-      $environment = $this->_environment;
+      //$environment = $this->_environment;
       $file = $this->_form_post['dates_upload']['name'];
       $file_elements =  explode('.',$file);
       if ( isset($file_elements[1]) and !empty($file_elements[1]) ){
