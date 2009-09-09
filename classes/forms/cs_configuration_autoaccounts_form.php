@@ -108,6 +108,10 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
          $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_NOT_FOUND');
          $this->_form->setFailure('autoaccounts_seperator','');
       }
+      $this->_values = array();
+      if ( isset($this->_form_post) ) {
+         $this->_values = $this->_form_post;
+      }
    }
 
 
@@ -127,11 +131,11 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
          $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'CSV') {
             $this->_error_array[] = getMessage('DATES_WRONG_FILE_FORMAT');
-	   $error = true;
+            $error = true;
          }
       }elseif ( !isset($file_elements[1]) ){
-            $this->_error_array[] = getMessage('NO_DATES_FILE_FOUND');
-	   $error = true;
+         $this->_error_array[] = getMessage('NO_DATES_FILE_FOUND');
+         $error = true;
       }
       return $error;
    }

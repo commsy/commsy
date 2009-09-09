@@ -185,7 +185,7 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                $dates_data_array = array();
-               if($_POST[autoaccounts_seperator] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
+               if($_POST['autoaccounts_seperator'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
                   $found_comma = false;
                   $found_semicolon = false;
                   for ($i = 0; $i < count($data_array); $i++){
@@ -290,7 +290,7 @@ function auto_create_accounts($date_array){
       if(!$account_info_missing){
          $found_user_by_email = false;
          $most_recent_account = null;
-   
+
          if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
             //Test auf E-Mail-Adresse...
             $user_manager = $environment->getUserManager();
@@ -317,13 +317,13 @@ function auto_create_accounts($date_array){
                }
             }
          }
-   
+
          if(!$found_user_by_email){
             $authentication = $environment->getAuthenticationObject();
             $current_portal = $environment->getCurrentPortalItem();
             $current_portal_id = $environment->getCurrentPortalID();
             $auth_source_id = $current_portal->getAuthDefault();
-   
+
             $new_account = $authentication->getNewItem();
             $new_account->setUserID($temp_account_account);
             $new_account->setPassword($temp_account_password);
@@ -344,7 +344,7 @@ function auto_create_accounts($date_array){
             $temp_user = $authentication->getUserItem();
             $temp_user->makeUser();
             $temp_user->save();
-   
+
             $temp_account_array = array();
             $temp_account_array['lastname'] = $temp_account_lastname;
             $temp_account_array['firstname'] = $temp_account_firstname;
@@ -368,7 +368,7 @@ function auto_create_accounts($date_array){
                $temp_account_array['password_generated'] = false;
             }
             $temp_account_array['found_account_by_email'] = false;
-            
+
             $rooms_added_to = add_user_to_rooms($temp_user, $temp_account_rooms_array, $password_generated, $temp_account_password);
             $temp_account_array['rooms_added'] = $rooms_added_to;
             $temp_account_array['rooms'] = $temp_account_rooms_array;
@@ -382,7 +382,7 @@ function auto_create_accounts($date_array){
             $temp_account_array['password'] = '';
             $temp_account_array['password_generated'] = false;
             $temp_account_array['found_account_by_email'] = true;
-            
+
             $rooms_added_to = add_user_to_rooms($most_recent_account, $temp_account_rooms_array);
             $temp_account_array['rooms_added'] = $rooms_added_to;
             $temp_account_array['rooms'] = $temp_account_rooms_array;
