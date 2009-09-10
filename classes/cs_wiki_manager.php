@@ -30,8 +30,8 @@ include_once('functions/date_functions.php');
 /** class for database connection to the database table "homepage"
  * this class implements a database manager for the table "homepage_page"
  */
-class cs_wiki_manager extends cs_manager {
 
+class cs_wiki_manager extends cs_manager {
 
   /** update an wiki - internal, do not use -> use method save
     * this method updates a wiki
@@ -478,7 +478,12 @@ class cs_wiki_manager extends cs_manager {
                     }
                     chdir($tempDir);
                 } else {
-                    $this->deleteDiscussion($titleForForm);
+                  global $c_use_soap_for_wiki;
+                  if(!$c_use_soap_for_wiki){
+                     $this->deleteDiscussion($titleForForm);
+                  } else {
+                     $this->deleteDiscussion_soap($titleForForm);
+                  }
                     $item->WikiRemoveDiscussion($titleForForm);
                 }
             }
@@ -1095,7 +1100,7 @@ function updateWikiProfileFile_soap($user){
       }
       
       $file_contents = implode("\n", $file_contents_array);
-      $client->createPage('Profiles.' . $name_for_profile, $file_contents);
+      $client->createPage('Profiles.' . $name_for_profile, $file_contents, $this->_environment->getSessionID());
       chdir($old_dir);
 }
 
@@ -1150,10 +1155,10 @@ function updateNotificationFile_soap($discussion, $user_array){
     // Client holen
     $client = $this->getSoapClient();
     // Datei vorhanden?
-    $exists_file = $client->getPageExists('FoxNotifyLists.' . $discussion . 'Forum');
+    $exists_file = $client->getPageExists('FoxNotifyLists.' . $discussion . 'Forum', $this->_environment->getSessionID());
     if($exists_file){
       // Source holen
-      $wiki_source = $client->getReadPage('FoxNotifyLists.' . $discussion . 'Forum');
+      $wiki_source = $client->getReadPage('FoxNotifyLists.' . $discussion . 'Forum', $this->_environment->getSessionID());
       // Source bearbeiten
       $wiki_source_array = explode("\n", $wiki_source);
       for ($index = 0; $index < sizeof($wiki_source_array); $index++) {
@@ -1163,16 +1168,15 @@ function updateNotificationFile_soap($discussion, $user_array){
           if(stripos($wiki_source_array[$index], 'text=') !== false){
               $notify = 'text=';
               foreach($user_array as $user){
-                  //$notify .= 'notify=' . $user->getEmail() . '%0a';
-                  $notify .= 'notify=' . $user->getEmail() . ' ';
-                  pr($notify);
+                  $notify .= 'notify=' . $user->getEmail() . '%0a';
+                  //$notify .= 'notify=' . $user->getEmail() . ' ';
               }
               $wiki_source_array[$index] = $notify;
           }
       }
       $wiki_source = implode("\n", $wiki_source_array);
       // Datei speichern
-      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $wiki_source);
+      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $wiki_source, $this->_environment->getSessionID());
     } else {
       // Datei nicht vorhanden
       // Source generieren
@@ -1185,15 +1189,15 @@ function updateNotificationFile_soap($discussion, $user_array){
           if(stripos($file_contents_array[$index], 'text=') !== false){
               $notify = 'text=';
               foreach($user_array as $user){
-                  //$notify .= 'notify=' . $user->getEmail() . '%0a';
-                  $notify .= 'notify=' . $user->getEmail() . ' ';
+                  $notify .= 'notify=' . $user->getEmail() . '%0a';
+                  //$notify .= 'notify=' . $user->getEmail() . ' ';
               }
               $file_contents_array[$index] = $notify;
           }
       }
       $file_contents = implode("\n", $file_contents_array);
       // Datei speichern
-      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $file_contents);
+      $client->createPage('FoxNotifyLists.' . $discussion . 'Forum', $file_contents, $this->_environment->getSessionID());
     }
 }
 
@@ -1222,6 +1226,56 @@ function deleteDiscussion($discussion){
     }
     $this->updateNotification();
     chdir('..');
+}
+
+function deleteDiscussion_soap($discussion){
+//    $discussionChecked = $this->getDiscussionWikiName($discussion);
+//    chdir('wiki.d');
+//    if($dir=opendir(getcwd())){
+//        while($file=readdir($dir)) {
+//            if (!is_dir($file) && $file != "." && $file != ".."){
+//                if((stripos($file, $discussionChecked) !== false) and !(stripos($file, 'Discussion_Backup_') !== false)){
+//                    rename($file, 'Discussion_Backup_' . $file);
+//                }
+//            }
+//        }
+//    }
+//    if(file_exists('Site.Forum')){
+//        $file_forum_contents = file_get_contents('Site.Forum');
+//        $file_forum_contents_array = explode("\n", $file_forum_contents);
+//        for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
+//            if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
+//                $file_forum_contents_array[$index] = str_replace('%0a*[['. $discussionChecked . 'Forum.' . $discussionChecked . 'Forum' . '|' . $discussion . ']]', '', $file_forum_contents_array[$index]);
+//            }
+//        }
+//        $file_forum_contents = implode("\n", $file_forum_contents_array);
+//        $result = file_put_contents('Site.Forum', $file_forum_contents);
+//    }
+//    $this->updateNotification();
+//    chdir('..');
+    
+   $discussionChecked = $this->getDiscussionWikiName($discussion);
+
+   // NEU
+   // client holen
+   $client = $this->getSoapClient();
+   $discussion_array = $client->getPageNames($discussionChecked);
+   foreach($discussion_array as $discussion_file){
+      $client->backupPage($discussion_file, 'Discussion_Backup_' . $discussion_file, $this->_environment->getSessionID());
+   }
+   $exists_file = $client->getPageExists('Site.Forum', $this->_environment->getSessionID());
+   if($exists_file){
+      $wiki_source = $client->getReadPage('Site.Forum', $this->_environment->getSessionID());
+      // Source bearbeiten
+      $wiki_source_array = explode("\n", $wiki_source);
+      for ($index = 0; $index < sizeof($wiki_source_array); $index++) {
+         if(stripos($wiki_source_array[$index], 'text=Foren:') !== false){
+            $wiki_source_array[$index] = str_replace('%0a*[['. $discussionChecked . 'Forum.' . $discussionChecked . 'Forum' . '|' . $discussion . ']]', '', $wiki_source_array[$index]);
+         }
+      }
+      $wiki_source = implode("\n", $wiki_source_array);
+      $client->createPage('Site.Forum', $wiki_source, $this->_environment->getSessionID());
+   }
 }
 
 function removeNotification(){
@@ -1264,8 +1318,12 @@ function updateNotification(){
             $user_manager->select();
             $user_list = $user_manager->get();
             $user_array = $user_list->to_array();
-            $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
-            //$this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $user_array);
+            global $c_use_soap_for_wiki;
+            if(!$c_use_soap_for_wiki){
+               $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $user_array);
+            } else {
+               $this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $user_array);
+            }
          }
       }
    } else {
@@ -1296,8 +1354,12 @@ function updateNotification(){
                    }
                 }
             }
-            $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
-            //$this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $discussion_member);
+            global $c_use_soap_for_wiki;
+            if(!$c_use_soap_for_wiki){
+               $this->updateNotificationFile($this->getDiscussionWikiName($discussion), $discussion_member);
+            } else {
+               $this->updateNotificationFile_soap($this->getDiscussionWikiName($discussion), $discussion_member);
+            }
          }
       }
    }
@@ -2069,5 +2131,11 @@ function deleteDirectory($dir) {
         }
         return rmdir($dir);
     }
+}
+
+function pr_soap($client){
+   pr($client->__getLastRequestHeaders());
+   pr($client->__getLastResponseHeaders());
+   pr($client->__getLastResponse());
 }
 ?>
