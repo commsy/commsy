@@ -22,6 +22,22 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
+// Function used for cleaning up the session. This function
+// deletes ALL session variables this page writes.
+function cleanup_session ($current_iid) {
+   global $session,$environment;
+   $session->unsetValue($environment->getCurrentModule().'_add_files');
+   $session->unsetValue($current_iid.'_post_vars');
+   $session->unsetValue($current_iid.'_material_attach_ids');
+   $session->unsetValue($current_iid.'_institution_attach_ids');
+   $session->unsetValue($current_iid.'_group_attach_ids');
+   $session->unsetValue($current_iid.'_topic_attach_ids');
+   $session->unsetValue($current_iid.'_material_back_module');
+   $session->unsetValue($current_iid.'_institution_back_module');
+   $session->unsetValue($current_iid.'_group_back_module');
+   $session->unsetValue($current_iid.'_topic_back_module');
+}
+
 // Get the current user and room
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
