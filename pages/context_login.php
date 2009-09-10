@@ -157,23 +157,30 @@ if ( !empty($_POST['login_redirect']) ) {
    $params = array();
    redirect($_GET['target_cid'],$mod,$fct,$params);
 } else {
-   $cid = $history[0]['context'];
-   if ( empty($cid) ) {
+   if ( !empty($history[0]['context']) ) {
+      $cid = $history[0]['context'];
+   } else {
       $cid = $environment->getCurrentContextID();
    }
-   $mod = $history[0]['module'];
-   if ( empty($mod) ) {
+
+   if ( !empty($history[0]['module']) ) {
+      $mod = $history[0]['module'];
+   } else {
       $mod = $environment->getCurrentModule();
    }
-   $fct = $history[0]['function'];
-   if ( empty($fct) ) {
+
+   if ( !empty($history[0]['function']) ) {
+      $fct = $history[0]['function'];
+   } else {
       $fct = $environment->getCurrentFunction();
    }
+
    if ( !isset($history[0]['parameter']) ) {
       $params = $environment->getCurrentParameterArray();
    } else {
       $params = $history[0]['parameter'];
    }
+
    if ( isset($error_array) and !empty($error_array) ) {
       if ( isset($auth_source) and !empty($auth_source) ) {
          $params['auth_source'] = $auth_source;
