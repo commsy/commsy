@@ -98,7 +98,13 @@ if ($type != CS_MATERIAL_TYPE) {
    } else {
       if(isset($_GET['export_to_wiki'])){
          $wiki_manager = $environment->getWikiManager();
-         $wiki_manager->exportItemToWiki($current_item_iid,CS_MATERIAL_TYPE);
+         //$wiki_manager->exportItemToWiki($current_item_iid,CS_MATERIAL_TYPE);
+         global $c_use_soap_for_wiki;
+         if(!$c_use_soap_for_wiki){
+            $wiki_manager->exportItemToWiki($current_item_iid,CS_MATERIAL_TYPE);
+         } else {
+            $wiki_manager->exportItemToWiki_soap($current_item_iid,CS_MATERIAL_TYPE);
+         }
          $params = $environment->getCurrentParameterArray();
          unset($params['export_to_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);

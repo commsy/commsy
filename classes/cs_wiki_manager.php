@@ -459,7 +459,12 @@ class cs_wiki_manager extends cs_manager {
                         $this->updateNotification();
                     } else {
 //                        $this->updateGroupNotificationFiles();
-                        $this->removeNotification();
+                        global $c_use_soap_for_wiki;
+                        if(!$c_use_soap_for_wiki){
+                           $this->removeNotification();
+                        } else {
+                           $this->removeNotification_soap();
+                        }
                     }
 
                     // Profile der vorhandenen CommSy-Benutzer anlegen
@@ -1229,34 +1234,8 @@ function deleteDiscussion($discussion){
 }
 
 function deleteDiscussion_soap($discussion){
-//    $discussionChecked = $this->getDiscussionWikiName($discussion);
-//    chdir('wiki.d');
-//    if($dir=opendir(getcwd())){
-//        while($file=readdir($dir)) {
-//            if (!is_dir($file) && $file != "." && $file != ".."){
-//                if((stripos($file, $discussionChecked) !== false) and !(stripos($file, 'Discussion_Backup_') !== false)){
-//                    rename($file, 'Discussion_Backup_' . $file);
-//                }
-//            }
-//        }
-//    }
-//    if(file_exists('Site.Forum')){
-//        $file_forum_contents = file_get_contents('Site.Forum');
-//        $file_forum_contents_array = explode("\n", $file_forum_contents);
-//        for ($index = 0; $index < sizeof($file_forum_contents_array); $index++) {
-//            if(stripos($file_forum_contents_array[$index], 'text=Foren:') !== false){
-//                $file_forum_contents_array[$index] = str_replace('%0a*[['. $discussionChecked . 'Forum.' . $discussionChecked . 'Forum' . '|' . $discussion . ']]', '', $file_forum_contents_array[$index]);
-//            }
-//        }
-//        $file_forum_contents = implode("\n", $file_forum_contents_array);
-//        $result = file_put_contents('Site.Forum', $file_forum_contents);
-//    }
-//    $this->updateNotification();
-//    chdir('..');
-    
    $discussionChecked = $this->getDiscussionWikiName($discussion);
 
-   // NEU
    // client holen
    $client = $this->getSoapClient();
    $discussion_array = $client->getPageNames($discussionChecked);
@@ -1300,8 +1279,21 @@ function removeNotification(){
    chdir($old_dir);
 }
 
+function removeNotification_soap(){
+   $client = $this->getSoapClient();
+   $notification_array = $client->getPageNames('FoxNotifyLists');
+   foreach($notification_array as $notification_file){
+      $client->removePage($notification_file, $this->_environment->getSessionID());
+   }
+}
+
 function updateNotification(){
-   $this->removeNotification();
+   global $c_use_soap_for_wiki;
+   if(!$c_use_soap_for_wiki){
+      $this->removeNotification();
+   } else {
+      $this->removeNotification_soap();
+   }
    $context_item = $this->_environment->getCurrentContextItem();
    global $c_commsy_path_file;
    $old_dir = getcwd();
@@ -1743,6 +1735,323 @@ function exportItemToWiki($current_item_id,$rubric){
    $this->updateExportLists($rubric);
 }
 
+function exportItemToWiki_soap($current_item_id,$rubric){
+   pr('exportItemToWiki_soap');
+   global $c_commsy_path_file;
+   global $c_pmwiki_path_file;
+   global $c_pmwiki_absolute_path_file;
+   global $c_pmwiki_path_url;
+   global $c_commsy_domain;
+   global $c_commsy_url_path;
+
+   $client = $this->getSoapClient();
+   $client->createDir('uploads/Main', $this->_environment->getSessionID());
+
+   $author = '';
+   $description = '';
+   if ($rubric == CS_MATERIAL_TYPE){
+      // Material Item
+      $material_manager = $this->_environment->getMaterialManager();
+      $material_version_list = $material_manager->getVersionList($current_item_id);
+      $item = $material_version_list->getFirst();
+      // Informationen
+      $author = $item->getAuthor();
+      if (empty($author)){
+         $author = $item->getModificatorItem()->getFullName();
+         $description = $item->getDescription();
+      }
+      $informations = '!' . $item->getTitle() . '%0a%0a';
+      $informations .= '(:table border=0 style="margin-left:0px;":)%0a';
+      $informations .= '(:cell:)\'\'\'AutorInnen:\'\'\' %0a(:cell:)' . $author . ' %0a';
+      // Kurzfassung fuer Wiki vorbereiten
+      if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
+         $text_converter = $this->_environment->getTextConverter();
+         $description = $text_converter->text_for_wiki_export($description);
+         //$description = _text_php2html_long($description);
+      }
+   }elseif($rubric == CS_DISCUSSION_TYPE){
+      // Discussion Item
+      $discussion_manager = $this->_environment->getDiscussionManager();
+      $item = $discussion_manager->getItem($current_item_id);
+      $informations = '!' . $item->getTitle() . '%0a%0a';
+   }
+   if ($rubric == CS_MATERIAL_TYPE or $rubric == CS_DISCUSSION_TYPE){
+       global $class_factory;
+       $params = array();
+       $params['environment'] = $this->_environment;
+       $wiki_view = $class_factory->getClass(WIKI_VIEW,$params);
+       $wiki_view->setItem($item);
+       $description = $wiki_view->formatForWiki($description);
+       $description = $this->encodeUmlaute($description);
+       $description = $this->encodeUrl($description);
+       if ($rubric == CS_MATERIAL_TYPE){
+          $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.html';
+       }elseif($rubric == CS_DISCUSSION_TYPE){
+          $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.html';
+       }
+       $old_dir = getcwd();
+
+       $description = '<br />' . "\n" . $description;
+       $client->uploadFile($html_wiki_file, base64_encode($description), 'uploads/Main', $this->_environment->getSessionID());
+       
+       $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
+       $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
+
+       if ($rubric == CS_MATERIAL_TYPE){
+          $informations .= '(:cellnr:)\'\'\'Kurzfassung:\'\'\' %0a(:cell:)' . $returnwiki . ' %0a';
+       }
+       // Dateien
+       $file_list = $item->getFileList();
+       if(!$file_list->isEmpty()){
+          $file_array = $file_list->to_array();
+          $file_link_array = array();
+          foreach ($file_array as $file) {
+             $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
+             $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
+             $new_filename = $new_filename.'.'.$file->getExtension();
+             $client->uploadFile($new_filename, base64_encode($c_commsy_path_file . '/' . $file->getDiskFileName()), 'uploads/Main', $this->_environment->getSessionID());
+             $new_link = $this->encodeUrlToHtml($file->getFileName());
+             $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
+          }
+          $file_links = implode('\\\\%0a', $file_link_array);
+          $informations .= '(:cellnr:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
+       }
+
+       if ($rubric == CS_MATERIAL_TYPE){
+          // Abschnitte
+          $sub_item_list = $item->getSectionList();
+       }elseif($rubric == CS_DISCUSSION_TYPE){
+          $discussionarticles_manager = $this->_environment->getDiscussionArticlesManager();
+          $discussionarticles_manager->setDiscussionLimit($item->getItemID(),array());
+          $discussion_type = $item->getDiscussionType();
+          if ($discussion_type=='threaded'){
+             $discussionarticles_manager->setSortPosition();
+          }
+          if ( isset($_GET['status']) and $_GET['status'] == 'all_articles' ) {
+             $discussionarticles_manager->setDeleteLimit(false);
+          }
+          $discussionarticles_manager->select();
+          $sub_item_list = $discussionarticles_manager->get();
+       }
+       $sub_item_descriptions = '';
+       if(!$sub_item_list->isEmpty()){
+          $size = $sub_item_list->getCount();
+          $index_start = 1;
+          if($rubric == CS_DISCUSSION_TYPE and $size >0){
+             $size = $size-1;
+             $index_start = 0;
+          }
+          $sub_item_link_array = array();
+          $sub_item_description_array = array();
+          for ($index = $index_start; $index <= $size; $index++) {
+             $sub_item = $sub_item_list->get($index);
+             if($rubric == CS_DISCUSSION_TYPE){
+                $sub_item_link_array[] = '(:cellnr width=50%:)'.($index+1).'. [[#' . $sub_item->getSubject() . '|' . $sub_item->getSubject() . ']] %0a(:cell width=30%:)' . $sub_item->getCreatorItem()->getFullName() . ' %0a(:cell:)' . getDateTimeInLang($sub_item->getModificationDate()) . '%0a';
+             }else{
+                $sub_item_link_array[] = '[[#' . $sub_item->getTitle() . '|' . $sub_item->getTitle() . ']]';
+             }
+             // Abschnitt fuer Wiki vorbereiten
+             $description = $sub_item->getDescription();
+             if(!preg_match('~<!-- KFC TEXT -->[\S|\s]*<!-- KFC TEXT -->~u', $description)){
+                $text_converter = $this->_environment->getTextConverter();
+                $description = $text_converter->text_for_wiki_export($description);
+                //$description = _text_php2html_long($sub_item->getDescription());
+             }
+             $params = array();
+             $params['environment'] = $this->_environment;
+             $params['with_modifying_actions'] = true;
+             $wiki_view = $this->_class_factory->getClass(WIKI_VIEW,$params);
+             unset($params);
+             $wiki_view->setItem($sub_item);
+             $description = $wiki_view->formatForWiki($description);
+             $description = $this->encodeUmlaute($description);
+             $description = $this->encodeUrl($description);
+             if ($rubric == CS_MATERIAL_TYPE){
+                $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
+             }elseif($rubric == CS_DISCUSSION_TYPE){
+                $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
+             }
+             $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
+             $html_wiki_file = $this->encodeUrl($html_wiki_file);
+             $description = '<br />' . "\n" . $description;
+             $client->uploadFile($html_wiki_file, base64_encode($description), 'uploads/Main', $this->_environment->getSessionID());
+             $c_pmwiki_path_url_upload = preg_replace('~http://[^/]*~u', '', $c_pmwiki_path_url);
+             $returnwiki = '(:includeupload /' . $c_pmwiki_path_url_upload . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $html_wiki_file .':)';
+             $description_sub_item_link = str_replace(' ', '', $sub_item->getTitle());
+
+             // Dateien (Abschnitte)
+             $files = '%0a%0a';
+             $file_list = $sub_item->getFileList();
+             if(!$file_list->isEmpty()){
+                $file_array = $file_list->to_array();
+                $file_link_array = array();
+                foreach ($file_array as $file) {
+                   $new_filename = $this->encodeUrl($file->getDiskFileNameWithoutFolder());
+                   $new_filename = preg_replace('~cid([0-9]*)_~u', '', $new_filename);
+                   $new_filename = $new_filename.'.'.$file->getExtension();
+                   $client->uploadFile($new_filename, base64_encode($c_commsy_path_file . '/' . $file->getDiskFileName()), 'uploads/Main', $this->_environment->getSessionID());
+                   $new_link = $this->encodeUrlToHtml($file->getFileName());
+                   $file_link_array[] = '[[' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main/' . $new_filename . '|' . $new_link . ']]';
+                }
+                $file_links = implode('\\\\%0a', $file_link_array);
+                $files .= '(:table border=0 style="margin-left:0px;":)%0a';
+                $files .= '(:cell:)\'\'\'Dateien:\'\'\' %0a(:cell:)' . $file_links . ' %0a';
+                $files .= '(:tableend:) %0a';
+             }
+
+             $sub_item_description_array[] = '%0a----%0a%0a====%0a%0a!!' . $sub_item->getTitle() . '%0a[[#' . $description_sub_item_link . ']]%0a' . $returnwiki . $files;
+
+          }
+
+          if ($rubric == CS_MATERIAL_TYPE){
+             $sub_item_links = implode('\\\\%0a', $sub_item_link_array);
+             $informations .= '(:cellnr:)\'\'\''.getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
+          }elseif ($rubric == CS_DISCUSSION_TYPE){
+             $sub_item_links = implode('', $sub_item_link_array);
+             $informations .= '(:cellnr:)%0a(:cell:)%0a';
+             $informations .= '(:table border=0 style="margin-left:0px;":)%0a';
+             $informations .= $sub_item_links;
+             $informations .= '(:tableend:) %0a';
+          }
+          $informations .= '(:tableend:) %0a';
+          $sub_item_descriptions = implode('\\\\%0a', $sub_item_description_array);
+       }
+       $buzzword_text = '';
+       $buzzword_list = $item->getBuzzwordList();
+       $buzzword = $buzzword_list->getFirst();
+       $buzzword_file_text = '';
+       $commentbox_text = '';
+       while ($buzzword){
+          if (!empty ($buzzword_text)){
+             $buzzword_text .= ', ';
+          }
+          if (!empty ($buzzword_file_text)){
+             $buzzword_file_text .= ',';
+          }
+          $buzzword_title = cs_ucfirst(str_replace('.','',str_replace(' ','',$buzzword->getTitle())));
+          $buzzword_text .= '[[!'.$buzzword_title.']]';
+          $exists_file = $client->getPageExists('Category.'.$buzzword_title, $this->_environment->getSessionID());
+          if(!$exists_file){
+            $file_buzzword_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Category.Keyword');
+            $file_buzzword_contents = str_replace('CS_KEYWORD',$buzzword_title,$file_buzzword_contents);
+            $client->createPage('Category.'.$buzzword_title, $file_buzzword_contents, $this->_environment->getSessionID());      
+          }
+          $buzzword_file_text .= 'Category.'.$buzzword_title;
+          $buzzword = $buzzword_list->getNext();
+       }
+       if (!empty ($buzzword_text)){
+          $buzzword_text = '%0a\\\\%0a'.getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
+       }
+       if ($item->getItemType() == CS_MATERIAL_TYPE){
+          $wiki_file = 'Main.CommSyMaterial' . $current_item_id.'-Comments';
+       }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
+          $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
+       }
+       $exists_file = $client->getPageExists($wiki_file, $this->_environment->getSessionID());
+       if(!$exists_file){
+         $commentbox_text ='%0a%0a----%0a\\\\%0a'.'(:include Site.FoxCommentBox:)';
+       }
+
+       // Link zurueck ins CommSy
+       global $c_single_entry_point;
+       $link = '[[' . $c_commsy_domain .  $c_commsy_url_path . '/'.$c_single_entry_point.'?cid=' . $this->_environment->getCurrentContextID() . '&mod='.$rubric.'&fct=detail&iid=' . $current_item_id . '|"' . $item->getTitle() . '" im CommSy]]';
+
+       $old_dir = getcwd();
+       // Kurzfassung fuer Wiki vorbereiten
+       if ($rubric == CS_MATERIAL_TYPE){
+          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.Material');
+       }elseif($rubric == CS_DISCUSSION_TYPE){
+          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.'.getMessage('COMMON_DISCUSSION'));
+       }
+       $file_contents_array = explode("\n", $file_contents);
+       for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+           if(stripos($file_contents_array[$index], 'name=') !== false){
+               if ($rubric == CS_MATERIAL_TYPE){
+                   $file_contents_array[$index] = 'name=Main.CommSyMaterial' . $current_item_id;
+               }elseif($rubric == CS_DISCUSSION_TYPE){
+                   $file_contents_array[$index] = 'name=Main.CommSy'.getMessage('COMMON_DISCUSSION') . $current_item_id;
+               }
+           }
+           if(stripos($file_contents_array[$index], 'text=') !== false){
+              if ($rubric == CS_MATERIAL_TYPE){
+                 $title_text = '(:title CommSy-Material "' . $item->getTitle() . '":)';
+              }elseif($rubric == CS_DISCUSSION_TYPE){
+                 $title_text = '(:title CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
+              }
+              $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text . '%0a%0a' . $title_text;
+           }
+           if(stripos($file_contents_array[$index], 'targets=') !== false and !empty($buzzword_file_text)){
+              $file_contents_array[$index] = 'targets='.$buzzword_file_text;
+           }
+       }
+       $file_contents = implode("\n", $file_contents_array);
+       if(!strstr($file_contents,'targets=') and !empty($buzzword_file_text)){
+          $file_contents .='"\n"'.'targets='.$buzzword_file_text;
+       }
+
+       if ($rubric == CS_MATERIAL_TYPE){
+           $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $item->getTitle() . '"';
+           $client->createPage('Main.CommSyMaterial' . $current_item_id, $file_contents, $this->_environment->getSessionID());
+       }elseif($rubric == CS_DISCUSSION_TYPE){
+           $file_contents =  $file_contents . 'title=CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
+           $client->createPage('Main.CommSy'.getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents, $this->_environment->getSessionID());
+       }
+
+       $item->setExportToWiki('1');
+       $item->save();
+
+       $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
+       $modifiers = $link_modifier_item_manager->getModifiersOfItem($item->getItemID());
+
+       $user_manager = $this->_environment->getUserManager();
+       $user_manager->reset();
+       $user_manager->setContextLimit($this->_environment->getCurrentContextID());
+       $user_manager->setIDArrayLimit($modifiers);
+       $user_manager->select();
+       $user_list = $user_manager->get();
+
+       if ($user_list->getCount() >= 1) {
+          $user_item = $user_list->getFirst();
+
+          include_once('classes/cs_mail.php');
+          $translator = $this->_environment->getTranslationObject();
+
+          while($user_item){
+             $mail = new cs_mail();
+             $mail->set_to($user_item->getEmail());
+
+             $room = $this->_environment->getCurrentContextItem();
+             $room_title = '';
+             if (isset($room)){
+                $room_title = $room->getTitle();
+             }
+             $from = $translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_title);
+             $mail->set_from_name($from);
+
+             $server_item = $this->_environment->getServerItem();
+             $default_sender_address = $server_item->getDefaultSenderAddress();
+             if (!empty($default_sender_address)) {
+                 $mail->set_from_email($default_sender_address);
+             } else {
+                 $mail->set_from_email('@');
+             }
+
+             $subject = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_SUBJECT').': '.$room_title;
+             $mail->set_subject($subject);
+
+             $body = $translator->getMessage('MATERIAL_EXPORT_WIKI_MAIL_BODY', $room_title, $item->getTitle(), $item->getExportToWikiLink());
+             $mail->set_message($body);
+             $mail->setSendAsHTML();
+
+             $mail->send();
+
+             $user_item = $user_list->getNext();
+          }
+       }
+   }
+   $this->updateExportLists($rubric);
+}
+
 function updateExportLists($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
@@ -1821,6 +2130,73 @@ function updateExportLists($rubric){
       file_put_contents('Main.CommSyMaterialien', $file_contents);
    }
    chdir($old_dir);
+}
+
+function updateExportLists_soap($rubric){
+   global $c_pmwiki_path_file;
+   global $c_commsy_path_file;
+
+   $client = $this->getSoapClient();
+   if ($rubric == CS_DISCUSSION_TYPE){
+      $exists_file = $client->getPageExists('Main.CommSyDiskussionenNavi', $this->_environment->getSessionID());
+      if(!$exists_file){
+         $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyDiskussionenNavi');
+         $client->createPage('Main.CommSyDiskussionenNavi', $file_contents, $this->_environment->getSessionID());      
+      }
+      $exported_discussions = array();
+      $dicussion_array = $client->getPageNames('Main.CommSy'.getMessage('COMMON_DISCUSSION'));
+      foreach($dicussion_array as $discussion_file){
+         if($discussion_file != 'Main.CommSyDiskussionenNavi' && $discussion_file != 'Main.CommSyDiskussionen'){
+            if((stripos($discussion_file, 'Main.CommSy'.getMessage('COMMON_DISCUSSION')) !== false)
+                and (stripos($discussion_file, '.count') === false)){
+                $exported_discussions[] = $discussion_file;
+            }
+         }
+      }
+      $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyDiskussionen');
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], 'text=') !== false){
+            $text = '';
+            foreach($exported_discussions as $exported_discussion){
+               $text .= '%0a* [[' . $exported_discussion . '|+]]';
+            }
+            $file_contents_array[$index] = 'text=' . $text;
+         }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      $client->createPage('Main.CommSyDiskussionen', $file_contents, $this->_environment->getSessionID());
+   }elseif($rubric == CS_MATERIAL_TYPE){
+      $exists_file = $client->getPageExists('Main.CommSyMaterialienNavi', $this->_environment->getSessionID());
+      if(!$exists_file){
+         $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyMaterialienNavi');
+         $client->createPage('Main.CommSyMaterialienNavi', $file_contents, $this->_environment->getSessionID());      
+      }
+      $exported_discussions = array();
+      $dicussion_array = $client->getPageNames('Main.CommSyCommSyMaterial');
+      foreach($dicussion_array as $discussion_file){
+         if($discussion_file != 'Main.CommSyMaterialienNavi' && $discussion_file != 'Main.CommSyMaterialien'){
+            if((stripos($discussion_file, 'Main.CommSyMaterial') !== false)
+                and (stripos($discussion_file, '.count') === false)){
+                $exported_discussions[] = $discussion_file;
+            }
+         }
+      }
+      $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.CommSyMaterialien');
+      $file_contents_array = explode("\n", $file_contents);
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], 'text=') !== false){
+            $text = '';
+            foreach($exported_discussions as $exported_discussion){
+               $text .= '%0a* [[' . $exported_discussion . '|+]]';
+            }
+            $file_contents_array[$index] = 'text=' . $text;
+         }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      $client->createPage('Main.CommSyMaterialien', $file_contents, $this->_environment->getSessionID());
+      
+   }
 }
 
 function encodeUmlaute($html){
