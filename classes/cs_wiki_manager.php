@@ -2052,6 +2052,10 @@ function exportItemToWiki_soap($current_item_id,$rubric){
    $this->updateExportLists($rubric);
 }
 
+function removeItemFromWiki_soap($current_item_id,$rubric){
+   // todo
+}
+
 function updateExportLists($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;

@@ -89,6 +89,17 @@ if ($type != CS_DISCUSSION_TYPE) {
          redirect($environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
       }
 
+      if(isset($_GET['remove_from_wiki'])){
+         $wiki_manager = $environment->getWikiManager();
+         global $c_use_soap_for_wiki;
+         if($c_use_soap_for_wiki){
+            $wiki_manager->removeItemFromWiki_soap($current_item_iid,CS_DISCUSSION_TYPE);
+         }
+         $params = $environment->getCurrentParameterArray();
+         unset($params['remove_from_wiki']);
+         redirect($environment->getCurrentContextID(),CS_DISCUSSION_TYPE, 'detail', $params);
+      }
+
       // Get clipboard
       if ( $session->issetValue('discussion_clipboard') ) {
          $clipboard_id_array = $session->getValue('discussion_clipboard');

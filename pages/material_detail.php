@@ -109,6 +109,17 @@ if ($type != CS_MATERIAL_TYPE) {
          unset($params['export_to_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
       }
+      
+      if(isset($_GET['remove_from_wiki'])){
+         $wiki_manager = $environment->getWikiManager();
+         global $c_use_soap_for_wiki;
+         if($c_use_soap_for_wiki){
+            $wiki_manager->removeItemFromWiki_soap($current_item_iid,CS_MATERIAL_TYPE);
+         }
+         $params = $environment->getCurrentParameterArray();
+         unset($params['remove_from_wiki']);
+         redirect($environment->getCurrentContextID(),'material', 'detail', $params);
+      }
 
       // Get clipboard
       if ( $session->issetValue('material_clipboard') ) {
