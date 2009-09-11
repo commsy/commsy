@@ -57,6 +57,11 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       }
       $this->_array = $temp_array;
    }
+   
+   function setAuthSource($autoaccounts_auth_source){
+      $this->autoaccounts_auth_source = $autoaccounts_auth_source;
+   }
+   
    /** init data for form, INTERNAL
     * this methods init the data for the form
     *
@@ -104,6 +109,8 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       $this->_form->addTextField('autoaccount_email_subject','',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_SUBJECT'),'',150,50,false,'','','','left','','',false,'','',false,false);
 
       $this->_form->addTextArea('autoaccount_email_text','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_TEXT'),'','60','20','',false);
+
+      $this->_form->addHidden('autoaccounts_auth_source', $this->autoaccounts_auth_source);
 
       $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
    }

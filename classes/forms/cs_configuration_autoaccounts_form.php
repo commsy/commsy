@@ -65,8 +65,8 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
       $auth_default = $portal->getAuthDefault();
       while($temp_auth_source){
          if($temp_auth_source->getItemID() == $auth_default){
-            //$text = $temp_auth_source->getTitle() . ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT') . ')';
-            $text = $temp_auth_source->getTitle();
+            $text = $temp_auth_source->getTitle() . ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT') . ')';
+            //$text = $temp_auth_source->getTitle();
 
             $this->auth_source[] = array('text' => $text, 'value' => $temp_auth_source->getItemID());
             $selected_auth_id = $temp_auth_source->getItemID();

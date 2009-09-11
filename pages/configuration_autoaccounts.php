@@ -76,6 +76,7 @@ else {
          $form = $class_factory->getClass(CONFIGURATION_AUTOACCOUNTS_SELECTION_FORM,$class_params);
          unset($class_params);
          $form->setArray($date_array[0]);
+         $form->setAuthSource($session->getValue('autoaccounts_auth_source'));
          // Load form data from postvars
          if ( !empty($_POST) ) {
             $values = $_POST;
@@ -226,6 +227,7 @@ else {
                   }
                }
                $session->setvalue('date_array', $dates_data_array);
+               $session->setValue('autoaccounts_auth_source', $_POST['autoaccounts_auth_source']);
                $params['selection']= true;
                redirect($environment->getCurrentContextID(),'configuration','autoaccounts',$params);
             }
@@ -247,6 +249,7 @@ else {
 
 function auto_create_accounts($date_array){
    global $environment;
+   $account_auth_source = $_POST['autoaccounts_auth_source'];
    $account_array = array();
    foreach($date_array as $account){
       $temp_account_lastname = $account[$_POST['autoaccounts_lastname']];
@@ -265,7 +268,7 @@ function auto_create_accounts($date_array){
          $temp_account_account = strtolower($temp_account_lastname);
          $account_generated = true;
       }
-      $temp_account_account = get_free_account($temp_account_account);
+      $temp_account_account = get_free_account($temp_account_account, $account_auth_source);
       $temp_account_password = $account[$_POST['autoaccounts_password']];
       $password_length = strlen($temp_account_password);
       if($password_length == 0){
@@ -293,6 +296,8 @@ function auto_create_accounts($date_array){
 
          if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
             //Test auf E-Mail-Adresse...
+            
+            // ausgewählte Quelle heraussuchen...
             $user_manager = $environment->getUserManager();
             $user_manager->resetCacheSQL();
             $user_manager->resetLimits();
@@ -319,10 +324,12 @@ function auto_create_accounts($date_array){
          }
 
          if(!$found_user_by_email){
+            // auf ausgewählte quelle umstellen!!!
             $authentication = $environment->getAuthenticationObject();
             $current_portal = $environment->getCurrentPortalItem();
             $current_portal_id = $environment->getCurrentPortalID();
-            $auth_source_id = $current_portal->getAuthDefault();
+            //$auth_source_id = $current_portal->getAuthDefault();
+            $auth_source_id = $account_auth_source;
 
             $new_account = $authentication->getNewItem();
             $new_account->setUserID($temp_account_account);
@@ -331,14 +338,14 @@ function auto_create_accounts($date_array){
             $new_account->setLastname($temp_account_lastname);
             $new_account->setEmail($temp_account_email);
             $new_account->setPortalID($current_portal_id);
-            if ( !empty($auth_source_id) ) {
+            //if ( !empty($auth_source_id) ) {
                $new_account->setAuthSourceID($auth_source_id);
-            } else {
-               $current_portal = $this->_environment->getCurrentPortalItem();
-               $new_account->setAuthSourceID($current_portal->getAuthDefault());
-               $auth_source_id = $current_portal->getAuthDefault();
-               unset($current_portal);
-            }
+            //} else {
+            //   $current_portal = $this->_environment->getCurrentPortalItem();
+            //   $new_account->setAuthSourceID($current_portal->getAuthDefault());
+            //   $auth_source_id = $current_portal->getAuthDefault();
+            //   unset($current_portal);
+            //}
             $save_only_user = false;
             $authentication->save($new_account,$save_only_user);
             $temp_user = $authentication->getUserItem();
@@ -418,25 +425,26 @@ function auto_create_accounts($date_array){
    return $account_array;
 }
 
-function get_free_account($temp_account_account, $index = 0){
+function get_free_account($temp_account_account, $account_auth_source, $index = 0){
    global $environment;
    $authentication = $environment->getAuthenticationObject();
    $current_portal = $environment->getCurrentPortalItem();
    $current_portal_id = $environment->getCurrentPortalID();
-   $auth_source_id = $current_portal->getAuthDefault();
+   //$auth_source_id = $current_portal->getAuthDefault();
+   $auth_source_id = $account_auth_source;
    if($index > 0){
       if ( $authentication->is_free($temp_account_account . $index,$auth_source_id) ) {
          return $temp_account_account . $index;
       } else {
          $index++;
-         return get_free_account($temp_account_account, $index);
+         return get_free_account($temp_account_account, $account_auth_source, $index);
       }
    } else {
       if ( $authentication->is_free($temp_account_account,$auth_source_id) ) {
          return $temp_account_account;
       } else {
          $index++;
-         return get_free_account($temp_account_account, $index);
+         return get_free_account($temp_account_account, $account_auth_source, $index);
       }
    }
 }
