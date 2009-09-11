@@ -1929,7 +1929,13 @@ class cs_item {
    function isExportToWiki() {
       if($this->getExportToWiki() == '1'){
          $wiki_manager = $this->_environment->getWikiManager();
-         return $wiki_manager->existsItemToWiki($this->getItemID());
+         //return $wiki_manager->existsItemToWiki($this->getItemID());
+         global $c_use_soap_for_wiki;
+         if(!$c_use_soap_for_wiki){
+            return $wiki_manager->existsItemToWiki($this->getItemID());
+         } else {
+            return $wiki_manager->existsItemToWiki_soap($this->getItemID());
+         }
       } else {
          return false;
       }

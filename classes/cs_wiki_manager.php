@@ -2244,6 +2244,19 @@ function existsItemToWiki($current_item_id){
    return file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file);
 }
 
+function existsItemToWiki_soap($current_item_id){
+   global $c_pmwiki_path_file;
+   $manager = $this->_environment->getItemManager();
+   $item = $manager->getItem($current_item_id);
+   if ($item->getItemType() == CS_MATERIAL_TYPE){
+      $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
+   }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
+      $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id;
+   }
+   $client = $this->getSoapClient();
+   return $client->getPageExists($wiki_file, $this->_environment->getSessionID());
+}
+
 function getExportToWikiLink($current_item_id){
    global $c_pmwiki_path_url;
    $manager = $this->_environment->getItemManager();
@@ -2338,6 +2351,21 @@ function setWikiGroupAsPublic($group){
     chdir($old_dir);
 }
 
+function setWikiGroupAsPublic_soap($group){
+   global $c_commsy_path_file;
+   
+   $client = $this->getSoapClient();
+   $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Group.GroupAttributes');
+   $file_contents_array = explode("\n", $file_contents);
+   for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+      if(stripos($file_contents_array[$index], 'name=Group.GroupAttributes') !== false){
+         $file_contents_array[$index] = 'name=' . $group . '.GroupAttributes';
+      }
+   }
+   $file_contents = implode("\n", $file_contents_array);
+   $client->createPage($group . '.GroupAttributes', $file_contents, $this->_environment->getSessionID());
+}
+
 function setWikiGroupsAsPublic($groups){
    global $c_pmwiki_path_file;
 
@@ -2360,7 +2388,35 @@ function setWikiGroupsAsPublic($groups){
    }
 
    foreach($groups as $group){
-      $this->setWikiGroupAsPublic($group);
+      //$this->setWikiGroupAsPublic($group);
+      global $c_use_soap_for_wiki;
+      if(!$c_use_soap_for_wiki){
+         $this->setWikiGroupAsPublic($group);
+      } else {
+         $this->setWikiGroupAsPublic_soap($group);
+      }
+   }
+}
+
+function setWikiGroupsAsPublic_soap($groups){
+   $client = $this->getSoapClient();
+   $groups_array = $client->getPageNames('.GroupAttributes');
+   foreach($groups_array as $group){
+      $client->removePage($group, $this->_environment->getSessionID());
+   }
+
+   if(isset($groups) && !(count($groups) == 0)){
+      $groups[] = 'Main';
+   }
+
+   foreach($groups as $group){
+      //$this->setWikiGroupAsPublic($group);
+      global $c_use_soap_for_wiki;
+      if(!$c_use_soap_for_wiki){
+         $this->setWikiGroupAsPublic($group);
+      } else {
+         $this->setWikiGroupAsPublic_soap($group);
+      }
    }
 }
 

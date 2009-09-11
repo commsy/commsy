@@ -519,10 +519,22 @@ class cs_configuration_wiki_form extends cs_rubric_form {
       }
       if ( !empty($this->_form_post['enable_wiki_groups'])){
          $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->setWikiGroupsAsPublic($this->_form_post['enable_wiki_groups']);
+         //$wiki_manager->setWikiGroupsAsPublic($this->_form_post['enable_wiki_groups']);
+         global $c_use_soap_for_wiki;
+         if(!$c_use_soap_for_wiki){
+            $wiki_manager->setWikiGroupsAsPublic($this->_form_post['enable_wiki_groups']);
+         } else {
+            $wiki_manager->setWikiGroupsAsPublic_soap($this->_form_post['enable_wiki_groups']);
+         }
       } else {
          $wiki_manager = $this->_environment->getWikiManager();
-        $wiki_manager->setWikiGroupsAsPublic(array());
+         //$wiki_manager->setWikiGroupsAsPublic(array());
+         global $c_use_soap_for_wiki;
+         if(!$c_use_soap_for_wiki){
+            $wiki_manager->setWikiGroupsAsPublic(array());
+         } else {
+            $wiki_manager->setWikiGroupsAsPublic_soap(array());
+         }
       }
 
       if ( empty($this->_form_post['community_read_access'])
