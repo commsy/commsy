@@ -290,6 +290,13 @@
 <message name='updateLastloginOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='createMembershipBySessionIN'>
+  <part name='session_id' type='xsd:string'/>
+  <part name='context_id' type='xsd:integer'/>
+</message>
+<message name='createMembershipBySessionOUT'>
+  <part name='result' type='xsd:boolean'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -443,6 +450,10 @@
   <operation name='updateLastlogin'>
     <input message='tns:updateLastloginIN'/>
     <output message='tns:updateLastloginOUT'/>
+  </operation>
+  <operation name='createMembershipBySession'>
+    <input message='tns:createMembershipBySessionIN'/>
+    <output message='tns:createMembershipBySessionOUT'/>
   </operation>
 </portType>
 
@@ -859,6 +870,17 @@
   </operation>
   <operation name='updateLastlogin'>
     <soap:operation soapAction='urn:xmethodsCommSy#updateLastlogin'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='createMembershipBySession'>
+    <soap:operation soapAction='urn:xmethodsCommSy#createMembershipBySession'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>

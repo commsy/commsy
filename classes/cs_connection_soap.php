@@ -176,7 +176,7 @@ class cs_connection_soap {
             $session_item = $session_manager->get($session_id);
             if ( !isset($session_item)  ) {
                $last_query = $session_manager->getLastQuery();
-               return new SoapFault('ERROR','createUser: can not get session_item with query: '.$last_query.' - '.__FILE__.' - '.__FILE__);
+               return new SoapFault('ERROR','createUser: can not get session_item with query: '.$last_query.' - '.__FILE__.' - '.__LINE__);
             }
          }
          $current_user_id = $session_item->getValue('user_id');
@@ -214,7 +214,6 @@ class cs_connection_soap {
                   }
                   $language = 'DE'; // (TBD)
                   // $language = $this->_environment->getSelectedLanguage();
-                  $auth_source_id = ''; // (TBD)
 
                   $portal_manager = $this->_environment->getPortalManager();
                   $portal_item = $portal_manager->getItem($portal_id);
@@ -428,6 +427,253 @@ class cs_connection_soap {
          }
       } else {
          return new SoapFault('ERROR','createUser: session id ('.$session_id.') is not set. - '.__FILE__.' - '.__LINE__);
+      }
+   }
+
+   public function createMembershipBySession ( $session_id, $context_id ) {
+      $session_id = $this->_encode_input($session_id);
+      $context_id = $this->_encode_input($context_id);
+      if ($this->_isSessionValid($session_id)) {
+         $this->_environment->setSessionID($session_id);
+         $session = $this->_environment->getSessionItem();
+         $user_id = $session->getValue('user_id');
+
+         // root or guest -> NO
+         if ( mb_strtoupper($user_id, 'UTF-8') != 'GUEST'
+              and mb_strtoupper($user_id, 'UTF-8') != 'ROOT'
+            ) {
+            $portal_id = $session->getValue('commsy_id');
+            $this->_environment->setCurrentPortalID($portal_id);
+            $auth_source = $session->getValue('auth_source');
+
+            // portal: is user valid
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setContextLimit($portal_id);
+            $user_manager->setUserIDLimit($user_id);
+            $user_manager->setAuthSourceLimit($auth_source);
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            if ($user_list->getCount() == 1) {
+               $current_user = $user_list->getFirst();
+               $this->_environment->setCurrentUserItem($current_user);
+
+               // room: user allready exist?
+               $room_manager = $this->_environment->getRoomManager();
+               $room_item = $room_manager->getItem($context_id);
+               if ( !empty($room_item) ) {
+                  $room_user_item = $room_item->getUserByUserID($current_user->getUserID(),$current_user->getAuthSource());
+                  if ( !isset($room_user_item) ) {
+
+                     // now create membership
+                     $private_room_user_item = $current_user->getRelatedPrivateRoomUserItem();
+                     if ( isset($private_room_user_item) ) {
+                        $user_item = $private_room_user_item->cloneData();
+                        $picture = $private_room_user_item->getPicture();
+                     } else {
+                        $user_item = $current_user->cloneData();
+                        $picture = $current_user->getPicture();
+                     }
+                     $user_item->setContextID($context_id);
+                     if (!empty($picture)) {
+                        $value_array = explode('_',$picture);
+                        $value_array[0] = 'cid'.$user_item->getContextID();
+
+                        $new_picture_name = implode('_',$value_array);
+                        $disc_manager = $this->_environment->getDiscManager();
+                        $disc_manager->copyImageFromRoomToRoom($picture,$user_item->getContextID());
+                        $user_item->setPicture($new_picture_name);
+                     }
+
+                     //check room_settings
+                     if ( !$room_item->checkNewMembersNever()
+                          and !$room_item->checkNewMembersWithCode()
+                        ) {
+                        $user_item->request();
+                        $check_message = 'YES'; // for mail body
+                     } else {
+                        $user_item->makeUser(); // for mail body
+                        $check_message = 'NO';
+                        // save link to the group ALL
+                        $group_manager = $this->_environment->getLabelManager();
+                        $group_manager->setExactNameLimit('ALL');
+                        $group_manager->setContextLimit($room_item->getItemID());
+                        $group_manager->select();
+                        $group_list = $group_manager->get();
+                        if ($group_list->getCount() == 1) {
+                           $group = $group_list->getFirst();
+                           $group->setTitle('ALL');
+                           $user_item->setGroupByID($group->getItemID());
+                        }
+                     }
+
+                     $user_item->save();
+                     $user_item->setCreatorID2ItemID();
+
+                     // save task
+                     if ( !$room_item->checkNewMembersNever()
+                          and !$room_item->checkNewMembersWithCode()
+                        ) {
+                        $task_manager = $this->_environment->getTaskManager();
+                        $task_item = $task_manager->getNewItem();
+                        $task_item->setCreatorItem($current_user);
+                        $task_item->setContextID($room_item->getItemID());
+                        $task_item->setTitle('TASK_USER_REQUEST');
+                        $task_item->setStatus('REQUEST');
+                        $task_item->setItem($user_item);
+                        $task_item->save();
+                     }
+
+                     // send email to moderators if necessary
+                     $user_manager = $this->_environment->getUserManager();
+                     $user_manager->resetLimits();
+                     $user_manager->setModeratorLimit();
+                     $user_manager->setContextLimit($room_item->getItemID());
+                     $user_manager->select();
+                     $user_list = $user_manager->get();
+                     $email_addresses = array();
+                     $moderator_item = $user_list->getFirst();
+                     $recipients = '';
+                     while ($moderator_item) {
+                        $want_mail = $moderator_item->getAccountWantMail();
+                        if (!empty($want_mail) and $want_mail == 'yes') {
+                           $email_addresses[] = $moderator_item->getEmail();
+                           $recipients .= $moderator_item->getFullname()."\n";
+                        }
+                        $moderator_item = $user_list->getNext();
+                     }
+
+                     // language
+                     $language = $room_item->getLanguage();
+                     if ($language == 'user') {
+                        $language = $user_item->getLanguage();
+                        if ($language == 'browser') {
+                           $language = $this->_environment->getSelectedLanguage();
+                        }
+                     }
+
+                     if ( count($email_addresses) > 0 ) {
+                        $translator = $this->_environment->getTranslationObject();
+                        $save_language = $translator->getSelectedLanguage();
+                        $translator->setSelectedLanguage($language);
+                        $subject = $translator->getMessage('USER_JOIN_CONTEXT_MAIL_SUBJECT',$user_item->getFullname(),$room_item->getTitle());
+                        $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('USER_JOIN_CONTEXT_MAIL_BODY',$user_item->getFullname(),$user_item->getUserID(),$user_item->getEmail(),$room_item->getTitle());
+                        $body .= LF.LF;
+
+                        $tempMessage = "";
+                        switch ( cs_strtoupper($check_message) ) {
+                           case 'YES':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_YES');
+                              break;
+                           case 'NO':
+                              $body .= $translator->getMessage('USER_GET_MAIL_STATUS_NO');
+                              break;
+                           default:
+                              $body .= $translator->getMessage('COMMON_MESSAGETAG_ERROR').' - '.__FILE__.' - '.__LINE__;
+                              break;
+                        }
+
+                        $body .= LF.LF;
+                        $body .= $translator->getMessage('MAIL_SEND_TO',$recipients);
+                        $body .= LF;
+                        if ( cs_strtoupper($check_message) == 'YES') {
+                           $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
+                           $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
+                        } else {
+                           $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID();
+                        }
+
+                        include_once('classes/cs_mail.php');
+                        $mail = new cs_mail();
+                        $mail->set_to(implode(',',$email_addresses));
+                        $server_item = $this->_environment->getServerItem();
+                        $default_sender_address = $server_item->getDefaultSenderAddress();
+                        if (!empty($default_sender_address)) {
+                           $mail->set_from_email($default_sender_address);
+                        } else {
+                           $mail->set_from_email('@');
+                        }
+                        $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+                        $mail->set_reply_to_name($user_item->getFullname());
+                        $mail->set_reply_to_email($user_item->getEmail());
+                        $mail->set_subject($subject);
+                        $mail->set_message($body);
+                        $mail->send();
+                        $translator->setSelectedLanguage($save_language);
+                     }
+
+                     // send email to user when account is free automatically (PROJECT ROOM)
+                     if ($user_item->isUser()) {
+
+                        // get contact moderator (TBD) now first moderator
+                        $user_list = $room_item->getModeratorList();
+                        $contact_moderator = $user_list->getFirst();
+
+                        // change context to project room
+                        $translator = $this->_environment->getTranslationObject();
+                        $translator->setEmailTextArray($room_item->getEmailTextArray());
+                        $translator->setContext('project');
+                        $save_language = $translator->getSelectedLanguage();
+
+                        // language
+                        $language = $room_item->getLanguage();
+                        if ($language == 'user') {
+                           $language = $user_item->getLanguage();
+                           if ($language == 'browser') {
+                              $language = $this->_environment->getSelectedLanguage();
+                           }
+                        }
+
+                        $translator->setSelectedLanguage($language);
+
+                        // email texts
+                        $subject = $translator->getMessage('MAIL_SUBJECT_USER_STATUS_USER',$room_item->getTitle());
+                        $body  = $translator->getMessage('MAIL_AUTO',$translator->getDateInLang(getCurrentDateTimeInMySQL()),$translator->getTimeInLang(getCurrentDateTimeInMySQL()));
+                        $body .= LF.LF;
+                        $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_item->getFullname());
+                        $body .= LF.LF;
+                        $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
+                        $body .= LF.LF;
+                        $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
+                        $body .= LF.LF;
+                        $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
+
+                        // send mail to user
+                        include_once('classes/cs_mail.php');
+                        $mail = new cs_mail();
+                        $mail->set_to($user_item->getEmail());
+                        $mail->set_from_name(getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+                        $server_item = $this->_environment->getServerItem();
+                        $default_sender_address = $server_item->getDefaultSenderAddress();
+                        if (!empty($default_sender_address)) {
+                           $mail->set_from_email($default_sender_address);
+                        } else {
+                           $mail->set_from_email('@');
+                        }
+                        $mail->set_reply_to_email($contact_moderator->getEmail());
+                        $mail->set_reply_to_name($contact_moderator->getFullname());
+                        $mail->set_subject($subject);
+                        $mail->set_message($body);
+                        $mail->send();
+                     }
+                     return true;
+                  } else {
+                     return new SoapFault('ERROR','createMembershipBySession: user ('.$user_id.' | '.$auth_source.') allready exist in room ('.$context_id.'). - '.__FILE__.' - '.__LINE__);
+                  }
+               } else {
+                  return new SoapFault('ERROR','createMembershipBySession: room ('.$context_id.') does not exist. - '.__FILE__.' - '.__LINE__);
+               }
+            } elseif ($user_list->getCount() > 1) {
+               return new SoapFault('ERROR','createMembershipBySession: user ('.$user_id.' | '.$auth_source.') exists '.$user_list->getCount().' times -> error in database. - '.__FILE__.' - '.__LINE__);
+            } else {
+               return new SoapFault('ERROR','createMembershipBySession: user ('.$user_id.' | '.$auth_source.') does not exist. - '.__FILE__.' - '.__LINE__);
+            }
+         } else {
+            return new SoapFault('ERROR','createMembershipBySession: root and guest are not allowed to become member in an room. - '.__FILE__.' - '.__LINE__);
+         }
+      } else {
+         return new SoapFault('ERROR','createMembershipBySession: session id ('.$session_id.') is not valid. - '.__FILE__.' - '.__LINE__);
       }
    }
 
