@@ -579,10 +579,12 @@ class cs_connection_soap {
                         $body .= LF;
                         if ( cs_strtoupper($check_message) == 'YES') {
                            $body .= $translator->getMessage('MAIL_USER_FREE_LINK').LF;
-                           $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
+                           $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID().'&mod=account&fct=index'.'&selstatus=1';
                         } else {
-                           $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID();
+                           $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID();
                         }
+                        global $c_single_entry_point;
+                        $body .= str_replace('soap.php',$c_single_entry_point,$url);
 
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
@@ -637,7 +639,9 @@ class cs_connection_soap {
                         $body .= LF.LF;
                         $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
                         $body .= LF.LF;
-                        $body .= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
+                        $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$environment->getCurrentContextID();
+                        global $c_single_entry_point;
+                        $body .= str_replace('soap.php',$c_single_entry_point,$url);
 
                         // send mail to user
                         include_once('classes/cs_mail.php');
