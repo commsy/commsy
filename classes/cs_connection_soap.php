@@ -639,7 +639,7 @@ class cs_connection_soap {
                         $body .= LF.LF;
                         $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());
                         $body .= LF.LF;
-                        $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getTitle();
+                        $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?cid='.$room_item->getItemID();
                         global $c_single_entry_point;
                         $body .= str_replace('soap.php',$c_single_entry_point,$url);
 
