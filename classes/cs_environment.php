@@ -1334,14 +1334,18 @@ class cs_environment {
       $available_languages = $this->getAvailableLanguageArray();
       // there is no central default language yet, so this needs to be hardcoded
       $language = 'de'; //default language
-      foreach ($browser_languages as $lang) {
-         if ($lang == 'ro'){
-            $lang = 'ru';
+      if ( !empty($browser_languages)
+           and is_array($browser_languages)
+         ) {
+         foreach ($browser_languages as $lang) {
+            if ($lang == 'ro'){
+               $lang = 'ru';
+            }
+            if (in_array($lang, $available_languages)) {
+               $language = $lang;
+               break;
+            }
          }
-   if (in_array($lang, $available_languages)) {
-      $language = $lang;
-      break;
-   }
       }
       return $language;
    }
