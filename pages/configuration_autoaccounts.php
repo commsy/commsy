@@ -324,10 +324,10 @@ function auto_create_accounts($date_array){
          }
 
          if(!$found_user_by_email){
-            // auf ausgewählte quelle umstellen!!!
             $authentication = $environment->getAuthenticationObject();
             $current_portal = $environment->getCurrentPortalItem();
             $current_portal_id = $environment->getCurrentPortalID();
+            // auf ausgewählte quelle umstellen
             //$auth_source_id = $current_portal->getAuthDefault();
             $auth_source_id = $account_auth_source;
 
@@ -339,7 +339,7 @@ function auto_create_accounts($date_array){
             $new_account->setEmail($temp_account_email);
             $new_account->setPortalID($current_portal_id);
             //if ( !empty($auth_source_id) ) {
-               $new_account->setAuthSourceID($auth_source_id);
+            $new_account->setAuthSourceID($auth_source_id);
             //} else {
             //   $current_portal = $this->_environment->getCurrentPortalItem();
             //   $new_account->setAuthSourceID($current_portal->getAuthDefault());
@@ -433,14 +433,14 @@ function get_free_account($temp_account_account, $account_auth_source, $index = 
    //$auth_source_id = $current_portal->getAuthDefault();
    $auth_source_id = $account_auth_source;
    if($index > 0){
-      if ( $authentication->is_free($temp_account_account . $index,$auth_source_id) ) {
+      if ( $authentication->is_free($temp_account_account . $index, $auth_source_id) ) {
          return $temp_account_account . $index;
       } else {
          $index++;
          return get_free_account($temp_account_account, $account_auth_source, $index);
       }
    } else {
-      if ( $authentication->is_free($temp_account_account,$auth_source_id) ) {
+      if ( $authentication->is_free($temp_account_account, $auth_source_id) ) {
          return $temp_account_account;
       } else {
          $index++;
