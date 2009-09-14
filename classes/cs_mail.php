@@ -99,6 +99,7 @@ class cs_mail extends Mail
     */
    function set_from_name($from_name) {
       $from_name = str_replace(',','',$from_name);
+      $from_name = str_replace(':','',$from_name);
       $this->from_name = encode(AS_MAIL,$from_name);
    }
 
