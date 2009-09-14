@@ -108,12 +108,14 @@ class class_voyeur extends cs_plugin {
          $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
          $url_to_zip .= '/'._curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$url_params);
          if ( strstr($url,'?') ) {
-            $url .= '&';
+            if ( substr($url,strlen($url)-1) == '&' ) {
+               $url .= '&';
+            }
          } else {
             $url .= '?';
          }
-         $url .= 'archive='.urlencode($url_to_zip);
-         $url .= '&inputFormat=ZIP';
+         $url .= 'inputFormat=ZIP';
+         $url .= '&archive='.urlencode($url_to_zip);
          $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
       }
       return $retour;
