@@ -113,6 +113,7 @@ class class_voyeur extends cs_plugin {
             $url .= '?';
          }
          $url .= 'archive='.urlencode($url_to_zip);
+         $url .= '&inputFormat=ZIP';
          $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
       }
       return $retour;
