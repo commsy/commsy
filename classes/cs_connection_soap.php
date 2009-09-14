@@ -2551,5 +2551,37 @@ class cs_connection_soap {
          return new SoapFault('ERROR: UPDATELASTLOGIN','Session ('.$session_id.') not valid!');
       }
    }
+
+   public function getAGBFromRoom ( $context_id, $language ) {
+      $result = '';
+      $context_id = $this->_encode_input($context_id);
+      $language = $this->_encode_input($language);
+      if ( !empty($context_id) ) {
+         $room_manager = $this->_environment->getRoomManager();
+         $room_item = $room_manager->getItem($context_id);
+         unset($room_manager);
+         if ( !empty($room_item) ) {
+            if ( $room_item->withAGB() ) {
+               $agb_text_array = $room_item->getAGBTextArray();
+               $language_array = array_keys($agb_text_array);
+               if ( !in_array($language,$language_array)
+                    and !in_array(mb_strtoupper($language,'UTF-8'),$language_array)
+                    and !in_array(mb_strtolower($language,'UTF-8'),$language_array)
+                  ) {
+                  $language = 'de';
+               }
+               include_once('functions/text_functions.php');
+               $result = $agb_text_array[cs_strtoupper($language)];
+            } else {
+               $result = new SoapFault('ERROR: getAGBFromRoom','agbs in room ('.$context_id.') are switched off.');
+            }
+         } else {
+            $result = new SoapFault('ERROR: getAGBFromRoom','Context-ID ('.$context_id.') not valid!');
+         }
+      } else {
+         $result = new SoapFault('ERROR: getAGBFromRoom','context_id is empty!');
+      }
+      return $result;
+   }
 }
 ?>

@@ -297,6 +297,13 @@
 <message name='createMembershipBySessionOUT'>
   <part name='result' type='xsd:boolean'/>
 </message>
+<message name='getAGBFromRoomIN'>
+  <part name='context_id' type='xsd:integer'/>
+  <part name='language' type='xsd:string'/>
+</message>
+<message name='getAGBFromRoomOUT'>
+  <part name='result' type='xsd:string'/>
+</message>
 
 <portType name='CommSyPortType'>
   <operation name='getGuestSession'>
@@ -454,6 +461,10 @@
   <operation name='createMembershipBySession'>
     <input message='tns:createMembershipBySessionIN'/>
     <output message='tns:createMembershipBySessionOUT'/>
+  </operation>
+  <operation name='getAGBFromRoom'>
+    <input message='tns:getAGBFromRoomIN'/>
+    <output message='tns:getAGBFromRoomOUT'/>
   </operation>
 </portType>
 
@@ -881,6 +892,17 @@
   </operation>
   <operation name='createMembershipBySession'>
     <soap:operation soapAction='urn:xmethodsCommSy#createMembershipBySession'/>
+    <input>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </input>
+    <output>
+      <soap:body use='encoded' namespace='urn:xmethodsCommSy'
+        encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
+    </output>
+  </operation>
+  <operation name='getAGBFromRoom'>
+    <soap:operation soapAction='urn:xmethodsCommSy#getAGBFromRoom'/>
     <input>
       <soap:body use='encoded' namespace='urn:xmethodsCommSy'
         encodingStyle='http://schemas.xmlsoap.org/soap/encoding/'/>
