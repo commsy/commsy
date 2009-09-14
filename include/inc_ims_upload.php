@@ -26,12 +26,12 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
    if (isset($values_array['authors'])){
       $material_item->setAuthor($values_array['authors']);
    }else{
-   	  $material_item->setAuthor(getMessage('COMMON_NO_AUTHORS'));
+        $material_item->setAuthor(getMessage('COMMON_NO_AUTHORS'));
    }
    if (isset($values_array['title'])){
       $material_item->setTitle($values_array['title']);
    }else{
-   	  $material_item->setTitle(getMessage('COMMON_NO_TITLE'));
+        $material_item->setTitle(getMessage('COMMON_NO_TITLE'));
    }
    if (isset($values_array['toc'])){
       $material_item->setBibTOC($values_array['toc']);
@@ -39,7 +39,7 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
    if (isset($values_array['year'])){
       $material_item->setPublishingDate($values_array['year']);
    }else{
-   	  $date = getdate();
+        $date = getdate();
       $material_item->setPublishingDate($date['year']);
    }
    if (isset($values_array['abstract'])){
@@ -47,22 +47,22 @@ function _getMaterialByXMLArray($material_item,$values_array,$directory){
    }
    if (isset($values_array['ppn'])){
                $availability = '<span  id="status"></span>' .
-      		  '<script type="text/javascript" src="javascript/beluga/seealso.js"></script>' .LF.
-      		  '<script type="text/javascript" src="javascript/beluga/daia2seealso.js"></script>' .LF.
-      		  '<script type="text/javascript" src="javascript/beluga/php.js"></script>' .LF.
-      		  '<script type="text/javascript">' .LF.
-      		  'var id = \''.$values_array['ppn'].'\';' .LF.
-      		  'var isil = \'DE-18\';' .LF.
-      		  'var url = "http://ws.gbv.de/daia/?format=json&isil=" + isil + "&id=" + id;' .LF.
-      		  'var service = new DAIAService(url);' .LF.
-      		  'var view = new SeeAlsoCSV();' .LF.
-      		  'var statusSpan = document.getElementById(\'status\');' .LF.
-      		  'statusSpan.innerHTML = "";' .LF.
-      		  'utf8_decode(service.query(id, function(response) {' .LF.
-      		  '   view.display(statusSpan, response);' .LF.
-      		  '}));' .LF.
-      		  '</script>';
-            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+              '<script type="text/javascript" src="javascript/beluga/seealso.js"></script>' .LF.
+              '<script type="text/javascript" src="javascript/beluga/daia2seealso.js"></script>' .LF.
+              '<script type="text/javascript" src="javascript/beluga/php.js"></script>' .LF.
+              '<script type="text/javascript">' .LF.
+              'var id = \''.$values_array['ppn'].'\';' .LF.
+              'var isil = \'DE-18\';' .LF.
+              'var url = "http://ws.gbv.de/daia/?format=json&isil=" + isil + "&id=" + id;' .LF.
+              'var service = new DAIAService(url);' .LF.
+              'var view = new SeeAlsoCSV();' .LF.
+              'var statusSpan = document.getElementById(\'status\');' .LF.
+              'statusSpan.innerHTML = "";' .LF.
+              'utf8_decode(service.query(id, function(response) {' .LF.
+              '   view.display(statusSpan, response);' .LF.
+              '}));' .LF.
+              '</script>';
+               $availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
       $material_item->setBibAvailibility($availability);
    }
    $file_man = $environment->getFileManager();
@@ -237,7 +237,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
             //$availability = utf8_decode($values_array[$key]['value']);
             $availability = $values_array[$key]['value'];
             if ($availability == 'none'){
-            	$availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
+               $availability = getMessage('BELUGA_NO_AVAILABILITY_INFORMATION');
             }
             break;
 
@@ -363,7 +363,7 @@ function _getMaterialByXMLArray_old($material_item, $values_array,$directory,$ci
 
    }
    if($is_diss){
-   	$bib_kind = Dissertation;
+      $bib_kind = Dissertation;
    }
 
 
@@ -1218,7 +1218,7 @@ function _getMaterialListByXML($directory){
          xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, 0);
          xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
          xml_parse_into_struct($parser, $data, $values, $tags);
-      	 $additional_values[$file] = _getAdditionalValuesByXMLArray($values);
+          $additional_values[$file] = _getAdditionalValuesByXMLArray($values);
       }
    }
 
@@ -1270,8 +1270,8 @@ function _getMaterialListByXML($directory){
          $material_item = _getMaterialByXMLArray_old($material_item,$values,$xml_directory);
       }else{
          if (isset($additional_values['b'.$i.'_bib.xml'])){
-         	$temp_values = array();
-         	$temp_values['xml'] = $values;
+            $temp_values = array();
+            $temp_values['xml'] = $values;
             $values = array_merge($temp_values, $additional_values['b'.$i.'_bib.xml']);
          }
          $material_item = _getMaterialByXMLArray($material_item,$values,$xml_directory);
@@ -1288,7 +1288,7 @@ function _getMaterialListByXML($directory){
 function getMaterialListByIMSZip($filename,$file_tmp_name, $target_directory,$environment){
    $has_manifest = false;
    $zip = new ZipArchive;
-  $res = $zip->open($file_tmp_name);
+   $res = $zip->open($file_tmp_name);
    if ( $res === TRUE ) {
       if( $zip->extractTo($target_directory,'imsmanifest.xml') ) {
         $has_manifest = true;
