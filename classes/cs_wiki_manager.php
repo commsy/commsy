@@ -1736,7 +1736,6 @@ function exportItemToWiki($current_item_id,$rubric){
 }
 
 function exportItemToWiki_soap($current_item_id,$rubric){
-   pr('exportItemToWiki_soap');
    global $c_commsy_path_file;
    global $c_pmwiki_path_file;
    global $c_pmwiki_absolute_path_file;
