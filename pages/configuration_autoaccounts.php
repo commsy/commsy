@@ -431,7 +431,7 @@ function auto_create_accounts($date_array){
             $temp_account_array['account_not_created'] = true;
             $temp_account_array['rooms'] = array();
             $temp_account_array['has_comment'] = true;
-            $temp_account_array['comment'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_ALLOW');
+            $temp_account_array['comment'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
             $account_array[] = $temp_account_array;
          } else {
             $new_account_data = $auth_source_manager->get_data_for_new_account($account[$_POST['autoaccounts_account']], $account[$_POST['autoaccounts_password']]);
@@ -481,6 +481,21 @@ function auto_create_accounts($date_array){
                $rooms_added_to = add_user_to_rooms($user_item, $temp_account_rooms_array);
                $temp_account_array['rooms_added'] = $rooms_added_to;
                $temp_account_array['rooms'] = $temp_account_rooms_array;
+               $account_array[] = $temp_account_array;
+            } else {
+               $temp_account_array = array();
+               $temp_account_array['lastname'] = $account[$_POST['autoaccounts_lastname']];
+               $temp_account_array['firstname'] = $account[$_POST['autoaccounts_lastname']];
+               $temp_account_array['email'] = $account[$_POST['autoaccounts_lastname']];
+               $temp_account_array['account'] = $account[$_POST['autoaccounts_account']];
+               $temp_account_array['account_changed'] = false;
+               $temp_account_array['password'] = '';
+               $temp_account_array['password_generated'] = false;
+               $temp_account_array['found_account_by_email'] = false;
+               $temp_account_array['account_not_created'] = true;
+               $temp_account_array['rooms'] = array();
+               $temp_account_array['has_comment'] = true;
+               $temp_account_array['comment'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA');
                $account_array[] = $temp_account_array;
             }
          }
