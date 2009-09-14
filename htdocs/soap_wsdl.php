@@ -26,6 +26,7 @@
   <part name='user_id' type='xsd:string'/>
   <part name='user_pwd' type='xsd:string'/>
   <part name='agb' type='xsd:boolean'/>
+  <part name='send_email' type='xsd:boolean'/>
 </message>
 <message name='createUserOUT'>
   <part name='session_id' type='xsd:string'/>

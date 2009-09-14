@@ -160,7 +160,7 @@ class cs_connection_soap {
       return $xml;
    }
 
-   public function createUser ($session_id,$portal_id,$firstname,$lastname,$mail,$user_id,$user_pwd,$agb = false) {
+   public function createUser ($session_id,$portal_id,$firstname,$lastname,$mail,$user_id,$user_pwd,$agb = false,$send_email = true) {
       $session_id = $this->_encode_input($session_id);
       $portal_id = $this->_encode_input($portal_id);
       if ( is_numeric($session_id) ) {
@@ -340,7 +340,9 @@ class cs_connection_soap {
                            $this->_environment->setCurrentUserItem($current_user);
 
                            // send email to user
-                           if ($current_user->isUser()) {
+                           if ( $send_email
+                                and $current_user->isUser()
+                              ) {
                               $mod_text = '';
                               $mod_list = $portal_item->getContactModeratorList();
                               if (!$mod_list->isEmpty()) {
