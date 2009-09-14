@@ -293,6 +293,7 @@
 <message name='createMembershipBySessionIN'>
   <part name='session_id' type='xsd:string'/>
   <part name='context_id' type='xsd:integer'/>
+  <part name='agb' type='xsd:boolean'/>
 </message>
 <message name='createMembershipBySessionOUT'>
   <part name='result' type='xsd:boolean'/>

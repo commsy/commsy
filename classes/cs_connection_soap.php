@@ -430,7 +430,7 @@ class cs_connection_soap {
       }
    }
 
-   public function createMembershipBySession ( $session_id, $context_id ) {
+   public function createMembershipBySession ( $session_id, $context_id, $agb = false ) {
       $session_id = $this->_encode_input($session_id);
       $context_id = $this->_encode_input($context_id);
       if ($this->_isSessionValid($session_id)) {
@@ -506,6 +506,9 @@ class cs_connection_soap {
                         }
                      }
 
+                     if ( $agb ) {
+                        $user_item->setAGBAcceptance();
+                     }
                      $user_item->save();
                      $user_item->setCreatorID2ItemID();
 
