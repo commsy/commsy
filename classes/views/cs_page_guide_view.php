@@ -119,6 +119,7 @@ class cs_page_guide_view extends cs_page_view {
 
    var $_style_image_path = 'images/layout/';
 
+   var $_delete_box_hidden_values = array();
 
    private $_navigation_bar = NULL;
 
@@ -134,6 +135,10 @@ class cs_page_guide_view extends cs_page_view {
       if (file_exists('htdocs/'.$this->_environment->getCurrentPortalID().'/commsy.css') ){
          $this->_style_image_path = $this->_environment->getCurrentPortalID().'/images/';
       }
+   }
+
+   public function addDeleteBoxHiddenValues ($array){
+      $this->_delete_box_hidden_values = $array;
    }
 
    public function setLoginRedirect () {
@@ -1423,6 +1428,9 @@ class cs_page_guide_view extends cs_page_view {
       }
       $html .= '<div style="position:fixed; z-index:100; margin-top:0px; margin-left:'.$margin_left.'; width:400px; padding:20px; background-color:#FFF; border:2px solid red;">';
       $html .= '<form style="margin-bottom:0px; padding:0px;" method="post" action="'.$this->_delete_box_action_url.'">';
+      foreach ( $this->_delete_box_hidden_values as $key => $value ) {
+         $html .= '<input type="hidden" name="'.$key.'" value="'.$value.'"/>'.LF;
+      }
       if ( $type == 'portal' ) {
          $html .= '<h2>'.getMessage('COMMON_DELETE_BOX_TITLE_PORTAL');
       } else {
