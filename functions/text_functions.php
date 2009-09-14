@@ -208,7 +208,7 @@ function withUmlaut($value) {
    // ------------------
    $retour = true;
    $regs = array();
-   mb_ereg('[A-Za-z0-9]+',$value,$regs);
+   mb_ereg('[A-Za-z0-9\._]+',$value,$regs);
    if ( $regs[0] == $value ) {
       $retour = false;
    }
