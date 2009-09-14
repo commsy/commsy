@@ -211,6 +211,10 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          if($account['account_not_created']){
             $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
             $account_string .= '<font style="color:red"><b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED') . '</b></font> ';
+            if($account['has_comment']){
+               $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
+               $account_string .= '<font style="color:red"><b>' . $account['comment'] . '</b></font> ';
+            }
          }
          $this->_form->addText(null, null, $account_string);
       }
