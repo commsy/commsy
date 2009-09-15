@@ -418,6 +418,23 @@ else {
          // Save item - after createWiki() -> old discussions might be deleted
          $item->save();
 
+         // WSDL-xml hier noch nicht zugreifbar, daher weiterhin die alte Variante
+         if ( !empty($_POST['enable_wiki_groups'])){
+            //global $c_use_soap_for_wiki;
+            //if(!$c_use_soap_for_wiki){
+               $wiki_manager->setWikiGroupsAsPublic($_POST['enable_wiki_groups']);
+            //} else {
+            //   $wiki_manager->setWikiGroupsAsPublic_soap($_POST['enable_wiki_groups']);
+            //}
+         } else {
+            //global $c_use_soap_for_wiki;
+            //if(!$c_use_soap_for_wiki){
+               $wiki_manager->setWikiGroupsAsPublic(array());
+            //} else {
+            //   $wiki_manager->setWikiGroupsAsPublic_soap(array());
+            //}
+         }
+
          $form_view->setItemIsSaved();
          $is_saved = true;
       }

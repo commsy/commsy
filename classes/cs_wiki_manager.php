@@ -2356,7 +2356,7 @@ function setWikiGroupAsPublic($group){
 
 function setWikiGroupAsPublic_soap($group){
    global $c_commsy_path_file;
-   
+
    $client = $this->getSoapClient();
    $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Group.GroupAttributes');
    $file_contents_array = explode("\n", $file_contents);
@@ -2426,7 +2426,6 @@ function setWikiGroupsAsPublic_soap($groups){
 function getSoapWsdlUrl(){
    global $c_pmwiki_path_url;
    return $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?action=soap&wsdl=1';
-
 }
 
 function getSoapClient(){
