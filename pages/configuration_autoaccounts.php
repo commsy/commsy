@@ -209,7 +209,7 @@ else {
                      redirect($environment->getCurrentContextID(),'configuration','autoaccounts',$params);
                   }
                } else {
-                  $seperator = $_POST[autoaccounts_seperator];
+                  $seperator = $_POST['autoaccounts_seperator'];
                }
                for ($i = 0; $i < count($data_array); $i++){
                   if ($i == 0){
@@ -444,6 +444,7 @@ function auto_create_accounts($date_array){
                  and !empty($new_account_data['firstname'])
                  and !empty($new_account_data['lastname'])
                ) {
+               $user_manager = $environment->getUserManager();
                $user_item = $user_manager->getNewItem();
                $user_item->setUserID($account[$_POST['autoaccounts_account']]);
                $user_item->setFirstname($new_account_data['firstname']);
@@ -451,7 +452,7 @@ function auto_create_accounts($date_array){
                if(!empty($new_account_data['email'])){
                   $user_item->setEmail($new_account_data['email']);
                } else {
-                  $server_item = $this->_environment->getServerItem();
+                  $server_item = $environment->getServerItem();
                   $email = $server_item->getDefaultSenderAddress();
                   $user_item->setEmail($email);
                   $user_item->setHasToChangeEmail();
@@ -575,6 +576,23 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
                $user_item->setStatus(1);
             }
             $user_item->save();
+
+            // task
+            if ( !$user_item->isUser() ) {
+               $current_user = $environment->getCurrentUserItem();
+               $task_manager = $environment->getTaskManager();
+               $task_item = $task_manager->getNewItem();
+               $task_item->setCreatorItem($current_user);
+               $task_item->setContextID($room_item->getItemID());
+               $task_item->setTitle('TASK_USER_REQUEST');
+               $task_item->setStatus('REQUEST');
+               $task_item->setItem($user_item);
+               $task_item->save();
+               unset($current_user);
+               unset($task_item);
+               unset($task_manager);
+            }
+
             $rooms_added_to['added'][] = $room;
             write_email_to_moderators($user_item, $room);
          }

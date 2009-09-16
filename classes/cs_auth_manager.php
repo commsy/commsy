@@ -81,27 +81,32 @@ class cs_auth_manager {
 
    //TBD: Argumente?
    public function addAcount () {
-      include_once('functions/error_functions.php');trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
 
    //TBD: Argumente?
    public function changeUserId () {
-      include_once('functions/error_functions.php');trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
 
    //TBD: Argumente
    public function deleteAccount () {
-      include_once('functions/error_functions.php');trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
 
    //TBD: Argumente
    public function changeUserData () {
-      include_once('functions/error_functions.php');trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
 
    //TBD: ARGUMENTE
    public function changePassword () {
-      include_once('functions/error_functions.php');trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
+      include_once('functions/error_functions.php');
+      trigger_error('Must be overwritten in subclass if used!',E_USER_ERROR);
    }
 
    public function isFunctionImplemented ($function_name) {

@@ -153,7 +153,13 @@ class cs_auth_ldap extends cs_auth_manager {
       if ( empty($password) or mb_strlen($password) == 0 ) {
          $password = microtime();
       }
-      $access = $this->_field_userid.'='.$uid.','.$this->_baseuser;
+      if ( stristr($uid,'=')
+           and stristr($uid,',')
+         ) {
+         $access = $uid;
+      } else {
+         $access = $this->_field_userid.'='.$uid.','.$this->_baseuser;
+      }
       $connect = @ldap_connect( $this->_server, $this->_server_port );
       if ( !$connect ) {
          include_once('functions/error_functions.php');
@@ -345,8 +351,24 @@ class cs_auth_ldap extends cs_auth_manager {
 
    private function _fillUserData ($uid, $password) {
       $user_dn = '';
+      $user_uid = '';
+      $user_password = '';
+      if ( empty($password)
+           and !empty($this->_rootuser)
+           and !empty($this->_rootuser_password)
+         ) {
+         $user_uid = $this->_rootuser;
+         $user_password = $this->_rootuser_password;
+      } elseif ( !empty($uid)
+                 and !empty($password)
+               ) {
+         $user_uid = $uid;
+         $user_password = $password;
+      } else {
+         return;
+      }
       if ( empty($this->_user_dn) ) {
-         if ( !$this->checkAccount($uid,$password) ) {
+         if ( !$this->checkAccount($user_uid,$user_password) ) {
             return;
          }
       }
@@ -360,10 +382,20 @@ class cs_auth_ldap extends cs_auth_manager {
          $bind = @ldap_bind( $connect, $user_dn, $this->encryptPassword($password) );
          if ( $bind ) {
             $suchfilter = "(".$this->_field_userid."=".$uid.")";
-            $search = @ldap_search($connect,$user_dn,$suchfilter);
-            $result = ldap_get_entries($connect,$search);
-            if ( $result['count'] != 0 ) {
-               $this->_user_data = $this->_cleanLDAPArray($result[0]);
+            $base_user_array = explode(',',$this->_baseuser);
+            $count = count($base_user_array);
+            for ( $i=0; $i<$count; $i++  ) {
+               if ( $bind ) {
+                  $baseuser = implode(',',$base_user_array);
+                  $search = @ldap_search($connect,$baseuser,$suchfilter);
+                  $result = ldap_get_entries($connect,$search);
+                  if ( $result['count'] != 0 ) {
+                     $this->_user_data = $this->_cleanLDAPArray($result[0]);
+                     $access = $result[0]['dn'];
+                     break;
+                  }
+               }
+               array_shift($base_user_array);
             }
          }
       }

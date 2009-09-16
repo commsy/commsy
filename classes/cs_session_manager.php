@@ -158,7 +158,7 @@ class cs_session_manager {
          if (!empty($result[0])) {
             $query = "UPDATE session SET session_value='".encode(AS_DB,$session_data)."',
                                          created='".$current_date_time."'
-                                     WHERE session_id='".$item->getSessionID()."';";
+                                     WHERE session_id='".encode(AS_DB,$item->getSessionID())."';";
 
             $this->_last_query = $query;
             $result = $this->_db_conntector->performQuery($query);

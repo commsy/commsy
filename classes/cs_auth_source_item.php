@@ -311,5 +311,10 @@ class cs_auth_source_item extends cs_item {
       $manager = $this->_environment->getManager($this->_type);
       $this->_delete($manager);
    }
+
+   public function getAuthConnection () {
+      $authentication = $this->_environment->getAuthenticationObject();
+      return $authentication->getAuthManagerByAuthSourceItem($this);
+   }
 }
 ?>
