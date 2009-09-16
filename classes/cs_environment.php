@@ -218,7 +218,11 @@ class cs_environment {
                include_once('functions/error_functions.php');
                trigger_error(' can not initiate room -> bug in item table',E_USER_ERROR);
             }
-            $this->current_context = $manager->getItem($this->current_context_id);
+            if ( !empty($manager)
+                 and is_object($manager)
+               ) {
+               $this->current_context = $manager->getItem($this->current_context_id);
+            }
          }
       } else {
          $this->current_context_id = $this->getServerID();
@@ -498,16 +502,16 @@ class cs_environment {
    * @access public
    */
    function getDiscManager() {
-     $name = 'cs_disc_manager';
+      $name = 'cs_disc_manager';
       if (!isset($this->instance[$name])) {
          require_once('classes/'.$name.'.php');
          $this->instance[$name] = new $name($this->getCurrentPortalID(),$this->getCurrentContextID());
-       if (!$this->inServer()) {
-          $this->instance[$name]->setPortalID($this->getCurrentPortalID());
-          $this->instance[$name]->setContextID($this->getCurrentContextID());
-       } else {
-          $this->instance[$name]->setServerID($this->getServerID());
-       }
+         if (!$this->inServer()) {
+            $this->instance[$name]->setPortalID($this->getCurrentPortalID());
+            $this->instance[$name]->setContextID($this->getCurrentContextID());
+         } else {
+           $this->instance[$name]->setServerID($this->getServerID());
+         }
       }
       return $this->instance[$name];
    }

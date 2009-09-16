@@ -41,7 +41,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
+   $errorbox->setText($translator->getMessage('PROJECT_ROOM_IS_CLOSED', $context_item->getTitle()));
    $page->add($errorbox);
 } elseif (!$current_user->isModerator()) {
    $params = array();
@@ -49,7 +49,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }
 
@@ -65,7 +65,7 @@ else {
       }
 
       // Cancel editing
-      if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),'configuration', 'index','');
       }
       // Show form and/or save item
@@ -86,7 +86,7 @@ else {
          $form->prepareForm();
          $form->loadValues();
          if ( !empty($command) and
-            isOption($command, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON')) ) {
+            isOption($command, $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON')) ) {
             $correct = $form->check();
             if($correct){
                $account_array = auto_create_accounts($date_array);
@@ -124,7 +124,7 @@ else {
          $command = '';
       }
       // Cancel editing
-      if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+      if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
          redirect($environment->getCurrentContextID(),'configuration','index',$params);
       }
 
@@ -161,7 +161,7 @@ else {
 
          // Save item
          if ( !empty($command)
-              and isOption($command, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'))
+              and isOption($command, $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'))
             ) {
 
             $correct = $form->check();
@@ -186,7 +186,7 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                $dates_data_array = array();
-               if($_POST['autoaccounts_seperator'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
+               if($_POST['autoaccounts_seperator'] == $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
                   $found_comma = false;
                   $found_semicolon = false;
                   for ($i = 0; $i < count($data_array); $i++){
@@ -249,6 +249,8 @@ else {
 
 function auto_create_accounts($date_array){
    global $environment;
+   $translator = $environment->getTranslationObject();
+
    $account_auth_source = $_POST['autoaccounts_auth_source'];
    $account_array = array();
    $allow_add_account = false;
@@ -300,7 +302,7 @@ function auto_create_accounts($date_array){
          if(!$account_info_missing){
             $found_user_by_email = false;
             $most_recent_account = null;
-   
+
             if((!empty($_POST['autoaccount_no_new_account_when_email_exists'])) and ($_POST['autoaccount_no_new_account_when_email_exists'] == 1)){
                //Test auf E-Mail-Adresse...
                $user_manager = $environment->getUserManager();
@@ -327,13 +329,13 @@ function auto_create_accounts($date_array){
                   }
                }
             }
-   
+
             if(!$found_user_by_email){
                $authentication = $environment->getAuthenticationObject();
                $current_portal = $environment->getCurrentPortalItem();
                $current_portal_id = $environment->getCurrentPortalID();
                $auth_source_id = $account_auth_source;
-   
+
                $new_account = $authentication->getNewItem();
                $new_account->setUserID($temp_account_account);
                $new_account->setPassword($temp_account_password);
@@ -347,7 +349,7 @@ function auto_create_accounts($date_array){
                $temp_user = $authentication->getUserItem();
                $temp_user->makeUser();
                $temp_user->save();
-   
+
                $temp_account_array = array();
                $temp_account_array['lastname'] = $temp_account_lastname;
                $temp_account_array['firstname'] = $temp_account_firstname;
@@ -392,17 +394,17 @@ function auto_create_accounts($date_array){
          } else {
             $temp_account_array = array();
             if($lastname_length == 0){
-               $temp_account_array['lastname'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['lastname'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['lastname'] = $temp_account_lastname;
             }
             if($firstname_length == 0){
-               $temp_account_array['firstname'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['firstname'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['firstname'] = $temp_account_firstname;
             }
             if($email_length == 0){
-               $temp_account_array['email'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['email'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['email'] = $temp_account_email;
             }
@@ -415,7 +417,10 @@ function auto_create_accounts($date_array){
             $temp_account_array['rooms'] = array();
             $account_array[] = $temp_account_array;
          }
-      } else {
+      }
+
+      // don not allow add accounts
+      else {
          $temp_account_account = $account[$_POST['autoaccounts_account']];
          $account_length = strlen($temp_account_account);
          if($account_length == 0){
@@ -431,7 +436,7 @@ function auto_create_accounts($date_array){
             $temp_account_array['account_not_created'] = true;
             $temp_account_array['rooms'] = array();
             $temp_account_array['has_comment'] = true;
-            $temp_account_array['comment'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
+            $temp_account_array['comment'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
             $account_array[] = $temp_account_array;
          } else {
             $new_account_data = $auth_source_manager->get_data_for_new_account($account[$_POST['autoaccounts_account']], $account[$_POST['autoaccounts_password']]);
@@ -454,7 +459,7 @@ function auto_create_accounts($date_array){
                $user_item->setAuthSource($account_auth_source);
                $user_item->makeUser();
                $user_item->save();
-               
+
                $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
                $temp_account_rooms = trim($temp_account_rooms);
                if(stristr($temp_account_rooms, ' ')){
@@ -468,7 +473,7 @@ function auto_create_accounts($date_array){
                if($room_length != 0 and empty($temp_account_rooms_array)){
                   $temp_account_rooms_array = array($temp_account_rooms);
                }
-               
+
                $temp_account_array = array();
                $temp_account_array['lastname'] = $user_item->getFirstname();
                $temp_account_array['firstname'] = $user_item->getLastname();
@@ -495,12 +500,12 @@ function auto_create_accounts($date_array){
                $temp_account_array['account_not_created'] = true;
                $temp_account_array['rooms'] = array();
                $temp_account_array['has_comment'] = true;
-               $temp_account_array['comment'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA');
+               $temp_account_array['comment'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA');
                $account_array[] = $temp_account_array;
             }
          }
       }
-   } 
+   }
    return $account_array;
 }
 
@@ -541,6 +546,7 @@ function generate_password(){
 
 function add_user_to_rooms($user, $room_array, $password_generated = false, $temp_account_password = ''){
    global $environment;
+
    $rooms_added_to = array();
    $rooms_added_to['added'] = array();
    $rooms_added_to['not_existing'] = array();
@@ -592,6 +598,8 @@ function add_user_to_rooms($user, $room_array, $password_generated = false, $tem
 
 function write_email_to_moderators($user_item, $room){
    global $environment;
+   $translator = $environment->getTranslationObject();
+
    $room_manager = $environment->getRoomManager();
    $room_item = $room_manager->getItem($room);
 
@@ -624,7 +632,6 @@ function write_email_to_moderators($user_item, $room){
    } else {
       $check_message = 'NO';
    }
-   $translator = $environment->getTranslationObject();
    foreach ($email_addresses as $language => $email_array) {
       if (count($email_array) > 0) {
          $old_lang = $translator->getSelectedLanguage();

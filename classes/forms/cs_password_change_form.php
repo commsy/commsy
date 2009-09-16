@@ -58,7 +58,9 @@ class cs_password_change_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addHeadline('title',$this->_translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
-      if ($this->_auth_source->allowChangePassword()) {
+      if ( isset($this->_auth_source)
+           and $this->_auth_source->allowChangePassword()
+         ) {
          $session_item = $this->_environment->getSessionItem();
          if ( !$session_item->issetValue('password_forget_ip') ) {
             $this->_form->addPassword('password_old','',$this->_translator->getMessage('USER_PASSWORD_OLD'),'','','21',true);
