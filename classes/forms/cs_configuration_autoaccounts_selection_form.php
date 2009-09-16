@@ -57,11 +57,11 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       }
       $this->_array = $temp_array;
    }
-   
+
    function setAuthSource($autoaccounts_auth_source){
       $this->autoaccounts_auth_source = $autoaccounts_auth_source;
    }
-   
+
    /** init data for form, INTERNAL
     * this methods init the data for the form
     *
@@ -208,10 +208,14 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
                }
             }
          }
-         if($account['account_not_created']){
+         if ( isset($account['account_not_created'])
+              and $account['account_not_created']
+            ) {
             $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
             $account_string .= '<font style="color:red"><b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED') . '</b></font> ';
-            if($account['has_comment']){
+            if ( isset($account['has_comment'])
+                 and $account['has_comment']
+               ) {
                $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
                $account_string .= '<font style="color:red"><b>' . $account['comment'] . '</b></font> ';
             }

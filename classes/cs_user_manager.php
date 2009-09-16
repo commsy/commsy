@@ -780,6 +780,31 @@ class cs_user_manager extends cs_manager {
       return $user;
    }
 
+   public function getItemByUserIDAuthSourceID ($uid, $asid) {
+      $retour = NULL;
+      if ( !empty($uid)
+           and !empty($asid)
+         ) {
+         $this->resetLimits();
+         $this->setUserIDLimit($uid);
+         $this->setAuthSourceLimit($asid);
+         $this->setContextLimit($this->_environment->getCurrentContextID());
+         $this->select();
+         $list = $this->get();
+         if ( $list->isNotEmpty()
+              and $list->getCount() == 1
+            ) {
+            $retour = $list->getFirst();
+         } elseif ( $list->isNotEmpty()
+                    and $list->getCount() > 1
+                  ) {
+            include_once('functions/error_functions.php');
+            trigger_error('bug in database: multiple user for user_id: '.$uid.', auth_source_id: '.$asid.', portal: '.$this->_environment->getCurrentContextID().' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
+         }
+      }
+      return $retour;
+   }
+
    function getRoomUserByIDsForCache($context_id, $id_array = 0) {
       // ------------------
       // --->UTF8 - OK<----

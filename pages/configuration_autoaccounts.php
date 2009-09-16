@@ -439,28 +439,36 @@ function auto_create_accounts($date_array){
             $temp_account_array['comment'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
             $account_array[] = $temp_account_array;
          } else {
-            $new_account_data = $auth_source_manager->get_data_for_new_account($account[$_POST['autoaccounts_account']], $account[$_POST['autoaccounts_password']]);
-            if ( !empty($new_account_data)
-                 and !empty($new_account_data['firstname'])
-                 and !empty($new_account_data['lastname'])
-               ) {
-               $user_manager = $environment->getUserManager();
-               $user_item = $user_manager->getNewItem();
-               $user_item->setUserID($account[$_POST['autoaccounts_account']]);
-               $user_item->setFirstname($new_account_data['firstname']);
-               $user_item->setLastname($new_account_data['lastname']);
-               if(!empty($new_account_data['email'])){
-                  $user_item->setEmail($new_account_data['email']);
-               } else {
-                  $server_item = $environment->getServerItem();
-                  $email = $server_item->getDefaultSenderAddress();
-                  $user_item->setEmail($email);
-                  $user_item->setHasToChangeEmail();
+            $user_manager = $environment->getUserManager();
+            $user_item = $user_manager->getItemByUserIDAuthSourceID($account[$_POST['autoaccounts_account']],$auth_source_item->getItemID());
+            $account_generated = false;
+            if ( !isset($user_item) ) {
+               $auth_connection = $auth_source_item->getAuthConnection();
+               $new_account_data = $auth_connection->get_data_for_new_account($account[$_POST['autoaccounts_account']], $account[$_POST['autoaccounts_password']]);
+               if ( !empty($new_account_data)
+                    and !empty($new_account_data['firstname'])
+                    and !empty($new_account_data['lastname'])
+                  ) {
+                  $user_manager = $environment->getUserManager();
+                  $user_item = $user_manager->getNewItem();
+                  $user_item->setUserID($account[$_POST['autoaccounts_account']]);
+                  $user_item->setFirstname($new_account_data['firstname']);
+                  $user_item->setLastname($new_account_data['lastname']);
+                  if(!empty($new_account_data['email'])){
+                     $user_item->setEmail($new_account_data['email']);
+                  } else {
+                     $server_item = $environment->getServerItem();
+                     $email = $server_item->getDefaultSenderAddress();
+                     $user_item->setEmail($email);
+                     $user_item->setHasToChangeEmail();
+                  }
+                  $user_item->setAuthSource($account_auth_source);
+                  $user_item->makeUser();
+                  $user_item->save();
+                  $account_generated = true;
                }
-               $user_item->setAuthSource($account_auth_source);
-               $user_item->makeUser();
-               $user_item->save();
-
+            }
+            if ( !empty($user_item) ) {
                $temp_account_rooms = $account[$_POST['autoaccounts_rooms']];
                $temp_account_rooms = trim($temp_account_rooms);
                if(stristr($temp_account_rooms, ' ')){
@@ -483,10 +491,15 @@ function auto_create_accounts($date_array){
                $temp_account_array['account_changed'] = false;
                $temp_account_array['password'] = '';
                $temp_account_array['password_generated'] = false;
-               $temp_account_array['found_account_by_email'] = true;
+               $temp_account_array['found_account_by_email'] = false;
                $rooms_added_to = add_user_to_rooms($user_item, $temp_account_rooms_array);
                $temp_account_array['rooms_added'] = $rooms_added_to;
                $temp_account_array['rooms'] = $temp_account_rooms_array;
+               $temp_account_array['account_not_created'] = !$account_generated;
+               if (!$account_generated) {
+                  $temp_account_array['has_comment'] = true;
+                  $temp_account_array['comment'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_FOUND_ACCOUNT');
+               }
                $account_array[] = $temp_account_array;
             } else {
                $temp_account_array = array();
