@@ -2470,6 +2470,11 @@ function getGroupsForWiki_soap($complete){
    return $result;
 }
 
+function getWikiNavigation(){
+   $client = $this->getSoapClient();
+   return $client->getWikiNavigation($this->_environment->getSessionID());
+}
+
 function soapCallToWiki(){
    $client = new SoapClient($this->getSoapWsdlUrl(), array("trace" => 1, "exceptions" => 0));
    //$test = $client->getPage('Main.GroupAttributes');		// - OK - UTF-8 check
