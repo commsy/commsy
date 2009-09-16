@@ -172,7 +172,10 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
          }
          $account_string .= '&nbsp;&nbsp;&nbsp;&nbsp;';
          $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
-         if(!$account['found_account_by_email']){
+         if($account['found_account_by_email']){
+            $account_string .= '<b>' . $account['account'] . '</b> ';
+            $account_string .= '(' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
+         } else {
             if($account['account_changed'] == 'changed'){
                $account_string .= $account['account'];
                $account_string .= ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS'). ': <i>' . $account['account_csv'] . '</i>' . ')';
@@ -188,9 +191,6 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
             if($account['password_generated']){
                $account_string .= ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD_GENERATED') . ')';
             }
-         } else {
-            $account_string .= '<b>' . $account['account'] . '</b> ';
-            $account_string .= '(' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
          }
          $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
          $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS') . '</b>: ';
