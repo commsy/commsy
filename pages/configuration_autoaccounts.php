@@ -86,7 +86,7 @@ else {
          $form->prepareForm();
          $form->loadValues();
          if ( !empty($command) and
-            isOption($command, $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON')) ) {
+            isOption($command, $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON')) ) {
             $correct = $form->check();
             if($correct){
                $account_array = auto_create_accounts($date_array);
@@ -161,7 +161,7 @@ else {
 
          // Save item
          if ( !empty($command)
-              and isOption($command, $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'))
+              and isOption($command, $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'))
             ) {
 
             $correct = $form->check();
@@ -186,7 +186,7 @@ else {
                or page_edit_virusscan_isClean($_FILES['dates_upload']['tmp_name'],$_FILES['dates_upload']['name']))) {
                $data_array = file($_FILES['dates_upload']['tmp_name'], FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                $dates_data_array = array();
-               if($_POST['autoaccounts_seperator'] == $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
+               if($_POST['autoaccounts_seperator'] == $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')){
                   $found_comma = false;
                   $found_semicolon = false;
                   for ($i = 0; $i < count($data_array); $i++){
@@ -394,17 +394,17 @@ function auto_create_accounts($date_array){
          } else {
             $temp_account_array = array();
             if($lastname_length == 0){
-               $temp_account_array['lastname'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['lastname'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['lastname'] = $temp_account_lastname;
             }
             if($firstname_length == 0){
-               $temp_account_array['firstname'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['firstname'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['firstname'] = $temp_account_firstname;
             }
             if($email_length == 0){
-               $temp_account_array['email'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
+               $temp_account_array['email'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING');
             } else {
                $temp_account_array['email'] = $temp_account_email;
             }
@@ -436,7 +436,7 @@ function auto_create_accounts($date_array){
             $temp_account_array['account_not_created'] = true;
             $temp_account_array['rooms'] = array();
             $temp_account_array['has_comment'] = true;
-            $temp_account_array['comment'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
+            $temp_account_array['comment'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_NO_USER_ID');
             $account_array[] = $temp_account_array;
          } else {
             $user_manager = $environment->getUserManager();
@@ -514,7 +514,7 @@ function auto_create_accounts($date_array){
                $temp_account_array['account_not_created'] = true;
                $temp_account_array['rooms'] = array();
                $temp_account_array['has_comment'] = true;
-               $temp_account_array['comment'] = $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA');
+               $temp_account_array['comment'] = $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_DID_NOT_GET_DATA');
                $account_array[] = $temp_account_array;
             }
          }
@@ -742,7 +742,7 @@ function write_email_to_user($user_item, $room, $password_generated = false, $te
    $body .= $translator->getEmailMessage('MAIL_BODY_USER_STATUS_USER',$user_item->getUserID(),$room_item->getTitle());
    $body .= LF.LF;
    if($password_generated){
-      $body .= $translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED',$temp_account_password);
+      $body .= $translator->getMessage('CONFIGURATION_AUTOACCOUNTS_PASSWORD_GENERATED',$temp_account_password);
       $body .= LF.LF;
    }
    $body .= $translator->getEmailMessage('MAIL_BODY_CIAO',$contact_moderator->getFullname(),$room_item->getTitle());

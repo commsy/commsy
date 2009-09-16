@@ -54,9 +54,9 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->_headline = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
       $this->setHeadline($this->_headline);
-      $this->seperators = array(array('text' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
+      $this->seperators = array(array('text' => $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
       $this->auth_source = array();
       $portal = $this->_environment->getCurrentPortalItem();
       $auth_source_list = $portal->getAuthSourceList();
@@ -65,7 +65,7 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
       $auth_default = $portal->getAuthDefault();
       while($temp_auth_source){
          if($temp_auth_source->getItemID() == $auth_default){
-            $text = $temp_auth_source->getTitle() . ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT') . ')';
+            $text = $temp_auth_source->getTitle() . ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT') . ')';
             //$text = $temp_auth_source->getTitle();
 
             $this->auth_source[] = array('text' => $text, 'value' => $temp_auth_source->getItemID());
@@ -91,11 +91,11 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      $this->_form->addImage('dates_upload','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOADFILE'),'');
-      $this->_form->addSelect('autoaccounts_seperator',$this->seperators,$this->seperators[0],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_auth_source',$this->auth_source,$this->auth_source[$this->selected_auth_entry],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'),getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
-      $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
-      $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES'));
+      $this->_form->addImage('dates_upload','',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_UPLOADFILE'),'');
+      $this->_form->addSelect('autoaccounts_seperator',$this->seperators,$this->seperators[0],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'),$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_auth_source',$this->auth_source,$this->auth_source[$this->selected_auth_entry],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'),$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_AUTH_SOURCE_SELECT_DESCRIPTION'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addText(null, null, $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_UPLOAD_FILE_TEMPLATES'));
    }
 
    /** loads the selected and given values to the form
@@ -105,7 +105,7 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
     */
    function _prepareValues () {
       if(isset($_GET['seperator_not_found'])){
-         $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEPERATOR_NOT_FOUND');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_NOT_FOUND');
          $this->_form->setFailure('autoaccounts_seperator','');
       }
       $this->_values = array();
@@ -130,11 +130,11 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
       if ( isset($file_elements[1]) and !empty($file_elements[1]) ){
          $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'CSV') {
-            $this->_error_array[] = getMessage('DATES_WRONG_FILE_FORMAT');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_WRONG_FILE_FORMAT');
             $error = true;
          }
       }elseif ( !isset($file_elements[1]) ){
-         $this->_error_array[] = getMessage('NO_DATES_FILE_FOUND');
+         $this->_error_array[] = $this->_translator->getMessage('NO_DATES_FILE_FOUND');
          $error = true;
       }
       return $error;

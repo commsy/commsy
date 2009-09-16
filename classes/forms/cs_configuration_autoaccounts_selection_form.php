@@ -68,7 +68,7 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->_headline = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
       $this->setHeadline($this->_headline);
    }
 
@@ -78,41 +78,41 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      $this->_form->addSelect('autoaccounts_lastname',$this->_array,$this->_array[0]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_LASTNAME'),getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_firstname',$this->_array,$this->_array[1]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_FIRSTNAME'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_email',$this->_array,$this->_array[2]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_EMAIL'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_account',$this->_array,$this->_array[3]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ACCOUNT'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_password',$this->_array,$this->_array[4]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_PASSWORD'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('autoaccounts_rooms',$this->_array,$this->_array[5]['value'],getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SELECTION_ROOMS'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_lastname',$this->_array,$this->_array[0]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_LASTNAME'),$this->_translator->getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_firstname',$this->_array,$this->_array[1]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_FIRSTNAME'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_email',$this->_array,$this->_array[2]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_EMAIL'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_account',$this->_array,$this->_array[3]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_ACCOUNT'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_password',$this->_array,$this->_array[4]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_PASSWORD'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('autoaccounts_rooms',$this->_array,$this->_array[5]['value'],$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SELECTION_ROOMS'),'', 1, false,false,false,'','','','',15.3);
       $this->_form->addEmptyline();
 
-      $this->_form->addCheckbox('autoaccount_no_new_account_when_email_exists',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
+      $this->_form->addCheckbox('autoaccount_no_new_account_when_email_exists',1,'',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL'),$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_NEW_ACCOUNT_WHEN_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
 
-      //$this->_form->addCheckbox('autoaccount_send_email',1,'',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
+      //$this->_form->addCheckbox('autoaccount_send_email',1,'',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_DESCRIPTION'),false,false,false,'','',false,false);
 
       $radio_values = array();
-      $radio_values[0]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_NO_EMAIL');
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_NO_EMAIL');
       $radio_values[0]['value'] = 'autoaccount_send_email_no_email';
-      $radio_values[1]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_COMMSY');
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_COMMSY');
       $radio_values[1]['value'] = 'autoaccount_send_email_commsy';
-      $radio_values[2]['text'] = getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_FORM');
+      $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL_FORM');
       $radio_values[2]['value'] = 'autoaccount_send_email_form';
       $this->_form->addRadioGroup('autoaccount_send_email',
-                                  getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
-                                  getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
+                                  $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
+                                  $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEND_EMAIL'),
                                   $radio_values,
                                   '',
                                   false,
                                   false
                                  );
 
-      $this->_form->addTextField('autoaccount_email_subject','',$this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_SUBJECT'),'',150,50,false,'','','','left','','',false,'','',false,false);
+      $this->_form->addTextField('autoaccount_email_subject','',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_EMAIL_SUBJECT'),'',150,50,false,'','','','left','','',false,'','',false,false);
 
-      $this->_form->addTextArea('autoaccount_email_text','',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_EMAIL_TEXT'),'','60','20','',false);
+      $this->_form->addTextArea('autoaccount_email_text','',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_EMAIL_TEXT'),'','60','20','',false);
 
       $this->_form->addHidden('autoaccounts_auth_source', $this->autoaccounts_auth_source);
 
-      $this->_form->addButtonBar('option',getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_CREATE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -137,74 +137,74 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
       if ( ($this->_form_post['autoaccount_send_email'] == 'autoaccount_send_email_form')
            and empty($this->_form_post['autoaccount_email_subject'])
          ) {
-         $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NO_SUBJECT_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_NO_SUBJECT_ERROR');
          $this->_form->setFailure('autoaccount_email_subject','');
       }
       if ( ($this->_form_post['autoaccount_send_email'] == 'autoaccount_send_email_form')
            and empty($this->_form_post['autoaccount_email_text'])
          ) {
-         $this->_error_array[] = $this->_translator->getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_NO_TEXT_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_NO_TEXT_ERROR');
          $this->_form->setFailure('autoaccount_email_text','');
       }
    }
 
    function show_account_array($account_array){
       $this->_form->reset();
-      $this->_form->addText(null, null, getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER') . ':');
+      $this->_form->addText(null, null, $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_HEADER') . ':');
       foreach($account_array as $account){
          $account_string = '';
-         if($account['lastname'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+         if($account['lastname'] == $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
             $account_string .= '<font style="color:red">' . $account['lastname'] . '</font>, ';
          } else {
             $account_string .= $account['lastname'] . ', ';
          }
-         if($account['firstname'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+         if($account['firstname'] == $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
             $account_string .= '<font style="color:red">' . $account['firstname'] . '</font><br/>';
          } else {
             $account_string .= $account['firstname'] . '<br/>';
          }
          $account_string .= '&nbsp;&nbsp;&nbsp;' . ' ';
-         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_EMAIL') . '</b>: ';
-         if($account['email'] == getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
+         $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_EMAIL') . '</b>: ';
+         if($account['email'] == $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_INFO_MISSING')){
             $account_string .= '<font style="color:red">' . $account['email'] . '</font><br/>';
          } else {
             $account_string .= $account['email'] . '<br/>';
          }
          $account_string .= '&nbsp;&nbsp;&nbsp;&nbsp;';
-         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
+         $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT') . '</b>: ';
          if(!$account['found_account_by_email']){
             if($account['account_changed'] == 'changed'){
                $account_string .= $account['account'];
-               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS'). ': <i>' . $account['account_csv'] . '</i>' . ')';
+               $account_string .= ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_EXISTS'). ': <i>' . $account['account_csv'] . '</i>' . ')';
             } else if($account['account_changed'] == 'generated'){
                $account_string .= $account['account'];
-               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_GENERATED'). ')';
+               $account_string .= ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ACCOUNT_GENERATED'). ')';
             } else {
                $account_string .= $account['account'];
             }
             $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-            $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD') . '</b>: ';
+            $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD') . '</b>: ';
             $account_string .= $account['password'];
             if($account['password_generated']){
-               $account_string .= ' (' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD_GENERATED') . ')';
+               $account_string .= ' (' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_PASSWORD_GENERATED') . ')';
             }
          } else {
             $account_string .= '<b>' . $account['account'] . '</b> ';
-            $account_string .= '(' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
+            $account_string .= '(' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_EMAIL_EXISTS') . ')';
          }
          $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-         $account_string .= '<b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS') . '</b>: ';
+         $account_string .= '<b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS') . '</b>: ';
          if(!empty($account['rooms'])){
             foreach($account['rooms'] as $room){
                if(in_array($room, $account['rooms_added']['added'])){
                   $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_ADDED');
+                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_ADDED');
                } else if (in_array($room, $account['rooms_added']['not_existing'])) {
                   $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-                  $account_string .= $room . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_EXISTING');
+                  $account_string .= $room . ' - ' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_EXISTING');
                }  else {
                   $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_ADDED');
+                  $account_string .= ahref_curl($room, 'account', 'index', null, $room) . ' - ' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SHOW_LIST_ROOMS_NOT_ADDED');
                }
             }
          }
@@ -212,7 +212,7 @@ class cs_configuration_autoaccounts_selection_form extends cs_rubric_form {
               and $account['account_not_created']
             ) {
             $account_string .= '<br/>&nbsp;&nbsp;&nbsp;&nbsp;';
-            $account_string .= '<font style="color:red"><b>' . getMessage('COMMON_CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED') . '</b></font> ';
+            $account_string .= '<font style="color:red"><b>' . $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_ACCOUNT_NOT_CREATED') . '</b></font> ';
             if ( isset($account['has_comment'])
                  and $account['has_comment']
                ) {
