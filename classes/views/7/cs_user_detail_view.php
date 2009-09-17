@@ -745,7 +745,10 @@ class cs_user_detail_view extends cs_detail_view {
                // must be addAccount not PasswordChange, because
                // for admin change password for user we need super user access to the auth source.
                // passwordChange ist for user change his/her own password
-               if ( $auth_source_item->allowAddAccount() ) {
+               if ( ( $auth_source_item->isCommSyDefault()
+                      and $auth_source_item->allowChangePassword()
+                    ) or $auth_source_item->allowAddAccount()
+                  ) {
                   $params = array();
                   $params['iid'] = $item->getItemID();
                   $html .= '> '.ahref_curl( $this->_environment->getCurrentContextID(),
