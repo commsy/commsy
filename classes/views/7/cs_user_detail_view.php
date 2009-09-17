@@ -752,7 +752,7 @@ class cs_user_detail_view extends cs_detail_view {
                                             $this->_environment->getCurrentModule(),
                                             'password',
                                             $params,
-                                            getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
+                                            $this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE')).BRLF;
                   unset($params);
                } else {
                   $html .= '<span class="disabled">> '.$this->_translator->getMessage('ACCOUNT_PASSWORD_CHANGE').'</span>'.BRLF;

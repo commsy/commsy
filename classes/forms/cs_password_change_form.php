@@ -67,13 +67,19 @@ class cs_password_change_form extends cs_rubric_form {
          }
          $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD_NEW'),'','','21',true);
          $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD_NEW2'),'','','21',true);
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
+         if ( !$session_item->issetValue('password_forget_ip') ) {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
+         } else {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON'),'','','','','',false,5.3,6.2);
+         }
       } else {
          //we mustn't edit pw
-         if ( $this->_auth_source->isCommSyDefault() ) {
-            $this->_form->addText('info','',$this->_translator->getMessage('AUTH_NOT_AVAILABLE2'),'');
-         } else {
-            $this->_form->addText('info','',$this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_auth_source->getTitle()),'');
+         if ( isset($this->_auth_source) ) {
+            if ( $this->_auth_source->isCommSyDefault() ) {
+               $this->_form->addText('info','',$this->_translator->getMessage('AUTH_NOT_AVAILABLE2'),'');
+            } else {
+               $this->_form->addText('info','',$this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_auth_source->getTitle()),'');
+            }
          }
          $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',14);
       }

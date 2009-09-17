@@ -653,18 +653,14 @@ class cs_user_detail_view extends cs_detail_view {
      return $status;
    }
 
-
-
-
-
    function _getSubItemsAsHTML($item){
       $html = '<!-- BEGIN OF SUB ITEM DETAIL VIEW -->'.LF.LF;
       $current_item = $item;
-      $html .='<div style="width:100%; margin-top:15px;">'.LF;
-      $html .='<div class="detail_sub_items_title" style="font-weight:normal;">'.LF;
-      $html .= '<span class="sub_item_pagetitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
+      $html .= '<div style="width:100%; margin-top:15px;">'.LF;
+      $html .= '   <div class="detail_sub_items_title" style="font-weight:normal;">'.LF;
+      $html .= '      <span class="sub_item_pagetitle">'.$this->_getSubItemTitleAsHTML($current_item, '1');
       $html .= '</span>'.LF;
-      $html .='</div>'.LF;
+      $html .= '   </div>'.LF;
 
       if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
          $html .='<div style="float:right; width:27%; margin-top:5px; padding-left:5px; padding-right:8px; vertical-align:top; text-align:left;">'.LF;
@@ -698,7 +694,6 @@ class cs_user_detail_view extends cs_detail_view {
       $html .= '<!-- END OF SUB ITEM DETAIL VIEW -->'.LF.LF;
       return $html;
    }
-
 
    function _getSubItemDetailActionsAsHTML ($subitem) {
       $user = $this->_environment->getCurrentUserItem();
@@ -1134,7 +1129,7 @@ class cs_user_detail_view extends cs_detail_view {
     */
    function asHTML () {
       $item = $this->getItem();
-      $html  = LF.'<!-- BEGIN OF DETAIL VIEW -->'.LF;
+      $html  = LF.'<!-- BEGIN OF USER DETAIL VIEW -->'.LF;
       $html .='<div style="width:100%;">'.LF;
       $html .='<div style="width:100%;">'.LF;
       $rubric = $this->_environment->getCurrentModule();
@@ -1208,9 +1203,9 @@ class cs_user_detail_view extends cs_detail_view {
            or $current_user->getItemID() == $item->getItemID()
          ) {
 ############SQL-Statements reduzieren
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
          $html .= $this->_getSubItemsAsHTML($item);
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
       }
       unset($current_user);
       if ( $rubric != CS_GROUP_TYPE
