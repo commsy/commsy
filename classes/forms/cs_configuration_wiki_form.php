@@ -464,15 +464,15 @@ class cs_configuration_wiki_form extends cs_rubric_form {
    }
 
    function _checkValues () {
-        $context_item = $this->_environment->getCurrentContextItem();
-        $discussion_array = $context_item->getWikiDiscussionArray();
-      if ( !empty($this->_form_post['enable_discussion'])
-           and empty($this->_form_post['new_discussion'])
-           and !isset($discussion_array[0])
-         ) {
-         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
-         $this->_form->setFailure('new_discussion','');
-      }
+      $context_item = $this->_environment->getCurrentContextItem();
+      $discussion_array = $context_item->getWikiDiscussionArray();
+//      if ( !empty($this->_form_post['enable_discussion'])
+//           and empty($this->_form_post['new_discussion'])
+//           and !isset($discussion_array[0])
+//         ) {
+//         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_EMPTY_ERROR');
+//         $this->_form->setFailure('new_discussion','');
+//      }
       if ( !empty($this->_form_post['enable_discussion'])
            and !empty($this->_form_post['new_discussion'])
            and isset($discussion_array[0])
@@ -510,13 +510,13 @@ class cs_configuration_wiki_form extends cs_rubric_form {
          $this->_form->setFailure('enable_discussion_notification','');
       }
 
-      if(!empty($this->_form_post['enable_discussion'])
-          and empty($this->_form_post['new_discussion'])
-          and empty($this->_form_post['enable_discussion_discussions'])
-        ) {
-         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
-         $this->_form->setFailure('enable_discussion_notification','');
-      }
+//      if(!empty($this->_form_post['enable_discussion'])
+//          and empty($this->_form_post['new_discussion'])
+//          and empty($this->_form_post['enable_discussion_discussions'])
+//        ) {
+//         $this->_error_array[] = $this->_translator->getMessage('WIKI_DISCUSSION_NO_DISCUSSION_ERROR');
+//         $this->_form->setFailure('enable_discussion_notification','');
+//      }
 
       if ( empty($this->_form_post['community_read_access'])
            and (!empty($this->_form_post['community_write_access']))
