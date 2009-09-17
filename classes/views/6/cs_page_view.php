@@ -1599,12 +1599,8 @@ class cs_page_view extends cs_view {
                }
                $params['cs_modus'] = 'account_forget';
                $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               if ($count_auth_source_list_add_account != 0) {
-                  $params['cs_modus'] = 'password_forget';
-                  $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               } else {
-                  $html .= '<span style="font-size:8pt;" class="disabled">> '.$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK').'</span>'.BRLF;
-               }
+               $params['cs_modus'] = 'password_forget';
+               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
                unset($params);
             }
             $html .= LF;

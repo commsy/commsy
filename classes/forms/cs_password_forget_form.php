@@ -54,7 +54,13 @@ class cs_password_forget_form extends cs_rubric_form {
          $auth_source_item = $auth_source_list->getFirst();
          while ($auth_source_item) {
             $temp_array = array();
-            if ( $auth_source_item->allowAddAccount() ) {
+            if ( ( $auth_source_item->isCommSyDefault()
+                   and $auth_source_item->allowChangePassword()
+                 )
+                 or $auth_source_item->allowAddAccount()
+                 or $auth_source_item->getContactEMail() != ''
+                 or $auth_source_item->getPasswordChangeLink() != ''
+               ) {
                $temp_array['value'] = $auth_source_item->getItemID();
                $this->_count_auth_source_list_add_account++;
             } else {
@@ -65,13 +71,21 @@ class cs_password_forget_form extends cs_rubric_form {
             unset($temp_array);
             $auth_source_item = $auth_source_list->getNext();
          }
-         $this->_count_auth_source_list_add_account;
       } else {
          $this->_count_auth_source_list_enabled = 0;
       }
       if ($this->_count_auth_source_list_add_account == 1) {
          $this->_default_auth_source_entry = $this->_auth_source_array[0]['value'];
-      } else {
+      }
+
+      if ( !empty($this->_form_post)
+           and isOption($this->_form_post['option'],$this->_translator->getMessage('PASSWORD_CHOOSE_BUTTON'))
+           and !empty($this->_form_post['auth_source'])
+         ) {
+         $this->_default_auth_source_entry = $this->_form_post['auth_source'];
+         $this->_count_auth_source_list_add_account = 1;
+      }
+      if ( empty( $this->_default_auth_source_entry ) ) {
          $this->_default_auth_source_entry = $current_portal->getAuthDefault();
       }
    }
@@ -81,27 +95,66 @@ class cs_password_forget_form extends cs_rubric_form {
     */
    function _createForm () {
       $this->_form->addHeadline('title',$this->_translator->getMessage('USER_PASSWORD_FORGET_HEADLINE'));
-      $this->_form->addText('text','',$this->_translator->getMessage('USER_PASSWORD_FORGET_TEXT'));
-
-      // auth source
-      if ( $this->_count_auth_source_list_enabled == 1
-           and $this->_count_auth_source_list_add_account == 1 ) {
-         $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
-      } elseif ( $this->_count_auth_source_list_enabled > 1 ) {
-         #$this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
-      }
-      if ( $this->_count_auth_source_list_enabled == 1
-           and $this->_count_auth_source_list_add_account == 0 ) {
-         $this->_form->addText('auth_not_available',$this->_translator->getMessage('AUTH_NOT_AVAILABLE2'),'');
-         // buttons
-         $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',13);
-      } elseif ($this->_count_auth_source_list_add_account == 0) {
-         $this->_form->addText('auth_not_available',$this->_translator->getMessage('AUTH_NOT_AVAILABLE'),'');
-         // buttons
-         $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',13);
+      if ( $this->_count_auth_source_list_add_account > 1 ) {
+         $this->_form->addText('text','',$this->_translator->getMessage('PASSWORD_CHOOSE_TEXT'));
+         $this->_form->addSelect('auth_source', $this->_auth_source_array, $this->_default_auth_source_entry, $this->_translator->getMessage('USER_AUTH_SOURCE'), '', 1 , false, false, false, '', '', '', '', 13.4);
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHOOSE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
       } else {
-         $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'','',24,true);
-         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_GENERATE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
+
+         $change_password = true;
+         if ( !empty($this->_default_auth_source_entry) ) {
+            $current_portal = $this->_environment->getCurrentPortalItem();
+            $auth_source_item = $current_portal->getAuthSource($this->_default_auth_source_entry);
+            if ( isset($auth_source_item)
+                 and !$auth_source_item->allowAddAccount()
+                 and !( $auth_source_item->isCommSyDefault()
+                        and $auth_source_item->allowChangePassword()
+                      )
+               ) {
+               $change_password = false;
+               $email = $auth_source_item->getContactEMail();
+               $passwd_link = $auth_source_item->getPasswordChangeLink();
+               if ( !empty($email)
+                    and !empty($passwd_link)
+                  ) {
+                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_EMAIL_PASSWD',$email,$passwd_link);
+               } elseif ( !empty($email) ) {
+                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_EMAIL',$email);
+               } elseif ( !empty($passwd_link) ) {
+                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_PASSWD',$passwd_link);
+               } else {
+                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_NO',$auth_source_item->getTitle());
+               }
+            }
+         }
+
+         if ( $change_password ) {
+            $this->_form->addText('text','',$this->_translator->getMessage('USER_PASSWORD_FORGET_TEXT'));
+
+            // auth source
+            if ( $this->_count_auth_source_list_enabled == 1
+                 and $this->_count_auth_source_list_add_account == 1 ) {
+               $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
+            } elseif ( !empty($this->_default_auth_source_entry) ) {
+               $this->_form->addHidden('auth_source',$this->_default_auth_source_entry);
+            }
+            if ( $this->_count_auth_source_list_enabled == 1
+                 and $this->_count_auth_source_list_add_account == 0 ) {
+               $this->_form->addText('auth_not_available',$this->_translator->getMessage('AUTH_NOT_AVAILABLE2'),'');
+               // buttons
+               $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',13);
+            } elseif ($this->_count_auth_source_list_add_account == 0) {
+               $this->_form->addText('auth_not_available',$this->_translator->getMessage('AUTH_NOT_AVAILABLE'),'');
+               // buttons
+               $this->_form->addButtonBar('option','',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,'',13);
+            } else {
+               $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'','',24,true);
+               $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_GENERATE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.4,6.3);
+            }
+         } else {
+            $this->_form->addText('text','',$text);
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','','',false,6.4,6.3);
+         }
       }
    }
 

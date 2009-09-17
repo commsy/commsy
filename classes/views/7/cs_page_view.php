@@ -758,6 +758,13 @@ class cs_page_view extends cs_view {
          unset($views);
          unset($view);
       }
+
+      // plugins
+      $retour .= LF.'   <!-- PLUGINS BEGIN -->'.LF;
+      include_once('functions/misc_functions.php');
+      $retour .= plugin_hook_output_all('getInfosForHeaderAsHTML',array(),LF).LF;
+      $retour .= '   <!-- PLUGINS END -->'.LF.LF;
+
       $retour .= '</head>'.LF;
       return $retour;
    }
@@ -1480,120 +1487,6 @@ class cs_page_view extends cs_view {
       return $html;
    }
 
-
-/*   function getMyAreaAsHTML(){
-      $get_vars  = $this->_environment->getCurrentParameterArray();
-      $post_vars = $this->_environment->getCurrentPostParameterArray();
-      $current_context = $this->_environment->getCurrentContextItem();
-      $current_portal = $this->_environment->getCurrentPortalItem();
-      if (!empty($get_vars['cs_modus'])) {
-         $cs_mod = $get_vars['cs_modus'];
-      } elseif (!empty($post_vars['cs_modus'])) {
-         $cs_mod = $post_vars['cs_modus'];
-      } else {
-         $cs_mod = '';
-      }
-      unset($get_vars);
-      unset($post_vars);
-      $html = '';
-      $html .= '<table summary="layout" style="border-collapse:collapse;">';
-      if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
-         $html .= '<tr>';
-         $html .= '<td>';
-         $html .= $this->_translator->getMessage('MYAREA_LOGGED_ON_AS').' ';
-         $html .= '</td>';
-         $html .= '<td>';
-         $html .= $this->_translator->getMessage('MYAREA_LOGIN_NOT_LOGGED_IN');
-         $html .= '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td>';
-            $insert_auth_source_selectbox = false;
-            $auth_source_list = $current_portal->getAuthSourceListEnabled();
-            if ( isset($auth_source_list) and !$auth_source_list->isEmpty() ) {
-               if ($auth_source_list->getCount() == 1) {
-                  $auth_source_item = $auth_source_list->getFirst();
-                  $html .= '<input type="hidden" name="auth_source" value="'.$auth_source_item->getItemID().'"/>'.LF;
-               } else {
-                  $insert_auth_source_selectbox = true;
-               }
-            }
-            // login form
-            $html .= '<table summary="Layout">'.LF;
-            // @segment-end 63814
-            // @segment-begin 8638 no-cs_mode/user=guest:account-field,password-field,log-in-button/table-end
-            $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
-            $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
-            $html .= '</td></tr>'.LF.'<tr><td>'.LF;
-            $html .= $this->_translator->getMessage('MYAREA_PASSWORD').':'.'</td>'.LF.'<td>';
-            $html .= '<input type="password" name="password" size="10" style="font-size:10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
-            if ( $insert_auth_source_selectbox ) {
-               $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
-               $html .= $this->_translator->getMessage('MYAREA_USER_AUTH_SOURCE_SHORT').':'.LF.'</td><td>';//Quelle?
-               // selectbox
-               $width_auth_selectbox = 6.5;
-               if ( strtolower($this->_environment->getCurrentBrowser()) == 'msie' ) {
-                  $width_auth_selectbox = 6.7;
-               }
-               $html .= '<select size="1" style="font-size:10pt; width:'.$width_auth_selectbox.'em;" name="auth_source">'.LF;
-               $auth_source_item = $auth_source_list->getFirst();
-               $auth_source_selected = false;
-               while ( $auth_source_item ) {
-                  $html .= '   <option value="'.$auth_source_item->getItemID().'"';
-                  if ( !$auth_source_selected ) {
-                     if ( isset($_GET['auth_source'])
-                          and !empty($_GET['auth_source'])
-                          and $auth_source_item->getItemID() == $_GET['auth_source']) {
-                        $html .= ' selected="selected"';
-                        $auth_source_selected = true;
-                     } elseif ( $auth_source_item->getItemID() == $current_portal->getAuthDefault() ) {
-                        $html .= ' selected="selected"';
-                     }
-                  }
-                  $html .= '>'.$auth_source_item->getTitle().'</option>'.LF;
-                  $auth_source_item = $auth_source_list->getNext();
-               }
-               $html .= '</select>'.LF;
-               $html .= '</td></tr>'.LF;
-            }
-            unset($auth_source_list);
-            $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
-            $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="3"/>'.LF;
-            $html .= '</td></tr>'.LF;
-            $html .= '</table>'.LF;
-         // @segment-end 77327
-         // @segment-begin 69973 no-cs_modus/user=guest:if-logged-in-as-guest
-         $html .= '</td>';
-         $html .= '</tr>';
-      } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
-         $html .= '<tr>';
-         $html .= '<td>';
-         $html .= $this->_translator->getMessage('MYAREA_LOGGED_ON_AS').' ';
-         $html .= '</td>';
-         $html .= '<td>';
-         $params = array();
-         $params['iid'] = $this->_current_user->getItemID();
-         $fullname = $this->_current_user->getFullname();
-          // @segment-end 70706
-          // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
-         $html .= '<span class="bold">'.$fullname.'</span>';
-         $html .= ' ('.ahref_curl($this->_environment->getCurrentContextID(), 'context', 'logout', $params,$this->_translator->getMessage('MYAREA_LOGOUT'),'','','','','','','style="color:#800000"').')'.LF;
-         $html .= '</td>';
-         $html .= '</tr>';
-         $html .= '<tr>';
-         $html .= '<td>';
-         $html .= $this->_translator->getMessage('MYAREA_MY_ACTUAL_ROOMS').': ';
-         $html .= '</td>';
-         $html .= '<td>';
-         $html .= $this->_getUserPersonalAreaAsHTML();
-         $html .= '</td>';
-         $html .= '</tr>';
-      }
-      $html .= '</table>';
-      return $html;
-   }*/
-
    function getMyAreaAsHTML() {
       $get_vars  = $this->_environment->getCurrentParameterArray();
       $post_vars = $this->_environment->getCurrentPostParameterArray();
@@ -1763,12 +1656,8 @@ class cs_page_view extends cs_view {
                }
                $params['cs_modus'] = 'account_forget';
                $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               if ($count_auth_source_list_add_account != 0) {
-                  $params['cs_modus'] = 'password_forget';
-                  $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-               } else {
-                  $html .= '<span style="font-size:8pt;" class="disabled">> '.$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK').'</span>'.BRLF;
-               }
+               $params['cs_modus'] = 'password_forget';
+               $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_PASSWORD_FORGET_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
                unset($params);
             }
             $html .= LF;
@@ -2056,21 +1945,21 @@ class cs_page_view extends cs_view {
      // change password
       elseif (!empty($cs_mod) and $cs_mod == 'password_change') {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-   } else {
-              $params = array();
+         } else {
+            $params = array();
             $params['iid'] = $this->_current_user->getItemID();
-      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-         $portal_user = $this->_environment->getPortalUserItem();
-         $fullname = $portal_user->getFullname();
+            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+               $portal_user = $this->_environment->getPortalUserItem();
+               $fullname = $portal_user->getFullname();
                unset($portal_user);
-      } else {
-         $fullname = $this->_current_user->getFullname();
-      }
+            } else {
+               $fullname = $this->_current_user->getFullname();
+            }
          }
          $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
          include_once('classes/cs_password_change_page.php');
-   $left_page = new cs_password_change_page($this->_environment);
-   $html .= $left_page->execute();
+         $left_page = new cs_password_change_page($this->_environment);
+         $html .= $left_page->execute();
          unset($left_page);
          $html .= '</div>'.LF;
       }
