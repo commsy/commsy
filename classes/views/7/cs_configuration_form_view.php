@@ -960,6 +960,8 @@ class cs_configuration_form_view extends cs_form_view {
               $html .= $normal;
            }
         }
+      } else {
+         $html .= LF.$this->_getHiddenFieldasHTML(array('name' => $form_element['name'].'_is_textarea', 'value' => '1'));
       }
       return $html;
    }
