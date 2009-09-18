@@ -29,7 +29,6 @@ if ( $language == 'user' ) {
    $language = getSelectedLanguage();
 }
 $text = $environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($language, 'UTF-8')]);
-
 $params = array();
 $params['environment'] = $environment;
 $params['with_modifying_actions'] = false;
