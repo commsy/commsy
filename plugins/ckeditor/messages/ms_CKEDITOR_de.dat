@@ -1,0 +1,3 @@
+<?php
+$message["CKEDITOR_DESCRIPTION"]["de"] = "Der CKEditor ist ein WYSIWYG Editor, d.h. er stellt den Text schon beim Bearbeiten so ähnliche wie möglich dem späteren, gespeicherten Resultat dar. Der CKEditor bingt Textbearbeitungsfunktionen mit, die von Microsoft Word oder Open Office bekannt sind.";
+?>
