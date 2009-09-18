@@ -862,88 +862,105 @@ class cs_configuration_form_view extends cs_form_view {
     * @author CommSy Development Group
     */
    function _getTextAreaAsHTML ($form_element) {
-      global $c_html_textarea;
       $html  = '';
-      $vsize = '60';
-      $normal = '<textarea name="'.$form_element['name'].'"';
-      $normal .= ' cols="'.$form_element['vsize'].'"';
-      $normal .= ' rows="'.$form_element['hsize'].'"';
-#      $normal .= ' wrap="'.$form_element['wrap'].'"';
-      $normal .= ' tabindex="'.$this->_count_form_elements.'"';
+
+      if ( !empty($form_element['value']) ) {
+         $form_element['value_for_output'] = $this->_text_as_form($form_element['value']);
+         $form_element['value_for_output_html'] = $this->_text_as_form_for_html_editor($form_element['value']);
+      } else {
+         $form_element['value_for_output'] = '';
+         $form_element['value_for_output_html'] = '';
+      }
+      $form_element['tabindex'] = $this->_count_form_elements;
       $this->_count_form_elements++;
-      if (isset($form_element['is_disabled']) and $form_element['is_disabled']) {
-         $normal .= ' disabled="disabled"';
-      }
-      $normal .= '>';
 
-      $specialTextArea = false;
-      if (isset($c_html_textarea) and $c_html_textarea) {
-         $specialTextArea = true;
-      }
-      $normal .= $this->_text_as_form($form_element['value'],$specialTextArea);
-      $normal .= '</textarea>'.LF;
-      $normal .= LF;
+      include_once('functions/misc_functions.php');
+      $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
 
-
-     $current_module = $this->_environment->getCurrentModule();
-     $current_function = $this->_environment->getCurrentFunction();
-     if ( ( $current_module == 'configuration' and $current_function == 'common' ) or
-          ( $current_module == 'configuration' and $current_function == 'preferences' ) or
-          ( $current_module == 'project' and $current_function == 'edit' ) or
-          ( $current_module == 'community' and $current_function == 'edit' )
-      ) {
-         if ( isset($form_element['vsize']) and !empty($form_element['vsize']) ){
-            $vsize = $form_element['vsize'];
+      if ( empty($html) ) {
+         global $c_html_textarea;
+         $html  = '';
+         $vsize = '60';
+         $normal = '<textarea name="'.$form_element['name'].'"';
+         $normal .= ' cols="'.$form_element['vsize'].'"';
+         $normal .= ' rows="'.$form_element['hsize'].'"';
+   #      $normal .= ' wrap="'.$form_element['wrap'].'"';
+         $normal .= ' tabindex="'.$this->_count_form_elements.'"';
+         $this->_count_form_elements++;
+         if (isset($form_element['is_disabled']) and $form_element['is_disabled']) {
+            $normal .= ' disabled="disabled"';
          }
-         $html_status = $form_element['with_html_area_status'];
-         if ( !empty($html_status) and $html_status!='3' ){
-            $with_htmltextarea = true; // control over $form_element['with_html_area']
-         }else{
-            $with_htmltextarea = false; // control over $form_element['with_html_area']
+         $normal .= '>';
+
+         $specialTextArea = false;
+         if (isset($c_html_textarea) and $c_html_textarea) {
+            $specialTextArea = true;
          }
-     } else {
-         $current_context = $this->_environment->getCurrentContextItem();
-         $with_htmltextarea = $current_context->withHtmlTextArea();
-         $html_status = $current_context->getHtmlTextAreaStatus();
-     }
-     $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-     $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-     if ( !isset($c_html_textarea)
-          or !$c_html_textarea
-          or !$form_element['with_html_area']
-          or !$with_htmltextarea
-        ) {
-        $html .= $normal;
-     } elseif ( $current_browser != 'msie'
-                and $current_browser != 'firefox'
-                and $current_browser != 'netscape'
-                and $current_browser != 'mozilla'
-                and $current_browser != 'camino'
-                and $current_browser != 'opera'
-                and $current_browser != 'safari'
-            ) {
-         $html .= $normal;
-     } else {
-        $session = $this->_environment->getSessionItem();
-        if ($session->issetValue('javascript')) {
-           $javascript = $session->getValue('javascript');
-           if ($javascript == 1) {
-              include_once('classes/cs_html_textarea.php');
-              $html_area = new cs_html_textarea();
-              $html .= $html_area->getAsHTML( $form_element['name'],
-                                              $this->_text_as_form_for_html_editor($form_element['value'],$specialTextArea),
-                                              $form_element['hsize']+10,
-                                              $html_status,
-                                              $this->_count_form_elements,
-                                              $vsize
-                                            );
+         $normal .= $this->_text_as_form($form_element['value'],$specialTextArea);
+         $normal .= '</textarea>'.LF;
+         $normal .= LF;
+
+
+        $current_module = $this->_environment->getCurrentModule();
+        $current_function = $this->_environment->getCurrentFunction();
+        if ( ( $current_module == 'configuration' and $current_function == 'common' ) or
+             ( $current_module == 'configuration' and $current_function == 'preferences' ) or
+             ( $current_module == 'project' and $current_function == 'edit' ) or
+             ( $current_module == 'community' and $current_function == 'edit' )
+         ) {
+            if ( isset($form_element['vsize']) and !empty($form_element['vsize']) ){
+               $vsize = $form_element['vsize'];
+            }
+            $html_status = $form_element['with_html_area_status'];
+            if ( !empty($html_status) and $html_status!='3' ){
+               $with_htmltextarea = true; // control over $form_element['with_html_area']
+            }else{
+               $with_htmltextarea = false; // control over $form_element['with_html_area']
+            }
+        } else {
+            $current_context = $this->_environment->getCurrentContextItem();
+            $with_htmltextarea = $current_context->withHtmlTextArea();
+            $html_status = $current_context->getHtmlTextAreaStatus();
+        }
+        $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+        $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+        if ( !isset($c_html_textarea)
+             or !$c_html_textarea
+             or !$form_element['with_html_area']
+             or !$with_htmltextarea
+           ) {
+           $html .= $normal;
+        } elseif ( $current_browser != 'msie'
+                   and $current_browser != 'firefox'
+                   and $current_browser != 'netscape'
+                   and $current_browser != 'mozilla'
+                   and $current_browser != 'camino'
+                   and $current_browser != 'opera'
+                   and $current_browser != 'safari'
+               ) {
+            $html .= $normal;
+        } else {
+           $session = $this->_environment->getSessionItem();
+           if ($session->issetValue('javascript')) {
+              $javascript = $session->getValue('javascript');
+              if ($javascript == 1) {
+                 include_once('classes/cs_html_textarea.php');
+                 $html_area = new cs_html_textarea();
+                 $html .= $html_area->getAsHTML( $form_element['name'],
+                                                 $this->_text_as_form_for_html_editor($form_element['value'],$specialTextArea),
+                                                 $form_element['hsize']+10,
+                                                 $html_status,
+                                                 $this->_count_form_elements,
+                                                 $vsize
+                                               );
+              } else {
+                 $html .= $normal;
+              }
            } else {
               $html .= $normal;
            }
-        } else {
-           $html .= $normal;
         }
-     }
+      }
       return $html;
    }
 
