@@ -95,6 +95,12 @@ class cs_configuration_plugins_form extends cs_rubric_form {
 
                $this->_array_plugins[$plugin_class->getIdentifier()]['values'] = $temp_array;
                $this->_array_plugins[$plugin_class->getIdentifier()]['title'] = $plugin_class->getTitle();
+               if ( method_exists($plugin_class,'getDescription') ) {
+                  $this->_array_plugins[$plugin_class->getIdentifier()]['description'] = $plugin_class->getDescription();
+               }
+               if ( method_exists($plugin_class,'getHomepage') ) {
+                  $this->_array_plugins[$plugin_class->getIdentifier()]['homepage'] = $plugin_class->getHomepage();
+               }
 
                if ( $this->_environment->inPortal()
                     and method_exists($plugin_class,'configurationAtPortal')
@@ -139,6 +145,14 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                      $plugin_class->configurationAtRoom('create_form',array('form' => $this->_form));
                   }
                }
+            }
+            if ( !empty($plugin_data['description']) ) {
+               $this->_form->combine();
+               $this->_form->addText('description','',$plugin_data['description']);
+            }
+            if ( !empty($plugin_data['homepage']) ) {
+               $this->_form->combine();
+               $this->_form->addText('homepage','',$this->_translator->getMessage('CONFIGURATION_PLUGIN_HOMEPAGE').': '.$plugin_data['homepage']);
             }
          }
 
