@@ -107,31 +107,6 @@ class cs_annotation_form extends cs_rubric_form {
          $this->_headline = getMessage('ANNOTATION_ENTER_NEW');
       }
 
-//      // materials
-//      $material_array = array();
-//      if (isset($this->_session_material_array)) {
-//         $material_manager = $this->_environment->getMaterialManager();
-//         foreach ( $this->_session_material_array as $material ) {
-//            $material_item = $material_manager->getItem($material['iid']);
-//            $temp_array['text'] = $material_item->getTitle();
-//            $temp_array['value'] = '<VALUE><ID>'.$material['iid'].'</ID><VERSION>'.$material['vid'].'</VERSION></VALUE>';
-//            $material_array[] = $temp_array;
-//         }
-//      } elseif (isset($this->_item)) {
-//         $material_list = $this->_item->getMaterialList();
-//         $material_array_for_session = array();
-//         if ($material_list->getCount() > 0) {
-//            $material_item = $material_list->getFirst();
-//            while ($material_item) {
-//               $temp_array['text'] = $material_item->getTitle();
-//               $temp_array['value'] = '<VALUE><ID>'.$material_item->getItemID().'</ID><VERSION>'.$material_item->getVersionID().'</VERSION></VALUE>';
-//               $material_array[] = $temp_array;
-//               $material_item = $material_list->getNext();
-//            }
-//         }
-//      }
-//      $this->_material_array = $material_array;
-
       // files
       $file_array = array();
       if (!empty($this->_session_file_array)) {
@@ -164,11 +139,7 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_form->addHidden('ref_iid','');
       $this->_form->addHidden('version','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,46);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),60);
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60);
 
       // buttons
       $id = 0;
