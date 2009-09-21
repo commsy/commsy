@@ -54,42 +54,6 @@ function getCSS ( $file, $file_url ) {
    fclose($out);
 }
 
-// Function to recursively add a directory,
-// sub-directories and files to a zip archive
-/*
-function addFolderToZip($dir, $zipArchive, $zipdir = ''){
-   if ( is_dir($dir) ) {
-      if ( $dh = opendir($dir) ) {
-         //Add the directory
-         if ( $dir !== "." ) {
-            $zipArchive->addEmptyDir($dir);
-         }
-
-         // Loop through all the files
-         while ( ($file = readdir($dh)) !== false ) {
-            if ( $dir !== "." ) {
-               $file_path = $dir.DIRECTORY_SEPARATOR.$file;
-            } else {
-              $file_path = $file;
-            }
-
-            //If it's a folder, run the function again!
-            if ( !is_file($file_path) ) {
-                // Skip parent and root directories
-                if ( ($file !== ".") and ($file !== "..") ) {
-                   addFolderToZip($file_path , $zipArchive, $file_path);
-                }
-            } else {
-               // Add the files
-               $zipArchive->addFile($file_path, $file_path);
-            }
-         }
-      }
-   }
-   return $zipArchive;
-}
-
-*/
      global $export_temp_folder;
      if(!isset($export_temp_folder)) {
         $export_temp_folder = 'var/temp/zip_export';

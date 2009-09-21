@@ -1950,10 +1950,11 @@ class cs_connection_soap {
          $this->_environment->setSessionID($session_id);
          $session = $this->_environment->getSessionItem();
          $user_id = $session->getValue('user_id');
+         $auth_source = $session->getValue('auth_source');
          $user_manager = $this->_environment->getUserManager();
          $user_manager->setContextLimit($context_id);
          $user_manager->setUserIDLimit($user_id);
-         // auth source, sonst nicht eindeutig !!!
+         $user_manager->setAuthSourceLimit($auth_source);
          $user_manager->select();
          $user_list = $user_manager->get();
          $user_info = '';
@@ -2171,6 +2172,10 @@ class cs_connection_soap {
             unset($user_manager);
             unset($user_list);
             unset($user_item);
+         } else {
+            $info = 'ERROR: GET AUTHENTICATION FOR WIKI';
+            $info_text = 'session id ('.$session_id.') is not valid: no auth source id or no user_id';
+            $result = new SoapFault($info,$info_text);
          }
       } else {
          $info = 'ERROR: GET AUTHENTICATION FOR WIKI';

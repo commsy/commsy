@@ -125,7 +125,7 @@ else {
       }
       // Cancel editing
       if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
-         redirect($environment->getCurrentContextID(),'configuration','index',$params);
+         redirect($environment->getCurrentContextID(),'configuration','index',array());
       }
 
       // Show form and/or save item
