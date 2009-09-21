@@ -1639,7 +1639,10 @@ class cs_page_room_view extends cs_page_view {
             $email_to_service .= '<input type="hidden" name="user_email" value="'.$this->_text_as_html_short($current_user->getEmail()).'"/>'.LF;
             $email_to_service .= '<input type="hidden" name="service_email" value="'.$this->_text_as_html_short($service_email).'"/>'.LF;
             #$email_to_service .= $this->_translator->getMessage('COMMON_MAIL_TO_SERVICE').' <input type="image" src="images/servicelink.jpg" alt="Link to CommSyService" style="vertical-align:text-bottom;" />'.LF;
-            $email_to_service .= '<a href="javascript:document.service.submit();" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
+            // jQuery
+            //$email_to_service .= '<a href="javascript:document.service.submit();" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
+            $email_to_service .= '<a href="#" id="submit_form" title="'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2_LINK_TITLE').'">'.$this->_translator->getMessage('COMMON_MAIL_TO_SERVICE2').'</a>'.LF;
+            // jQuery
             $email_to_service .= '</form>'.LF;
             $html .= '<table style="margin:0px; padding:0px; border-collapse: collapse; border:0px solid black;" summary="Layout">'.LF;
             $html .= '  <tr>'.LF;

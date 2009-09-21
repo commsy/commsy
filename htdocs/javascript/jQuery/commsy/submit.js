@@ -14,4 +14,12 @@ jQuery(document).ready(function() {
          });
       }
    });
+   
+   jQuery("a").click(function () {
+      if(this.id == 'submit_form'){
+         jQuery(this).parents("form").map(function () {
+            this.submit();
+         });
+      }
+   });
 });
