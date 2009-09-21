@@ -80,7 +80,10 @@ class cs_configuration_rubric_form_view extends cs_configuration_form_view {
      }
      $html.=' style="width:'.$width.'; font-size: 10pt; background-color:'.$bgcolor.'; color:'.$color.';font-weight:bold;"';
 
-      $html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
+      // jQuery
+      //$html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
+      $html .= $form_element['event'] ? " id='submit_form'" : '';
+      // jQuery
       $html .= '>'.LF;
       $options = $form_element['options'];
       $option = reset($options);

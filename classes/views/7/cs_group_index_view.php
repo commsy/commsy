@@ -328,7 +328,10 @@ class cs_group_index_view extends cs_index_view {
          $topic_list = $this->getAvailableTopics();
          $seltopic = $this->getSelectedTopic();
          $html = '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TOPIC').BRLF;
-         $html .= '   <select name="seltopic" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select name="seltopic" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '   <select name="seltopic" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;
+         // jQuery
          $html .= '      <option value="0"';
          if ( !isset($seltopic) || $seltopic == 0 ) {
             $html .= ' selected="selected"';

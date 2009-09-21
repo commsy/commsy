@@ -801,8 +801,10 @@ class cs_account_index_view extends cs_index_view {
       $html .= '<span class="disabled">'.$this->_translator->getMessage('COMMON_STATUS').'</span>'.LF;
 
       $html .= '   <select name="selstatus" size="1" style="width: '. $width;
-      $html .= 'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
-
+      // jQuery
+      //$html .= 'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= 'px; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="7"';
       if ( !isset($selstatus) || $selstatus == 7 ) {
          $html .= ' selected="selected"';
@@ -914,7 +916,10 @@ class cs_account_index_view extends cs_index_view {
             $html .= '<div style="text-align:left; font-size: 10pt;">';
             $html .= $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE').BRLF;
             $html .= '   <select name="sel_auth_source" size="1" style="width: '. $width;
-            $html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+            // jQuery
+            //$html .= 'px; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+            $html .= 'px; font-size:8pt; margin-bottom:5px;" id="submit_form">'.LF;
+            // jQuery
 
             $html .= '      <option value="-1"';
             if ( !isset($sel_auth_source) || $sel_auth_source == -1 ) {

@@ -591,7 +591,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
       $html .= $this->_translator->getMessage('SEARCH_RUBRIC_RESTRICTION').'&nbsp;'.LF;
       $selrubric = $this->getChoosenRubric();
-      $html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" onChange="javascript:document.item_list_form.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" onChange="javascript:document.item_list_form.submit()">'.LF;
+      $html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="all"';
       if ( !isset($selrubric) or $selrubric == 'all' ) {
          $html .= ' selected="selected"';
@@ -671,7 +674,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html .= '   <input type="hidden" name="selrubric_old" value="'.$selrubric.'"/>'.LF;
 
       # checkbox for only linked items
-      $html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
+      // jQuery
+      //$html .= '   <input type="checkbox" name="linked_only" value="1" onChange="javascript:document.item_list_form.submit()"';
+      $html .= '   <input type="checkbox" name="linked_only" value="1" id="submit_form"';
+      // jQuery
       if ( !empty($_POST['linked_only']) and $_POST['linked_only'] == 1 ) {
          $html .= ' checked="checked"';
       }
@@ -694,7 +700,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
 
       if ( $context_item->withActivatingContent() ) {
          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
-         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.item_list_form.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.item_list_form.submit()">'.LF;
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" id="submit_form">'.LF;
+         // jQuery
          $html .= '      <option value="1"';
          if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
             $html .= ' selected="selected"';
@@ -748,7 +757,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
                }
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.item_list_form.submit()">'.LF;
+                  // jQuery
+                  //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.item_list_form.submit()">'.LF;
+                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';

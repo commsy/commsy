@@ -841,7 +841,10 @@ class cs_page_room_view extends cs_page_view {
    function _getUserPersonalAreaAsHTML () {
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
-      $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      // jQuery
+      //$retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $retour .= '         <select size="1" style="font-size:8pt; width:220px;" name="room_id" id="submit_form">'.LF;
+      // jQuery
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();

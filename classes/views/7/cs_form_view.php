@@ -950,7 +950,10 @@ class cs_form_view extends cs_view {
       }else{
          $html.=' style="font-size:'.$form_element['font_size'].'pt;"';
       }
-      $html .= $form_element['event'] ? " onChange='javascript:document.edit.submit()'" : '';
+      // jQuery
+      //$html .= $form_element['event'] ? " onChange='javascript:document.edit.submit()'" : '';
+      $html .= $form_element['event'] ? " id='submit_form'" : '';
+      // jQuery
       if ( isset($form_element['extention']) and !empty($form_element['extention']) ) {
          $html .= ' '.$form_element['extention'];
       }

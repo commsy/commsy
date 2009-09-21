@@ -117,7 +117,10 @@ class cs_project_index_view extends cs_context_index_view {
        $this->translatorChangeToPortal();
          $html .= '<div style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TIME_NAME').BRLF;
        $this->translatorChangeToCurrentContext();
-         $html .= '   <select style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '   <select style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" name="seltime" size="1" id="submit_form">'.LF;
+         // jQuery
          $html .= '      <option value="-3"';
          if ( !isset($seltime) or $seltime == 0 or $seltime == -3) {
             $html .= ' selected="selected"';

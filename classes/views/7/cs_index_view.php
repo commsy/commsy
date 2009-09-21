@@ -974,7 +974,10 @@ class cs_index_view extends cs_view {
          }
       }
 
-      $html .= '   <select style="width: '.$width.'px; font-size:8pt; margin-left:'.$margin.'px; margin-bottom:5px;" name="seltag_'.$depth.'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select style="width: '.$width.'px; font-size:8pt; margin-left:'.$margin.'px; margin-bottom:5px;" name="seltag_'.$depth.'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: '.$width.'px; font-size:8pt; margin-left:'.$margin.'px; margin-bottom:5px;" name="seltag_'.$depth.'" size="1" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="0"';
       if ( empty($selected_id) ) {
          $html .= ' selected="selected"';
@@ -3092,7 +3095,10 @@ EOD;
                }
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  // jQuery
+                  //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';

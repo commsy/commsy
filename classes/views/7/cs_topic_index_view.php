@@ -332,7 +332,10 @@ class cs_topic_index_view extends cs_index_view {
          $selinstitution = $this->getSelectedInstitution();
          $html .= '<div style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_INSTITUTION').BRLF;
          if ( isset($list) ) {
-            $html .= '   <select name="selinstitution" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+            // jQuery
+            //$html .= '   <select name="selinstitution" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+            $html .= '   <select name="selinstitution" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" id="submit_form">'.LF;
+            // jQuery
             $html .= '      <option value="0"';
             if ( !isset($selinstitution) || $selinstitution == 0 ) {
                $html .= ' selected="selected"';
@@ -399,7 +402,10 @@ class cs_topic_index_view extends cs_index_view {
       $list = $this->getAvailableGroups();
       $selgroup = $this->getSelectedGroup();
       $html = '<div class="infocolor"  style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_GROUP').'&nbsp;'.BRLF;
-      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selgroup" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selgroup" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selgroup" size="1" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="0"';
       if ( !isset($selgroup) || $selgroup == 0 ) {
          $html .= ' selected="selected"';

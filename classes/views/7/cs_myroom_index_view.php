@@ -316,7 +316,10 @@ class cs_myroom_index_view extends cs_context_index_view {
 
       $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
       // STATUS SELECTION FIELD
-      $html .= '   <select name="selroomtype" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="selroomtype" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selroomtype" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="2"';
       if ( empty($selroomtype) || $selroomtype == 2 ) {
          $html .= ' selected="selected"';

@@ -111,7 +111,10 @@ class cs_material_admin_index_view extends cs_material_index_view {
       $width = '235px';
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor">&nbsp;'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
-      $html .= '   <select name="selstatus" size="1" style="width: '.$width.'; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="selstatus" size="1" style="width: '.$width.'; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selstatus" size="1" style="width: '.$width.'; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="6"';
       if ( !isset($selstatus) || $selstatus == 6 ) {
          $html .= ' selected="selected"';
@@ -390,7 +393,10 @@ class cs_material_admin_index_view extends cs_material_index_view {
          $html .= '<div class="right_box_main" style="padding-top:5px;">'.LF;
          if ($context_item->withActivatingContent()){
             $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
-            $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+            // jQuery
+            //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+            $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" id="submit_form">'.LF;
+            // jQuery
             $html .= '      <option value="1"';
             if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
                $html .= ' selected="selected"';

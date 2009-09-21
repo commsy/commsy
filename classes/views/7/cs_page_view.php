@@ -633,6 +633,11 @@ class cs_page_view extends cs_view {
       if (  $this->_environment->getCurrentModule() == 'material_admin' or $this->_environment->getCurrentModule() == 'account' ) {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
       }
+      //$retour = '';
+      // jQuery
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/submit.js"></script>'.LF;
+      // jQuery
       return $retour;
    }
 
@@ -1128,7 +1133,10 @@ class cs_page_view extends cs_view {
    function _getUserPersonalAreaAsHTML () {
       $retour  = '';
       $retour .= '   <form style="margin:0px; padding:0px;" method="post" action="'.curl($this->_environment->getCurrentContextID(),'room','change','').'" name="room_change">'.LF;
-      $retour .= '         <select size="1" style="font-size:8pt; width:17em;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      // jQuery
+      //$retour .= '         <select size="1" style="font-size:8pt; width:17em;" name="room_id" onChange="javascript:document.room_change.submit()">'.LF;
+      $retour .= '         <select size="1" style="font-size:8pt; width:17em;" name="room_id" id="submit_form">'.LF;
+      // jQuery
       $context_array = array();
       $context_array = $this->_getAllOpenContextsForCurrentUser();
       $current_portal = $this->_environment->getCurrentPortalItem();
@@ -2309,7 +2317,10 @@ class cs_page_view extends cs_view {
       $languageArray = $this->_translator->getAvailableLanguages();
       $url = curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$this->_environment->getCurrentParameterArray());
       $html .= '<form style="margin:0px; padding:0px;" method="post" action="'.$url.'" name="language_change">'.LF;
-      $html .= '<select name="message_language_select" size="1" onChange="javascript:document.language_change.submit()">'.LF;
+      // jQuery
+      //$html .= '<select name="message_language_select" size="1" onChange="javascript:document.language_change.submit()">'.LF;
+      $html .= '<select name="message_language_select" size="1" id="submit_form">'.LF;
+      // jQuery
       $html .= '<option value="reset"';
       if ( empty($session_language) ) {
          $html .= ' selected="selected"';

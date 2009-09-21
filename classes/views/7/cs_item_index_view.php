@@ -1135,7 +1135,10 @@ var $_sel_rubric = '';
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
       $html .= $this->_translator->getMessage('SEARCH_ONLY_IN_FILES_TEXT').'&nbsp;'.LF;
       $selfile = $this->getSelectedFile();
-      $html .= '<input type="checkbox" name="only_files" value="1" tabindex="7" style="margin-left:0px;" onClick="javascript:document.indexform.submit()"';
+      // jQuery
+      //$html .= '<input type="checkbox" name="only_files" value="1" tabindex="7" style="margin-left:0px;" onClick="javascript:document.indexform.submit()"';
+      $html .= '<input type="checkbox" name="only_files" value="1" tabindex="7" style="margin-left:0px;" id="submit_form"';
+      // jQuery
       if ( !empty($selfile) ) {
          $html .= ' checked="checked"';
       }
@@ -1145,7 +1148,10 @@ var $_sel_rubric = '';
       $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
       $html .= $this->_translator->getMessage('SEARCH_RUBRIC_RESTRICTION').'&nbsp;'.LF;
       $selrubric = $this->getChoosenRubric();
-      $html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selrubric" size="1" style="width: '.$width.'px; font-size:10pt;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="all"';
       if ( !isset($selrubric) or $selrubric == 'all' ) {
          $html .= ' selected="selected"';
@@ -1215,7 +1221,10 @@ var $_sel_rubric = '';
       $html .= $this->_translator->getMessage('COMMON_FIELD_RESTRICTIONS').'<br />'.LF;
       $selected_value = $this->getSelectedRestriction();
       if (isset($this->_search_text) and !empty($this->_search_text) ){
-         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selrestriction" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selrestriction" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selrestriction" size="1" id="submit_form">'.LF;
+         // jQuery
       }else{
          $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selrestriction" size="1">'.LF;
       }
@@ -1240,7 +1249,10 @@ var $_sel_rubric = '';
 
       if ($context_item->withActivatingContent()){
          $html .= '<div class="infocolor" style="text-align:left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_SHOW_ACTIVATING_ENTRIES').'<br />'.LF;
-         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selactivatingstatus" size="1" id="submit_form">'.LF;
+         // jQuery
          $html .= '      <option value="1"';
          if ( isset($this->_activation_limit) and $this->_activation_limit == 1 ) {
             $html .= ' selected="selected"';
@@ -1303,7 +1315,10 @@ var $_sel_rubric = '';
                }
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  // jQuery
+                  //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';
@@ -1598,7 +1613,10 @@ var $_sel_rubric = '';
          $html_text .= '<span class="infocolor" style="white-space:nowrap;">'.$this->_translator->getMessage('SEARCH_FIELD_RESTRICTION').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
-         $html_text .= '   <select style="width: '.$width.'px; font-size:10pt; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" name="selrestriction" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html_text .= '   <select style="width: '.$width.'px; font-size:10pt; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" name="selrestriction" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html_text .= '   <select style="width: '.$width.'px; font-size:10pt; font-family: \'Trebuchet MS\',\'lucida grande\',tahoma,\'ms sans serif\',verdana,arial,sans-serif;" name="selrestriction" size="1" id="submit_form">'.LF;
+         // jQuery
          $html_text .= '      <option value="0"';
          $html_text .= ' selected="selected"';
          $html_text .= '>*'.$this->_translator->getMessage('COMMON_NO_RESTRICTION').'</option>'.LF;

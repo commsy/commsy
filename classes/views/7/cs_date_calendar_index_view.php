@@ -467,7 +467,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $selstatus = $this->getSelectedStatus();
       $html .= '<div class="infocolor" style="padding-bottom:5px;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
-      $html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="selstatus" size="1" style="width:150px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="selstatus" size="1" style="width:150px;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
          $html .= ' selected="selected"';
@@ -528,7 +531,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $html .= BRLF;
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  // jQuery
+                  //$html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+                  $html .= '   <select style="width: 150px; font-size:10pt;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';
@@ -575,7 +581,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html  = '   <tr>'.LF;
       $html .= '      <td class="infoborderyear"  style="vertical-align:bottom;">'.LF;
 
-      $html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+      // jQuery
+      
       $html .= '      <option value="2"';
       if ($this->_presentation_mode == '2'){
          $html .= ' selected="selected"';
@@ -614,7 +624,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }else{
          $year = $this->_year;
       }
-      $html = '   <select name="year" size="1" style="width:5em;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html = '   <select name="year" size="1" style="width:5em;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html = '   <select name="year" size="1" style="width:5em;" id="submit_form">'.LF;
+      // jQuery
       $params = $this->_environment->getCurrentParameterArray();
       unset($params['week']);
       unset($params['month']);
@@ -667,7 +680,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }else{
          $week = $this->_week;
       }
-      $html .= '   <select name="week" size="1" style="width:10em;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="week" size="1" style="width:10em;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="week" size="1" style="width:10em;" id="submit_form">'.LF;
+      // jQuery
       for ( $i = -4; $i <= 7; $i++ ) {
          $twkstart = $week + ( 3600 * 24 * 7 * $i );
          $twkend = $twkstart + ( 3600 * 24 * 6 );
@@ -745,7 +761,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             $this->_translator->getMessage('DATES_OCTOBER_LONG'),
             $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
             $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-      $html .= '   <select name="month" size="1" style="width:10em;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="month" size="1" style="width:10em;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="month" size="1" style="width:10em;" id="submit_form">'.LF;
+      // jQuery
       if (!isset($this->_month) or empty($this->_month)){
          $month = date ("Ymd");
       }else{

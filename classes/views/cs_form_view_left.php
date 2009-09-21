@@ -513,7 +513,10 @@ class cs_form_view_left extends cs_view {
       }
       $html .= ' tabindex="'.$this->_count_form_elements.'"';
 
-      $html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
+      // jQuery
+      //$html .= $form_element['event'] ? " onChange='javascript:document.f.submit()'" : '';
+      $html .= $form_element['event'] ? " id='submit_form'" : '';
+      // jQuery
       $html .= '>'."\n";
       $options = $form_element['options'];
       $option = reset($options);

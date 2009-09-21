@@ -628,8 +628,11 @@ class cs_guide_list_view extends cs_list_view_plain {
       }
 
       $html .= '<div style="text-align:left; font-size: 10pt; padding-bottom:0px; margin-bottom:0px;">'.$this->_translator->getMessage('PORTAL_ROOM_LIST_ROOMS').':'.BRLF;
-      $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-
+      // jQuery
+      //$html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" id="submit_form">'.LF;
+      // jQuery
+      
       $html .= '      <option value="1"';
       if ( !isset($selroom) || ($selroom == 1 or $selroom == 2) ) {
          $html .= ' selected="selected"';
@@ -723,7 +726,10 @@ class cs_guide_list_view extends cs_list_view_plain {
 
          $html .= '';
          $html .= '<div style="text-align: left; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_TIME_NAME').':'.BRLF;
-         $html .= '   <select style="width: '.$width.'; font-size: 8pt; margin-bottom:10px;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         // jQuery
+         //$html .= '   <select style="width: '.$width.'; font-size: 8pt; margin-bottom:10px;" name="seltime" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+         $html .= '   <select style="width: '.$width.'; font-size: 8pt; margin-bottom:10px;" name="seltime" size="1" id="submit_form">'.LF;
+         // jQuery
          $html .= '      <option value="-3"';
          if ( !isset($seltime) or $seltime == 0 or $seltime == -3) {
             $html .= ' selected="selected"';

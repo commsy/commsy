@@ -175,7 +175,10 @@ class cs_date_index_view extends cs_index_view {
       $html = '';
       $selstatus = $this->getSelectedStatus();
       $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_DATE_STATUS').BRLF;
-      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="selstatus" size="1" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="2"';
       if ( empty($selstatus) || $selstatus == 2 ) {
          $html .= ' selected="selected"';

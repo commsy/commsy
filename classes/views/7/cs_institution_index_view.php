@@ -244,7 +244,10 @@ class cs_institution_index_view extends cs_index_view {
       $list = $this->getAvailableTopics();
       $seltopic = $this->getSelectedTopic();
       $html = '<div style="text-align:left; font-size: 10pt;">&nbsp;'.$this->_translator->getMessage('COMMON_TOPIC').BRLF;
-      $html .= '   <select name="seltopic" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      // jQuery
+      //$html .= '   <select name="seltopic" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
+      $html .= '   <select name="seltopic" size="1" style="width: '.$width.'em; font-size:8pt; margin-bottom:5px;" id="submit_form">'.LF;
+      // jQuery
       $html .= '      <option value="0"';
       if ( !isset($seltopic) || $seltopic == 0 ) {
          $html .= ' selected="selected"';

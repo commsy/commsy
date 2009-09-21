@@ -105,7 +105,10 @@ class cs_homepage_netnavigation_view extends cs_view {
                }
 
                if ( isset($list)) {
-                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.netnavigationform.submit()">'.LF;
+                  // jQuery
+                  //$html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" onChange="javascript:document.netnavigationform.submit()">'.LF;
+                  $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="sel'.$link_name[0].'" size="1" id="submit_form">'.LF;
+                  // jQuery
                   $html .= '      <option value="0"';
                   if ( !isset($selrubric) || $selrubric == 0 ) {
                      $html .= ' selected="selected"';
