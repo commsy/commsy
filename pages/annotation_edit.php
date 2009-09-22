@@ -179,6 +179,12 @@ else {
       $form = $class_factory->getClass(ANNOTATION_FORM,$class_params);
       unset($class_params);
 
+      if ( $session->issetValue('annotation_history_function')
+           and $session->getValue('annotation_history_function') == 'detail'
+         ) {
+         $form->setDetailMode(1);
+      }
+
       // files
       include_once('include/inc_fileupload_edit_page_handling.php');
 
@@ -186,11 +192,6 @@ else {
       $rubric_connection = array();
       $rubric_connection[] = CS_MATERIAL_TYPE;
       $form->setRubricConnections($rubric_connection);
-
-      // Redirect to attach material
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON')) ) {
-         attach_redirect(CS_MATERIAL_TYPE, $current_iid);
-      }
 
       // Load form data from postvars
       if ( !empty($_POST) ) {
@@ -207,15 +208,6 @@ else {
          if ( isset($post_file_ids) AND !empty($post_file_ids) ) {
             $session_post_vars['filelist'] = $post_file_ids;
          }
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching material
-      elseif ( $backfrom == CS_MATERIAL_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-       $with_anchor = true;
-         $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
          $form->setFormPost($session_post_vars);
       }
 
@@ -250,7 +242,8 @@ else {
       }
 
       else {
-         include_once('functions/error_functions.php');trigger_error('annotation_edit was called in an unknown manner', E_USER_ERROR);
+         include_once('functions/error_functions.php');
+         trigger_error('annotation_edit was called in an unknown manner', E_USER_ERROR);
       }
 
       if ($session->issetValue($environment->getCurrentModule().'_add_files')) {
@@ -259,13 +252,13 @@ else {
       $form->prepareForm();
       $form->loadValues();
 
-
       // Save item
       if ( !empty($command) and
            (isOption($command, getMessage('ANNOTATION_SAVE_BUTTON'))
             or isOption($command, getMessage('ANNOTATION_CHANGE_BUTTON'))
             or isOption($command, getMessage('ANNOTATION_ADD_NEW_BUTTON'))
             ) ) {
+
 
          $correct = $form->check();
          if ( $correct ) {

@@ -1700,10 +1700,10 @@ class cs_form_view extends cs_view {
       $with_htmltextarea = $item->withHtmlTextArea();
       $text = '';
       if ( !isset($c_html_textarea)
-          or !$c_html_textarea
-          or !$form_element['with_html_area']
-          or !$with_htmltextarea
-        ) {
+           or !$c_html_textarea
+           or !$form_element['with_html_area']
+           or !$with_htmltextarea
+         ) {
          $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
          $html .= '<div style="padding-top:5px;">';
          $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';

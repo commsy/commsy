@@ -47,6 +47,7 @@ class class_ckeditor extends cs_plugin {
    public function getInfosForHeaderAsHTML () {
       $retour  = '';
       $retour .= '   <script type="text/javascript" src="plugins/'.$this->getIdentifier().'/ckeditor.js"></script>';
+      $retour .= '   <link rel="stylesheet" href="plugins/'.$this->getIdentifier().'/commsy_css.php?cid='.$this->_environment->getCurrentContextID().'" />';
       return $retour;
    }
 
@@ -83,8 +84,8 @@ class class_ckeditor extends cs_plugin {
                      uiColor: \''.$color['content_background'].'\',
                      toolbar :
                      [
-                        [ \'SelectAll\', \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Find\', \'Replace\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'RemoveFormat\', \'-\', \'Maximize\'],
-                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'TextColor\', \'BGColor\' ]
+                        [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\'],
+                        [ \'Format\', \'Font\', \'FontSize\', \'-\', \'JustifyLeft\', \'JustifyCenter\', \'JustifyRight\', \'JustifyBlock\', \'-\', \'Link\', \'Unlink\', \'-\', \'Table\', \'HorizontalRule\', \'Smiley\', \'-\', \'Maximize\']
                      ]
 
                   });'.LF;

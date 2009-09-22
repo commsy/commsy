@@ -425,3 +425,22 @@ div.gauge-bar {
    font-size:10px;
 }
 
+td.form_view_detail_left {
+   vertical-align: top;
+   padding-right: 5px;
+   width: 1px;
+}
+
+div.form_view_detail_formelement {
+   padding-bottom: 5px;
+}
+
+div.form_view_detail_formelement span.titlefield {
+   font-size: 12pt;
+   font-weight: bold;
+}
+
+table.form_view_detail {
+   width: 100%;
+}
+?>

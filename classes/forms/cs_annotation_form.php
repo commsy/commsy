@@ -51,6 +51,9 @@ class cs_annotation_form extends cs_rubric_form {
    */
    var $_version = NULL;    // sollte nicht mehr verwendet werden, sondern die Methode $item->getLinkedVersionID()
 
+   private $_detail_mode = false;
+   private $_number = 0;
+
    /** constructor: cs_annotation_form
     * the only available constructor
     *
@@ -60,6 +63,11 @@ class cs_annotation_form extends cs_rubric_form {
     */
    function cs_annotation_form($params) {
       $this->cs_rubric_form($params);
+   }
+
+   public function setDetailMode ( $value ) {
+      $this->_detail_mode = true;
+      $this->_number = $value;
    }
 
    /** set materials from session
@@ -96,15 +104,15 @@ class cs_annotation_form extends cs_rubric_form {
    function _initForm () {
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('ANNOTATION_EDIT');
+         $this->_headline = $this->_translator->getMessage('ANNOTATION_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('ANNOTATION_EDIT');
+            $this->_headline = $this->_translator->getMessage('ANNOTATION_EDIT');
          } else {
-            $this->_headline = getMessage('ANNOTATION_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('ANNOTATION_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('ANNOTATION_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('ANNOTATION_ENTER_NEW');
       }
 
       // files
@@ -138,22 +146,28 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('ref_iid','');
       $this->_form->addHidden('version','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,46);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60);
+      if ( !$this->_detail_mode ) {
+         $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),'',200,46);
+         $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'',60);
 
-      // buttons
-      $id = 0;
-      if (isset($this->_item)) {
-         $id = $this->_item->getItemID();
-      } elseif (isset($this->_form_post)) {
-         if (isset($this->_form_post['iid'])) {
-            $id = $this->_form_post['iid'];
+         // buttons
+         $id = 0;
+         if (isset($this->_item)) {
+            $id = $this->_item->getItemID();
+         } elseif (isset($this->_form_post)) {
+            if (isset($this->_form_post['iid'])) {
+               $id = $this->_form_post['iid'];
+            }
          }
-      }
-      if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('ANNOTATION_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         if ( $id == 0 )  {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('ANNOTATION_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
+         } else {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('ANNOTATION_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         }
       } else {
-         $this->_form->addButtonBar('option',getMessage('ANNOTATION_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addTitleField('title','',$this->_number.'.','',200,46,true);
+         $this->_form->addTextArea('description','','','',60);
+         $this->_form->addButton('option',$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON'),'');
       }
    }
 
