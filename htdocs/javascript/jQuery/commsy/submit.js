@@ -21,14 +21,12 @@ jQuery(document).ready(function() {
    //      });
    //   }
    //});
-   jQuery("input[id='submit_form']").each(function(i) {
-      if(this.type == 'checkbox'){
-         jQuery(this).change(function () {
-            jQuery(this).parents("form").map(function () {
-               this.submit();
-            });
-         })
-      }
+   jQuery("input[id='submit_form'][type='checkbox']").each(function(i) {
+      jQuery(this).change(function () {
+         jQuery(this).parents("form").map(function () {
+            this.submit();
+         });
+      })
    });
    
    //jQuery("a").click(function () {

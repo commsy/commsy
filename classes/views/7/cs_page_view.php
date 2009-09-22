@@ -744,7 +744,10 @@ class cs_page_view extends cs_view {
             $retour .= '   <script type="text/javascript">'.LF;
             $retour .= '      <!--'.LF;
             $retour .= '         function setfocus() {';
-            $retour .= 'document.login.user_id.focus(); ';
+            // jQuery
+            //$retour .= 'document.login.user_id.focus(); ';
+            //$retour .= 'jQuery("input[name=\'user_id\'], login").focus(); ';
+            // jQuery
             $retour .= '}'.LF;
             $retour .= '      -->'.LF;
             $retour .= '   </script>'.LF;

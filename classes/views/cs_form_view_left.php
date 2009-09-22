@@ -937,7 +937,10 @@ class cs_form_view_left extends cs_view {
       if ($this->_with_javascript) {
          $html .= '   <script type="text/javascript">'."\n";
          $html .= '      <!--'."\n";
-         $html .= '         function setfocus() { document.f.'.$this->_getFirstInputFieldName().'.focus(); }'."\n";
+         // jQuery
+         //$html .= '         function setfocus() { document.f.'.$this->_getFirstInputFieldName().'.focus(); }'."\n";
+         $html .= '         function setfocus() { jQuery("input[name=\''.$this->_getFirstInputFieldName().'\'], f").focus(); }'."\n";
+         // jQuery
          $html .= '      -->'."\n";
          $html .= '   </script>'."\n";
       }

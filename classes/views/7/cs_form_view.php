@@ -3053,11 +3053,19 @@ class cs_form_view extends cs_view {
          $html .= LF;
          $html .= '         function setfocus() {'.LF;
          if ( $this->getFocusElementOnload() != '' ) {
-           $html .= '           document.edit.elements["'.$this->getFocusElementOnLoad().'"].focus();'.LF;
+            // jQuery   
+            //$html .= '           document.edit.elements["'.$this->getFocusElementOnLoad().'"].focus();'.LF;
+            $html .= '           jQuery("input[name=\''.$this->getFocusElementOnLoad().'\'], edit").focus();'.LF;
+            // jQuery
          } elseif ( $this->getFocusElementAnchor() != '' ) {
-           $html .= '           location.hash="'.$this->getFocusElementAnchor().'";'.LF;
+            // jQuery todo
+            $html .= '           location.hash="'.$this->getFocusElementAnchor().'";'.LF;
+            // jQuery todo
          } else {
-           $html .= '           document.edit.elements["'.$this->_getFirstInputFieldName().'"].focus();'.LF;
+            // jQuery
+            //$html .= '           document.edit.elements["'.$this->_getFirstInputFieldName().'"].focus();'.LF;
+            $html .= '           jQuery("input[name=\''.$this->_getFirstInputFieldName().'\'], edit").focus();'.LF;
+            // jQuery
          }
          $html .= '         }'.LF;
          if (isset($this->_form) and !empty($this->_form)) {
@@ -3065,6 +3073,7 @@ class cs_form_view extends cs_view {
          }
          $html .= '      -->'.LF;
          $html .= '   </script>'.LF;
+         
       }
       return $html;
    }

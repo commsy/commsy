@@ -487,7 +487,10 @@ class cs_form_view_plain extends cs_view {
       if ($this->_with_javascript) {
          $html .= '   <script type="text/javascript">'.LF;
          $html .= '      <!--'."\n";
-         $html .= '         function setfocus() { document.f.'.$this->_getFirstInputFieldName().'.focus(); }'.LF;
+         // jQuery
+         //$html .= '         function setfocus() { document.f.'.$this->_getFirstInputFieldName().'.focus(); }'.LF;
+         $html .= '         function setfocus() { jQuery("input[name=\''.$this->_getFirstInputFieldName().'\'], f").focus(); }'.LF;
+         // jQuery
          $html .= '      -->'."\n";
          $html .= '   </script>'."\n";
       }

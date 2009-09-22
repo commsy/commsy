@@ -454,7 +454,11 @@ class cs_homepage_detail_view extends cs_detail_view {
          $html .= '   <script type="text/javascript">'.LF;
          $html .= '      <!--'.LF;
          $html .= '         function setfocus() {'.LF;
-         $html .= '           document.f.elements["title"].focus(); '.LF;
+         // jQuery
+         //$html .= '           document.f.elements["title"].focus(); '.LF;
+         $html .= '           jQuery("input[name=\'title\'], f").focus(); '.LF;
+         // jQuery
+         $html .= '           alert("test"); '.LF;
          $html .= '         }'.LF;
          $html .= '      -->'.LF;
          $html .= '   </script>'.LF;

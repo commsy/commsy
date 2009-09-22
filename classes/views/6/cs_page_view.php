@@ -615,6 +615,10 @@ class cs_page_view extends cs_view {
       if (  $this->_environment->getCurrentModule() == 'material_admin' or $this->_environment->getCurrentModule() == 'account' ) {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
       }
+      // jQuery
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/submit.js"></script>'.LF;
+      // jQuery
       return $retour;
    }
 
@@ -715,7 +719,10 @@ class cs_page_view extends cs_view {
             $retour .= '   <script type="text/javascript">'.LF;
             $retour .= '      <!--'.LF;
             $retour .= '         function setfocus() {';
-            $retour .= 'document.login.user_id.focus(); ';
+            // jQuery
+            //$retour .= 'document.login.user_id.focus(); ';
+            $retour .= 'jQuery("input[name=\'user_id\'], login").focus();';
+            // jQuery
             $retour .= '}'.LF;
             $retour .= '      -->'.LF;
             $retour .= '   </script>'.LF;
