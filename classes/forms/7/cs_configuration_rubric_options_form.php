@@ -147,7 +147,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                  }
                  if ( !empty($text) ) {
                     $select_array[$i]['text'] = $text;
-                 } else {
+                 } elseif ( !$this->_environment->isPlugin($rubric) ) {
                     $select_array[$i]['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' '.__FILE__.'('.__LINE__.')');
                  }
                  break;
