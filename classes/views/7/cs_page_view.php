@@ -637,6 +637,7 @@ class cs_page_view extends cs_view {
       // jQuery
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/submit.js"></script>'.LF;
+      $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions.js"></script>'.LF;
       // jQuery
       return $retour;
    }
