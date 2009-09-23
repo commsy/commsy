@@ -37,6 +37,8 @@ class cs_step_form extends cs_rubric_form {
    var $_did = NULL; // ID of the todo this article belongs to
    var $_ref_position = '1'; // Position of the answered step
    var $_ref_did = NULL; // ID of the article this article answers
+   private $_detail_mode = false;
+   private $_number = 0;
 
   /** constructor
     * the only available constructor
@@ -47,6 +49,20 @@ class cs_step_form extends cs_rubric_form {
     */
    function cs_step_form($params) {
       $this->cs_rubric_form($params);
+   }
+
+   public function setDetailMode ( $value ) {
+      $this->_detail_mode = true;
+      $this->_number = $value;
+   }
+
+   /**
+    * Set the refId for this annotation
+    *
+    * @param int an unique refId of the item
+    */
+   function setRefId($value) {
+      $this->_ref_iid = $value;
    }
 
    /** set materials from session
@@ -69,15 +85,15 @@ class cs_step_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('STEP_EDIT');
+         $this->_headline = $this->_translator->getMessage('STEP_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('STEP_EDIT');
+            $this->_headline = $this->_translator->getMessage('STEP_EDIT');
          } else {
-            $this->_headline = getMessage('STEP_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('STEP_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('STEP_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('STEP_ENTER_NEW');
       }
 
       // files
@@ -110,29 +126,32 @@ class cs_step_form extends cs_rubric_form {
     */
    function _createForm () {
 
+      $text_title = $this->_translator->getMessage('COMMON_TITLE');
+      $text_discription = $this->_translator->getMessage('COMMON_DESCRIPTION');
+      $text_time = $this->_translator->getMessage('STEP_MINUTES');
+      if ( $this->_detail_mode ) {
+         $text_title = $this->_number.'.';
+         $text_discription = '';
+         $text_time .= ':';
+      }
+
+
       // todo
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('todo_id','');
       $this->_form->addHidden('ref_position','');
-      $this->_form->addTitleField('subject','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,45,true);
-      $this->_form->addTextField('minutes','',getMessage('STEP_MINUTES'),getMessage('STEP_MINUTES_DESC'),200,4,false);
+      $this->_form->addTitleField('subject','',$text_title,'',200,45,true);
+      $this->_form->addTextField('minutes','',$text_time,'',200,4,true);
       $time_type = array();
-      $time_type[] = array('text'  => getMessage('TODO_TIME_MINUTES'),
+      $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_MINUTES'),
                            'value' => '1');
-      $time_type[] = array('text'  => getMessage('TODO_TIME_HOURS'),
+      $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_HOURS'),
                            'value' => '2');
-      $time_type[] = array('text'  => getMessage('TODO_TIME_DAYS'),
+      $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_DAYS'),
                            'value' => '3');
       $this->_form->combine('horizontal');
-      $this->_form->addSelect('time_type',$time_type,'',getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('DISCUSSION_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),59);
-
-      // rubric connections
-      $this->_setFormElementsForConnectedRubrics();
+      $this->_form->addSelect('time_type',$time_type,'',$this->_translator->getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
+      $this->_form->addTextArea('description','',$text_discription,'',59);
 
       // files
       $this->_form->addAnchor('fileupload');
@@ -151,11 +170,11 @@ class cs_step_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), '', 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -184,24 +203,31 @@ class cs_step_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
-      $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      if ( !$this->_detail_mode ) {
+         $this->_form->combine('vertical');
+      }
+      $this->_form->addText('max_size','',$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
       // buttons
-      $id = 0;
-      if (isset($this->_item)) {
-         $id = $this->_item->getItemID();
-      } elseif (isset($this->_form_post)) {
-         if (isset($this->_form_post['iid'])) {
-            $id = $this->_form_post['iid'];
+      if ( !$this->_detail_mode ) {
+         $id = 0;
+         if (isset($this->_item)) {
+            $id = $this->_item->getItemID();
+         } elseif (isset($this->_form_post)) {
+            if (isset($this->_form_post['iid'])) {
+               $id = $this->_form_post['iid'];
+            }
          }
-      }
-      if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('STEP_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         if ( $id == 0 )  {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('STEP_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
+         } else {
+            $this->_form->addButtonBar('option',$this->_translator->getMessage('STEP_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         }
       } else {
-         $this->_form->addButtonBar('option',getMessage('STEP_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addEmptyLine();
+         $this->_form->addButton('option',$this->_translator->getMessage('STEP_CHANGE_BUTTON'),'');
       }
    }
 
@@ -251,11 +277,11 @@ class cs_step_form extends cs_rubric_form {
 
       } elseif ( isset($this->_did) ) {
          $this->_values['todo_id'] = $this->_did;
-         if (isset($this->_ref_did)){
-            $step_manager = $this->_environment->getTodoArticlesManager();
-            $step_item = $step_manager->getItem($this->_ref_did);
-         }
          $this->_values['ref_position'] = $this->_ref_position;
+      }
+      if ( empty($this->_values['todo_id'])
+           and !empty($this->_ref_iid) ) {
+         $this->_values['todo_id'] = $this->_ref_iid;
       }
    }
 
@@ -264,7 +290,7 @@ class cs_step_form extends cs_rubric_form {
          $minutes = str_replace(',','.',$this->_form_post['minutes']);
          if(!is_numeric($minutes)){
             $this->_form->setFailure('minutes','mandatory');
-            $this->_error_array[] = getMessage('COMMON_ERROR_MINUTES_INT',getMessage('COMMON_ERROR_MINUTES_INT'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_MINUTES_INT',$this->_translator->getMessage('COMMON_ERROR_MINUTES_INT'));
          }
       }
    }

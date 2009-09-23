@@ -48,6 +48,7 @@ class cs_form_view_detail extends cs_form_view {
     * @return string form element in commsy-style as HMTL
     */
    function _getFormElementAsHTML ($form_element) {
+
       // prepare form element array for combined form elements
       $form_element_array = array();
       if (!isset($form_element[0]['type'])) {
@@ -70,18 +71,25 @@ class cs_form_view_detail extends cs_form_view {
          } else {
             $label = $form_element_array[0]['label'];
          }
-         if ( $form_element_array[0]['type'] = 'titlefield' ) {
+         if ( $form_element_array[0]['type'] == 'titlefield' ) {
             $label = '<span class="titlefield">'.$label.'</span>';
          }
          $html .= $label;
          if (!empty($form_element_array[0]['mandatory'])) {
-            $html.= '<span class="required">'.getMessage('MARK').'</span>'."\n";
+            if ( $label[strlen($label)-1] == ':' ) {
+               $red_star = '<span class="required">'.getMessage('MARK').'</span>';
+               $html = str_replace($label,substr($label,0,strlen($label)-1).$red_star.':',$html);
+            } else {
+               $html.= '<span class="required">'.getMessage('MARK').'</span>'."\n";
+            }
          }
       }
 
       // form element
+      $counter = 0;
       $first = true;
       foreach ($form_element_array as $form_element) {
+         $counter++;
          if ($first) {
             $first = false;
          }
@@ -126,7 +134,10 @@ class cs_form_view_detail extends cs_form_view {
          }
       }
 
-      if (!empty($form_element_array[0]['example'])) {
+      if ( !empty($form_element_array[0]['example'])
+           and count($form_element_array)
+           and count($form_element_array) == $counter
+         ) {
          $html .= '<br />'.LF;
          $html .= $form_element_array[0]['example'];
       }
@@ -243,6 +254,10 @@ class cs_form_view_detail extends cs_form_view {
     * fomr cs_detail_view.php
     */
    private function _getItemPictureAsHTML ( $item ) {
+      $picture_url = '';
+      if ( method_exists($item,'getPictureUrl') ) {
+         $picture_url = $item->getPictureUrl();
+      }
       $picture = $item->getPicture();
       $linktext = '';
       if ( !empty($picture) ) {
@@ -258,11 +273,16 @@ class cs_form_view_detail extends cs_form_view {
          }else{
              $height = 60;
          }
-         $params = array();
-         $params['picture'] = $picture;
-         $curl = curl($this->_environment->getCurrentContextID(),
-                      'picture', 'getfile', $params,'');
-         unset($params);
+
+         if ( empty($picture_url) ) {
+            $params = array();
+            $params['picture'] = $picture;
+            $curl = curl($this->_environment->getCurrentContextID(),
+                         'picture', 'getfile', $params,'');
+            unset($params);
+         } else {
+            $curl = $picture_url;
+         }
          $html = '<img alt="'.$this->_translator->getMessage('USER_PICTURE_UPLOADFILE').'" src="'.$curl.'" style="vertical-align:middle; width: '.$height.'px;"/>'.LF;
          if ($item->isA(CS_USER_TYPE)) {
             $linktext = str_replace('"','&quot;',encode(AS_HTML_SHORT,$item->getFullName()));

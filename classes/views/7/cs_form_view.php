@@ -1103,7 +1103,9 @@ class cs_form_view extends cs_view {
     */
    function _getTitleFieldAsHTML ($form_element) {
       $html  = '';
-      if ($form_element['display']){
+      if ( !empty($form_element['display'])
+           and $form_element['display']
+         ) {
          $with = 'width:85%; ';
          if ($this->_environment->getCurrentModule() == 'discarticle'){
             $with = 'width:80%; ';
@@ -3053,7 +3055,7 @@ class cs_form_view extends cs_view {
          $html .= LF;
          $html .= '         function setfocus() {'.LF;
          if ( $this->getFocusElementOnload() != '' ) {
-            // jQuery   
+            // jQuery
             //$html .= '           document.edit.elements["'.$this->getFocusElementOnLoad().'"].focus();'.LF;
             $html .= '           jQuery("input[name=\''.$this->getFocusElementOnLoad().'\'], edit").focus();'.LF;
             // jQuery
@@ -3073,7 +3075,7 @@ class cs_form_view extends cs_view {
          }
          $html .= '      -->'.LF;
          $html .= '   </script>'.LF;
-         
+
       }
       return $html;
    }

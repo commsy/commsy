@@ -51,6 +51,10 @@ table#form tr.textarea #cke_27_text {
    width: 40px;
 }
 
+td.cke_bottom {
+   display: none;
+}
+
 <?php
 if ( !empty($environment)
      and strtoupper($environment->getSelectedLanguage()) == 'DE'

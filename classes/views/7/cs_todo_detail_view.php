@@ -595,200 +595,44 @@ class cs_todo_detail_view extends cs_detail_view {
    }
 
    function _getTodoFormAsHTML(){
-        if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
-         $html = '<!-- BEGIN OF STEP FORM VIEW -->'.LF.LF;
+      if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {
          $item = $this->getItem();
-            $html .='</div>'.LF;
-            $html .='</div>'.LF;
-            $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:70px; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
-            $html .='<div style="width:100%;" >'.LF;
-            $html .= '<a name="step_form"></a>'.LF;
-            $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'step', 'edit','').'" method="post" enctype="multipart/form-data" name="step">'.LF;
-            $html .= '   <input type="hidden" name="iid" value=""/>'.LF;
-            $html .= '   <input type="hidden" name="todo_id" value="'.$item->getItemID().'"/>'.LF;
-            $count = 1;
-            $subitems = $item->getStepItemList();
-            if ( isset($subitems) and !empty($subitems) ){
-               $count = $subitems->getCount();
-               $count++;
-            }
-            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
-            $html .= '<table style="width:100%;">'.LF;
-            $html .= '<tr>'.LF;
-            $html .= '<td style="width:15%; padding-top:5px; vertical-align:middle;">'.LF;
-            $html .= '<h3 class="subitemtitle">'.$this->_translator->getMessage('COMMON_STEP').' '.$count.':&nbsp;</h3>';
-            $html .= '</td>'.LF;
-            $html .= '<td style="width:85%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="30" type="text"/>';
-            $html .= '</td>'.LF;
-            $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
+         $count = 1;
+         $subitems = $item->getStepItemList();
+         if ( isset($subitems) and !empty($subitems) ){
+            $count = $subitems->getCount();
+            $count++;
+         }
 
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key">'.LF;
-            $html .= $this->_translator->getMessage('STEP_MINUTES').': ';
-            $html .= '</td>'.LF;
-            $html .= '<td>'.LF;
-            $html .= '<input tabindex="31" type="text" name="minutes" size="4" style=""/>&nbsp;';
-            $html .= '<select name="time_type" size="1" tabindex="32" style="width: 12em; font-size: 10pt;">';
-            $html .= '<option value="1" selected="selected">'.$this->_translator->getMessage('TODO_TIME_MINUTES').'</option>';
-            $html .= '<option value="2">'.$this->_translator->getMessage('TODO_TIME_HOURS').'</option>';
-            $html .= '<option value="3">'.$this->_translator->getMessage('TODO_TIME_DAYS').'</option>';
-            $html .= '</select>';
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="padding-top:5px; vertical-align:top;">'.LF;
-            $html .= $this->_translator->getMessage('COMMON_DESCRIPTION').': ';
-            $html .= '</td>'.LF;
-            $html .= '<td>'.LF;
+         $html  = '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '<!-- BEGIN OF STEP FORM VIEW -->'.LF.LF;
 
-            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="5" tabindex="33"></textarea>';
-            $text = '';
-            global $c_html_textarea;
-            $current_context = $this->_environment->getCurrentContextItem();
-            $with_htmltextarea = $current_context->withHtmlTextArea();
-            $html_status = $current_context->getHtmlTextAreaStatus();
-            $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-            $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-            if ( !isset($c_html_textarea)
-                 or !$c_html_textarea
-                 or !$with_htmltextarea
-               ) {
-               $html .= $normal;
-            } elseif ( ($current_browser != 'msie'
-                    and $current_browser != 'firefox'
-                    and $current_browser != 'netscape'
-                    and $current_browser != 'mozilla'
-                    and $current_browser != 'camino'
-                    and $current_browser != 'opera'
-                    and $current_browser != 'safari')
-               ) {
-               $html .= $normal;
-             } else {
-               $session = $this->_environment->getSessionItem();
-                if ($session->issetValue('javascript')) {
-                  $javascript = $session->getValue('javascript');
-                  if ($javascript == 1) {
-                     include_once('classes/cs_html_textarea.php');
-                     $html_area = new cs_html_textarea();
-                     $html .= $html_area->getAsHTML( 'description',
-                                              '',
-                                              10,
-                                              $html_status,
-                                              '',
-                                              '',
-                                              false
-                                            );
-                     $html .= '<input type="hidden" name="description_is_textarea" value="1" />';
-                  } else {
-                     $html .= $normal;
-                  }
-               } else {
-                  $html .= $normal;
-               }
-            }
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
-            // files
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= getMessage('MATERIAL_FILES').':';
-            $html .= '</td>'.LF;
-            $html .= '<td style="padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $val = ini_get('upload_max_filesize');
-            $val = trim($val);
-            $last = $val[mb_strlen($val)-1];
-            switch($last) {
-               case 'k':
-               case 'K':
-                  $val = $val * 1024;
-                  break;
-               case 'm':
-               case 'M':
-                  $val = $val * 1048576;
-                  break;
-            }
-            $meg_val = round($val/1048576);
-            $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            $disabled = '';
-            if ( !$this->_with_modifying_actions ) {
-               $disabled = ' disabled="disabled"';
-            }
-            $html .= '   <input type="file" name="upload" size="12" tabindex="34"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="35" style="width:9.61538461538em; font-size:10pt;"'.$disabled.'/>'.LF;
-            $html .= BRLF;
-            #$px = '245';
-            $px = '331';
-            $browser = $this->_environment->getCurrentBrowser();
-            if ($browser == 'MSIE') {
-               $px = '351';
-            } elseif ($browser == 'OPERA') {
-               $px = '321';
-            } elseif ($browser == 'KONQUEROR') {
-               $px = '361';
-            } elseif ($browser == 'SAFARI') {
-               $px = '380';
-            } elseif ($browser == 'FIREFOX') {
-               $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (mb_strtoupper($operation_system, 'UTF-8') == 'LINUX') {
-                  $px = '360';
-               } elseif (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
-                  $px = '352';
-               }
-            } elseif ($browser == 'MOZILLA') {
-               $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
-                  $px = '336'; // camino
-               }
-            }
-            $em = $px/13;
-            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="36" type="submit" style="width: '.$em.'em;"'.$disabled.'/>'.LF;
-            $html .= BRLF;
-            $html .= '<span class="multiupload_discussion_detail">'.getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val).'</span>'.LF;
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
+         $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
+         $html .='<div style="width:100%;" >'.LF;
+         $html .= '<a name="step_form"></a>'.LF;
 
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="padding-top:10px; vertical-align:top; ">'.LF;
-            $html .= '&nbsp;';
-            $html .= '</td>'.LF;
-            $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('STEP_CHANGE_BUTTON').'" tabindex="37" type="submit"'.$disabled.'/>';
-            $current_user = $this->_environment->getCurrentUser();
-            if ( $current_user->isAutoSaveOn() ) {
-               $html .= '<span class="formcounter">'.LF;
-               global $c_autosave_mode;
-               if ( $c_autosave_mode == 1 ) {
-                  $currTime = time();
-                  global $c_autosave_limit;
-                  $sessEnds = $currTime + ($c_autosave_limit * 60);
-                  $sessEnds = date("H:i", $sessEnds);
-                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' '.$sessEnds.LF;
-               } elseif ( $c_autosave_mode == 2 ) {
-                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' <input type="text" size="5" name="timerField" value="..." class="formcounterfield" />'.LF;
-               }
-               $html .= '</span>'.LF;
-            }
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
-            $html .= '</table>'.BRLF;
-            $html .= '</div>'.LF;
-            $html .= '</form>';
+         $class_factory = $this->_environment->getClassFactory();
+         $class_params = array();
+         $class_params['environment'] = $this->_environment;
+         $form = $class_factory->getClass(STEP_FORM,$class_params);
+         $form->setDetailMode($count);
+         $form->setRefId($item->getItemID());
+         unset($class_params);
+         $form->prepareForm();
+         $form->loadValues();
+         $class_params = array();
+         $class_params['environment'] = $this->_environment;
+         $class_params['with_modifying_actions'] = true;
+         $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
+         unset($class_params);
+         $form_view->setAction(curl($this->_environment->getCurrentContextID(),'step','edit',array()));
+         $form_view->setForm($form);
+         $html .= $form_view->asHTML();
 
-            $html .='<script type="text/javascript">initTextFormatingInformation("'.$current_context->getItemID().'",false)</script>';
-            if ( $current_user->isAutoSaveOn() ) {
-               $html .= '   <script type="text/javascript">'.LF;
-               $html .= '      <!--'.LF;
-               $html .= '         var breakCrit = "'.getMessage('STEP_CHANGE_BUTTON').'"'.';'.LF;
-               $html .= '         startclock();'.LF;
-               $html .= '      -->'.LF;
-               $html .= '   </script>'.LF;
-            }
-
-            $html .= '<!-- END OF STEP FORM VIEW -->'.LF.LF;
+         $html .= '<!-- END OF STEP FORM VIEW -->'.LF.LF;
          return $html;
-        }
+      }
    }
 
   /** get the file list of the item
