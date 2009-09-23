@@ -17,7 +17,7 @@
 //         img.onmouseover = mouseoverTopbar;
 //	img.onmouseout = mouseoutTopbar;
 
-function initCreatorInformations(id,show){
+function initCreatorInformations_old(id,show){
    var item_id = id;
       var is_shown = show;
          var mySlide = new Fx.Slide('creator_information'+item_id,{duration: 200});

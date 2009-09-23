@@ -465,7 +465,9 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanelsIe5.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
+         // jQuery
       }
       return $retour;
    }
@@ -528,8 +530,9 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
       }elseif ($this->_environment->getCurrentFunction() == 'detail'){
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
-         $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
+         // jQuery$retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript">'.LF;
          $retour .= '      <!--'.LF;
          $retour .= '   var message = \''.$this->_translator->getMessage('COMMON_PICTURE_DOWNLOADFILE').'\';'.LF;
@@ -537,7 +540,9 @@ class cs_page_view extends cs_view {
          $retour .= '   </script>'.LF;
          $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
+         // jQuery
          // for tex in commsy
          // see http://www.math.union.edu/~dpvc/jsMath/
          global $c_jsmath_enable;
@@ -599,7 +604,9 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentModule() == 'material_admin'
       ){
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
+         // jQuery
          if (!$this->_environment->inServer()){
             $retour .= '   <script type="text/javascript">'.LF;
             $retour .= '      <!--'.LF;
