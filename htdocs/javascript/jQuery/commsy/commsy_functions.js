@@ -24,11 +24,11 @@ function initTextFormatingInformation(item_id,is_shown){
    }
    jQuery('#toggle'+item_id).click(function(){
       if(jQuery('#toggle'+item_id).attr('src').toLowerCase().indexOf('less') >= 0){
-          jQuery('#creator_information'+item_id).slideUp(200);
-          jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('less','more'));
+         jQuery('#creator_information'+item_id).slideUp(200);
+         jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('less','more'));
       } else {
-          jQuery('#creator_information'+item_id).slideDown(200);
-          jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('more','less'));
+         jQuery('#creator_information'+item_id).slideDown(200);
+         jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('more','less'));
       }
 	});
    jQuery('#toggle'+item_id).mouseover(function(){
