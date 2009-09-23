@@ -252,7 +252,7 @@
       }
    }
 
-   function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
+   function preInitCommSyPanels_old(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
       window.addEvent('domready', function(){
          initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray);
       });

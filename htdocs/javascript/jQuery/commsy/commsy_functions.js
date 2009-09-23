@@ -62,6 +62,12 @@ function initCreatorInformations(item_id,is_shown){
 	});
 }
 
+function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
+   jQuery(document).ready(function() {
+      initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray);
+   });
+}
+
 function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
    var divs = jQuery('#commsy_panels').find('div');
    commsy_panel_index=0;
