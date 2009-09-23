@@ -167,7 +167,16 @@ class cs_discussion_manager extends cs_manager {
           or isset($this->_sort_order)
           or ( isset($this->_only_files_limit) and $this->_only_files_limit )
         ) {
-        $query .= ' LEFT JOIN discussionarticles ON (discussionarticles.discussion_id = discussions.item_id AND discussionarticles.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+        $query .= ' LEFT JOIN discussionarticles ON (discussionarticles.discussion_id = discussions.item_id';
+        if ( !empty($this->_room_array_limit)
+             and is_array($this->_room_array_limit)
+           ) {
+           $query .= ' AND discussionarticles.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).'))';
+        } elseif ( !empty($this->_room_limit) ) {
+           $query .= ' AND discussionarticles.context_id = "'.encode(AS_DB,$this->_room_limit).'")';
+        } else {
+           $query .= ' AND discussionarticles.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'")';
+        }
         if (!isset($this->_buzzword_limit)) {
            $query .= ' LEFT JOIN links AS l8 ON l8.from_item_id=discussions.item_id AND l8.link_type="buzzword_for"';
            $query .= ' LEFT JOIN labels AS buzzwords ON l8.to_item_id=buzzwords.item_id AND buzzwords.type="buzzword"';
@@ -230,7 +239,11 @@ class cs_discussion_manager extends cs_manager {
          $query .= ' AND (discussions.modification_date IS NULL OR discussions.modification_date <= "'.getCurrentDateTimeInMySQL().'")';
       }
      // fifth, insert limits into the select statement
-     if (isset($this->_room_limit)) {
+     if ( !empty($this->_room_array_limit)
+          and is_array($this->_room_array_limit)
+        ) {
+        $query .= ' AND discussions.context_id IN ('.encode(AS_DB,implode(',',$this->_room_array_limit)).')';
+     } elseif (isset($this->_room_limit)) {
         $query .= ' AND discussions.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
      } else {
         $query .= ' AND discussions.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';

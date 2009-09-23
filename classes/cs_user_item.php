@@ -41,6 +41,8 @@ class cs_user_item extends cs_item {
 
    var $_changed_values = array();
 
+   private $_context_id_array = NULL;
+
    /** constructor: cs_user_item
     * the only available constructor, initial values for internal variables
     */
@@ -1053,6 +1055,28 @@ class cs_user_item extends cs_item {
       $manager = $this->_environment->getProjectManager();
       $list = $manager->getRelatedProjectListForUserSortByTimeForMyArea($this);
       return $list;
+   }
+
+   public function getContextIDArray () {
+      if ( !isset($this->_context_id_array) ) {
+         $retour = array();
+         $manager = $this->_environment->getRoomManager();
+         $manager->setUserIDLimit($this->getUserID());
+         $manager->setAuthSourceLimit($this->getAuthSource());
+         $manager->setContextLimit('');
+         $manager->setWithGrouproom();
+         $manager->select();
+         $array = $manager->getIDArray();
+         if ( !empty($array) ) {
+            $retour = array_merge($retour,$array);
+         }
+         $own_room = $this->getOwnRoom();
+         if ( isset($own_room) ) {
+            $retour[] = $own_room->getItemID();
+         }
+         $this->_context_id_array = $retour;
+      }
+      return $this->_context_id_array;
    }
 
    function _getTaskList () {

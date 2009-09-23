@@ -67,6 +67,8 @@ class cs_room_manager extends cs_context_manager {
 
   private $_logarchive_limit = NULL;
 
+  private $_limit_with_grouproom = false;
+
   /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -93,6 +95,11 @@ class cs_room_manager extends cs_context_manager {
      $this->_continuous_limit = NULL;
      $this->_template_limit = NULL;
      $this->_logarchive_limit = NULL;
+     $this->_limit_with_grouproom = false;
+  }
+
+  public function setWithGrouproom () {
+     $this->_limit_with_grouproom = true;
   }
 
   /** set interval limit
@@ -235,6 +242,7 @@ class cs_room_manager extends cs_context_manager {
      if ( empty($this->_room_type) or $this->_room_type != CS_GROUPROOM_TYPE ) {
         if ( !isset($this->_logarchive_limit)
              and !isset($this->_id_array_limit)
+             and !$this->_limit_with_grouproom
            ) {
            $query .= ' AND '.$this->_db_table.'.type != "'.CS_GROUPROOM_TYPE.'"';
         }
@@ -330,7 +338,7 @@ class cs_room_manager extends cs_context_manager {
            $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
         }
      } else {
-        $query .= ' ORDER BY title, modification_date DESC';
+        $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
      }
 
      if ($mode == 'select') {

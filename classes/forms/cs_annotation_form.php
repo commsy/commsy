@@ -85,8 +85,6 @@ class cs_annotation_form extends cs_rubric_form {
     * Set the refId for this annotation
     *
     * @param int an unique refId of the item
-    *
-    * @author CommSy Development Group
     */
    function setRefId($value) {
       $this->_ref_iid = $value;
