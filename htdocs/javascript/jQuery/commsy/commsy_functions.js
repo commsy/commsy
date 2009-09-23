@@ -148,7 +148,7 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
                   outerContentDiv.css('display', 'none');
                }
             }
-            img.src = 'images/arrow_down.gif';
+            img.attr('src', 'images/arrow_down.gif');
             klick.attr('id', klick.attr('id') + 'down');
             span.attr('id', span.attr('id') + 'down');
             span2.attr('id', span2.attr('id') + 'down');
@@ -186,4 +186,16 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          klick.mouseout(mouseoutTopbarBar);
       }
    }
+}
+
+function mouseoverTopbarBar(){
+   var numericId = this.id.replace(/[^0-9]/g,'');
+   jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('.gif','_over.gif'));
+   document.body.style.cursor = "pointer";
+}
+
+function mouseoutTopbarBar(){
+   var numericId = this.id.replace(/[^0-9]/g,'');
+   jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('_over.gif','.gif'));
+   document.body.style.cursor = "default";
 }

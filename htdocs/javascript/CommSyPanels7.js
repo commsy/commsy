@@ -380,7 +380,7 @@
       }
    }
 
-   function mouseoverTopbarBar(){
+   function mouseoverTopbarBar_old(){
 		var numericId = this.id.replace(/[^0-9]/g,'');
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;
@@ -388,7 +388,7 @@
       document.body.style.cursor = "pointer";
    }
 
-   function mouseoutTopbarBar(){
+   function mouseoutTopbarBar_old(){
       var numericId = this.id.replace(/[^0-9]/g,'');
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;
