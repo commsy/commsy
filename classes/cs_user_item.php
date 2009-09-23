@@ -599,7 +599,6 @@ class cs_user_item extends cs_item {
             $retour = $domain_and_path.$retour;
          }
       }
-      pr($retour);
       return $retour;
    }
 
