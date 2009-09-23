@@ -747,7 +747,7 @@ class cs_page_view extends cs_view {
             $retour .= '         function setfocus() {';
             // jQuery
             //$retour .= 'document.login.user_id.focus(); ';
-            //$retour .= 'jQuery("input[name=\'user_id\'], login").focus(); ';
+            $retour .= 'jQuery("input[name=\'user_id\'], login").focus(); ';
             // jQuery
             $retour .= '}'.LF;
             $retour .= '      -->'.LF;
