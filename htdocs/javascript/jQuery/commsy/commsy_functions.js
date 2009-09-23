@@ -16,6 +16,18 @@ function handleWidth_new(id,max_width,link_name){
    }
 }
 
+var xpPanel_slideActive = true;	// Slide down/up active?
+var xpPanel_slideSpeed = 30;	// Speed of slide
+var xpPanel_onlyOneExpandedPane = false;	// Only one pane expanded at a time ?
+var commsy_pane;
+var commsy_panel_index;
+var savedActivePane = new Array();
+var savedActiveSub = new Array();
+var xpPanel_currentDirection = new Array();
+var cookieNames = new Array();
+var speedArray = new Array();
+var currentlyExpandedPane = false;
+
 function initTextFormatingInformation(item_id,is_shown){
    if (is_shown == false){
       jQuery('#creator_information'+item_id).hide();
@@ -321,4 +333,37 @@ function slidePane(slideValue,id,name){
          setTimeout('slidePane(' + slideValue + ',"' + id + '")',10);
       }
    }
+}
+
+function cancelXpWidgetEvent(){
+   return false;
+}
+
+function Set_Cookie(name,value,expires,path,domain,secure) {
+   expires = expires * 60*60*24*1000;
+   var today = new Date();
+   var expires_date = new Date( today.getTime() + (expires) );
+   var cookieString = name + "=" +escape(value) +
+          ( (expires) ? ";expires=" + expires_date.toGMTString() : "") +
+          ( (path) ? ";path=" + path : "") +
+          ( (domain) ? ";domain=" + domain : "") +
+          ( (secure) ? ";secure" : "");
+   document.cookie = cookieString;
+   //jQuery.cookie(escape(value), cookieString);
+}
+
+function Get_Cookie(name) {
+   var start = document.cookie.indexOf(name+"=");
+   var len = start+name.length+1;
+   if ((!start) && (name != document.cookie.substring(0,name.length))){
+      return null;
+   }
+   if (start == -1){
+      return null;
+   }
+   var end = document.cookie.indexOf(";",len);
+   if (end == -1){
+      end = document.cookie.length;
+   }
+   return unescape(document.cookie.substring(len,end));
 }

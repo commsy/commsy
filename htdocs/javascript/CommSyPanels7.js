@@ -47,7 +47,7 @@
    These cookie functions are downloaded from
    http://www.mach5.com/support/analyzer/manual/html/General/CookiesJavaScript.htm
    */
-   function Get_Cookie(name) {
+   function Get_Cookie_old(name) {
       var start = document.cookie.indexOf(name+"=");
       var len = start+name.length+1;
       if ((!start) && (name != document.cookie.substring(0,name.length))){
@@ -64,7 +64,7 @@
    }
 
    // This function has been slightly modified
-   function Set_Cookie(name,value,expires,path,domain,secure) {
+   function Set_Cookie_old(name,value,expires,path,domain,secure) {
       expires = expires * 60*60*24*1000;
       var today = new Date();
       var expires_date = new Date( today.getTime() + (expires) );
@@ -76,7 +76,7 @@
        document.cookie = cookieString;
    }
 
-   function cancelXpWidgetEvent(){
+   function cancelXpWidgetEvent_old(){
       return false;
    }
 

@@ -506,7 +506,9 @@ class cs_page_view extends cs_view {
       }
 
       if (!$this->_environment->inServer() and (!$this->_environment->inPortal() or $this->_environment->getCurrentModule() == 'account')){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
+         // jQuery
       }
       if ( $this->_environment->inPortal()
            or ( $this->_environment->getCurrentModule() == CS_PROJECT_TYPE
