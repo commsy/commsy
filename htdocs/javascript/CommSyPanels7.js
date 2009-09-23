@@ -80,7 +80,7 @@
       return false;
    }
 
-   function showHidePaneContent(e,inputObj){
+   function showHidePaneContent_old(e,inputObj){
       if(!inputObj)inputObj = this;
 
       var img = inputObj;
@@ -130,7 +130,7 @@
       return true;
    }
 
-   function showHidePaneContentTopBar(e,inputObj){
+   function showHidePaneContentTopBar_old(e,inputObj){
       if(!inputObj)inputObj = this;
 
       var numericId = inputObj.id.replace(/[^0-9]/g,'');
@@ -198,7 +198,7 @@
       return true;
    }
 
-   function slidePane(slideValue,id,name){
+   function slidePane_old(slideValue,id,name){
       if(slideValue!=xpPanel_currentDirection[id]){
          return false;
       }
