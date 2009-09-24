@@ -367,3 +367,11 @@ function Get_Cookie(name) {
    }
    return unescape(document.cookie.substring(len,end));
 }
+
+function initDeleteLayer(){
+   jQuery('#delete').css('height', jQuery('body').height() - 140 + "px");
+}
+
+function initLayer(id){
+   jQuery('#' + id).css('height', jQuery('body').height() + "px");
+}

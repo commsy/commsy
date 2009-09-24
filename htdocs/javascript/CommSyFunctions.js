@@ -23,25 +23,25 @@
 //    along with CommSy.
 
    var layer_id;
-   function mouseoverTopbar(){
+   function mouseoverTopbar_not_user(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('.gif','_over.gif');
    }
 
-   function mouseoutTopbar(){
+   function mouseoutTopbar_not_used(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('_over.gif','.gif');
    }
 
-   function buildRoomLayer(e,inputObj){
+   function buildRoomLayer_old(e,inputObj){
       var div = document.getElementById(layer_id);
       var height = document.body.offsetHeight - 140;
       div.style.height = height + "px";
    }
 
-   function initDeleteLayer(){
+   function initDeleteLayer_old(){
       layer_id = "delete";
       buildRoomLayer();
    }
@@ -51,7 +51,7 @@
 //      text.value = "";
 //   }
 
-   function initLayer(id){
+   function initLayer_old(id){
       var div = document.getElementById(id);
       var height = document.body.offsetHeight;
       div.style.height = height + "px";
