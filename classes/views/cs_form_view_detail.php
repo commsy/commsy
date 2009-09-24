@@ -99,6 +99,7 @@ class cs_form_view_detail extends cs_form_view {
          }
          if ($form_element['type'] == 'textarea') {
             $html .= '         '.$this->_getTextAreaAsHTML($form_element);
+            $html .= $this->_getTextFormatingInformationAsHTML($form_element);
          } elseif ($form_element['type'] == 'titlefield') {
             $html .= '         '.$this->_getTitleFieldAsHTML($form_element);
          } elseif ($form_element['type'] == 'textfield') {
