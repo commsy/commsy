@@ -2,10 +2,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk Blï¿½ssl, Matthias Finck, Dirk Fust, Franz Grï¿½nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -24,15 +24,16 @@
 
    var context_id;
 
-   function cs_toggle_template(){
+   function cs_toggle_template_old(){
       var id = document.getElementsByName('template_select').namedItem('template_select');
+      alert(id.value);
       document.getElementById('template_extention').innerHTML = template_array[id.value];
       if (id.value != '-1'){
          showTemplateInformation();
 	  }
    }
 
-   function initToggleTemplate(id){
+   function initToggleTemplate_old(id){
       context_id = id;
       window.addEvent('domready', function(){
          var id = document.getElementsByName('template_select').namedItem('template_select');
@@ -43,7 +44,7 @@
       });
    }
 
-   function showTemplateInformation(){
+   function showTemplateInformation_old(){
       var mySlide = new Fx.Slide('template_information_box',{duration: 200});
       mySlide.hide();
       $('toggle'+context_id).addEvent('click', function(e){

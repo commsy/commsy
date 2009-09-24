@@ -525,7 +525,9 @@ class cs_page_view extends cs_view {
                 and $this->_environment->inPrivateRoom()
               )
          ) {
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyTemplateInformation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyTemplateInformation.js"></script>'.LF;
+         // jQuery
       }
 
       if (!$this->_environment->inServer() and !$this->_environment->inPortal() and $this->_environment->getCurrentModule() == 'home'){

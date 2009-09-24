@@ -1444,9 +1444,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                   $room_item = $room_manager->getItem($key);
                   if ( !empty($room_item) ) {
                      if ( $room_item->withHTMLTextArea() ) {
-                        $value = str_replace(LF,'',$value);
+                        $value = str_replace("\r\n",'',$value);
                      } else {
-                        $value = str_replace(LF,BR,$value);
+                        $value = str_replace("\r\n",BR,$value);
                      }
                   }
                }
