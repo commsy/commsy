@@ -2,10 +2,10 @@
 //
 // Release $Name$
 //
-// Copyright (c)2002-2007 Dirk Blössl, Matthias Finck, Dirk Fust, Franz Grünig,
+// Copyright (c)2002-2007 Dirk Blï¿½ssl, Matthias Finck, Dirk Fust, Franz Grï¿½nig,
 // Oliver Hankel, Iver Jackewitz, Michael Janneck, Martti Jeenicke,
 // Detlev Krause, Irina L. Marinescu, Frithjof Meyer, Timo Nolte, Bernd Pape,
-// Edouard Simon, Monique Strauss, José Manuel González Vázquez
+// Edouard Simon, Monique Strauss, Josï¿½ Manuel Gonzï¿½lez Vï¿½zquez
 //
 //    This file is part of CommSy.
 //
@@ -127,7 +127,7 @@
    }
 
 
-   function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
+   function initDhtmlNetnavigation_old(element_id,panelTitles,rubric, item_id){
       var netnavigation = document.getElementById(element_id + item_id);
       var netnavigation_divs = netnavigation.getElementsByTagName('DIV');
       var divs = netnavigation_divs[0].getElementsByTagName('DIV');

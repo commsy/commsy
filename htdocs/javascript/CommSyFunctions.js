@@ -23,13 +23,13 @@
 //    along with CommSy.
 
    var layer_id;
-   function mouseoverTopbar_not_used(){
+   function mouseoverTopbar_old(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('.gif','_over.gif');
    }
 
-   function mouseoutTopbar_not_used(){
+   function mouseoutTopbar_old(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('_over.gif','.gif');

@@ -436,3 +436,56 @@ function showTemplateInformation(){
       jQuery('#toggle'+context_id).attr('src', jQuery('#toggle'+context_id).attr('src').replace('_over.gif','.gif'));
    });
 }
+
+function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
+   var netnavigation = jQuery('#' + element_id + item_id);
+   var netnavigation_divs = netnavigation.children('div:first');
+   var divs = netnavigation_divs.find('div');
+   var end = divs.length;
+   rubric_index=0;
+   for(var no=0;no<divs.length;no++){
+      temp_div = jQuery(divs[no]);
+      if(temp_div.attr('class') == element_id + '_panel'){
+         var outerContentDiv = jQuery('<div></div>');
+         var contentDiv = temp_div.children('div:first');
+         outerContentDiv.append(contentDiv);
+
+         outerContentDiv.attr('id', 'rubricContent' + item_id +'_'+ rubric_index);
+         outerContentDiv.attr('class', 'panelContent');
+
+         var topBar = jQuery('<div></div>');
+         var img = jQuery('<img/>');
+         img.attr('id', 'ShowHideRubricButton' + item_id +'_'+ rubric_index);
+         img.attr('src', 'images/arrow_netnavigation_up.gif');
+         topBar.append(img);
+
+         var span = jQuery('<span></span>');
+         span.html(panelTitles[rubric_index].replace(/&COMMSYDHTMLTAG&/g,'</'));
+         topBar.append(span);
+
+         topBar.css('position', 'relative');
+         img.click(showHideRubricContent);
+         img.mouseover(mouseoverTopbar);
+         img.mouseout(mouseoutTopbar);
+         if(rubric_index != rubric){
+            outerContentDiv.css('height', '0px');
+            contentDiv.css('top', 0 - contentDiv.offsetHeight + 'px');
+            img.attr('src', 'images/arrow_netnavigation_down.gif');
+         }
+
+	     topBar.attr('class', 'tpBar');
+	     temp_div.append(topBar);
+	     temp_div.append(outerContentDiv);
+	     rubric_index++;
+      }
+      count_rubrics[item_id] = rubric_index;
+   }
+}
+
+function mouseoverTopbar(){
+   jQuery(this).attr('src', jQuery(this).attr('src').replace('.gif','_over.gif'));
+}
+
+function mouseoutTopbar(){
+   jQuery(this).attr('src', jQuery(this).attr('src').replace('_over.gif','.gif'));
+}
