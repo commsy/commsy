@@ -1692,7 +1692,13 @@ class cs_form_view extends cs_view {
    }
 
    function _getTextFormatingInformationAsHTML($form_element){
+      global $_count_form_elements;
       $show_text = true;
+      if(empty($_count_form_elements)){
+         $_count_form_elements = 0;
+      }
+      $toggle_id = $_count_form_elements;
+      $_count_form_elements++;
       if ( isset($form_element['help_text']) ){
          $show_text = $form_element['help_text'];
       }
@@ -1712,9 +1718,11 @@ class cs_form_view extends cs_view {
          $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
          $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
          $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-         $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+         //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+         $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
-         $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+         //$html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+         $html .= '<div id="creator_information'.$toggle_id.'">'.LF;
          $html .= '<div style="padding:2px;">'.LF;
          $html .= '<div id="form_formatting_box" style="width:97%">'.LF;
          $html .= $text;
@@ -1727,9 +1735,11 @@ class cs_form_view extends cs_view {
          $html .= '<div style="padding-top:0px;">';
          $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
          $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-         $html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+         //$html .='<img id="toggle'.$item->getItemID().'" src="images/more.gif"/>';
+         $html .='<img id="toggle'.$toggle_id.'" src="images/more.gif"/>';
          $html .= $title;
-         $html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+         //$html .= '<div id="creator_information'.$item->getItemID().'">'.LF;
+         $html .= '<div id="creator_information'.$toggle_id.'">'.LF;
          $html .= '<div style="padding:2px;">'.LF;
          $html .= '<div id="form_formatting_box" style="width:97%">'.LF;
          $html .= $text;
@@ -1738,7 +1748,8 @@ class cs_form_view extends cs_view {
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }
-      $html .='<script type="text/javascript">initTextFormatingInformation("'.$item->getItemID().'",false);</script>';
+      //$html .='<script type="text/javascript">initTextFormatingInformation("'.$item->getItemID().'",false);</script>';
+      $html .='<script type="text/javascript">initTextFormatingInformation("'.$toggle_id.'",false);</script>';
       $html .= '<!-- END OF FORM-VIEW -->'.LF;
       $current_module = $this->_environment->getCurrentModule();
       if ( ( $current_module == CS_DATE_TYPE or
