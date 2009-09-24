@@ -375,3 +375,24 @@ function initDeleteLayer(){
 function initLayer(id){
    jQuery('#' + id).css('height', jQuery('body').height() + "px");
 }
+
+function handleWidth(id,max_width,link_name){
+   jQuery(document).ready(function() {
+      var inner_div = jQuery('#inner_' + id);
+      var width = inner_div.attr("scrollWidth");
+      var height = inner_div.attr("scrollHeight");
+      if (width > max_width){
+         inner_div.css('width', max_width+'px');
+         if (navigator.userAgent.indexOf("MSIE") != -1){
+            inner_div.css('height', (height+50)+'px');
+         }
+      }
+   });
+}
+
+function right_box_send(form_id,option,value) {
+  document.getElementById(option).value = value;
+  //jQuery('#'.option).val(value);
+  document.getElementById(form_id).submit()
+  //jQuery('#'.form_id).submit();
+}

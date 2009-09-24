@@ -23,7 +23,7 @@
 //    along with CommSy.
 
    var layer_id;
-   function mouseoverTopbar_not_user(){
+   function mouseoverTopbar_not_used(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('.gif','_over.gif');
@@ -57,7 +57,7 @@
       div.style.height = height + "px";
    }
 
-   function handleWidth(id,max_width,link_name){
+   function handleWidth_old(id,max_width,link_name){
       window.addEvent('domready', function(){
       var div = document.getElementById(id);
       var inner_div = document.getElementById('inner_'+id);
@@ -76,7 +76,7 @@
       });
    }
 
-function right_box_send(form_id,option,value)
+function right_box_send_old(form_id,option,value)
 {
   document.getElementById(option).value = value;
   document.getElementById(form_id).submit()

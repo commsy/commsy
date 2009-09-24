@@ -1692,13 +1692,8 @@ class cs_form_view extends cs_view {
    }
 
    function _getTextFormatingInformationAsHTML($form_element){
-      global $_count_form_elements;
       $show_text = true;
-      if(empty($_count_form_elements)){
-         $_count_form_elements = 0;
-      }
-      $toggle_id = $_count_form_elements;
-      $_count_form_elements++;
+      $toggle_id = rand(0,1000000);
       if ( isset($form_element['help_text']) ){
          $show_text = $form_element['help_text'];
       }

@@ -461,7 +461,9 @@ class cs_page_view extends cs_view {
       unset($views);
       unset($view);
       if ( !$this->_environment->inServer() and !$this->_environment->inPortal() ){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanelsIe5.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
@@ -499,10 +501,14 @@ class cs_page_view extends cs_view {
       $left_menue_status = $session->getValue('left_menue_status');
       $retour  = '';
       if (!$this->_environment->inServer()){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
       }else{
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         // jQuery
       }
 
       if (!$this->_environment->inServer() and (!$this->_environment->inPortal() or $this->_environment->getCurrentModule() == 'account')){
