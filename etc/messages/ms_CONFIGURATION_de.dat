@@ -223,7 +223,7 @@ $message["CONFIGURATION_RUBRIC_DESC"]["de"] = "Die Auswahl der Rubriken erfolgt 
 </li><li>in <b>welcher Reihenfolge</b> diese Rubriken dargestellt werden sollen.</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["de"] = "Bitte beachten Sie, dass Sie nicht zweimal <b>dieselbe Rubrik</b> ausgewählen.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["de"] = "Einstellung von <span style=&quot;font-weight:bold&quot;>Terminen</span>, <span style=&quot;font-weight:bold&quot;>Diskussionen</span>, <span style=&quot;font-weight:bold&quot;>Aufgaben</span> und <span style=&quot;font-weight:bold&quot;>Gruppenräumen</span>.";
 $message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["de"] = "Zusätzliche Rubrikeinstellungen";
 $message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["de"] = "Wählen Sie die Rubriken im Raum aus und deren Darstellung auf der Home.";
 $message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["de"] = "Einstellung der Rubriken";

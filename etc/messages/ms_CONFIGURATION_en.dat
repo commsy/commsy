@@ -223,7 +223,7 @@ $message["CONFIGURATION_RUBRIC_DESC"]["en"] = "Use the following select boxes to
 </li><li><b>arrange</b> these workspace rubrics in the correct order</li>
 </ul>";
 $message["CONFIGURATION_RUBRIC_ERROR_DESCRIPTION"]["en"] = "Please remember: workspace rubrics cannot be selected twice.";
-$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["en"] = "Preferences for <span style=&quot;font-weight:bold&quot;>events</span>, <span style=&quot;font-weight:bold&quot;>discussions</span>, <span style=&quot;font-weight:bold&quot;>group workspaces</span>.";
+$message["CONFIGURATION_RUBRIC_EXTRAS_DESC"]["en"] = "Preferences for <span style=&quot;font-weight:bold&quot;>events</span>, <span style=&quot;font-weight:bold&quot;>tasks</span>, <span style=&quot;font-weight:bold&quot;>discussions</span>, <span style=&quot;font-weight:bold&quot;>group workspaces</span>.";
 $message["CONFIGURATION_RUBRIC_EXTRAS_TITLE"]["en"] = "Additional rubric settings";
 $message["CONFIGURATION_RUBRIC_OPTIONS_DESC"]["en"] = "Please choose workspace rubrics and configure their display on Home.";
 $message["CONFIGURATION_RUBRIC_OPTIONS_TITLE"]["en"] = "Configure rubrics";
