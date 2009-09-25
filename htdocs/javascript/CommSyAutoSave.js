@@ -28,7 +28,8 @@ function showtime() {
   timeValue  += ((seconds < 10) ? ":0" : ":") + seconds;
 
   if (dispMode == 2) {
-    document.f.timerField.value = timeValue;
+    //document.f.timerField.value = timeValue;
+    jQuery('[name=timerField]').val(timeValue);
   }
 
   timerID = setTimeout("showtime()",1000);
@@ -40,47 +41,46 @@ function showtime() {
     // ### change the following to whatever...                    ###
     // ### the following examples hit 'material' and 'discussion' ###
 
-    if (document.f.title) {
-      if (document.f.title.value != "") {
+    //if (document.f.title) {
+    if (jQuery('[name=title]')) {
+      //if (document.f.title.value != "") {
+      if (jQuery('[name=title]').val() != "") {
         fieldfound = true;
-        document.f.title.value = "tmp_" + document.f.title.value;
+        //document.f.title.value = "tmp_" + document.f.title.value;
+        jQuery('[name=title]').val("tmp_" + jQuery('[name=title]').val());
       } else {
-        document.f.title.value = "tmp_???";
+        //document.f.title.value = "tmp_???";
+        jQuery('[name=title]').val("tmp_???");
       }
     }
-    if (document.f.subject) {
-      if (document.f.subject.value != "") {
+    //if (document.f.subject) {
+    if (jQuery('[name=subject]')) {
+      //if (document.f.subject.value != "") {
+      if (jQuery('[name=subject]') != "") {
         fieldfound = true;
-        document.f.subject.value = "tmp_" + document.f.subject.value;
+        //document.f.subject.value = "tmp_" + document.f.subject.value;
+        jQuery('[name=subject]').val("tmp_" + jQuery('[name=subject]').val());
       } else {
-        document.f.subject.value = "tmp_???";
+        //document.f.subject.value = "tmp_???";
+        jQuery('[name=subject]').val("tmp_???");
       }
     }
-    if (document.f.description) {
-      if (document.f.description.value != "") {
+    //if (document.f.description) {
+    if (jQuery('[name=description]')) {
+      //if (document.f.description.value != "") {
+      if (jQuery('[name=description]').val() != "") {
         fieldfound = true;
-        document.f.description.value = "tmp_" + document.f.description.value;
+        //document.f.description.value = "tmp_" + document.f.description.value;
+        jQuery('[name=description]').val("tmp_" + jQuery('[name=description]').val());
       } else {
-        document.f.description.value = "tmp_???";
+        //document.f.description.value = "tmp_???";
+        jQuery('[name=description]').val("tmp_???");
       }
     }
-    if (document.f.dayStart) {
-      if (document.f.dayStart.value != "") {
-        // fieldfound = true;
-      } else {
-       d = new Date ();
-        cday = (d.getDate() < 10 ? '0' + d.getDate() : d.getDate());
-        cmonth = ((d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1));
-        cyear = d.getFullYear();
-        chour = (d.getHours () < 10 ? '0' + d.getHours () : d.getHours ());
-        cmin = (d.getMinutes () < 10 ? '0' + d.getMinutes () : d.getMinutes ());
-        // cs = (d.getSeconds () < 10 ? '0' + d.getSeconds () : d.getSeconds ());
-        document.f.dayStart.value = cday + '.' + cmonth + '.' + cyear;
-        document.f.timeStart.value = chour + ':' + cmin;
-      }
-    }
-    if (document.f.dayEnd) {
-      if (document.f.dayEnd.value != "") {
+    //if (document.f.dayStart) {
+    if (jQuery('[name=dayStart]')) {
+      //if (document.f.dayStart.value != "") {
+      if (jQuery('[name=dayStart]').val() != "") {
         // fieldfound = true;
       } else {
         d = new Date ();
@@ -90,16 +90,41 @@ function showtime() {
         chour = (d.getHours () < 10 ? '0' + d.getHours () : d.getHours ());
         cmin = (d.getMinutes () < 10 ? '0' + d.getMinutes () : d.getMinutes ());
         // cs = (d.getSeconds () < 10 ? '0' + d.getSeconds () : d.getSeconds ());
-        document.f.dayEnd.value = cday + '.' + cmonth + '.' + cyear;
-        document.f.timeEnd.value = chour + ':' + cmin;
+        //document.f.dayStart.value = cday + '.' + cmonth + '.' + cyear;
+        jQuery('[name=dayStart]').val(cday + '.' + cmonth + '.' + cyear);
+        //document.f.timeStart.value = chour + ':' + cmin;
+        jQuery('[name=timeStart]').val(chour + ':' + cmin);
       }
     }
-    if (document.f.author) {
-      if (document.f.author.value != "") {
-        fieldfound = true;
-        document.f.author.value = "tmp_" + document.f.author.value;
+    //if (document.f.dayEnd) {
+    if (jQuery('[name=dayEnd]')) {
+      //if (document.f.dayEnd.value != "") {
+      if (jQuery('[name=dayEnd]').val() != "") {
+        // fieldfound = true;
       } else {
-        document.f.author.value = "tmp_???";
+        d = new Date ();
+        cday = (d.getDate() < 10 ? '0' + d.getDate() : d.getDate());
+        cmonth = ((d.getMonth() + 1) < 10 ? '0' + (d.getMonth() + 1) : (d.getMonth() + 1));
+        cyear = d.getFullYear();
+        chour = (d.getHours () < 10 ? '0' + d.getHours () : d.getHours ());
+        cmin = (d.getMinutes () < 10 ? '0' + d.getMinutes () : d.getMinutes ());
+        // cs = (d.getSeconds () < 10 ? '0' + d.getSeconds () : d.getSeconds ());
+        //document.f.dayEnd.value = cday + '.' + cmonth + '.' + cyear;
+        jQuery('[name=dayEnd]').val(cday + '.' + cmonth + '.' + cyear);
+        //document.f.timeEnd.value = chour + ':' + cmin;
+        jQuery('[name=timeEnd]').val(chour + ':' + cmin);
+      }
+    }
+    //if (document.f.author) {
+    if (jQuery('[name=author]')) {
+      //if (document.f.author.value != "") {
+      if (jQuery('[name=author]').val() != "") {
+        fieldfound = true;
+        //document.f.author.value = "tmp_" + document.f.author.value;
+        jQuery('[name=author]').val("tmp_" + jQuery('[name=author]').val());
+      } else {
+        //document.f.author.value = "tmp_???";
+        jQuery('[name=author]').val("tmp_???");
       }
     }
 
@@ -109,10 +134,14 @@ function showtime() {
     // ##########################################################################
 
     if (fieldfound) {
-      var x = document.getElementsByName("option");
+      //var x = document.getElementsByName("option");
+      var x = jQuery.find('[name=option]');
       for (i = 0; i < x.length; i = i + 1) {
-        if (x[i].value == breakCrit) {
-          x[i].click();
+         temp_option = jQuery(x[i]);
+         //if (x[i].value == breakCrit) {
+         if (temp_option.val() == breakCrit) {
+          //x[i].click();
+          temp_option.click();
         }
       }
     }

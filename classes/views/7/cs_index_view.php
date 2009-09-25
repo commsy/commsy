@@ -1945,7 +1945,9 @@ EOD;
 
          $html .= '<script src="javascript/AC_OETags.js" language="javascript" type="text/javascript"></script>'.LF;
          $html .= '<script src="javascript/history/history.js" language="javascript" type="text/javascript"></script>'.LF;
-         $html .= '<script src="javascript/studylog_flash.js" language="javascript" type="text/javascript"></script>'.LF;
+         // jQuery
+         //$html .= '<script src="javascript/studylog_flash.js" language="javascript" type="text/javascript"></script>'.LF;
+         // jQuery
          $html .= '<script language="JavaScript" type="text/javascript">'.LF;
          $html .= '<!--'.LF;
          $html .= '// Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)'.LF;

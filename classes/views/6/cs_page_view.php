@@ -292,7 +292,7 @@ class cs_page_view extends cs_view {
       }else{
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/Slimbox2/css/slimbox2.css"/>'.LF;
       }
       if ($left_menue_status !='disapear'){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
@@ -379,7 +379,7 @@ class cs_page_view extends cs_view {
       }else{
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_room_ie5_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_right_boxes_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
-         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/slimbox/css/slimbox2.css"/>'.LF;
       }
       if ($left_menue_status !='disapear'){
          $retour .= '   <link rel="stylesheet" type="text/css" href="commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID().$url_addon.'"/>'.LF;
