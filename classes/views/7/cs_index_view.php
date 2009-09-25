@@ -1034,7 +1034,10 @@ class cs_index_view extends cs_view {
          cookie_value = elem.name + '=1'
       else
          cookie_value = elem.name + '=0'
-      document.cookie=cookie_value;
+      // jQuery
+      //document.cookie=cookie_value;
+      jQuery.cookie(cookie_value);
+      // jQuery
    }
 -->
 </script>
