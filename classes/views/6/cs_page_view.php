@@ -450,7 +450,9 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/CommSyPanelsIe5.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
       }
       return $retour;
@@ -510,7 +512,9 @@ class cs_page_view extends cs_view {
          $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/swfobject.js"></script>'.LF;
       }elseif ($this->_environment->getCurrentFunction() == 'detail'){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
          $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
          $retour .= '   <script type="text/javascript">'.LF;
@@ -583,7 +587,9 @@ class cs_page_view extends cs_view {
                or $this->_environment->getCurrentModule() == 'account'
                or $this->_environment->getCurrentModule() == 'material_admin'
       ){
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
          $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
          if (!$this->_environment->inServer()){
             $retour .= '   <script type="text/javascript">'.LF;
@@ -615,7 +621,9 @@ class cs_page_view extends cs_view {
       }
 
       if (  $this->_environment->getCurrentModule() == 'material_admin' or $this->_environment->getCurrentModule() == 'account' ) {
-         $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
+         //$retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         // jQuery
       }
       // jQuery
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;

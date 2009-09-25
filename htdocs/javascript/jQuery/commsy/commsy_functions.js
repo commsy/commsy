@@ -437,6 +437,16 @@ function showTemplateInformation(){
    });
 }
 
+var netnavigation_slide_speed = 50;	// Speed of slide
+var rubric_index;
+var count_rubrics = new Array();
+var path_info = false;
+
+var savedActiveNetnavigationPane = false;
+var savedActiveNetnavigationSub = false;
+var currentlyExpandedRubric = false;
+var netnavigation_currentDirection = new Array();
+
 function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
    var netnavigation = jQuery('#' + element_id + item_id);
    var netnavigation_divs = netnavigation.children('div:first');
@@ -468,7 +478,7 @@ function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
          img.mouseover(mouseoverTopbar);
          img.mouseout(mouseoutTopbar);
          if(rubric_index != rubric){
-            outerContentDiv.css('height', '0px');
+            outerContentDiv.hide();
             contentDiv.css('top', 0 - contentDiv.offsetHeight + 'px');
             img.attr('src', 'images/arrow_netnavigation_down.gif');
          }
@@ -488,4 +498,29 @@ function mouseoverTopbar(){
 
 function mouseoutTopbar(){
    jQuery(this).attr('src', jQuery(this).attr('src').replace('_over.gif','.gif'));
+}
+
+function showHideRubricContent(e,inputObj){
+   if(!inputObj){
+      inputObj = jQuery(this);
+   }
+   var my_array = inputObj.attr('id').split('_');
+   var number = my_array[1].replace(/[^0-9]/g,'');
+   var number_item_id = my_array[0].replace(/[^0-9]/g,'');
+   for(var no=0;no<count_rubrics[number_item_id];no++){
+      var img = jQuery('#ShowHideRubricButton' + number_item_id + '_' + no);
+      var temp_number_array = img.attr('id').split('_');
+      var numericId = temp_number_array[1].replace(/[^0-9]/g,'');
+      var obj = jQuery('#rubricContent' + number_item_id + '_' + numericId);
+      if(img.attr('src').toLowerCase().indexOf('up') >= 0){
+         img.attr('src', img.attr('src').replace('up','down'));
+         obj.css('display', 'block');
+         obj.hide();
+      }else if (number == no){
+         img.attr('src', img.attr('src').replace('down','up'));
+         obj.css('display', 'block');
+         obj.slideDown(200);
+      }
+   }
+   return true;
 }

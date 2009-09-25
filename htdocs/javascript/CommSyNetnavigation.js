@@ -40,7 +40,7 @@
    var netnavigation_currentDirection = new Array();
 
 
-   function showHideRubricContent(e,inputObj){
+   function showHideRubricContent_old(e,inputObj){
       if(!inputObj){
          inputObj = this;
       }
@@ -71,7 +71,7 @@
 
 
 
-   function slideRubric(slideValue,id){
+   function slideRubric_old(slideValue,id){
       if(slideValue != netnavigation_currentDirection[id]){
          return false;
       }
