@@ -509,7 +509,7 @@ class cs_profile_form_view extends cs_form_view {
       } else {
          $counter = 1;
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
-            $html .= '<ul id="MySortable" style="padding-top:0px; margin-top:0px;">'.LF;
+            $html .= '<ul id="MySortable" unselectable="on" style="padding-top:0px; margin-top:0px;">'.LF;
          }
          while ($option) {
             $option['name'] = $form_element['name'].'[]';
@@ -562,32 +562,33 @@ class cs_profile_form_view extends cs_form_view {
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
             $html .= '</ul>'.LF;
             $html .= '<script type="text/javascript">'.LF;
-
-            $html .='var MySortables = Sortables.extend({
-                        start: function(event, element) {
-                           if (event.target.tagName != \'A\'
-                               && event.target.tagName != \'INPUT\'
-                               && event.target.tagName != \'SELECT\'
-                               && event.target.tagName != \'TEXTAREA\'
-                           ) {
-                              this.parent(event, element);
-                           }
-                        }
-                     });
-                     window.addEvent(\'domready\', function(){
-                        new MySortables($(\'MySortable\'), {
-                           initialize: function(){
-                              var step = 0;
-                              this.elements.each(function(element, i){
-                              element.setStyle(\'width\', \'400px\');
-                           });
-                        },
-                        onDragStart: function(element, ghost){
-                           ghost.setStyle(\'width\', \'395px\');
-                           ghost.setStyle(\'list-style\', \'none\');
-                        }
-                        });
-                     });'.'</script>';
+			$html .= 'jQuery(function(){jQuery(\'#MySortable\').sortable();$("#MySortable").disableSelection();});';
+//            $html .='var MySortables = Sortables.extend({
+//                        start: function(event, element) {
+//                           if (event.target.tagName != \'A\'
+//                               && event.target.tagName != \'INPUT\'
+//                               && event.target.tagName != \'SELECT\'
+//                               && event.target.tagName != \'TEXTAREA\'
+//                           ) {
+//                              this.parent(event, element);
+//                           }
+//                        }
+//                     });
+//                     window.addEvent(\'domready\', function(){
+//                        new MySortables($(\'MySortable\'), {
+//                           initialize: function(){
+//                              var step = 0;
+//                              this.elements.each(function(element, i){
+//                              element.setStyle(\'width\', \'400px\');
+//                           });
+//                        },
+//                        onDragStart: function(element, ghost){
+//                           ghost.setStyle(\'width\', \'395px\');
+//                           ghost.setStyle(\'list-style\', \'none\');
+//                        }
+//                        });
+//                     });'.'</script>';
+         	$html .= '</script>';
          }
 
       }
