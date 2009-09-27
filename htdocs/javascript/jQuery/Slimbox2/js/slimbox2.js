@@ -14,8 +14,11 @@
 	preload = {}, preloadPrev = new Image(), preloadNext = new Image(),
 
 	// DOM elements
-	overlay, center, image, sizer, prevLink, nextLink, bottomContainer, bottom, caption, number;
-
+	// CommSy
+	//overlay, center, image, sizer, prevLink, nextLink, bottomContainer, bottom, caption, number;
+	overlay, center, image, sizer, prevLink, nextLink, bottomContainer, bottom, caption, number, text;
+	// CommSy
+	
 	/*
 		Initialization
 	*/
@@ -41,6 +44,9 @@
 			$('<a id="lbCloseLink" href="#" />').add(overlay).click(close)[0],
 			caption = $('<div id="lbCaption" />')[0],
 			number = $('<div id="lbNumber" />')[0],
+			// CommSy
+			text = $('<div id="lbText" />')[0],
+			// CommSy
 			$('<div style="clear: both;" />')[0]
 		])[0];
 	});
@@ -190,7 +196,10 @@
 
 		$(caption).html(images[activeImage][1] || "");
 		$(number).html((((images.length > 1) && options.counterText) || "").replace(/{x}/, activeImage + 1).replace(/{y}/, images.length));
-
+		// CommSy
+		$(text).html('<a style=\"font-size:10pt;font-weight:bold;\" href=\"'+images[activeImage][0]+'\">'+message+'</a>');
+		// CommSy
+		
 		if (prevImage >= 0) preloadPrev.src = images[prevImage][0];
 		if (nextImage >= 0) preloadNext.src = images[nextImage][0];
 
