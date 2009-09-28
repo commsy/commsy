@@ -1142,12 +1142,49 @@ class cs_form_view extends cs_view {
    function _getTextAreaAsHTML ($form_element) {
       $html  = '';
 
+      $form_element['value_for_output'] = '';
+      $form_element['value_for_output_html'] = '';
+      $form_element['value_for_output_html_security'] = '';
+      $form_element['value_for_output_html_security_hidden'] = '';
       if ( !empty($form_element['value']) ) {
          $form_element['value_for_output'] = $this->_text_as_form($form_element['value']);
          $form_element['value_for_output_html'] = $this->_text_as_form_for_html_editor($form_element['value']);
-      } else {
-         $form_element['value_for_output'] = '';
-         $form_element['value_for_output_html'] = '';
+
+         // value translations
+         $value = str_replace('<!-- KFC TEXT -->','',$form_element['value_for_output_html']);
+
+         // security KFC (hidden)
+         $hidden_value = str_replace('"','COMMSY_QUOT',$value);
+         $hidden_value = str_replace('&','COMMSY_AMPERSEND',$hidden_value);
+         $form_element['value_for_output_html_security_hidden'] = $hidden_value;
+         unset($hidden_value);
+
+         // security KFC
+         $values = array();
+         preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$value,$values);
+         if ( !empty($values[1]) ) {
+            $hash = $values[1];
+            $temp_text = str_replace('<!-- KFC TEXT '.$hash.' -->','',$value);
+            global $c_enable_htmltextarea_security;
+            if ( isset($c_enable_htmltextarea_security)
+                 and !empty($c_enable_htmltextarea_security)
+                 and $c_enable_htmltextarea_security
+               ) {
+               include_once('functions/security_functions.php');
+               if ( getSecurityHash($temp_text) != $hash ) {
+                  $value = $this->_environment->getTextConverter()->text_as_html_long($temp_text);
+                  $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
+               }
+            }
+         } elseif ( !strstr($value,'<!-- KFC TEXT') ) {
+            include_once('functions/security_functions.php');
+            $value = '<!-- KFC TEXT '.getSecurityHash($value).' -->'.$value.'<!-- KFC TEXT '.getSecurityHash($value).' -->';
+         }
+
+         // this is for migration of texts not insert with an HTML editor
+         $value = str_replace("\n\n",'<br/><br/>',$value);
+         $form_element['value_for_output_html_security'] = $value;
+         unset($value);
       }
       $form_element['tabindex'] = $this->_count_form_elements;
       $this->_count_form_elements++;
@@ -1241,6 +1278,9 @@ class cs_form_view extends cs_view {
          }
       } else {
          $html .= LF.$this->_getHiddenFieldasHTML(array('name' => $form_element['name'].'_is_textarea', 'value' => '1'));
+         if ( !empty($form_element['value_for_output_html_security_hidden']) ) {
+            $html .= LF.$this->_getHiddenFieldasHTML(array('name' => $form_element['name'].'_fck_hidden', 'value' => $form_element['value_for_output_html_security_hidden']));
+         }
       }
       return $html;
    }

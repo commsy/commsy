@@ -73,9 +73,15 @@ class class_ckeditor extends cs_plugin {
          $retour .= ' disabled="disabled"';
       }
       $retour .= ' id="'.$form_element['name'].'_'.$form_element['tabindex'].'"';
-      $retour .= '>';
-      $retour .= $form_element['value_for_output'];
-      $retour .= '</textarea>'.LF;
+      $retour .= '>'.LF;
+      if ( !empty($form_element['value_for_output_html_security']) ) {
+         $retour .= $form_element['value_for_output_html_security'];
+      } elseif ( !empty($form_element['value_for_output_html']) ) {
+         $retour .= $form_element['value_for_output_html'];
+      } elseif ( !empty($form_element['value_for_output']) ) {
+         $retour .= $form_element['value_for_output'];
+      }
+      $retour .= LF.'</textarea>'.LF;
       $retour .= '<script type="text/javascript">'.LF;
       $retour .= '   CKEDITOR.replace( \''.$form_element['name'].'_'.$form_element['tabindex'].'\' ,
                   {

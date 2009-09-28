@@ -2580,6 +2580,7 @@ class misc_text_converter {
       foreach ( $array as $key => $value ) {
          if ( is_string($value)
               and strstr($value,'<!-- KFC TEXT')
+              and !stristr($key,'_fck_hidden')
             ) {
             $fck_array[$key] = $value;
          } else {
@@ -2601,6 +2602,13 @@ class misc_text_converter {
 
                   $hidden_value = str_replace('COMMSY_AMPERSEND','&',$retour[$key.'_fck_hidden']);
                   $hidden_value = str_replace('COMMSY_QUOT','"',$hidden_value);
+
+                  $hidden_values = array();
+                  preg_match('~<!-- KFC TEXT ([a-z0-9]*) -->~u',$hidden_value,$hidden_values);
+                  if ( !empty($hidden_values[1]) ) {
+                     $hidden_hash = $hidden_values[1];
+                     $hidden_value = str_replace('<!-- KFC TEXT '.$hidden_hash.' -->','',$hidden_value);
+                  }
 
                   include_once('functions/security_functions.php');
                   global $c_enable_htmltextarea_security;
