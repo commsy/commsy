@@ -580,6 +580,24 @@ class cs_discussion_detail_view extends cs_detail_view {
          $html .= '<span class="disabled">'.$image.'</span>'.LF;
       }
 
+      // closed discussion
+      if ( $item->isClosed() ) {
+         if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+            $image = '<img src="images/commsyicons_msie6/22x22/discussion_close.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCUSSION_CLOSE_ALL_ARTICLES').'"/>';
+         } else {
+            $image = '<img src="images/commsyicons/22x22/discussion_close.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCUSSION_CLOSE_ALL_ARTICLES').'"/>';
+         }
+         $params = $this->_environment->getCurrentParameterArray();
+         $params['status'] = 'all_articles';
+         $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                     $this->_environment->getCurrentModule(),
+                                     'detail',
+                                     $params,
+                                     $image,
+                                     $this->_translator->getMessage('DISCUSSION_CLOSE_ALL_ARTICLES')).LF;
+         unset($params);
+      }
+
       // delete
       $html .= $this->_getDeleteAction($item,$current_user);
       return $html.'&nbsp;&nbsp;&nbsp;';
