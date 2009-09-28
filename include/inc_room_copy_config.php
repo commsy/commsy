@@ -43,6 +43,9 @@ $extra_config = $old_room->getExtraConfig();
 unset($extra_config['TEMPLATE']);
 $new_room->setExtraConfig($extra_config);
 
+// config of plugins
+$new_room->setPluginConfig($old_room->getPluginConfig());
+
 // config of colors
 $new_room->setColorArray($old_room->getColorArray());
 
