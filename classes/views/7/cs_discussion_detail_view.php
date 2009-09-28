@@ -73,250 +73,37 @@ class cs_discussion_detail_view extends cs_detail_view {
          $discussion_type = $item->getDiscussionType();
          $disabled = '';
          if ( $discussion_type == 'simple') {
-            $html .='</div>'.LF;
-            $html .='</div>'.LF;
-            $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-left:70px; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
-            $html .='<div style="width:100%;" >'.LF;
-            $html .= '<a name="form"></a>'.LF;
-            $html .= '<form style="padding:0px; margin:0px;" action="'.curl($this->_environment->getCurrentContextID(),'discarticle', 'edit','').'" method="post" enctype="multipart/form-data" name="f">'.LF;
-            $html .= '   <input type="hidden" name="iid" value=""/>'.LF;
-            $html .= '   <input type="hidden" name="discussion_id" value="'.$item->getItemID().'"/>'.LF;
-            $html .= '<table style="width:100%; border-collapse:collapse; margin-bottom:0px; padding-bottom:0px;" summary="Layout">'.LF;
-            $html .= '<tr>'.LF;
-            $html .= '<td style="width:1%; padding-top:5px; vertical-align:middle;">'.LF;
+
             $count = 1;
             $subitems = $this->getSubItemList();
             if ( isset($subitems) and !empty($subitems) ){
                $count = $subitems->getCount();
                $count++;
             }
-            $html .= '<h3 class="subitemtitle">'.$count.'.&nbsp;</h3>';
-            $html .= '</td>'.LF;
-            $html .= '<td style="width:99%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $html .= '<input name="subject" style="width:98%; font-size:14pt; font-weight:bold; font-family: Arial, Nimbus Sans L, sans-serif;" value="" maxlength="200" tabindex="8" type="text"/>';
-            $html .= '</td>'.LF;
-            $html .= '<td rowspan="3" style="width:28%; padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
-            $html .= '</table>'.LF;
-            $html .= '<div style=" margin:0px;padding:0px;">'.LF;
-            $normal = '<textarea style="font-size:10pt; width:98%;" name="description" rows="10" tabindex="8"></textarea>';
-            $text = '';
-            global $c_html_textarea;
-            $current_context = $this->_environment->getCurrentContextItem();
-            $with_htmltextarea = $current_context->withHtmlTextArea();
-            $html_status = $current_context->getHtmlTextAreaStatus();
-            $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-            $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-            if ( !isset($c_html_textarea)
-                 or !$c_html_textarea
-                 or !$with_htmltextarea
-               ) {
-               $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-               $html .= $title;
-               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-               $html .= '<div style="padding:2px;">'.LF;
-               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-               $html .= $text;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-            } elseif ( ($current_browser != 'msie'
-                    and $current_browser != 'firefox'
-                    and $current_browser != 'netscape'
-                    and $current_browser != 'mozilla'
-                    and $current_browser != 'camino'
-                    and $current_browser != 'opera'
-                    and $current_browser != 'safari')
-               ) {
-               $html .= $normal;
-               $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-               $html .= '<div style="padding-top:5px;">';
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-               $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-               $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-               $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-               $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-               $html .= $title;
-               $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-               $html .= '<div style="padding:2px;">'.LF;
-               $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-               $html .= $text;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-               $html .= '</div>'.LF;
-            } else {
-               $session = $this->_environment->getSessionItem();
-                if ($session->issetValue('javascript')) {
-                  $javascript = $session->getValue('javascript');
-                  if ($javascript == 1) {
-                     include_once('classes/cs_html_textarea.php');
-                     $html_area = new cs_html_textarea();
-                     $html .= $html_area->getAsHTML( 'description',
-                                              '',
-                                              20,
-                                              $html_status,
-                                              '',
-                                              '',
-                                              false
-                                            );
-                     $html .= '<input type="hidden" name="description_is_textarea" value="1" />';
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_SHORT');
-                     $html .= '<div style="padding-top:0px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                     $html .= $title;
-                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                     $html .= '<div style="padding:2px;">'.LF;
-                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                     $html .= $text;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.BRLF;
-                  } else {
-                     $html .= $normal;
-                     $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                     $html .= '<div style="padding-top:5px;">';
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                     $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                     $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                     $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                     $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                     $html .= $title;
-                     $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                     $html .= '<div style="padding:2px;">'.LF;
-                     $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                     $html .= $text;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                     $html .= '</div>'.LF;
-                  }
-               } else {
-                  $html .= $normal;
-                  $title = '&nbsp;'.getMessage('COMMON_TEXT_FORMATING_HELP_FULL');
-                  $html .= '<div style="padding-top:5px;">';
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('HELP_COMMON_FORMAT_TITLE').':</div>';
-                  $text .= getMessage('COMMON_TEXT_FORMATING_FORMAT_TEXT');
-                  $text .= '<div class="bold" style="padding-bottom:5px;">'.getMessage('COMMON_TEXT_INCLUDING_MEDIA').':</div>';
-                  $text .= getMessage('COMMON_TEXT_INCLUDING_MEDIA_TEXT');
-                  $html .='<img id="toggle'.$current_context->getItemID().'" src="images/more.gif"/>';
-                  $html .= $title;
-                  $html .= '<div id="creator_information'.$current_context->getItemID().'">'.LF;
-                  $html .= '<div style="padding:2px;">'.LF;
-                  $html .= '<div id="form_formatting_box" style="width:98%">'.LF;
-                  $html .= $text;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
-                  $html .= '</div>'.LF;
-               }
-            }
-            $html .= '</div>';
-            // files
-            $html .= '<table style="width:100%; border-collapse:collapse;" summary="Layout">'.LF;
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="width:10%; padding-top:5px; vertical-align:top; ">'.LF;
-            $html .= getMessage('MATERIAL_FILES').':';
-            $html .= '</td>'.LF;
-            $html .= '<td style="width:90%; padding-top:5px; padding-bottom:5px; vertical-align:top; text-align:left;">'.LF;
-            $val = ini_get('upload_max_filesize');
-            $val = trim($val);
-            $last = $val[mb_strlen($val)-1];
-            switch($last) {
-               case 'k':
-               case 'K':
-                  $val = $val * 1024;
-                  break;
-               case 'm':
-               case 'M':
-                  $val = $val * 1048576;
-                  break;
-            }
-            $meg_val = round($val/1048576);
-            $html .= '   <input type="hidden" name="MAX_FILE_SIZE" value="'.$val.'"/>'.LF;
-            if ( !$this->_with_modifying_actions ) {
-               $disabled = ' disabled="disabled"';
-            }
-            $html .= '   <input type="file" name="upload" size="12" tabindex="5"/>&nbsp;<input type="submit" name="option" value="'.$this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON').'" tabindex="6" style="width:9.61538461538em; font-size:10pt;"'.$disabled.'/>'.LF;
-            $html .= BRLF;
-            #$px = '245';
-            $px = '331';
-            $browser = $this->_environment->getCurrentBrowser();
-            if ($browser == 'MSIE') {
-               $px = '351';
-            } elseif ($browser == 'OPERA') {
-               $px = '321';
-            } elseif ($browser == 'KONQUEROR') {
-               $px = '361';
-            } elseif ($browser == 'SAFARI') {
-               $px = '380';
-            } elseif ($browser == 'FIREFOX') {
-               $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (mb_strtoupper($operation_system, 'UTF-8') == 'LINUX') {
-                  $px = '360';
-               } elseif (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
-                  $px = '352';
-               }
-            } elseif ($browser == 'MOZILLA') {
-               $operation_system = $this->_environment->getCurrentOperatingSystem();
-               if (mb_strtoupper($operation_system, 'UTF-8') == 'MAC OS') {
-                  $px = '336'; // camino
-               }
-            }
-            $em = $px/13;
-            $html .= '<input name="option" value="'.getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES').'" tabindex="7" type="submit" style="width: '.$em.'em;"'.$disabled.'/>'.LF;
-            $html .= BRLF;
-            $html .= '<span class="multiupload_discussion_detail">'.getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val).'</span>'.LF;
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
 
-            $html .= '<tr>'.LF;
-            $html .= '<td class="key" style="padding-top:10px; vertical-align:top; ">'.LF;
-            $html .= '&nbsp;';
-            $html .= '</td>'.LF;
-            $html .= '<td style="padding-top:10px; vertical-align:top; white-space:nowrap;">'.LF;
-            $html .= '<input name="option" value="'.getMessage('DISCARTICLE_CHANGE_BUTTON').'" tabindex="8" type="submit"'.$disabled.'/>';
-            $current_user = $this->_environment->getCurrentUser();
-            if ( $current_user->isAutoSaveOn() ) {
-               $html .= '<span class="formcounter">'.LF;
-               global $c_autosave_mode;
-               if ( $c_autosave_mode == 1 ) {
-                  $currTime = time();
-                  global $c_autosave_limit;
-                  $sessEnds = $currTime + ($c_autosave_limit * 60);
-                  $sessEnds = date("H:i", $sessEnds);
-                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' '.$sessEnds.LF;
-               } elseif ( $c_autosave_mode == 2 ) {
-                  $html .= '&nbsp;'.$this->_translator->getMessage('COMMON_SAVE_AT_TIME').' <input type="text" size="5" name="timerField" value="..." class="formcounterfield" />'.LF;
-               }
-               $html .= '</span>'.LF;
-            }
-            $html .= '</td>'.LF;
-            $html .= '</tr>'.LF;
-            $html .= '</table>'.BRLF;
-            $html .= '</form>';
+            $html .= '</div>'.LF;
+            $html .= '</div>'.LF;
+            $html .= '<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
+            $html .= '<div style="width:100%;" >'.LF;
+            $html .= '<a name="form"></a>'.LF;
 
-            $html .='<script type="text/javascript">initTextFormatingInformation("'.$current_context->getItemID().'",false)</script>';
-            if ( $current_user->isAutoSaveOn() ) {
-               $html .= '   <script type="text/javascript">'.LF;
-               $html .= '      <!--'.LF;
-               $html .= '         var breakCrit = "'.getMessage('DISCARTICLE_CHANGE_BUTTON').'"'.';'.LF;
-               $html .= '         startclock();'.LF;
-               $html .= '      -->'.LF;
-               $html .= '   </script>'.LF;
-            }
+            $class_factory = $this->_environment->getClassFactory();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $form = $class_factory->getClass(DISCARTICLE_FORM,$class_params);
+            $form->setDetailMode($count);
+            $form->setDiscussionID($item->getItemID());
+            unset($class_params);
+            $form->prepareForm();
+            $form->loadValues();
+            $class_params = array();
+            $class_params['environment'] = $this->_environment;
+            $class_params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(FORM_DETAIL_VIEW,$class_params);
+            unset($class_params);
+            $form_view->setAction(curl($this->_environment->getCurrentContextID(),'discarticle','edit',array()));
+            $form_view->setForm($form);
+            $html .= $form_view->asHTML();
 
             $html .= '<!-- END OF DISCARTICLE FORM VIEW -->'.LF.LF;
          }

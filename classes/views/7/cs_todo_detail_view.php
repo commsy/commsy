@@ -608,8 +608,8 @@ class cs_todo_detail_view extends cs_detail_view {
          $html .= '</div>'.LF;
          $html .= '<!-- BEGIN OF STEP FORM VIEW -->'.LF.LF;
 
-         $html .='<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
-         $html .='<div style="width:100%;" >'.LF;
+         $html .= '<div class="sub_item_main" style="border-top: 1px solid #B0B0B0; margin-top:20px; padding-top:5px; background-color:white;">'.LF;
+         $html .= '<div style="width:100%;" >'.LF;
          $html .= '<a name="step_form"></a>'.LF;
 
          $class_factory = $this->_environment->getClassFactory();

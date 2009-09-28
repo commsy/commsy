@@ -135,7 +135,6 @@ class cs_step_form extends cs_rubric_form {
          $text_time .= ':';
       }
 
-
       // todo
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('todo_id','');
