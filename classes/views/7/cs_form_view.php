@@ -1743,6 +1743,10 @@ class cs_form_view extends cs_view {
       $html = '';
       $item = $this->_environment->getCurrentContextItem();
       $with_htmltextarea = $item->withHtmlTextArea();
+      include_once('functions/misc_functions.php');
+      if ( plugin_hook_method_active('getTextAreaAsHTML') ) {
+         $with_htmltextarea = true;
+      }
       $text = '';
       if ( !isset($c_html_textarea)
            or !$c_html_textarea

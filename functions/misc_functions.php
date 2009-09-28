@@ -1017,6 +1017,30 @@ function plugin_hook_output ($plugin,$hook_function,$params = NULL) {
    return $retour;
 }
 
+function plugin_hook_method_active ( $hook_function ) {
+   global $environment;
+   global $c_plugin_array;
+   $retour = false;
+
+   if ( isset($c_plugin_array)
+        and !empty($c_plugin_array)
+      ) {
+      $current_context_item = $environment->getCurrentContextItem();
+      foreach ($c_plugin_array as $plugin) {
+         if ( isset($current_context_item)
+              and $current_context_item->isPluginOn($plugin)
+            ) {
+            $plugin_class = $environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,$hook_function) ) {
+               $retour = true;
+               break;
+            }
+         }
+      }
+   }
+   return $retour;
+}
+
 // Function to recursively add a directory,
 // sub-directories and files to a zip archive
 function addFolderToZip($dir, $zipArchive, $zipdir = ''){
