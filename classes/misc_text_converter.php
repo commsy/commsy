@@ -1620,13 +1620,15 @@ class misc_text_converter {
    // see http://www.math.union.edu/~dpvc/jsMath/
    private function _formatMath1 ( $text, $array ) {
       $retour = '';
-      $image_text = '';
-      $image_text = '<span class="math">'.$array[1].'</span>';
-      if ( !empty($image_text) ) {
-         $text = str_replace($array[0],$image_text,$text);
-      }
+      if ( !empty($array[0]) and !empty($array[1]) ) {
+         $image_text = '';
+         $image_text = '<span class="math">'.$array[1].'</span>';
+         if ( !empty($image_text) ) {
+            $text = str_replace($array[0],$image_text,$text);
+         }
 
-      $retour = $text;
+         $retour = $text;
+      }
       return $retour;
    }
 
