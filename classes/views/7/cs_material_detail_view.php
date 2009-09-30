@@ -596,8 +596,11 @@ class cs_material_detail_view extends cs_detail_view {
                $biblio .= $item->getBibliographicValues();
          }
       }
+      $biblio_pur = strip_tags($biblio);
+      $biblio_pur = str_ireplace('&nbsp;','',$biblio_pur);
+      $biblio_pur = trim($biblio_pur);
       if ( $bib_kind != 'none'
-           and !empty($biblio)
+           and !empty($biblio_pur)
          ) {
          $temp_array = array();
          $temp_array[]  = $this->_translator->getMessage('MATERIAL_BIBLIOGRAPHIC');
