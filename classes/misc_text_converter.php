@@ -2847,8 +2847,9 @@ class misc_text_converter {
            and $c_html_textarea
          ) {
          $current_context_item = $this->_environment->getCurrentContextItem();
-         if ( isset($current_context_item)
-              and $current_context_item->withHtmlTextArea()
+         if ( ( isset($current_context_item)
+                and $current_context_item->withHtmlTextArea()
+              ) or plugin_hook_method_active('getTextAreaAsHTML')
             ) {
             $retour = array();
             foreach ( $value as $key => $data ) {
