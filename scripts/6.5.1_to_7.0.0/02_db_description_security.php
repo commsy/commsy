@@ -38,6 +38,7 @@ $table_array[] = 'annotations';
 $table_array[] = 'announcement';
 $table_array[] = 'dates';
 $table_array[] = 'discussionarticles';
+$table_array[] = 'homepage_page';
 $table_array[] = 'labels';
 $table_array[] = 'materials';
 $table_array[] = 'section';

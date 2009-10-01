@@ -29,11 +29,6 @@ chdir('..');
 
 include_once('functions/misc_functions.php');
 
-// transform POST_VARS and GET_VARS --- move into page object, if exist
-include_once('functions/text_functions.php');
-$_POST = encode(FROM_FORM,$_POST);
-$_GET  = encode(FROM_FORM,$_GET);
-
 // start of execution time
 $time_start = getmicrotime();
 
@@ -65,6 +60,11 @@ $class_factory = new cs_class_factory();
 // setup commsy-environment
 include_once('classes/cs_environment.php');
 $environment = new cs_environment();
+
+// transform POST_VARS and GET_VARS --- move into page object, if exist
+include_once('functions/text_functions.php');
+$_POST = encode(FROM_FORM,$_POST);
+$_GET  = encode(FROM_FORM,$_GET);
 
 // include classes needed for this script
 include_once('classes/cs_session_item.php');
