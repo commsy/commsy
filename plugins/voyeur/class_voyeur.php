@@ -97,8 +97,6 @@ class class_voyeur extends cs_plugin {
       if ( !empty($url) ) {
          $url_params = array();
          $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
-         $url_params['download'] = 'zip';
-         $url_params['mode'] = 'print';
          $session_item = $this->_environment->getSessionItem();
          if ( isset($session_item) ) {
             $url_params['SID'] = $session_item->getSessionID();
@@ -106,7 +104,7 @@ class class_voyeur extends cs_plugin {
 
          global $c_commsy_domain, $c_commsy_url_path;
          $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
-         $url_to_zip .= '/'._curl(false,$this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$url_params);
+         $url_to_zip .= '/'._curl(false,$this->_environment->getCurrentContextID(),$this->_identifier,'download',$url_params);
          if ( strstr($url,'?') ) {
             $url .= '&';
          } else {
