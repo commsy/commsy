@@ -137,7 +137,10 @@ class misc_item2zip {
          $detail_page = 'pages/'.type2module($item_type).'_detail.php';
          if ( file_exists($detail_page) ) {
             $session = $this->_environment->getSessionItem();
+            $current_user = $this->_environment->getCurrentUserItem();
             include_once($detail_page);
+            unset($current_user);
+            unset($session);
          }
 
          //Put page into string
@@ -178,22 +181,24 @@ class misc_item2zip {
          if (isset($index) ) {
             $filemanager = $this->_environment->getFileManager();
             $file = $filemanager->getItem($index);
-            $icon = $directory.'/images/'.$file->getIconFilename();
-            $filearray[$i] = $file->getDiskFileName();
-            if ( file_exists(realpath($file->getDiskFileName())) ) {
-               include_once('functions/text_functions.php');
-               copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
-               $retour = str_replace($match, toggleUmlaut($file->getFilename()), $retour);
-               copy('htdocs/images/'.$file->getIconFilename(),$icon);
+            if ( isset($file) ) {
+               $icon = $directory.'/images/'.$file->getIconFilename();
+               $filearray[$i] = $file->getDiskFileName();
+               if ( file_exists(realpath($file->getDiskFileName())) ) {
+                  include_once('functions/text_functions.php');
+                  copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
+                  $retour = str_replace($match, toggleUmlaut($file->getFilename()), $retour);
+                  copy('htdocs/images/'.$file->getIconFilename(),$icon);
 
-               // thumbs gehen nicht
-               // warum nicht allgemeiner mit <img? (siehe unten)
-               // geht unten aber auch nicht
-               $thumb_name = $file->getFilename() . '_thumb';
-               $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-               if ( file_exists(realpath($thumb_disk_name)) ) {
-                  copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
-                  $retour = str_replace($match, $thumb_name, $retour);
+                  // thumbs gehen nicht
+                  // warum nicht allgemeiner mit <img? (siehe unten)
+                  // geht unten aber auch nicht
+                  $thumb_name = $file->getFilename() . '_thumb';
+                  $thumb_disk_name = $file->getDiskFileName() . '_thumb';
+                  if ( file_exists(realpath($thumb_disk_name)) ) {
+                     copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
+                     $retour = str_replace($match, $thumb_name, $retour);
+                  }
                }
             }
          }

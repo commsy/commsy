@@ -93,6 +93,20 @@ class class_voyeur extends cs_plugin {
       $retour = '';
       $title = $this->_translator->getMessage('VOYEUR_ACTION_ICON_TITLE');
       $img =  '<img src="'.$this->_image_path.'/voyeur_icon_22x22.png" style="vertical-align:bottom;" title="'.$title.'"/>';
+      $url_params = array();
+      $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
+      $session_item = $this->_environment->getSessionItem();
+      if ( isset($session_item) ) {
+         $url_params['SID'] = $session_item->getSessionID();
+      }
+      unset($session_item);
+      $url = curl($this->_environment->getCurrentContextID(),$this->_identifier,'reload',$url_params);
+      $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
+      return $retour;
+   }
+
+   public function getVoyeurURL () {
+      $retour = '';
       $url = $this->_getConfigValueFor($this->_identifier.'_server_url');
       if ( !empty($url) ) {
          $url_params = array();
@@ -101,6 +115,7 @@ class class_voyeur extends cs_plugin {
          if ( isset($session_item) ) {
             $url_params['SID'] = $session_item->getSessionID();
          }
+         unset($session_item);
 
          global $c_commsy_domain, $c_commsy_url_path;
          $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
@@ -113,7 +128,9 @@ class class_voyeur extends cs_plugin {
          $url .= 'inputFormat=ZIP';
          $url .= '&input='.urlencode($url_to_zip);
          $url = str_replace('&&','&',$url);
-         $retour .= '<a href="'.$url.'" target="_blank">'.$img.'</a>';
+      }
+      if ( !empty($url) ) {
+         $retour = $url;
       }
       return $retour;
    }

@@ -90,12 +90,23 @@ if ( !empty($_GET['iid']) ) {
       }
 
       // to sender
-      $voyeur_zip_name = $export_temp_folder.'/'.$item_type.'_'.$_GET['iid'].'_voyeur.zip';
-      $downloadfile =  str_replace($export_temp_folder.'/','',$voyeur_zip_name);
-      header('Content-type: application/zip');
-      header('Content-Disposition: attachment; filename="'.$downloadfile.'"');
-      readfile($voyeur_zip_name);
-      exit();
+      if ( !isset($goto)
+           or empty($goto)
+           or !$goto
+         ) {
+         $voyeur_zip_name = $export_temp_folder.'/'.$item_type.'_'.$_GET['iid'].'_voyeur.zip';
+         $downloadfile =  str_replace($export_temp_folder.'/','',$voyeur_zip_name);
+         header('Content-type: application/zip');
+         header('Content-Disposition: attachment; filename="'.$downloadfile.'"');
+         readfile($voyeur_zip_name);
+         exit();
+      } else {
+         $voyeur = $environment->getPluginClass('voyeur');
+         $url = $voyeur->getVoyeurURL();
+         header('Location: '.$url);
+         header('HTTP/1.0 302 Found');
+         exit();
+      }
 
    } else {
       include_once('functions/error_functions.php');
