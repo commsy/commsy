@@ -2692,13 +2692,10 @@ class cs_detail_view extends cs_view {
             }
             $files[] = $file_string;
             $file = $file_list->getNext();
-
          }
       }
       return $files;
    }
-
-
 
    function _getDiscussionFormAsHTML(){
         if(!(isset($_GET['mode']) and $_GET['mode'] == 'print')) {

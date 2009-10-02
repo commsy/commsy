@@ -40,4 +40,10 @@ $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$sub_folder;
 $class_config[$class_name]['switchable'] = false;
 
+$class_name = 'misc_item2zip';
+define('MISC_ITEM2ZIP',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$sub_folder;
+$class_config[$class_name]['switchable'] = false;
 ?>

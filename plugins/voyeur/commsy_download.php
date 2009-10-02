@@ -33,67 +33,9 @@ if ( !empty($_GET['iid']) ) {
       if ( !file_exists($voyeur_zip_name) ) {
          $zip_name = $export_temp_folder.'/'.$item_type.'_'.$_GET['iid'].'.zip';
          if ( !file_exists($zip_name) ) {
-            $url_params = array();
-            $url_params['iid'] = $_GET['iid'];
-            $url_params['download'] = 'zip';
-            $url_params['mode'] = 'print';
-            $session_item = $environment->getSessionItem();
-            if ( isset($session_item) ) {
-               $url_params['SID'] = $session_item->getSessionID();
-            }
-
-            global $c_commsy_domain, $c_commsy_url_path;
-            $url_to_zip = $c_commsy_domain.$c_commsy_url_path;
-            include_once('functions/misc_functions.php');
-            $url_to_zip .= '/'._curl(false,$environment->getCurrentContextID(),type2module($item_type),'detail',$url_params);
-
-            // get zip
-            $directory_split = explode("/",$export_temp_folder);
-            $done_dir = "./";
-            foreach($directory_split as $dir) {
-               if(!is_dir($done_dir.'/'.$dir)) {
-                  mkdir($done_dir.'/'.$dir, 0777);
-               }
-               $done_dir .= '/'.$dir;
-            }
-            $directory = './'.$export_temp_folder;
-
-            $file = $directory.'/'.$item_type.'_'.$_GET['iid'].'_temp.zip';
-            $file_url = $url_to_zip;
-            $out = fopen($file,'wb');
-            if ( $out == false ) {
-               include_once('functions/error_functions.php');
-               trigger_error('can not open destination file. - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-            }
-            if ( function_exists('curl_init') ) {
-               $ch = curl_init();
-               curl_setopt($ch,CURLOPT_FILE,$out);
-               curl_setopt($ch,CURLOPT_HEADER,0);
-               curl_setopt($ch,CURLOPT_URL,$file_url);
-               global $c_proxy_ip;
-               global $c_proxy_port;
-               if ( !empty($c_proxy_ip) ) {
-                  $proxy = $c_proxy_ip;
-                  if ( !empty($c_proxy_port) ) {
-                     $proxy = $c_proxy_ip.':'.$c_proxy_port;
-                  }
-                  curl_setopt($ch,CURLOPT_PROXY,$proxy);
-               }
-               curl_exec($ch);
-               $error = curl_error($ch);
-               if ( !empty($error) ) {
-                  include_once('functions/error_functions.php');
-                  trigger_error('curl error: '.$error.' - '.$file_url.' - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-               }
-               curl_close($ch);
-            } else {
-               include_once('functions/error_functions.php');
-               trigger_error('curl library php5-curl is not installed - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
-            }
-            fclose($out);
-            if ( file_exists($file) ) {
-               unlink($file);
-            }
+            $item2ZIP = $class_factory->getClass(MISC_ITEM2ZIP,array('environment' => $environment));
+            $item2ZIP->setItemID($_GET['iid']);
+            $item2ZIP->execute();
          }
 
          // change ZIP

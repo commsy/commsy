@@ -227,6 +227,20 @@ class cs_disc_manager {
       return $retour;
    }
 
+   public function makeDirectoryR ( $dir ) {
+      $retour = true;
+      $directory_split = explode("/",$dir);
+      $done_dir = "./";
+      foreach($directory_split as $dir) {
+         if ( !is_dir($done_dir.'/'.$dir) ) {
+            $success_dir = $this->makeDirectory($done_dir.'/'.$dir);
+            $retour = $retour and $success_dir;
+         }
+         $done_dir .= '/'.$dir;
+      }
+      return $retour;
+   }
+
    function moveFiles ($second_folder, $old_first_folder, $new_first_folder) {
       $retour = true;
       $folder_new = $this->_file_path_basic.$new_first_folder.'/'.$second_folder;
