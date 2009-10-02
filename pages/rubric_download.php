@@ -75,6 +75,7 @@ function getCSS ( $file, $file_url ) {
      $handle = fopen($filename, 'a');
      //Put page into string
      $output = $page->asHTML();
+
      //String replacements
      $output = str_replace('commsy_print_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
      $output = str_replace('commsy_pda_css.php?cid='.$environment->getCurrentContextID(),'stylesheet.css', $output);
@@ -86,6 +87,10 @@ function getCSS ( $file, $file_url ) {
      preg_match_all($reg_exp, $output, $matches_array);
      $i = 0;
      $iids = array();
+
+     if ( !empty($matches_array[1]) ) {
+        mkdir($directory.'/images', 0777);
+     }
 
      foreach($matches_array[1] as $match) {
         $new = parse_url($matches_array[1][$i],PHP_URL_QUERY);
@@ -102,25 +107,21 @@ function getCSS ( $file, $file_url ) {
         if(isset($index))
          {
           $file = $filemanager->getItem($index);
-          $icon = $directory.'/'.$file->getIconFilename();
+          $icon = $directory.'/images/'.$file->getIconFilename();
           $filearray[$i] = $file->getDiskFileName();
           if(file_exists(realpath($file->getDiskFileName()))) {
              include_once('functions/text_functions.php');
              copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
              $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
              copy('htdocs/images/'.$file->getIconFilename(),$icon);
-             $output = str_replace('images/'.$file->getIconFilename(),$file->getIconFilename(), $output);
 
+             // thumbs gehen nicht
+             // warum nicht allgemeiner mit <img? (siehe unten)
+             // geht unten aber auch nicht
              $thumb_name = $file->getFilename() . '_thumb';
-             //$point_position = mb_strrpos($thumb_name,'.');
-             //$thumb_name = substr_replace ( $thumb_name, '_thumb.png', $point_position , mb_strlen($thumb_name));
-             //$thumb_name = substr($thumb_name, 0, $point_position).'_thumb.png'.substr($thumb_name, $point_position+mb_strlen($thumb_name));
              $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-             //$point_position = mb_strrpos($thumb_disk_name,'.');
-             //$thumb_disk_name = substr_replace ( $thumb_disk_name, '_thumb.png', $point_position , mb_strlen($thumb_disk_name));
-             //$thumb_disk_name = substr($thumb_disk_name, 0, $point_position).'_thumb.png'.substr($thumb_disk_name, $point_position+mb_strlen($thumb_disk_name));
              if ( file_exists(realpath($thumb_disk_name)) ) {
-                copy($thumb_disk_name,$directory.'/'.$thumb_name);
+                copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
                 $output = str_replace($match, $thumb_name, $output);
              }
           }
@@ -198,6 +199,7 @@ function getCSS ( $file, $file_url ) {
      $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&amp;mod=picture&amp;fct=getfile&amp;picture=','',$output);
      $output = str_replace($c_single_entry_point.'/'.$c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=picture&fct=getfile&picture=','',$output);
      $output = preg_replace('~cid\d{1,}_\d{1,}_~u','',$output);
+
      //write string into file
      fwrite($handle, $output);
      fclose($handle);
