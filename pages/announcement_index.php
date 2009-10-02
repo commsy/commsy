@@ -80,9 +80,7 @@ if ( isset($_GET['mode']) ) {
    unset($ref_iid);
    unset($ref_user);
 }
-// @segment-end 43488
 
-// @segment-begin 5810 read:option(=action-from-buttons)
 // Find current option
 if ( isset($_POST['option']) ) {
    $option = $_POST['option'];
@@ -100,30 +98,19 @@ if ( isset($_POST['delete_option']) ) {
    $delete_command = '';
 }
 
-
-
-// @segment-end 5810
-
-// @segment-begin 64624 put-announcement-copies-from-session-in-array-$clipboard_id_array
 // Find clipboard id array
 if ( $session->issetValue('announcement_clipboard') ) {
    $clipboard_id_array = $session->getValue('announcement_clipboard');
 } else {
    $clipboard_id_array = array();
 }
-// @segment-end 64624
 
-
-// @segment-begin 25907 ?mode'formattach'-and-'detailattach'
 // Handle attaching
 if ( $mode == 'formattach' or $mode == 'detailattach' ) {
    $attach_type = CS_ANNOUNCEMENT_TYPE;
    include('pages/index_attach_inc.php');
 }
-// @segment-end 25907
 
-
-// @segment-begin 34656 read:from(depending-from-selected-page)/interval-from-GET/session
 // Find current browsing starting point
 if ( isset($_GET['from']) ) {
    $from = $_GET['from'];
@@ -236,7 +223,6 @@ $context_item = $environment->getCurrentContextItem();
 // LIST ACTIONS
 // initiate selected array of IDs
 
-// @segment-begin 27021 read-IDs-of-selected-announcements-from-session-and-put-in-array
 $selected_ids = array();
 if ($mode == '') {
    $session->unsetValue('cid'.$environment->getCurrentContextID().
@@ -251,9 +237,7 @@ if ($mode == '') {
                                                '_selected_ids');
    }
 }
-// @segment-end 27021
 
-      // @segment-begin 82946 ?Update-attached-items-from-COOKIE/POST
       // Update attached items from cookie (requires JavaScript in browser)
       if ( isset($_COOKIE['attach']) ) {
          foreach ( $_COOKIE['attach'] as $key => $val ) {
@@ -286,9 +270,6 @@ if ($mode == '') {
             }
          }
       }
-      // @segment-end 82946
-
-   // @segment-begin 56986 perform-action-of-footer-action-box
 
    ///////////////////////////////////////
    // perform list actions              //
@@ -324,7 +305,6 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
    redirect($environment->getCurrentContextID(), CS_ANNOUNCEMENT_TYPE, 'index', $params);
 }
 
-
    if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
         and !isset($_GET['show_copies'])
         and $_POST['index_view_action'] != '-1'
@@ -337,7 +317,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
             $error = false;
             $announcement_manager = $environment->getAnnouncementManager();
             $noticed_manager = $environment->getNoticedManager();
-      foreach ($selected_ids as $id) {
+            foreach ($selected_ids as $id) {
                $announcement_item = $announcement_manager->getItem($id);
                $version_id = $announcement_item->getVersionID();
                $noticed_manager->markNoticed($id, $version_id );
@@ -372,6 +352,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                unset($params);
             }
             break;
+         case 'download':
+            include_once('include/inc_rubric_download.php');
+            break;
          default:
             $params = $environment->getCurrentParameterArray();
             unset($params['mode']);
@@ -384,9 +367,6 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                               '_selected_ids');
       }
    } // end if (perform list actions)
-   // @segment-end 56986
-
-// @segment-begin 59346 ??
 
 // Get data from database
 $announcement_manager = $environment->getAnnouncementManager();
@@ -429,10 +409,6 @@ if ( !empty($selbuzzword) ) {
 if ( !empty($last_selected_tag) ){
    $announcement_manager->setTagLimit($last_selected_tag);
 }
-// @segment-end 59346
-
-// @segment-begin 50396 create-a-view-object;uses#80628
-
 
 // Get available buzzwords
 $buzzword_manager = $environment->getLabelManager();
@@ -481,6 +457,10 @@ foreach($sel_array as $rubric => $value){
 
 if ( $interval > 0 ) {
    $announcement_manager->setIntervalLimit($from-1,$interval);
+}
+if ( !empty($only_show_array) ) {
+   $announcement_manager->resetLimits();
+   $announcement_manager->setIDArrayLimit($only_show_array);
 }
 $announcement_manager->select();
 $list = $announcement_manager->get();        // returns a cs_list of announcement_items

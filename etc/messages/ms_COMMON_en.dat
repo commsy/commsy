@@ -395,6 +395,7 @@ $message["COMMON_LINK_CREATOR"]["en"] = "assigned by";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["en"] = "Apply";
 $message["COMMON_LIST_ACTION_COPY"]["en"] = "Copy selected to online clipboard";
 $message["COMMON_LIST_ACTION_DELETE"]["en"] = "Delete items";
+$message["COMMON_LIST_ACTION_DOWNLOAD"]["en"] = "save entries";
 $message["COMMON_LIST_ACTION_MARK_AS_READ"]["en"] = "Mark selected as read";
 $message["COMMON_LIST_ACTION_NO"]["en"] = "Select action";
 $message["COMMON_LIST_PRINTVIEW"]["en"] = "Print this page";

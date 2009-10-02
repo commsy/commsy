@@ -323,11 +323,7 @@ class cs_announcement_index_view extends cs_index_view {
 
       return $html;
    }
-   // @segment-end 66261
 
-
-
-   // @segment-begin 86052 _getItemTitle($item),uses#53255,#15464,#15464,#50746
    /** get the title of the item
     * this method returns the item title in the right formatted style
     *
@@ -354,6 +350,11 @@ class cs_announcement_index_view extends cs_index_view {
      }
       return $title;
    }
-   // @segment-end 86052
+
+   public function _getAdditionalViewActionsAsHTML () {
+      $retour = '';
+      #$retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      return $retour;
+   }
 }
 ?>

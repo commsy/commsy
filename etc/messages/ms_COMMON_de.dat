@@ -395,6 +395,7 @@ $message["COMMON_LINK_CREATOR"]["de"] = "zugeordnet von";
 $message["COMMON_LIST_ACTION_BUTTON_GO"]["de"] = "ausführen";
 $message["COMMON_LIST_ACTION_COPY"]["de"] = "Einträge kopieren";
 $message["COMMON_LIST_ACTION_DELETE"]["de"] = "Einträge löschen";
+$message["COMMON_LIST_ACTION_DOWNLOAD"]["de"] = "Einträge speichern";
 $message["COMMON_LIST_ACTION_MARK_AS_READ"]["de"] = "Einträge als gelesen markieren";
 $message["COMMON_LIST_ACTION_NO"]["de"] = "keine Aktion";
 $message["COMMON_LIST_PRINTVIEW"]["de"] = "Seite drucken";

@@ -46,4 +46,18 @@ $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$sub_folder;
 $class_config[$class_name]['switchable'] = false;
+
+$class_name = 'misc_list2zip';
+define('MISC_LIST2ZIP',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$sub_folder;
+$class_config[$class_name]['switchable'] = false;
+
+$class_name = 'misc_2zip';
+define('MISC_2ZIP',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$sub_folder;
+$class_config[$class_name]['switchable'] = false;
 ?>

@@ -138,9 +138,11 @@ class misc_item2zip {
          if ( file_exists($detail_page) ) {
             $session = $this->_environment->getSessionItem();
             $current_user = $this->_environment->getCurrentUserItem();
+            $current_context = $this->_environment->getCurrentContextItem();
             include_once($detail_page);
             unset($current_user);
             unset($session);
+            unset($current_context);
          }
 
          //Put page into string

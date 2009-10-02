@@ -2444,9 +2444,6 @@ EOD;
      return $html;
   }
 
-
-
-   // @segment-begin 68626 _getViewActionsAsHTML()-actions-for-action-box-under-annoucement-index
    /** get View-Actions of this index view
     * this method returns the index actions as html
     *
@@ -2461,6 +2458,10 @@ EOD;
       if (!$this->_clipboard_mode){
          $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
          $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
+         if ( method_exists($this,'_getAdditionalViewActionsAsHTML') ) {
+            $html .= $this->_getAdditionalViewActionsAsHTML();
+         }
+
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
          if ($user->isModerator()){
             $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
@@ -2471,6 +2472,7 @@ EOD;
          $html .= '   <option value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;
          $html .= '   <option value="2">'.$this->_translator->getMessage('CLIPBOARD_DELETE_BUTTON').'</option>'.LF;
       }
+
       $html .= '</select>'.LF;
       $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
       $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
@@ -2478,10 +2480,6 @@ EOD;
 
       return $html;
    }
-
-   // @segment-end 68626
-
-
 
 
    function _getComplexFormAsHTML() {
