@@ -1,3 +1,29 @@
+jQuery(document).ready(function() {
+   jQuery("select[id='submit_form']").each(function(i) {
+      jQuery(this).change(function () {
+         jQuery(this).parents("form").map(function () {
+            this.submit();
+         });
+      })
+   });
+
+   jQuery("input[id='submit_form'][type='checkbox']").each(function(i) {
+      jQuery(this).change(function () {
+         jQuery(this).parents("form").map(function () {
+            this.submit();
+         });
+      })
+   });
+
+   jQuery("a[id='submit_form']").each(function(i) {
+      jQuery(this).click(function () {
+         jQuery(this).parents("form").map(function () {
+            this.submit();
+         });
+      })
+   });
+});
+
 function resetSearchText(id){
    jQuery('#' + id).val("");
 }
