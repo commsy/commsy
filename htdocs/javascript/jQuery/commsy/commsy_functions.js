@@ -175,8 +175,7 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          temp_div.append(outerContentDiv);
          commsy_panel_index++;
 
-         //var childrenSpan = span.getElementsByTagName('*');
-         var childrenSpan = span.find('');
+         var childrenSpan = span.children();
          var hasLink = false;
          for(var index=0; index<childrenSpan.length; index++) {
             if(childrenSpan[index].tagName == 'A'){
