@@ -722,12 +722,6 @@ class cs_user_detail_view extends cs_detail_view {
      return $status;
    }
 
-
-
-
-
-
-
    function _getSubItemDetailActionsAsHTML ($subitem) {
       $user = $this->_environment->getCurrentUserItem();
       $mod  = $this->_with_modifying_actions;

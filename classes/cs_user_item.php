@@ -1215,11 +1215,14 @@ class cs_user_item extends cs_item {
          if ( $user_item->isRoot()
               or ( $user_item->isGuest() and $this->isVisibleForAll() )
               or ( $user_item->getContextID() == $this->getContextID()
-                   and ( ( $user_item->isUser() and $this->isVisibleForLoggedIn() )
-                          or ( $user_item->getUserID() == $this->getUserID()
-                               and $user_item->getAuthSource == $this->getAuthSource()
-                             )
-                          or ($user_item->isModerator())
+                   and ( ( $user_item->isUser()
+                           and $this->isVisibleForLoggedIn()
+                         )
+                         or ( $user_item->getUserID() == $this->getUserID()
+                              and $user_item->getAuthSource == $this->getAuthSource()
+                            )
+                         or ($user_item->isModerator()
+                       )
             ) ) ) {
             $access = true;
          } else {
