@@ -94,7 +94,9 @@ class cs_auth_mysql extends cs_auth_manager {
       $umlaut = mb_substr($user_id, $position, $len);
       $last = mb_substr($user_id, $position + $len);
       $retour[] = $first . $umlaut . $last;
-      $retour[] = $first . $array[$umlaut] . $last;
+      if ( !empty($array[$umlaut]) ) {
+         $retour[] = $first . $array[$umlaut] . $last;
+      }
 
       return $retour;
    }

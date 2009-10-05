@@ -564,7 +564,10 @@ class cs_page_homepage_view extends cs_page_view {
          $action_array = array();
 
          // Edit the homepage item, if the current user may so
-         if ( $item->mayEdit($user) and $mod ) {
+         if ( isset($item)
+              and $item->mayEdit($user)
+              and $mod
+            ) {
             $params = array();
             $params['iid'] = $item->getItemID();
             $actionCurl = ahref_curl( $this->_environment->getCurrentContextID(),

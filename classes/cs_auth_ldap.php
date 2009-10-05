@@ -427,13 +427,27 @@ class cs_auth_ldap extends cs_auth_manager {
       unset($retour['objectsid']);
       unset($retour['objectcategory']);
       unset($retour['samaccounttype']);
-      $retour['whencreated'] = $this->_OZ2Time($retour['whencreated']);
-      $retour['whenchanged'] = $this->_OZ2Time($retour['whenchanged']);
-      $retour['badpasswordtime'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['badpasswordtime']));
-      $retour['lastlogon'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogon']));
-      $retour['pwdlastset'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['pwdlastset']));
-      $retour['lastlogontimestamp'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogontimestamp']));
-      $retour['accountexpires'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['accountexpires']));
+      if ( !empty($retour['whencreated']) ) {
+         $retour['whencreated'] = $this->_OZ2Time($retour['whencreated']);
+      }
+      if ( !empty($retour['whenchanged']) ) {
+         $retour['whenchanged'] = $this->_OZ2Time($retour['whenchanged']);
+      }
+      if ( !empty($retour['badpasswordtime']) ) {
+         $retour['badpasswordtime'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['badpasswordtime']));
+      }
+      if ( !empty($retour['lastlogon']) ) {
+         $retour['lastlogon'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogon']));
+      }
+      if ( !empty($retour['pwdlastset']) ) {
+         $retour['pwdlastset'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['pwdlastset']));
+      }
+      if ( !empty($retour['lastlogontimestamp']) ) {
+         $retour['lastlogontimestamp'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['lastlogontimestamp']));
+      }
+      if ( !empty($retour['accountexpires']) ) {
+         $retour['accountexpires'] = date('d.m.Y H:i:s',$this->_win_filetime_to_timestamp($retour['accountexpires']));
+      }
       ksort($retour);
       return $retour;
    }

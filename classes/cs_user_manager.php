@@ -1271,7 +1271,15 @@ class cs_user_manager extends cs_manager {
      //Add modifier to all users who ever edited this user
      if ( $this->_link_modifier ) {
         $link_modifier_item_manager = $this->_environment->getLinkModifierItemManager();
-        $link_modifier_item_manager->markEdited($item->getItemID());
+        $mod_id = $item->getModificatorID();
+        if ( !empty($mod_id)
+             and is_numeric($mod_id)
+             and $mod_id > 99
+           ) {
+           $link_modifier_item_manager->markEdited($item->getItemID(),$mod_id);
+        } else {
+           $link_modifier_item_manager->markEdited($item->getItemID());
+        }
      }
      unset($item);
   }

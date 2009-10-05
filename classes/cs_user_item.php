@@ -1124,15 +1124,6 @@ class cs_user_item extends cs_item {
          $this->setItemID($user_mananger->getCreateID());
       }
 
-//      global $c_plugin_array;
-//      if (isset($c_plugin_array) and !empty($c_plugin_array)) {
-//         foreach ($c_plugin_array as $plugin) {
-//            $plugin_class = $this->_environment->getPluginClass($plugin);
-//            if (method_exists($plugin_class,'user_save')) {
-//               $plugin_class->user_save($this);
-//            }
-//         }
-//      }
       plugin_hook('user_save', $this);
 
       // set old status to current status
@@ -1371,12 +1362,12 @@ class cs_user_item extends cs_item {
                if ($value == -1) {
                   $new_picture_name = '';
                } else {
-       $value_array = explode('_',$value);
-       $value_array[0] = 'cid'.$user_item->getContextID();
-       $new_picture_name = implode('_',$value_array);
-       $disc_manager = $this->_environment->getDiscManager();
-       $disc_manager->copyImageFromRoomToRoom($value,$user_item->getContextID());
-         }
+                  $value_array = explode('_',$value);
+                  $value_array[0] = 'cid'.$user_item->getContextID();
+                  $new_picture_name = implode('_',$value_array);
+                  $disc_manager = $this->_environment->getDiscManager();
+                  $disc_manager->copyImageFromRoomToRoom($value,$user_item->getContextID());
+               }
                $user_item->setPicture($new_picture_name);
             }
             $value = $dummy_item->getEmail();
@@ -1442,13 +1433,24 @@ class cs_user_item extends cs_item {
                $user_item->setExternalID($value);
             }
 
+            $current_user_item = $this->_environment->getCurrentUserItem();
+            if ( !$current_user_item->isRoot()
+                 and $current_user_item->getItemID() != $user_item->getContextID()
+                 and $current_user_item->getUserID() == $user_item->getUserID()
+                 and $current_user_item->getAuthSource() == $user_item->getAuthSource()
+               ) {
+               $user_item->setModificatorItem($user_item);
+            }
+
             $user_item->save();
-            if ($old_fullname != $user_item->getFullName() and $user_item->isContact()){
+            if ( $old_fullname != $user_item->getFullName()
+                 and $user_item->isContact()
+               ) {
                $room_id = $user_item->getContextID();
                $room_manager = $this->_environment->getRoomManager();
                $room_item = $room_manager->getItem($room_id);
-               $room_item->unsetContactPerson ($old_fullname);
-               $room_item->setContactPerson ($user_item->getFullName());
+               $room_item->unsetContactPerson($old_fullname);
+               $room_item->setContactPerson($user_item->getFullName());
                $room_item->save();
             }
 

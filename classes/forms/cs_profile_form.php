@@ -637,20 +637,23 @@ class cs_profile_form extends cs_rubric_form {
       }
 
       if ( !empty($this->_form_post['user_id']) ) {
-         $current_user = $this->_environment->getCurrentUserItem();
-         $auth_source = $current_user->getAuthSource();
-         if ( !empty($auth_source) ) {
-            $authentication = $this->_environment->getAuthenticationObject();
-            $this->_user = $this->_environment->getPortalUserItem();
-            if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$auth_source)) {
-               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR',$this->_form_post['user_id']);
-               $this->_form->setFailure('user_id','');
-            } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
-               $this->_form->setFailure('user_id','');
+         $this->_user = $this->_environment->getPortalUserItem();
+         if ( isset($this->_user)
+              and $this->_user->getUserID() != $this->_form_post['user_id']
+            ) {
+            $auth_source = $this->_user->getAuthSource();
+            if ( !empty($auth_source) ) {
+               $authentication = $this->_environment->getAuthenticationObject();
+               if ( !$authentication->is_free($this->_form_post['user_id'],$auth_source) ) {
+                  $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR',$this->_form_post['user_id']);
+                  $this->_form->setFailure('user_id','');
+               } elseif ( withUmlaut($this->_form_post['user_id']) ) {
+                  $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+                  $this->_form->setFailure('user_id','');
+               }
+            } else {
+               $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE_ERROR');
             }
-         } else {
-            $this->_error_array[] = $this->_translator->getMessageInLang($this->_language,'USER_AUTH_SOURCE_ERROR');
          }
       }
    }

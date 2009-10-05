@@ -574,28 +574,30 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_todos_manager.php');
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
-            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-            $user_item = $item->getModificatorItem();
-            $fullname = $user_item->getFullName();
-            $email = $user_item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item) ) {
+               $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+               $user_item = $item->getModificatorItem();
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
+               $date = date('r',strtotime($item->getModificationDate()));
+               unset($user_item);
             }
-            if ( !$user_item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$row['item_id'];
-            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
-            unset($user_item);
             break;
       case 'step':
             $manager = $environment->getManager(CS_STEP_TYPE);
