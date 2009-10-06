@@ -1453,7 +1453,12 @@ class cs_page_room_view extends cs_page_view {
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array('.$mod_string.'),' . $this->_environment->getCurrentContextID() . ');'.LF;
+               if($this->_with_modifying_actions){
+                  $modify = 1;
+               } else {
+                  $modify = 0;
+               }
+               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array('.$mod_string.'),' . $this->_environment->getCurrentContextID() . ',' . $modify . ');'.LF;
                $html .= '</script>'.LF;
             }else{
                $html .= '<table style="width:100%; padding-top:0px;" summary="Layout">'.LF;

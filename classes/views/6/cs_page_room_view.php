@@ -948,7 +948,7 @@ class cs_page_room_view extends cs_page_view {
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'));'.LF;
+               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array(),null,null);'.LF;
                $html .= '</script>'.LF;
             }else{
                $html .= '<table style="width:100%; padding-top:0px;" summary="Layout">'.LF;

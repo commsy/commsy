@@ -106,7 +106,7 @@ function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,si
    });
 }
 
-function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray,modArray,contextID){
+function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray,modArray,contextID,modify){
    var divs = jQuery('#commsy_panels').find('div');
    commsy_panel_index=0;
    for(var no=0;no<sizeArray.length;no++){
@@ -163,7 +163,11 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
 
          if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user')){
             var newItem = jQuery('<span></span>')
-            newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new_home.png"/></a>');
+            if(modify == 1){
+               newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new_home.png"/></a>');
+            } else {
+               newItem.html('<img src="images/commsyicons/16x16/new_home_gray.png"/>');
+            }
             newItem.css('float', 'right');
             topBar.append(newItem);
          } else {
