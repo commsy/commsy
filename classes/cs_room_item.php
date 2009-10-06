@@ -99,7 +99,8 @@ class cs_room_item extends cs_context_item {
                      $date_label_end = $date_label_end + 10000;
                   }
                   if ( $date_label_start <= $start_date
-                       and $start_date <= $date_label_end) {
+                       and $start_date <= $date_label_end
+                     ) {
                      $get_time_item_ids = true;
                   }
                   if ($first) {
