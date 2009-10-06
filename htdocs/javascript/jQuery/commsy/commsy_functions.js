@@ -161,17 +161,19 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          klick.attr('id', 'klick' + commsy_panel_index);
          klick.css('height', '100%');
 
-         if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user') && (modArray[commsy_panel_index] != 'group')){
+         if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user')){
             var newItem = jQuery('<span></span>')
-            newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new.png"/></a>');
+            newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new_home.png"/></a>');
             newItem.css('float', 'right');
             topBar.append(newItem);
          } else {
-            var img = jQuery('<img/>');
-            img.attr('id', 'showHideButton' + commsy_panel_index);
-            img.attr('src', 'images/arrow_up.gif');
-            img.css('float', 'right');
-            klick.append(img);
+            if((modArray[commsy_panel_index] != 'user')){
+               var img = jQuery('<img/>');
+               img.attr('id', 'showHideButton' + commsy_panel_index);
+               img.attr('src', 'images/arrow_up.gif');
+               img.css('float', 'right');
+               klick.append(img);
+            }
          }
 
          topBar.append(klick);
