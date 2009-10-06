@@ -48,6 +48,7 @@ class cs_portal_item extends cs_guide_item {
    private $_project_id_array = NULL;
    private $_group_id_array = NULL;
    private $_private_id_array = NULL;
+   private $_room_list_continuous_nlct = NULL;
 
    /** constructor: cs_server_item
     * the only available constructor, initial values for internal variables
@@ -369,8 +370,31 @@ class cs_portal_item extends cs_guide_item {
          $manager->select();
          $this->_room_list_continuous = $manager->get();
          unset($manager);
-     }
-     return $this->_room_list_continuous;
+      }
+      return $this->_room_list_continuous;
+   }
+
+   function getContinuousRoomListNotLinkedToTime ( $time_obj ) {
+      if (!isset($this->_room_list_continuous_nlct)) {
+         $manager = $this->_environment->getRoomManager();
+         $manager->setContextLimit($this->getItemID());
+         $manager->setContinuousLimit();
+         $manager->setOpenedLimit();
+         $manager->select();
+         $id_array1 = $manager->getIdArray();
+         $manager->setTimeLimit($time_obj->getItemID());
+         $manager->select();
+         $id_array2 = $manager->getIdArray();
+         $id_array3 = array_diff($id_array1,$id_array2);
+         if ( !empty($id_array3) ) {
+            $manager->resetLimits();
+            $manager->setIDArrayLimit($id_array3);
+            $manager->select();
+            $this->_room_list_continuous_nlct = $manager->get();
+         }
+         unset($manager);
+      }
+      return $this->_room_list_continuous_nlct;
    }
 
    ###########################################################
@@ -995,19 +1019,15 @@ class cs_portal_item extends cs_guide_item {
 
       $current_time = $this->getCurrentTimeItem();
       if ( isset($current_time) ) {
-         $cont_room_list = $this->getContinuousRoomList();
-         if ( isset($cont_room_list) and $cont_room_list->isNotEmpty()) {
+         $cont_room_list = $this->getContinuousRoomListNotLinkedToTime($current_time);
+         if ( isset($cont_room_list)
+              and $cont_room_list->isNotEmpty()
+            ) {
             $cont_room_item = $cont_room_list->getFirst();
             while ($cont_room_item) {
-               $time_list = $cont_room_item->getTimeList();
-               if ( isset($time_list)
-                    and !$time_list->inList($current_time)
-                  ) {
-                  $cont_room_item->setContinuous();
-                  $cont_room_item->saveWithoutChangingModificationInformation();
-                  $count++;
-               }
-               unset($time_list);
+               $cont_room_item->setContinuous();
+               $cont_room_item->saveWithoutChangingModificationInformation();
+               $count++;
                unset($cont_room_item);
                $cont_room_item = $cont_room_list->getNext();
             }
