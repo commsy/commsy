@@ -164,11 +164,12 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user')){
             var newItem = jQuery('<span></span>')
             if(modify == 1){
-               newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new_home.png"/></a>');
+               newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
             } else {
-               newItem.html('<img src="images/commsyicons/16x16/new_home_gray.png"/>');
+               newItem.html('<img src="images/commsyicons/16x16/new_home_big_gray.png" style="cursor:default;"/>');
             }
             newItem.css('float', 'right');
+            klick.css('width', temp_div.width());
             topBar.append(newItem);
          } else {
             if((modArray[commsy_panel_index] != 'user')){
