@@ -2697,7 +2697,10 @@ class cs_detail_view extends cs_view {
                     )
                   ) {
                   $this->_with_slimbox = true;
-                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
+                  // jQuery
+                  //$file_string = '<a href="'.$file->getUrl().'" rel="lightbox[gallery'.$item->getItemID().']">'.
+                  $file_string = '<a href="'.$file->getUrl().'" rel="lightbox-gallery_'.$item->getItemID().'">'.
+                  // jQuery
                   $file->getFileIcon().' '.($this->_text_as_html_short($this->_compareWithSearchText($file->getDisplayName()))).'</a> ('.$file->getFileSize().' KB)';
                } else {
                   $file_string = '<a href="'.$file->getUrl().'" target="blank">';

@@ -807,7 +807,10 @@ class cs_discussion_detail_view extends cs_detail_view {
                  or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
                   ) {
                    $this->_with_slimbox = true;
-                   $file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.str_replace('"','&quot;',$this->_text_as_html_short($displayname)).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                   // jQuery
+                   //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.str_replace('"','&quot;',$this->_text_as_html_short($displayname)).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                   $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.str_replace('"','&quot;',$this->_text_as_html_short($displayname)).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                   // jQuery
                }else{
                   $file_list.='<a href="'.$url.'" title="'.str_replace('"','&quot;',$this->_text_as_html_short($displayname)).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
                }

@@ -1963,7 +1963,10 @@ class misc_text_converter {
          $alt = 'image: '.$source;
       }
       if ( !empty($args['gallery']) ) {
-         $gallery = '['.$args['gallery'].']';
+         // jQuery
+         //$gallery = '['.$args['gallery'].']';
+         $gallery = '-'.$args['gallery'];
+         // jQuery
       } elseif ( !empty($source) )  {
          $gallery = '';
       }
