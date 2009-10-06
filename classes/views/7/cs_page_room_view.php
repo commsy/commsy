@@ -1230,6 +1230,7 @@ class cs_page_room_view extends cs_page_view {
                $title_string = '';
                $desc_string = '';
                $size_string = '';
+               $mod_string = '';
                $config_text = '';
                $html .='<div style="clear:both;">'.LF;
                $html .='</div>'.LF;
@@ -1271,6 +1272,7 @@ class cs_page_room_view extends cs_page_view {
                      $html .= $view->asHTML();
                      $title_string .= $append.'"'.$view->getViewTitle().'"';
                      $desc_string  .= $append.'"&nbsp;"';
+                     $mod_string  .= $append.'"&nbsp;"';
                      if ($view_name == 'buzzwords'){
                         $buzzword_manager = $this->_environment->getLabelManager();
                         $buzzword_manager->resetLimits();
@@ -1378,6 +1380,7 @@ class cs_page_room_view extends cs_page_view {
                      }else{
                         $image_text = 'material';
                      }
+                     $mod = $image_text;
                      if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                         $image = '<img src="images/commsyicons_msie6/16x16/'.$image_text.'.gif" style="padding-top:2px; float:left;"/>';
                      } else {
@@ -1406,13 +1409,18 @@ class cs_page_room_view extends cs_page_view {
                           $title_string .= '"'.$title.'"';
                           $desc_string  .= '"'.$desc.'"';
                           $size_string  .= '"'.$size.'"';
+                          $mod_string   .= '"'.$mod.'"';
                        }else{
                           $title_string .= ',"'.$title.'"';
                           $desc_string  .= ',"'.$desc.'"';
                           $size_string  .= ',"'.$size.'"';
+                          $mod_string   .= ',"'.$mod.'"';
                        }
                      }
-                     $html .= '<div>';
+                     // jQuery
+                     //$html .= '<div>';
+                     $html .= '<div id="homeheader">';
+                     // jQuery
                      $html .= '<noscript>';
                      $html .= '<div class="homeheader">'.$noscript_title.' '.$desc.'</div>';
                      $html .= '</noscript>';
@@ -1445,7 +1453,7 @@ class cs_page_room_view extends cs_page_view {
                /* gespeichert werden sollen Array("pane1","pane1",...)*/
                /*******************************/
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
-               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'));'.LF;
+               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array('.$mod_string.'),' . $this->_environment->getCurrentContextID() . ');'.LF;
                $html .= '</script>'.LF;
             }else{
                $html .= '<table style="width:100%; padding-top:0px;" summary="Layout">'.LF;

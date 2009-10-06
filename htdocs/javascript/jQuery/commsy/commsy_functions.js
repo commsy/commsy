@@ -106,7 +106,7 @@ function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,si
    });
 }
 
-function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
+function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray,modArray,contextID){
    var divs = jQuery('#commsy_panels').find('div');
    commsy_panel_index=0;
    for(var no=0;no<sizeArray.length;no++){
@@ -161,11 +161,18 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          klick.attr('id', 'klick' + commsy_panel_index);
          klick.css('height', '100%');
 
-         var img = jQuery('<img/>');
-         img.attr('id', 'showHideButton' + commsy_panel_index);
-         img.attr('src', 'images/arrow_up.gif');
-         img.css('float', 'right');
-         klick.append(img);
+         if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user') && (modArray[commsy_panel_index] != 'group')){
+            var newItem = jQuery('<span></span>')
+            newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW"><img src="images/commsyicons/16x16/new.png"/></a>');
+            newItem.css('float', 'right');
+            topBar.append(newItem);
+         } else {
+            var img = jQuery('<img/>');
+            img.attr('id', 'showHideButton' + commsy_panel_index);
+            img.attr('src', 'images/arrow_up.gif');
+            img.css('float', 'right');
+            klick.append(img);
+         }
 
          topBar.append(klick);
 
@@ -186,7 +193,9 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
                   outerContentDiv.css('display', 'none');
                }
             }
-            img.attr('src', 'images/arrow_down.gif');
+            if(contentDiv.attr('id') != 'homeheader'){
+               img.attr('src', 'images/arrow_down.gif');
+            }
             klick.attr('id', klick.attr('id') + 'down');
             span.attr('id', span.attr('id') + 'down');
             span2.attr('id', span2.attr('id') + 'down');
@@ -242,7 +251,9 @@ function showHidePaneContentTopBar(e,inputObj){
       var span2 = jQuery('#spanKlick' + numericId + 'down');
       var bar = jQuery('#topBar' + numericId + 'down');
    }
-   var img = jQuery('#showHideButton' + numericId);
+   if(jQuery('#showHideButton' + numericId).length > 0){
+      var img = jQuery('#showHideButton' + numericId);
+   }
    var obj = jQuery('#paneContent' + numericId);
 
    xpPanel_slideSpeed = speedArray[numericId];
@@ -252,7 +263,9 @@ function showHidePaneContentTopBar(e,inputObj){
       klick.attr('id', klick.attr('id').replace('up','down'));
       span.attr('id', span.attr('id').replace('up','down'));
       span2.attr('id', span2.attr('id').replace('up','down'));
-      img.attr('src', img.attr('src').replace('up','down'));
+      if(jQuery('#showHideButton' + numericId).length > 0){
+         img.attr('src', img.attr('src').replace('up','down'));
+      }
       if(xpPanel_slideActive && xpPanel_slideSpeed<200){
          obj.css('display', 'block');
          xpPanel_currentDirection[obj.attr('id')] = (xpPanel_slideSpeed*-1);
@@ -275,7 +288,9 @@ function showHidePaneContentTopBar(e,inputObj){
       klick.attr('id', klick.attr('id').replace('down','up'));
       span.attr('id', span.attr('id').replace('down','up'));
       span2.attr('id', span2.attr('id').replace('down','up'));
-      img.attr('src', img.attr('src').replace('down','up'));
+      if(jQuery('#showHideButton' + numericId).length > 0){
+         img.attr('src', img.attr('src').replace('down','up'));
+      }
       if(xpPanel_slideActive && xpPanel_slideSpeed<200){
          if(document.all){
             obj.css('display', 'block');
@@ -296,13 +311,17 @@ function showHidePaneContentTopBar(e,inputObj){
 
 function mouseoverTopbarBar(){
    var numericId = this.id.replace(/[^0-9]/g,'');
-   jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('.gif','_over.gif'));
+   if(jQuery('#showHideButton' + numericId).length > 0){
+      jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('.gif','_over.gif'));
+   }
    document.body.style.cursor = "pointer";
 }
 
 function mouseoutTopbarBar(){
    var numericId = this.id.replace(/[^0-9]/g,'');
-   jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('_over.gif','.gif'));
+   if(jQuery('#showHideButton' + numericId).length > 0){
+      jQuery('#showHideButton' + numericId).attr('src', jQuery('#showHideButton' + numericId).attr('src').replace('_over.gif','.gif'));
+   }
    document.body.style.cursor = "default";
 }
 
