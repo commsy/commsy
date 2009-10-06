@@ -688,6 +688,9 @@ class cs_community_item extends cs_room_item {
             case 'CAMPUS_SEARCH_INDEX':
                $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CAMPUS_SEARCH_INDEX',$link);
                break;
+            case 'GROUP_INDEX':
+               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_GROUP_INDEX',$link);
+               break;
             default:
                $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item('.__LINE__.') ',$link);
                break;
