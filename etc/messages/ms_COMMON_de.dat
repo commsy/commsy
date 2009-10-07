@@ -450,6 +450,7 @@ $message["COMMON_NEW_ANNOUNCEMENT_EDIT"]["de"] = "Neue Ankündigung erstellen";
 $message["COMMON_NEW_BUZZWORD_BUTTON"]["de"] = "Neu";
 $message["COMMON_NEW_COMMUNITY"]["de"] = "neuer %_COMMUNITY_SUB_NOMS_BIG";
 $message["COMMON_NEW_DATE"]["de"] = "neuer Termin";
+$message["COMMON_NEW_DATE_EDIT"]["de"] = "Neuen Termin erstellen";
 $message["COMMON_NEW_DISCUSSION"]["de"] = "Neue Diskussion erstellen";
 $message["COMMON_NEW_DISCUSSION_EDIT"]["de"] = "Neue Diskussion erstellen";
 $message["COMMON_NEW_F"]["de"] = "neue";
