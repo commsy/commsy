@@ -1196,8 +1196,10 @@ class cs_form_view extends cs_view {
       $form_element['tabindex'] = $this->_count_form_elements;
       $this->_count_form_elements++;
 
-      include_once('functions/misc_functions.php');
-      $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
+      if ( $form_element['with_html_area'] ) {
+         include_once('functions/misc_functions.php');
+         $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
+      }
 
       if ( empty($html) ) {
          $vsize = '';
