@@ -1570,7 +1570,7 @@ EOD;
 
          $html .='</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;
-         $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+         $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'),Array(),null,null);'.LF;
          $html .= '</script>'.LF;
       }
       // @segment-end 13018

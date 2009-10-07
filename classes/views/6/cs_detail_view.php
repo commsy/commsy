@@ -743,7 +743,7 @@ class cs_detail_view extends cs_view {
                and isset($desc_string)
                and isset($config_text)
                and isset($size_string)){
-               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+               $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'),Array(),null,null);'.LF;
             }
          }
          $html .= '</script>'.LF;

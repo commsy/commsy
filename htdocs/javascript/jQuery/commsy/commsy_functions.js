@@ -102,7 +102,7 @@ function initCreatorInformations(item_id,is_shown){
 
 function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
    jQuery(document).ready(function() {
-      initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray);
+      initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray,Array(),null,null);
    });
 }
 

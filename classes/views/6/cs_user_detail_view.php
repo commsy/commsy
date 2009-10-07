@@ -1172,7 +1172,7 @@ class cs_user_detail_view extends cs_detail_view {
          }
          $html .='</div>'.LF;
          $html .= '<script type="text/javascript">'.LF;
-         $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'));'.LF;
+         $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'), Array(),Array('.$size_string.'),Array(),null,null);'.LF;
          $html .= '</script>'.LF;
          $html .='</div>'.LF;
          $html .='<div class="infoborder" style="width:71%; margin-top:5px; vertical-align:bottom;">'.LF;
