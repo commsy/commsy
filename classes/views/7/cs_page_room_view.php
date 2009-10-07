@@ -1455,8 +1455,10 @@ class cs_page_room_view extends cs_page_view {
                $title_string = str_replace('</','&COMMSYDHTMLTAG&',$title_string);
                if($this->_with_modifying_actions){
                   $modify = 1;
+                  $html .= 'var new_action_message="' . $this->_translator->getMessage('COMMON_NEW_ITEM') . '";'.LF;
                } else {
                   $modify = 0;
+                  $html .= 'var new_action_message="' . getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;
                }
                $html .= 'initCommSyPanels(Array('.$title_string.'),Array('.$desc_string.'),Array('.$config_text.'),Array(),Array('.$size_string.'),Array('.$mod_string.'),' . $this->_environment->getCurrentContextID() . ',' . $modify . ');'.LF;
                $html .= '</script>'.LF;

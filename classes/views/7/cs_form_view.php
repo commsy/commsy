@@ -147,6 +147,13 @@ class cs_form_view extends cs_view {
             $this->_rubric_connections = $rubric_connections;
          }
       }
+      if ( !empty($_GET['iid']) ) {
+         $this->current_iid = $_GET['iid'];
+      } elseif ( !empty($_POST['iid']) ) {
+         $this->current_iid = $_POST['iid'];
+      } else {
+         $this->current_iid = 'NEW';
+      }
     }
 
    function setItemIsSaved(){
@@ -1931,7 +1938,12 @@ class cs_form_view extends cs_view {
             switch( $temp_mod_func  )
             {
                case 'ANNOUNCEMENT_EDIT':
-                  $tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
+                  //$tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_ANNOUNCEMENT_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_ANNOUNCEMENT_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/announcement.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1939,7 +1951,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'MATERIAL_EDIT':
-                  $tempMessage = getMessage('COMMON_MATERIAL_EDIT');
+                  //$tempMessage = getMessage('COMMON_MATERIAL_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_MATERIAL_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_MATERIAL_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1947,7 +1964,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DATE_EDIT':
-                  $tempMessage = getMessage('COMMON_DATE_EDIT');
+                  //$tempMessage = getMessage('COMMON_DATE_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_DATE_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_DATE_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/date.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1955,7 +1977,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'TODO_EDIT':
-                  $tempMessage = getMessage('COMMON_TODO_EDIT');
+                  //$tempMessage = getMessage('COMMON_TODO_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_TODO_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_TODO_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1963,7 +1990,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'GROUP_EDIT':
-                  $tempMessage = getMessage('COMMON_GROUP_EDIT');
+                  //$tempMessage = getMessage('COMMON_GROUP_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_GROUP_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_GROUP_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/group.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1979,7 +2011,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'TOPIC_EDIT':
-                  $tempMessage = getMessage('COMMON_TOPIC_EDIT');
+                  //$tempMessage = getMessage('COMMON_TOPIC_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_TOPIC_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_TOPIC_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/topic.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -1995,7 +2032,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DISCUSSION_EDIT':
-                  $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
+                  //$tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_DISCUSSION_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_DISCUSSION_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2011,7 +2053,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'SECTION_EDIT':
-                  $tempMessage = getMessage('COMMON_SECTION_EDIT');
+                  //$tempMessage = getMessage('COMMON_SECTION_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_SECTION_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_SECTION_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/material.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
