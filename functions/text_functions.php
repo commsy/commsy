@@ -264,7 +264,46 @@ function mb_unserialize($serial_str) {
    $retour = @unserialize($serial_str);
    if ( empty($retour) ) {
       $serial_str = preg_replace('!s:(\d+):"(.*?)";!se', "'s:'.strlen('$2').':\"$2\";'", $serial_str );
-      $retour = unserialize($serial_str);
+      $retour = @unserialize($serial_str);
+      if ( empty($retour) ) {
+         $retour = @unserialize(_correct_a($serial_str));
+      }
+   }
+   return $retour;
+}
+
+function _correct_a ( $value ) {
+   $retour = $value;
+
+   $found = array();
+   preg_match_all('~a:([0-9]*):~',$value,$found);
+   if ( !empty($found[1][0]) ) {
+      $begin = substr($value,0,strpos($value,'{')+1);
+      $middle = substr($value,strpos($value,'{')+1,strrpos($value,'}')-strpos($value,'{')-1);
+      $end = substr($value,strrpos($value,'}'));
+      if ( count($found[1]) > 1 ) {
+         $middle = _correct_a($middle);
+      }
+      $count_sem = 0;
+      $count_klam = 0;
+      for ( $i=0; $i<strlen($middle); $i++) {
+         if ( $count_klam == 0
+              and $middle[$i] == ';'
+            ) {
+            $count_sem = $count_sem + 0.5;
+         }
+         if ( $middle[$i] == '{' ) {
+            $count_klam++;
+         } elseif ( $middle[$i] == '}' ) {
+            $count_klam--;
+         }
+      }
+      if ( $count_sem == round($count_sem,0)
+           and $count_sem != $found[1][0]
+         ) {
+         $begin = str_replace($found[1][0],$count_sem,$begin);
+         $retour = $begin.$middle.$end;
+      }
    }
    return $retour;
 }
