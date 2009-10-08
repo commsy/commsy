@@ -426,6 +426,7 @@ class cs_page_view extends cs_view {
       return $retour;
    }
    function _includedJavascriptIE5AsHTML(){
+      $retour = '';
       global $c_commsy_url_path;
       $module   = $this->_environment->getCurrentModule();
       $current_user   = $this->_environment->getCurrentUserItem();
