@@ -300,7 +300,9 @@ class cs_group_item extends cs_label_item {
    function delete() {
       if ( $this->isGroupRoomActivated() ) {
          $room = $this->getGroupRoomItem();
-         $room->delete();
+         if ( isset($room) ) {
+            $room->delete();
+         }
       }
       parent::delete();
    }
