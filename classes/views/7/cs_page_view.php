@@ -509,6 +509,7 @@ class cs_page_view extends cs_view {
       // jQuery
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-ui-1.7.2.custom.min.js"></script>'.LF;
+      $retour .= '   <script type="text/javascript" src="http://cdn.jquerytools.org/1.1.2/jquery.tools.min.js"></script>'.LF;
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions.js"></script>'.LF;
       // jQuery
       if (!$this->_environment->inServer()){

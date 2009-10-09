@@ -2863,7 +2863,48 @@ class cs_form_view extends cs_view {
             $item = $manager->getItem($linked_item->getItemID());
             $text = getRubricMessageTageName($type);
             $text .= ' - '.$item->getTitle();
-            $html .= '   <li  style="padding:0px 3px;">';
+            //$html .= '   <li  style="padding:0px 3px;">';
+            
+            $type = $item->getType();
+            if ($type =='label'){
+               $type = $item->getLabelType();
+            }
+            switch ( mb_strtoupper($type, 'UTF-8') )
+               {
+                  case 'ANNOUNCEMENT':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/announcement.png)">';
+                     break;
+                  case 'DATE':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/date.png)">';
+                     break;
+                  case 'DISCUSSION':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/discussion.png)">';
+                     break;
+                  case 'GROUP':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/group.png)">';
+                     break;
+                  case 'INSTITUTION':
+                     $html .= '   <li  style="padding:0px 3px;">';
+                     break;
+                  case 'MATERIAL':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/material.png)">';
+                     break;
+                  case 'PROJECT':
+                     $html .= '   <li  style="padding:0px 3px;">';
+                     break;
+                  case 'TODO':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/todo.png")>';
+                     break;
+                  case 'TOPIC':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/topic.png">';
+                     break;
+                  case 'USER':
+                     $html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/user.png">';
+                     break;
+                  default:
+                     $html .= '   <li  style="padding:0px 3px;">';
+                     break;
+               }
             if ($type == CS_USER_TYPE){
                $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getFullName(),35)).'</a>';
             }else{
