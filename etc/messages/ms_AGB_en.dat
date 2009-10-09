@@ -2,7 +2,7 @@
 $message["AGB_ACCEPTANCE_BUTTON"]["en"] = "I accept the above Terms and Conditions.";
 $message["AGB_ACCEPTANCE_NOT_BUTTON"]["en"] = "Cancel application";
 $message["AGB_ACCEPTANCE_NOT_BUTTON_PORTAL"]["en"] = "Cancel membership";
-$message["AGB_ACCEPTANCE_NOT_BUTTON_ROOM"]["en"] = "Cancel membership";
+$message["AGB_ACCEPTANCE_NOT_BUTTON_ROOM"]["en"] = "Refuse membership";
 $message["AGB_CHANGE_TITLE"]["en"] = "New Terms and Conditions";
 $message["AGB_COMFIRMATION_TEXT"]["en"] = "I accept the %1.";
 $message["AGB_CONFIRMATION"]["en"] = "Terms and Conditions";
