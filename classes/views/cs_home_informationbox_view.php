@@ -155,7 +155,7 @@ class cs_home_informationbox_view extends cs_home_view {
       $item = $manager->getItem($id);
       $entry_manager = $this->_environment->getManager($item->getItemType());
       $entry = $entry_manager->getItem($id);
-      $html = '<div class="right_box">';
+      $html = '<div class="right_box" style="background-color:#ffffff;">';
       $current_context = $this->_environment->getCurrentContextItem();
       $html .= '<div class="right_box_title">';
       $html .= '<div id="right_box_title_link" style="float:right;">';
