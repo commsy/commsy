@@ -113,12 +113,19 @@ if ( $context_item->isLocked() ) {
       $disc_id_array = array();
 
       if ($context_item->withInformationBox()){
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = $context_item->isOpen();
-         $information_view = $class_factory->getClass(HOME_INFORMATIONBOX_VIEW,$params);
-         unset($params);
-         $page->addLeft($information_view);
+         $id = $current_context->getInformationBoxEntryID();
+         $manager = $environment->getItemManager();
+         $item = $manager->getItem($id);
+         $entry_manager = $environment->getManager($item->getItemType());
+         $entry = $entry_manager->getItem($id);
+         if($entry->isNotActivated() != '1'){
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = $context_item->isOpen();
+            $information_view = $class_factory->getClass(HOME_INFORMATIONBOX_VIEW,$params);
+            unset($params);
+            $page->addLeft($information_view);
+         }
       }
 
       foreach ( $rubrics as $rubric ) {
