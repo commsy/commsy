@@ -58,7 +58,7 @@ class misc_item2zip extends misc_2zip {
       $this->_item_id = $value;
    }
 
-   private function _getCSS ( $file, $file_url ) {
+   public function _getCSS ( $file, $file_url ) {
       $out = fopen($file,'wb');
       if ( $out == false ) {
          include_once('functions/error_functions.php');
