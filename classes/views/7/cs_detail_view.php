@@ -1740,57 +1740,46 @@ class cs_detail_view extends cs_view {
                {
                   case 'ANNOUNCEMENT':
                      $text .= $this->_translator->getMessage('COMMON_ONE_ANNOUNCEMENT');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/announcement.png)">';
                      $img = 'images/commsyicons/netnavigation/announcement.png';
                      break;
                   case 'DATE':
                      $text .= $this->_translator->getMessage('COMMON_ONE_DATE');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/date.png)">';
                      $img = 'images/commsyicons/netnavigation/date.png';
                      break;
                   case 'DISCUSSION':
                      $text .= $this->_translator->getMessage('COMMON_ONE_DISCUSSION');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/discussion.png)">';
                      $img = 'images/commsyicons/netnavigation/discussion.png';
                      break;
                   case 'GROUP':
                      $text .= $this->_translator->getMessage('COMMON_ONE_GROUP');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/group.png)">';
                      $img = 'images/commsyicons/netnavigation/group.png';
                      break;
                   case 'INSTITUTION':
                      $text .= $this->_translator->getMessage('COMMON_ONE_INSTITUTION');
-                     //$html .= '   <li  style="padding:0px 3px;">';
                      $img = '';
                      break;
                   case 'MATERIAL':
                      $text .= $this->_translator->getMessage('COMMON_ONE_MATERIAL');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/material.png)">';
                      $img = 'images/commsyicons/netnavigation/material.png';
                      break;
                   case 'PROJECT':
                      $text .= $this->_translator->getMessage('COMMON_ONE_PROJECT');
-                     //$html .= '   <li  style="padding:0px 3px;">';
                      $img = '';
                      break;
                   case 'TODO':
                      $text .= $this->_translator->getMessage('COMMON_ONE_TODO');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/todo.png")>';
                      $img = 'images/commsyicons/netnavigation/todo.png';
                      break;
                   case 'TOPIC':
                      $text .= $this->_translator->getMessage('COMMON_ONE_TOPIC');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/topic.png")>';
                      $img = 'images/commsyicons/netnavigation/topic.png';
                      break;
                   case 'USER':
                      $text .= $this->_translator->getMessage('COMMON_USER');
-                     //$html .= '   <li  style="padding:0px 3px; list-style-image:url(images/commsyicons/netnavigation/user.png")>';
                      $img = 'images/commsyicons/netnavigation/user.png"';
                      break;
                   default:
                      $text .= $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR').' cs_detail_view('.__LINE__.') ';
-                     //$html .= '   <li  style="padding:0px 3px;">';
                      $img = '';
                      break;
                }
