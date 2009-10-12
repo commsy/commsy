@@ -61,9 +61,19 @@ img {
 }
 
 #page_header{
-   visibility:hidden;
-   height:10px;
+   height:30px;
+   margin: 0px;
+   padding: 0px;
 }
+
+#page_header div.page_header_personal_area {
+   display: none;
+}
+
+#page_header tr.header_room_path {
+   visibility:hidden;
+}
+
 #tabs_frame{
    visibility:hidden;
    height:0px;

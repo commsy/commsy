@@ -3156,24 +3156,41 @@ EOD;
          $displayname = $file->getDisplayName();
          $filesize = $file->getFileSize();
          $fileicon = $file->getFileIcon();
-         if ($with_links and $this->_environment->inProjectRoom() or (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
-            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+         if ( $with_links
+              and $this->_environment->inProjectRoom()
+              or ( !$this->_environment->inProjectRoom()
+                   and ( $item->isPublished()
+                         or $user->isUser()
+                       )
+                 )
+            ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
-               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
-                 or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
-               ) {
-                   $this->_with_slimbox = true;
-                   // jQuery
-                   //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-                   $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
-                   // jQuery
-               }else{
+               if ( ( empty($_GET['download'])
+                      or $_GET['download'] != 'zip'
+                    )
+                    and
+                    ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpg')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'jpeg')
+                      or mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'gif')
+                    )
+                  ) {
+                  $this->_with_slimbox = true;
+                  // jQuery
+                  //$file_list.='<a href="'.$url.'" rel="lightbox[gallery'.$item->getItemID().']" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  $file_list.='<a href="'.$url.'" rel="lightbox-gallery'.$item->getItemID().'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" >'.$fileicon.'</a> ';
+                  // jQuery
+               } else {
                   $file_list.='<a href="'.$url.'" title="'.$this->_text_as_html_short($displayname).' ('.$filesize.' kb)" target="blank" >'.$fileicon.'</a> ';
                }
-           }
+            }
          } else {
             $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
          }

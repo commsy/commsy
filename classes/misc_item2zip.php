@@ -25,6 +25,9 @@ class misc_item2zip {
    private $_environment = NULL;
    private $_item_id = NULL;
    private $_view_mode = 'print';
+   private $_zip_mode = true;
+   private $_filename = 'index';
+   private $_folder_existing = NULL;
 
    public function __construct ($params) {
       if ( !empty($params['environment']) ) {
@@ -35,22 +38,22 @@ class misc_item2zip {
       }
    }
 
-   public function setItemID ( $value ) {
-      $this->_item_id = $value;
+   public function setWithoutZIP () {
+      $this->_zip_mode = false;
    }
 
-   private function _makeTempFolder () {
-      $retour = false;
-      global $export_temp_folder;
-      if ( !isset($export_temp_folder) ) {
-         $export_temp_folder = 'var/temp/zip_export';
+   public function setFilename2ID () {
+      $this->_filename = $this->_item_id;
+   }
+
+   public function setFolder ( $value ) {
+      if ( is_dir($value) ) {
+         $this->_folder_existing = $value;
       }
-      $directory = './'.$export_temp_folder.'/'.time();
-      $disc_manager = $this->_environment->getDiscManager();
-      if ($disc_manager->makeDirectoryR($directory)) {
-         $retour = $directory;
-      }
-      return $retour;
+   }
+
+   public function setItemID ( $value ) {
+      $this->_item_id = $value;
    }
 
    private function _getCSS ( $file, $file_url ) {
@@ -139,7 +142,9 @@ class misc_item2zip {
             $session = $this->_environment->getSessionItem();
             $current_user = $this->_environment->getCurrentUserItem();
             $current_context = $this->_environment->getCurrentContextItem();
-            include_once($detail_page);
+            $this->_environment->setCurrentParameter('iid',$item_id);
+            $_GET['iid'] = $item_id;
+            include($detail_page);
             unset($current_user);
             unset($session);
             unset($current_context);
@@ -149,8 +154,8 @@ class misc_item2zip {
          $page->setPrintableView();
          if ( $this->_view_mode == 'print' ) {
             $this->_environment->setCurrentParameter('mode','print');
-            $this->_environment->setCurrentParameter('download','zip');
             $_GET['mode'] = 'print';
+            $this->_environment->setCurrentParameter('download','zip');
             $_GET['download'] = 'zip';
          }
          $retour .= $page->asHTMLFirstPart();
@@ -166,7 +171,9 @@ class misc_item2zip {
       $i = 0;
       $iids = array();
 
-      if ( !empty($matches_array[1]) ) {
+      if ( !empty($matches_array[1])
+           and !is_dir($directory.'/images')
+         ) {
          mkdir($directory.'/images', 0777);
       }
 
@@ -217,7 +224,9 @@ class misc_item2zip {
       // commsy 7
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->isDesign7() ) {
-         mkdir($folder.'/css', 0777);
+         if ( !is_dir($folder.'/css') ) {
+            mkdir($folder.'/css', 0777);
+         }
 
          global $c_commsy_domain;
          global $c_commsy_url_path;
@@ -273,8 +282,10 @@ class misc_item2zip {
          $zip->close();
          unset($zip);
 
-         $disc_manager = $this->_environment->getDiscManager();
-         $disc_manager->removeDirectory($folder);
+         if ( empty($this->_folder_existing) ) {
+            $disc_manager = $this->_environment->getDiscManager();
+            $disc_manager->removeDirectory($folder);
+         }
       } else {
          include_once('functions/error_functions.php');
          trigger_error('can not initiate ZIP class, please contact your system administrator',E_USER_WARNNG);
@@ -282,7 +293,11 @@ class misc_item2zip {
    }
 
    public function execute () {
-      $folder = $this->_makeTempFolder();
+      if ( !empty($this->_folder_existing) ) {
+         $folder = $this->_folder_existing;
+      } else {
+         $folder = $this->_makeTempFolder();
+      }
       if ( $folder ) {
          // get HTML output
          $output = $this->_getOutput($this->_item_id);
@@ -294,7 +309,7 @@ class misc_item2zip {
          $output = $this->_replaceLinksToFiles($output,$folder);
 
          //create HTML-File
-         $filename = $folder.'/index.html';
+         $filename = $folder.'/'.$this->_filename.'.html';
          $handle = fopen($filename, 'a');
          fwrite($handle, $output);
          fclose($handle);
@@ -304,7 +319,9 @@ class misc_item2zip {
          $this->_copyCSS($folder);
 
          // create ZIP File
-         $this->_createZIP($folder);
+         if ( $this->_zip_mode ) {
+            $this->_createZIP($folder);
+         }
       } else {
          include_once('functions/error_functions.php');
          trigger_error('can not make temp folder - '.__FILE__.' - '.__LINE__,E_USER_ERROR);

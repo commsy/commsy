@@ -65,7 +65,12 @@ function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $ti
 
 
        $ahref .= '>'.$linktext.'</a>';
-       if(isset($_GET['mode']) and $_GET['mode']=='print'){
+       if ( isset($_GET['mode'])
+            and $_GET['mode'] == 'print'
+            and ( empty($_GET['download'])
+                  or $_GET['download'] != 'zip'
+                )
+          ) {
           return $linktext;
        }else{
           return $ahref;

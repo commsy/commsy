@@ -567,8 +567,8 @@ class cs_page_room_view extends cs_page_view {
       $logo_filename = '';
       $context_item = $this->_environment->getCurrentContextItem();
       $current_user = $this->_environment->getCurrentUserItem();
-      $html .='<table summary="layout" style="padding:0px; border-collapse:collapse;">';
-      $html .= '<tr>';
+      $html .='<table summary="layout" style="padding:0px; border-collapse:collapse;">'.LF;
+      $html .= '<tr>'.LF;
       if ( $this->_environment->inCommunityRoom()
            or $this->_environment->inProjectRoom()
            or $this->_environment->inPrivateRoom()
@@ -580,18 +580,18 @@ class cs_page_room_view extends cs_page_view {
             $params['picture'] = $context_item->getLogoFilename();
             $curl = curl($this->_environment->getCurrentContextID(), 'picture', 'getfile', $params,'');
             unset($params);
-            $html .= '<td style="padding:0px; height:55px; width:10%;">';
+            $html .= '<td style="padding:0px; height:55px; width:10%;">'.LF;
             $html .= '<div class="logo" style="vertical-align:top; padding:5px 5px 0px 0px; margin:0px;">'.LF;
-            $html .= '     <img style="height:45px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>';
+            $html .= '     <img style="height:45px; padding: 0px; margin:0px;" src="'.$curl.'" alt="'.$this->_translator->getMessage('COMMON_LOGO').'" border="0"/>'.LF;
             $html .= '</div>'.LF;
-            $html .= '</td>';
-            $html .= '<td style="vertical-align:middle; padding: 5px 0px 0px 0px;">';
+            $html .= '</td>'.LF;
+            $html .= '<td style="vertical-align:middle; padding: 5px 0px 0px 0px;">'.LF;
          }else{
-            $html .= '<td colspan="2" style="height:55px; vertical-align:middle; padding:0px;">';
+            $html .= '<td colspan="2" style="height:55px; vertical-align:middle; padding:0px;">'.LF;
 
          }
       }else{
-         $html .= '<td colspan="2" style="height:55px; border:1px solid green; vertical-align:bottom; padding:5px 0px 0px 0px;">';
+         $html .= '<td colspan="2" style="height:55px; border:1px solid green; vertical-align:bottom; padding:5px 0px 0px 0px;">'.LF;
 
       }
       $length = mb_strlen($context_item->getTitle());
@@ -615,12 +615,12 @@ class cs_page_room_view extends cs_page_view {
       }else{
          $html .= '<h1 '.$size.'>'.'&nbsp;'.'</h1>'.LF;
       }
-      $html .= '</td>';
-      $html .= '</tr>';
+      $html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
 
       if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
-         $html .= '<tr>';
-         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">';
+         $html .= '<tr class="header_room_path">'.LF;
+         $html .= '<td colspan="2" style="padding:0px; margin:0px; vertical-align:bottom;">'.LF;
          $breadcrump = '';
          $params = array();
          if ($current_user->isRoot()){
@@ -654,10 +654,10 @@ class cs_page_room_view extends cs_page_view {
             $breadcrump.= ' &gt; '.chunkText($this->_text_as_html_short($context_item->getTitle()),50);
          }
          $html .= '<span style="height: 20px;font-size:8pt; font-weight:normal;">'.$breadcrump.'</span>'.BRLF;
-         $html .= '</td>';
-         $html .= '</tr>';
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
       }
-      $html .= '</table>';
+      $html .= '</table>'.LF;
       return $html;
    }
 
@@ -761,43 +761,43 @@ class cs_page_room_view extends cs_page_view {
 
       $html .= '<div id="page_header">';
       if ( !isset($this->_with_navigation_links) or $this->_with_navigation_links) {
-         $html .= '<div class="page_header_personal_area">';
-         $html .= '<div style="float:right;">';
-         $html .= $this->getMyAreaAsHTML();
-         $html .= '</div>';
-         $html .= '<div style="clear:both;">';
-         $html .= '</div>';
+         $html .= '<div class="page_header_personal_area">'.LF;
+         $html .= '<div style="float:right;">'.LF;
+         $html .= $this->getMyAreaAsHTML().LF;
+         $html .= '</div>'.LF;
+         $html .= '<div style="clear:both;">'.LF;
+         $html .= '</div>'.LF;
          $browser = $this->_environment->getCurrentBrowser();
          $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
          $current_browser_version = $this->_environment->getCurrentBrowserVersion();
          if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
+            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
          }elseif ($current_browser == 'msie') {
-            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">';
+            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
          }else{
-            $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">';
+            $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">'.LF;
          }
-         $html .= '<div style="float:right; vertical-align:bottom;">';
-         $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">';
-         $html .= '<tr>';
-         $html .= '<td style="vertical-align:middle;">';
+         $html .= '<div style="float:right; vertical-align:bottom;">'.LF;
+         $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">'.LF;
+         $html .= '<tr>'.LF;
+         $html .= '<td style="vertical-align:middle;">'.LF;
          $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
-         $html .= '</td>';
-         $html .= '<td>';
+         $html .= '</td>'.LF;
+         $html .= '<td>'.LF;
          $html .= $this->_getUserPersonalAreaAsHTML().LF;
-         $html .= '</td>';
-         $html .= '</tr>';
-         $html .= '</table>';
-         $html .= '</div>';
-         $html .= '</div>';
-         $html .= '<div style="clear:both;">';
-         $html .= '</div>';
-         $html .= '</div>';
+         $html .= '</td>'.LF;
+         $html .= '</tr>'.LF;
+         $html .= '</table>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF;
+         $html .= '<div style="clear:both;">'.LF;
+         $html .= '</div>'.LF;
+         $html .= '</div>'.LF.LF;
       }
-      $html .= '<div id="page_header_logo">';
+      $html .= '<div id="page_header_logo">'.LF;
       $html .= $this->_getLogoAsHTML().LF;
-      $html .= '</div>';
-      $html .= '</div>';
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
       $this->_send_first_html_part = true;
       return $html;
    }

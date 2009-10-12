@@ -122,8 +122,14 @@ class cs_announcement_index_view extends cs_index_view {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                              $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_TITLE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -138,8 +144,14 @@ class cs_announcement_index_view extends cs_index_view {
          $params['sort'] = 'modified';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                              $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_MODIFIED_AT');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -154,8 +166,14 @@ class cs_announcement_index_view extends cs_index_view {
          $params['sort'] = 'modificator';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                              $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_MODIFIED_BY');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -261,25 +279,34 @@ class cs_announcement_index_view extends cs_index_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
+      $download = $this->_environment->getValueOfParameter('download');
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print')
+           or ( !empty($download)
+                and $download == 'zip'
+              )
+         ) {
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         $user = $this->_environment->getCurrentUser();
-         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-            $html .= ' disabled="disabled"'.LF;
-         }elseif ( isset($checked_ids)
-              and !empty($checked_ids)
-              and in_array($key, $checked_ids)
+         if ( empty($download)
+              or $download != 'zip'
             ) {
-            $html .= ' checked="checked"'.LF;
-            if ( in_array($key, $dontedit_ids) ) {
+            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+            $user = $this->_environment->getCurrentUser();
+            if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
+            }elseif ( isset($checked_ids)
+                 and !empty($checked_ids)
+                 and in_array($key, $checked_ids)
+               ) {
+               $html .= ' checked="checked"'.LF;
+               if ( in_array($key, $dontedit_ids) ) {
+                  $html .= ' disabled="disabled"'.LF;
+               }
             }
+            $html .= '/>'.LF;
+            $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          }
-         $html .= '/>'.LF;
-         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-         if ($item->isNotActivated()){
+         if ( $item->isNotActivated() ) {
             $title = $item->getTitle();
             $title = $this->_compareWithSearchText($title);
             $user = $this->_environment->getCurrentUser();
@@ -314,9 +341,7 @@ class cs_announcement_index_view extends cs_index_view {
       } else {
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).$fileicons.'</td>'.LF;
       }
-     // @segment-end 75550
 
-     // @segment-begin 66261 creator/creation-date-of-announcement-entry,see#82455,#55311
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -328,8 +353,6 @@ class cs_announcement_index_view extends cs_index_view {
     * this method returns the item title in the right formatted style
     *
     * @return string title
-    *
-    * @author CommSy Development Group
     */
    function _getItemTitle($item){
       $title = $item->getTitle();
@@ -347,13 +370,13 @@ class cs_announcement_index_view extends cs_index_view {
       if ( !$this->_environment->inPrivateRoom() and !$item->isNotActivated()) {
          $title .= $this->_getItemChangeStatus($item);
          $title .= $this->_getItemAnnotationChangeStatus($item);
-     }
+      }
       return $title;
    }
 
    public function _getAdditionalViewActionsAsHTML () {
       $retour = '';
-      #$retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
       return $retour;
    }
 }

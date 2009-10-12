@@ -90,7 +90,9 @@ class misc_2zip {
       // commsy 7
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->isDesign7() ) {
-         mkdir($folder.'/css', 0777);
+         if ( !is_dir($folder.'/css') ) {
+            mkdir($folder.'/css', 0777);
+         }
 
          global $c_commsy_domain;
          global $c_commsy_url_path;
@@ -123,7 +125,7 @@ class misc_2zip {
          $item_type = $item_manager->getItemType($this->_item_id);
          $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$item_type.'_'.$this->_item_id.'.zip';
       } else {
-         $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$this->_environment->getCurrentModule().'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'.zip';
+         $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$this->_environment->getCurrentModule().'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
       }
       if ( file_exists(realpath($zipfile)) ) {
          unlink($zipfile);
@@ -147,8 +149,10 @@ class misc_2zip {
          $zip->close();
          unset($zip);
 
-         $disc_manager = $this->_environment->getDiscManager();
-         $disc_manager->removeDirectory($folder);
+         if ( empty($this->_folder_existing) ) {
+            $disc_manager = $this->_environment->getDiscManager();
+            $disc_manager->removeDirectory($folder);
+         }
 
          $retour = $filename;
       } else {
@@ -206,55 +210,6 @@ class misc_2zip {
       if ( !empty($page) ) {
          $retour = $page;
          unset($page);
-      }
-      return $retour;
-   }
-
-   public function _replaceLinksToFiles ( $retour, $directory ) {
-      $reg_exp = '~\<a\s{1}href=\"([^"]*)\"~u';
-      preg_match_all($reg_exp, $retour, $matches_array);
-      $i = 0;
-      $iids = array();
-
-      if ( !empty($matches_array[1]) ) {
-         mkdir($directory.'/images', 0777);
-      }
-
-      foreach($matches_array[1] as $match) {
-         $new = parse_url($matches_array[1][$i],PHP_URL_QUERY);
-         $out = '';
-         parse_str($new,$out);
-
-         if ( isset($out['amp;iid']) ) {
-             $index = $out['amp;iid'];
-         } elseif( isset($out['iid']) ) {
-             $index = $out['iid'];
-         }
-         if (isset($index) ) {
-            $filemanager = $this->_environment->getFileManager();
-            $file = $filemanager->getItem($index);
-            if ( isset($file) ) {
-               $icon = $directory.'/images/'.$file->getIconFilename();
-               $filearray[$i] = $file->getDiskFileName();
-               if ( file_exists(realpath($file->getDiskFileName())) ) {
-                  include_once('functions/text_functions.php');
-                  copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
-                  $retour = str_replace($match, toggleUmlaut($file->getFilename()), $retour);
-                  copy('htdocs/images/'.$file->getIconFilename(),$icon);
-
-                  // thumbs gehen nicht
-                  // warum nicht allgemeiner mit <img? (siehe unten)
-                  // geht unten aber auch nicht
-                  $thumb_name = $file->getFilename() . '_thumb';
-                  $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-                  if ( file_exists(realpath($thumb_disk_name)) ) {
-                     copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
-                     $retour = str_replace($match, $thumb_name, $retour);
-                  }
-               }
-            }
-         }
-         $i++;
       }
       return $retour;
    }

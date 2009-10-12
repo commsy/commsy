@@ -84,6 +84,23 @@ class misc_list2zip extends misc_2zip {
       return $retour;
    }
 
+   private function _saveDetailPages ( $id_array, $folder ) {
+      $retour = true;
+      if ( !empty($id_array) ) {
+         $class_factory = $this->_environment->getClassFactory();
+         foreach ( $id_array as $id ) {
+            $item2zip = $class_factory->getClass(MISC_ITEM2ZIP,array('environment' => $this->_environment));
+            $item2zip->setItemID($id);
+            $item2zip->setFolder($folder);
+            $item2zip->setWithoutZip();
+            $item2zip->setFilename2ID();
+            $item2zip->execute();
+         }
+         unset($class_factory);
+      }
+      return $retour;
+   }
+
    public function execute () {
       $folder = $this->_makeTempFolder();
       if ( $folder ) {
@@ -94,6 +111,11 @@ class misc_list2zip extends misc_2zip {
          $output = str_replace('commsy_print_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
          $output = str_replace('commsy_pda_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet.css', $output);
          $output = str_replace('commsy_myarea_css.php?cid='.$this->_environment->getCurrentContextID(),'stylesheet2.css', $output);
+
+         // now detail pages
+         $this->_saveDetailPages($this->_item_id_array,$folder);
+
+         // links on index page
          $output = $this->_replaceLinksToFiles($output,$folder);
 
          //create HTML-File
@@ -112,6 +134,48 @@ class misc_list2zip extends misc_2zip {
          include_once('functions/error_functions.php');
          trigger_error('can not make temp folder - '.__FILE__.' - '.__LINE__,E_USER_ERROR);
       }
+   }
+
+   public function _replaceLinksToFiles ( $retour, $directory ) {
+      $reg_exp = '~\<a\s{1}href=\"([^"]*)\"~u';
+      preg_match_all($reg_exp, $retour, $matches_array);
+      $link_list = array();
+      if ( !empty($matches_array[1]) ) {
+         foreach ( $matches_array[1] as $link ) {
+            if ( stristr($link,'detail')
+                 or stristr($link,'getFile')
+               ) {
+               $link_list[] = $link;
+            }
+         }
+      }
+
+
+      $iids = array();
+
+      if ( !empty($matches_array[1]) ) {
+         if ( !is_dir($directory.'/images') ) {
+            mkdir($directory.'/images', 0777);
+         }
+      }
+
+      foreach ( $link_list as $link ) {
+         if ( stristr($link,'getFile') ) {
+            $name = str_replace('commsy.php/','',$link);
+            $name = substr($name,0,strpos($name,'?'));
+            include_once('functions/text_functions.php');
+            $name = toggleUmlaut($name);
+            $retour = str_replace($link,$name,$retour);
+         } else {
+            $reg_exp = '~iid=([0-9]*)~u';
+            $iid_array = array();
+            preg_match_all($reg_exp, $link, $iid_array);
+            if ( !empty($iid_array[1][0]) ) {
+               $retour = str_replace($link,$iid_array[1][0].'.html',$retour);
+            }
+         }
+      }
+      return $retour;
    }
 
    public function send () {
