@@ -20,7 +20,9 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-class misc_item2zip {
+$this->includeClass(MISC_2ZIP);
+
+class misc_item2zip extends misc_2zip {
 
    private $_environment = NULL;
    private $_item_id = NULL;
