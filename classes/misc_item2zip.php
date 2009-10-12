@@ -218,7 +218,7 @@ class misc_item2zip extends misc_2zip {
       return $retour;
    }
 
-   private function _copyCSS ($folder) {
+   public function _copyCSS ($folder) {
       // CSS
       $csstarget = $folder.'/stylesheet.css';
       $csssrc = 'htdocs/commsy_print_css.php';
@@ -249,7 +249,7 @@ class misc_item2zip extends misc_2zip {
       }
    }
 
-   private function _createZIP ($folder) {
+   public function _createZIP ($folder) {
       // create ZIP File
       global $export_temp_folder;
       if ( !isset($export_temp_folder) ) {
