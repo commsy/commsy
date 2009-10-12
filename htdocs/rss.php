@@ -237,29 +237,33 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_user_manager.php');
             $manager = new cs_user_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $fullname = $item->getFullName();
-            $email = $item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $fullname = $item->getFullName();
+               $email = $item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
+               if ( $item->getCreationDate() == $item->getModificationDate() ) {
+                  $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
+                  $description = $translator->getMessage('RSS_NEW_PERSON_DESCRIPTION',$fullname);
+               } else {
+                  $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
+                  $description = $translator->getMessage('RSS_CHANGE_PERSON_DESCRIPTION',$fullname);
+               }
+               $date = date('r',strtotime($item->getModificationDate()));
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             }
-            if ( !$item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            if ( $item->getCreationDate() == $item->getModificationDate() ) {
-               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
-               $description = $translator->getMessage('RSS_NEW_PERSON_DESCRIPTION',$fullname);
-            } else {
-               $title = $translator->getMessage('RSS_NEW_PERSON_TITLE',$fullname);
-               $description = $translator->getMessage('RSS_CHANGE_PERSON_DESCRIPTION',$fullname);
-            }
-            $date = date('r',strtotime($item->getModificationDate()));
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=user&amp;fct=detail&amp;iid='.$row['item_id'];
             unset($manager);
             unset($item);
             break;
@@ -267,128 +271,175 @@ if ( isset($_GET['cid']) ) {
             include_once('classes/cs_annotations_manager.php');
             $manager = new cs_annotations_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $linked_item = $item->getLinkedItem();
-            if ( isset($linked_item) ) {
-               $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
-               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-               $user_item = $item->getModificatorItem();
-               $fullname = $user_item->getFullName();
-               $email = $user_item->getEmail();
-               if ( $context_item->isCommunityRoom() ) {
-                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $linked_item = $item->getLinkedItem();
+               if ( isset($linked_item) ) {
+                  $title = $translator->getMessage('RSS_NEW_ANNOTATION_TITLE',$item->getTitle(),$linked_item->getTitle());
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                  $user_item = $item->getModificatorItem();
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
                      $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+                  $date = date('r',strtotime($item->getModificationDate()));
                }
-               if ( !$user_item->isEmailVisible() ) {
-                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               }
-               $author = $email.' ('.$fullname.')';
-               unset($email);
-               unset($fullname);
-               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod='.$linked_item->getItemType().'&amp;fct=detail&amp;iid='.$linked_item->getItemID();
-               $date = date('r',strtotime($item->getModificationDate()));
+               unset($linked_item);
+               unset($user_item);
             }
             unset($manager);
             unset($item);
-            unset($linked_item);
-            unset($user_item);
             break;
          case 'discussion':
             include_once('classes/cs_discussion_manager.php');
             $manager = new cs_discussion_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ( isset($last_discarticle_item)
-                 and $item->getModificationDate() == $last_discarticle_item->getModificationDate()
-                 and $item->getModificationDate() != $item->getCreationDate()
+            if ( isset($item)
+                 and !$item->isNotActivated()
                ) {
-               unset($last_discarticle_item);
-               $title = '';
-               $description = '';
-               $link = '';
-               $author = '';
-               $date = '';
-            } elseif ( $item->getModificationDate() != $item->getCreationDate() ) {
-               $title = '';
-               $description = '';
-               $link = '';
-               $author = '';
-               $date = '';
-            } else {
-               $title = $translator->getMessage('RSS_NEW_DISCUSSION_TITLE',$item->getTitle());
-               $description = $translator->getMessage('RSS_NEW_DISCUSSION_DESCRIPTION',$item->getTitle());
-               $user_item = $item->getModificatorItem();
-               $fullname = $user_item->getFullName();
-               $email = $user_item->getEmail();
-               if ( $context_item->isCommunityRoom() ) {
-                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+               if ( isset($last_discarticle_item)
+                    and $item->getModificationDate() == $last_discarticle_item->getModificationDate()
+                    and $item->getModificationDate() != $item->getCreationDate()
+                  ) {
+                  unset($last_discarticle_item);
+                  $title = '';
+                  $description = '';
+                  $link = '';
+                  $author = '';
+                  $date = '';
+               } elseif ( $item->getModificationDate() != $item->getCreationDate() ) {
+                  $title = '';
+                  $description = '';
+                  $link = '';
+                  $author = '';
+                  $date = '';
+               } else {
+                  $title = $translator->getMessage('RSS_NEW_DISCUSSION_TITLE',$item->getTitle());
+                  $description = $translator->getMessage('RSS_NEW_DISCUSSION_DESCRIPTION',$item->getTitle());
+                  $user_item = $item->getModificatorItem();
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
                      $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
+                  $date = date('r',strtotime($item->getModificationDate()));
                }
-               if ( !$user_item->isEmailVisible() ) {
-                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               }
-               $author = $email.' ('.$fullname.')';
-               unset($email);
-               unset($fullname);
-               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$row['item_id'];
-               $date = date('r',strtotime($item->getModificationDate()));
+               unset($user_item);
             }
             unset($manager);
             unset($item);
-            unset($user_item);
             break;
          case 'discarticle':
             include_once('classes/cs_discussionarticles_manager.php');
             $manager = new cs_discussionarticles_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $linked_item = $item->getLinkedItem();
-            if ( !empty($linked_item) ) {
-               $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
-               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-               $user_item = $item->getModificatorItem();
-               $fullname = $user_item->getFullName();
-               $email = $user_item->getEmail();
-               if ( $context_item->isCommunityRoom() ) {
-                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $linked_item = $item->getLinkedItem();
+               if ( !empty($linked_item) ) {
+                  $title = $translator->getMessage('RSS_NEW_DISCUSSIONARTICLE_TITLE',$item->getTitle(),$linked_item->getTitle());
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                  $user_item = $item->getModificatorItem();
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
                      $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                   }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
+                  $date = date('r',strtotime($item->getModificationDate()));
+                  $last_discarticle_item = $item;
+                  unset($user_item);
+                  unset($linked_item);
                }
-               if ( !$user_item->isEmailVisible() ) {
-                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               }
-               $author = $email.' ('.$fullname.')';
-               unset($email);
-               unset($fullname);
-               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=discussion&amp;fct=detail&amp;iid='.$linked_item->getItemID();
-               $date = date('r',strtotime($item->getModificationDate()));
-               unset($manager);
-               $last_discarticle_item = $item;
-               unset($item);
-               unset($user_item);
-               unset($linked_item);
             }
+            unset($item);
+            unset($manager);
             break;
       case 'material':
             include_once('classes/cs_material_manager.php');
             $manager = new cs_material_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ( !isset($item)
-                 or $item->isDeleted()
-                 or ( isset($last_section_item)
-                      and $item->getModificationDate() == $last_section_item->getModificationDate()
-                    )
+            if ( isset($item)
+                 and !$item->isNotActivated()
                ) {
-               unset($last_section_item);
-               $title = '';
-               $description = '';
-               $link = '';
-               $author = '';
-               $date = '';
-            } else {
-               $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
+               if ( !isset($item)
+                    or $item->isDeleted()
+                    or ( isset($last_section_item)
+                         and $item->getModificationDate() == $last_section_item->getModificationDate()
+                       )
+                  ) {
+                  unset($last_section_item);
+                  $title = '';
+                  $description = '';
+                  $link = '';
+                  $author = '';
+                  $date = '';
+               } else {
+                  $title = $translator->getMessage('RSS_NEW_MATERIAL_TITLE',$item->getTitle());
+                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                  $user_item = $item->getModificatorItem();
+                  $fullname = $user_item->getFullName();
+                  $email = $user_item->getEmail();
+                  if ( $context_item->isCommunityRoom() ) {
+                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     }
+                  }
+                  if ( !$user_item->isEmailVisible() ) {
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+                  $author = $email.' ('.$fullname.')';
+                  unset($email);
+                  unset($fullname);
+                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
+                  $date = date('r',strtotime($item->getModificationDate()));
+               }
+               unset($user_item);
+            }
+            unset($manager);
+            unset($item);
+            break;
+      case 'announcement':
+            include_once('classes/cs_announcement_manager.php');
+            $manager = new cs_announcement_manager($environment);
+            $item = $manager->getItem($row['item_id']);
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $title = $translator->getMessage('RSS_NEW_ANNOUNCEMENT_TITLE',$item->getTitle());
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
                $fullname = $user_item->getFullName();
@@ -405,176 +456,163 @@ if ( isset($_GET['cid']) ) {
                $author = $email.' ('.$fullname.')';
                unset($email);
                unset($fullname);
-               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$row['item_id'];
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
                $date = date('r',strtotime($item->getModificationDate()));
+               unset($user_item);
             }
             unset($manager);
             unset($item);
-            unset($user_item);
-            break;
-      case 'announcement':
-            include_once('classes/cs_announcement_manager.php');
-            $manager = new cs_announcement_manager($environment);
-            $item = $manager->getItem($row['item_id']);
-            $title = $translator->getMessage('RSS_NEW_ANNOUNCEMENT_TITLE',$item->getTitle());
-            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-            $user_item = $item->getModificatorItem();
-            $fullname = $user_item->getFullName();
-            $email = $user_item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-                  $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-               }
-            }
-            if ( !$user_item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=announcement&amp;fct=detail&amp;iid='.$row['item_id'];
-            $date = date('r',strtotime($item->getModificationDate()));
-            unset($manager);
-            unset($item);
-            unset($user_item);
             break;
       case 'section':
             include_once('classes/cs_section_manager.php');
             $manager = new cs_section_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $linked_item = $item->getLinkedItem();
-            $title = '';
-            if ( isset($linked_item) ) {
-               $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
-            }
-            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-            $user_item = $item->getModificatorItem();
-            $fullname = $user_item->getFullName();
-            $email = $user_item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $linked_item = $item->getLinkedItem();
+               $title = '';
+               if ( isset($linked_item) ) {
+                  $title = $translator->getMessage('RSS_NEW_SECTION_TITLE',$item->getTitle(),$linked_item->getTitle());
+               }
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+               $user_item = $item->getModificatorItem();
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
+               $date = date('r',strtotime($item->getModificationDate()));
+               $last_section_item = $item;
+               unset($user_item);
+               unset($linked_item);
             }
-            if ( !$user_item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=material&amp;fct=detail&amp;iid='.$item->getLinkedItemID();
-            $date = date('r',strtotime($item->getModificationDate()));
-            unset($manager);
-            $last_section_item = $item;
             unset($item);
-            unset($user_item);
-            unset($linked_item);
+            unset($manager);
             break;
       case 'date':
             include_once('classes/cs_dates_manager.php');
             $manager = new cs_dates_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            $title = $translator->getMessage('RSS_NEW_DATE_TITLE',$item->getTitle());
-            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-            $user_item = $item->getModificatorItem();
-            $fullname = $user_item->getFullName();
-            $email = $user_item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $title = $translator->getMessage('RSS_NEW_DATE_TITLE',$item->getTitle());
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+               $user_item = $item->getModificatorItem();
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
+               $date = date('r',strtotime($item->getModificationDate()));
+               unset($user_item);
             }
-            if ( !$user_item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=date&amp;fct=detail&amp;iid='.$row['item_id'];
-            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
-            unset($user_item);
             break;
       case 'label':
             include_once('classes/cs_labels_manager.php');
             $manager = new cs_labels_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            switch($item->getLabelType()) {
-               case 'group':
-                  $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
-                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-                  $user_item = $item->getModificatorItem();
-                  $fullname = $user_item->getFullName();
-                  $email = $user_item->getEmail();
-                  if ( $context_item->isCommunityRoom() ) {
-                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               switch($item->getLabelType()) {
+                  case 'group':
+                     $title = $translator->getMessage('RSS_NEW_GROUP_TITLE',$item->getTitle());
+                     $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                     $user_item = $item->getModificatorItem();
+                     $fullname = $user_item->getFullName();
+                     $email = $user_item->getEmail();
+                     if ( $context_item->isCommunityRoom() ) {
+                        if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                           $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                           $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        }
+                     }
+                     if ( !$user_item->isEmailVisible() ) {
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      }
-                  }
-                  if ( !$user_item->isEmailVisible() ) {
-                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-                  }
-                  $author = $email.' ('.$fullname.')';
-                  unset($email);
-                  unset($fullname);
-                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=group&amp;fct=detail&amp;iid='.$row['item_id'];
-               break;
-               case 'institution':
-                  $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
-                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-                  $user_item = $item->getModificatorItem();
-                  $fullname = $user_item->getFullName();
-                  $email = $user_item->getEmail();
-                  if ( $context_item->isCommunityRoom() ) {
-                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $author = $email.' ('.$fullname.')';
+                     unset($email);
+                     unset($fullname);
+                     $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=group&amp;fct=detail&amp;iid='.$row['item_id'];
+                  break;
+                  case 'institution':
+                     $title = $translator->getMessage('RSS_NEW_INSTITUTION_TITLE',$item->getTitle());
+                     $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                     $user_item = $item->getModificatorItem();
+                     $fullname = $user_item->getFullName();
+                     $email = $user_item->getEmail();
+                     if ( $context_item->isCommunityRoom() ) {
+                        if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                           $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                           $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        }
+                     }
+                     if ( !$user_item->isEmailVisible() ) {
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      }
-                  }
-                  if ( !$user_item->isEmailVisible() ) {
-                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-                  }
-                  $author = $email.' ('.$fullname.')';
-                  unset($email);
-                  unset($fullname);
-                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=institution&amp;fct=detail&amp;iid='.$row['item_id'];
-               break;
-               case 'topic':
-                  $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
-                  $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-                  $user_item = $item->getModificatorItem();
-                  $fullname = $user_item->getFullName();
-                  $email = $user_item->getEmail();
-                  if ( $context_item->isCommunityRoom() ) {
-                     if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                        $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $author = $email.' ('.$fullname.')';
+                     unset($email);
+                     unset($fullname);
+                     $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=institution&amp;fct=detail&amp;iid='.$row['item_id'];
+                  break;
+                  case 'topic':
+                     $title = $translator->getMessage('RSS_NEW_TOPIC_TITLE',$item->getTitle());
+                     $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+                     $user_item = $item->getModificatorItem();
+                     $fullname = $user_item->getFullName();
+                     $email = $user_item->getEmail();
+                     if ( $context_item->isCommunityRoom() ) {
+                        if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                           $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                           $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                        }
+                     }
+                     if ( !$user_item->isEmailVisible() ) {
                         $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                      }
-                  }
-                  if ( !$user_item->isEmailVisible() ) {
-                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-                  }
-                  $author = $email.' ('.$fullname.')';
-                  unset($email);
-                  unset($fullname);
-                  $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
-               break;
+                     $author = $email.' ('.$fullname.')';
+                     unset($email);
+                     unset($fullname);
+                     $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=topic&amp;fct=detail&amp;iid='.$row['item_id'];
+                  break;
+               }
+               $date = date('r',strtotime($item->getModificationDate()));
+               unset($user_item);
             }
-            $date = date('r',strtotime($item->getModificationDate()));
             unset($manager);
             unset($item);
-            unset($user_item);
             break;
       case 'todo':
             include_once('classes/cs_todos_manager.php');
             $manager = new cs_todos_manager($environment);
             $item = $manager->getItem($row['item_id']);
-            if ( isset($item) ) {
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
                $title = $translator->getMessage('RSS_NEW_TODO_TITLE',$item->getTitle(),date('d.m.Y',strtotime($item->getDate())));
                $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
                $user_item = $item->getModificatorItem();
@@ -602,34 +640,38 @@ if ( isset($_GET['cid']) ) {
       case 'step':
             $manager = $environment->getManager(CS_STEP_TYPE);
             $item = $manager->getItem($row['item_id']);
-            $linked_item = $item->getLinkedItem();
-            $title = '';
-            if ( isset($linked_item) ) {
-               $title = $translator->getMessage('RSS_NEW_STEP_TITLE',$item->getTitle(),$linked_item->getTitle());
-            }
-            $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
-            $user_item = $item->getModificatorItem();
-            $fullname = $user_item->getFullName();
-            $email = $user_item->getEmail();
-            if ( $context_item->isCommunityRoom() ) {
-               if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
-                  $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+            if ( isset($item)
+                 and !$item->isNotActivated()
+               ) {
+               $linked_item = $item->getLinkedItem();
+               $title = '';
+               if ( isset($linked_item) ) {
+                  $title = $translator->getMessage('RSS_NEW_STEP_TITLE',$item->getTitle(),$linked_item->getTitle());
+               }
+               $description = $environment->getTextConverter()->text_as_html_long($environment->getTextConverter()->cleanDataFromTextArea($item->getDescription()));
+               $user_item = $item->getModificatorItem();
+               $fullname = $user_item->getFullName();
+               $email = $user_item->getEmail();
+               if ( $context_item->isCommunityRoom() ) {
+                  if ( empty($_GET['hid']) and !$user_item->isVisibleForAll() ) {
+                     $fullname = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                     $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
+                  }
+               }
+               if ( !$user_item->isEmailVisible() ) {
                   $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
                }
+               $author = $email.' ('.$fullname.')';
+               unset($email);
+               unset($fullname);
+               $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$item->getToDoID().'#anchor'.$item->getItemID();
+               $date = date('r',strtotime($item->getModificationDate()));
+               $last_section_item = $item;
+               unset($user_item);
+               unset($linked_item);
             }
-            if ( !$user_item->isEmailVisible() ) {
-               $email = $translator->getMessage('COMMON_USER_NOT_VISIBLE');
-            }
-            $author = $email.' ('.$fullname.')';
-            unset($email);
-            unset($fullname);
-            $link = $path.$c_single_entry_point.'?cid='.$cid.'&amp;mod=todo&amp;fct=detail&amp;iid='.$item->getToDoID().'#anchor'.$item->getItemID();
-            $date = date('r',strtotime($item->getModificationDate()));
-            unset($manager);
-            $last_section_item = $item;
             unset($item);
-            unset($user_item);
-            unset($linked_item);
+            unset($manager);
             break;
       default:
             $title = '';
