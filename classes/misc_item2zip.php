@@ -32,6 +32,7 @@ class misc_item2zip extends misc_2zip {
    private $_folder_existing = NULL;
 
    public function __construct ($params) {
+      parent::__construct($params);
       if ( !empty($params['environment']) ) {
          $this->_environment = $params['environment'];
       } else {
