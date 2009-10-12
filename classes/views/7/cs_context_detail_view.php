@@ -376,7 +376,8 @@ var $_room_type = 'context';
 
       // prepare time (clock pulses)
       $current_context = $this->_environment->getCurrentContextItem();
-      if ( $current_context->showTime()
+      $current_portal = $this->_environment->getCurrentPortalItem();
+      if ( $current_portal->showTime()
            and ( $this->_item->isProjectRoom()
                 or $this->_item->isCommunityRoom() )
          ) {
@@ -527,20 +528,20 @@ var $_room_type = 'context';
          $html .= '<div>'.LF;
          $formal_data = array();
          $params['iid'] = $this->_item->getItemID();
-   $html.= $this->_translator->getMessage('EMAIL_CONTACT_MODERATOR_TEXT');
+         $html.= $this->_translator->getMessage('EMAIL_CONTACT_MODERATOR_TEXT');
          $html .= '<form method="post" action="'.curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'detail',$params).'" name="member">'.LF;
          $temp_array[0] = $this->_translator->getMessage('EMAIL_CONTACT_MODERATOR_TEXT_DESC').': ';
-   $temp_array[1]= '<textarea name="description_user" cols="50" rows="10" wrap="virtual" tabindex="14" ></textarea>'.LF;
-   $formal_data[] = $temp_array;
+         $temp_array[1]= '<textarea name="description_user" cols="50" rows="10" wrap="virtual" tabindex="14" ></textarea>'.LF;
+         $formal_data[] = $temp_array;
          $temp_array = array();
-   $temp_array[0] = '&nbsp;';
-   $temp_array[1]= '<input type="submit" name="option"  value="'.$this->_translator->getMessage('CONTACT_MAIL_SEND_BUTTON').'"/>'.
+         $temp_array[0] = '&nbsp;';
+         $temp_array[1]= '<input type="submit" name="option"  value="'.$this->_translator->getMessage('CONTACT_MAIL_SEND_BUTTON').'"/>'.
                        '&nbsp;&nbsp;'.'<input type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_BACK_BUTTON').'"/>'.LF;
-   $formal_data[] = $temp_array;
-   if ( !empty($formal_data) ) {
-      $html .= $this->_getFormalDataAsHTML2($formal_data);
-      $html .= BRLF;
-   }
+         $formal_data[] = $temp_array;
+         if ( !empty($formal_data) ) {
+            $html .= $this->_getFormalDataAsHTML2($formal_data);
+            $html .= BRLF;
+         }
          unset($params);
          $html .= '</form>'.LF;
          $html .= '</div>'.LF;
