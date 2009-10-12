@@ -1803,7 +1803,6 @@ class cs_detail_view extends cs_view {
                      $linked_iid = $linked_item->getItemID();
                }
                $html .= '   <li  style="padding-left:5px; list-style-type:none;">';
-               $html .= '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>';
                $params = array();
                $params['iid'] = $linked_iid;
                $params['link_item_path'] = $this->getItem()->getItemID();
@@ -1811,6 +1810,21 @@ class cs_detail_view extends cs_view {
                $user = $this->_environment->getCurrentUser();
                if ($module == CS_USER_TYPE and (!$linked_item->isUser() or !$linked_item->maySee($user))){
                    $link_title = chunkText($this->_text_as_html_short($linked_item->getFullName()),35);
+                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $this->_translator->getMessage('USER_STATUS_REJECTED'),
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
@@ -1843,6 +1857,21 @@ class cs_detail_view extends cs_view {
                                        $module,
                                        'detail',
                                        $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
+                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
                                        $link_title,
                                        $link_creator_text,
                                        '_self',
@@ -1861,7 +1890,19 @@ class cs_detail_view extends cs_view {
                       }else{
                           $link_title = chunkText($this->_text_as_html_short($linked_item->getTitle()),35);
                       }
-                     $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'style=""');
+                      $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
                                        $params,

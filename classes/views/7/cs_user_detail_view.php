@@ -984,9 +984,7 @@ class cs_user_detail_view extends cs_detail_view {
                   default:
                      $linked_iid = $linked_item->getItemID();
                }
-               //$html .= '   <li  style="padding:0px 3px;">';
                $html .= '   <li  style="padding-left:5px; list-style-type:none;">';
-               $html .= '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>';
                
                $params = array();
                $params['iid'] = $linked_iid;
@@ -999,6 +997,21 @@ class cs_user_detail_view extends cs_detail_view {
                    }else{
                       $link_creator_text .= ' ('.$this->_translator->getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($linked_item->getActivatingDate()).')';
                    }
+                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment,
+                                       '',
+                                       '',
+                                       '',
+                                       'class="disabled"',
+                                       '',
+                                       '',
+                                       true);
                    $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
@@ -1016,6 +1029,14 @@ class cs_user_detail_view extends cs_detail_view {
                                        true);
                   unset($params);
                }else{
+                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                       $module,
+                                       'detail',
+                                       $params,
+                                       '<img src="' . $img . '" style="padding-right:3px;" title="' . $link_creator_text . '"/>',
+                                       $link_creator_text,
+                                       '_self',
+                                       $fragment);
                   $html .= ahref_curl( $this->_environment->getCurrentContextID(),
                                        $module,
                                        'detail',
