@@ -2309,11 +2309,14 @@ class cs_detail_view extends cs_view {
          $read_percentage = round(($read_count/$user_count) * 100);
          $read_since_modification_percentage = round(($read_since_modification_count/$user_count) * 100);
       }
+
       if ( isset($modificator)
            and $modificator->isRoot()
          ) {
          $temp_html = $this->_compareWithSearchText($modificator->getFullname());
-      } elseif ( $environment->inProjectRoom() ) {
+      } elseif ( $environment->inProjectRoom()
+                 or $environment->inGroupRoom()
+               ) {
          if ( isset($modificator)
               and $modificator->isUser()
               and !$modificator->isDeleted()
