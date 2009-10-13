@@ -106,17 +106,23 @@ if ($current_user->isGuest()) {
          if ( isset($_POST['status']) ) {
             if ($_POST['status'] == '') {
                $current_context->open();
-               $wiki_manager = $environment->getWikiManager();
-               $wiki_manager->openWiki();
+               if($current_context->existWiki()){
+                  $wiki_manager = $environment->getWikiManager();
+                  $wiki_manager->openWiki();
+               }
             } elseif ($_POST['status'] == 2) {
                $current_context->close();
-               $wiki_manager = $environment->getWikiManager();
-               $wiki_manager->closeWiki();
+               if($current_context->existWiki()){
+                  $wiki_manager = $environment->getWikiManager();
+                  $wiki_manager->closeWiki();
+               }
             }
          }else{
             $current_context->open();
-            $wiki_manager = $environment->getWikiManager();
-            $wiki_manager->openWiki();
+            if($current_context->existWiki()){
+               $wiki_manager = $environment->getWikiManager();
+               $wiki_manager->openWiki();
+            }
          }
 
 
