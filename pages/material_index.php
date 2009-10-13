@@ -391,6 +391,9 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
             unset($params);
          }
          break;
+      case 'download':
+         include_once('include/inc_rubric_download.php');
+         break;
       default:
          $params = $environment->getCurrentParameterArray();
          unset($params['mode']);
@@ -408,76 +411,84 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
 # get data from database
 ###############################################################
 $material_manager = $environment->getMaterialManager();
-$material_manager->create_tmp_table($environment->getCurrentContextID());
-$material_manager->setContextLimit($environment->getCurrentContextID());
-$all_ids = $material_manager->getIds();
-$count_all = count($all_ids);
-if (isset($all_ids[0])){
-	$newest_id = $all_ids[0];
-	$item = $material_manager->getItem($newest_id);
-	$date = $item->getModificationDate();
-	$now = getCurrentDateTimeInMySQL();
-	if ($date <= $now){
-	   $sel_activating_status = 1;
-	}
-}elseif($count_all == 0){
-	$sel_activating_status = 1;
-}
-$material_manager->resetData();
-
-if ( !empty($ref_iid) and $mode == 'attached' ){
-   $material_manager->setRefIDLimit($ref_iid);
-}
-
-if ( !empty($ref_user) and $mode == 'attached' ){
-   $material_manager->setRefUserLimit($ref_user);
-}
-if ( !empty($sort) ) {
-   $material_manager->setOrder($sort);
-}
-
-/***Activating Code***/
-if ( $sel_activating_status == 2 ) {
-   $material_manager->showNoNotActivatedEntries();
-}
-/*********************/
-
-if ( !empty($search) ) {
-   $material_manager->setSearchLimit($search);
-}
-if ( !empty($attribute_limit) ) {
-   $material_manager->setAttributeLimit($attribute_limit);
-}
-if ( !empty($selbuzzword) ) {
-   $material_manager->setBuzzwordLimit($selbuzzword);
-}
-if ( $interval > 0
-     and !$environment->isOutputMode('XML') ) {
-   $material_manager->setIntervalLimit($from-1, $interval);
-}
-if ( $context_item->isProjectRoom() ){
-   if ( !empty($selgroup) ) {
-      $material_manager->setGroupLimit($selgroup);
+if ( !isset($only_show_array)
+     or empty($only_show_array)
+   ) {
+   $material_manager->create_tmp_table($environment->getCurrentContextID());
+   $material_manager->setContextLimit($environment->getCurrentContextID());
+   $all_ids = $material_manager->getIds();
+   $count_all = count($all_ids);
+   if (isset($all_ids[0])){
+      $newest_id = $all_ids[0];
+      $item = $material_manager->getItem($newest_id);
+      $date = $item->getModificationDate();
+      $now = getCurrentDateTimeInMySQL();
+      if ($date <= $now){
+         $sel_activating_status = 1;
+      }
+   }elseif($count_all == 0){
+      $sel_activating_status = 1;
    }
-   if ( !empty($seltopic) ) {
-      $material_manager->setTopicLimit($seltopic);
+   $material_manager->resetData();
+
+   if ( !empty($ref_iid) and $mode == 'attached' ){
+      $material_manager->setRefIDLimit($ref_iid);
    }
+
+   if ( !empty($ref_user) and $mode == 'attached' ){
+      $material_manager->setRefUserLimit($ref_user);
+   }
+   if ( !empty($sort) ) {
+      $material_manager->setOrder($sort);
+   }
+
+   /***Activating Code***/
+   if ( $sel_activating_status == 2 ) {
+      $material_manager->showNoNotActivatedEntries();
+   }
+   /*********************/
+
+   if ( !empty($search) ) {
+      $material_manager->setSearchLimit($search);
+   }
+   if ( !empty($attribute_limit) ) {
+      $material_manager->setAttributeLimit($attribute_limit);
+   }
+   if ( !empty($selbuzzword) ) {
+      $material_manager->setBuzzwordLimit($selbuzzword);
+   }
+   if ( $interval > 0
+        and !$environment->isOutputMode('XML') ) {
+      $material_manager->setIntervalLimit($from-1, $interval);
+   }
+   if ( $context_item->isProjectRoom() ){
+      if ( !empty($selgroup) ) {
+         $material_manager->setGroupLimit($selgroup);
+      }
+      if ( !empty($seltopic) ) {
+         $material_manager->setTopicLimit($seltopic);
+      }
+   } else {
+      if ( !empty($selinstitution) ) {
+         $material_manager->setInstitutionLimit($selinstitution);
+      }
+      if ( !empty($seltopic) ) {
+         $material_manager->setTopicLimit($seltopic);
+      }
+   }
+   if ( !empty($last_selected_tag) ){
+      $material_manager->setTagLimit($last_selected_tag);
+   }
+
+   foreach($sel_array as $rubric => $value){
+      if (!empty($value)){
+         $material_manager->setRubricLimit($rubric,$value);
+      }
+   }
+
 } else {
-   if ( !empty($selinstitution) ) {
-      $material_manager->setInstitutionLimit($selinstitution);
-   }
-   if ( !empty($seltopic) ) {
-      $material_manager->setTopicLimit($seltopic);
-   }
-}
-if ( !empty($last_selected_tag) ){
-   $material_manager->setTagLimit($last_selected_tag);
-}
-
-foreach($sel_array as $rubric => $value){
-   if (!empty($value)){
-      $material_manager->setRubricLimit($rubric,$value);
-   }
+   $material_manager->resetLimits();
+   $material_manager->setIDArrayLimit($only_show_array);
 }
 
 $ids = $material_manager->getIDs();       // returns an array of item ids
@@ -534,7 +545,11 @@ if ( $environment->isOutputMode('XML') ) {
    if ( empty($seldisplay_mode) or $seldisplay_mode != 'flash' ) {
       $list = $material_manager->get();        // returns a cs_list of material_items
    }
-   $material_manager->delete_tmp_table();
+   if ( !isset($only_show_array)
+        or empty($only_show_array)
+      ) {
+      $material_manager->delete_tmp_table();
+   }
 
    if ( empty($seldisplay_mode) or $seldisplay_mode != 'flash' ) {
       $id_array = array();
@@ -593,7 +608,9 @@ if ( $environment->isOutputMode('XML') ) {
    // Set data for view
    $params = array();
    $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $with_modifying_actions;
+   if ( !empty($with_modifying_actions) ) {
+      $params['with_modifying_actions'] = $with_modifying_actions;
+   }
    $view = $class_factory->getClass(MATERIAL_INDEX_VIEW,$params);
    unset($params);
 
@@ -615,7 +632,9 @@ if ( $environment->isOutputMode('XML') ) {
       $view->setInterval($interval);
    }
    $view->setCountAllShown($count_all_shown);
-   $view->setCountAll($count_all);
+   if ( isset($count_all) ) {
+      $view->setCountAll($count_all);
+   }
 
    /***Activating Code***/
    $view->setActivationLimit($sel_activating_status);

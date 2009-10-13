@@ -561,7 +561,7 @@ class cs_index_view extends cs_view {
 
    // @segment-begin 35732  _getGetParamsAsArray()-cs_index_view-params_as_array
    function _getGetParamsAsArray() {
-      $params = array();
+      $params = $this->_environment->getCurrentParameterArray();
       if ( $this->hasCheckboxes() ) {
          $params['ref_iid'] = $this->getRefIID();
          $params['ref_user'] = $this->getRefUser();

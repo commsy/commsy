@@ -233,9 +233,7 @@ class cs_announcement_index_view extends cs_index_view {
       }else{
          $style='class="even"';
       }
-     // @segment-end 89418
 
-      // @segment-begin 38279 ?see-#48753,#9157
       if ($this->_clipboard_mode){
          $sort_criteria = $item->getContextID();
          if ( $sort_criteria != $this->_last_sort_criteria ) {
@@ -264,16 +262,11 @@ class cs_announcement_index_view extends cs_index_view {
             }
          }
       }
-      // @segment-end 38279
 
-     // @segment-begin 96494 begin-announcement-entry,see#21229,#51566
       $html  .= '   <tr class="list">'.LF;
       $checked_ids = $this->getCheckedIDs();
       $dontedit_ids = $this->getDontEditIDs();
       $key = $item->getItemID();
-     // @segment-end 96494
-
-      // @segment-begin 75550 check-box/text_from_announcement-entry
 
       $fileicons = $this->_getItemFiles($item, $with_links);
       if ( !empty($fileicons) ) {

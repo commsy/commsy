@@ -48,7 +48,7 @@ class cs_material_index_view extends cs_index_view {
     * @param boolean with_modifying_actions true: display with modifying functions
     *                                       false: display without modifying functions
     */
-   function cs_material_index_view ($params) {
+   function __construct ($params) {
       $this->cs_index_view($params);
       $this->setTitle($this->_translator->getMessage('MATERIAL_INDEX'));
       $this->_show_buzzword_box = true;
@@ -64,42 +64,6 @@ class cs_material_index_view extends cs_index_view {
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
       $html = '';
-      /*
-      $current_context = $this->_environment->getCurrentContextItem();
-      $session = $this->_environment->getSession();
-      $left_menue_status = $session->getValue('left_menue_status');
-      $selected_value = $this->_attribute_limit;
-      $width = '235';
-      $context_item = $this->_environment->getCurrentContextItem();
-      $html .= '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">';
-      $html .= $this->_translator->getMessage('COMMON_RESTRICT_SEARCH').'<br />'.LF;
-      if ( isset($this->_search_text)
-           and !empty($this->_search_text)
-           and $this->_search_text != $this->_translator->getMessage('COMMON_SEARCH_IN_ROOM')
-         ) {
-         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1" onChange="javascript:document.indexform.submit()">'.LF;
-      }else{
-         $html .= '   <select style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" name="attribute_limit" size="1">'.LF;
-      }
-      $html .= '      <option value="0"';
-      if ( !isset($selected_value) || $selected_value == 0 ) {
-          $html .= ' selected="selected"';
-      }
-      $html .= '>*'.$this->_translator->getMessage('MATERIAL_FULL_SEARCH').'</option>'.LF;
-      $html .= '   <option class="disabled" disabled="disabled" value="-2">------------------------------</option>'.LF;
-      $html .= '      <option value="1"';
-      if ( isset($selected_value) and $selected_value == 'title' ) {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_TITLE').'</option>'.LF;
-      $html .= '      <option value="2"';
-      if ( isset($selected_value) and $selected_value == 'author' ) {
-         $html .= ' selected="selected"';
-      }
-      $html .= '>'.$this->_translator->getMessage('MATERIAL_ONLY_AUTHOR').'</option>'.LF;
-      $html .= '   </select>'.LF;
-      $html .='</div>';
-      */
       return $html;
    }
 
@@ -182,8 +146,14 @@ class cs_material_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       if($with_links) {
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('MATERIAL_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+         if ( empty($params['download'])
+              or $params['download'] != 'zip'
+            ) {
+            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('MATERIAL_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+         } else {
+            $html .= $this->_translator->getMessage('MATERIAL_TITLE');
+         }
          $html .= $picture;
       } else {
          $html.=  '<span class="index_link">'.$this->_translator->getMessage('MATERIAL_TITLE').'</span>';
@@ -205,8 +175,14 @@ class cs_material_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       if($with_links) {
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                          $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
+         if ( empty($params['download'])
+              or $params['download'] != 'zip'
+            ) {
+            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                             $params, $this->_translator->getMessage('COMMON_MODIFIED_AT'), '', '', $this->getFragment(),'','','','class="head"');
+         } else {
+            $html .= $this->_translator->getMessage('COMMON_MODIFIED_AT');
+         }
          $html .= $picture;
       } else {
          $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_MODIFIED_AT').'</span>';
@@ -226,8 +202,14 @@ class cs_material_index_view extends cs_index_view {
          $picture ='&nbsp;';
       }
       if($with_links) {
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+         if ( empty($params['download'])
+              or $params['download'] != 'zip'
+            ) {
+            $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('COMMON_MODIFIED_BY'), '', '', $this->getFragment(),'','','','class="head"');
+         } else {
+            $html .= $this->_translator->getMessage('COMMON_MODIFIED_BY');
+         }
          $html .= $picture;
       } else {
          $html .= '<span class="index_link">'.$this->_translator->getMessage('COMMON_MODIFIED_BY').'</span>';
@@ -273,36 +255,6 @@ class cs_material_index_view extends cs_index_view {
       $html .= '   </tr>'.LF;
       return $html;
 
-   }
-
-   /** get View-Actions of this index view
-    * this method returns the index actions as html
-    *
-    * @return string index actions
-    */
-   function _getViewActionsAsHTML () {
-      $user = $this->_environment->getCurrentUserItem();
-      if ($this->_clipboard_mode){
-         $html = parent::_getViewActionsAsHTML();
-      }else{
-         $html  = '';
-         $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
-         $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-         $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
-         $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
-         $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-         if ($user->isModerator()){
-            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
-         }else{
-            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
-         }
-         $html .= '</select>'.LF;
-         $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
-         $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
-         $html .= '/>'.LF;
-      }
-      return $html;
    }
 
    /** get the item of the list view as HTML
@@ -356,27 +308,35 @@ class cs_material_index_view extends cs_index_view {
       $checked_ids = $this->getCheckedIDs();
       $dontedit_ids = $this->getDontEditIDs();
       $key = $item->getItemID();
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
-        $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-/***Activating Code***/
-         $user = $this->_environment->getCurrentUser();
-         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-            $html .= ' disabled="disabled"'.LF;
-         }elseif ( isset($checked_ids)
-              and !empty($checked_ids)
-              and in_array($key, $checked_ids)
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print')
+           or ( !empty($download)
+                and $download == 'zip'
+              )
+         ) {
+         $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
+         if ( empty($download)
+              or $download != 'zip'
             ) {
-            $html .= ' checked="checked"'.LF;
-            if ( in_array($key, $dontedit_ids) ) {
+            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+
+            $user = $this->_environment->getCurrentUser();
+            if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
+            }elseif ( isset($checked_ids)
+                 and !empty($checked_ids)
+                 and in_array($key, $checked_ids)
+               ) {
+               $html .= ' checked="checked"'.LF;
+               if ( in_array($key, $dontedit_ids) ) {
+                  $html .= ' disabled="disabled"'.LF;
+               }
             }
+
+            $html .= '/>'.LF;
+            $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          }
-/*********************/
-         $html .= '/>'.LF;
-         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
-/***Activating Code***/
+
          if ($item->isNotActivated()){
             $title = $this->_getItemTitle($item);
             $title = $this->_compareWithSearchText($title);
@@ -409,7 +369,7 @@ class cs_material_index_view extends cs_index_view {
                 $html .= '      <td '.$style.'>'.$title.LF;
              }
          }
-/*********************/
+
       }else{
             if($with_links) {
                $html .= '      <td colspan="2" '.$style.'>'.$this->_getItemTitle($item).LF;
@@ -552,7 +512,12 @@ class cs_material_index_view extends cs_index_view {
          $filesize = $file->getFileSize();
          $fileicon = $file->getFileIcon();
          if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
-            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
                if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
@@ -575,6 +540,12 @@ class cs_material_index_view extends cs_index_view {
          $file = $files->getNext();
       }
       return $retour.$file_list;
+   }
+
+   public function _getAdditionalViewActionsAsHTML () {
+      $retour = '';
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      return $retour;
    }
 }
 ?>
