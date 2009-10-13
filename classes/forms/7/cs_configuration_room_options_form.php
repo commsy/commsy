@@ -749,32 +749,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
          }
       }
 
-      // switch CommSy6 and CommSy7
-      global $only_design_7_array;
-      $current_portal_item = $this->_environment->getCurrentPortalItem();
-      if (!(isset($only_design_7_array) and in_array($current_portal_item->getItemID(),$only_design_7_array))){
-         if ( $this->_environment->inProjectRoom()
-	           or $this->_environment->inCommunityRoom()
-	           or $this->_environment->inPrivateRoom()
-	           or $this->_environment->inPortal()
-	           or $this->_environment->inServer()
-	         ) {
-	         $value_array = array();
-	         $temp_array = array();
-	         $temp_array['text'] = 'CommSy6';
-	         $temp_array['value'] = '6';
-	         $value_array[] = $temp_array;
-	         unset($temp_array);
-	         $temp_array = array();
-	         $temp_array['text'] = 'CommSy7';
-	         $temp_array['value'] = '7';
-	         $value_array[] = $temp_array;
-	         unset($temp_array);
-	         $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
-	      }
-      }
-
-      /*****Beschreibung****/
       $languageArray = array();
       $tmpArray = $this->_environment->getAvailableLanguageArray();
       $zaehler = 0;

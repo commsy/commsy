@@ -5135,107 +5135,17 @@ class cs_context_item extends cs_item {
    }
 
    public function isDesign6() {
-      $retour = true;
-      $design = $this->_getDesign();
-      if ( empty($design) ) {
-         if ( $this->isGroupRoom() ) {
-            $context = $this->getLinkedProjectItem();
-            $retour = $context->isDesign6();
-            unset($context);
-         }
-         if ( $this->isProjectRoom() ) {
-            $community_room_list = $this->getCommunityList();
-            if ( isset($community_room_list) and $community_room_list->isNotEmpty() ) {
-               $context = $community_room_list->getFirst();
-               $retour = $context->isDesign6();
-               unset($context);
-            } else {
-               $context = $this->getContextItem();
-               $retour = $context->isDesign6();
-               unset($context);
-            }
-         }
-         if ( $this->isCommunityRoom()
-              or $this->isPrivateRoom()
-              or $this->isPortal()
-            ) {
-            $context = $this->getContextItem();
-            if ( isset($context) ) {
-               $context = $this->getContextItem();
-               $retour = $context->isDesign6();
-            }
-            unset($context);
-         }
-      } elseif ( $design != 6 ) {
-         $retour = false;
-      }
+      $retour = false;
       return $retour;
    }
 
    public function isDesign7() {
-      $retour = false;
-      $design = $this->_getDesign();
-      if ( empty($design) ) {
-         if ( $this->isGroupRoom() ) {
-            $context = $this->getLinkedProjectItem();
-            $retour = $context->isDesign7();
-            unset($context);
-         }
-         if ( $this->isProjectRoom() ) {
-            $community_room_list = $this->getCommunityList();
-            if ( isset($community_room_list) and $community_room_list->isNotEmpty() ) {
-               $context = $community_room_list->getFirst();
-               $c_design = $context->_getDesign();
-               if ( $c_design == 7 ) {
-                  $retour = true;
-               }
-               unset($context);
-            } else {
-               $context = $this->getContextItem();
-               $retour = $context->isDesign7();
-               unset($context);
-            }
-         }
-         if ( $this->isCommunityRoom()){
-               $c_design = $this->_getDesign();
-               if ( $c_design == 7 ) {
-                  $retour = true;
-               }
-         }
-         if ($this->isPrivateRoom()
-              or $this->isPortal()
-            ) {
-            $context = $this->getContextItem();
-            if ( isset($context) ) {
-               $retour = $context->isDesign7();
-               unset($context);
-            }
-         }
-      } elseif ( $design == 7 ) {
-         $retour = true;
-      }
+      $retour = true;
       return $retour;
    }
 
    private function _getDesign() {
-      global $only_design_7_array;
-      if ( $this->isPortal()
-           or $this->isServer()
-         ) {
-         $current_portal_item = $this;
-      } else {
-         $current_portal_item = $this->_environment->getCurrentPortalItem();
-      }
-      $retour = '';
-      if ( $this->_issetExtra('DESIGN')) {
-         $retour = $this->_getExtra('DESIGN');
-      }
-      if ( isset($current_portal_item)
-           and isset($only_design_7_array)
-           and in_array($current_portal_item->getItemID(),$only_design_7_array)
-         ) {
-         $retour = '7';
-      }
+      $retour = '7';
       return $retour;
    }
 

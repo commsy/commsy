@@ -129,6 +129,7 @@ class class_ckeditor extends cs_plugin {
       $var_Min = min($var_R, $var_G, $var_B);
       $var_Max = max($var_R, $var_G, $var_B);
       $del_Max = $var_Max - $var_Min;
+      $max = $var_Max;
 
       $V = $var_Max;
 
@@ -146,8 +147,8 @@ class class_ckeditor extends cs_plugin {
          else if ($var_G == $var_Max) $H = ( 1 / 3 ) + $del_R - $del_B;
          else if ($var_B == $var_Max) $H = ( 2 / 3 ) + $del_G - $del_R;
 
-         if (H<0) $H++;
-         if (H>1) $H--;
+         if ($H<0) $H++;
+         if ($H>1) $H--;
       }
 
       $HSL['H'] = $H;
