@@ -61,6 +61,7 @@ class misc_list2zip extends misc_2zip {
             $session = $this->_environment->getSessionItem();
             #$current_user = $this->_environment->getCurrentUserItem();
             #$current_context = $this->_environment->getCurrentContextItem();
+            unset($_POST);
             include($index_page);
             unset($environment);
             unset($class_factory);

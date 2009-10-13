@@ -131,8 +131,14 @@ class cs_todo_index_view extends cs_room_index_view {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_TITLE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -147,8 +153,14 @@ class cs_todo_index_view extends cs_room_index_view {
          $params['sort'] = 'status';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                              $params, $this->_translator->getMessage('TODO_STATUS'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                 $params, $this->_translator->getMessage('TODO_STATUS'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('TODO_STATUS');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -163,8 +175,14 @@ class cs_todo_index_view extends cs_room_index_view {
          $params['sort'] = 'date';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('TODO_DATE'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('TODO_DATE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('TODO_DATE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -265,23 +283,31 @@ class cs_todo_index_view extends cs_room_index_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      if ( !(isset($_GET['mode']) and $_GET['mode']=='print') ) {
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print')
+           or ( !empty($download)
+                and $download == 'zip'
+              )
+         ) {
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         $user = $this->_environment->getCurrentUser();
-         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-            $html .= ' disabled="disabled"'.LF;
-         }elseif ( isset($checked_ids)
-              and !empty($checked_ids)
-              and in_array($key, $checked_ids)
+         if ( empty($download)
+              or $download != 'zip'
             ) {
-            $html .= ' checked="checked"'.LF;
-            if ( in_array($key, $dontedit_ids) ) {
+            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+            $user = $this->_environment->getCurrentUser();
+            if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
+            }elseif ( isset($checked_ids)
+                 and !empty($checked_ids)
+                 and in_array($key, $checked_ids)
+               ) {
+               $html .= ' checked="checked"'.LF;
+               if ( in_array($key, $dontedit_ids) ) {
+                  $html .= ' disabled="disabled"'.LF;
+               }
             }
+            $html .= '/>'.LF;
+            $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          }
-         $html .= '/>'.LF;
-         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
          if ($item->isNotActivated()){
             $title = $item->getTitle();
@@ -325,7 +351,6 @@ class cs_todo_index_view extends cs_room_index_view {
 
       return $html;
    }
-
 
    /** get the title of the item
     * this method returns the item title in the right formatted style
@@ -442,7 +467,6 @@ class cs_todo_index_view extends cs_room_index_view {
       return $status;
    }
 
-
    function _getProcessors($item){
      $user = $this->_environment->getCurrentUser();
      $html ='';
@@ -488,8 +512,6 @@ class cs_todo_index_view extends cs_room_index_view {
       }
       return $html;
    }
-
-
 
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
       $current_context = $this->_environment->getCurrentContextItem();
@@ -595,7 +617,6 @@ class cs_todo_index_view extends cs_room_index_view {
       return $html;
    }
 
-
    function _getViewActionsAsHTML () {
       $user = $this->_environment->getCurrentUserItem();
       $html  = '';
@@ -605,6 +626,10 @@ class cs_todo_index_view extends cs_room_index_view {
       if (!$this->_clipboard_mode){
          $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
          $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
+         if ( method_exists($this,'_getAdditionalViewActionsAsHTML') ) {
+            $html .= $this->_getAdditionalViewActionsAsHTML();
+         }
+
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
          if ($user->isModerator()){
             $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
@@ -632,8 +657,6 @@ class cs_todo_index_view extends cs_room_index_view {
 
       return $html;
    }
-
-
 
    function _getPrintableTableHeadAsHTML() {
       $params = $this->_getGetParamsAsArray();
@@ -718,7 +741,12 @@ class cs_todo_index_view extends cs_room_index_view {
          $filesize = $file->getFileSize();
          $fileicon = $file->getFileIcon();
          if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
-            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
@@ -743,6 +771,10 @@ class cs_todo_index_view extends cs_room_index_view {
       return $retour.$file_list;
    }
 
-
+   public function _getAdditionalViewActionsAsHTML () {
+      $retour = '';
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      return $retour;
+   }
 }
 ?>

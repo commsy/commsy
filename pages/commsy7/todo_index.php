@@ -33,7 +33,9 @@ include_once('classes/cs_list.php');
 //                  do not changes, but leave in session
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
-if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+if ( isset($_GET['back_to_index'])
+     and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')
+   ) {
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
    $params['sort'] = $index_search_parameter_array['sort'];
@@ -390,6 +392,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                unset($params);
             }
             break;
+         case 'download':
+            include_once('include/inc_rubric_download.php');
+            break;
          default:
             $params = $environment->getCurrentParameterArray();
             unset($params['mode']);
@@ -404,74 +409,84 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
 } // end if (perform list actions)
 
 
-
-// Get data from database
-$todo_manager = $environment->getToDosManager();
-$todo_manager->setContextLimit($environment->getCurrentContextID());
-$all_ids = $todo_manager->getIds();
-$count_all = count($all_ids);
-if (isset($all_ids[0])){
-	$newest_id = $all_ids[0];
-	$item = $todo_manager->getItem($newest_id);
-	$date = $item->getModificationDate();
-	$now = getCurrentDateTimeInMySQL();
-	if ($date <= $now){
-	   $sel_activating_status = 1;
-	}
-}elseif($count_all == 0){
-	$sel_activating_status = 1;
-}
-$todo_manager->resetData();
-if ( !empty($ref_iid) and $mode == 'attached' ){
-   $todo_manager->setRefIDLimit($ref_iid);
-}
-if ( !empty($ref_user) and $mode == 'attached' ){
-   $todo_manager->setRefUserLimit($ref_user);
-}
-if ( !empty($sort) ) {
-   $todo_manager->setSortOrder($sort);
-}
-if ( $sel_activating_status == 2 ) {
-   $todo_manager->showNoNotActivatedEntries();
-}
-if ( !empty($search) ) {
-   $todo_manager->setSearchLimit($search);
-}
-if ( !empty($selstatus) ) {
-   $todo_manager->setStatusLimit($selstatus);
-}
-if ( !empty($selbuzzword) ) {
-   $todo_manager->setBuzzwordLimit($selbuzzword);
-}
-if ( !empty($last_selected_tag) ){
-   $todo_manager->setTagLimit($last_selected_tag);
-}
 $params = array();
 $params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
+if ( isset($with_modifying_actions) ) {
+   $params['with_modifying_actions'] = $with_modifying_actions;
+}
 $view = $class_factory->getClass(TODO_INDEX_VIEW,$params);
 unset($params);
 
-foreach($sel_array as $rubric => $value){
-   if (!empty($value)){
-      $todo_manager->setRubricLimit($rubric,$value);
+// Get data from database
+$todo_manager = $environment->getToDosManager();
+if ( !isset($only_show_array)
+     or empty($only_show_array)
+   ) {
+   $todo_manager->setContextLimit($environment->getCurrentContextID());
+   $all_ids = $todo_manager->getIds();
+   $count_all = count($all_ids);
+   if (isset($all_ids[0])){
+      $newest_id = $all_ids[0];
+      $item = $todo_manager->getItem($newest_id);
+      $date = $item->getModificationDate();
+      $now = getCurrentDateTimeInMySQL();
+      if ($date <= $now){
+         $sel_activating_status = 1;
+      }
+   }elseif($count_all == 0){
+      $sel_activating_status = 1;
    }
-   $label_manager = $environment->getManager($rubric);
-   $label_manager->setContextLimit($environment->getCurrentContextID());
-   if ($rubric == CS_USER_TYPE){
-      $label_manager->setUserLimit();
+   $todo_manager->resetData();
+   if ( !empty($ref_iid) and $mode == 'attached' ){
+      $todo_manager->setRefIDLimit($ref_iid);
    }
-   $label_manager->select();
-   $rubric_list = $label_manager->get();
-   $temp_rubric_list = clone $rubric_list;
-   $view->setAvailableRubric($rubric,$temp_rubric_list);
-   $view->setSelectedRubric($rubric,$value);
-   unset($rubric_list);
+   if ( !empty($ref_user) and $mode == 'attached' ){
+      $todo_manager->setRefUserLimit($ref_user);
+   }
+   if ( !empty($sort) ) {
+      $todo_manager->setSortOrder($sort);
+   }
+   if ( $sel_activating_status == 2 ) {
+      $todo_manager->showNoNotActivatedEntries();
+   }
+   if ( !empty($search) ) {
+      $todo_manager->setSearchLimit($search);
+   }
+   if ( !empty($selstatus) ) {
+      $todo_manager->setStatusLimit($selstatus);
+   }
+   if ( !empty($selbuzzword) ) {
+      $todo_manager->setBuzzwordLimit($selbuzzword);
+   }
+   if ( !empty($last_selected_tag) ){
+      $todo_manager->setTagLimit($last_selected_tag);
+   }
+
+   foreach($sel_array as $rubric => $value){
+      if (!empty($value)){
+         $todo_manager->setRubricLimit($rubric,$value);
+      }
+      $label_manager = $environment->getManager($rubric);
+      $label_manager->setContextLimit($environment->getCurrentContextID());
+      if ($rubric == CS_USER_TYPE){
+         $label_manager->setUserLimit();
+      }
+      $label_manager->select();
+      $rubric_list = $label_manager->get();
+      $temp_rubric_list = clone $rubric_list;
+      $view->setAvailableRubric($rubric,$temp_rubric_list);
+      $view->setSelectedRubric($rubric,$value);
+      unset($rubric_list);
+   }
+
+   if ( $interval > 0 ) {
+      $todo_manager->setIntervalLimit($from-1,$interval);
+   }
+} else {
+   $todo_manager->resetLimits();
+   $todo_manager->setIDArrayLimit($only_show_array);
 }
 
-if ( $interval > 0 ) {
-   $todo_manager->setIntervalLimit($from-1,$interval);
-}
 $todo_manager->select();
 $list = $todo_manager->get();        // returns a cs_list of todo_items
 $ids = $todo_manager->getIDArray();       // returns an array of item ids
@@ -528,10 +543,11 @@ if ( $context_item->isProjectRoom() ) {
    }
 }
 
-
 // Set data for view
 $view->setList($list);
-$view->setCountAll($count_all);
+if ( isset($count_all) ) {
+   $view->setCountAll($count_all);
+}
 $view->setCountAllShown($count_all_shown);
 $view->setFrom($from);
 $view->setInterval($interval);

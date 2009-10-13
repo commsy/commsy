@@ -157,14 +157,21 @@ class cs_todo_detail_view extends cs_detail_view {
                $params = array();
                $params['iid'] = $item->getItemID();
                $hover = str_replace('"','&quot;',$this->_text_as_html_short($step->getTitle()));
-               $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                        CS_TODO_TYPE,
-                        'detail',
-                        $params,
-                        $this->_text_as_html_short($this->_compareWithSearchText($step->getTitle())),
-                        $hover,
-                        '',
-                        'anchor'.$step->getItemID());
+               $param_zip = $this->_environment->getValueOfParameter('download');
+               if ( empty($param_zip)
+                    or $param_zip != 'zip'
+                  ) {
+                  $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_TODO_TYPE,
+                           'detail',
+                           $params,
+                           $this->_text_as_html_short($this->_compareWithSearchText($step->getTitle())),
+                           $hover,
+                           '',
+                           'anchor'.$step->getItemID());
+               } else {
+                  $title = $this->_text_as_html_short($this->_compareWithSearchText($step->getTitle()));
+               }
                $step_html .= $counter.'. '.$title.$fileicons;
                $step_html .= $this->_getItemChangeStatus($step).' '.'<br/>';
                $step = $step_item_list->getNext();

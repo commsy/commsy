@@ -402,59 +402,68 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       }
 } // end if (perform list actions)
 
-
-
-// Get data from database
-$todo_manager = $environment->getToDosManager();
-$todo_manager->setContextLimit($environment->getCurrentContextID());
-$count_all = $todo_manager->getCountAll();
-if ( !empty($ref_iid) and $mode == 'attached' ){
-   $todo_manager->setRefIDLimit($ref_iid);
-}
-if ( !empty($ref_user) and $mode == 'attached' ){
-   $todo_manager->setRefUserLimit($ref_user);
-}
-if ( !empty($sort) ) {
-   $todo_manager->setSortOrder($sort);
-}
-if ( $sel_activating_status == 2 ) {
-   $todo_manager->showNoNotActivatedEntries();
-}
-if ( !empty($search) ) {
-   $todo_manager->setSearchLimit($search);
-}
-if ( !empty($selstatus) ) {
-   $todo_manager->setStatusLimit($selstatus);
-}
-if ( !empty($selbuzzword) ) {
-   $todo_manager->setBuzzwordLimit($selbuzzword);
-}
-if ( !empty($last_selected_tag) ){
-   $todo_manager->setTagLimit($last_selected_tag);
-}
 $params = array();
 $params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
+if ( isset($with_modifying_actions) ) {
+   $params['with_modifying_actions'] = $with_modifying_actions;
+}
 $view = $class_factory->getClass(TODO_INDEX_VIEW,$params);
 unset($params);
 
-foreach($sel_array as $rubric => $value){
-   if (!empty($value)){
-      $todo_manager->setRubricLimit($rubric,$value);
+// Get data from database
+$todo_manager = $environment->getToDosManager();
+if ( !isset($only_show_array)
+     or empty($only_show_array)
+   ) {
+   $todo_manager->setContextLimit($environment->getCurrentContextID());
+   $count_all = $todo_manager->getCountAll();
+   if ( !empty($ref_iid) and $mode == 'attached' ){
+      $todo_manager->setRefIDLimit($ref_iid);
    }
-   $label_manager = $environment->getManager($rubric);
-   $label_manager->setContextLimit($environment->getCurrentContextID());
-   $label_manager->select();
-   $rubric_list = $label_manager->get();
-   $temp_rubric_list = clone $rubric_list;
-   $view->setAvailableRubric($rubric,$temp_rubric_list);
-   $view->setSelectedRubric($rubric,$value);
-   unset($rubric_list);
+   if ( !empty($ref_user) and $mode == 'attached' ){
+      $todo_manager->setRefUserLimit($ref_user);
+   }
+   if ( !empty($sort) ) {
+      $todo_manager->setSortOrder($sort);
+   }
+   if ( $sel_activating_status == 2 ) {
+      $todo_manager->showNoNotActivatedEntries();
+   }
+   if ( !empty($search) ) {
+      $todo_manager->setSearchLimit($search);
+   }
+   if ( !empty($selstatus) ) {
+      $todo_manager->setStatusLimit($selstatus);
+   }
+   if ( !empty($selbuzzword) ) {
+      $todo_manager->setBuzzwordLimit($selbuzzword);
+   }
+   if ( !empty($last_selected_tag) ){
+      $todo_manager->setTagLimit($last_selected_tag);
+   }
+
+   foreach($sel_array as $rubric => $value){
+      if (!empty($value)){
+         $todo_manager->setRubricLimit($rubric,$value);
+      }
+      $label_manager = $environment->getManager($rubric);
+      $label_manager->setContextLimit($environment->getCurrentContextID());
+      $label_manager->select();
+      $rubric_list = $label_manager->get();
+      $temp_rubric_list = clone $rubric_list;
+      $view->setAvailableRubric($rubric,$temp_rubric_list);
+      $view->setSelectedRubric($rubric,$value);
+      unset($rubric_list);
+   }
+
+   if ( $interval > 0 ) {
+      $todo_manager->setIntervalLimit($from-1,$interval);
+   }
+} else {
+   $todo_manager->resetLimits();
+   $todo_manager->setIDArrayLimit($only_show_array);
 }
 
-if ( $interval > 0 ) {
-   $todo_manager->setIntervalLimit($from-1,$interval);
-}
 $todo_manager->select();
 $list = $todo_manager->get();        // returns a cs_list of todo_items
 $ids = $todo_manager->getIDArray();       // returns an array of item ids
@@ -514,7 +523,9 @@ if ( $context_item->isProjectRoom() ) {
 
 // Set data for view
 $view->setList($list);
-$view->setCountAll($count_all);
+if ( isset($count_all) ) {
+   $view->setCountAll($count_all);
+}
 $view->setCountAllShown($count_all_shown);
 $view->setFrom($from);
 $view->setInterval($interval);
