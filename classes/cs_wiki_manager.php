@@ -2559,17 +2559,67 @@ function recurse_copy_dir($src,$dst) {
 
 // von http://us2.php.net/manual/en/function.rmdir.php
 function deleteDirectory($dir) {
-    if (!file_exists($dir)) return true;
-    if (!is_dir($dir) || is_link($dir)) return unlink($dir);
-        foreach (scandir($dir) as $item) {
-            if ($item == '.' || $item == '..') continue;
-            if (!$this->deleteDirectory($dir . "/" . $item)) {
-                chmod($dir . "/" . $item, 0777);
-                if (!$this->deleteDirectory($dir . "/" . $item)) return false;
-            };
-        }
-        return rmdir($dir);
-    }
+   if (!file_exists($dir)) return true;
+   if (!is_dir($dir) || is_link($dir)) return unlink($dir);
+   foreach (scandir($dir) as $item) {
+      if ($item == '.' || $item == '..') continue;
+      if (!$this->deleteDirectory($dir . "/" . $item)) {
+         chmod($dir . "/" . $item, 0777);
+         if (!$this->deleteDirectory($dir . "/" . $item)) return false;
+      };
+   }
+   return rmdir($dir);
+}
+    
+function closeWiki(){
+   $client = $this->getSoapClient();
+   $file_contents_array = explode("\n", $client->getWikiConfiguration($this->_environment->getSessionID()));
+   
+   $wiki_closed_found = false;
+   $wiki_closed_added = false;
+   foreach($file_contents_array as $file_contents_line){
+      if(stristr($file_contents_line, '$WIKI_CLOSED = "1";')){
+         $wiki_closed_found = true;
+      }
+   }
+   
+   if(!$wiki_closed_found){
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], '?>') !== false){
+            $file_contents_array[$index] = '$WIKI_CLOSED = "1";';
+            $wiki_closed_added = true;
+         }
+      }
+      if($wiki_closed_added){
+         $file_contents_array[] = '?>';
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      $client->saveWikiConfiguration($file_contents, $this->_environment->getSessionID());
+   }
+}
+
+function openWiki(){
+   $client = $this->getSoapClient();
+   $file_contents_array = explode("\n", $client->getWikiConfiguration($this->_environment->getSessionID()));
+   
+   $wiki_closed_found = false;
+   $wiki_closed_added = false;
+   foreach($file_contents_array as $file_contents_line){
+      if(stristr($file_contents_line, '$WIKI_CLOSED = "1";')){
+         $wiki_closed_found = true;
+      }
+   }
+   
+   if($wiki_closed_found){
+      for ($index = 0; $index < sizeof($file_contents_array); $index++) {
+         if(stripos($file_contents_array[$index], '$WIKI_CLOSED = "1";') !== false){
+            unset($file_contents_array[$index]);
+         }
+      }
+      $file_contents = implode("\n", $file_contents_array);
+      $client->saveWikiConfiguration($file_contents, $this->_environment->getSessionID());
+   }
+}
 }
 
 function pr_soap($client){
