@@ -483,6 +483,9 @@ class cs_page_room_view extends cs_page_view {
             $html .= '     <span >'.$link_title.'</span>'.LF;
          }
       }
+      if($current_user_item->isModerator()){
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'configuration', 'rubric_options', '', '+', '','','','','','','class="navlist"');
+      }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
