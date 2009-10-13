@@ -509,19 +509,6 @@ class cs_statistic_view extends cs_view {
       }
       $html .='<div class="infoborder" style="padding-top:10px; padding-bottom:0px; vertical-align:top; width:100%; font-size:2pt;">&nbsp;</div>'.LF;
 
-      // Always show context sensitive help
-      if (!isset($_GET['mode']) or !$_GET['mode']=='print') {
-         $html .= '<div class="actions">'.LF;
-         $params = $this->_environment->getCurrentParameterArray();
-         $params['mode'] = 'print';
-         $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params,
-                             $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'), '', '', '', '',
-                             '').LF;
-        unset($params);
-         $html .= '</div>'.LF;
-      }
-
       // select form
       if (!isset($_GET['mode']) or !$_GET['mode']=='print') {
          $html .= '<form action="'.curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,'').'" method="get" name="indexform">'.LF;

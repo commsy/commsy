@@ -225,18 +225,6 @@ class cs_page_print_view extends cs_page_view {
       }
       $html .= '<div class="tabs_frame" style="'.$width.'">'.LF;
       $html .= '<div class="tabs">'.LF;
-      $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
-         // Always show context sensitive help
-         $params = array();
-         $params['module'] = $this->_module;
-         $params['function'] = $this->_function;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', 'help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-         unset($params);
-      $html .= '  '."\n";
-      $html .= '</div>'."\n";
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
       $session = $this->_environment->getSession();
       $history = $session->getValue('history');
@@ -362,17 +350,6 @@ class cs_page_print_view extends cs_page_view {
       }
       $html .= '<div class="tabs_frame" style="'.$width.'">'.LF;
       $html .= '<div class="tabs">'.LF;
-      $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
-         // Always show context sensitive help
-         $params = array();
-         $params['module'] = $this->_module;
-         $params['function'] = $this->_function;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', '_help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-         unset($params);
-      $html .= '</div>'."\n";
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
       $html .= '<span class="navlist">&nbsp;</span>'."\n";
       $html .= '</div>'."\n";

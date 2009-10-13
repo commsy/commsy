@@ -649,69 +649,42 @@ class cs_server_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href,
-                                                  target,
-                                                  \'toolbar=no,
-                                                  location=no,
-                                                  directories=no,
-                                                  status=no,
-                                                  menubar=no,
-                                                  scrollbars=yes,
-                                                  resizable=yes,
-                                                  copyhistory=yes,
-                                                  width=600,
-                                                  height=400
-                                                \'
-                                               );
-                                     "'
-                           );
          $temp = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage      = "";
          switch( $temp )
          {
             case 'CONFIGURATION_BACKUP':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
                break;
             case 'CONFIGURATION_COLOR':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM');
                break;
             case 'CONFIGURATION_EXTRA':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM');
                break;
             case 'CONFIGURATION_IMS':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM');
                break;
             case 'CONFIGURATION_LANGUAGE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM');
                break;
             case 'CONFIGURATION_NEWS':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM');
                break;
             case 'CONFIGURATION_PREFERENCES':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM');
                break;
             case 'CONFIGURATION_SERVICE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM');
                break;
             case 'CONFIGURATION_OUTOFSERVICE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM');
                break;
             case 'CONFIGURATION_SCRIBD':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM');
                break;
             case 'CONFIGURATION_UPDATE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM',$link);
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM');
                break;
             default:
                $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item ('.__LINE__.')";

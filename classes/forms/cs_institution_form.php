@@ -105,7 +105,7 @@ class cs_institution_form extends cs_rubric_form {
       $this->_public_array = $public_array;
 
       // picture
-  	   if ( !empty($this->_item) ) {
+        if ( !empty($this->_item) ) {
          $this->_has_picture = $this->_item->getPicture();
       } else {
          $this->_has_picture = false;
@@ -173,11 +173,7 @@ class cs_institution_form extends cs_rubric_form {
       // institution
       $this->_form->addHidden('iid','');
       $this->_form->addTitleField('name','',getMessage('COMMON_NAME'),getMessage('COMMON_NAME_DESC'),200,45,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),60);
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60);
       $this->_form->addImage('picture_upload','',getMessage('USER_PICTURE_UPLOADFILE'), getMessage('INSTITUTION_PICTURE_FILE_DESC'));
 
       //delete picture
@@ -230,9 +226,9 @@ class cs_institution_form extends cs_rubric_form {
          if ( !isset($this->_values['public']) ) {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
-		 if ( isset($this->_values['picture_hidden']) and !empty($this->_values['picture_hidden']) ) {
-			 $this->_values['picture_upload'] = $this->_values['picture_hidden'];
-		 }
+       if ( isset($this->_values['picture_hidden']) and !empty($this->_values['picture_hidden']) ) {
+          $this->_values['picture_upload'] = $this->_values['picture_hidden'];
+       }
       } elseif (isset($this->_item)) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['name'] = $this->_item->getName();

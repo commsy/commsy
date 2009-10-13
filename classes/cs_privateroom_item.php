@@ -650,59 +650,7 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
-            $retour = '';
-         }else{
-       $link = ahref_curl($this->_environment->getCurrentContextID(),
-                       'help',
-                       'context',
-                       array('module'  =>$this->_environment->getCurrentModule(),
-                             'function'=>$this->_environment->getCurrentFunction(),
-                             'context' =>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp )
-         {
-            case 'HOME_INDEX':             // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_INDEX',$link);
-                break;
-            case 'HOME_USAGEINFO':         // siehe "Übersicht der Einstellungsoptionen" / "Nutzungshinweise bearbeiten"
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_USAGEINFO',$link);
-                break;
-            case 'MYROOM_INDEX':           // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MYROOM_INDEX',$link);
-                break;
-            case 'MATERIAL_INDEX':         // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_INDEX',$link);
-                break;
-            case 'DATE_INDEX':             // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_INDEX',$link);
-                break;
-            case 'TOPIC_INDEX':            // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_INDEX',$link);
-                break;
-            case 'DATE_CLIPBOARD_INDEX':   // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
-                break;
-            case 'MATERIAL_CLIPBOARD_INDEX':   // getestet
-                $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
-                break;
-            default:                       // getestet
-                $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . " cs_privateroom_item (616)");
-                break;
-         }
-         $retour = $tempMessage;
-         // if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.strtoupper($rubric).'_'.strtoupper($funct) or $retour =='tbd'){
-         if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp or $retour =='tbd'){
-            $retour = getMessage('USAGE_INFO_COMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -722,53 +670,7 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7()){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'  =>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context' =>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-        $temp = mb_strtoupper($rubric, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp )
-         {
-            case 'DATE':                  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_INDEX',$link);
-               break;
-            case 'HOME':                  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_HOME_INDEX',$link);
-               break;
-            case 'MATERIAL':              // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_INDEX',$link);
-               break;
-            case 'MYROOM':                // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MYROOM_INDEX',$link);
-               break;
-            case 'TOPIC':                 // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_INDEX',$link);
-               break;
-            case 'USER':                  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_INDEX',$link);
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'." cs_privateroom_item _INDEX");
-               break;
-         }
-         $retour = $tempMessage;
-         // if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.strtoupper($rubric).'_INDEX' or $retour =='tbd'){
-         if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp.'_INDEX' or $retour == 'tbd'){
-            $retour = getMessage('USAGE_INFO_COMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -831,118 +733,7 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp )
-         {
-            case 'ANNOTATION_EDIT':       // getestet: pers. Raum/Meine Räume/<1 Raum>/Neue Anmerkung erstellen
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_ANNOTATION_EDIT_FORM',$link);
-               break;
-            case 'BUZZWORDS_EDIT':        // getestet: pers. Raum, "Materialien" / Materialarten bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_BUZZWORDS_EDIT_FORM',$link);
-               break;
-            case 'CONFIGURATION_COLOR':   // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_COLOR_FORM',$link);
-               break;
-            case 'CONFIGURATION_DATES':   // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_DATES_FORM',$link);
-               break;
-            case 'CONFIGURATION_HOME':    // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_HOME_FORM',$link);
-               break;
-            case 'CONFIGURATION_PREFERENCES': // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_PREFERENCES_FORM',$link);
-               break;
-            case 'CONFIGURATION_PRIVATEROOM_NEWSLETTER': // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_PRIVATEROOM_NEWSLETTER_FORM',$link);
-               break;
-            case 'CONFIGURATION_RUBRIC':  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_RUBRIC_FORM',$link);
-               break;
-            case 'CONFIGURATION_PATH':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_PATH_FORM',$link);
-               break;
-             case 'CONFIGURATION_TAGS':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_TAGS_FORM',$link);
-               break;
-             case 'CONFIGURATION_LISTVIEWS':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_LISTVIEWS_FORM',$link);
-               break;
-            case 'CONFIGURATION_SERVICE': // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_SERVICE_FORM',$link);
-               break;
-            case 'CONFIGURATION_USAGEINFO': // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_USAGEINFO_FORM',$link);
-               break;
-            case 'CONFIGURATION_INFORMATIONBOX':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_INFORMATIOBOX_FORM',$link);
-               break;
-            case 'DATE_EDIT':             // getestet: pers. Raum, "Termine" / Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_EDIT_FORM',$link);
-               break;
-            case 'DATE_IMPORT':           // getestet: pers. Raum, "Termine" / Termine importieren
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_DATE_IMPORT_FORM',$link);
-               break;
-            case 'LABELS_EDIT':           // getestet: pers. Raum, "Materialien" / Materialarten bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_LABELS_EDIT_FORM',$link);
-               break;
-            case 'MATERIAL_EDIT':         // getestet: pers. Raum, "Materialien" / Neuen Eintrag erstellen
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_EDIT_FORM',$link);
-               break;
-            case 'SECTION_EDIT':            // getestet: pers. Raum, "Themen" / Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_SECTION_EDIT_FORM',$link);
-               break;
-            case 'TOPIC_EDIT':            // getestet: pers. Raum, "Themen" / Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_TOPIC_EDIT_FORM',$link);
-               break;
-            case 'USER_EDIT':             // getestet: pers. Raum, "Mein Profil" / Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_EDIT_FORM',$link);
-               break;
-            case 'USER_PREFERENCES':      // getestet: pers. Raum, "Mein Profil" / Einstellungen
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_PREFERENCES_FORM',$link);
-               break;
-            case 'CONFIGURATION_HTMLTEXTAREA':      // getestet: pers. Raum, "Mein Profil" / Einstellungen
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_CONFIGURATION_HTMLTEXTAREA_FORM',$link);
-               break;
-            case 'TAG_EDIT':            // getestet: pers. Raum, "Themen" / Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_ROOM_TAG_EDIT_FORM',$link);
-               break;
-            case 'DISCUSSION_DETAIL':      //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCUSSION_DETAIL_FORM');
-               break;
-            case 'DISCARTICLE_EDIT':      //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_DISCARTICLE_EDIT_FORM');
-               break;
-            case 'LANGUAGE_UNUSED':      //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . " cs_privateroom_item(".__LINE__.") ");
-               break;
-         }
-         $retour = $tempMessage;
-         if ( $retour == 'USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp.'_FORM'
-              or $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.$temp.'_FORM'
-              or $retour =='tbd'
-            ){
-            $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -962,50 +753,7 @@ class cs_privateroom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7()){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp = mb_strtoupper($rubric, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp )
-         {
-            case 'DATE':                  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATE_FOR_DATE_EDIT_FORM',$link);
-               break;
-            case 'MATERIAL':              // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MATERIAL_EDIT_FORM',$link);
-               break;
-            case 'MYROOM':                // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_MYROOM_EDIT_FORM',$link);
-               break;
-            case 'TOPIC':                 // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATE_FOR_TOPIC_EDIT_FORM',$link);
-               break;
-            case 'USER':                  // getestet
-               $tempMessage = getMessage('USAGE_INFO_TEXT_PRIVATEROOM_FOR_USER_EDIT_FORM',$link);
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_privateroom_item _EDIT_FORM');
-               break;
-         }
-         $retour = $tempMessage;
-         // if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.strtoupper($rubric).'_EDIT_FORM' or $retour == 'tbd'){
-         if ($retour =='USAGE_INFO_TEXT_PRIVATEROOM_FOR_'.$temp.'_EDIT_FORM' or $retour == 'tbd'){
-            $retour = getMessage('USAGE_INFO_FORM_COMMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }

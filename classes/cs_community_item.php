@@ -613,94 +613,7 @@ class cs_community_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help', 'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            $translator->getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub_func = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp_rub_func )
-         {
-            case 'ACCOUNT_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX',$link);
-               break;
-            case 'ACCOUNT_STATUS':      //
-               $tempMessage      = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
-               break;
-            case 'ANNOUNCEMENT_CLIPBOARD_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
-               break;
-            case 'ANNOUNCEMENT_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX',$link);
-               break;
-            case 'DATE_CLIPBOARD_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
-               break;
-            case 'DATE_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX',$link);
-               break;
-            case 'DISCUSSION_CLIPBOARD_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
-               break;
-            case 'DISCUSSION_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX',$link);
-               break;
-            case 'HOME_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX',$link);
-               break;
-            case 'HOME_USAGEINFO':        // getestet - Nutzungshinweise bearbeiten als Raum-Moderator
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_USAGEINFO',$link);
-               break;
-            case 'INSTITUTION_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX',$link);
-               break;
-            case 'MATERIAL_CLIPBOARD_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
-               break;
-            case 'MATERIAL_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX',$link);
-               break;
-            case 'PROJECT_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_INDEX',$link);
-               break;
-            case 'TODO_CLIPBOARD_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
-               break;
-            case 'TODO_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX',$link);
-               break;
-            case 'TOPIC_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX',$link);
-               break;
-            case 'USER_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX',$link);
-               break;
-            case 'CAMPUS_SEARCH_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CAMPUS_SEARCH_INDEX',$link);
-               break;
-            case 'GROUP_INDEX':
-               $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_GROUP_INDEX',$link);
-               break;
-            default:
-               $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item('.__LINE__.') ',$link);
-               break;
-         }
-         $retour = $tempMessage;
-
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8') or $retour =='tbd'){
-            $retour = $translator->getMessage('USAGE_INFO_COMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -719,7 +632,7 @@ class cs_community_item extends cs_room_item {
       if(!empty($string)){
          $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])){
             unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
@@ -740,7 +653,7 @@ class cs_community_item extends cs_room_item {
       if(!empty($string)){
          $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])){
             unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
@@ -764,190 +677,7 @@ class cs_community_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7() and $this->_environment->getCurrentModule() != 'configuration'){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub_func = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp_rub_func )
-         {
-            case 'ACCOUNT_EDIT':          // Raumeinstellungen, Kennungen, <ein Benutzer>, Bearbeiten
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_EDIT_FORM', $link);
-               break;
-            case 'ACCOUNT_PREFERENCES':   // Raumeinstellungen, Kennungen, <ein Benutzer>, Einstellungen ändern
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_PREFERENCES_FORM', $link);
-               break;
-            case 'ACCOUNT_STATUS':        // Raumeinstellungen, Kennungen, <ein Benutzer>, Status ändern
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_STATUS_FORM', $link);
-               break;
-            case 'ANNOTATION_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOTATION_EDIT_FORM', $link);
-               break;
-            case 'ANNOUNCEMENT_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_EDIT_FORM', $link);
-               break;
-            case 'BUZZWORDS_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_BUZZWORDS_EDIT_FORM', $link);
-               break;
-            case 'CONFIGURATION_AGB':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_AGB_FORM', $link);
-               break;
-            case 'CONFIGURATION_CHAT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_CHAT_FORM', $link);
-               break;
-            case 'CONFIGURATION_COLOR':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_COLOR_FORM', $link);
-               break;
-            case 'CONFIGURATION_DATES':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DATES_FORM', $link);
-               break;
-            case 'CONFIGURATION_DEFAULTS':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DEFAULTS_FORM', $link);
-               break;
-            case 'CONFIGURATION_DISCUSSION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_DISCUSSION_FORM', $link);
-               break;
-            case 'CONFIGURATION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_FORM', $link);
-               break;
-            case 'CONFIGURATION_HOMEPAGE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HOMEPAGE_FORM', $link);
-               break;
-            case 'CONFIGURATION_HOME':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HOME_FORM', $link);
-               break;
-            case 'CONFIGURATION_HTMLTEXTAREA':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_HTMLTEXTAREA_FORM', $link);
-               break;
-            case 'CONFIGURATION_MAIL':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_MAIL_FORM', $link);
-               break;
-            case 'CONFIGURATION_NEWSLETTER':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_NEWSLETTER_FORM', $link);
-               break;
-            case 'CONFIGURATION_PREFERENCES':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_PREFERENCES_FORM', $link);
-               break;
-            case 'CONFIGURATION_RUBRIC':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_RUBRIC_FORM', $link);
-               break;
-            case 'CONFIGURATION_SERVICE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_SERVICE_FORM', $link);
-               break;
-            case 'CONFIGURATION_USAGEINFO':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_USAGEINFO_FORM', $link);
-               break;
-             case 'CONFIGURATION_TAGS':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_CONFIGURATION_TAGS_FORM',$link);
-               break;
-             case 'CONFIGURATION_LISTVIEWS':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_LISTVIEWS_FORM',$link);
-               break;
-            case 'CONFIGURATION_WIKI':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_WIKI_FORM',$link);
-               break;
-            case 'CONFIGURATION_PATH':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_PATH_FORM',$link);
-               break;
-            case 'CONFIGURATION_INFORMATIONBOX':    // getestet
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_PROJECTROOM_FOR_CONFIGURATION_INFORMATIOBOX_FORM',$link);
-               break;
-            case 'DATE_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_EDIT_FORM', $link);
-               break;
-            case 'DISCARTICLE_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCARTICLE_EDIT_FORM', $link);
-               break;
-            case 'DISCUSSION_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_EDIT_FORM', $link);
-               break;
-            case 'DISCUSSION_INDEX':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX', $link);
-               break;
-            case 'DISCUSSION_DETAIL':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_DETAIL_FORM', $link);
-               break;
-            case 'INSTITUTION_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_EDIT_FORM', $link);
-               break;
-            case 'LABELS_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_LABELS_EDIT_FORM', $link);
-               break;
-            case 'MATERIAL_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_EDIT_FORM', $link);
-               break;
-            case 'PROJECT_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_EDIT_FORM', $link);
-               break;
-            case 'RUBRIC_MAIL':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_RUBRIC_MAIL_FORM', $link);
-               break;
-            case 'SECTION_EDIT':   // Nutzungshinweise unter Materialien, <ein Material>, Abschnitt hinzufügen
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_SECTION_EDIT_FORM', $link);
-               break;
-            case 'TODO_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_EDIT_FORM', $link);
-               break;
-            case 'TOPIC_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_EDIT_FORM', $link);
-               break;
-            case 'USER_CLOSE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_CLOSE_FORM', $link);
-               break;
-            case 'ACCOUNT_CLOSE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_CLOSE_FORM', $link);
-               break;
-            case 'USER_EDIT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_EDIT_FORM', $link);
-               break;
-            case 'USER_PREFERENCES':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_PREFERENCES_FORM', $link);
-               break;
-            case 'MAIL_TO_MODERATOR':      //
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MAIL_TO_MODERATOR_FORM',$link);
-               break;
-            case 'TAG_EDIT':      //
-               $tempMessage = getMessage('USAGE_INFO_TEXT_ROOM_TAG_EDIT_FORM');
-               break;
-            case 'ACCOUNT_ACTION':             //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_ROOM_ACCOUNT_EDIT_FORM');
-               break;
-            case 'MAIL_PROCESS':             //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_ROOM_MAIL_PROCESS_FORM');
-               break;
-            case 'LANGUAGE_UNUSED':      //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
-               break;
-            case 'CONFIGURATION_ARCHIVE':      //
-               $tempMessage      = getMessage('USAGE_INFO_FORM_COMING_SOON');
-               break;
-            case 'INSTITUTION_MAIL':      //
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_MAIL_FORM');
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item('.__LINE__.') ',$link);
-               break;
-         }
-         $retour = $tempMessage;
-         if ( $retour == 'USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8').'_FORM'
-              or $retour == 'tbd'
-              or $retour == 'USAGE_INFO_TEXT_PROJECTROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8').'_FORM'
-            ) {
-            $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -968,68 +698,7 @@ class cs_community_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7()){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub = mb_strtoupper($rubric, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp_rub )
-         {
-            case 'ANNOUNCEMENT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_EDIT_FORM',$link);
-               break;
-            case 'BUZZWORDS':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_BUZZWORDS_EDIT_FORM',$link);
-               break;
-            case 'DATE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_EDIT_FORM',$link);
-               break;
-            case 'DISCUSSION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_EDIT_FORM',$link);
-               break;
-            case 'INSTITUTION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_EDIT_FORM',$link);
-               break;
-            case 'LABELS':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_LABELS_EDIT_FORM',$link);
-               break;
-            case 'MATERIAL':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_EDIT_FORM',$link);
-               break;
-            case 'PROJECT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_EDIT_FORM',$link);
-               break;
-            case 'TODO':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_EDIT_FORM',$link);
-               break;
-            case 'TOPIC':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_EDIT_FORM',$link);
-               break;
-            case 'USER':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_EDIT_FORM',$link);
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item(988) ',$link);
-               break;
-         }
-         $retour = $tempMessage;
-
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_EDIT_FORM' or $retour =='tbd'){
-            $retour = getMessage('USAGE_INFO_FORM_COMMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }
@@ -1050,83 +719,7 @@ class cs_community_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         if ($this->isDesign7()){
-            $retour = '';
-         }else{
-         $link = ahref_curl($this->_environment->getCurrentContextID(),
-                            'help',
-                            'context',
-                            array('module'=>$this->_environment->getCurrentModule(),
-                                  'function'=>$this->_environment->getCurrentFunction(),
-                                  'context'=>'HELP_COMMON_FORMAT'),
-                            getMessage('COMMON_HELP_COMMON_FORMAT_TITLE'),
-                            '',
-                            'help',
-                            '',
-                            '',
-                            'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','').LF;
-         $temp_rub = mb_strtoupper($rubric, 'UTF-8');
-         $tempMessage = "";
-         switch( $temp_rub )
-         {
-            case 'ACCOUNT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ACCOUNT_INDEX',$link);
-               break;
-            case 'ANNOUNCEMENT_CLIPBOARD':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_CLIPBOARD_INDEX',$link);
-               break;
-            case 'ANNOUNCEMENT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_ANNOUNCEMENT_INDEX',$link);
-               break;
-            case 'DATE_CLIPBOARD':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_CLIPBOARD_INDEX',$link);
-               break;
-            case 'DATE':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DATE_INDEX',$link);
-               break;
-            case 'DISCUSSION_CLIPBOARD':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_CLIPBOARD_INDEX',$link);
-               break;
-            case 'DISCUSSION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_DISCUSSION_INDEX',$link);
-               break;
-            case 'HOME':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_HOME_INDEX',$link);
-               break;
-            case 'INSTITUTION':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_INSTITUTION_INDEX',$link);
-               break;
-            case 'MATERIAL_CLIPBOARD':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_CLIPBOARD_INDEX',$link);
-               break;
-            case 'MATERIAL':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_MATERIAL_INDEX',$link);
-               break;
-            case 'PROJECT':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_PROJECT_INDEX',$link);
-               break;
-            case 'TODO_CLIPBOARD':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_CLIPBOARD_INDEX',$link);
-               break;
-            case 'TODO':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TODO_INDEX',$link);
-               break;
-            case 'TOPIC':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_TOPIC_INDEX',$link);
-               break;
-            case 'USER':
-               $tempMessage = getMessage('USAGE_INFO_TEXT_COMMUNITYROOM_FOR_USER_INDEX',$link);
-               break;
-            default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_community_item(1099) ',$link);
-               break;
-         }
-         $retour = $tempMessage;
-
-         if ($retour =='USAGE_INFO_TEXT_COMMUNITYROOM_FOR_'.mb_strtoupper($rubric, 'UTF-8').'_INDEX' or $retour =='tbd'){
-            $retour = getMessage('USAGE_INFO_COMMING_SOON');
-         }
-         }
+         $retour = '';
       }
       return $retour;
    }

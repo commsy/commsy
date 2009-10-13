@@ -71,15 +71,11 @@ class cs_configuration_news_form extends cs_rubric_form {
     */
    function _createForm () {
 
-      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('iid','');
       $this->_form->addRadioGroup('show',getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
       $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',200,'62',true);
-      $this->_form->addTextArea('text','',getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),getMessage('COMMON_CONTENT_DESC',$link));
+      $this->_form->addTextArea('text','',getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),'');
       $this->_form->addTextfield('link','',getMessage('SERVER_CONFIGURATION_NEWS_LINK'),getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'62',false);
 
       if ( $this->_environment->inPortal() ) {

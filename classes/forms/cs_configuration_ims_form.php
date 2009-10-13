@@ -60,10 +60,6 @@ class cs_configuration_ims_form extends cs_rubric_form {
     */
    function _createForm () {
 
-      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('user_id',$this->_ims_user_id);
       $this->_form->addCheckbox('exist','1',false,getMessage('SERVER_CONFIGURATION_IMS_USER_EXIST'),'','','','','onclick="cs_toggle()"');

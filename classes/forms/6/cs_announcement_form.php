@@ -361,17 +361,13 @@ class cs_announcement_form extends cs_rubric_form {
       // announcement
       $this->_form->addHidden('iid','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',200,46,true);
-      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->_form->addDateTimeField('end_date_time','',
                               'dayEnd','timeEnd',10,10,
                               getMessage('ANNOUNCEMENT_TIME_DAY_END'),
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
                               getMessage('ANNOUNCEMENT_TIME_DAY_END_DESC'),true,false);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$link),'',25);
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'','',25);
 
 
       // rubric connections

@@ -257,10 +257,6 @@ class cs_todo_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,46,true);
 #      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,48,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->_form->addDateTimeField('end_date_time','',
                               'dayEnd','timeEnd',10,10,
                               getMessage('TODO_DATE'),
@@ -286,7 +282,7 @@ class cs_todo_form extends cs_rubric_form {
       }
 
       $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link));
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'');
 
 
       // rubric connections

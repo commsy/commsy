@@ -186,11 +186,7 @@ class cs_section_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('material_modification_date','');
       $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,47,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),60,20);
+      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60,20);
       $this->_form->addSelect('number',$this->_section_array,(string)count($this->_section_array),getMessage('SECTION_OTHER_SECTIONS'),'','',false,false,false,'','',$this->_other_sections);
 
       // rubric connections

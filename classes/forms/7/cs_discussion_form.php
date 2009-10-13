@@ -227,11 +227,7 @@ class cs_discussion_form extends cs_rubric_form {
 
       if ( $this->_is_new_discussion ) {
          $this->_form->addTextField('subject','',getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,59,true);
-         $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-         $this->_form->addTextArea('description','',getMessage('DISCUSSION_INIT_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',15);
+         $this->_form->addTextArea('description','',getMessage('DISCUSSION_INIT_ARTICLE'),'','',15);
       }
       $current_context = $this->_environment->getCurrentContextItem();
 

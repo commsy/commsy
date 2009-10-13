@@ -331,16 +331,7 @@ class cs_page_guide_view extends cs_page_view {
          unset($params);
       }
 
-      // Always show context sensitive help
-      $params = array();
-      $params['module'] = $this->_module;
-      $params['function'] = $this->_function;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                          $params,
-                          '?', '', 'help', '', '',
-                          'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-      unset($params);
-      $html .= '  '."\n";
+      $html .= '&nbsp;'.LF;
       $html .= '</div>'."\n";
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
       $html .= '<span class="navlist">&nbsp;</span>'."\n";
@@ -358,16 +349,7 @@ class cs_page_guide_view extends cs_page_view {
       $html .= '<div class="tabs">'.LF;
       $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
 
-      // Always show context sensitive help
-      $params = array();
-      $params['module'] = $this->_environment->getCurrentModule();
-      $params['function'] = $this->_environment->getCurrentFunction();
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                              '?', '', '', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-      unset($params);
-      $html .= '  '.LF;
+      $html .= '&nbsp;'.LF;
       $html .= '</div>'.LF;
       $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $html .= '<span class="navlist">&nbsp;</span>'.LF;
@@ -647,18 +629,6 @@ class cs_page_guide_view extends cs_page_view {
       $html  = LF.'<!-- BEGIN TABS -->'.LF;
       $html .= '<div class="tabs_frame" >'.LF;
       $html .= '<div class="tabs">'.LF;
-      $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
-
-         // Always show context sensitive help
-         $params = array();
-         $params['module'] = $this->_module;
-         $params['function'] = $this->_function;
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', 'help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-         unset($params);
-      $html .= '</div>'.LF;
 
       if ( isset($this->_agb_view) and $this->_agb_view instanceof cs_form_view_plain ) {
          $title = $this->_agb_view->getTitle();

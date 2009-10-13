@@ -535,17 +535,6 @@ class cs_page_room_view extends cs_page_view {
       unset($current_user_item);
       unset($current_context_item);
 
-      // Always show context sensitive help
-      /*
-      $params = array();
-      $params['module'] = $this->_module;
-      $params['function'] = $this->_function;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', 'help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-      unset($params);
-      */
       $html .= '</div>'.LF;
       $text = '&nbsp;';
       if ( $this->_environment->getCurrentModule() == 'agb'

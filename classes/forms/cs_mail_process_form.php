@@ -100,11 +100,7 @@ class cs_mail_process_form extends cs_rubric_form {
          $this->_form->addText('receiver',getMessage('COMMON_MAIL_RECEIVER'),'');
          $this->_form->addHidden('receivers',$this->_receiver_array);
       }
-		$format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('content','',getMessage('COMMON_CONTENT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'60', '15', '', true,false,false);
+      $this->_form->addTextArea('content','',getMessage('COMMON_CONTENT'),'','60', '15', '', true,false,false);
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('MAIL_SEND_BUTTON'),getMessage('MAIL_NOT_SEND_BUTTON'));

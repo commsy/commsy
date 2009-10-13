@@ -441,14 +441,10 @@ class cs_material_form extends cs_rubric_form {
                break;
          }
 
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       if ( $this->_bib_kind=='none' ) {
-         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',25);
+         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),'','',25);
       } else {
-         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),getMessage('COMMON_CONTENT_DESC',$format_help_link),'',25);
+         $this->_form->addTextArea('description','',getMessage('MATERIAL_ABSTRACT'),'','',25);
       }
       $this->_form->addEmptyline();
       $current_context = $this->_environment->getCurrentContextItem();

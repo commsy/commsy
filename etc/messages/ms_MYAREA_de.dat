@@ -9,7 +9,6 @@ $message["MYAREA_CLIPBOARD_HEADER_1"]["de"] = "Kopie";
 $message["MYAREA_COMMUNITY_INDEX"]["de"] = "%_COMMUNITY_SUB_NOMPL_BIG";
 $message["MYAREA_CONTEXT_GUEST_IN"]["de"] = "Gast in";
 $message["MYAREA_CONTEXT_JOIN"]["de"] = "Teilnahme beantragen";
-$message["MYAREA_LOGGED_ON_AS"]["de"] = "Angemeldet als:";
 $message["MYAREA_LOGIN_ACCOUNT_FORGET_LINK"]["de"] = "Kennung vergessen?";
 $message["MYAREA_LOGIN_ACCOUNT_WANT_LINK"]["de"] = "Neue Kennung beantragen";
 $message["MYAREA_LOGIN_AS_GUEST"]["de"] = "Als Gast im Raum";

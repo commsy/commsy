@@ -214,8 +214,7 @@ class cs_page_room_view extends cs_page_view {
       $left_menue_status = $session->getValue('left_menue_status');
       $html .= '<div class="tabs_frame" >'.LF;
       $html .= '<div class="tabs">'.LF;
-      // @segment-end 88232
-      // @segment-begin 49110 _getLinkRowAsHTML(): display-help-tab
+
       $html .= '<div style="float:right; margin:0px; padding:0px;">'.LF;
 
       // rss link
@@ -246,20 +245,9 @@ class cs_page_room_view extends cs_page_view {
       unset($current_user_item);
       unset($current_context_item);
 
-      // Always show context sensitive help
-      $params = array();
-      $params['module'] = $this->_module;
-      $params['function'] = $this->_function;
-      $context = $this->_environment->getCurrentContextItem();
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', 'help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-      unset($params);
-      $html .= '  '.LF;
+      $html .= '&nbsp;'.LF;
       $html .= '</div>'.LF;
-      // @segment-end 49110
-      // @segment-begin 31695 _getLinkRowAsHTML():?history
+
       $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $session = $this->_environment->getSession();
       $history = $session->getValue('history');
@@ -268,10 +256,8 @@ class cs_page_room_view extends cs_page_view {
       } else {
          $h_module ='';
       }
-      // @segment-end 31695
-      // @segment-begin 96055 _getLinkRowAsHTML():get-tab_title-foreach-context-link;some-different-texts-if-privat-room
-      // construct tabs
 
+      // construct tabs
       $first = true;
       foreach ( $this->_links as $link ) {
          if ($context->isPrivateRoom()){
@@ -430,15 +416,6 @@ class cs_page_room_view extends cs_page_view {
       unset($current_user_item);
       unset($current_context_item);
 
-      // Always show context sensitive help
-      $params = array();
-      $params['module'] = $this->_module;
-      $params['function'] = $this->_function;
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                             $params,
-                             '?', '', 'help', '', '',
-                             'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"','','class="navlist_help"').LF;
-      unset($params);
       $html .= '</div>'.LF;
       $html .= '<div style="margin:0px; padding:0px;">'.LF;
       $text = '&nbsp;';

@@ -112,35 +112,10 @@ class cs_configuration_agb_form extends cs_rubric_form {
       // text fields
       $languages = $this->_environment->getAvailableLanguageArray();
       foreach ($this->_languages as $language) {
-         $format_help_link = ahref_curl($this->_environment->getCurrentContextID(),
-                                        'help',
-                                        'context',
-                                        array('module'=>$this->_environment->getCurrentModule(),
-                                        'function'=>$this->_environment->getCurrentFunction(),
-                                        'context'=>'HELP_COMMON_FORMAT'),
-                                        getMessage('HELP_COMMON_FORMAT_TITLE'),
-                                        '',
-                                        '_help',
-                                        '',
-                                        '',
-                                        'onclick="window.open(href,
-                                                              target,
-                                                              \'toolbar=no,
-                                                              location=no,
-                                                              directories=no,
-                                                              status=no,
-                                                              menubar=no,
-                                                              scrollbars=yes,
-                                                              resizable=yes,
-                                                              copyhistory=yes,
-                                                              width=600,
-                                                              height=400\'
-                                                             );"'
-                                       );
          $this->_form->addTextArea('agb_text_'.cs_strtoupper($language),
                                    '',
                                    getMessage('CONFIGURATION_AGB_FORM_TEXT').'&nbsp;'.'('.$this->_translator->getLanguageLabelTranslated($language).')',
-                                   getMessage('COMMON_CONTENT_DESC',$format_help_link),
+                                   '',
                                    '60',
                                    $this->_text_area_height,
                                    '',

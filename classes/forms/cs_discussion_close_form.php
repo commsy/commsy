@@ -81,11 +81,7 @@ class cs_discussion_close_form extends cs_rubric_form {
          $title = '';
       }
       $this->_form->addTitleField('subject',getMessage('DISCUSSION_CLOSE_TITLE'),getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,40,true);
-      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('summary','',getMessage('DISCUSSION_CLOSE'),getMessage('COMMON_CONTENT_DESC',$link),51);
+      $this->_form->addTextArea('summary','',getMessage('DISCUSSION_CLOSE'),'',51);
 
       // buttons
       $this->_form->addButtonBar('option',getMessage('DISCUSSION_CLOSE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));

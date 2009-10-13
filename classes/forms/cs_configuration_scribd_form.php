@@ -57,10 +57,6 @@ class cs_configuration_scribd_form extends cs_rubric_form {
     */
    function _createForm () {
 
-      $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
       $this->setHeadline($this->_headline);
 
       $this->_form->addText('text',$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_TITLE'),$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_DESC',getCommSyVersion()));

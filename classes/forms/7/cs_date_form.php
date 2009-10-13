@@ -308,11 +308,7 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,getMessage('DATES_TIME_DAY_START'),getMessage('DATES_START_DAY'),getMessage('DATES_START_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
       $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,getMessage('DATES_TIME_DAY_END'),getMessage('DATES_END_DAY'),getMessage('DATES_END_TIME'),getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
       $this->_form->addTextfield('place','',getMessage('DATES_PLACE'),getMessage('DATES_PLACE_DESC'),100,50);
-           $link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),getMessage('COMMON_CONTENT_DESC',$link),'',10);
+      $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();

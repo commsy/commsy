@@ -115,11 +115,7 @@ class cs_discarticle_form extends cs_rubric_form {
       $this->_form->addHidden('discussion_id','');
       $this->_form->addHidden('ref_position','');
       $this->_form->addTitleField('subject','',getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,45,true);
-      $format_help_link = ahref_curl($this->_environment->getCurrentContextID(), 'help', 'context',
-                  array('module'=>$this->_environment->getCurrentModule(),'function'=>$this->_environment->getCurrentFunction(),'context'=>'HELP_COMMON_FORMAT'),
-                  getMessage('HELP_COMMON_FORMAT_TITLE'), '', '_help', '', '',
-                  'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=600, height=400\');"');
-      $this->_form->addTextArea('description','',getMessage('DISCUSSION_ARTICLE'),getMessage('COMMON_CONTENT_DESC',$format_help_link),59);
+      $this->_form->addTextArea('description','',getMessage('DISCUSSION_ARTICLE'),'',59);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
