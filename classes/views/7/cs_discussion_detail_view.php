@@ -267,14 +267,21 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .='</div><div>';
                   $params = array();
                   $params['iid'] = $item->getItemID();
-                  $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_DISCUSSION_TYPE,
-                           'detail',
-                           $params,
-                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                           $hover,
-                           '',
-                           'anchor'.$article->getItemID());
+                  $param_zip = $this->_environment->getValueOfParameter('download');
+                  if ( empty($param_zip)
+                       or $param_zip != 'zip'
+                     ) {
+                     $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                              CS_DISCUSSION_TYPE,
+                              'detail',
+                              $params,
+                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
+                              $hover,
+                              '',
+                              'anchor'.$article->getItemID());
+                  } else {
+                    $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+                  }
                   $html .= $this->_getItemChangeStatus($article).' ';
                   $html .= $title.$fileicons;
 #                  $html .= $this->_getItemChangeStatus($article);
@@ -284,14 +291,21 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .= '   <td colspan="2" style="vertical-align:top; padding:0px; margin:0px; padding-left:'.$em.'em; width: 55%;">';
                   $params = array();
                   $params['iid'] = $item->getItemID();
-                  $title = ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_DISCUSSION_TYPE,
-                           'detail',
-                           $params,
-                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                           $hover,
-                           '',
-                           'anchor'.$article->getItemID());
+                  $param_zip = $this->_environment->getValueOfParameter('download');
+                  if ( empty($param_zip)
+                       or $param_zip != 'zip'
+                     ) {
+                     $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                              CS_DISCUSSION_TYPE,
+                              'detail',
+                              $params,
+                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
+                              $hover,
+                              '',
+                              'anchor'.$article->getItemID());
+                  } else {
+                     $title = $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+                  }
                   $html .= $this->_getItemChangeStatus($article).' ';
                   $html .= $title.$fileicons;
                }
@@ -315,15 +329,21 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .= '   <td style="width: 46%;">';
                $params = array();
                $params['iid'] = $item->getItemID();
-               $html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                           CS_DISCUSSION_TYPE,
-                           'detail',
-                           $params,
-                           $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
-                           $hover,
-                           '',
-                           'anchor'.$article->getItemID());
-
+               $param_zip = $this->_environment->getValueOfParameter('download');
+               if ( empty($param_zip)
+                    or $param_zip != 'zip'
+                  ) {
+                  $html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                              CS_DISCUSSION_TYPE,
+                              'detail',
+                              $params,
+                              $this->_text_as_html_short($this->_compareWithSearchText($display_subject)),
+                              $hover,
+                              '',
+                              'anchor'.$article->getItemID());
+               } else {
+                  $html .= $this->_text_as_html_short($this->_compareWithSearchText($display_subject));
+               }
                $html .= $this->_getItemChangeStatus($article).' ';
                $html .= $fileicons.'</td>'.LF;
                $html .= '   <td style="vertical-align:bottom; white-space:nowrap; width: 30%;">'.$this->_text_as_html_short($this->_compareWithSearchText($creator_fullname)).'&nbsp; </td>'.LF;

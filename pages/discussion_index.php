@@ -352,6 +352,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                unset($params);
             }
             break;
+         case 'download':
+            include_once('include/inc_rubric_download.php');
+            break;
          default:
             $params = $environment->getCurrentParameterArray();
             unset($params['mode']);
@@ -374,15 +377,15 @@ $context_item = $environment->getCurrentContextItem();
 $all_ids = $discussion_manager->getIds();
 $count_all = count($all_ids);
 if (isset($all_ids[0])){
-	$newest_id = $all_ids[0];
-	$item = $discussion_manager->getItem($newest_id);
-	$date = $item->getModificationDate();
-	$now = getCurrentDateTimeInMySQL();
-	if ($date <= $now){
-	   $sel_activating_status = 1;
-	}
+   $newest_id = $all_ids[0];
+   $item = $discussion_manager->getItem($newest_id);
+   $date = $item->getModificationDate();
+   $now = getCurrentDateTimeInMySQL();
+   if ($date <= $now){
+      $sel_activating_status = 1;
+   }
 }elseif($count_all == 0){
-	$sel_activating_status = 1;
+   $sel_activating_status = 1;
 }
 $discussion_manager->resetData();
 
@@ -406,7 +409,9 @@ if ( !empty($search) ) {
 
 $params = array();
 $params['environment'] = $environment;
-$params['with_modifying_actions'] = $with_modifying_actions;
+if ( isset($with_modifying_actions) ) {
+   $params['with_modifying_actions'] = $with_modifying_actions;
+}
 $view = $class_factory->getClass(DISCUSSION_INDEX_VIEW,$params);
 unset($params);
 
@@ -424,9 +429,6 @@ foreach($sel_array as $rubric => $value){
    unset($rubric_list);
 }
 
-
-
-
 if ( !empty($selbuzzword) ) {
    $discussion_manager->setBuzzwordLimit($selbuzzword);
 }
@@ -434,20 +436,19 @@ if ( !empty($last_selected_tag) ){
    $discussion_manager->setTagLimit($last_selected_tag);
 }
 
-
-
-
-
-
 $ids = $discussion_manager->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
 if ( $interval > 0 ) {
    $discussion_manager->setIntervalLimit($from-1,$interval);
 }
+
+if ( !empty($only_show_array) ) {
+   $discussion_manager->resetLimits();
+   $discussion_manager->setIDArrayLimit($only_show_array);
+}
+
 $discussion_manager->select();
 $list = $discussion_manager->get();        // returns a cs_list of discussion_items
-
-
 
 $id_array = array();
 $item = $list->getFirst();

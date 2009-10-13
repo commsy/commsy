@@ -182,16 +182,24 @@ class misc_item2zip extends misc_2zip {
       }
 
       foreach($matches_array[1] as $match) {
-         $new = parse_url($matches_array[1][$i],PHP_URL_QUERY);
+         $new = parse_url($match,PHP_URL_QUERY);
          $out = '';
          parse_str($new,$out);
 
+         $index = '';
          if ( isset($out['amp;iid']) ) {
-             $index = $out['amp;iid'];
+            $index = $out['amp;iid'];
          } elseif( isset($out['iid']) ) {
-             $index = $out['iid'];
+            $index = $out['iid'];
          }
-         if (isset($index) ) {
+
+         if ( !empty($index)
+              and $index == $this->_item_id
+              and stristr($match,'#anchor')
+            ) {
+            $thumb_name = substr($match,strpos($match,'#'));
+            $retour = str_replace($match, $thumb_name, $retour);
+         } elseif (isset($index) ) {
             $filemanager = $this->_environment->getFileManager();
             $file = $filemanager->getItem($index);
             if ( isset($file) ) {
@@ -221,11 +229,13 @@ class misc_item2zip extends misc_2zip {
       $matches_array = array();
       $reg_exp = '~src=\"([^"]*)\"~u';
       preg_match_all($reg_exp, $retour, $matches_array);
+
       $link_list = array();
       if ( !empty($matches_array[1]) ) {
          foreach ( $matches_array[1] as $link ) {
-            if ( stristr($link,'getFile')
-                 and stristr($link,'picture')
+            if ( ( stristr($link,'getFile')
+                   and stristr($link,'picture')
+                 ) or stristr($link,'images/disc1')
                ) {
                $link_list[] = $link;
             }
@@ -234,24 +244,36 @@ class misc_item2zip extends misc_2zip {
 
       foreach ( $link_list as $link ) {
          $img_name = '';
-         $name = substr($link,strpos($link,'?')+1);
-         $name_array = explode('&',$name);
-         foreach ( $name_array as $param ) {
-            if ( stristr($param,'picture=') ) {
-               $img_name = substr($param,strpos($param,'=')+1);
+         if ( stristr($link,'picture=') ) {
+            $name = substr($link,strpos($link,'?')+1);
+            $name_array = explode('&',$name);
+            foreach ( $name_array as $param ) {
+               if ( stristr($param,'picture=') ) {
+                  $img_name = substr($param,strpos($param,'=')+1);
+               }
             }
+         } elseif ( stristr($link,'images/disc1') ) {
+            $img_name = str_replace('images/','',$link);
          }
 
          if ( !empty($img_name) ) {
             if ( !empty($thumb_array[$img_name]) ) {
                $retour = str_replace($link,'images/'.$thumb_array[$img_name],$retour);
             } else {
-               if ( !file_exists($directory.'/images'.$img_name) ) {
-                  $orig_img_file  = 'var/';
-                  $orig_img_file .= $this->_environment->getCurrentPortalID().'/';
-                  $orig_img_file .= $this->_environment->getCurrentContextID().'/';
-                  $orig_img_file .= $img_name;
-                  if ( file_exists($orig_img_file) ) {
+               if ( !file_exists($directory.'/images/'.$img_name) ) {
+                  $orig_img_file = '';
+                  if ( stristr($link,'picture=') ) {
+                     $orig_img_file  = 'var/';
+                     $orig_img_file .= $this->_environment->getCurrentPortalID().'/';
+                     $orig_img_file .= $this->_environment->getCurrentContextID().'/';
+                     $orig_img_file .= $img_name;
+                  } elseif ( stristr($link,'images/disc1') ) {
+                     $orig_img_file  = 'htdocs/images/';
+                     $orig_img_file .= $img_name;
+                  }
+                  if ( !empty($orig_img_file)
+                       and file_exists($orig_img_file)
+                     ) {
                      copy($orig_img_file,$directory.'/images/'.$img_name);
                   }
                }

@@ -106,8 +106,14 @@ class cs_discussion_index_view extends cs_room_index_view {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_TITLE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -122,8 +128,14 @@ class cs_discussion_index_view extends cs_room_index_view {
          $params['sort'] = 'numposts';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('DISCUSSION_ARTICLES'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('DISCUSSION_ARTICLES'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('DISCUSSION_ARTICLES');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -138,8 +150,14 @@ class cs_discussion_index_view extends cs_room_index_view {
          $params['sort'] = 'latest';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_EDIT_AT'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('COMMON_EDIT_AT'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_EDIT_AT');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
@@ -153,8 +171,14 @@ class cs_discussion_index_view extends cs_room_index_view {
          $params['sort'] = 'creator';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                              $params, $this->_translator->getMessage('COMMON_EDIT_BY'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                 $params, $this->_translator->getMessage('COMMON_EDIT_BY'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_EDIT_BY');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -252,23 +276,31 @@ class cs_discussion_index_view extends cs_room_index_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print')
+           or ( !empty($download)
+                and $download == 'zip'
+              )
+         ) {
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         $user = $this->_environment->getCurrentUser();
-         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-            $html .= ' disabled="disabled"'.LF;
-         }elseif ( isset($checked_ids)
-              and !empty($checked_ids)
-              and in_array($key, $checked_ids)
+         if ( empty($download)
+              or $download != 'zip'
             ) {
-            $html .= ' checked="checked"'.LF;
-            if ( in_array($key, $dontedit_ids) ) {
+            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+            $user = $this->_environment->getCurrentUser();
+            if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
+            }elseif ( isset($checked_ids)
+                 and !empty($checked_ids)
+                 and in_array($key, $checked_ids)
+               ) {
+               $html .= ' checked="checked"'.LF;
+               if ( in_array($key, $dontedit_ids) ) {
+                  $html .= ' disabled="disabled"'.LF;
+               }
             }
+            $html .= '/>'.LF;
+            $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          }
-         $html .= '/>'.LF;
-         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
          if ($item->isNotActivated()){
             $title = $item->getTitle();
@@ -398,7 +430,12 @@ class cs_discussion_index_view extends cs_room_index_view {
          $filesize = $file->getFileSize();
          $fileicon = $file->getFileIcon();
          if ($with_links and $this->_environment->inProjectRoom() || (!$this->_environment->inProjectRoom() and ($item->isPublished() || $user->isUser())) ) {
-            if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
+            if ( isset($_GET['mode'])
+                 and $_GET['mode']=='print'
+                 and ( empty($_GET['download'])
+                       or $_GET['download'] != 'zip'
+                     )
+               ) {
                $file_list .= '<span class="disabled">'.$fileicon.'</span>'."\n";
             } else {
               if ( mb_stristr(mb_strtolower($file->getFilename(), 'UTF-8'),'png')
@@ -421,6 +458,12 @@ class cs_discussion_index_view extends cs_room_index_view {
          $file = $files->getNext();
       }
       return $retour.$file_list;
+   }
+
+   public function _getAdditionalViewActionsAsHTML () {
+      $retour = '';
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      return $retour;
    }
 }
 ?>
