@@ -131,6 +131,14 @@ class cs_configuration_plugins_form extends cs_rubric_form {
          foreach ( $this->_array_plugins as $plugin => $plugin_data) {
             $this->_form->addEmptyLine();
             $this->_form->addRadioGroup($plugin,$plugin_data['title'],'',$plugin_data['values'],'',true,true);
+            if ( !empty($plugin_data['description']) ) {
+               $this->_form->combine();
+               $this->_form->addText('description','',$plugin_data['description']);
+            }
+            if ( !empty($plugin_data['homepage']) ) {
+               $this->_form->combine();
+               $this->_form->addText('homepage','',$this->_translator->getMessage('CONFIGURATION_PLUGIN_HOMEPAGE').': '.$plugin_data['homepage']);
+            }
             if ( !empty($plugin_data['change_form']) ) {
                $plugin_class = $this->_environment->getPluginClass($plugin);
                if ( $this->_environment->inPortal() ) {
@@ -145,14 +153,6 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                      $plugin_class->configurationAtRoom('create_form',array('form' => $this->_form));
                   }
                }
-            }
-            if ( !empty($plugin_data['description']) ) {
-               $this->_form->combine();
-               $this->_form->addText('description','',$plugin_data['description']);
-            }
-            if ( !empty($plugin_data['homepage']) ) {
-               $this->_form->combine();
-               $this->_form->addText('homepage','',$this->_translator->getMessage('CONFIGURATION_PLUGIN_HOMEPAGE').': '.$plugin_data['homepage']);
             }
          }
 

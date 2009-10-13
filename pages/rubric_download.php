@@ -107,22 +107,24 @@ function getCSS ( $file, $file_url ) {
         if(isset($index))
          {
           $file = $filemanager->getItem($index);
-          $icon = $directory.'/images/'.$file->getIconFilename();
-          $filearray[$i] = $file->getDiskFileName();
-          if(file_exists(realpath($file->getDiskFileName()))) {
-             include_once('functions/text_functions.php');
-             copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
-             $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
-             copy('htdocs/images/'.$file->getIconFilename(),$icon);
+          if ( isset($file) ) {
+             $icon = $directory.'/images/'.$file->getIconFilename();
+             $filearray[$i] = $file->getDiskFileName();
+             if(file_exists(realpath($file->getDiskFileName()))) {
+                include_once('functions/text_functions.php');
+                copy($file->getDiskFileName(),$directory.'/'.toggleUmlaut($file->getFilename()));
+                $output = str_replace($match, toggleUmlaut($file->getFilename()), $output);
+                copy('htdocs/images/'.$file->getIconFilename(),$icon);
 
-             // thumbs gehen nicht
-             // warum nicht allgemeiner mit <img? (siehe unten)
-             // geht unten aber auch nicht
-             $thumb_name = $file->getFilename() . '_thumb';
-             $thumb_disk_name = $file->getDiskFileName() . '_thumb';
-             if ( file_exists(realpath($thumb_disk_name)) ) {
-                copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
-                $output = str_replace($match, $thumb_name, $output);
+                // thumbs gehen nicht
+                // warum nicht allgemeiner mit <img? (siehe unten)
+                // geht unten aber auch nicht
+                $thumb_name = $file->getFilename() . '_thumb';
+                $thumb_disk_name = $file->getDiskFileName() . '_thumb';
+                if ( file_exists(realpath($thumb_disk_name)) ) {
+                   copy($thumb_disk_name,$directory.'/images/'.$thumb_name);
+                   $output = str_replace($match, $thumb_name, $output);
+                }
              }
           }
        }
@@ -278,6 +280,4 @@ function getCSS ( $file, $file_url ) {
     header('Content-type: application/zip');
     header('Content-Disposition: attachment; filename="'.$downloadfile.'"');
     readfile($zipfile);
-
-
 ?>

@@ -218,6 +218,10 @@ class misc_list2zip extends misc_2zip {
       return $retour;
    }
 
+   public function getZipFilenameWithFolder () {
+      return $this->_zip_filename_with_folder;
+   }
+
    public function send () {
       header('Content-type: application/zip');
       header('Content-Disposition: attachment; filename="'.basename($this->_zip_filename_with_folder).'"');

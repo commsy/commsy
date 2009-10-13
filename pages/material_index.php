@@ -395,9 +395,23 @@ if ( isOption($option,getMessage('COMMON_LIST_ACTION_BUTTON_GO'))
          include_once('include/inc_rubric_download.php');
          break;
       default:
-         $params = $environment->getCurrentParameterArray();
-         unset($params['mode']);
-         redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
+         if ( !empty($_POST['index_view_action'])
+              and ( $environment->isPlugin($_POST['index_view_action'])
+                    or $environment->isPlugin(substr($_POST['index_view_action'],0,strpos($_POST['index_view_action'],'_')))
+                  )
+            ) {
+            $plugin = '';
+            if ( $environment->isPlugin($_POST['index_view_action']) ) {
+               $plugin = $_POST['index_view_action'];
+            } else {
+               $plugin = substr($_POST['index_view_action'],0,strpos($_POST['index_view_action'],'_'));
+            }
+            plugin_hook_plugin($plugin,'performListAction',$_POST);
+         } else {
+            $params = $environment->getCurrentParameterArray();
+            unset($params['mode']);
+            redirect($environment->getCurrentContextID(), CS_MATERIAL_TYPE, 'index', $params);
+         }
    }
    if ($_POST['index_view_action'] != '3'){
       $selected_ids = array();

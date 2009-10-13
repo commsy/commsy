@@ -961,6 +961,35 @@ function plugin_hook ($hook_function, $params = null) {
    }
 }
 
+function plugin_hook_plugin ($plugin, $hook_function, $params = null) {
+   global $environment;
+   global $c_plugin_array;
+   if ( in_array($plugin,$c_plugin_array) ) {
+      $do_it = false;
+      $plugin_class = $environment->getPluginClass($plugin);
+      if ( method_exists($plugin_class,'isConfigurableInRoom')
+           and $plugin_class->isConfigurableInRoom()
+         ) {
+         $current_context_item = $environment->getCurrentContextItem();
+      } elseif ( method_exists($plugin_class,'isConfigurableInPortal')
+                 and $plugin_class->isConfigurableInPortal()
+               ) {
+         $current_context_item = $environment->getCurrentPortalItem();
+      }
+      if ( isset($current_context_item)
+           and $current_context_item->isPluginActive($plugin)
+         ) {
+         $do_it = true;
+      }
+      if ( $do_it
+           and isset($plugin_class)
+           and method_exists($plugin_class,$hook_function)
+         ) {
+         $plugin_class->$hook_function($params);
+      }
+   }
+}
+
 function plugin_hook_output_all ($hook_function, $params = null, $separator = '') {
    $retour = '';
    global $environment;
