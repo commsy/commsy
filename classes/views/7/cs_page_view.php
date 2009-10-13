@@ -62,6 +62,11 @@ class cs_page_view extends cs_view {
    var $_views_right = array();
 
    /**
+    * array - containing the views overlay the page
+    */
+   var $_views_overlay = array();
+
+   /**
     * string - containing the name of the page
     */
    var $_name_page = NULL;
@@ -211,8 +216,6 @@ class cs_page_view extends cs_view {
     * this method adds a view to the page
     *
     * @param object cs_view a commsy view
-    *
-    * @author CommSy Development Group
     */
    function add ($view) {
       $this->_views[] = $view;
@@ -222,8 +225,6 @@ class cs_page_view extends cs_view {
     * this method adds a view to the page on the left hand side
     *
     * @param object cs_view a commsy view
-    *
-    * @author CommSy Development Group
     */
    function addLeft ($view) {
       $this->_views_left[] = $view;
@@ -233,11 +234,18 @@ class cs_page_view extends cs_view {
     * this method adds a view to the page on the right hand side
     *
     * @param object cs_view a commsy view
-    *
-    * @author CommSy Development Group
     */
    function addRight ($view) {
       $this->_views_right[] = $view;
+   }
+
+   /** adds a view in the right
+    * this method adds a view to the page on the right hand side
+    *
+    * @param object cs_view a commsy view
+    */
+   function addOverlay ($view) {
+      $this->_views_overlay[] = $view;
    }
 
    function _getIncludedCSSAsHTML(){

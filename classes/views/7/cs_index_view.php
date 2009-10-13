@@ -130,7 +130,6 @@ class cs_index_view extends cs_view {
 
    var $_colspan = 4;
 
-   // @segment-begin 77035  cs_index_view_($environment,_$with_modifying_actions,_$with_form_fields_=_true)-constructor,uses#56209
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -152,9 +151,7 @@ class cs_index_view extends cs_view {
          $this->_show_buzzwords_box = true;
       }
    }
-   // @segment-end 77035
 
-   // @segment-begin 48753 ?setTitle($value)/getTitle()-for-list-view
    /** set title of the list view
     * this method sets the title of the list view
     *
@@ -173,23 +170,18 @@ class cs_index_view extends cs_view {
        $this->_display_title = false;
        return $this->_title;
     }
-    // @segment-end 48753
 
-  // @segment-begin 63086  setClipboardIDArray($cia)/getClipboardIDArray()
-  function setClipboardIDArray($cia) {
+   function setClipboardIDArray($cia) {
       $this->_clipboard_id_array = $cia;
    }
 
    function getClipboardIDArray() {
       return $this->_clipboard_id_array;
    }
-   // @segment-end 63086
 
-  // @segment-begin 9157 ?setClipboardMode()
-  function setClipboardMode() {
+   function setClipboardMode() {
       $this->_clipboard_mode = true;
    }
-   // @segment-end 9157
 
    function setDisplayMode ( $value ) {
       $this->_display_mode = $value;
@@ -207,7 +199,6 @@ class cs_index_view extends cs_view {
       return $this->_activation_limit;
    }
 
-   // @segment-begin 91360  setFrom($from)/getFrom()-beginning-counter-of-list
    /** set from counter of the list view
     * this method sets the counter of the beginning of the list view
     *
@@ -225,9 +216,7 @@ class cs_index_view extends cs_view {
     function getFrom (){
        return $this->_from;
     }
-    // @segment-end 91360
 
-   // @segment-begin 46784  setInterval($interval)/getInterval()-shown-interval-of-list-view
    /** set interval counter of the list view
     * this method sets the shown interval of the list view
     *
@@ -245,9 +234,7 @@ class cs_index_view extends cs_view {
     function getInterval () {
        return $this->_interval;
     }
-    // @segment-end 46784
 
-   // @segment-begin 49781  setCountAll($count_all)/getCountAll()-lenght-of-whole-list
    /** set count_all counter of the list view
     * this method sets the whole entries of the list view
     *
@@ -265,9 +252,7 @@ class cs_index_view extends cs_view {
     function getCountAll () {
        return $this->_count_all;
     }
-    // @segment-end 49781
 
-   // @segment-begin 17374  setCountAllShown($count_all)/getCountAllShown()-lenght-of-whole-shown-list
    /** set count_all counter of the list view
     * this method sets the whole entries of the list view
     *
@@ -285,7 +270,6 @@ class cs_index_view extends cs_view {
     function getCountAllShown () {
        return $this->_count_all_shown;
     }
-    // @segment-end 17374
 
    /** set description of the list view
     * this method sets the shown description of the list view
@@ -296,7 +280,6 @@ class cs_index_view extends cs_view {
        $this->_description = (string)$description;
     }
 
-   // @segment-begin 96199  setList($list)/getList()-whole-entries-of-list-view
    /** set the content of the list view
     * this method sets the whole entries of the list view
     *
@@ -314,7 +297,6 @@ class cs_index_view extends cs_view {
     function getList () {
        return $this->_list;
     }
-    // @segment-end 96199
 
     /** get the value of the search box
     * this method gets the search value of the list
@@ -2033,6 +2015,8 @@ EOD;
          $html .= '</div>'.LF;
       } else {
          $params = $this->_environment->getCurrentParameterArray();
+         unset($params['mode']);
+         unset($params['download']);
          $html .= '<form style="padding:0px; margin:0px;" action="';
          $html .= curl($this->_environment->getCurrentContextID(),
                        $this->_environment->getCurrentModule(),

@@ -678,6 +678,8 @@ class cs_date_index_view extends cs_index_view {
    public function _getAdditionalViewActionsAsHTML () {
       $retour = '';
       $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      include_once('functions/misc_functions.php');
+      $retour .= plugin_hook_output_all('getAdditionalViewActionsAsHTML',array('module' => CS_MATERIAL_TYPE),LF);
       return $retour;
    }
 }

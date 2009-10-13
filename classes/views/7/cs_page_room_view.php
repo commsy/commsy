@@ -1022,6 +1022,24 @@ class cs_page_room_view extends cs_page_view {
      return $html;
   }
 
+   private function _getOverlayBoxAsHTML ( $view ) {
+      $left = '0em';
+      $width = '100%';
+      $html  = '<div style="position: absolute; z-index:1000; top:100px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
+      $html .= '<center>';
+      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left:30%; background-color:#FFF;">';
+
+      $html .= $view->asHTML();
+
+      $html .= '</div>'.LF;
+      $html .= '</center>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="delete" style="position: absolute; z-index:900; top:105px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
+      $html .= '</div>'.LF;
+
+      return $html;
+   }
+
    function getDeleteBoxAsHTML(){
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
@@ -1210,8 +1228,7 @@ class cs_page_room_view extends cs_page_view {
          if ($show_agb_again) {
             $html .='&nbsp;';
          }
-         // @segment-end 97506
-         // @segment-begin 64067 asHTML():display-full_screen_views-added-to-the-$page(e.g.:cs_announcement_view-which-asHTML()-from-upper_class-cs_index_view)
+
          if ( !empty($this->_views) ) {
             foreach ($this->_views as $view) {
                if ($first){
@@ -1585,6 +1602,13 @@ class cs_page_room_view extends cs_page_view {
             ) {
             $html .= $this->getItemListBoxAsHTML();
          }
+
+         if ( !empty( $this->_views_overlay ) ) {
+            foreach ( $this->_views_overlay as $view ) {
+               $html .= $this->_getOverlayBoxAsHTML($view);
+            }
+         }
+
          $html .= $this->_getPluginInfosForAfterContentAsHTML();
 
          if ( $this->_environment->getCurrentModule() == 'agb'
