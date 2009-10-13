@@ -20,8 +20,22 @@
 // You have received a copy of the GNU General Public License
 // along with the plugin.
 
+// send zip
+if ( !empty($_GET['filename']) ) {
+   global $export_temp_folder;
+   if ( !isset($export_temp_folder) ) {
+      $export_temp_folder = 'var/temp/zip_export';
+   }
+   if ( file_exists($export_temp_folder.'/'.$_GET['filename']) ) {
+      header('Content-type: application/zip');
+      header('Content-Disposition: attachment; filename="'.$_GET['filename'].'"');
+      readfile($export_temp_folder.'/'.$_GET['filename']);
+      exit();
+   }
+}
+
 // url to commsy zip
-if ( !empty($_GET['iid']) ) {
+elseif ( !empty($_GET['iid']) ) {
    $item_manager = $environment->getItemManager();
    $item_type = $item_manager->getItemType($_GET['iid']);
    if ( !empty($item_type) ) {

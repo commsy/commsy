@@ -36,6 +36,14 @@ class class_voyeur extends cs_plugin {
       $this->_image_path = 'plugins/'.$this->getIdentifier();
    }
 
+   public function getDescription () {
+      return $this->_translator->getMessage('VOYEUR_DESCRIPTION');
+   }
+
+   public function getHomepage () {
+      return 'http://voyeur.hermeneuti.ca';
+   }
+
    public function isConfigurableInPortal () {
       return true;
    }
@@ -105,12 +113,16 @@ class class_voyeur extends cs_plugin {
       return $retour;
    }
 
-   public function getVoyeurURL () {
+   public function getVoyeurURL ( $filename = '' ) {
       $retour = '';
       $url = $this->_getConfigValueFor($this->_identifier.'_server_url');
       if ( !empty($url) ) {
          $url_params = array();
-         $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
+         if ( empty($filename) ) {
+            $url_params['iid'] = $this->_environment->getValueOfParameter('iid');
+         } else {
+            $url_params['filename'] = $filename;
+         }
          $session_item = $this->_environment->getSessionItem();
          if ( isset($session_item) ) {
             $url_params['SID'] = $session_item->getSessionID();
@@ -133,6 +145,110 @@ class class_voyeur extends cs_plugin {
          $retour = $url;
       }
       return $retour;
+   }
+
+   public function getAdditionalViewActionsAsHTML ( $params ) {
+      $retour = '';
+      $retour .= '   <option value="'.$this->_identifier.'_analyse">'.$this->_translator->getMessage('VOYEUR_LIST_ACTION_ANALYSE').'</option>'.LF;
+      return $retour;
+   }
+
+   public function performListAction ( $params ) {
+      if ( $params['index_view_action'] == $this->_identifier.'_analyse'
+           and !empty($_POST['attach'])
+         ) {
+         $id_array = array();
+         foreach ($_POST['attach'] as $key => $value) {
+            $id_array[] = $key;
+         }
+         $class_factory = $this->_environment->getClassFactory();
+         $list2zip = $class_factory->getClass(MISC_LIST2ZIP,array('environment' => $this->_environment));
+         $list2zip->setItemIDArray($id_array);
+         $list2zip->setModule($this->_environment->getCurrentModule());
+         $list2zip->execute();
+         $zipname_wf = $list2zip->getZipFilenameWithFolder();
+         $new_zip = $this->_changeZIP($zipname_wf);
+         unlink($zipname_wf);
+
+         $params = array();
+         $params['environment'] = $this->_environment;
+         $params['with_modifying_actions'] = true;
+         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
+         unset($params);
+         $errorbox->setText($this->_translator->getMessage('VOYEUR_LIST_ACTION_TEXT',$this->getVoyeurURL(basename($new_zip))));
+         global $page;
+         $page->add($errorbox);
+         unset($_GET['download']);
+         unset($_GET['mode']);
+      }
+   }
+
+   private function _changeZIP ($zip_name) {
+      $retour = '';
+      // change ZIP
+      if ( file_exists($zip_name) ) {
+         $zip = new ZipArchive();
+         if ( $zip->open($zip_name) !== TRUE ) {
+            include_once('functions/error_functions.php');
+            trigger_error('can not modify zip',E_USER_WARNING);
+         } else {
+            // extract zip
+            global $export_temp_folder;
+            if ( !isset($export_temp_folder) ) {
+               $export_temp_folder = 'var/temp/zip_export';
+            }
+            $voyeur_dir = $export_temp_folder.'/'.str_replace('.zip','_voyeur',basename($zip_name));
+            if ( !is_dir($voyeur_dir) ) {
+               mkdir($voyeur_dir, 0777);
+               if ( is_dir($voyeur_dir) ) {
+                  $zip->extractTo($voyeur_dir);
+                  $zip->close();
+
+                  // delete folder
+                  $disc_manager = $this->_environment->getDiscManager();
+                  $disc_manager->removeDirectory($voyeur_dir.'/css');
+                  $disc_manager->removeDirectory($voyeur_dir.'/images');
+               } else {
+                  include_once('functions/error_functions.php');
+                  trigger_error('can not make directory ('.$voyeur_dir.')',E_USER_ERROR);
+               }
+            }
+
+            // make zip
+            $zip = new ZipArchive();
+            $voyeur_zip_name = str_replace('.zip','_voyeur.zip',$zip_name);
+            if ( $zip->open($voyeur_zip_name, ZIPARCHIVE::CREATE) !== TRUE ) {
+                include_once('functions/error_functions.php');
+                trigger_error('can not open zip-file '.$voyeur_zip_name,E_USER_WARNNG);
+            }
+            $temp_dir = getcwd();
+            chdir($voyeur_dir);
+
+            $zip = addFolderToZip('.',$zip);
+            chdir($temp_dir);
+
+            $zip->close();
+            unset($zip);
+
+            $disc_manager = $this->_environment->getDiscManager();
+            $disc_manager->removeDirectory($voyeur_dir);
+
+            $retour = $voyeur_zip_name;
+         }
+      } else {
+         include_once('functions/error_functions.php');
+         trigger_error('can not open zip ('.$zip_name.')',E_USER_ERROR);
+      }
+      return $retour;
+   }
+
+   private function _sendZIP ( $value ) {
+      if ( file_exists($value) ) {
+         header('Content-type: application/zip');
+         header('Content-Disposition: attachment; filename="'.basename($value).'"');
+         readfile($value);
+         exit();
+      }
    }
 }
 ?>
