@@ -92,11 +92,18 @@ class cs_todo_detail_view extends cs_detail_view {
                if ( $member->maySee($user) ) {
                   $params = array();
                   $params['iid'] = $member->getItemID();
-                  $member_html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                'user',
-                                'detail',
-                                $params,
-                                $linktext);
+                  $param_zip = $this->_environment->getValueOfParameter('download');
+                  if ( empty($param_zip)
+                       or $param_zip != 'zip'
+                     ) {
+                     $member_html .= ahref_curl($this->_environment->getCurrentContextID(),
+                                   'user',
+                                   'detail',
+                                   $params,
+                                   $linktext);
+                  } else {
+                     $member_html .= $linktext;
+                  }
                   unset($params);
                } else {
                   $member_html .= '<span class="disabled">'.$linktext.'</span>'.LF;
@@ -106,21 +113,29 @@ class cs_todo_detail_view extends cs_detail_view {
                }
             }else{
                $link_title = $this->_text_as_html_short($this->_compareWithSearchText(chunkText($member->getFullName(),35)));
-               $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
-                                   $this->_environment->getCurrentModule(),
-                                   $this->_environment->getCurrentFunction(),
-                                   array(),
-                                   $link_title,
-                                   $this->_translator->getMessage('USER_STATUS_REJECTED'),
-                                   '_self',
-                                   '',
-                                   '',
-                                   '',
-                                   '',
-                                   'class="disabled"',
-                                   '',
-                                   '',
-                                   true);
+               $param_zip = $this->_environment->getValueOfParameter('download');
+               if ( empty($param_zip)
+                    or $param_zip != 'zip'
+                  ) {
+                  $member_html .= ahref_curl( $this->_environment->getCurrentContextID(),
+                                      $this->_environment->getCurrentModule(),
+                                      $this->_environment->getCurrentFunction(),
+                                      array(),
+                                      $link_title,
+                                      $this->_translator->getMessage('USER_STATUS_REJECTED'),
+                                      '_self',
+                                      '',
+                                      '',
+                                      '',
+                                      '',
+                                      'class="disabled"',
+                                      '',
+                                      '',
+                                      true);
+
+               } else {
+                  $member_html .= $link_title;
+               }
                if ( $counter != $count) {
                   $member_html .= ', ';
                }

@@ -133,40 +133,6 @@ class cs_date_index_view extends cs_index_view {
       return $html;
    }
 
-   function _getViewActionsAsHTML () {
-      $html  = '';
-      $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
-      $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
-      $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-      if (!$this->_clipboard_mode){
-         $html .= '   <option value="1">'.$this->_translator->getMessage('COMMON_LIST_ACTION_MARK_AS_READ').'</option>'.LF;
-         $html .= '   <option value="2">'.$this->_translator->getMessage('COMMON_LIST_ACTION_COPY').'</option>'.LF;
-         if ($this->_environment->inPrivateRoom()){
-            $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-            $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
-         }else{
-            $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-            $user = $this->_environment->getCurrentUserItem();
-            if ($user->isModerator()){
-               $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
-            }else{
-               $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
-            }
-         }
-      }else{
-         $html .= '   <option value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;
-         $html .= '   <option value="2">'.$this->_translator->getMessage('CLIPBOARD_DELETE_BUTTON').'</option>'.LF;
-      }
-      $html .= '</select>'.LF;
-      $html .= '<input type="submit" style="width:70px; font-size:8pt;" name="option"';
-      $html .= ' value="'.$this->_translator->getMessage('COMMON_LIST_ACTION_BUTTON_GO').'"';
-      $html .= '/>'.LF;
-
-      return $html;
-   }
-
-
-
    function _getAdditionalRestrictionBoxAsHTML($field_length=14.5){
       $current_context = $this->_environment->getCurrentContextItem();
       $session = $this->_environment->getSession();
@@ -271,8 +237,14 @@ class cs_date_index_view extends cs_index_view {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('COMMON_TITLE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('COMMON_TITLE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -287,8 +259,14 @@ class cs_date_index_view extends cs_index_view {
          $params['sort'] = 'time';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('DATES_TIME'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('DATES_TIME'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('DATES_TIME');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
 
@@ -303,8 +281,14 @@ class cs_date_index_view extends cs_index_view {
          $params['sort'] = 'place';
          $picture ='&nbsp;';
       }
-      $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
-                             $params, $this->_translator->getMessage('DATES_PLACE'), '', '', $this->getFragment(),'','','','class="head"');
+      if ( empty($params['download'])
+           or $params['download'] != 'zip'
+         ) {
+         $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
+                                $params, $this->_translator->getMessage('DATES_PLACE'), '', '', $this->getFragment(),'','','','class="head"');
+      } else {
+         $html .= $this->_translator->getMessage('DATES_PLACE');
+      }
       $html .= $picture;
       $html .= '</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -514,23 +498,31 @@ class cs_date_index_view extends cs_index_view {
       if ( !empty($fileicons) ) {
          $fileicons = ' '.$fileicons;
       }
-      if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+      if ( !(isset($_GET['mode']) and $_GET['mode']=='print')
+           or ( !empty($download)
+                and $download == 'zip'
+              )
+         ) {
          $html .= '      <td '.$style.' style="vertical-align:middle;" width="2%">'.LF;
-         $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
-         $user = $this->_environment->getCurrentUser();
-         if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
-            $html .= ' disabled="disabled"'.LF;
-         }elseif ( isset($checked_ids)
-              and !empty($checked_ids)
-              and in_array($key, $checked_ids)
+         if ( empty($download)
+              or $download != 'zip'
             ) {
-            $html .= ' checked="checked"'.LF;
-            if ( in_array($key, $dontedit_ids) ) {
+            $html .= '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px;" type="checkbox" onClick="quark(this)" name="attach['.$key.']" value="1"';
+            $user = $this->_environment->getCurrentUser();
+            if($item->isNotActivated() and !($item->getCreatorID() == $user->getItemID() or $user->isModerator()) ){
                $html .= ' disabled="disabled"'.LF;
+            }elseif ( isset($checked_ids)
+                 and !empty($checked_ids)
+                 and in_array($key, $checked_ids)
+               ) {
+               $html .= ' checked="checked"'.LF;
+               if ( in_array($key, $dontedit_ids) ) {
+                  $html .= ' disabled="disabled"'.LF;
+               }
             }
+            $html .= '/>'.LF;
+            $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          }
-         $html .= '/>'.LF;
-         $html .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
          $html .= '      </td>'.LF;
          if ($item->isNotActivated()){
             $title = $item->getTitle();
@@ -683,6 +675,10 @@ class cs_date_index_view extends cs_index_view {
       }
    }
 
-
+   public function _getAdditionalViewActionsAsHTML () {
+      $retour = '';
+      $retour .= '   <option value="download">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DOWNLOAD').'</option>'.LF;
+      return $retour;
+   }
 }
 ?>

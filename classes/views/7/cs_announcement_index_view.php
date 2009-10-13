@@ -30,12 +30,6 @@ $this->includeClass(INDEX_VIEW);
  */
 class cs_announcement_index_view extends cs_index_view {
 
-
-
-
-
-
-   // @segment-begin 80628 cs_announcement_index_view($environment, $with_modifying_actions)-uses-#77035,#48753,#60854
    /** constructor
     * the only available constructor, initial values for internal variables
     *
@@ -49,7 +43,6 @@ class cs_announcement_index_view extends cs_index_view {
       $this->setActionTitle($this->_translator->getMessage('COMMON_ANNOUNCEMENT'));
       $this->_colspan = '4';
    }
-   // @segment-end 80628
 
    function getAdditionalRestrictionTextAsHTML(){
       $html = '';
@@ -76,7 +69,6 @@ class cs_announcement_index_view extends cs_index_view {
       }
       return $html;
    }
-
 
    /** set the content of the list view
     * this method sets the whole entries of the list view
@@ -105,8 +97,6 @@ class cs_announcement_index_view extends cs_index_view {
        }
     }
 
-
-   // @segment-begin 47311 _getTableheadAsHTML()-Titlebox-for-announcement-index-with-sort-links,-see#35732,#96650,see#40867
    function _getTableheadAsHTML () {
       $params = $this->_environment->getCurrentParameterArray();
       $params['from'] = 1;

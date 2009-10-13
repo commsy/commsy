@@ -2450,7 +2450,6 @@ EOD;
     * @return string index actions
     */
    function _getViewActionsAsHTML () {
-      $user = $this->_environment->getCurrentUserItem();
       $html  = '';
       $html .= '<select name="index_view_action" size="1" style="width:160px; font-size:8pt; font-weight:normal;">'.LF;
       $html .= '   <option selected="selected" value="-1">*'.$this->_translator->getMessage('COMMON_LIST_ACTION_NO').'</option>'.LF;
@@ -2463,10 +2462,15 @@ EOD;
          }
 
          $html .= '   <option class="disabled" disabled="disabled">------------------------------</option>'.LF;
-         if ($user->isModerator()){
+         if ($this->_environment->inPrivateRoom()){
             $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
          }else{
-            $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            $user = $this->_environment->getCurrentUserItem();
+            if ($user->isModerator()){
+               $html .= '   <option value="3">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            }else{
+               $html .= '   <option class="disabled" disabled="disabled">'.$this->_translator->getMessage('COMMON_LIST_ACTION_DELETE').'</option>'.LF;
+            }
          }
       }else{
          $html .= '   <option value="1">'.$this->_translator->getMessage('CLIPBOARD_PASTE_BUTTON').'</option>'.LF;

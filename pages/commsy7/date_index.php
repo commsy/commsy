@@ -532,6 +532,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                unset($params);
             }
             break;
+         case 'download':
+            include_once('include/inc_rubric_download.php');
+            break;
          default:
             $params = $environment->getCurrentParameterArray();
             unset($params['mode']);
@@ -546,96 +549,94 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
    } // end if (perform list actions)
 
 
-
-
-
-
 // Get data from database
 $dates_manager = $environment->getDatesManager();
-$dates_manager->setContextLimit($environment->getCurrentContextID());
-if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'detailattach') ){
-   $dates_manager->setDateModeLimit(2);
-   $dates_manager->setYearLimit($year);
-   if (!empty($presentation_mode) and $presentation_mode =='2'){
-      $real_month = mb_substr($month,4,2);
-      $first_char = mb_substr($real_month,0,1);
-      if ($first_char == '0'){
-         $real_month = mb_substr($real_month,1,2);
+
+if ( empty($only_show_array) ) {
+   $dates_manager->setContextLimit($environment->getCurrentContextID());
+   if ($seldisplay_mode == 'calendar'  and !($mode == 'formattach' or $mode == 'detailattach') ){
+      $dates_manager->setDateModeLimit(2);
+      $dates_manager->setYearLimit($year);
+      if (!empty($presentation_mode) and $presentation_mode =='2'){
+         $real_month = mb_substr($month,4,2);
+         $first_char = mb_substr($real_month,0,1);
+         if ($first_char == '0'){
+            $real_month = mb_substr($real_month,1,2);
+         }
+         $dates_manager->setMonthLimit($real_month);
+         $count_all = $dates_manager->getCountAll();
+     }else{
+         $real_month = mb_substr($month,4,2);
+         $first_char = mb_substr($real_month,0,1);
+         if ($first_char == '0'){
+            $real_month = mb_substr($real_month,1,2);
+         }
+         $real_day = mb_substr($month,6,2);
+         $d_time = mktime(3,0,0,$real_month,$real_day,$year);
+         $wday = date("w",$d_time);
+         $week_start_day = $real_day - $wday;
+         if ($week_start_day < 1){
+            $week_start_day = 1;
+         }
+         $dates_manager->setMonthLimit2($real_month);
+         $dates_manager->setDayLimit2($week_start_day);
+         $count_all = $dates_manager->getCountAll();
       }
-      $dates_manager->setMonthLimit($real_month);
-      $count_all = $dates_manager->getCountAll();
-  }else{
-      $real_month = mb_substr($month,4,2);
-      $first_char = mb_substr($real_month,0,1);
-      if ($first_char == '0'){
-         $real_month = mb_substr($real_month,1,2);
-      }
-      $real_day = mb_substr($month,6,2);
-      $d_time = mktime(3,0,0,$real_month,$real_day,$year);
-      $wday = date("w",$d_time);
-      $week_start_day = $real_day - $wday;
-      if ($week_start_day < 1){
-         $week_start_day = 1;
-      }
-      $dates_manager->setMonthLimit2($real_month);
-      $dates_manager->setDayLimit2($week_start_day);
-      $count_all = $dates_manager->getCountAll();
-   }
-   $dates_manager->resetLimits();
-   $dates_manager->setSortOrder('time');
-} else {
-   $dates_manager->setDateModeLimit(2);
-   $all_ids = $dates_manager->getIds();
-   $count_all = count($all_ids);
-   if (isset($all_ids[0])){
-      $newest_id = $all_ids[0];
-      $item = $dates_manager->getItem($newest_id);
-      $date = $item->getModificationDate();
-      $now = getCurrentDateTimeInMySQL();
-      if ($date <= $now){
+      $dates_manager->resetLimits();
+      $dates_manager->setSortOrder('time');
+   } else {
+      $dates_manager->setDateModeLimit(2);
+      $all_ids = $dates_manager->getIds();
+      $count_all = count($all_ids);
+      if (isset($all_ids[0])){
+         $newest_id = $all_ids[0];
+         $item = $dates_manager->getItem($newest_id);
+         $date = $item->getModificationDate();
+         $now = getCurrentDateTimeInMySQL();
+         if ($date <= $now){
+            $sel_activating_status = 1;
+         }
+      }elseif($count_all == 0){
          $sel_activating_status = 1;
       }
-   }elseif($count_all == 0){
-      $sel_activating_status = 1;
+      $dates_manager->resetData();
+      $dates_manager->setDateModeLimit(2);
    }
-   $dates_manager->resetData();
-   $dates_manager->setDateModeLimit(2);
-}
-if ( $sel_activating_status == 2 ) {
-   $dates_manager->showNoNotActivatedEntries();
-}
+   if ( $sel_activating_status == 2 ) {
+      $dates_manager->showNoNotActivatedEntries();
+   }
 
-if ( !empty($ref_iid) and $mode == 'attached' ){
-   $dates_manager->setRefIDLimit($ref_iid);
-}
-if ( !empty($ref_user) and $mode == 'attached' ){
-   $dates_manager->setRefUserLimit($ref_user);
-}
-if ( !empty($sort) and ($seldisplay_mode!='calendar' or $mode == 'formattach' or $mode == 'detailattach') ) {
-   $dates_manager->setSortOrder($sort);
-}
-if ( !empty($search) ) {
-   $dates_manager->setSearchLimit($search);
-}
-if ( !empty($selstatus) ) {
-   $dates_manager->setDateModeLimit($selstatus);
-}
-if ( !empty($selbuzzword) ) {
-   $dates_manager->setBuzzwordLimit($selbuzzword);
-}
-if ( !empty($last_selected_tag) ){
-   $dates_manager->setTagLimit($last_selected_tag);
-}
+   if ( !empty($ref_iid) and $mode == 'attached' ){
+      $dates_manager->setRefIDLimit($ref_iid);
+   }
+   if ( !empty($ref_user) and $mode == 'attached' ){
+      $dates_manager->setRefUserLimit($ref_user);
+   }
+   if ( !empty($sort) and ($seldisplay_mode!='calendar' or $mode == 'formattach' or $mode == 'detailattach') ) {
+      $dates_manager->setSortOrder($sort);
+   }
+   if ( !empty($search) ) {
+      $dates_manager->setSearchLimit($search);
+   }
+   if ( !empty($selstatus) ) {
+      $dates_manager->setDateModeLimit($selstatus);
+   }
+   if ( !empty($selbuzzword) ) {
+      $dates_manager->setBuzzwordLimit($selbuzzword);
+   }
+   if ( !empty($last_selected_tag) ){
+      $dates_manager->setTagLimit($last_selected_tag);
+   }
 
-// Get available buzzwords
-$buzzword_manager = $environment->getLabelManager();
-$buzzword_manager->resetLimits();
-$buzzword_manager->setContextLimit($environment->getCurrentContextID());
-$buzzword_manager->setTypeLimit('buzzword');
-$buzzword_manager->setGetCountLinks();
-$buzzword_manager->select();
-$buzzword_list = $buzzword_manager->get();
-
+   // Get available buzzwords
+   $buzzword_manager = $environment->getLabelManager();
+   $buzzword_manager->resetLimits();
+   $buzzword_manager->setContextLimit($environment->getCurrentContextID());
+   $buzzword_manager->setTypeLimit('buzzword');
+   $buzzword_manager->setGetCountLinks();
+   $buzzword_manager->select();
+   $buzzword_list = $buzzword_manager->get();
+}
 
 //*******************************
 // Prepare view object
@@ -696,11 +697,14 @@ foreach($sel_array as $rubric => $value){
 }
 //********************************
 
+if ( !empty($only_show_array) ) {
+   $dates_manager->resetLimits();
+   $dates_manager->setWithoutDateModeLimit();
+   $dates_manager->setIDArrayLimit($only_show_array);
+}
 
 $ids = $dates_manager->getIDArray();       // returns an array of item ids
 $count_all_shown = count($ids);
-
-
 
 if ($seldisplay_mode=='calendar' and !($mode == 'formattach' or $mode == 'detailattach') ){
    if (!empty($year)) {
@@ -771,7 +775,9 @@ $file_manager->select();
 
 // Set data for view
 $view->setList($list);
-$view->setCountAll($count_all);
+if ( isset($count_all) ) {
+   $view->setCountAll($count_all);
+}
 $view->setCountAllShown($count_all_shown);
 $view->setFrom($from);
 $view->setInterval($interval);
@@ -780,7 +786,9 @@ $view->setSearchText($search);
 $view->setSelectedStatus($selstatus);
 $view->setDisplayMode($seldisplay_mode);
 $view->setClipboardIDArray($clipboard_id_array);
-$view->setAvailableBuzzwords($buzzword_list);
+if ( isset($buzzword_list) ) {
+   $view->setAvailableBuzzwords($buzzword_list);
+}
 $view->setSelectedBuzzword($selbuzzword);
 $view->setSelectedTagArray($seltag_array);
 $view->setAdditionalSelect();
