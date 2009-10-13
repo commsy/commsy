@@ -150,7 +150,6 @@ class misc_list2zip extends misc_2zip {
          }
       }
 
-
       $iids = array();
 
       if ( !empty($matches_array[1]) ) {
@@ -175,6 +174,46 @@ class misc_list2zip extends misc_2zip {
             }
          }
       }
+
+       // img src
+      $matches_array = array();
+      $reg_exp = '~src=\"([^"]*)\"~u';
+      preg_match_all($reg_exp, $retour, $matches_array);
+      $link_list = array();
+      if ( !empty($matches_array[1]) ) {
+         foreach ( $matches_array[1] as $link ) {
+            if ( stristr($link,'getFile')
+                 and stristr($link,'picture')
+               ) {
+               $link_list[] = $link;
+            }
+         }
+      }
+
+      foreach ( $link_list as $link ) {
+         $img_name = '';
+         $name = substr($link,strpos($link,'?')+1);
+         $name_array = explode('&',$name);
+         foreach ( $name_array as $param ) {
+            if ( stristr($param,'picture=') ) {
+               $img_name = substr($param,strpos($param,'=')+1);
+            }
+         }
+
+         if ( !empty($img_name) ) {
+            if ( !file_exists($directory.'/images'.$img_name) ) {
+               $orig_img_file  = 'var/';
+               $orig_img_file .= $this->_environment->getCurrentPortalID().'/';
+               $orig_img_file .= $this->_environment->getCurrentContextID().'/';
+               $orig_img_file .= $img_name;
+               if ( file_exists($orig_img_file) ) {
+                  copy($orig_img_file,$directory.'/images/'.$img_name);
+               }
+            }
+            $retour = str_replace($link,'images/'.$img_name,$retour);
+         }
+      }
+
       return $retour;
    }
 

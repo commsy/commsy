@@ -40,7 +40,15 @@ class misc_2zip {
       if ( !isset($export_temp_folder) ) {
          $export_temp_folder = 'var/temp/zip_export';
       }
-      $directory = './'.$export_temp_folder.'/'.time();
+
+      $folder_name = time();
+      $session_item = $this->_environment->getSessionItem();
+      if ( isset($session_item) ) {
+         $folder_name .= $session_item->getSessionID();
+      }
+      $folder_name = md5($folder_name);
+
+      $directory = './'.$export_temp_folder.'/'.$folder_name;
       $disc_manager = $this->_environment->getDiscManager();
       if ($disc_manager->makeDirectoryR($directory)) {
          $retour = $directory;
