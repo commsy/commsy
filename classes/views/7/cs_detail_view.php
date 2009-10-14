@@ -484,9 +484,7 @@ class cs_detail_view extends cs_view {
             }
 
 
-            if ( $item->isA(CS_USER_TYPE)
-                 //and ( $this->_environment->getCurrentModule() == CS_USER_TYPE or $this->_environment->getCurrentModule() == 'account' )
-               ) {
+            if ( $item->isA(CS_USER_TYPE) ) {
                $link_title = $item->getFullName();
             } elseif ( isset($item) ) {
                $link_title = $item->getTitle();
