@@ -1588,8 +1588,6 @@ class cs_page_view extends cs_view {
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
             if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
                  and !$this->_environment->inServer()
                  and !$this->_environment->inPortal()
@@ -2130,16 +2128,9 @@ class cs_page_view extends cs_view {
         unset($left_page);
         $html .= '</div>'.LF;
       }
-      // @segment-end 90042
-      // @segment-begin 89418 end-of-my_area_box/down-corner-pictures
-      $html .= '<div class="frame_bottom">'.LF;
-      $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
+
       $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      // @segment-end 89418
+
       $html .= $this->_getServerNewsAsHTML();
 
       global $c_message_management;
@@ -2199,8 +2190,6 @@ class cs_page_view extends cs_view {
          $html .= $this->_translator->getMessage('COMMON_SERVER_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $server_item->getServerNewsLink();
          if (!empty($link)) {
             $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($server_item->getServerNewsTitle()).'</a></span>'.LF;
@@ -2221,12 +2210,6 @@ class cs_page_view extends cs_view {
          $html .= BRLF;
          $html .= BRLF;
          $html .= '</div>'.LF;
-         $html .= '<div class="frame_bottom">'.LF;
-         $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }
 
@@ -2240,8 +2223,6 @@ class cs_page_view extends cs_view {
          $html .= $this->_translator->getMessage('COMMON_PORTAL_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $portal_item->getServerNewsLink();
          if (!empty($link)) {
             $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($portal_item->getServerNewsTitle()).'</a></span>'.LF;
@@ -2262,12 +2243,6 @@ class cs_page_view extends cs_view {
          $html .= BRLF;
          $html .= BRLF;
          $html .= '</div>'.LF;
-         $html .= '<div class="frame_bottom">'.LF;
-         $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
-         $html .= '</div>'."\n";
-         $html .= '</div>'."\n";
          $html .= '</div>'.LF;
       }
       unset($portal_item);
@@ -2335,8 +2310,6 @@ class cs_page_view extends cs_view {
       $html .= $this->_translator->getMessage('MESSAGE_BOX_TITLE');
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
       $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MESSAGE_TITLE_LINK').'</div>';
       $html .= '<div class="myarea_content" style="position:relative; padding-bottom:0em;">';
       $html .= '<span>> '.ahref_curl( $this->_environment->getCurrentContextID(),
@@ -2417,16 +2390,6 @@ class cs_page_view extends cs_view {
       $html .= BRLF;
       $html .= '</div>'.LF;
 
-      $html .= '<div class="frame_bottom">'.LF;
-      $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;">
-                <img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/>
-                </div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;">
-                <img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/>
-                </div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
    }

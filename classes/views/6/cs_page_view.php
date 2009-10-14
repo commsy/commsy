@@ -1484,19 +1484,15 @@ class cs_page_view extends cs_view {
       }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
-            if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
-                 and !$this->_environment->inServer()
-                 and !$this->_environment->inPortal()
-               ) {
+      if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
+           and !$this->_environment->inServer()
+           and !$this->_environment->inPortal()
+         ) {
          $html .= '<div class="myarea_content" style="padding-bottom:5px; margin-bottom:0px; font-weight:bold;">'.LF;
-               $html .= $this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST');
+         $html .= $this->_translator->getMessage('MYAREA_LOGIN_AS_GUEST');
          $html .= '</div >'.LF;
-            }
-      // @segment-end 65267
-      // personal area
-      // @segment-begin 77327 no-cs_modus/user=guest:no-user-logged-in-message
+      }
+
       if ( $this->_with_personal_area and empty($cs_mod)) {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) and !$this->_environment->inServer() ) {
             if ( $current_context->isOpenForGuests() and !$this->_current_user->isUser()
@@ -1518,8 +1514,7 @@ class cs_page_view extends cs_view {
             }
             unset($context_id);
             unset($error_box);
-            // @segment-end 84341
-            // @segment-begin 63814 no-cs_modus/user=guest:?auth source1/table-begin
+
             // auth source
             $insert_auth_source_selectbox = false;
             if ( $current_portal->showAuthAtLogin() ) {
@@ -1546,8 +1541,6 @@ class cs_page_view extends cs_view {
 
             // login form
             $html .= '<table summary="Layout">'.LF;
-            // @segment-end 63814
-            // @segment-begin 8638 no-cs_mode/user=guest:account-field,password-field,log-in-button/table-end
             $html .= '<tr><td style="padding:0px;margin:0px;">'.LF;
             $html .= $this->_translator->getMessage('MYAREA_ACCOUNT').':'.LF.'</td><td>';
             $html .= '<input type="text" name="user_id" size="100" style="font-size:10pt; width:6.2em;" tabindex="1"/>'.LF;
@@ -1588,8 +1581,7 @@ class cs_page_view extends cs_view {
             $html .= '<input type="submit" name="option" style="width: 6.6em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'" tabindex="4"/>'.LF;
             $html .= '</td></tr>'.LF;
             $html .= '</table>'.LF;
-            // @segment-end 8638
-            // @segment-begin 2240 no-cs_modus/user=guest:?auth_source2
+
             if ( !$this->_environment->inServer() ) {
                $params = array();
                $params = $this->_environment->getCurrentParameterArray();
@@ -1608,8 +1600,7 @@ class cs_page_view extends cs_view {
                   }
                }
                unset($auth_source_list);
-               // @segment-end 2240
-               // @segment-begin 83516 no_cs_modus/user=guest:links-want_account/account_forget/pasword_forget(log_in_form-end)
+
                if ( $count_auth_source_list_add_account != 0 ) {
                   $params['cs_modus'] = 'portalmember';
                   $html .= '<span style="font-size:8pt;">> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_LOGIN_ACCOUNT_WANT_LINK'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
@@ -1625,15 +1616,9 @@ class cs_page_view extends cs_view {
             $html .= LF;
             $html .= '</form>'.LF;
             $html .= '</div>'.LF;
-            // @segment-end 83516
-            // @segment-begin 70706 no-cs_modus/user-status><0:get-user-name/user_item_id
+
          } elseif ( !($this->_environment->inServer() and $this->_current_user->isGuest()) ) {
             $params = array();
-
-            // @segment-end 70706
-            // @segment-begin 23516 no-cs_modus/user-status><0:display-user_name,font-size-depends-on-length
-            // @segment-end 23516
-            // @segment-begin 67550 no-cs_modus/user-status><0:link-log_out
 
             if (!$this->_environment->inServer()) {
                $title = $this->_translator->getMessage('MYAREA_LOGIN_TO_OWN_ROOM');
@@ -1691,8 +1676,6 @@ class cs_page_view extends cs_view {
 
                $html .= ahref_curl($this->_environment->getCurrentPortalID(), 'home', 'index', '',$this->_translator->getMessage('COMMON_PORTAL').' ('.$this->_translator->getMessage('MYAREA_LOGIN_TO_PORTAL_OVERVIEW').')','','','','','','','style="color:#800000"').'</span>'.LF;
 
-               // @segment-end 7294
-               // @segment-begin 90042 link-to:portal-overview-if-root-user
                if ( $this->_current_user->isRoot() ) {
                   $html .= BR.'<span> '.ahref_curl($this->_environment->getServerID(), 'home',
                                         'index',
@@ -1713,7 +1696,6 @@ class cs_page_view extends cs_view {
                   $html .= '</div>'.LF;
                }
             }
-            // @segment-begin 7294 link-to:own-room/room-overview
 
             unset($current_context);
             unset($current_portal);
@@ -1721,16 +1703,10 @@ class cs_page_view extends cs_view {
                $html .= '</div>'.LF;
             }
             if (!$this->_environment->inServer() and !$this->_current_user->isRoot() ) {
-               // @segment-end 42457
-               // @segment-begin 60617 no-cs_modus/user-status><0:user-copies
                $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MYAREA_MY_COPIES').'</div>'.LF;
                $html .= '<div class="myarea_content">'.LF;
                $html .= $this->_getUserCopiesAsHTML();
                $html .= '</div>'.LF;
-               // @segment-end 60617
-               // @segment-begin 66584 no-cs_modus/user-status><0:my-rooms
-               // @segment-end 66584
-               // @segment-begin 21493 no-cs_modus/user-status><0:no-middle-part-if-in-server
             }
 
             if (!$this->_environment->inServer() ) {
@@ -2059,12 +2035,6 @@ class cs_page_view extends cs_view {
       }
       // @segment-end 90042
       // @segment-begin 89418 end-of-my_area_box/down-corner-pictures
-      $html .= '<div class="frame_bottom">'.LF;
-      $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>';
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>';
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       // @segment-end 89418
       $html .= $this->_getServerNewsAsHTML();
@@ -2126,8 +2096,6 @@ class cs_page_view extends cs_view {
          $html .= getMessage('COMMON_SERVER_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $server_item->getServerNewsLink();
          if (!empty($link)) {
             $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($server_item->getServerNewsTitle()).'</a></span>'.LF;
@@ -2148,12 +2116,6 @@ class cs_page_view extends cs_view {
          $html .= BRLF;
          $html .= BRLF;
          $html .= '</div>'.LF;
-         $html .= '<div class="frame_bottom">'.LF;
-         $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
          $html .= '</div>'.LF;
       }
 
@@ -2167,8 +2129,6 @@ class cs_page_view extends cs_view {
          $html .= getMessage('COMMON_PORTAL_NEWS');
          $html .= '</div>'.LF;
          $html .= '</div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
          $link = $portal_item->getServerNewsLink();
          if (!empty($link)) {
             $title = '<span style="font-weight: bold;"><a href="'.$this->_text_as_html_short($link).'" style="color:#800000" target="_blank">'.$this->_text_as_html_short($portal_item->getServerNewsTitle()).'</a></span>'.LF;
@@ -2189,12 +2149,6 @@ class cs_page_view extends cs_view {
          $html .= BRLF;
          $html .= BRLF;
          $html .= '</div>'.LF;
-         $html .= '<div class="frame_bottom">'.LF;
-         $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/></div>'.LF;
-         $html .= '<div style="position:absolute; top:-11px; right:-7px;"><img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/></div>'.LF;
-         $html .= '</div>'."\n";
-         $html .= '</div>'."\n";
          $html .= '</div>'.LF;
       }
       unset($portal_item);
@@ -2262,8 +2216,6 @@ class cs_page_view extends cs_view {
       $html .= getMessage('MESSAGE_BOX_TITLE');
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_links.gif" alt="" border="0"/></div>'.LF;
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="'.$this->_style_image_path.'ecke_oben_rechts.gif" alt="" border="0"/></div>'.LF;
       $html .= '<div class="myarea_section_title">'.$this->_translator->getMessage('MESSAGE_TITLE_LINK').'</div>';
       $html .= '<div class="myarea_content" style="position:relative; padding-bottom:0em;">';
       $html .= '<span>> '.ahref_curl( $this->_environment->getCurrentContextID(),
@@ -2341,16 +2293,6 @@ class cs_page_view extends cs_view {
       $html .= BRLF;
       $html .= '</div>'.LF;
 
-      $html .= '<div class="frame_bottom">'.LF;
-      $html .= '<div class="content_bottom">'.LF;
-      $html .= '<div style="position:absolute; top:-11px; left:-7px;">
-                <img src="'.$this->_style_image_path.'ecke_unten_links.gif" alt=""/>
-                </div>'.LF;
-      $html .= '<div style="position:absolute; top:-11px; right:-7px;">
-                <img src="'.$this->_style_image_path.'ecke_unten_rechts.gif" alt=""/>
-                </div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       return $html;
    }

@@ -217,8 +217,6 @@ class cs_page_help_view extends cs_page_view {
       $html .= '<div style="margin:0px; padding:0px;">'."\n";
       $html .= '<span class="navlist">&nbsp;</span>'."\n";
       $html .= '</div>'."\n";
-      $html .= '<div style="position:absolute; top:-4px; left:-5px;"><img src="images/layout/ecke_oben_links.gif" alt="" border="0"/></div>';
-      $html .= '<div style="position:absolute; top:-4px; right:-5px;"><img src="images/layout/ecke_oben_rechts.gif" alt="" border="0"/></div>';
       $html .= '</div>'."\n";
       $html .= '</div>'."\n";
       $html .= '<!-- END TABS -->'."\n";
@@ -320,8 +318,6 @@ class cs_page_help_view extends cs_page_view {
          $html .= '</div>'.LF;
          $html .= '<div class="frame_bottom">'.LF;
          $html .= '<div class="content_bottom">'.LF;
-         $html .= '<div style="position:absolute; top:-11px; left:-5px;"><img src="images/layout/ecke_unten_links.gif" alt=""/></div>';
-         $html .= '<div style="position:absolute; top:-11px; right:-5px;"><img src="images/layout/ecke_unten_rechts.gif" alt=""/></div>';
          $html .= '</div>'."\n";
          $html .= '</div>'."\n";
 

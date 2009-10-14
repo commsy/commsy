@@ -173,9 +173,7 @@ div.welcome_frame {
     position:relative;
     margin:0px;
     padding:0px;
-    border-left: 2px solid #CBD0D6;
-    border-right: 2px solid #CBD0D6;
-    border-top: 2px solid #CBD0D6;
+    border: 2px solid #CBD0D6;
 }
 
 div.welcome_content {
@@ -425,9 +423,7 @@ div.tabs_frame {
    padding:0px;
    margin:0px;
    font-weight: bold;
-   border-left: 2px solid #CBD0D6;
-   border-right: 2px solid #CBD0D6;
-   border-top: 2px solid #CBD0D6;
+   border: 2px solid #CBD0D6;
 }
 
 div.tabs {

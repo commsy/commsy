@@ -45,23 +45,21 @@ if (!empty($_GET['cid'])) {
 ?>
 
 div.myarea_frame {
-	position:relative;
-	width: 13.5em;
-	margin:0px 0px 0px 5px;
-	padding:0px; font-size: 10pt;
-	border-left: 2px solid #C5C5C5;
-	border-right: 2px solid #C5C5C5;
-	border-top: 2px solid #C5C5C5;
+   position:relative;
+   width: 13.5em;
+   margin:0px 0px 0px 5px;
+   padding:0px; font-size: 10pt;
+   border: 2px solid #C5C5C5;
 }
 div.myarea_headline {
-	position:relative;
-	width: 100%;
-	margin:0px;
-	padding:4px 0px 3px 0px;
-	font-size: 10pt;
-	font-weight: bold;
-	background:url(images/layout/tab_menu_fader_aktiv_myarea.gif) repeat-x;
-	background-color: #A2A2A2;
+   position:relative;
+   width: 100%;
+   margin:0px;
+   padding:4px 0px 3px 0px;
+   font-size: 10pt;
+   font-weight: bold;
+   background:url(images/layout/tab_menu_fader_aktiv_myarea.gif) repeat-x;
+   background-color: #A2A2A2;
 }
 
 div.myarea_headline_title {
