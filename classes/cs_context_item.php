@@ -5118,37 +5118,6 @@ class cs_context_item extends cs_item {
       }
    }
 
-   ######################################################
-   # switch CommSy6 / CommSy7
-   ######################################################
-
-   public function setDesignTo6 () {
-      $this->_setDesign(6);
-   }
-
-   public function setDesignTo7 () {
-      $this->_setDesign(7);
-   }
-
-   private function _setDesign ( $value ) {
-      $this->_addExtra('DESIGN',(int)$value);
-   }
-
-   public function isDesign6() {
-      $retour = false;
-      return $retour;
-   }
-
-   public function isDesign7() {
-      $retour = true;
-      return $retour;
-   }
-
-   private function _getDesign() {
-      $retour = '7';
-      return $retour;
-   }
-
    function generateLayoutImages(){
        global $c_commsy_path_file;
        $color_array = $this->getColorArray();
