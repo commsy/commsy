@@ -625,6 +625,13 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .='</table>'.LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
+               } else {
+                  $html .='</table>'.LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
+                  $html .='</table>'.LF;
+                  $html .='</td>'.LF;
+                  $html .='</tr>'.LF;
                }
             }else{
                $image = $this->_getItemPicture($current_item->getModificatorItem());
