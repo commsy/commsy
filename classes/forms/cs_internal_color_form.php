@@ -300,29 +300,6 @@ class cs_internal_color_form extends cs_rubric_form {
 
       }
 
-      // switch CommSy6 and CommSy7
-      if ( $this->_environment->inProjectRoom()
-           or $this->_environment->inCommunityRoom()
-           or $this->_environment->inPrivateRoom()
-           or $this->_environment->inPortal()
-           or $this->_environment->inServer()
-         ) {
-         $value_array = array();
-         $temp_array = array();
-         $temp_array['text'] = 'CommSy6';
-         $temp_array['value'] = '6';
-         $value_array[] = $temp_array;
-         unset($temp_array);
-         $temp_array = array();
-         $temp_array['text'] = 'CommSy7';
-         $temp_array['value'] = '7';
-         $value_array[] = $temp_array;
-         unset($temp_array);
-         $this->_form->addSelect('design',$value_array,'',$this->_translator->getMessage('CONFIGURATION_COLOR_DESIGN'),'');
-         $this->_form->combine();
-         $this->_form->addText('design_desc',getMessage('CONFIGURATION_DESIGN_SWITCH_DESC'),getMessage('CONFIGURATION_DESIGN_SWITCH_DESC'));
-      }
-
       // buttons
       $this->_form->addButtonBar('option',getMessage('COMMON_SAVE_BUTTON'),'');
 
@@ -352,13 +329,6 @@ class cs_internal_color_form extends cs_rubric_form {
       $temp_array['color_14'] = $color['info_color'];
       $temp_array['color_15'] = $color['disabled'];
       $temp_array['color_16'] = $color['warning'];
-
-      // switch CommSy6 / CommSy7
-      if ( $context_item->isDesign6() ) {
-         $this->_values['design'] = 6;
-      } else {
-         $this->_values['design'] = 7;
-      }
 
       if ( !empty($this->_form_post) ) {
          $this->_values = $this->_form_post;

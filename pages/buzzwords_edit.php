@@ -22,41 +22,6 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-// Function used for redirecting to connected rubrics
-function attach_redirect ($rubric_type, $current_iid) {
-   global $session, $environment;
-   $infix = '_'.$rubric_type;
-   $session->setValue($current_iid.'_post_vars', $_POST);
-
-   $links_manager = $environment->getLinkManager();
-   $links_manager->setItemTypeLimit($rubric_type);
-   $links_manager->setItemIDLimit($current_iid);
-   $result_array = $links_manager->_performQuery();
-   unset($links_manager);
-   $id_array = array();
-   foreach ($result_array as $link) {
-      $id_array[] = $link['from_item_id'];
-   }
-   $session->setValue($current_iid.$infix.'_attach_ids', $id_array);
-
-   $session->setValue($current_iid.$infix.'_back_module', 'buzzwords');
-   $params = array();
-   $params['ref_iid'] = $current_iid;
-   $params['mode'] = 'formattach';
-   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params);
-}
-
-function attach_return ($rubric_type, $current_iid) {
-   global $session;
-   $infix = '_'.$rubric_type;
-   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.'_post_vars');
-   $session->unsetValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.$infix.'_back_module');
-   return $attach_ids;
-}
-
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
 function cleanup_session ($current_iid) {
@@ -76,13 +41,6 @@ function cleanup_session ($current_iid) {
 // Get the current user and room
 $current_user = $environment->getCurrentUserItem();
 $context_item = $environment->getCurrentContextItem();
-
-// Coming back from attaching something
-if ( !empty($_GET['backfrom']) ) {
-   $backfrom = $_GET['backfrom'];
-} else {
-   $backfrom = false;
-}
 
 // Get item to be edited
 if ( !empty($_GET['iid']) ) {
@@ -133,33 +91,55 @@ else {
 
    $change_id = 0;
    $delete_id = 0;
-   $assign_id = 0;
    foreach ($_POST as $key => $post_var){
       $iid = mb_substr(strchr($key,'#'),1);
       if (!empty($iid) and mb_stristr($key,'option') ) {
-         if ( isOption($post_var, getMessage('COMMON_DELETE_BUTTON')) ){
+         if ( isOption($post_var, $translator->getMessage('COMMON_DELETE_BUTTON')) ){
             $delete_id = $iid;
-         }else{
+         } elseif ( isOption($post_var, $translator->getMessage('BUZZWORDS_CHANGE_BUTTON')) ) {
             $change_id = $iid;
          }
       }
    }
 
-   // Get item to be edited
-   if ( !empty($_GET['iid']) ) {
-      $assign_id = $_GET['iid'];
-   } elseif ( !empty($_POST['iid']) ) {
-      $assign_id = $_POST['iid'];
-   }
-
-   // Redirect to attach material
-   foreach ($_POST as $key => $post_var){
-      $iid = mb_substr(strchr($key,'#'),1);
-      if (!empty($iid) and mb_stristr($key,'option') ) {
-         if ( isOption($post_var, getMessage('BUZZWORDS_ASSIGN_ENTRIES')) ){
-            $assign_id = $iid;
-            attach_redirect($linked_rubric, $iid);
+   // attach items
+   if ( !empty($_POST) ) {
+      $link_items = false;
+      foreach ( $_POST as $key => $value ) {
+         if ( $value == $translator->getMessage('COMMON_ITEM_NEW_ATTACH')
+              and strstr($key,'right_box_option')
+            ) {
+            $tag_id = substr($key,strpos($key,'#')+1);
+            $_GET['iid'] = $tag_id;
+            if ( !empty($_POST['module'])
+                 and $_POST['module'] != 'home'
+               ) {
+               $_GET['selrubric'] = $_POST['module'];
+            }
+            $_POST['right_box_option'] = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+            $link_items = true;
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
+            break;
          }
+      }
+      if ( !$link_items
+           and !empty($_POST['option'])
+           and isOption($_POST['option'], $translator->getMessage('COMMON_ITEM_ATTACH'))
+         ) {
+         $link_items = true;
+      }
+      if ( !$link_items
+           and !empty($_POST)
+           and empty($_POST['option'])
+           and empty($change_id)
+           and empty($delete_id)
+         ) {
+         $_GET['attach_view'] = 'yes';
+         $_GET['attach_type'] = 'item';
+         $link_items = true;
+      }
+      if ( $link_items ) {
+         include_once('pages/item_attach.php');
       }
    }
 
@@ -179,14 +159,6 @@ else {
       // Load form data from postvars
       if ( !empty($_POST) ) {
          $form->setFormPost($_POST);
-      }
-      // Back from attaching rubric
-      elseif ( $backfrom == $linked_rubric ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return($linked_rubric, $current_iid);
-         $buzzword_manager = $environment->getBuzzwordManager();
-         $buzzword_item = $buzzword_manager->getItem($assign_id);
-         $buzzword_item->saveRubricLinksByIDArray($attach_ids,$linked_rubric);
       }
 
       $form->prepareForm();
@@ -251,8 +223,8 @@ else {
              $params['focus_element_onload'] = 'sel1';
              redirect($environment->getCurrentContextID(), 'buzzwords', 'edit', $params);
           }
-       }else{
        }
+
       // Display form
       $params = array();
       $params['environment'] = $environment;

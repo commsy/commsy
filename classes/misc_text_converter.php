@@ -1289,10 +1289,6 @@ class misc_text_converter {
       }
 
       $factor = 0.625; // orig = 1;
-      $current_context_item = $this->_environment->getCurrentContextItem();
-      if ( $current_context_item->isDesign6() ) {
-         $factor = 0.524;
-      }
       if ( !empty($args['width']) ) {
          $width = $args['width'];
       } else {
@@ -2218,21 +2214,10 @@ class misc_text_converter {
             // use flv media player for swf, flv
             // see: http://www.jeroenwijering.com/?item=JW_FLV_Media_Player
             if ( empty($args['width']) ) {
-               $current_item = $this->_environment->getCurrentContextItem();
-               if ( $current_item->isDesign7() ) {
-                  $args['width'] = '600'; // 16:9
-               } else {
-                  $args['width'] = '300'; // old
-               }
-               unset($current_item);
+               $args['width'] = '600'; // 16:9
             }
             if ( empty($args['height']) ) {
-               $current_item = $this->_environment->getCurrentContextItem();
-               if ( $current_item->isDesign7() ) {
-                  $args['height'] = '337.5';  // 16:9
-               } else {
-                  $args['height'] = '250'; // old
-               }
+               $args['height'] = '337.5';  // 16:9
             }
             if ( $this->_environment->getCurrentBrowser() == 'MSIE' ) {
                $args['height'] -= 10;

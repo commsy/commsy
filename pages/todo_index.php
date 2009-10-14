@@ -33,7 +33,9 @@ include_once('classes/cs_list.php');
 //                  do not changes, but leave in session
 //   attached     = ref_iid is set, show backlink
 //                  show all items attached to the ref item
-if (isset($_GET['back_to_index']) and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')){
+if ( isset($_GET['back_to_index'])
+     and $session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_ids')
+   ) {
    $index_search_parameter_array = $session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_back_to_index_parameter_array');
    $params['interval'] = $index_search_parameter_array['interval'];
    $params['sort'] = $index_search_parameter_array['sort'];
@@ -137,6 +139,7 @@ if ( isset($_GET['sort']) ) {
 if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESET')) ) {
    $search = '';
    $selgroup = '';
+   $seluser = '';
    $seltopic = '';
    $last_selected_tag = '';
    $seltag_array = array();
@@ -198,7 +201,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    foreach ( $room_modules as $module ) {
       $link_name = explode('_', $module);
       if ( $link_name[1] != 'none' ) {
-         if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+         if (($context_item->_is_perspective($link_name[0]) or $link_name[0] == CS_USER_TYPE) and $context_item->withRubric($link_name[0])) {
             // Find current institution selection
             $string = 'sel'.$link_name[0];
             if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
@@ -389,6 +392,9 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
                unset($params);
             }
             break;
+         case 'download':
+            include_once('include/inc_rubric_download.php');
+            break;
          default:
             if ( !empty($_POST['index_view_action'])
                  and ( $environment->isPlugin($_POST['index_view_action'])
@@ -416,6 +422,7 @@ elseif ( isOption($delete_command, getMessage('COMMON_DELETE_BUTTON')) ) {
       }
 } // end if (perform list actions)
 
+
 $params = array();
 $params['environment'] = $environment;
 if ( isset($with_modifying_actions) ) {
@@ -430,7 +437,20 @@ if ( !isset($only_show_array)
      or empty($only_show_array)
    ) {
    $todo_manager->setContextLimit($environment->getCurrentContextID());
-   $count_all = $todo_manager->getCountAll();
+   $all_ids = $todo_manager->getIds();
+   $count_all = count($all_ids);
+   if (isset($all_ids[0])){
+      $newest_id = $all_ids[0];
+      $item = $todo_manager->getItem($newest_id);
+      $date = $item->getModificationDate();
+      $now = getCurrentDateTimeInMySQL();
+      if ($date <= $now){
+         $sel_activating_status = 1;
+      }
+   }elseif($count_all == 0){
+      $sel_activating_status = 1;
+   }
+   $todo_manager->resetData();
    if ( !empty($ref_iid) and $mode == 'attached' ){
       $todo_manager->setRefIDLimit($ref_iid);
    }
@@ -462,6 +482,9 @@ if ( !isset($only_show_array)
       }
       $label_manager = $environment->getManager($rubric);
       $label_manager->setContextLimit($environment->getCurrentContextID());
+      if ($rubric == CS_USER_TYPE){
+         $label_manager->setUserLimit();
+      }
       $label_manager->select();
       $rubric_list = $label_manager->get();
       $temp_rubric_list = clone $rubric_list;
@@ -533,7 +556,6 @@ if ( $context_item->isProjectRoom() ) {
       $with_modifying_actions = true;     // Community room
    }
 }
-
 
 // Set data for view
 $view->setList($list);

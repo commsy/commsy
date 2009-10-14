@@ -168,21 +168,7 @@ if ( $environment->getCurrentFunction() == 'index'
    }
 }
 
-// switch: CommSy6 / CommSy7
-if ( $environment->inProjectRoom()
-     or $environment->inCommunityRoom()
-     or $environment->inGroupRoom()
-     or $environment->inPrivateRoom()
-   ) {
-   $current_context_item = $environment->getCurrentContextItem();
-   if ( $current_context_item->isDesign6() ) {
-      $class_factory->setDesignTo6();
-   } else {
-      $class_factory->setDesignTo7();
-   }
-}else{
-   $class_factory->setDesignTo6();
-}
+$class_factory->setDesignTo7();
 
 $server_item = $environment->getServerItem();
 if ( $server_item->showOutOfService() ) {
@@ -868,34 +854,10 @@ if ( $show_agb_again ) {
          $page->setWithoutPersonalArea();
       }
    } else {
-      if ( $current_function == 'edit'
+      if ( $current_function == 'status'
+           and $environment->getCurrentModule() == 'account'
            and $current_context->isDesign7()
-           and (
-                 $current_module == CS_MATERIAL_TYPE
-                 or $current_module == CS_ANNOUNCEMENT_TYPE
-                 or $current_module == CS_DATE_TYPE
-                 or $current_module == CS_DISCUSSION_TYPE
-                 or $current_module == CS_GROUP_TYPE
-                 or $current_module == CS_TODO_TYPE
-                 or $current_module == CS_TOPIC_TYPE
-                 or $current_module == CS_INSTITUTION_TYPE
-                 or $current_module == CS_TAG_TYPE
-                 or $current_module == CS_BUZZWORD_TYPE
-                 or $current_module == 'buzzwords'
-               )
          ) {
-         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
-      } elseif ( $current_function == 'index'
-                 and $current_context->isDesign7()
-                 and ( $current_module == CS_DATE_TYPE
-                       or $current_module == CS_TODO_TYPE
-                     )
-               ) {
-         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
-      } elseif ( $current_function == 'status'
-                 and $environment->getCurrentModule() == 'account'
-                 and $current_context->isDesign7()
-               ) {
          include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
       } else {
          include('pages/'.$current_module.'_'.$current_function.'.php');

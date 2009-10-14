@@ -766,7 +766,7 @@ class cs_context_item extends cs_item {
          $retour = $retour_temp;
       }
 
-      if (!strstr($retour['schema'],'OWN') and !$this->isDesign6() ){
+      if ( !strstr($retour['schema'],'OWN') ) {
          $retour = $cs_color[$retour['schema']];
       }
       return $retour;
@@ -1905,7 +1905,7 @@ class cs_context_item extends cs_item {
 
    function showGrouproomConfig () {
       $retour = false;
-      if ($this->withGrouproomFunctions() or $this->isDesign7()) {
+      if ( $this->withGrouproomFunctions() ) {
          $retour = true;
       } elseif ( $this->isProjectRoom()
                  or $this->isCommunityRoom()
@@ -3442,7 +3442,7 @@ class cs_context_item extends cs_item {
    function getAvailableDefaultRubricArray () {
      $retour = array();
      $temp = $this->_default_rubrics_array;
-     if ($this->isPrivateRoom() and $this->isDesign7()){
+     if ($this->isPrivateRoom()){
         unset($temp[4]);
      }
      foreach ($temp as $rubric) {

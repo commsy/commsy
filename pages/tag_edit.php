@@ -22,75 +22,11 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-// Function used for redirecting to connected rubrics
-function attach_redirect ($rubric_type, $current_iid) {
-   global $session, $environment;
-   $infix = '_'.$rubric_type;
-   $session->setValue($current_iid.'_post_vars', $_POST);
-
-   $tag_manager = $environment->getTagManager();
-   $tag_item = $tag_manager->getItem($current_iid);
-   unset($tag_manager);
-   $type = $rubric_type;
-   $link_item_manager = $environment->getLinkItemManager();
-   $link_item_manager->setTypeLimit($type);
-   $link_item_manager->setLinkedItemLimit($tag_item);
-   unset($tag_item);
-   $link_item_manager->select(false);
-   $result_list = $link_item_manager->get();
-   $id_array = array();
-   if ( $result_list->isNotEmpty() ) {
-      $link_item = $result_list->getFirst();
-      while ($link_item) {
-         if ( $link_item->getFirstLinkedItemType() == $type ) {
-            $id_array[] = $link_item->getFirstLinkedItemID();
-         } else {
-            $id_array[] = $link_item->getSecondLinkedItemID();
-         }
-         unset($link_item);
-         $link_item = $result_list->getNext();
-      }
-   }
-   unset($result_list);
-   $session->setValue($current_iid.$infix.'_attach_ids', $id_array);
-
-   $session->setValue($current_iid.$infix.'_back_module', $environment->getCurrentModule());
-   $params = array();
-   $params['ref_iid'] = $current_iid;
-   $params['mode'] = 'formattach';
-   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params);
-}
-
-function attach_return ($rubric_type, $current_iid) {
-   global $session;
-   $infix = '_'.$rubric_type;
-   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.'_post_vars');
-   $session->unsetValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.$infix.'_back_module');
-   return $attach_ids;
-}
-
-// Function used for cleaning up the session. This function
-// deletes ALL session variables this page writes.
-function cleanup_session ($current_iid) {
-   global $session,$environment;
-   $session->unsetValue($environment->getCurrentModule().'_add_files');
-   $session->unsetValue($current_iid.'_post_vars');
-   $session->unsetValue($current_iid.'_material_attach_ids');
-   $session->unsetValue($current_iid.'_institution_attach_ids');
-   $session->unsetValue($current_iid.'_group_attach_ids');
-   $session->unsetValue($current_iid.'_topic_attach_ids');
-   $session->unsetValue($current_iid.'_material_back_module');
-   $session->unsetValue($current_iid.'_institution_back_module');
-   $session->unsetValue($current_iid.'_group_back_module');
-   $session->unsetValue($current_iid.'_topic_back_module');
-}
-
 // Check access rights
 // TBD: config of room
 $current_user = $environment->getCurrentUserItem();
 $current_context = $environment->getCurrentContextItem();
+
 // Get linked rubric
 if ( !empty($_GET['module']) ) {
    $linked_rubric = $_GET['module'];
@@ -132,42 +68,57 @@ else {
       $command = '';
    }
 
-   // Coming back from attaching something
-   if ( !empty($_GET['backfrom']) ) {
-      $backfrom = $_GET['backfrom'];
-   } else {
-      $backfrom = false;
-   }
-
    $change_id = 0;
    $delete_id = 0;
-   $assign_id = 0;
    foreach ($_POST as $key => $post_var){
       $iid = mb_substr(strchr($key,'#'),1);
       if ( !empty($iid) and mb_stristr($key,'option') ) {
          if ( isOption($post_var, getMessage('COMMON_DELETE_BUTTON')) ) {
             $delete_id = $iid;
-         } else {
+         } elseif ( isOption($post_var, $translator->getMessage('BUZZWORDS_CHANGE_BUTTON')) ) {
             $change_id = $iid;
          }
       }
    }
 
-   // Get item to be edited
-   if ( !empty($_GET['iid']) ) {
-      $assign_id = $_GET['iid'];
-   } elseif ( !empty($_POST['iid']) ) {
-      $assign_id = $_POST['iid'];
-   }
-
-   // Redirect to attach material
-   foreach ($_POST as $key => $post_var){
-      $iid = mb_substr(strchr($key,'#'),1);
-      if (!empty($iid) and mb_stristr($key,'option') ) {
-         if ( isOption($post_var, $translator->getMessage('BUZZWORDS_ASSIGN_ENTRIES')) ){
-            $assign_id = $iid;
-            attach_redirect($linked_rubric, $iid);
+   // attach items
+   if ( !empty($_POST) ) {
+      $link_items = false;
+      foreach ( $_POST as $key => $value ) {
+         if ( $value == $translator->getMessage('COMMON_ITEM_NEW_ATTACH')
+              and strstr($key,'right_box_option')
+            ) {
+            $tag_id = substr($key,strpos($key,'#')+1);
+            $_GET['iid'] = $tag_id;
+            if ( !empty($_POST['module'])
+                 and $_POST['module'] != 'home'
+               ) {
+               $_GET['selrubric'] = $_POST['module'];
+            }
+            $_POST['right_box_option'] = $translator->getMessage('COMMON_ITEM_NEW_ATTACH');
+            $link_items = true;
+            $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
+            break;
          }
+      }
+      if ( !$link_items
+           and !empty($_POST['option'])
+           and isOption($_POST['option'], $translator->getMessage('COMMON_ITEM_ATTACH'))
+         ) {
+         $link_items = true;
+      }
+      if ( !$link_items
+           and !empty($_POST)
+           and empty($_POST['option'])
+           and empty($change_id)
+           and empty($delete_id)
+         ) {
+         $_GET['attach_view'] = 'yes';
+         $_GET['attach_type'] = 'item';
+         $link_items = true;
+      }
+      if ( $link_items ) {
+         include_once('pages/item_attach.php');
       }
    }
 
@@ -178,6 +129,7 @@ else {
 
    // Show form and/or save item
    else {
+
       // Initialize the form
       $class_params= array();
       $class_params['environment'] = $environment;
@@ -186,14 +138,6 @@ else {
       // Load form data from postvars
       if ( !empty($_POST) ) {
          $form->setFormPost($_POST);
-      }
-
-      // Back from attaching rubric
-      elseif ( $backfrom == $linked_rubric ) {
-         $attach_ids = attach_return($linked_rubric, $assign_id);
-         $tag_manager = $environment->getTagManager();
-         $tag_item = $tag_manager->getItem($assign_id);
-         $tag_item->saveRubricLinkItemsByIDArray($attach_ids,$linked_rubric);
       }
 
       $form->prepareForm();

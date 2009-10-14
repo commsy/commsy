@@ -187,7 +187,6 @@ class cs_configuration_service_form extends cs_rubric_form {
       $current_context_item = $this->_environment->getCurrentContextItem();
       if ( $this->_environment->inPortal()
            or $this->_environment->inServer()
-           or $current_context_item->isDesign6()
          ) {
          $form_name = 'f';
       }

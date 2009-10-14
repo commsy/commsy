@@ -924,30 +924,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_start > 0 ) {
          $params['from'] = $browse_start;
          $image = '<span class="bold">&lt;&lt;</span>';
-         if ( $edit_page
-              or ( !$edit_page
-                   and $current_context->isDesign7()
-                 )
-            ) {
-            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
-            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<input type="hidden" name="from_start" value="'.$browse_start.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_START'.'\');" class="index_system_link">'.$image.'</a>'.LF;
-         }else{
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $this->_module,
-                                         $this->_function,
-                                         $params, $image,
-                                         $this->_translator->getMessage('COMMON_BROWSE_START_DESC'),
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         'class="index_system_link"'
-                                        ).LF;
-
-         }
+         $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+         $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+         $html .= '<input type="hidden" name="from_start" value="'.$browse_start.'"/>';
+         $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_START'.'\');" class="index_system_link">'.$image.'</a>'.LF;
       } else {
          $html .= '         <span style="font-weight:normal;">&lt;&lt;</span>'.LF;
       }
@@ -955,28 +935,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_left > 0 ) {
          $params['from'] = $browse_left;
          $image = '<span class="bold">&lt;</span>';
-         if ( $edit_page
-              or ( !$edit_page
-                   and $current_context->isDesign7()
-                 )
-            ) {
-            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
-            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<input type="hidden" name="from_left" value="'.$browse_left.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_LEFT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
-         }else{
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $this->_module, $this->_function,
-                                         $params, $image,
-                                         $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         'class="index_system_link"'
-                                        ).LF;
-         }
+         $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+         $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+         $html .= '<input type="hidden" name="from_left" value="'.$browse_left.'"/>';
+         $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_LEFT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
       } else {
          $html .= '         <span style="font-weight:normal;">&lt;</span>'.LF;
       }
@@ -984,30 +946,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_right > 0 ) {
          $params['from'] = $browse_right;
          $image = '<span class="bold">&gt;</span>';
-         if ( $edit_page
-              or ( !$edit_page
-                   and $current_context->isDesign7()
-                 )
-            ) {
-            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
-            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<input type="hidden" name="from_right" value="'.$browse_right.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_RIGHT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
-         } else {
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $this->_module,
-                                         $this->_function,
-                                         $params,
-                                         $image,
-                                         $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC'),
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         'class="index_system_link"'
-                                        ).LF;
-         }
+         $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+         $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+         $html .= '<input type="hidden" name="from_right" value="'.$browse_right.'"/>';
+         $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_RIGHT'.'\');" class="index_system_link">'.$image.'</a>'.LF;
       } else {
          $html .= '         <span style="font-weight:normal;">&gt;</span>'.LF;
       }
@@ -1015,29 +957,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
       if ( $browse_end > 0 ) {
          $params['from'] = $browse_end;
          $image = '<span class="bold">&gt;&gt;</span>';
-         if ( $edit_page
-              or ( !$edit_page
-                   and $current_context->isDesign7()
-                 )
-            ) {
-            $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
-            $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
-            $html .= '<input type="hidden" name="from_end" value="'.$browse_end.'"/>';
-            $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_END'.'\');" class="index_system_link">'.$image.'</a>'.LF;
-         }else{
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                         $this->_module, $this->_function,
-                                         $params,
-                                         $image,
-                                         $this->_translator->getMessage('COMMON_BROWSE_END_DESC'),
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         '',
-                                         'class="index_system_link"'
-                                        ).LF;
-         }
+         $html .= '<input type="hidden" name="interval" value="'.$interval.'"/>';
+         $html .= '<input type="hidden" name="count_all_shown" value="'.$count_all_shown.'"/>';
+         $html .= '<input type="hidden" name="from_end" value="'.$browse_end.'"/>';
+         $html .= '<a href="javascript:right_box_send(\'item_list_form\',\'right_box_option2\',\''.'COMMON_ITEM_NEW_ATTACH_END'.'\');" class="index_system_link">'.$image.'</a>'.LF;
       } else {
          $html .= '         <span style="font-weight:normal;">&gt;&gt;</span>'.LF;
       }

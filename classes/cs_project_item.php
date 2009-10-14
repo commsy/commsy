@@ -680,7 +680,7 @@ class cs_project_item extends cs_room_item {
       }if(!empty($string)){
          $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])){
             unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }
@@ -701,7 +701,7 @@ class cs_project_item extends cs_room_item {
       if(!empty($string)){
          $value_array[mb_strtoupper($rubric, 'UTF-8')]=$string;
       }else{
-         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')]) and $this->isDesign7()){
+         if (isset($value_array[mb_strtoupper($rubric, 'UTF-8')])){
             unset($value_array[mb_strtoupper($rubric, 'UTF-8')]);
          }
       }

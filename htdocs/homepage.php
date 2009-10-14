@@ -129,21 +129,7 @@ unset($current_module);
 unset($current_function);
 $context_item_current = $environment->getCurrentContextItem();
 
-// switch: CommSy6 / CommSy7
-if ( $environment->inProjectRoom()
-     or $environment->inCommunityRoom()
-     or $environment->inGroupRoom()
-     or $environment->inPrivateRoom()
-   ) {
-   if ( $context_item_current->isDesign6() ) {
-      $class_factory->setDesignTo6();
-   } else {
-      $class_factory->setDesignTo7();
-   }
-} else {
-   $class_factory->setDesignTo6();
-}
-
+$class_factory->setDesignTo7();
 
 /*********** SERVER INITIALIZATION AND JUMP TO HOMEPAGE INDEX ***********/
 

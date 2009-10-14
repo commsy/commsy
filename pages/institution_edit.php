@@ -32,48 +32,12 @@ if (isset($_GET['return_attach_tag_list'])){
    unset($_POST['option']);
    unset($_POST['right_box_option']);
 }
-
-
-// Function used for redirecting to connected rubrics
-function attach_redirect ($rubric_type, $current_iid) {
-   global $session, $environment;
-   $infix = '_'.$rubric_type;
-   $session->setValue($current_iid.'_post_vars', $_POST);
-   if ( isset($_POST[$rubric_type]) ) {
-      $session->setValue($current_iid.$infix.'_attach_ids', $_POST[$rubric_type]);
-   } else {
-      $session->setValue($current_iid.$infix.'_attach_ids', array());
-   }
-   $session->setValue($current_iid.$infix.'_back_module', CS_INSTITUTION_TYPE);
-   $params = array();
-   $params['ref_iid'] = $current_iid;
-   $params['mode'] = 'formattach';
-   redirect($environment->getCurrentContextID(), type2Module($rubric_type), 'index', $params);
-}
-
-function attach_return ($rubric_type, $current_iid) {
-   global $session;
-   $infix = '_'.$rubric_type;
-   $attach_ids = $session->getValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.'_post_vars');
-   $session->unsetValue($current_iid.$infix.'_attach_ids');
-   $session->unsetValue($current_iid.$infix.'_back_module');
-   return $attach_ids;
-}
-
 // Function used for cleaning up the session. This function
 // deletes ALL session variables this page writes.
 function cleanup_session ($current_iid) {
    global $session,$environment;
    $session->unsetValue($environment->getCurrentModule().'_add_files');
    $session->unsetValue($current_iid.'_post_vars');
-   $session->unsetValue($current_iid.'_material_attach_ids');
-   $session->unsetValue($current_iid.'_group_attach_ids');
-   $session->unsetValue($current_iid.'_topic_attach_ids');
-   $session->unsetValue($current_iid.'_material_back_module');
-   $session->unsetValue($current_iid.'_institution_attach_ids');
-   $session->unsetValue($current_iid.'_group_back_module');
-   $session->unsetValue($current_iid.'_topic_back_module');
 }
 
 // function for page edit
@@ -170,53 +134,6 @@ else {
       $class_params['environment'] = $environment;
       $form = $class_factory->getClass(INSTITUTION_FORM,$class_params);
       unset($class_params);
-
-      // Redirect to attach material
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_MATERIAL_BUTTON')) ) {
-         attach_redirect(CS_MATERIAL_TYPE, $current_iid);
-      }
-
-      // Redirect to attach TODO
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TODO_BUTTON')) ) {
-         attach_redirect(CS_TODO_TYPE, $current_iid);
-      }
-
-      // Redirect to attach DATE
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DATE_BUTTON')) ) {
-         attach_redirect(CS_DATE_TYPE, $current_iid);
-      }
-
-      // Redirect to attach ANNOUNCEMENT
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_ANNOUNCEMENT_BUTTON')) ) {
-         attach_redirect(CS_ANNOUNCEMENT_TYPE, $current_iid);
-      }
-
-      // Redirect to attach DISCUSSION
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_DISCUSSION_BUTTON')) ) {
-         attach_redirect(CS_DISCUSSION_TYPE, $current_iid);
-      }
-
-      // Redirect to attach PROJECT
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_PROJECT_BUTTON')) ) {
-         attach_redirect(CS_PROJECT_TYPE, $current_iid);
-      }
-
-
-
-      // Redirect to attach groups
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_GROUP_BUTTON')) ) {
-         attach_redirect(CS_GROUP_TYPE, $current_iid);
-      }
-
-      // Redirect to attach topics
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_TOPIC_BUTTON')) ) {
-         attach_redirect(CS_TOPIC_TYPE, $current_iid);
-      }
-
-      // Redirect to attach institution
-      if ( isOption($command, getMessage('RUBRIC_DO_ATTACH_INSTITUTION_BUTTON')) ) {
-         attach_redirect(CS_INSTITUTION_TYPE, $current_iid);
-      }
       include_once('include/inc_right_boxes_handling.php');
 
       // Load form data from postvars
@@ -241,92 +158,6 @@ else {
          }
          $form->setFormPost($values);
       }
-
-      // Back from attaching material
-      elseif ( $backfrom == CS_MATERIAL_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_MATERIAL_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_MATERIAL_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching PROJECT
-      elseif ( $backfrom == CS_PROJECT_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_PROJECT_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_PROJECT_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching DISCUSSION
-      elseif ( $backfrom == CS_DISCUSSION_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_DISCUSSION_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_DISCUSSION_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching TODO
-      elseif ( $backfrom == CS_TODO_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_TODO_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_TODO_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching DATE
-      elseif ( $backfrom == CS_DATE_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_DATE_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_DATE_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching ANNOUNCEMENT
-      elseif ( $backfrom == CS_ANNOUNCEMENT_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_ANNOUNCEMENT_TYPE, $current_iid);
-   $with_anchor = true;
-         $session_post_vars[CS_ANNOUNCEMENT_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-
-
-
-
-      // Back from attaching groups
-      elseif ( $backfrom == CS_GROUP_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_GROUP_TYPE, $current_iid);
-       $with_anchor = true;
-         $session_post_vars[CS_GROUP_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching topics
-      elseif ( $backfrom == CS_TOPIC_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_TOPIC_TYPE, $current_iid);
-       $with_anchor = true;
-         $session_post_vars[CS_TOPIC_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
-      // Back from attaching institutions
-      elseif ( $backfrom == CS_INSTITUTION_TYPE ) {
-         $session_post_vars = $session->getValue($current_iid.'_post_vars'); // Must be called before attach_return(...)
-         $attach_ids = attach_return(CS_INSTITUTION_TYPE, $current_iid);
-       $with_anchor = true;
-         $session_post_vars[CS_INSTITUTION_TYPE] = $attach_ids;
-         $form->setFormPost($session_post_vars);
-      }
-
       // Load form data from database
       elseif ( isset($institution_item) ) {
          $form->setItem($institution_item);
@@ -370,6 +201,7 @@ else {
                   )
             ) {
             // Create new item
+            $item_is_new = false;
             if ( !isset($institution_item) ) {
                $institution_manager = $environment->getLabelManager();
                $institution_item = $institution_manager->getNewItem();
@@ -378,6 +210,7 @@ else {
                $institution_item->setCreatorItem($user);
                $institution_item->setCreationDate(getCurrentDateTimeInMySQL());
                $institution_item->setLabelType(CS_INSTITUTION_TYPE);
+               $item_is_new = true;
             }
 
             // Set modificator and modification date
@@ -410,68 +243,22 @@ else {
                $disc_manager->copyFile($_FILES['picture_upload']['tmp_name'],$filename,true);
                $institution_item->setPicture($filename);
             }
-
-            // Set links to connected rubrics
-            if ( isset($_POST[CS_MATERIAL_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_MATERIAL_TYPE,$_POST[CS_MATERIAL_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_MATERIAL_TYPE,array());
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')){
+               $institution_item->setLinkedItemsByIDArray(array_unique($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids')));
+               $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
             }
-
-            if ( isset($_POST[CS_ANNOUNCEMENT_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_ANNOUNCEMENT_TYPE,$_POST[CS_ANNOUNCEMENT_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_ANNOUNCEMENT_TYPE,array());
-            }
-
-            if ( isset($_POST[CS_DATE_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_DATE_TYPE,$_POST[CS_DATE_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_DATE_TYPE,array());
-            }
-
-            if ( isset($_POST[CS_TODO_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_TODO_TYPE,$_POST[CS_TODO_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_TODO_TYPE,array());
-            }
-
-            if ( isset($_POST[CS_DISCUSSION_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_DISCUSSION_TYPE,$_POST[CS_DISCUSSION_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_DISCUSSION_TYPE,array());
-            }
-
-            if ( isset($_POST[CS_PROJECT_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_PROJECT_TYPE,$_POST[CS_PROJECT_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_PROJECT_TYPE,array());
-            }
-
-
-            if ( isset($_POST[CS_GROUP_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_GROUP_TYPE,$_POST[CS_GROUP_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_GROUP_TYPE,array());
-            }
-            if ( isset($_POST[CS_TOPIC_TYPE]) ) {
-               $institution_item->setLinkedItemsByID(CS_TOPIC_TYPE,$_POST[CS_TOPIC_TYPE]);
-            } else {
-               $institution_item->setLinkedItemsByID(CS_TOPIC_TYPE,array());
-            }
-      if ($environment->inCommunityRoom()) {
-               if ( isset($_POST[CS_INSTITUTION_TYPE]) ) {
-                  $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,$_POST[CS_INSTITUTION_TYPE]);
-               } else {
-                  $institution_item->setLinkedItemsByID(CS_INSTITUTION_TYPE,array());
-               }
-      }
-           // Save item
+            // Save item
             $institution_item->save();
-
-            // Reset id array
-            $session->setValue('cid'.$room_item->getItemID().'_institution_index_ids',
-                                  array($institution_item->getItemID()));
+            if ($session->issetValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids')){
+               $id_array =  array_reverse($session->getValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids'));
+            }else{
+               $id_array =  array();
+            }
+            if ($item_is_new){
+               $id_array[] = $institution_item->getItemID();
+               $id_array = array_reverse($id_array);
+               $session->setValue('cid'.$environment->getCurrentContextID().'_'.$environment->getCurrentModule().'_index_ids',$id_array);
+           }
 
             // Redirect
             $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');

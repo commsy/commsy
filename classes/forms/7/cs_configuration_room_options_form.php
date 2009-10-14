@@ -804,12 +804,6 @@ class cs_configuration_room_options_form extends cs_rubric_form {
       $context_item = $this->_environment->getCurrentContextItem();
 
       $this->_values = array();
-      // switch CommSy6 / CommSy7
-      if ( $context_item->isDesign7() ) {
-         $this->_values['design'] = 7;
-      } else {
-         $this->_values['design'] = 6;
-      }
       $color = $context_item->getColorArray();
       $temp_array = array();
       $temp_array['color_1'] = $color['tabs_background'];
