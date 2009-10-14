@@ -32,4 +32,7 @@ $c_pmwiki = true;
 // start at the commsy main folder
 // $c_pmwiki_path_file = 'htdocs/commsy_wiki';
 // $c_pmwiki_absolute_path_file = '/var/www/htdocs/commsy_wiki';
+
+// enable use of the wiki-SOAP-connection
+$c_use_soap_for_wiki = true;
 ?>
