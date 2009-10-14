@@ -1,5 +1,4 @@
 <?php
-$message["BUZZWORDS_ASSIGN_ENTRIES"]["de"] = "Einträge zuordnen";
 $message["BUZZWORDS_CHANGE_BUTTON"]["de"] = "Ändern";
 $message["BUZZWORDS_COMBINE_BUTTON"]["de"] = "zusammenlegen";
 $message["BUZZWORDS_EDIT_HEADER"]["de"] = "Schlagwörter bearbeiten";

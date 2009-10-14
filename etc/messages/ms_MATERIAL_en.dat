@@ -36,7 +36,6 @@ $message["MATERIAL_BOOKTITLE"]["en"] = "Book title";
 $message["MATERIAL_BOOKTITLE_DESC"]["en"] = "/Things that Matter/";
 $message["MATERIAL_BUTTON_MULTI_UPLOAD_YES"]["en"] = "Upload multiple files [requires Java]";
 $message["MATERIAL_BUZZWORDS"]["en"] = "Tags";
-$message["MATERIAL_BUZZWORD_DESC"]["en"] = "Select from existing tags or enter a new one";
 $message["MATERIAL_CHANGE_BUTTON"]["en"] = "Save material";
 $message["MATERIAL_COPY_TO_CLIPBOARD"]["en"] = "copy";
 $message["MATERIAL_CURRENT_VERSION_DATE"]["en"] = "Current version, revision";
@@ -82,8 +81,6 @@ $message["MATERIAL_MAX_FILE_SIZE"]["en"] = "<span class=&quot;key&quot;>Upload f
 $message["MATERIAL_META_DATA"]["en"] = "Metadata";
 $message["MATERIAL_NEW_SECTION_INSERT"]["en"] = "<NEW>";
 $message["MATERIAL_NOT_PUBLISHED"]["en"] = "not public world-wide";
-$message["MATERIAL_NO_BUZZWORDS"]["en"] = "Select tag from list";
-$message["MATERIAL_NO_TAGS"]["en"] = "Select category from list";
 $message["MATERIAL_ONLY_AUTHOR"]["en"] = "Restrict search to &quot;author&quot;";
 $message["MATERIAL_ONLY_FILE"]["en"] = "Restrict search to files";
 $message["MATERIAL_ONLY_TITLE"]["en"] = "Restrict search to &quot;title&quot;";

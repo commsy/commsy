@@ -36,7 +36,6 @@ $message["MATERIAL_BOOKTITLE"]["de"] = "Buchtitel";
 $message["MATERIAL_BOOKTITLE_DESC"]["de"] = "/Das Leben in seinen Phasen/";
 $message["MATERIAL_BUTTON_MULTI_UPLOAD_YES"]["de"] = "Mehrere Dateien gleichzeitig hochladen [benötigt Java]";
 $message["MATERIAL_BUZZWORDS"]["de"] = "Schlagwörter";
-$message["MATERIAL_BUZZWORD_DESC"]["de"] = "Sie können vorhandene Schlagwörter auswählen, oder neue hinzufügen.";
 $message["MATERIAL_CHANGE_BUTTON"]["de"] = "Material speichern";
 $message["MATERIAL_COPY_TO_CLIPBOARD"]["de"] = "kopieren";
 $message["MATERIAL_CURRENT_VERSION_DATE"]["de"] = "aktuelle Version vom";
@@ -83,8 +82,6 @@ $message["MATERIAL_MAX_FILE_SIZE"]["de"] = "<span class=&quot;key&quot;>Nur Date
 $message["MATERIAL_META_DATA"]["de"] = "Metadaten";
 $message["MATERIAL_NEW_SECTION_INSERT"]["de"] = "<NEU>";
 $message["MATERIAL_NOT_PUBLISHED"]["de"] = "nicht weltweit öffentlich";
-$message["MATERIAL_NO_BUZZWORDS"]["de"] = "Kein weiteres Schlagwort";
-$message["MATERIAL_NO_TAGS"]["de"] = "Keine weitere Kategorie";
 $message["MATERIAL_ONLY_AUTHOR"]["de"] = "Nur in &quot;AutorInnen&quot; suchen";
 $message["MATERIAL_ONLY_FILE"]["de"] = "Nur in Dateien suchen";
 $message["MATERIAL_ONLY_TITLE"]["de"] = "Nur in &quot;Titel&quot; suchen";
