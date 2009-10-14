@@ -168,14 +168,16 @@ if ( !empty($c_plugin_array) ) {
    $show_link = false;
 
    $current_portal = $environment->getCurrentPortalItem();
-   foreach ( $c_plugin_array as $plugin) {
-      if ( $current_portal->isPluginOn($plugin) ) {
-         $plugin_class = $environment->getPluginClass($plugin);
-         if ( method_exists($plugin_class,'isConfigurableInRoom') ) {
-            $current_context_item = $environment->getCurrentContextItem();
-            if ($plugin_class->isConfigurableInRoom($current_context_item->getItemType())) {
-               $show_link = true;
-               break;
+   if ( isset($current_portal) ) {
+      foreach ( $c_plugin_array as $plugin) {
+         if ( $current_portal->isPluginOn($plugin) ) {
+            $plugin_class = $environment->getPluginClass($plugin);
+            if ( method_exists($plugin_class,'isConfigurableInRoom') ) {
+               $current_context_item = $environment->getCurrentContextItem();
+               if ($plugin_class->isConfigurableInRoom($current_context_item->getItemType())) {
+                  $show_link = true;
+                  break;
+               }
             }
          }
       }

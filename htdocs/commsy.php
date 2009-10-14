@@ -168,7 +168,13 @@ if ( $environment->getCurrentFunction() == 'index'
    }
 }
 
-$class_factory->setDesignTo7();
+if ( $environment->inPortal()
+     or $environment->inServer()
+   ) {
+   $class_factory->setDesignTo6();
+} else {
+   $class_factory->setDesignTo7();
+}
 
 $server_item = $environment->getServerItem();
 if ( $server_item->showOutOfService() ) {

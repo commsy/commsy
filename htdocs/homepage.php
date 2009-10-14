@@ -129,7 +129,13 @@ unset($current_module);
 unset($current_function);
 $context_item_current = $environment->getCurrentContextItem();
 
-$class_factory->setDesignTo7();
+if ( $environment->inPortal()
+     or $environment->inServer()
+   ) {
+   $class_factory->setDesignTo6();
+} else {
+   $class_factory->setDesignTo7();
+}
 
 /*********** SERVER INITIALIZATION AND JUMP TO HOMEPAGE INDEX ***********/
 
