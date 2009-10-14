@@ -211,19 +211,31 @@ if ($command != 'error') { // only if user is allowed to edit user
                   $session_item->setValue($environment->getCurrentContextID().'_user_'.$iid.'_upload_name',$_FILES['upload']['name']);
                }
                //resizing the userimage to a maximum width of 150px
+               // + keeping a set ratio
                $srcfile = $_FILES['upload']['tmp_name'];
                $target = $_FILES['upload']['tmp_name'];
                $size = getimagesize($srcfile);
                $x_orig= $size[0];
                $y_orig= $size[1];
-               $verhaeltnis = $x_orig/$y_orig;
+               //$verhaeltnis = $x_orig/$y_orig;
+               $verhaeltnis = $y_orig/$x_orig;
                $max_width = 150;
-               if ($x_orig > $max_width) {
-                  $show_width = $max_width;
-                  $show_height = $y_orig * ($max_width/$x_orig);
+               //$ratio = 1.618; // Goldener Schnitt
+               //$ratio = 1.5; // 2:3
+               //$ratio = 1.334; // 3:4
+               $ratio = 1; // 1:1
+               if($verhaeltnis < $ratio){
+                  // Breiter als 1:$ratio
+                  $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
+                  $source_height = $size[1];
+                  $source_x = ($size[0] - $source_width) / 2;
+                  $source_y = 0;
                } else {
-                  $show_width = $x_orig;
-                  $show_height = $y_orig;
+                  // Höher als 1:$ratio
+                  $source_width = $size[0];
+                  $source_height = ($size[0] * ($max_width * $ratio)) / ($max_width);
+                  $source_x = 0;
+                  $source_y = ($size[1] - $source_height) / 2;
                }
                switch ($size[2]) {
                   case '1':
@@ -236,8 +248,10 @@ if ($command != 'error') { // only if user is allowed to edit user
                      $im = imagecreatefrompng($srcfile);
                      break;
                }
-               $newimg = imagecreatetruecolor($show_width,$show_height);
-               imagecopyresampled($newimg, $im, 0, 0, 0, 0, $show_width, $show_height, $size[0], $size[1]);
+               //$newimg = imagecreatetruecolor($show_width,$show_height);
+               //imagecopyresampled($newimg, $im, 0, 0, 0, 0, $show_width, $show_height, $size[0], $size[1]);
+               $newimg = imagecreatetruecolor($max_width,($max_width * $ratio));
+               imagecopyresampled($newimg, $im, 0, 0, $source_x, $source_y, $max_width, ceil($max_width * $ratio), $source_width, $source_height);
                imagepng($newimg,$target);
                imagedestroy($im);
                imagedestroy($newimg);
