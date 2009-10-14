@@ -198,18 +198,14 @@ if ($type != CS_TOPIC_TYPE) {
       $detail_view->setAnnotationList($annotations);
 
       // highlight search words in detail views
-      $current_context_item = $environment->getCurrentContextItem();
-      if ( $current_context_item->isDesign7() ) {
-         $session_item = $environment->getSessionItem();
-         if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
-            $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
-            if ( !empty($search_array['search']) ) {
-               $detail_view->setSearchText($search_array['search']);
-            }
-            unset($search_array);
+      $session_item = $environment->getSessionItem();
+      if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
+         $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+         if ( !empty($search_array['search']) ) {
+            $detail_view->setSearchText($search_array['search']);
          }
+         unset($search_array);
       }
-      unset($current_context_item);
 
       $page->add($detail_view);
 

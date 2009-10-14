@@ -174,9 +174,7 @@ if ( empty($option)
 }
 
 // for commsy 7
-if ( $environment->getCurrentContextItem()->isDesign7()
-     and $session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')
-   ) {
+if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2') ) {
    $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
 }
 
@@ -192,23 +190,22 @@ elseif ( $mode == 'list_actions' ) {
    }
 }
 
-if ( $environment->getCurrentContextItem()->isDesign7() ) {
-   if ( isset($_COOKIE['itemlist']) ) {
-      foreach ( $_COOKIE['itemlist'] as $key => $val ) {
-         setcookie ('itemlist['.$key.']', '', time()-3600);
-         if ( $val == '1' ) {
-            if ( !in_array($key, $selected_ids) ) {
-               $selected_ids[] = $key;
-            }
-         } else {
-            $idx = array_search($key, $selected_ids);
-            if ( $idx !== false ) {
-               unset($selected_ids[$idx]);
-            }
+if ( isset($_COOKIE['itemlist']) ) {
+   foreach ( $_COOKIE['itemlist'] as $key => $val ) {
+      setcookie ('itemlist['.$key.']', '', time()-3600);
+      if ( $val == '1' ) {
+         if ( !in_array($key, $selected_ids) ) {
+            $selected_ids[] = $key;
+         }
+      } else {
+         $idx = array_search($key, $selected_ids);
+         if ( $idx !== false ) {
+            unset($selected_ids[$idx]);
          }
       }
    }
 }
+
 $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
 
 if ( isset($_POST['right_box_option2']) ) {

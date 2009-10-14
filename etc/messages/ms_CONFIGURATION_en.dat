@@ -99,7 +99,6 @@ $message["CONFIGURATION_BGIMAGE_REPEAT"]["en"] = "Repeat background image";
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["en"] = "Make tag assignment mandatory";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["en"] = "Make tag assignment voluntary.";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["en"] = "Description";
-$message["CONFIGURATION_COLOR_DESIGN"]["en"] = "Design";
 $message["CONFIGURATION_COLOR_FORM_CHOOSE_TEXT"]["en"] = "Color theme";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING"]["en"] = "Initiation of <br/> %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["en"] = "by all users";
@@ -112,12 +111,6 @@ $message["CONFIGURATION_DATES_DESC"]["en"] = "Select list of events or calendar 
 $message["CONFIGURATION_DATES_DESC_0"]["en"] = "As list of events";
 $message["CONFIGURATION_DATES_DESC_1"]["en"] = "As calendar";
 $message["CONFIGURATION_DEFAULTS"]["en"] = "Workspace presets";
-$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["en"] = "<span class=&quot;bold&quot;>Please note:</span><br/>
-If you want to test CommSy 7, you are free to do so. Just turn the according switch on the workspace preferences panel from &quot;CommSy 6.x&quot; to &quot;CommSy 7&quot;. You should be aware of the following:
-<ul>
-<li>You can switch back to CommSy 6.x at any time. (You will find the switch in the &quot;workspace configuration&quot; section of &quot;settings&quot; in CommSy 7)</li>
-<li>Switching between versions is free of risk, all data will be preserved while switching.</li>
-<li>CommSy 7 is a prerelease candidate version. It is stable, safe and secure to use, but there is still some surface work to do. We are working on it.</li></ul>";
 $message["CONFIGURATION_DISCUSSION"]["en"] = "Choose discussion style";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["en"] = "'Flat' discussions";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["en"] = "Threaded discussions";

@@ -109,7 +109,7 @@ if ($type != CS_MATERIAL_TYPE) {
          unset($params['export_to_wiki']);
          redirect($environment->getCurrentContextID(),'material', 'detail', $params);
       }
-      
+
       if(isset($_GET['remove_from_wiki'])){
          $wiki_manager = $environment->getWikiManager();
          global $c_use_soap_for_wiki;
@@ -302,18 +302,14 @@ if ($type != CS_MATERIAL_TYPE) {
          }
 
          // highlight search words in detail views
-         $current_context_item = $environment->getCurrentContextItem();
-         if ( $current_context_item->isDesign7() ) {
-            $session_item = $environment->getSessionItem();
-            if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
-               $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
-               if ( !empty($search_array['search']) ) {
-                  $detail_view->setSearchText($search_array['search']);
-               }
-               unset($search_array);
+         $session_item = $environment->getSessionItem();
+         if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array') ) {
+            $search_array = $session->getValue('cid'.$environment->getCurrentContextID().'_campus_search_parameter_array');
+            if ( !empty($search_array['search']) ) {
+               $detail_view->setSearchText($search_array['search']);
             }
+            unset($search_array);
          }
-         unset($current_context_item);
 
          $page->add($detail_view);
       }

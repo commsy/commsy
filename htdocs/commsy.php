@@ -860,14 +860,7 @@ if ( $show_agb_again ) {
          $page->setWithoutPersonalArea();
       }
    } else {
-      if ( $current_function == 'status'
-           and $environment->getCurrentModule() == 'account'
-           and $current_context->isDesign7()
-         ) {
-         include('pages/commsy7/'.$current_module.'_'.$current_function.'.php');
-      } else {
-         include('pages/'.$current_module.'_'.$current_function.'.php');
-      }
+      include('pages/'.$current_module.'_'.$current_function.'.php');
    }
 } else {
    $page->add($errorbox);

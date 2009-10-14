@@ -100,7 +100,6 @@ $message["CONFIGURATION_BGIMAGE_REPEAT"]["de"] = "Hintergrundbild wiederholt dar
 $message["CONFIGURATION_BUZZWORDS_MANDATORY"]["de"] = "Zwingende Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_BUZZWORDS_NOT_MANDATORY"]["de"] = "Mögliche Zuordnung von Schlagwörtern";
 $message["CONFIGURATION_CHOOSE_LANGUAGE"]["de"] = "Beschreibung";
-$message["CONFIGURATION_COLOR_DESIGN"]["de"] = "Design";
 $message["CONFIGURATION_COLOR_FORM_CHOOSE_TEXT"]["de"] = "Farbschema";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING"]["de"] = "Eröffnung von <br/> %_COMMUNITY_SUB_DATPL_LOW";
 $message["CONFIGURATION_COMMUNITYROOM_OPENING_ALL"]["de"] = "durch alle NutzerInnen";
@@ -113,14 +112,6 @@ $message["CONFIGURATION_DATES_DESC"]["de"] = "Wählen Sie zwischen der Listendar
 $message["CONFIGURATION_DATES_DESC_0"]["de"] = "als Liste";
 $message["CONFIGURATION_DATES_DESC_1"]["de"] = "als Kalender";
 $message["CONFIGURATION_DEFAULTS"]["de"] = "Voreinstellungen für Räume";
-$message["CONFIGURATION_DESIGN_SWITCH_DESC"]["de"] = "<span class=&quot;bold&quot;>Achtung:</span><br/> Wer CommSy 7 ausprobieren möchte, kann einfach mit dieser Option den Raum von CommSy 6.x auf CommSy 7 umschalten.
- 
-Wichtig sind dabei drei Dinge:
-<ul>
-<li>Man kann den Schalter jederzeit wieder auf CommSy 6 umstellen (im Bereich &quot;Raumgestaltung&quot; des Konfigurationsbereichs von CommSy 7)
-</li>
-<li>Die erstellten Einträge stehen immer zur Verfügung, egal wie oft ich zwischen den Versionen hin- und herschalte. Das Umschalten ist also völlig risikolos!
-</li><li>CommSy 7 ist noch eine Testversion: Sie läuft nach unser Einschätzung bereits zuverlässig und stabil. Es sind aber z.B. im Layout noch kleine Restarbeiten zu erledigen.</li></ul>";
 $message["CONFIGURATION_DISCUSSION"]["de"] = "Art der Diskussion";
 $message["CONFIGURATION_DISCUSSION_DESC_1"]["de"] = "Lineare Darstellung";
 $message["CONFIGURATION_DISCUSSION_DESC_2"]["de"] = "Verzweigte Darstellung (Threaded)";

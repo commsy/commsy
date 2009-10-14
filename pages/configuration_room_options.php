@@ -373,19 +373,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
          }
          $context_item->setDescriptionArray($description);
          $redirect = false;
-         if ( !empty($_POST['design']) ) {
-            if ( $_POST['design'] == 7 ) {
-               if ( $context_item->isDesign6() ) {
-                  $redirect = true;
-               }
-               $context_item->setDesignTo7();
-            } else {
-               if ( $context_item->isDesign7() ) {
-                  $redirect = true;
-               }
-               $context_item->setDesignTo6();
-            }
-         }
 
          // save room_item
          $context_item->save();

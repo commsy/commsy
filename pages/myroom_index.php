@@ -80,12 +80,10 @@ if ( isset($_GET['interval']) ) {
    $interval = $_GET['interval'];
 } elseif ( $session->issetValue('interval') ) {
    $interval = $session->getValue('interval');
-} else{
+} else {
    $interval = $context_item->getListLength();
 }
-if ($context_item->isDesign7()){
-   $interval = 10;
-}
+$interval = 10;
 
 
 // Find current sort key

@@ -215,25 +215,19 @@ function getCSS ( $file, $file_url ) {
      }
      $csstarget = $directory.'/stylesheet.css';
 
-     // commsy 7
-     $current_context = $environment->getCurrentContextItem();
-     if ( $current_context->isDesign7() ) {
-        mkdir($directory.'/css', 0777);
+     mkdir($directory.'/css', 0777);
 
-        if (isset($params['view_mode'])){
-           $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$environment->getCurrentContextID();
-        } else {
-           $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
-        }
-        getCSS($directory.'/css/stylesheet.css',$url_to_style);
-        unset($url_to_style);
-
-        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
-        getCSS($directory.'/css/stylesheet2.css',$url_to_style);
-        unset($url_to_style);
+     if (isset($params['view_mode'])){
+        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_pda_css.php?cid='.$environment->getCurrentContextID();
      } else {
-        copy($csssrc,$csstarget);
+        $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_print_css.php?cid='.$environment->getCurrentContextID();
      }
+     getCSS($directory.'/css/stylesheet.css',$url_to_style);
+     unset($url_to_style);
+
+     $url_to_style = $c_commsy_domain.$c_commsy_url_path.'/css/commsy_myarea_css.php?cid='.$environment->getCurrentContextID();
+     getCSS($directory.'/css/stylesheet2.css',$url_to_style);
+     unset($url_to_style);
 
      //create ZIP File
      if(isset($params['iid'])) {

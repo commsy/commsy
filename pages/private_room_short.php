@@ -62,11 +62,8 @@ if ( isset($_GET['from']) ) {
 }
 
 $i=1;
-if($current_context_item->isDesign7()){
-   $end = $from+5;
-} else {
-   $end = $from+10;
-}
+$end = $from+5;
+
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){
@@ -94,11 +91,8 @@ if ( isset($_GET['from']) ) {
 
 $i=1;
 $status = $current_context->getHomeStatus();
-if($current_context_item->isDesign7()){
-   $end = $from+5;
-} else {
-   $end = $from+10;
-}
+$end = $from+5;
+
 $list3 = new cs_list();
 $list_item = $list2->getFirst();
 while($list_item){
@@ -138,34 +132,19 @@ $title_view = $class_factory->getClass(HOME_TITLE_VIEW,$params);
 unset($params);
 $page->add($title_view);
 
-if ($status=='detailed' or $context_item->isDesign7()){
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $short_view = $class_factory->getClass(PRIVATEROOM_DETAILED_SHORT_VIEW,$params);
-   unset($params);
-   $short_view->setUsedRubricsForRoomsArray($used_rubrics_for_room_array);
-   $user_manager = $environment->getUserManager();
-   $short_view->setUserForRoomsArray($user_manager->getAllUsersByUserAndRoomIDLimit($user->getUserID(), $shown_room_id_array,$user->getAuthSource()));
-}else{
-   $params = array();
-   $params['environment'] = $environment;
-   $params['with_modifying_actions'] = $current_context->isOpen();
-   $short_view = $class_factory->getClass(PRIVATEROOM_SHORT_VIEW,$params);
-   unset($params);
-}
+$params = array();
+$params['environment'] = $environment;
+$params['with_modifying_actions'] = $current_context->isOpen();
+$short_view = $class_factory->getClass(PRIVATEROOM_DETAILED_SHORT_VIEW,$params);
+unset($params);
+$short_view->setUsedRubricsForRoomsArray($used_rubrics_for_room_array);
+$user_manager = $environment->getUserManager();
+$short_view->setUserForRoomsArray($user_manager->getAllUsersByUserAndRoomIDLimit($user->getUserID(), $shown_room_id_array,$user->getAuthSource()));
+
 include_once('classes/cs_list.php');
 
 $short_view->setFrom($from);
-if ($status=='detailed'){
-   $short_view->setInterval(5);
-}else{
-   if($current_context_item->isDesign7()){
-      $short_view->setInterval(5);
-   } else {
-      $short_view->setInterval(10);
-   }
-}
+$short_view->setInterval(5);
 $short_view->setCountAll($countAll);
 $short_view->setCountAllShown($countShown);
 $short_view->setList($list3);

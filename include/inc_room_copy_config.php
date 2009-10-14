@@ -115,13 +115,6 @@ if ( $old_room->withBuzzwords() ) {
 // config of email message tags
 $new_room->setEmailTextArray($old_room->getEmailTextArray());
 
-// design
-if ( $old_room->isDesign7() ) {
-   $new_room->setDesignTo7();
-} elseif( $old_room->isDesign6() ) {
-   $new_room->setDesignTo6();
-}
-
 // title and logo
 if ( $old_room->isPrivateRoom() ) {
    $title = $old_room->getTitlePure();

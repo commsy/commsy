@@ -122,24 +122,24 @@ var $_configuration_rubric_list = NULL;
       $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ADMIN_OPTIONS').'</span></td></tr>'.LF;
       $html .= '<tr>';
       $configuration_admin_list = $this->_configuration_admin_list;
-         if ( isset($configuration_admin_list)) {
-            $current_item = $configuration_admin_list->getFirst();
+      if ( isset($configuration_admin_list)) {
+         $current_item = $configuration_admin_list->getFirst();
          $count = 0;
-            while ( $current_item ) {
+         while ( $current_item ) {
             if ( $count == 3 ){
                $count = 0;
                $html .= '</tr><tr>'.LF;
             }
-               $item_text = $this->_getItemAsHTML($current_item);
-               $html .= $item_text;
-               $current_item = $configuration_admin_list->getNext();
+            $item_text = $this->_getItemAsHTML($current_item);
+            $html .= $item_text;
+            $current_item = $configuration_admin_list->getNext();
             $count++;
-            }
+         }
          while ( $count < 3 ){
-               $html .= '<td width="25%" style="vertical-align: baseline; padding-bottom:10px;"></td>';
-               $count++;
+            $html .= '<td width="25%" style="vertical-align: baseline; padding-bottom:10px;"></td>';
+            $count++;
          }
-         }
+      }
       $html .= '</tr></table>'.LF;
       $html .= '<table class="configuration_table" style="margin-top:20px;" summary="Layout">'.LF;
       $html .= '<tr class="list"><td class="head" colspan="3"><span style="font-weight: bold">'.getMessage('COMMON_CONFIGURATION_ROOM_OPTIONS').'</span></td></tr>'.LF;
