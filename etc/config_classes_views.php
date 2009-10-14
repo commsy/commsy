@@ -23,12 +23,73 @@
 // views
 $view_folder = 'views/';
 
+// switchable
+
 $class_name = 'cs_page_view';
 define('PAGE_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_index_view';
+define('INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_user_index_view';
+define('USER_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_detail_view';
+define('DETAIL_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_user_detail_view';
+define('USER_DETAIL_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_form_view';
+define('FORM_VIEW',$class_name);
+$class_config[$class_name]['name']       = $class_name;
+$class_config[$class_name]['filename']   = $class_name.'.php';
+$class_config[$class_name]['folder']     = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_configuration_form_view';
+define('CONFIGURATION_FORM_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_link_preference_list_view';
+define('LINK_PREFERENCE_LIST_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+$class_name = 'cs_account_index_view';
+define('ACCOUNT_INDEX_VIEW',$class_name);
+$class_config[$class_name]['name'] = $class_name;
+$class_config[$class_name]['filename'] = $class_name.'.php';
+$class_config[$class_name]['folder'] = $main_folder.$view_folder;
+$class_config[$class_name]['switchable'] = true;
+
+
+// unswitchable
 
 $class_name = 'cs_page_room_view';
 define('PAGE_ROOM_VIEW',$class_name);
@@ -39,13 +100,6 @@ $class_config[$class_name]['switchable'] = false;
 
 
 /*************HOME**************/
-
-$class_name = 'cs_homepage_netnavigation_view';
-define('HOMEPAGE_NETNAVIGATION_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
 
 $class_name = 'cs_home_view';
 define('HOME_VIEW',$class_name);
@@ -84,26 +138,12 @@ $class_config[$class_name]['switchable'] = false;
 
 /*************INDEX**************/
 
-$class_name = 'cs_index_view';
-define('INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
-
 $class_name = 'cs_announcement_index_view';
 define('ANNOUNCEMENT_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_user_index_view';
-define('USER_INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
 
 $class_name = 'cs_material_index_view';
 define('MATERIAL_INDEX_VIEW',$class_name);
@@ -159,7 +199,7 @@ define('COPY_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_buzzword_index_view';
 define('BUZZWORD_INDEX_VIEW',$class_name);
@@ -194,14 +234,14 @@ define('PROJECT_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_context_index_view';
 define('CONTEXT_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 
 /*************HOME**************/
@@ -267,7 +307,7 @@ define('PROJECT_SHORT_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_user_short_view';
 define('USER_SHORT_VIEW',$class_name);
@@ -278,26 +318,12 @@ $class_config[$class_name]['switchable'] = false;
 
 
 /*************DETAIL**************/
-$class_name = 'cs_detail_view';
-define('DETAIL_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
-
 $class_name = 'cs_announcement_detail_view';
 define('ANNOUNCEMENT_DETAIL_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_user_detail_view';
-define('USER_DETAIL_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
 
 $class_name = 'cs_material_detail_view';
 define('MATERIAL_DETAIL_VIEW',$class_name);
@@ -353,7 +379,7 @@ define('CONTEXT_DETAIL_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_institution_detail_view';
 define('INSTITUTION_DETAIL_VIEW',$class_name);
@@ -363,15 +389,7 @@ $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
 
-
 /**************FORM********************/
-$class_name = 'cs_form_view';
-define('FORM_VIEW',$class_name);
-$class_config[$class_name]['name']       = $class_name;
-$class_config[$class_name]['filename']   = $class_name.'.php';
-$class_config[$class_name]['folder']     = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
-
 $class_name = 'cs_profile_form_view';
 define('PROFILE_FORM_VIEW',$class_name);
 $class_config[$class_name]['name']       = $class_name;
@@ -380,33 +398,12 @@ $class_config[$class_name]['folder']     = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
 
 /**************CONFIG********************/
-$class_name = 'cs_configuration_form_view';
-define('CONFIGURATION_FORM_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
-
-$class_name = 'cs_link_preference_list_view';
-define('LINK_PREFERENCE_LIST_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
-
 $class_name = 'cs_configuration_room_options_form_view';
 define('CONFIGURATION_ROOM_OPTIONS_FORM_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
 $class_config[$class_name]['switchable'] = false;
-
-$class_name = 'cs_account_index_view';
-define('ACCOUNT_INDEX_VIEW',$class_name);
-$class_config[$class_name]['name'] = $class_name;
-$class_config[$class_name]['filename'] = $class_name.'.php';
-$class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
 
 $class_name = 'cs_material_admin_index_view';
 define('MATERIAL_ADMIN_INDEX_VIEW',$class_name);
@@ -436,14 +433,14 @@ define('ITEM_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_item_attach_index_view';
 define('ITEM_ATTACH_INDEX_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_private_room_detailed_short_view';
 define('PRIVATEROOM_DETAILED_SHORT_VIEW',$class_name);
@@ -457,7 +454,7 @@ define('MAIL_VIEW',$class_name);
 $class_config[$class_name]['name'] = $class_name;
 $class_config[$class_name]['filename'] = $class_name.'.php';
 $class_config[$class_name]['folder'] = $main_folder.$view_folder;
-$class_config[$class_name]['switchable'] = true;
+$class_config[$class_name]['switchable'] = false;
 
 $class_name = 'cs_material_version_detail_view';
 define('MATERIAL_VERSION_DETAIL_VIEW',$class_name);
