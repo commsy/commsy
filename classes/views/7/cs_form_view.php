@@ -2047,7 +2047,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'DISCARTICLE_EDIT':
-                  $tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
+                  //$tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_DISCARTICLE_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_DISCARTICLE_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/discussion.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2225,7 +2230,12 @@ class cs_form_view extends cs_view {
                   $tempMessage = getMessage('COMMON_ANNOTATION_EDIT');
                   break;
                case 'STEP_EDIT':      //
-                  $tempMessage = getMessage('COMMON_STEP_EDIT');
+                  //$tempMessage = getMessage('COMMON_STEP_EDIT');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_STEP_EDIT');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_STEP_EDIT');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/todo.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
