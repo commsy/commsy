@@ -1,5 +1,4 @@
 <?php
-$message["HOME_ACTIVITY_ACTIVE_MEMBERS"]["en"] = "Active members";
 $message["HOME_ACTIVITY_ACTIVE_MEMBERS_SHORT"]["en"] = "active members";
 $message["HOME_ACTIVITY_NEW_ENTRIES"]["en"] = "New items";
 $message["HOME_ACTIVITY_PAGE_IMPRESSIONS"]["en"] = "Page impressions";

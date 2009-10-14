@@ -1,5 +1,4 @@
 <?php
-$message["HOME_ACTIVITY_ACTIVE_MEMBERS"]["de"] = "Mitglieder, die angemeldet waren";
 $message["HOME_ACTIVITY_ACTIVE_MEMBERS_SHORT"]["de"] = "angemeldete Mitglieder";
 $message["HOME_ACTIVITY_NEW_ENTRIES"]["de"] = "neue Beiträge";
 $message["HOME_ACTIVITY_PAGE_IMPRESSIONS"]["de"] = "Seitenaufrufe";

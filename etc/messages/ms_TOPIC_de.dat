@@ -10,7 +10,6 @@ $message["TOPIC_ENTER_NEW"]["de"] = "%_TOPICS_SUB_NOMS_LOW eingeben";
 $message["TOPIC_INDEX"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["TOPIC_LEAVE"]["de"] = "Austreten";
 $message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["de"] = "Den ausgewählten %_TOPICS_SUB_AKKPL_BIG haben sich keine Personen zu geordnet, d.h. die Adressatenliste dieser E-Mail ist leer.";
-$message["TOPIC_MEMBERS"]["de"] = "Personen, die sich %_TOPICS_ART_DEF_DATS_LOW %_TOPICS_SUB_DATS_BIG zugeordnet haben:";
 $message["TOPIC_PATH"]["de"] = "Pfad";
 $message["TOPIC_SAVE_BUTTON"]["de"] = "%_TOPICS_SUB_NOMS_LOW speichern";
 ?>

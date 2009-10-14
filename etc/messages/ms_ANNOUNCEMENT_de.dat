@@ -11,5 +11,4 @@ $message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["de"] = "Zu diesem Datum verschwindet
 <br/>
 Datum: TT.MM.JJJJ - z.B. 24.12.2006<br/>
 Uhrzeit: SS:MM - z.B. 12:30";
-$message["ANNOUNCEMENT_VALIDITY_DATE"]["de"] = "gültig bis";
 ?>

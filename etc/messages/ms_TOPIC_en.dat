@@ -10,7 +10,6 @@ $message["TOPIC_ENTER_NEW"]["en"] = "Add new %_TOPICS_SUB_NOMS_LOW";
 $message["TOPIC_INDEX"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["TOPIC_LEAVE"]["en"] = "Leave";
 $message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["en"] = "There are no receipients for this mail because no persons joined the selected %_TOPICS_SUB_AKKPL_LOW.";
-$message["TOPIC_MEMBERS"]["en"] = "Persons who joined this %_TOPICS_SUB_DATS_LOW:";
 $message["TOPIC_PATH"]["en"] = "Path";
 $message["TOPIC_SAVE_BUTTON"]["en"] = "Save %_TOPICS_SUB_NOMS_LOW";
 ?>

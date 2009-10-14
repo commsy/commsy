@@ -4,7 +4,6 @@ $message["DISCUSSION_ARTICLES"]["en"] = "Posts";
 $message["DISCUSSION_CLOSE"]["en"] = "Close discussion";
 $message["DISCUSSION_CLOSE_ALL_ARTICLES"]["en"] = "display all posts";
 $message["DISCUSSION_CLOSE_BUTTON"]["en"] = "Close discussion";
-$message["DISCUSSION_CLOSE_NO_ARTICLES"]["en"] = "display closing summary post only";
 $message["DISCUSSION_CLOSE_TITLE"]["en"] = "Closing summary post";
 $message["DISCUSSION_DISCARTICLE_COUNT"]["en"] = "Number of items";
 $message["DISCUSSION_EDIT"]["en"] = "Edit discussion";

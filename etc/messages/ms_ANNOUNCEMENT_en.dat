@@ -11,5 +11,4 @@ $message["ANNOUNCEMENT_TIME_DAY_END_DESC"]["en"] = "At this date your announceme
 <br/>
 date: month/day/year<br/>
 time: hour:minute";
-$message["ANNOUNCEMENT_VALIDITY_DATE"]["en"] = "Expires on";
 ?>

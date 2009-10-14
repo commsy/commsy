@@ -4,7 +4,6 @@ $message["DISCUSSION_ARTICLES"]["de"] = "Beiträge";
 $message["DISCUSSION_CLOSE"]["de"] = "Abschließen";
 $message["DISCUSSION_CLOSE_ALL_ARTICLES"]["de"] = "alle Beiträge anzeigen";
 $message["DISCUSSION_CLOSE_BUTTON"]["de"] = "Diskussion schließen";
-$message["DISCUSSION_CLOSE_NO_ARTICLES"]["de"] = "Abschlussbeitrag anzeigen";
 $message["DISCUSSION_CLOSE_TITLE"]["de"] = "Abschlussbeitrag";
 $message["DISCUSSION_DISCARTICLE_COUNT"]["de"] = "Anzahl der Beiträge";
 $message["DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
