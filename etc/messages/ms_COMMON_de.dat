@@ -641,7 +641,9 @@ $message["COMMON_TEXT_FORMATING_FORMAT_TEXT"]["de"] = "<span style=&quot;font-we
 $message["COMMON_TEXT_FORMATING_HELP_FULL"]["de"] = "Hinweise zum Umgang mit Textformatierung, Links, Bildern, Videos etc.";
 $message["COMMON_TEXT_FORMATING_HELP_SHORT"]["de"] = "Hinweise zum Umgang mit Links, Bildern, Videos etc.";
 $message["COMMON_TEXT_INCLUDING_MEDIA"]["de"] = "Einbettung von Medien";
-$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<span style=&quot;font-weight:bold&quot;>Links:</span>
+$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weight:normal;&quot;><li>Suchen Sie bitte die zum Medium passende Zeile (siehe unten),</li><li> kopieren diese,</li><li>fügen die Zeile in den Beitrag ein und</li><li>ersetzen die GROSSBUCHSTABEN mit eigenen Angaben.</li></ol>
+
+<span style=&quot;font-weight:bold&quot;>Links:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
     <li>(:link ZIEL text=TEXT:) für Hyperlinks</li>
     <li>(:item NUMMER text=TEXT:) für Verweise auf Einträge in CommSy</li>
@@ -700,10 +702,10 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<span style=&quot;font-wei
     <li>Bsp: (:mp3 mymusic.mp3 width=150 play=true:)</li>
 </ul><br/><span style=&quot;font-weight:bold&quot;>Dokumente:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
-    <li>(:slideshare DOC-ID:) für Slideshare-Pr&auml;sentationen</li>
+    <li>(:slideshare DOC-ID:) für Slideshare-Präsentationen</li>
     <li>Argumente:
     <ul>
-        <li>DOC-ID: slideshare.net &quot;doc=&quot;-Angabe f&uuml;r die Pr&auml;sentation (siehe WordPress-Quelltext unten)</li>
+        <li>DOC-ID: slideshare.net &quot;doc=&quot;-Angabe für die Präsentation (siehe WordPress-Quelltext unten)</li>
     </ul>
     </li>
     <li>Bsp: (:slideshare quicktour-1209540124077378-8:)<br/>oder:<br/></li>

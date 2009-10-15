@@ -640,7 +640,9 @@ $message["COMMON_TEXT_FORMATING_FORMAT_TEXT"]["en"] = "<span style=&quot;font-we
 $message["COMMON_TEXT_FORMATING_HELP_FULL"]["en"] = "How to format text and include links, images, videos etc.";
 $message["COMMON_TEXT_FORMATING_HELP_SHORT"]["en"] = "How to include links, images, videos etc.";
 $message["COMMON_TEXT_INCLUDING_MEDIA"]["en"] = "Embedding media";
-$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<span style=&quot;font-weight:bold&quot;>Links:</span>
+$message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["en"] = "<ol style=&quot;font-weight:normal;&quot;><li>Please search the line fitting to your media (see below),</li><li> copy it,</li><li>paste it in your content and</li><li>replace the CAPITALS with your data.</li></ol>
+
+<span style=&quot;font-weight:bold&quot;>Links:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
     <li>(:link ADRESS text=TEXT:) for hyperlinks</li>
     <li>(:item NUMBER text=TEXT:) for links to entries in CommSy</li>
