@@ -198,7 +198,6 @@ class cs_server_item extends cs_guide_item {
                   $pi = $log_manager->getCountAll();
 
                   $pi_array = $room_item->getPageImpressionArray();
-                  array_pop($pi_array);
                   array_unshift($pi_array,$pi);
                   $room_item->setPageImpressionArray($pi_array);
                   $room_item->saveWithoutChangingModificationInformation();

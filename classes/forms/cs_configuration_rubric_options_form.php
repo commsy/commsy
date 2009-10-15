@@ -230,7 +230,7 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
                                     '',
                                     $this->_translator->getMessage('INTERNAL_TIME_SPREAD'),
                                     $this->_translator->getMessage('INTERNAL_TIME_SPREAD_DESC'),
-                                    '2',
+                                    '3',
                                     '3',
                                     true
                                    );
@@ -243,29 +243,33 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
     * this methods loads the selected and given values to the form from the material item or the form_post data
     */
    function _prepareValues () {
-      $room = $this->_environment->getCurrentContextItem();
-      $default_rubrics = $room->getAvailableDefaultRubricArray();
-      if ( count($default_rubrics) > 8 ) {
-         $count = 8;
-      } else {
-         $count = count($default_rubrics);
-      }
-
-      $this->_values = array();
-      $home_conf = $this->_environment->getCurrentContextItem()->getHomeConf();
-      $home_conf_array = explode(',',$home_conf);
-      $i=0;
-      foreach ($home_conf_array as $rubric_conf) {
-         $rubric_conf_array = explode('_',$rubric_conf);
-         if ($rubric_conf_array[1] != 'none') {
-            $this->_values['rubric_'.$i] = $rubric_conf_array[0];
-            $this->_values['show_'.$i] = $rubric_conf_array[1];
-            $i++;
+      if ( !isset($_POST['rubric_0']) ) {
+         $room = $this->_environment->getCurrentContextItem();
+         $default_rubrics = $room->getAvailableDefaultRubricArray();
+         if ( count($default_rubrics) > 8 ) {
+            $count = 8;
+         } else {
+            $count = count($default_rubrics);
          }
-      }
-      for ($j=$i+1; $j<$count; $j++) {
-         $this->_values['rubric_'.$j] = 'none';
-         $this->_values['show_'.$j] = 'none';
+
+         $this->_values = array();
+         $home_conf = $this->_environment->getCurrentContextItem()->getHomeConf();
+         $home_conf_array = explode(',',$home_conf);
+         $i=0;
+         foreach ($home_conf_array as $rubric_conf) {
+            $rubric_conf_array = explode('_',$rubric_conf);
+            if ($rubric_conf_array[1] != 'none') {
+               $this->_values['rubric_'.$i] = $rubric_conf_array[0];
+               $this->_values['show_'.$i] = $rubric_conf_array[1];
+               $i++;
+            }
+         }
+         for ($j=$i+1; $j<$count; $j++) {
+            $this->_values['rubric_'.$j] = 'none';
+            $this->_values['show_'.$j] = 'none';
+         }
+      } else {
+         $this->_values = $this->_form_post;
       }
       if ( isset($_POST['time_spread']) ) {
         $this->_values['time_spread'] = $_POST['time_spread'];
@@ -277,32 +281,42 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
    /** specific check the values of the form
     * this methods check the entered values
     */
-   function check () {
-      $room = $this->_environment->getCurrentContextItem();
-      $default_rubrics = $room->getAvailableDefaultRubricArray();
-      if ( count($default_rubrics) > 8 ) {
-         $count = 8;
-      } else {
-         $count = count($default_rubrics);
+   function _checkValues () {
+      if ( !empty($this->_form_post['time_spread'])
+           and is_numeric($this->_form_post['time_spread'])
+           and $this->_form_post['time_spread'] > 365
+         ) {
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_ERROR_TIME_SPREAD_LONG');
+         $this->_form->setFailure('time_spread','');
       }
-      if ( isset($_POST['rubric_0']) ) {
-         $post_array=array();
-         for ($j=0; $j<$count; $j++) {
-            $post_array[] = $_POST['rubric_'.$j];
+      if ( !empty($this->_form_post['rubric_0']) ) {
+         $room = $this->_environment->getCurrentContextItem();
+         $default_rubrics = $room->getAvailableDefaultRubricArray();
+         if ( count($default_rubrics) > 8 ) {
+            $count = 8;
+         } else {
+            $count = count($default_rubrics);
          }
-         $value = true;
-         for ($k=0; $k<$count; $k++) {
-            for ($l=0; $l<$count; $l++) {
-               if ($k!=$l){
-                  if ($post_array[$l]==$post_array[$k] and $post_array[$l]!='none'){
-                     $value= false;
+         if ( isset($_POST['rubric_0']) ) {
+            $post_array=array();
+            for ($j=0; $j<$count; $j++) {
+               $post_array[] = $_POST['rubric_'.$j];
+            }
+            $value = true;
+            for ($k=0; $k<$count; $k++) {
+               for ($l=0; $l<$count; $l++) {
+                  if ($k!=$l){
+                     if ($post_array[$l]==$post_array[$k] and $post_array[$l]!='none'){
+                        $value= false;
+                     }
                   }
                }
             }
          }
-         return $value;
-      } else {
-         return true;
+         if ( !$value ) {
+            $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_RUBRIC_ERROR_DESCRIPTION');
+            $this->_form->setFailure('rubric_0','');
+         }
       }
    }
 

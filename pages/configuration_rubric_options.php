@@ -79,6 +79,9 @@ else {
    }
    // Save item
    elseif ( !empty($command) and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
+      if ( !empty($_POST) ) {
+         $form->setFormPost($_POST);
+      }
       $correct = $form->check();
       if ( $correct and isOption($command, getMessage('PREFERENCES_SAVE_BUTTON')) ) {
          $home_conf = $room_item->getHomeConf();
@@ -152,16 +155,6 @@ else {
    // Display form
    $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
    $form_view->setForm($form);
-   if (!$form->check()){
-      $params = array();
-      $params['environment'] = $environment;
-      $params['with_modifying_actions'] = true;
-      $params['width'] = 500;
-      $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-      unset($params);
-      $errorbox->setText(getMessage('CONFIGURATION_RUBRIC_ERROR_DESCRIPTION'));
-      $page->add($errorbox);
-   }
    $page->add($form_view);
 }
 ?>

@@ -4945,6 +4945,12 @@ class cs_context_item extends cs_item {
     * @param array value page impression
     */
    function setPageImpressionArray ($value) {
+      // only save for 365 days
+      if ( is_array($value) ) {
+         while ( count($value) > 365 ) {
+            array_pop($value);
+         }
+      }
       $this->_addExtra('PAGE_IMPRESSION',(array)$value);
    }
 
