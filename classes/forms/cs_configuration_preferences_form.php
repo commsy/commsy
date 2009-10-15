@@ -594,7 +594,33 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          }
       }
 
-
+      if ( $this->_environment->inServer() ) {
+         $this->_portal_option_array = array();
+         $temp = array();
+         $temp['value'] = 'overview';
+         $temp['text']  = '*'.$this->_translator->getMessage('PREFERENCES_PORTAL_DEFAULT_OVERVIEW');
+         $this->_portal_option_array[] = $temp;
+         $server_item = $this->_environment->getCurrentContextItem();
+         if ( isset($server_item) ) {
+            $portal_list = $server_item->getPortalList();
+            if ( isset($portal_list)
+                 and $portal_list->isNotEmpty()
+               ) {
+               $temp = array();
+               $temp['value'] = '-1';
+               $temp['text']  = '-------------';
+               $this->_portal_option_array[] = $temp;
+               $portal_item = $portal_list->getFirst();
+               while ($portal_item) {
+                  $temp = array();
+                  $temp['value'] = $portal_item->getItemID();
+                  $temp['text']  = $portal_item->getTitle();
+                  $this->_portal_option_array[] = $temp;
+                  $portal_item = $portal_list->getNext();
+               }
+            }
+         }
+      }
 
       // check membership
       $this->_disable_code = true;
@@ -1052,6 +1078,9 @@ class cs_configuration_preferences_form extends cs_rubric_form {
                                       30,
                                       true
                                      );
+           if ( !empty($this->_portal_option_array) ) {
+              $this->_form->addSelect('server_portal_option',$this->_portal_option_array,'',$this->_translator->getMessage('PREFERENCES_PORTAL_DEFAULT'),'', 1, false,false,false,'','','','',13);
+           }
         }
    $languageArray = array();
    $tmpArray = $this->_environment->getAvailableLanguageArray();
@@ -1224,6 +1253,7 @@ class cs_configuration_preferences_form extends cs_rubric_form {
          }
          if ( $this->_item->isServer() ) {
             $this->_values['server_default_sender_address'] = $this->_item->getDefaultSenderAddress();
+            $this->_values['server_portal_option'] = $this->_item->getDefaultPortalItemID();
          }
          $description_array = $this->_item->getDescriptionArray();
          $languages = $this->_environment->getAvailableLanguageArray();

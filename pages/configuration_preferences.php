@@ -946,6 +946,13 @@ if ($current_user->isGuest()) {
             $template_copy = true;
          }
 
+         if ( $environment->inServer()
+              and $item->isServer()
+              and !empty($_POST['server_portal_option'])
+            ) {
+            $item->setDefaultPortalItemID($_POST['server_portal_option']);
+         }
+
                   //******************************************//
 
                   // Save item

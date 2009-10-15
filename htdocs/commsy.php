@@ -190,6 +190,12 @@ if ( $server_item->showOutOfService() ) {
 } else {
    $outofservice = false;
 }
+if ( !empty($cid_not_set) and $cid_not_set) {
+   $default_portal_id = $server_item->getDefaultPortalItemID();
+   if ( is_numeric($default_portal_id) ) {
+      $environment->setCurrentContextID($default_portal_id);
+   }
+}
 unset($server_item);
 
 $context_item_current = $environment->getCurrentContextItem();

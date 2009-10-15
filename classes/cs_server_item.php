@@ -47,6 +47,26 @@ class cs_server_item extends cs_guide_item {
       return true;
    }
 
+   /** get default portal item id
+    *
+    * @return string portal item id
+    */
+   function getDefaultPortalItemID () {
+      $retour = '';
+      if ($this->_issetExtra('DEFAULT_PORTAL_ID')) {
+         $retour = $this->_getExtra('DEFAULT_PORTAL_ID');
+      }
+      return $retour;
+   }
+
+   /** set default portal item id
+    *
+    * @param default portal item id
+    */
+   function setDefaultPortalItemID ($value) {
+      $this->_addExtra('DEFAULT_PORTAL_ID',$value);
+   }
+
    /** get default email sender address
     *
     * @return string default email sender address
