@@ -102,24 +102,24 @@ if ($current_user->isGuest()) {
       $form->loadValues();
       if ( $form->check() ) {
 
-
+         global $c_use_soap_for_wiki;
          if ( isset($_POST['status']) ) {
             if ($_POST['status'] == '') {
                $current_context->open();
-               if($current_context->existWiki()){
+               if($current_context->existWiki() and $c_use_soap_for_wiki){
                   $wiki_manager = $environment->getWikiManager();
                   $wiki_manager->openWiki();
                }
             } elseif ($_POST['status'] == 2) {
                $current_context->close();
-               if($current_context->existWiki()){
+               if($current_context->existWiki() and $c_use_soap_for_wiki){
                   $wiki_manager = $environment->getWikiManager();
                   $wiki_manager->closeWiki();
                }
             }
          }else{
             $current_context->open();
-            if($current_context->existWiki()){
+            if($current_context->existWiki() and $c_use_soap_for_wiki){
                $wiki_manager = $environment->getWikiManager();
                $wiki_manager->openWiki();
             }
