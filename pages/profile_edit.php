@@ -222,8 +222,8 @@ if ($command != 'error') { // only if user is allowed to edit user
                $max_width = 150;
                //$ratio = 1.618; // Goldener Schnitt
                //$ratio = 1.5; // 2:3
-               //$ratio = 1.334; // 3:4
-               $ratio = 1; // 1:1
+               $ratio = 1.334; // 3:4
+               //$ratio = 1; // 1:1
                if($verhaeltnis < $ratio){
                   // Breiter als 1:$ratio
                   $source_width = ($size[1] * $max_width) / ($max_width * $ratio);
