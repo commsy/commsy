@@ -2064,7 +2064,9 @@ EOD;
                          'index',
                          $params,
                          $image,
-                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
+                         '_blank'
+                         ).LF;
       $html .= $this->_getAdditionalActionsAsHTML();
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();

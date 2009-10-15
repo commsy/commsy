@@ -52,7 +52,7 @@ class cs_material_admin_index_view extends cs_material_index_view {
       if ( isset($params['with_modifying_actions']) ) {
          $with_modifying_actions = $params['with_modifying_actions'];
       }
-      $this->cs_material_index_view($params);
+      parent::__construct($params);
       $this->setTitle($this->_translator->getMessage('MATERIAL_INDEX'));
    }
    function setSelectedStatus ($status) {
@@ -160,7 +160,9 @@ class cs_material_admin_index_view extends cs_material_index_view {
                          'index',
                          $params,
                          $image,
-                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
+                         '_blank'
+                         ).LF;
       $html .= '</div>'.LF;
       return $html;
    }

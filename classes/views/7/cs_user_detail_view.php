@@ -409,7 +409,9 @@ class cs_user_detail_view extends cs_detail_view {
                                     'detail',
                                     $params,
                                     $image,
-                                    getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                                    getMessage('COMMON_LIST_PRINTVIEW'),
+                                    '_blank'
+                         ).LF;
       unset($params['mode']);
       $params = $this->_environment->getCurrentParameterArray();
       $params['download']='zip';
@@ -985,7 +987,7 @@ class cs_user_detail_view extends cs_detail_view {
                      $linked_iid = $linked_item->getItemID();
                }
                $html .= '   <li  style="padding-left:5px; list-style-type:none;">';
-               
+
                $params = array();
                $params['iid'] = $linked_iid;
                $module = Type2Module($type);

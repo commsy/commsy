@@ -65,7 +65,9 @@ class cs_user_index_view extends cs_room_index_view {
                          'index',
                          $params,
                          $image,
-                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                         $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
+                         '_blank'
+                         ).LF;
       if ($current_user->isUser() and $this->_with_modifying_actions ) {
          $params = array();
          $params['iid'] = $current_user->getItemID();
@@ -481,7 +483,7 @@ class cs_user_index_view extends cs_room_index_view {
       $selstatus = $this->getSelectedStatus();
       $html = '<div class="infocolor" style="text-align:left; padding-bottom:5px; font-size: 10pt;">'.$this->_translator->getMessage('COMMON_STATUS').BRLF;
       // STATUS SELECTION FIELD
-      
+
       // jQuery
       //$html .= '   <select name="selstatus" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '   <select name="selstatus" size="1" style="width: '.$width.'px; font-size:10pt; margin-bottom:5px;" id="submit_form">'.LF;

@@ -3217,7 +3217,9 @@ class cs_detail_view extends cs_view {
                                     'detail',
                                     $params,
                                     $image,
-                                    $this->_translator->getMessage('COMMON_LIST_PRINTVIEW')).LF;
+                                    $this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),
+                                    '_blank'
+                         ).LF;
       unset($params['mode']);
       return $html;
    }
