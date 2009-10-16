@@ -199,7 +199,8 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          if(!panelDisplayed[commsy_panel_index]){
             outerContentDiv.css('height', '0px');
             if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-               contentDiv.css('top', 0 - contentDiv.offsetHeight + 'px');
+               //contentDiv.css('top', 0 - contentDiv.offsetHeight + 'px');
+               contentDiv.css('top', '0px');
                if(document.all){
                   outerContentDiv.css('display', 'none');
                }
