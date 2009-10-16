@@ -482,5 +482,15 @@ function getDayFromDateTime ( $datetime ) {
    return $retour;
 }
 
+function datetime2Timestamp ( $datetime ) {
+   $year = $datetime[0].$datetime[1].$datetime[2].$datetime[3];
+   $month = $datetime[5].$datetime[6];
+   $day = $datetime[8].$datetime[9];
+   $hour = $datetime[11].$datetime[12];
+   $min = $datetime[14].$datetime[15];
+   $sec = $datetime[17].$datetime[18];
+   return mktime($hour,$min,$sec,$month,$day,$year);
+}
+
 date_default_timezone_set(date_default_timezone_get());
 ?>

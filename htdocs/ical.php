@@ -209,11 +209,14 @@ if ( isset($_GET['cid']) ) {
          } else {
             $place = '';
          }
-         if($item->getDateTime_start() == $item->getDateTime_end())
-         {
-            $starttime = $starttime + (24*3600);
+         if ( $item->getDateTime_start() == $item->getDateTime_end() ) {
+            if ( strstr($item->getDateTime_start(),"00:00:00") ) {
+               $starttime = $starttime + (24*3600);
+            }
             $endtime = 'allday';
-         } elseif(strstr($item->getDateTime_start(),"00:00:00") and strstr($item->getDateTime_end(),"00:00:00"))
+         } elseif ( strstr($item->getDateTime_start(),"00:00:00")
+                    and strstr($item->getDateTime_end(),"00:00:00")
+                  )
          {
             $starttime = $starttime + (24*3600);
             $endtime = $endtime + (24*3600);
