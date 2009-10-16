@@ -159,45 +159,66 @@ if ( isOption($right_box_command, getMessage('COMMON_TAG_NEW_ATTACH')) ) {
    unset($params);
 }
 
-
 if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
      isOption($command, getMessage('COMMON_GROUP_ATTACH')) or
      isOption($command, getMessage('COMMON_INSTITUTION_ATTACH'))
    ) {
 
-    $entry_array = array();
-    $entry_new_array = array();
-    if ($session->issetValue('cid'.$environment->getCurrentContextID().
-                                  '_linked_items_index_selected_ids')) {
-       $entry_array = $session->getValue('cid'.$environment->getCurrentContextID().
-                                               '_linked_items_index_selected_ids');
-    }
-    if (isset($_POST['itemlist'])){
-       $selected_ids = $_POST['itemlist'];
-       foreach($selected_ids as $id => $value){
-          $entry_new_array[] = $id;
-       }
-    }
-    if ( isset($_COOKIE['itemlist']) ) {
-       foreach ( $_COOKIE['itemlist'] as $key => $val ) {
-          setcookie ('itemlist['.$key.']', '', time()-3600);
-          if ( $val == '1' ) {
-             if ( !in_array($key, $entry_array) ) {
-                $entry_array[] = $key;
-             }
-          } else {
-             $idx = array_search($key, $entry_array);
-             if ( $idx !== false ) {
-                unset($entry_array[$idx]);
-             }
-          }
-       }
-    }
-    $entry_array = array_merge($entry_array,$entry_new_array);
-    $entry_array = array_unique($entry_array);
-    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_array);
-    $session_post_vars = $session->getValue('linked_items_post_vars');
-}elseif(empty($command)){
+   $entry_array = array();
+   $entry_new_array = array();
+   if ($session->issetValue('cid'.$environment->getCurrentContextID().
+                            '_linked_items_index_selected_ids')) {
+      $entry_array = $session->getValue('cid'.$environment->getCurrentContextID().
+                                        '_linked_items_index_selected_ids');
+   }
+   if (isset($_POST['itemlist'])){
+      $selected_ids = $_POST['itemlist'];
+      foreach($selected_ids as $id => $value){
+         $entry_new_array[] = $id;
+      }
+   }
+   if ( isset($_COOKIE['itemlist']) ) {
+      foreach ( $_COOKIE['itemlist'] as $key => $val ) {
+         setcookie ('itemlist['.$key.']', '', time()-3600);
+         if ( $val == '1' ) {
+            if ( !in_array($key, $entry_array) ) {
+               $entry_array[] = $key;
+            }
+         } else {
+            $idx = array_search($key, $entry_array);
+            if ( $idx !== false ) {
+               unset($entry_array[$idx]);
+            }
+         }
+      }
+   }
+   if ( !empty($_POST['shown']) ) {
+      $drop_array = array();
+      foreach ( $_POST['shown'] as $id => $value) {
+         if ( in_array($id,$entry_array)
+              and ( empty($_POST['itemlist'])
+                    or !array_key_exists($id,$_POST['itemlist'])
+                  )
+            ) {
+            $drop_array[] = $id;
+         }
+      }
+      if ( !empty($drop_array) ) {
+         $temp_array = array();
+         foreach ($entry_array as $id) {
+            if ( !in_array($id,$drop_array) ) {
+               $temp_array[] = $id;
+            }
+         }
+         $entry_array = $temp_array;
+      }
+   }
+
+   $entry_array = array_merge($entry_array,$entry_new_array);
+   $entry_array = array_unique($entry_array);
+   $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$entry_array);
+   $session_post_vars = $session->getValue('linked_items_post_vars');
+} elseif(empty($command)){
    if ( isset($_POST['mode']) ) {
       $mode = $_POST['mode'];
    } elseif ( isset($_GET['mode']) ) {
@@ -215,7 +236,7 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
       $from = 1;
    }
    if ( isset($_POST['selrubric'])
-        and isset($_POST['selrubric_old'])
+        and !empty($_POST['selrubric_old'])
         and $_POST['selrubric'] != $_POST['selrubric_old']
       ) {
       $from = 1;
@@ -265,22 +286,36 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
          $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
       }
    }
-   if ( isset($_COOKIE['itemlist']) ) {
-      foreach ( $_COOKIE['itemlist'] as $key => $val ) {
-         setcookie ('itemlist['.$key.']', '', time()-3600);
-         if ( $val == '1' ) {
-            if ( is_array($selected_ids) and !in_array($key, $selected_ids) ) {
-               $selected_ids[] = $key;
-            }
-         } else {
-            $idx = array_search($key, $selected_ids);
-            if ( $idx !== false ) {
-               unset($selected_ids[$idx]);
-            }
-         }
+   if ( !empty($_POST['itemlist']) ) {
+      foreach ($_POST['itemlist'] as $key => $id) {
+         $selected_ids[] = $key;
       }
    }
+   if ( !empty($_POST['shown']) ) {
+      $drop_array = array();
+      foreach ( $_POST['shown'] as $id => $value) {
+         if ( in_array($id,$selected_ids)
+              and ( empty($_POST['itemlist'])
+                    or !array_key_exists($id,$_POST['itemlist'])
+                  )
+            ) {
+            $drop_array[] = $id;
+         }
+      }
+      if ( !empty($drop_array) ) {
+         $temp_array = array();
+         foreach ($selected_ids as $id) {
+            if ( !in_array($id,$drop_array) ) {
+               $temp_array[] = $id;
+            }
+         }
+         $selected_ids = $temp_array;
+      }
+   }
+
+
    if (!empty($selected_ids)){
+      $selected_ids = array_unique($selected_ids);
       $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids',$selected_ids);
    }
    if ( isOption($right_box_command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
