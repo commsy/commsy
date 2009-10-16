@@ -506,6 +506,31 @@ class cs_detail_view extends cs_view {
                $html .='<li class="detail_list_entry" style="'.$style.'">';
                $html .= '<span>'.($count_items+1).'. '.chunkText($link_title,35).'</span>';
                $html .='</li>';
+            } elseif ( isset($item) and $item->isNotActivated() and isset($_GET['path'])){
+               $activating_date = $item->getActivatingDate();
+               if (strstr($activating_date,'9999-00-00')){
+               	  $activating_text = getMessage('COMMON_NOT_ACTIVATED');
+               }else{
+                  $activating_text = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
+               }
+               $html .='<li class="disabled" style="'.$style.'">';
+               $params['iid'] =	$item->getItemID();
+               $html .= ($count_items+1).'. '.ahref_curl( $this->_environment->getCurrentContextID(),
+                                 $type,
+                                 $this->_environment->getCurrentFunction(),
+                                 $params,
+                                 chunkText($link_title,5).'&nbsp;(' . $activating_text . ')',
+                                 $text.' - '.$link_title,
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 '',
+                                 'class="disabled"',
+                                 '',
+                                 '',
+                                 true);
+               $html .='</li>';
             } elseif ( isset($item) ) {
                $html .='<li style="'.$style.'">';
                $params['iid'] =	$item->getItemID();
@@ -2093,6 +2118,13 @@ class cs_detail_view extends cs_view {
    function _getForwardLinkAsHTML ($ids,$forward_type='') {
       $pos       = $this->getPosition();  // zero-based!
       $item_manager = $this->_environment->getItemManager();
+      $ids_not_activated = array();
+      foreach($ids as $index => $id){
+      	$item = $item_manager->getItem($id);
+      	if($item->isNotActivated()){
+      		$ids_not_activated[] = $id;
+      	}
+      }
       $count_all = count($ids);
       // Determine the position if it is not (correctly) given
       if ( $pos < 0 || $pos >= $count_all ) {
@@ -2112,17 +2144,65 @@ class cs_detail_view extends cs_view {
          $this->setPosition($pos);
       }
 
+	  $pos_index_start = 0;
+	  $pos_index_left = $pos-1;
+	  $pos_index_right = $pos+1;
+	  $pos_index_end = $count_all-1;
       // prepare browsing
       if ( $pos > 0 ) { // can I browse to the left / start?
-         $browse_left = $ids[$pos-1];
-         $browse_start = $ids[0];
+         for ($index = $pos-1, $max_count = 0; $index >= $max_count; $index--) {
+         	if(in_array($ids[$index], $ids_not_activated)){
+         		$pos_index_left--;
+         	} else {
+         		break;
+         	}
+		 }
+		 if($pos_index_left >= 0){
+         	$browse_left = $ids[$pos_index_left];
+		 } else {
+		 	$browse_left = 0;      // 0 means: do not browse
+		 }
+		 for ($index = 0, $max_count = $pos-1; $index <= $max_count; $index++) {
+         	if(in_array($ids[$index], $ids_not_activated)){
+         		$pos_index_start++;
+         	} else {
+         		break;
+         	}
+		 }
+		 if($pos_index_left >= 0){
+         	$browse_start = $ids[$pos_index_start];
+		 } else {
+         	$browse_start = 0;     // 0 means: do not browse
+		 }
       } else {
          $browse_left = 0;      // 0 means: do not browse
          $browse_start = 0;     // 0 means: do not browse
       }
       if ( $pos >= 0 and $pos < $count_all-1 ) { // can I browse to the right / end?
-         $browse_right = $ids[$pos+1];
-         $browse_end = $ids[$count_all-1];
+        for ($index = $pos+1, $max_count = $count_all-1; $index <= $max_count; $index++) {
+         	if(in_array($ids[$index], $ids_not_activated)){
+         		$pos_index_right++;
+         	} else {
+         		break;
+         	}
+		 }
+		 if($pos_index_right < sizeof($ids)){
+         	$browse_right = $ids[$pos_index_right];
+		 } else {
+		 	$browse_right = 0;   // 0 means: do not browse
+		 }
+		 for ($index = $count_all-1, $max_count = $pos+1; $index >= $max_count; $index--) {
+         	if(in_array($ids[$index], $ids_not_activated)){
+         		$pos_index_end--;
+         	} else {
+         		break;
+         	}
+		 }
+		 if($pos_index_right < sizeof($ids)){
+         	$browse_end = $ids[$pos_index_end];
+		 } else {
+         	$browse_end = 0;     // 0 means: do not browse
+		 }
       } else {
          $browse_right = 0;     // 0 means: do not browse
          $browse_end = 0;       // 0 means: do not browse
@@ -2137,7 +2217,7 @@ class cs_detail_view extends cs_view {
          unset($params[$this->_module.'_option']);
          unset($params['add_to_'.$this->_module.'_clipboard']);
          $params['iid'] = $browse_start;
-         $params['pos'] = 0;
+         $params['pos'] = $pos_index_start;
          if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
             $item = $item_manager->getItem($browse_start);
             $module = $item->getItemType();
@@ -2166,7 +2246,8 @@ class cs_detail_view extends cs_view {
          }else{
             $module = $this->_module;
          }
-         $params['pos'] = $pos-1;
+         //$params['pos'] = $pos-1;
+         $params['pos'] = $pos_index_left;
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_LEFT_DESC'),
@@ -2193,7 +2274,8 @@ class cs_detail_view extends cs_view {
             $module = $this->_module;
          }
 
-         $params['pos'] = $pos+1;
+         //$params['pos'] = $pos+1;
+         $params['pos'] = $pos_index_right;
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $module, $this->_function,
                                    $params, $image, $this->_translator->getMessage('COMMON_BROWSE_RIGHT_DESC'),'','','','','','class="detail_system_link"').LF;
          unset($params);
@@ -2214,7 +2296,7 @@ class cs_detail_view extends cs_view {
          }else{
             $module = $this->_module;
          }
-         $params['pos'] = $count_all-1;
+         $params['pos'] = $pos_index_end;
          $html .= ahref_curl($this->_environment->getCurrentContextID(), $this->_module, $this->_function,
                                    $params,
                                    $image, $this->_translator->getMessage('COMMON_BROWSE_END_DESC'),'','','','','','class="detail_system_link"').LF;
