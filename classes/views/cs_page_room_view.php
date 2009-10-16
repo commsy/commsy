@@ -760,29 +760,34 @@ class cs_page_room_view extends cs_page_view {
          $html .= '</div>'.LF;
          $html .= '<div style="clear:both;">'.LF;
          $html .= '</div>'.LF;
-         $browser = $this->_environment->getCurrentBrowser();
-         $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
-         $current_browser_version = $this->_environment->getCurrentBrowserVersion();
-         if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
-            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
-         }elseif ($current_browser == 'msie') {
-            $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
-         }else{
-            $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">'.LF;
+         $current_user = $this->_environment->getCurrentUserItem();
+         if ( empty($current_user)
+              or !$current_user->isRoot()
+            ) {
+            $browser = $this->_environment->getCurrentBrowser();
+            $current_browser = mb_strtolower($this->_environment->getCurrentBrowser(), 'UTF-8');
+            $current_browser_version = $this->_environment->getCurrentBrowserVersion();
+            if ( $current_browser == 'msie' and (strstr($current_browser_version,'5.') or (strstr($current_browser_version,'6.'))) ){
+               $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
+            }elseif ($current_browser == 'msie') {
+               $html .='<div style="float:right; padding-top:22px; white-space:nowrap;">'.LF;
+            }else{
+               $html .='<div style="float:right; padding-top:28px; white-space:nowrap;">'.LF;
+            }
+            $html .= '<div style="float:right; vertical-align:bottom;">'.LF;
+            $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">'.LF;
+            $html .= '<tr>'.LF;
+            $html .= '<td style="vertical-align:middle;">'.LF;
+            $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
+            $html .= '</td>'.LF;
+            $html .= '<td>'.LF;
+            $html .= $this->_getUserPersonalAreaAsHTML().LF;
+            $html .= '</td>'.LF;
+            $html .= '</tr>'.LF;
+            $html .= '</table>'.LF;
+            $html .= '</div>'.LF;
+            $html .= '</div>'.LF;
          }
-         $html .= '<div style="float:right; vertical-align:bottom;">'.LF;
-         $html .= '<table style="font-size:8pt; padding:0px; margin:0px; border-collapse:collapse;">'.LF;
-         $html .= '<tr>'.LF;
-         $html .= '<td style="vertical-align:middle;">'.LF;
-         $html .= $this->_translator->getMessage('MYAREA_CHANGE_MY_ACTUAL_ROOMS').'&nbsp;'.LF;
-         $html .= '</td>'.LF;
-         $html .= '<td>'.LF;
-         $html .= $this->_getUserPersonalAreaAsHTML().LF;
-         $html .= '</td>'.LF;
-         $html .= '</tr>'.LF;
-         $html .= '</table>'.LF;
-         $html .= '</div>'.LF;
-         $html .= '</div>'.LF;
          $html .= '<div style="clear:both;">'.LF;
          $html .= '</div>'.LF;
          $html .= '</div>'.LF.LF;
