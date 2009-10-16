@@ -743,7 +743,28 @@ class cs_page_guide_view extends cs_page_view {
                      $current_user_item = $this->_environment->getCurrentUserItem();
                      $current_user_item = $current_user_item->getRelatedCommSyUserItem();
                      if ( isset($current_user_item) and $current_user_item->isUser() ) {
-                        $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN_NOT_ALLOWED');
+                        $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN_NOT_ALLOWED').LF;
+                        if($item->isGroupRoom()){
+                        	$linked_project_item = $item->getLinkedProjectItem();
+                        	$user_related_project_list = $current_user_item->getRelatedProjectList();
+                        	$user_is_room_member = false;
+                        	if ( $user_related_project_list->isNotEmpty() ) {
+               					$room_item = $user_related_project_list->getFirst();
+               					while ($room_item) {
+                  					if($room_item->getItemID() == $linked_project_item->getItemID()){
+                  						$user_is_room_member = true;
+                  						break;
+                  					}
+                  					$room_item = $user_related_project_list->getNext();
+               					}
+            				}
+            				$html .= '<br/><br/>';
+            				if($user_is_room_member){
+            					$html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER', $item->getTitle(), $linked_project_item->getTitle());
+							} else {
+            					$html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
+            				}
+                        }
                      } else {
                         $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
                      }
