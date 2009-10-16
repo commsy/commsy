@@ -10,6 +10,7 @@ $message["DATES_CHANGE_BUTTON"]["de"] = "Termin speichern";
 $message["DATES_CHANGE_CALENDAR"]["de"] = "Kalender";
 $message["DATES_COMMON_DISPLAY"]["de"] = "Liste";
 $message["DATES_DATETIME"]["de"] = "Termin";
+$message["DATES_DATE_NOT_VALID"]["de"] = "Das Datum ist ungültig.";
 $message["DATES_DAYS"]["de"] = "Tage";
 $message["DATES_DECEMBER_LONG"]["de"] = "Dezember";
 $message["DATES_DECEMBER_SHORT"]["de"] = "Dez";
@@ -70,7 +71,6 @@ $message["DATES_TITLE_DESC"]["de"] = "Titel des Termins <i>(private Einträge we
 $message["DATES_UPLOADFILE"]["de"] = "Termindatei";
 $message["DATES_UPLOADFILE_DESC"]["de"] = "Eine CSV Datei auswählen (*.csv).";
 $message["DATES_WEEK_TIPP_FOR_ENTRIES"]["de"] = "Tipp: Klicken Sie auf eine Stunde eines Tages, um einen Termin einzutragen.";
-$message["DATES_WRONG_DATE_FORMAT"]["de"] = "Ein Datum sollte das Format TT.MM.JJJJ haben!
-(Weitere Informationen in der Hilfe)";
+$message["DATES_WRONG_DATE_FORMAT"]["de"] = "Ein Datum sollte das Format TT.MM.JJJJ haben!";
 $message["DATES_WRONG_FILE_FORMAT"]["de"] = "Die ausgewählte Datei muss eine CSV-Datei sein!";
 ?>
