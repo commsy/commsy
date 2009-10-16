@@ -1471,6 +1471,12 @@ class cs_page_room_view extends cs_page_view {
                if($this->_with_modifying_actions){
                   $modify = 1;
                   $html .= 'var new_action_message="' . $this->_translator->getMessage('COMMON_NEW_ITEM') . '";'.LF;
+                  if ( !$session->issetValue('cookie')
+			           or $session->getValue('cookie') == '0' ) {
+			           $html .= 'var session_id = "' . $session->getSessionID() . '";' . LF;
+			      } else {
+			      	   $html .= 'var session_id = false;' . LF;
+			      }
                } else {
                   $modify = 0;
                   $html .= 'var new_action_message="' . getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;
