@@ -498,8 +498,6 @@ class cs_todo_form extends cs_rubric_form {
    }
    /** specific check the values of the form
     * this methods check the entered values
-    *
-    * @author CommSy Development Group
     */
    function _checkValues () {
       $current_context = $this->_environment->getCurrentContextItem();
@@ -515,6 +513,16 @@ class cs_todo_form extends cs_rubric_form {
          $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
          if (count($buzzword_ids) == 0){
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
+         }
+      }
+      if ( !empty($this->_form_post['end_date_time'][0]) ) {
+         if ( empty($this->_form_post['end_date_time'][1]) ) {
+            $this->_form_post['end_date_time'][1] = '00:00';
+         }
+         include_once('functions/date_functions.php');
+         if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time'][0],$this->_form_post['end_date_time'][1]) ) {
+            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_form->setFailure('end_date_time','');
          }
       }
    }

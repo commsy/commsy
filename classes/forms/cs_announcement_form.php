@@ -422,8 +422,6 @@ class cs_announcement_form extends cs_rubric_form {
             $this->_error_array[] = getMessage('COMMON_ERROR_FIELD_DATE_INVALID');
          }
       }
-
-
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->isTagMandatory() ){
          $session = $this->_environment->getSessionItem();
@@ -439,8 +437,6 @@ class cs_announcement_form extends cs_rubric_form {
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
       }
-
-
    }
 }
 ?>

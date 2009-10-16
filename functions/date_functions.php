@@ -492,5 +492,30 @@ function datetime2Timestamp ( $datetime ) {
    return mktime($hour,$min,$sec,$month,$day,$year);
 }
 
+function isDatetimeCorrect ( $language, $date, $time='' ) {
+   $retour = false;
+   $date_result = convertDateFromInput($date,$language);
+   if ( !empty($time)) {
+      $time_result = convertTimeFromInput($time);
+   } else {
+      $time_result['datetime'] = '00:00:00';
+   }
+   if ( empty($date_result['error'])
+        and empty($time_result['error'])
+        and !empty($date_result['conforms'])
+        and !empty($time_result['conforms'])
+      ) {
+      if ( !empty($time_result['datetime'])
+           and !empty($date_result['datetime'])
+         ) {
+         $value = $date_result['datetime'].' '.$time_result['datetime'];
+         if ( $value == date('Y-m-d H:i:s',datetime2Timestamp($value)) ) {
+            $retour = true;
+         }
+      }
+   }
+   return $retour;
+}
+
 date_default_timezone_set(date_default_timezone_get());
 ?>
