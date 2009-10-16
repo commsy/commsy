@@ -96,7 +96,31 @@ class cs_material_short_view extends cs_home_view {
       $html .= '      <td '.$style.' style="width:50%;">'.$this->_getItemTitle($item).LF;
       $html .= '          '.$this->_getItemFiles($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:20%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      if ( $this->_environment->inConfigArray('c_material_auhtor_array',$this->_environment->getCurrentContextID()) ) {
+         $text = $this->_getItemAuthor($item);
+         if ( empty($text) ) {
+            $text = $this->_getItemModificator($item);
+         }
+         $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$text.'</td>'.LF;
+      } else {
+      ########################
+      # EDU HACK - END
+      ########################
+
+         $html .= '      <td '.$style.' style="font-size:8pt; width:30%;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      }
+      ########################
+      # EDU HACK - END
+      ########################
+
       $html .= '   </tr>'.LF;
       unset($item);
       return $html;
