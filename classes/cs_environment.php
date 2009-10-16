@@ -1672,5 +1672,18 @@ class cs_environment {
       }
       return $this->_misc_text_converter;
    }
+
+   public function inConfigArray ( $config_array_name, $value ) {
+      $retour = false;
+      global $$config_array_name;
+      if ( !empty($value)
+           and !empty($$config_array_name)
+           and is_array($$config_array_name)
+           and in_array($value,$$config_array_name)
+         ) {
+         $retour = true;
+      }
+      return $retour;
+   }
 }
 ?>

@@ -254,8 +254,32 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:10pt; width:62%;">'.$this->_getItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:12%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      if ( $this->_environment->inConfigArray('c_material_auhtor_array',$this->_environment->getCurrentContextID()) ) {
+         $text = $this->_getItemAuthor($item);
+         if ( empty($text) ) {
+            $text = $this->_getItemModificator($item);
+         }
+         $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$text.'</td>'.LF;
+      } else {
+      ########################
+      # EDU HACK - END
+      ########################
+
+         $html .= '      <td '.$style.' style="font-size:8pt; width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      }
+      ########################
+      # EDU HACK - END
+      ########################
+
       $html .= '   </tr>'.LF;
       return $html;
    }

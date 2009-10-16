@@ -380,7 +380,31 @@ class cs_material_index_view extends cs_index_view {
       }
       $html .= '          '.$this->_getItemFiles($item, $with_links).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificationDate($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      if ( $this->_environment->inConfigArray('c_material_auhtor_array',$this->_environment->getCurrentContextID()) ) {
+         $text = $this->_getItemAuthor($item);
+         if ( empty($text) ) {
+            $text = $this->_getItemModificator($item);
+         }
+         $html .= '      <td '.$style.' style="font-size:8pt;">'.$text.'</td>'.LF;
+      } else {
+      ########################
+      # EDU HACK - END
+      ########################
+
+         $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      }
+      ########################
+      # EDU HACK - END
+      ########################
+
       $html .= '   </tr>'.LF;
 
       return $html;

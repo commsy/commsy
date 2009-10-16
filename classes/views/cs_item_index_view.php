@@ -699,8 +699,32 @@ var $_sel_rubric = '';
    function _getMaterialItemAsLongHTML($item,$style) {
       $html  = '   <tr>'.LF;
       $html .= '      <td colspan="2" '.$style.' style="font-size:10pt; width:62%;">'.$this->_getMaterialItemTitle($item).'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:13%;">'.$this->_getItemModificationDate($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      if ( $this->_environment->inConfigArray('c_material_auhtor_array',$this->_environment->getCurrentContextID()) ) {
+         $text = $this->_getItemAuthor($item);
+         if ( empty($text) ) {
+            $text = $this->_getItemModificator($item);
+         }
+         $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$text.'</td>'.LF;
+      } else {
+      ########################
+      # EDU HACK - END
+      ########################
+
+         $html .= '      <td '.$style.' style="font-size:8pt;width:25%;">'.$this->_getItemModificator($item).'</td>'.LF;
+
+      ########################
+      # EDU HACK - BEGIN
+      ########################
+      }
+      ########################
+      # EDU HACK - END
+      ########################
+
       $html .= '   </tr>'.LF;
       return $html;
    }
