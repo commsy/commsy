@@ -509,7 +509,7 @@ class cs_profile_form_view extends cs_form_view {
       } else {
          $counter = 1;
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
-            $html .= '<ul id="MySortable" unselectable="on" style="padding-top:0px; margin-top:0px;">'.LF;
+            $html .= '<ul id="MySortableRoom" unselectable="on" style="padding-top:0px; margin-top:0px;">'.LF;
          }
          while ($option) {
             $option['name'] = $form_element['name'].'[]';
@@ -562,7 +562,7 @@ class cs_profile_form_view extends cs_form_view {
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
             $html .= '</ul>'.LF;
             $html .= '<script type="text/javascript">'.LF;
-			$html .= 'jQuery(function(){jQuery(\'#MySortable\').sortable();$("#MySortable").disableSelection();});';
+			$html .= 'jQuery(document).ready(function(){jQuery(\'#MySortableRoom\').sortable();$("#MySortableRoom").disableSelection();});';
 //            $html .='var MySortables = Sortables.extend({
 //                        start: function(event, element) {
 //                           if (event.target.tagName != \'A\'

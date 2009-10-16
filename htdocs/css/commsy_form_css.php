@@ -280,6 +280,14 @@ span.formcounter{
     z-index:1005;
 }
 
+#MySortableRoom{
+    list-style: none;
+    padding-left:0px;
+    margin-left:0px;
+    width:400px;
+    z-index:1005;
+}
+
 li.form_checkbox_dhtml{
    margin-top:2px;
    border: 1px dotted <?php echo($color['tabs_background'])?>;

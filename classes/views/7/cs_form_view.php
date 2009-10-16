@@ -866,7 +866,7 @@ class cs_form_view extends cs_view {
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
             $html .= '</ul>'.LF;
             $html .= '<script type="text/javascript">'.LF;
-            $html .= 'jQuery(function(){jQuery(\'#MySortable\').sortable();$("#MySortable").disableSelection();});';
+            $html .= 'jQuery(document).ready(function(){jQuery("#MySortable").sortable();jQuery("#MySortable").disableSelection();});';
 //
 //            $html .='var MySortables = Sortables.extend({
 //                        start: function(event, element) {
