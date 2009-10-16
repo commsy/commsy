@@ -134,10 +134,8 @@ if ( !$session->issetValue('cid'.$environment->getCurrentContextID().'_linked_it
    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$selected_ids);
 }
 
-if ( empty($option)
-     and ( !empty($_POST['itemlist'])
-           or !empty($_POST['shown'])
-         )
+if ( !empty($_POST['itemlist'])
+     or !empty($_POST['shown'])
    ) {
    $sess_selected_ids = array();
    if ($session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2')) {
@@ -173,7 +171,6 @@ if ( empty($option)
    $session->setValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2',$sess_selected_ids);
 }
 
-// for commsy 7
 if ( $session->issetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2') ) {
    $selected_ids = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids2');
 }
@@ -190,6 +187,8 @@ elseif ( $mode == 'list_actions' ) {
    }
 }
 
+// wird das noch gebraucht????
+// ij 16.10.2009
 if ( isset($_COOKIE['itemlist']) ) {
    foreach ( $_COOKIE['itemlist'] as $key => $val ) {
       setcookie ('itemlist['.$key.']', '', time()-3600);
