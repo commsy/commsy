@@ -548,7 +548,7 @@ class cs_account_index_view extends cs_index_view {
    function _getItemUserID ($item){
       $name = $item->getUserID();
       if ($this->_auth_source_count > 1 and $this->_environment->inProjectRoom() and !$this->_environment->getCurrentUser()->isRoot()) {
-         $name .= '&nbsp;['.$this->_auth_source_array[$item->getAuthSource()]->getTitle().']';
+         $name .= '&nbsp;<span class="disabled" style="font-size: 8pt;">['.$this->_auth_source_array[$item->getAuthSource()]->getTitle().']</span>';
       }
       return $name;
    }
