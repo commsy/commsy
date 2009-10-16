@@ -440,9 +440,7 @@ class cs_group_detail_view extends cs_detail_view {
       $html .= $this->_getEditAction($item,$current_user);
       $html .= $this->_getDetailItemActionsAsHTML($item).'&nbsp;&nbsp;&nbsp;';
       $html .= $this->_getPrintAction($item,$current_user);
-      if ( !$this->_environment->inPrivateRoom() ) {
-         $html .= $this->_getMailAction($item,$current_user,type2Module(CS_GROUP_TYPE));
-      }
+      $html .= $this->_getMailAction($item,$current_user,type2Module(CS_GROUP_TYPE));
       $html .= $this->_getDownloadAction($item,$current_user);
       $html .= $this->_getNewAction($item,$current_user);
       return $html;
