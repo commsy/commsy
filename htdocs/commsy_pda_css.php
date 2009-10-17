@@ -109,7 +109,7 @@ div.main{
 }
 
 div.content_fader{
-  widht: 100%;
+  width: 100%;
   margin-top:0px;
   xbackground-image:url(images/layout/bg-fader_<?php echo($color['schema'])?>.gif);
   xbackground-repeat:repeat-x;

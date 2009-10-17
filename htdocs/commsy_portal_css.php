@@ -521,7 +521,7 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 
 #profile_content{
    margin-bottom:20px;
-   padding:0px
+   padding:0px;
    background-color: #FFFFFF;
    border: 2px solid <?php echo($color['tabs_background'])?>;
 }

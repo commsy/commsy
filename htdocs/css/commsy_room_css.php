@@ -237,7 +237,7 @@ div.content_fader{
 
 div.content{
     margin:0px;
-    heigth:100%;
+    height:100%;
     background-color: <?php echo($color['content_background'])?>;
     border-right: 1px solid #C3C3C3;
 }
@@ -388,7 +388,7 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 /*Headlines*/
 h1{
    margin:0px;
-   padding-left:0px 0px 0px 10px;
+   padding:0px 0px 0px 10px;
    font-size:30px;
 }
 
@@ -449,13 +449,13 @@ h1{
 
 #profile_content{
    margin-bottom:20px;
-   padding:0px
+   padding:0px;
    background-color: #FFFFFF;
    border: 2px solid <?php echo($color['tabs_background'])?>;
 }
 
 #mail_content{
-   margin-bottom:00px 0px 20px 0px;
+   margin:0px 0px 20px 0px;
    padding:10px;
    background-color: #FFFFFF;
    border: 2px solid <?php echo($color['tabs_background'])?>;
@@ -489,7 +489,7 @@ h1{
 
 #copy_content{
    margin-bottom:20px;
-   padding:0px
+   padding:0px;
    background-color: #FFFFFF;
    border: 1px solid <?php echo($color['tabs_background'])?>;
 }

@@ -270,7 +270,7 @@ a.navlist_help, a.navlist_help:hover, a.navlist_help:active{
 /*Headlines*/
 h1{
    margin:0px;
-   padding-left:0px 0px 0px 10px;
+   padding:0px 0px 0px 10px;
    font-size:30px;
 }
 
