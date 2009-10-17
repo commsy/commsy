@@ -955,7 +955,11 @@ class misc_text_converter {
                $target = '';
             }
             $source = $file->getUrl();
-            $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
+            if(($file->getExtension() == 'jpg') or ($file->getExtension() == 'gif') or ($file->getExtension() == 'png')){
+            	$image_text = '<a href="'.$source.'"'.$target.' rel="lightbox">'.$icon.$name.'</a>'.$kb;
+            } else {
+            	$image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
+            }
          }
       }
 
