@@ -173,23 +173,21 @@ class class_voyeur extends cs_plugin {
          $params = array();
          $params['environment'] = $this->_environment;
          $params['with_modifying_actions'] = true;
-         $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
-         $errorbox->setTitle($this->_title);
+         $box = $class_factory->getClass(OVERLAYBOX_VIEW,$params);
+         $box->setTitle($this->_title);
          unset($params);
 
          $params = $this->_environment->getCurrentParameterArray();
          unset($params['iid']);
          unset($params['mode']);
          unset($params['download']);
-         $back_link = ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('VOYEUR_LIST_ACTION_TEXT_LINK_BACK'));
+         $back_link = curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params);
+         $box->setBackLink($back_link);
 
          $text = $this->_translator->getMessage('VOYEUR_LIST_ACTION_TEXT',$this->getVoyeurURL(basename($new_zip)));
-         $text .= BRLF;
-         $text .= BRLF;
-         $text .= $back_link;
-         $errorbox->setText($text);
+         $box->setText($text);
          global $page;
-         $page->addOverlay($errorbox);
+         $page->addOverlay($box);
          unset($_GET['download']);
          unset($_GET['mode']);
       }

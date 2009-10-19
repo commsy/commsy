@@ -515,7 +515,7 @@ table.configuration_table{
 }
 
 #cs_portal_announcements {
-	width:180px;
+   width:180px;
    border-collapse: collapse;
    border: 0px;
    padding:0px;

@@ -93,6 +93,20 @@ function ahref_curl( $context_id, $module, $function, $parameter, $linktext, $ti
    }
 }
 
+function ahref_curl2 ( $curl, $linktext, $title='', $target='', $fragment = '', $jshack='',$name='', $style='', $id='', $empty_adress = false ) {
+   if ( !empty($style) ) {
+      $style = ' '.$style;
+   }
+   $retour = '<a'.$style.' href="'.$curl.'"';
+   if ( $title != '' )  $retour .= ' title="'.strip_tags($title).'"';
+   if ( $name != '' )   $retour .= ' name="'.$name.'"';
+   if ( $target != '' ) $retour .= ' target="'.$target.'"';
+   if ( $jshack != '' ) $retour .= ' '.$jshack;
+   if ( $id != '' )     $retour .= ' id="'.$id.'"';
+
+   $retour .= '>'.$linktext.'</a>';
+   return $retour;
+}
 
 /**
  * Construct a commsy url (custom url) related to a given schema.

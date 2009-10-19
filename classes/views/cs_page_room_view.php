@@ -219,9 +219,9 @@ class cs_page_room_view extends cs_page_view {
       }
       $html .= '<div style="float:right; margin:0px; padding:0px 12px;">'.LF;
 
-	  // Einstellungen
-	  
-	  $context_user = $this->_environment->getCurrentUserItem();
+     // Einstellungen
+
+     $context_user = $this->_environment->getCurrentUserItem();
       if ( $context_user->isModerator()
            and !$context_user->isOnlyReadUser()
          ) {
@@ -291,12 +291,12 @@ class cs_page_room_view extends cs_page_view {
                                        getMessage('ACCOUNT_INDEX')).LF;
          }
       }
-	  
-	  // Einstellungen
-	  // Wiki, Chat
 
-	  $current_context = $this->_environment->getCurrentContextItem();
-	  if (
+     // Einstellungen
+     // Wiki, Chat
+
+     $current_context = $this->_environment->getCurrentContextItem();
+     if (
          ( $current_context->showWikiLink() and $current_context->existWiki() and $current_context->issetWikiHomeLink() )
          or ( $current_context->showChatLink() )
          or ( $current_context->showHomepageLink() )
@@ -353,8 +353,8 @@ class cs_page_room_view extends cs_page_view {
          }
       }
       }
-	  
-	  // Wiki, Chat
+
+     // Wiki, Chat
 
       // rss link
       $current_context_item = $this->_environment->getCurrentContextItem();
@@ -862,7 +862,7 @@ class cs_page_room_view extends cs_page_view {
             $html .= ' initLayer(\'item_list\');';
             $html .= ' "';
             }
-         $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+         $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
          $view = reset($views);
          while ($view) {
             $html .= $view->getInfoForBodyAsHTML();
@@ -1159,7 +1159,7 @@ class cs_page_room_view extends cs_page_view {
       $width = '100%';
       $html  = '<div style="position: absolute; z-index:1000; top:100px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
       $html .= '<center>';
-      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left:30%; background-color:#FFF;">';
+      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left:25%; background-color:#FFF;">';
 
       $html .= $view->asHTML();
 
@@ -1609,11 +1609,11 @@ class cs_page_room_view extends cs_page_view {
                   $modify = 1;
                   $html .= 'var new_action_message="' . $this->_translator->getMessage('COMMON_NEW_ITEM') . '";'.LF;
                   if ( !$session->issetValue('cookie')
-			           or $session->getValue('cookie') == '0' ) {
-			           $html .= 'var session_id = "' . $session->getSessionID() . '";' . LF;
-			      } else {
-			      	   $html .= 'var session_id = false;' . LF;
-			      }
+                    or $session->getValue('cookie') == '0' ) {
+                    $html .= 'var session_id = "' . $session->getSessionID() . '";' . LF;
+               } else {
+                     $html .= 'var session_id = false;' . LF;
+               }
                } else {
                   $modify = 0;
                   $html .= 'var new_action_message="' . getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;

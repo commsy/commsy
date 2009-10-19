@@ -807,7 +807,7 @@ class cs_page_view extends cs_view {
             $this->_focus_onload = true;
          }
       } else {
-         $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+         $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
          if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
          }
