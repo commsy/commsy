@@ -2221,6 +2221,11 @@ class cs_detail_view extends cs_view {
          if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
             $item = $item_manager->getItem($browse_start);
             $module = $item->getItemType();
+            if ($module == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($item->getItemID());
+               $module = $label_item->getLabelType();
+            }
          }else{
             $module = $this->_module;
          }
@@ -2243,6 +2248,11 @@ class cs_detail_view extends cs_view {
          if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
             $item = $item_manager->getItem($browse_left);
             $module = $item->getItemType();
+            if ($module == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($item->getItemID());
+               $module = $label_item->getLabelType();
+            }
          }else{
             $module = $this->_module;
          }
@@ -2270,6 +2280,11 @@ class cs_detail_view extends cs_view {
          if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search' or $forward_type =='link_item')){
             $item = $item_manager->getItem($browse_right);
             $module = $item->getItemType();
+            if ($module == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($item->getItemID());
+               $module = $label_item->getLabelType();
+            }
          }else{
             $module = $this->_module;
          }
@@ -2293,6 +2308,11 @@ class cs_detail_view extends cs_view {
          if (!empty($forward_type) and ($forward_type =='path' or $forward_type =='search')){
             $item = $item_manager->getItem($browse_end);
             $module = $item->getItemType();
+            if ($module == 'label'){
+               $label_manager = $this->_environment->getLabelManager();
+               $label_item = $label_manager->getItem($item->getItemID());
+               $module = $label_item->getLabelType();
+            }
          }else{
             $module = $this->_module;
          }
