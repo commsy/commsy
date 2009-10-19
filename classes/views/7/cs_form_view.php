@@ -2920,7 +2920,11 @@ class cs_form_view extends cs_view {
             if ($type == CS_USER_TYPE){
                $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getFullName(),35)).'</a>';
             }else{
-               $html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
+            	if($item->isNotActivated() and !($item->getCreatorID() == $current_user->getItemID() or $current_user->isModerator())){
+               		$html .= '<a title="'.$text.'" class="disabled">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
+            	} else {
+            		$html .= '<a title="'.$text.'">'.$this->_text_as_html_short(chunkText($item->getTitle(),35)).'</a>';
+            	}
             }
             $html .= '</li>'.LF;
             $linked_item = $linked_items->getNext();
