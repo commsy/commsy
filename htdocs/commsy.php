@@ -291,8 +291,8 @@ if ( !empty($SID) ) {
    /** password forget (BEGIN) **/
    if ( isset($session)
         and $session->issetValue('password_forget_ip')
-        and !( $environment->getCurrenModule() == 'picture'
-               and $environment->getCurrenFunction() == 'getfile'
+        and !( $environment->getCurrentModule() == 'picture'
+               and $environment->getCurrentFunction() == 'getfile'
              )
       ) {
       $session_time = $session->issetValue('password_forget_time');
