@@ -321,11 +321,12 @@ if (!isset($error) or !$error) {
             break;
          case 3:
             $action = 'USER_ACCOUNT_FREE';
-            if ($room_moderator_count - $selected_moderator_count < 1) {
-               $error = true;
-               $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
-               $action = '';
-            }
+            // Bugfix - 1933279
+            //if ($room_moderator_count - $selected_moderator_count < 1) {
+            //   $error = true;
+            //   $error_text_on_selection = getMessage('ERROR_LAST_MODERATOR');
+            //   $action = '';
+            //}
             break;
          case 4:
             $action = 'USER_ACCOUNT_FREE';
