@@ -377,9 +377,9 @@ class cs_page_room_view extends cs_page_view {
 
       if ( $show_rss_link ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.gif" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
+            $html .= '&nbsp;<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.gif" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
          } else {
-            $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
+            $html .= '&nbsp;<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="RSS-Feed dieses Raumes abonnieren"/></a>';
          }
       }
 
