@@ -174,7 +174,6 @@ class cs_form_view_detail extends cs_form_view {
       $html .= '   <tr>'.LF;
       $html .= '      <td class="form_view_detail_left">'.LF;
       $html .= '      '.$this->_getItemPictureAsHTML($this->_environment->getCurrentUserItem());
-      $html .= '         <img src=""/>'.LF;
       $html .= '      </td>'.LF;
       $html .= '      <td class="form_view_detail">'.LF;
 
