@@ -618,6 +618,13 @@ class cs_material_form extends cs_rubric_form {
          }
       }
 /*** Neue Schlagwörter und Tags***/
+      if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
+         include_once('functions/date_functions.php');
+         if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayStart'],$this->_form_post['timeStart']) ) {
+            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_form->setFailure('start_date_time','');
+         }
+      }
    }
 }
 ?>

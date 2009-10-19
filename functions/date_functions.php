@@ -498,6 +498,7 @@ function isDatetimeCorrect ( $language, $date, $time='' ) {
    if ( !empty($time)) {
       $time_result = convertTimeFromInput($time);
    } else {
+      $time_result['conforms'] = '1';
       $time_result['datetime'] = '00:00:00';
    }
    if ( empty($date_result['error'])

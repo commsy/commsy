@@ -424,6 +424,13 @@ class cs_discussion_form extends cs_rubric_form {
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
       }
+      if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
+         include_once('functions/date_functions.php');
+         if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayStart'],$this->_form_post['timeStart']) ) {
+            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_form->setFailure('start_date_time','');
+         }
+      }
    }
 
 

@@ -571,6 +571,15 @@ class cs_date_form extends cs_rubric_form {
       if (!$error) {
          $this->_check_start_end_time();
       }
+      include_once('functions/date_functions.php');
+      if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['start_date_time'][0],$this->_form_post['start_date_time'][1]) ) {
+         $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+         $this->_form->setFailure('start_date_time','');
+      }
+      if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time']['dayEnd'],$this->_form_post['end_date_time']['timeEnd']) ) {
+         $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+         $this->_form->setFailure('end_date_time','');
+      }
       $current_context = $this->_environment->getCurrentContextItem();
       if ( $current_context->isTagMandatory() ){
          $session = $this->_environment->getSessionItem();
@@ -586,7 +595,12 @@ class cs_date_form extends cs_rubric_form {
             $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
          }
       }
-
+      if ($current_context->withActivatingContent() and !empty($this->_form_post['dayActivateStart']) and !empty($this->_form_post['hide'])){
+         if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayActivateStart'],$this->_form_post['timeActivateStart']) ) {
+            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_form->setFailure('start_activate_date_time','');
+         }
+      }
    }
 
    function _check_language_date_time_format() {
