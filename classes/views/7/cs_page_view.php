@@ -1879,25 +1879,6 @@ class cs_page_view extends cs_view {
                   }
                   $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                   unset($current_portal_item);
-
-                  /*
-                  if (!$this->_environment->inServer() ) {
-                  // auth source
-                     if ( ( isset($current_auth_source_item)
-                          #  and $current_auth_source_item->allowChangeUserID()
-                          )
-                          or $this->_current_user->isRoot()
-                        ) {
-                        $params = array();
-                        $params = $this->_environment->getCurrentParameterArray();
-                        $params['cs_modus'] = 'account_change';
-                        $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                        unset($params['cs_modus']);
-                      } else {
-                        $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
-                      }
-                  }
-                  */
                }
             } else {
 

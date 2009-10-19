@@ -2027,6 +2027,12 @@ class cs_page_room_view extends cs_page_view {
                unset($params['is_saved']);
                unset($params['show_copies']);
                unset($params['profile_page']);
+               if ( !empty($params['mode']) ) {
+                  unset($params['mode']);
+               }
+               if ( !empty($params['download']) ) {
+                  unset($params['download']);
+               }
                global $c_annonymous_account_array;
                if ( empty($c_annonymous_account_array[mb_strtolower($this->_current_user->getUserID(), 'UTF-8').'_'.$this->_current_user->getAuthSource()])
                     and !$this->_current_user->isOnlyReadUser()
