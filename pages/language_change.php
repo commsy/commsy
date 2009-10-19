@@ -21,13 +21,17 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-
 $current_user = $environment->getCurrentUserItem();
 if ( $current_user->isUser() ) {
    if ( !empty($_GET['language']) ) {
       $current_user->setLanguage($_GET['language']);
       $current_user->setChangeModificationOnSave(false);
       $current_user->save();
+
+      $session_item = $environment->getSessionItem();
+      if ( $session_item->issetValue('password_forget_time') ) {
+         $session_item->setValue('message_language_select',$_GET['language']);
+      }
    }
 } else {
    $session_item = $environment->getSessionItem();
