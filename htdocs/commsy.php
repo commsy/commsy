@@ -294,6 +294,9 @@ if ( !empty($SID) ) {
         and !( $environment->getCurrentModule() == 'picture'
                and $environment->getCurrentFunction() == 'getfile'
              )
+        and !( $environment->getCurrentModule() == 'language'
+               and $environment->getCurrentFunction() == 'change'
+             )
       ) {
       $session_time = $session->issetValue('password_forget_time');
       $session_ip = $session->issetValue('password_forget_ip');
