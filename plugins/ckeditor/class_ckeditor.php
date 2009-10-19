@@ -104,6 +104,7 @@ class class_ckeditor extends cs_plugin {
                      language : \''.$this->_environment->getSelectedLanguage().'\',
                      skin : \'kama\',
                      uiColor: \''.$color['content_background'].'\',
+                     startupFocus: false,
                      toolbar :
                      [
                         [ \'Cut\', \'Copy\', \'Paste\', \'PasteFromWord\', \'-\', \'Undo\', \'Redo\', \'-\', \'Bold\', \'Italic\', \'Underline\', \'Strike\', \'Subscript\', \'Superscript\', \'-\', \'NumberedList\', \'BulletedList\', \'Outdent\', \'Indent\', \'Blockquote\', \'-\', \'TextColor\', \'BGColor\', \'-\', \'RemoveFormat\']
