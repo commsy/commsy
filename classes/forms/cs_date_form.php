@@ -572,11 +572,13 @@ class cs_date_form extends cs_rubric_form {
          $this->_check_start_end_time();
       }
       include_once('functions/date_functions.php');
-      if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['start_date_time'][0],$this->_form_post['start_date_time'][1]) ) {
+      if ( !empty($this->_form_post['start_date_time'][0])
+           and !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['start_date_time'][0],$this->_form_post['start_date_time'][1]) ) {
          $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
          $this->_form->setFailure('start_date_time','');
       }
-      if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time']['dayEnd'],$this->_form_post['end_date_time']['timeEnd']) ) {
+      if ( !empty($this->_form_post['end_date_time'][0])
+           and !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time']['dayEnd'],$this->_form_post['end_date_time']['timeEnd']) ) {
          $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
          $this->_form->setFailure('end_date_time','');
       }

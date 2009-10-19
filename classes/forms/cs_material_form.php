@@ -602,7 +602,7 @@ class cs_material_form extends cs_rubric_form {
     */
    function _checkValues () {
       $current_context = $this->_environment->getCurrentContextItem();
-/*** Neue Schlagwörter und Tags***/
+
       if ( $current_context->isTagMandatory() ){
          $session = $this->_environment->getSessionItem();
          $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
@@ -617,7 +617,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY',$this->_translator->getMessage('MATERIAL_BUZZWORDS'));
          }
       }
-/*** Neue Schlagwörter und Tags***/
+
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
          include_once('functions/date_functions.php');
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayStart'],$this->_form_post['timeStart']) ) {
