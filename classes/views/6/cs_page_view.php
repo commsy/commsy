@@ -1737,32 +1737,6 @@ class cs_page_view extends cs_view {
                   } else {
                      $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
                   }
-
-                  /*
-                  $current_portal_item = $this->_environment->getCurrentPortalItem();
-                  if ( $current_portal_item->showAllwaysPrivateRoomLink() ) {
-                     $link_active = true;
-                  } else {
-                     $current_user_item = $this->_environment->getCurrentUserItem();
-                     if ( $current_user_item->isRoomMember() ) {
-                        $link_active = true;
-                     } else {
-                        $link_active = false;
-                     }
-                     unset($current_user_item);
-                  }
-                  unset($current_portal_item);
-                  if ( $link_active ) {
-                     $private_room_manager = $this->_environment->getPrivateRoomManager();
-                     $own_room = $private_room_manager->getRelatedOwnRoomForUser($this->_current_user,$this->_environment->getCurrentPortalID());
-                     if ( isset($own_room) ) {
-                        $html .= '<span>> '.ahref_curl($own_room->getItemID(),'user','index',array(),$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                     }
-                  } else {
-                     // disable private room
-                     $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_PROFIL').'</span>'.BRLF;
-                  }
-                  */
                } elseif ( !$this->_current_user->isRoot() ) {
                   $html .= '<div>'.LF;
                }
@@ -1787,29 +1761,8 @@ class cs_page_view extends cs_view {
                   }
                   $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
                   unset($current_portal_item);
-
-                  /*
-                  if (!$this->_environment->inServer() ) {
-                  // auth source
-                     if ( ( isset($current_auth_source_item)
-                          #  and $current_auth_source_item->allowChangeUserID()
-                          )
-                          or $this->_current_user->isRoot()
-                        ) {
-                        $params = array();
-                        $params = $this->_environment->getCurrentParameterArray();
-                        $params['cs_modus'] = 'account_change';
-                        $html .= '<span>> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),$params,$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE'),'','','','','','','style="color:#800000"').'</span>'.BRLF;
-                        unset($params['cs_modus']);
-                      } else {
-                        $html .= '<span class="disabled">> '.$this->_translator->getMessage('MYAREA_ACCOUNT_CHANGE').'</span>'.LF;
-                      }
-                  }
-                  */
                }
             } else {
-               // @segment-end 1467
-               // @segment-begin 89153 no-cs_modus/user-status><0:links-change_password
                // auth source
                if (!$this->_environment->inServer() ) {
                   $html .= '</div>'.LF;
@@ -1871,15 +1824,14 @@ class cs_page_view extends cs_view {
                   $html .= '<input type="password" name="password" style="font-size: 10pt; width:6.2em;" tabindex="2"/>'.'</td></tr>'.LF;
                   $html .= '<tr>'.LF.'<td></td>'.LF.'<td>'.LF;
                   $html .= '<input type="submit" name="option" style="font-size: 10pt; width:6.2em;" value="'.$this->_translator->getMessage('MYAREA_LOGIN_BUTTON').'"/>'.LF;
-           $html .= '</td></tr>'.LF;
-             $html .= '</table>'.LF;
+                  $html .= '</td></tr>'.LF;
+                  $html .= '</table>'.LF;
                   $html .= '</form>'.LF;
                   $html .= '</div>'.LF;
-          }
+               }
            }
-           // @segment-end 68416
 
-   // new account
+      // new account
       }elseif ( !empty($cs_mod)
          and ( $cs_mod == 'portalmember'
          or $cs_mod == 'portalmember2'
