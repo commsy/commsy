@@ -35,6 +35,8 @@ class cs_account_password_form extends cs_rubric_form {
    */
    var $_headline = NULL;
 
+   private $_modus = 'normal';
+
   /** constructor
     * the only available constructor
     *
@@ -48,21 +50,18 @@ class cs_account_password_form extends cs_rubric_form {
     * this methods init the data (text and options) for the form
     */
    function _initForm () {
-      // if an item is given - first call of the form
-      if (!empty($this->_item)) {
-         $this->_headline = getMessage('USER_PASSWORD_CHANGE_HEADLINE');
-      }
+      $this->_headline = getMessage('USER_PASSWORD_CHANGE_HEADLINE');
 
-      // if form posts are given - second call of the form
-      else {
-         $this->_headline = getMessage('USER_PASSWORD_CHANGE_HEADLINE');
+      $session = $this->_environment->getSessionItem();
+      if ( isset($session)
+           and $session->issetValue('password_forget_ip')
+         ) {
+         $this->_modus = 'forget';
       }
    }
 
    /** create the form, INTERNAL
     * this methods creates the form with the form definitions
-    *
-    * @author CommSy Development Group
     */
    function _createForm () {
 
@@ -71,23 +70,53 @@ class cs_account_password_form extends cs_rubric_form {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('fullname','');
       $this->_form->addHidden('user_id','');
+      $this->_form->addHidden('auth_source_id','');
 
       // content form fields
-      $this->_form->addText('fullname_text',getMessage('USER_NAME'),'');
-      $this->_form->addText('user_id_text',getMessage('AUTH_ACCOUNT'),'');
-      $this->_form->addPassword('password','',getMessage('USER_PASSWORD'),getMessage('USER_PASSWORD_DESC'),'','',true);
-      $this->_form->addPassword('password2','',getMessage('USER_PASSWORD2'),getMessage('USER_PASSWORD2_DESC'),'','',true);
+      $this->_form->addText('fullname_text',$this->_translator->getMessage('USER_NAME'),'');
+      $this->_form->addText('user_id_text',$this->_translator->getMessage('AUTH_ACCOUNT'),'');
+      $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),$this->_translator->getMessage('USER_PASSWORD_DESC'),'','',true);
+      $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),$this->_translator->getMessage('USER_PASSWORD2_DESC'),'','',true);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PASSWORD_CHANGE_BUTTON_LONG'),getMessage('ADMIN_CANCEL_BUTTON'));
+      if ( !empty($this->_modus)
+           and $this->_modus == 'forget'
+         ) {
+         $this->_form->addButton('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'));
+      } else {
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('PASSWORD_CHANGE_BUTTON_LONG'),$this->_translator->getMessage('ADMIN_CANCEL_BUTTON'));
+      }
    }
 
    /** loads the selected and given values to the form
     * this methods loads the selected and given values to the form from the material item or the form_post data
-    *
-    * @author CommSy Development Group
     */
    function _prepareValues () {
+      if ( empty($this->_form_post)
+           and empty($this->_item)
+           and !empty($this->_modus)
+           and $this->_modus = 'forget'
+         ) {
+         $session_item = $this->_environment->getSessionItem();
+         if ( $session_item->issetValue('user_id')
+              and $session_item->issetValue('auth_source')
+            ) {
+            $user_manager = $this->_environment->getUserManager();
+            $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+            $user_manager->setUserIDLimit($session_item->getValue('user_id'));
+            $user_manager->setAuthSourceLimit($session_item->getValue('auth_source'));
+            $user_manager->select();
+            $user_list = $user_manager->get();
+            unset($user_manager);
+            if ( !empty($user_list)
+                 and $user_list->isNotEmpty()
+                 and $user_list->getCount() == 1
+               ) {
+               $this->_item = $user_list->getFirst();
+            }
+            unset($user_list);
+         }
+      }
       if (!empty($this->_form_post)) {
          $this->_values = $this->_form_post;
          $this->_values['fullname_text'] = $this->_values['fullname'];
@@ -96,6 +125,7 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['fullname'] = $this->_item->getFullname();
          $this->_values['user_id'] = $this->_item->getUserID();
+         $this->_values['auth_source_id'] = $this->_item->getAuthSource();
          $this->_values['fullname_text'] = $this->_item->getFullname();
          $this->_values['user_id_text'] = $this->_item->getUserID();
       } else {

@@ -244,8 +244,26 @@ class cs_page_view extends cs_view {
     *
     * @param object cs_view a commsy view
     */
-   function addOverlay ($view) {
+   public function addOverlay ($view) {
       $this->_views_overlay[] = $view;
+   }
+
+   public function _getOverlayBoxAsHTML ( $view ) {
+      $left = '0em';
+      $width = '100%';
+      $html  = '<div style="position: absolute; z-index:1000; top:100px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
+      $html .= '<center>';
+      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left:25%; background-color:#FFF;">';
+
+      $html .= $view->asHTML();
+
+      $html .= '</div>'.LF;
+      $html .= '</center>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="delete" style="position: absolute; z-index:900; top:105px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
+      $html .= '</div>'.LF;
+
+      return $html;
    }
 
    function _getIncludedCSSAsHTML(){
@@ -1984,64 +2002,6 @@ class cs_page_view extends cs_view {
         unset($left_page);
         $html .= '</div>'.LF;
       }
-
-     // change password
-      elseif (!empty($cs_mod) and $cs_mod == 'password_change') {
-         if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-         } else {
-            $params = array();
-            $params['iid'] = $this->_current_user->getItemID();
-            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-               $portal_user = $this->_environment->getPortalUserItem();
-               $fullname = $portal_user->getFullname();
-               unset($portal_user);
-            } else {
-               $fullname = $this->_current_user->getFullname();
-            }
-         }
-         $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-         include_once('classes/cs_password_change_page.php');
-         $left_page = new cs_password_change_page($this->_environment);
-         $html .= $left_page->execute();
-         unset($left_page);
-         $html .= '</div>'.LF;
-      }
-
-     // change account
-     /*
-     elseif (!empty($cs_mod) and $cs_mod == 'account_change') {
-        if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-        } else {
-           $params = array();
-           $params['iid'] = $this->_current_user->getItemID();
-           if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-              $portal_user = $this->_environment->getPortalUserItem();
-              $fullname = $portal_user->getFullname();
-              unset($portal_user);
-           } else {
-              $fullname = $this->_current_user->getFullname();
-           }
-        }
-        $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
-        $current_portal_item = $this->_environment->getCurrentPortalItem();
-        $current_auth_source_item = $current_portal_item->getAuthSource($this->_current_user->getAuthSource());
-        unset($current_portal_item);
-        if ( isset($current_auth_source_item)
-             and $current_auth_source_item->allowChangeUserID()
-           ) {
-           include_once('classes/cs_account_change_page.php');
-           $left_page = new cs_account_change_page($this->_environment);
-           $html .= $left_page->execute();
-           $html .= BRLF;
-        }
-        unset($current_auth_source_item);
-        include_once('classes/cs_account_merge_page.php');
-        $left_page = new cs_account_merge_page($this->_environment);
-        $html .= $left_page->execute();
-        unset($left_page);
-        $html .= '</div>'.LF;
-     }
-     */
 
      // forget account
       elseif (!empty($cs_mod) and $cs_mod == 'account_forget') {

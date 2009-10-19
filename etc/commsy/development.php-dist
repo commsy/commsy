@@ -38,7 +38,7 @@ $c_message_management = true;
 // send emails (default == true) --- only for developers !!!!
 // true = send emails
 // false = don't send emails
-// print = don't end emails but echo them in the htmlpage (usefull for debugging)
+// print = don't send emails but echo them in the htmlpage (usefull for debugging)
 $c_send_email = 'print';
 
 // support for debugging

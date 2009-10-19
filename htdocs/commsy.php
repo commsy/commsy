@@ -980,6 +980,13 @@ if ( $environment->isOutputModeNot('XML') ) {
             break;
       }
    }
+
+   $password_param = $environment->getValueOfParameter('cs_modus');
+   if ( !empty($password_param)
+        and $password_param == 'password_change'
+      ) {
+      include_once('pages/user_password_overlay.php');
+   }
 }
 
 // display page

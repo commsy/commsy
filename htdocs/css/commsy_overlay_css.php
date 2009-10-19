@@ -78,3 +78,11 @@ if (!empty($_GET['cid'])) {
    width: 95%;
    padding: 10px;
 }
+
+div.form_view_overlay_formelement {
+   padding: 5px 0px 5px 0px;
+}
+
+div.overlay_form_element_title {
+   color: <?php echo($color['myarea_section_title'])?>;
+}

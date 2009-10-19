@@ -97,7 +97,7 @@ if ( isOption($command,getMessage('ADMIN_CANCEL_BUTTON')) or isOption($command,g
                   $params = array();
                   $params['iid'] = $iid;
 
-       include_once('classes/cs_mail_obj.php');
+                  include_once('classes/cs_mail_obj.php');
                   $mail_obj = new cs_mail_obj();
                   $mail_obj->setMailFormHeadLine(getMessage('USER_PASSWORD_CHANGE_HEADLINE'));
 

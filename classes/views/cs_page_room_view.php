@@ -1154,24 +1154,6 @@ class cs_page_room_view extends cs_page_view {
      return $html;
   }
 
-   private function _getOverlayBoxAsHTML ( $view ) {
-      $left = '0em';
-      $width = '100%';
-      $html  = '<div style="position: absolute; z-index:1000; top:100px; left:'.$left.'; width:'.$width.'; height: 100%;">'.LF;
-      $html .= '<center>';
-      $html .= '<div style="position:fixed; left:'.$left.'; z-index:1000; margin-top:10px; margin-left:25%; background-color:#FFF;">';
-
-      $html .= $view->asHTML();
-
-      $html .= '</div>'.LF;
-      $html .= '</center>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '<div id="delete" style="position: absolute; z-index:900; top:105px; left:'.$left.'; width:'.$width.'; height: 100%; background-color:#FFF; opacity:0.7; filter:Alpha(opacity=70);">';
-      $html .= '</div>'.LF;
-
-      return $html;
-   }
-
    function getDeleteBoxAsHTML(){
       $session = $this->_environment->getSession();
       $left_menue_status = $session->getValue('left_menue_status');
