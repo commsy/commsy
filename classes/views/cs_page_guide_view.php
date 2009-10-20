@@ -757,13 +757,41 @@ class cs_page_guide_view extends cs_page_view {
                                  }
                                  $room_item = $user_related_project_list->getNext();
                               }
-                        }
-                        $html .= '<br/><br/>';
-                        if($user_is_room_member){
-                           $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER', $item->getTitle(), $linked_project_item->getTitle());
-                     } else {
-                           $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
-                        }
+                           }
+                           $html .= '<br/><br/>';
+                           if($user_is_room_member){
+                              $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_GROUP_MEMBER', $item->getTitle(), $linked_project_item->getTitle());
+                              $html .= '<br/><br/>';
+                              $actionCurl = curl($linked_project_item->getItemID(),
+                                                 'group',
+                                                 'detail',
+                                                 array('account' => 'member', 'iid' => $item->getLinkedGroupItemID()),
+                                                 '');
+                              $html .= '<a href="'.$actionCurl.'">' . $this->_translator->getMessage('COMMON_REGISTER_HERE') . '</a>'.LF;
+                           } else {
+                              $user_manager->setUserIDLimit($current_user->getUserID());
+                              $user_manager->setAuthSourceLimit($current_user->getAuthSource());
+                              $user_manager->setContextLimit($linked_project_item->getItemID());
+                              $user_manager->select();
+                              $user_list = $user_manager->get();
+                              if (!empty($user_list)) {
+                                 $room_user = $user_list->getFirst();
+                              } else {
+                                 $room_user = '';
+                              }
+                              if(!$room_user->isRejected()){
+                                 $html .= $this->_translator->getMessage('CONTEXT_ENTER_NEED_TO_BECOME_ROOM_MEMBER', $linked_project_item->getTitle(), $item->getTitle());
+                                 $html .= '<br/><br/>';
+                                 $actionCurl = curl($this->_environment->getCurrentContextID(),
+                                                    'home',
+                                                    'index',
+                                                    array('room_id' => $linked_project_item->getItemID(), 'account' => 'member'),
+                                                    '');
+                                 $html .= '<a href="'.$actionCurl.'">' . $this->_translator->getMessage('COMMON_REGISTER_HERE') . '</a>'.LF;
+                              } else {
+                                 $html .= $this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED');
+                              }
+                           }
                         }
                      } else {
                         $html .= $this->_translator->getMessage('CONTEXT_ENTER_LOGIN2');
