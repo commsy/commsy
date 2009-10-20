@@ -18,5 +18,6 @@ $message["RSS_NEW_TODO_TITLE"]["en"] = "Task: %1 (due date %2)";
 $message["RSS_NEW_TOPIC_TITLE"]["en"] = "%_TOPIC_SUB_NOMS_BIG: %1";
 $message["RSS_NOT_ALLOWED"]["en"] = "Please login with your CommSy user ID!";
 $message["RSS_NO_CONTEXT"]["en"] = "No context selected!";
+$message["RSS_SUBSCRIBE_LINK"]["en"] = "Subscribe to the RSS-feed of this room";
 $message["RSS_TITLE"]["en"] = "%1 (RSS)";
 ?>
