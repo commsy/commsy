@@ -197,13 +197,9 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          }
 
          if(!panelDisplayed[commsy_panel_index]){
-            outerContentDiv.css('height', '0px');
+            outerContentDiv.hide();
             if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-               //contentDiv.css('top', 0 - contentDiv.offsetHeight + 'px');
                contentDiv.css('top', '0px');
-               if(document.all){
-                  outerContentDiv.css('display', 'none');
-               }
             }
             if(contentDiv.attr('id') != 'homeheader'){
                img.attr('src', 'images/arrow_down.gif');
@@ -250,70 +246,36 @@ function showHidePaneContentTopBar(e,inputObj){
    if(!inputObj){
       inputObj = this;
    }
-
    var numericId = inputObj.id.replace(/[^0-9]/g,'');
-   if(inputObj.id.toLowerCase().indexOf('up')>=0){
-      var klick = jQuery('#klick' + numericId + 'up');
-      var span = jQuery('#span' + numericId + 'up');
-      var span2 = jQuery('#spanKlick' + numericId + 'up');
-      var bar = jQuery('#topBar' + numericId + 'up');
-   } else {
-      var klick = jQuery('#klick' + numericId + 'down');
-      var span = jQuery('#span' + numericId + 'down');
-      var span2 = jQuery('#spanKlick' + numericId + 'down');
-      var bar = jQuery('#topBar' + numericId + 'down');
-   }
    if(jQuery('#showHideButton' + numericId).length > 0){
       var img = jQuery('#showHideButton' + numericId);
    }
    var obj = jQuery('#paneContent' + numericId);
-
-   xpPanel_slideSpeed = speedArray[numericId];
-
    if(inputObj.id.toLowerCase().indexOf('up')>=0){
       currentlyExpandedPane = false;
-      klick.attr('id', klick.attr('id').replace('up','down'));
-      span.attr('id', span.attr('id').replace('up','down'));
-      span2.attr('id', span2.attr('id').replace('up','down'));
+      jQuery('#klick' + numericId + 'up').attr('id', jQuery('#klick' + numericId + 'up').attr('id').replace('up','down'));
+      jQuery('#span' + numericId + 'up').attr('id', jQuery('#span' + numericId + 'up').attr('id').replace('up','down'));
+      jQuery('#spanKlick' + numericId + 'up').attr('id', jQuery('#spanKlick' + numericId + 'up').attr('id').replace('up','down'));
       if(jQuery('#showHideButton' + numericId).length > 0){
          img.attr('src', img.attr('src').replace('up','down'));
       }
-      if(xpPanel_slideActive && xpPanel_slideSpeed<200){
-         obj.css('display', 'block');
-         xpPanel_currentDirection[obj.attr('id')] = (xpPanel_slideSpeed*-1);
-         slidePane((xpPanel_slideSpeed*-1), obj.attr('id'));
-      }else{
-         obj.css('display', 'none');
-      }
+      obj.slideUp(200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'0',100000);
       }
-   }else{
+   } else {
       if(this){
-         //if(currentlyExpandedPane && xpPanel_onlyOneExpandedPane){
-         //   showHidePaneContent(xpPanel_slideSpeed,false,currentlyExpandedPane);
-         //}
          currentlyExpandedPane = this;
       }else{
          currentlyExpandedPane = false;
       }
-      klick.attr('id', klick.attr('id').replace('down','up'));
-      span.attr('id', span.attr('id').replace('down','up'));
-      span2.attr('id', span2.attr('id').replace('down','up'));
+      jQuery('#klick' + numericId + 'down').attr('id', jQuery('#klick' + numericId + 'down').attr('id').replace('down','up'));
+      jQuery('#span' + numericId + 'down').attr('id', jQuery('#span' + numericId + 'down').attr('id').replace('down','up'));
+      jQuery('#spanKlick' + numericId + 'down').attr('id', jQuery('#spanKlick' + numericId + 'down').attr('id').replace('down','up'));
       if(jQuery('#showHideButton' + numericId).length > 0){
          img.attr('src', img.attr('src').replace('down','up'));
       }
-      if(xpPanel_slideActive && xpPanel_slideSpeed<200){
-         if(document.all){
-            obj.css('display', 'block');
-         }
-         xpPanel_currentDirection[obj.attr('id')] = xpPanel_slideSpeed;
-         slidePane(xpPanel_slideSpeed,obj.attr('id'));
-      }else{
-         obj.css('display', 'block');
-         subDiv = obj.children('div:first');
-         obj.css('height', subDiv.offsetHeight + 'px');
-      }
+      obj.slideDown(200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'1',100000);
       }
