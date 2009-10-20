@@ -3227,8 +3227,6 @@ class cs_context_item extends cs_item {
       return $retour;
    }
 
-
-
    function isNetnavigationShowExpanded () {
       $retour = false;
       if ( $this->_issetExtra('NAVIGATIONSHOWEXPANDED') ) {

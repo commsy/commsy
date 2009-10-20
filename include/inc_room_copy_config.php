@@ -80,6 +80,11 @@ if ( $old_room->withTags() ) {
 } else {
    $new_room->setWithoutTags();
 }
+if ( $old_room->isTagsShowExpanded() ) {
+   $new_room->setTagsShowExpanded();
+} else {
+   $new_room->unsetTagsShowExpanded();
+}
 
 // chat
 if ( $old_room->withChatLink() ) {
@@ -110,6 +115,23 @@ if ( $old_room->withBuzzwords() ) {
    $new_room->setWithBuzzwords();
 } else {
    $new_room->setWithoutBuzzwords();
+}
+if ( $old_room->isBuzzwordShowExpanded() ) {
+   $new_room->setBuzzwordShowExpanded();
+} else {
+   $new_room->unsetBuzzwordShowExpanded();
+}
+
+// config of netnavigation
+if ( $old_room->isNetnavigationShowExpanded() ) {
+   $new_room->setNetnavigationShowExpanded();
+} else {
+   $new_room->unsetNetnavigationShowExpanded();
+}
+if ( $old_room->withNetnavigation() ) {
+   $new_room->setWithNetnavigation();
+} else {
+   $new_room->setWithoutNetnavigation();
 }
 
 // config of email message tags
