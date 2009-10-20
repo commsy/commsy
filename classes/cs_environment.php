@@ -1578,9 +1578,7 @@ class cs_environment {
 
    public function isCurlForPHPAvailable(){
       return function_exists("curl_init");
-//      return false; //-> Scribd not available in release 6.1.2
    }
-
 
    public function isScribdAvailable(){
         if(!$this->isCurlForPHPAvailable()){

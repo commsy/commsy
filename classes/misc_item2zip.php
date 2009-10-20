@@ -70,6 +70,7 @@ class misc_item2zip extends misc_2zip {
          curl_setopt($ch,CURLOPT_FILE,$out);
          curl_setopt($ch,CURLOPT_HEADER,0);
          curl_setopt($ch,CURLOPT_URL,$file_url);
+         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
          global $c_proxy_ip;
          global $c_proxy_port;
          if ( !empty($c_proxy_ip) ) {
