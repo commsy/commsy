@@ -260,6 +260,7 @@ function showHidePaneContentTopBar(e,inputObj){
          img.attr('src', img.attr('src').replace('up','down'));
       }
       obj.slideUp(200);
+      //obj.animate({height: "toggle", opacity: 0}, 200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'0',100000);
       }
@@ -276,6 +277,7 @@ function showHidePaneContentTopBar(e,inputObj){
          img.attr('src', img.attr('src').replace('down','up'));
       }
       obj.slideDown(200);
+      //obj.animate({height: "toggle", opacity: 1}, 200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'1',100000);
       }
