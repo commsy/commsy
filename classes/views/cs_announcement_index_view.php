@@ -98,16 +98,17 @@ class cs_announcement_index_view extends cs_index_view {
     }
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_environment->getCurrentParameterArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:53%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -126,10 +127,10 @@ class cs_announcement_index_view extends cs_index_view {
       $html .= '      <td style="width:13%; font-size:8pt;" class="head" >';
       if ( $this->getSortKey() == 'modified' ) {
          $params['sort'] = 'modified_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'modified_rev' ) {
          $params['sort'] = 'modified';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'modified';
          $picture ='&nbsp;';
@@ -148,10 +149,10 @@ class cs_announcement_index_view extends cs_index_view {
       $html .= '      <td style="width:24%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'modificator' ) {
          $params['sort'] = 'modificator_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'modificator_rev' ) {
          $params['sort'] = 'modificator';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'modificator';
          $picture ='&nbsp;';

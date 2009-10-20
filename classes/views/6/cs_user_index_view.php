@@ -71,16 +71,17 @@ class cs_user_index_view extends cs_room_index_view {
    }
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:40%;" colspan="2">';
       if ( $this->getSortKey() == 'name' ) {
          $params['sort'] = 'name_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'name_rev' ) {
          $params['sort'] = 'name';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'name';
          $picture ='&nbsp;';
@@ -93,10 +94,10 @@ class cs_user_index_view extends cs_room_index_view {
       $html .= '      <td style="width:35%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'email' ) {
          $params['sort'] = 'email_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'email_rev' ) {
          $params['sort'] = 'email';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'email';
          $picture ='&nbsp;';

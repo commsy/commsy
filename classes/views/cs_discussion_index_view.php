@@ -92,16 +92,17 @@ class cs_discussion_index_view extends cs_room_index_view {
    }
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:47%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -120,10 +121,10 @@ class cs_discussion_index_view extends cs_room_index_view {
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'numposts' ) {
          $params['sort'] = 'numposts_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'numposts_rev' ) {
          $params['sort'] = 'numposts';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'numposts';
          $picture ='&nbsp;';
@@ -142,10 +143,10 @@ class cs_discussion_index_view extends cs_room_index_view {
       $html .= '      <td style="width:13%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'latest' ) {
          $params['sort'] = 'latest_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'latest_rev' ) {
          $params['sort'] = 'latest';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'latest';
          $picture ='&nbsp;';
@@ -163,10 +164,10 @@ class cs_discussion_index_view extends cs_room_index_view {
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'creator' ) {
          $params['sort'] = 'creator_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'creator_rev' ) {
          $params['sort'] = 'creator';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'creator';
          $picture ='&nbsp;';

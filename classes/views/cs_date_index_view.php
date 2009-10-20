@@ -223,16 +223,17 @@ class cs_date_index_view extends cs_index_view {
 
 
    function _getTableheadAsHTML() {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:55%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -251,10 +252,10 @@ class cs_date_index_view extends cs_index_view {
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'time' ) {
          $params['sort'] = 'time_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'time_rev' ) {
          $params['sort'] = 'time';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'time';
          $picture ='&nbsp;';
@@ -273,10 +274,10 @@ class cs_date_index_view extends cs_index_view {
       $html .= '      <td style="width:25%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'place' ) {
          $params['sort'] = 'place_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'place_rev' ) {
          $params['sort'] = 'place';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'place';
          $picture ='&nbsp;';

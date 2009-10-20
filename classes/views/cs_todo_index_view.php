@@ -117,16 +117,17 @@ class cs_todo_index_view extends cs_room_index_view {
 
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:40%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -145,10 +146,10 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'status' ) {
          $params['sort'] = 'status_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'status_rev' ) {
          $params['sort'] = 'status';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'status';
          $picture ='&nbsp;';
@@ -167,10 +168,10 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= '      <td style="width:10%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'date' ) {
          $params['sort'] = 'date_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'date_rev' ) {
          $params['sort'] = 'date';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'date';
          $picture ='&nbsp;';
@@ -659,6 +660,7 @@ class cs_todo_index_view extends cs_room_index_view {
    }
 
    function _getPrintableTableHeadAsHTML() {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
 
@@ -679,10 +681,10 @@ class cs_todo_index_view extends cs_room_index_view {
       }
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $text = $this->_translator->getMessage('COMMON_TITLE');
@@ -693,10 +695,10 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= '      <td width="20%" class="head" >';
       if ( $this->getSortKey() == 'date_rev' ) {
          $params['sort'] = 'date';
-         $text = $this->_translator->getMessage('TODO_DATE').' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('TODO_DATE').' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'date' ) {
          $params['sort'] = 'date_rev';
-         $text = $this->_translator->getMessage('TODO_DATE').' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('TODO_DATE').' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'date';
          $text = $this->_translator->getMessage('TODO_DATE');
@@ -708,10 +710,10 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= '      <td width="15%" class="head" >';
       if ( $this->getSortKey() == 'status' ) {
          $params['sort'] = 'status_rev';
-         $text = $this->_translator->getMessage('TODO_STATUS').' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('TODO_STATUS').' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'status_rev' ) {
          $params['sort'] = 'status';
-         $text = $this->_translator->getMessage('TODO_STATUS').' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('TODO_STATUS').' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'status';
          $text = $this->_translator->getMessage('TODO_STATUS');

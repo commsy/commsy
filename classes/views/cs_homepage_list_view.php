@@ -359,6 +359,7 @@ class cs_homepage_list_view extends cs_list_view_plain {
    }
 
    function _getTableheadAsHTML() {
+      include_once('functions/misc_functions.php');
       $html = '';
 
          $params = $this->_environment->getCurrentParameterArray();
@@ -366,10 +367,10 @@ class cs_homepage_list_view extends cs_list_view_plain {
          $html .= '      <td class="head">'.LF;
          if ( $this->getSortKey() == 'room_title' ) {
             $params['sort'] = 'room_title_rev';
-            $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'room_title_rev' ) {
             $params['sort'] = 'room_title';
-            $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+            $text = $this->_translator->getMessage('COMMON_TITLE').' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          } else {
             $params['sort'] = 'room_title_rev';
             $text = $this->_translator->getMessage('COMMON_TITLE');
@@ -381,10 +382,10 @@ class cs_homepage_list_view extends cs_list_view_plain {
          $html .= '      <td class="head">'.LF;
          if ( $this->getSortKey() == 'activity_rev' ) {
             $params['sort'] = 'activity';
-            $text = $this->_translator->getMessage('CONTEXT_ACTIVITY').' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+            $text = $this->_translator->getMessage('CONTEXT_ACTIVITY').' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'activity' ) {
             $params['sort'] = 'activity_rev';
-            $text = $this->_translator->getMessage('CONTEXT_ACTIVITY').' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $text = $this->_translator->getMessage('CONTEXT_ACTIVITY').' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          } else {
             $params['sort'] = 'activity';
             $text = $this->_translator->getMessage('CONTEXT_ACTIVITY');

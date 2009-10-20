@@ -870,6 +870,7 @@ class cs_guide_list_view extends cs_list_view_plain {
    }
 
    function _getTableheadAsHTML() {
+      include_once('functions/misc_functions.php');
       $html = '';
       $current_portal = $this->_environment->getCurrentPortalItem();
       if ($this->_environment->inPortal()) {
@@ -893,9 +894,9 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= $text;
          }
          if ( $this->getSortKey() == 'title' ) {
-            $html .= ' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+            $html .= ' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'title_rev' ) {
-            $html .= ' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $html .= ' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          }
          $html .= '      </td>'.LF;
          if ($this->_environment->inPortal()) {
@@ -922,9 +923,9 @@ class cs_guide_list_view extends cs_list_view_plain {
             $html .= $text;
          }
          if ( $this->getSortKey() == 'activity_rev' ) {
-            $html .= ' <img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $html .= ' <img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'activity' ) {
-           $html .= ' <img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+           $html .= ' <img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          }
          $html .= '      </td>'.LF;
 

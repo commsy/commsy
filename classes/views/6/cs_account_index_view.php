@@ -75,16 +75,17 @@ class cs_account_index_view extends cs_index_view {
 
 
    function _getTableheadAsHTML() {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
       $html .= '      <td class="head" style="width:40%;" colspan="2">';
       if ( $this->getSortKey() == 'name' ) {
          $params['sort'] = 'name_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'name_rev' ) {
          $params['sort'] = 'name';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'name';
          $picture ='&nbsp;';
@@ -105,10 +106,10 @@ class cs_account_index_view extends cs_index_view {
 
       if ( $this->getSortKey() == 'user_id' ) {
          $params['sort'] = 'user_id_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'user_id_rev' ) {
          $params['sort'] = 'user_id';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'user_id';
          $picture ='';
@@ -134,10 +135,10 @@ class cs_account_index_view extends cs_index_view {
          $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
          if ( $this->getSortKey() == 'last_login' ) {
             $params['sort'] = 'last_login_rev';
-            $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+            $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'last_login_rev' ) {
             $params['sort'] = 'last_login';
-            $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          } else {
             $params['sort'] = 'last_login';
             $picture ='&nbsp;';
@@ -161,10 +162,10 @@ class cs_account_index_view extends cs_index_view {
          $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
          if ( $this->getSortKey() == 'status' ) {
             $params['sort'] = 'status_rev';
-            $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+            $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
          } elseif ( $this->getSortKey() == 'status_rev' ) {
             $params['sort'] = 'status';
-            $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+            $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
          } else {
             $params['sort'] = 'status';
             $picture ='&nbsp;';
@@ -189,10 +190,10 @@ class cs_account_index_view extends cs_index_view {
 
       if ( $this->getSortKey() == 'email' ) {
          $params['sort'] = 'email_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'email_rev' ) {
          $params['sort'] = 'email';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'email';
          $picture ='&nbsp;';

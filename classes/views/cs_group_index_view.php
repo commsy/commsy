@@ -97,6 +97,7 @@ class cs_group_index_view extends cs_index_view {
    }
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
 
@@ -104,10 +105,10 @@ class cs_group_index_view extends cs_index_view {
       $html .= '      <td class="head" style="width:55%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -121,10 +122,10 @@ class cs_group_index_view extends cs_index_view {
       $html .= '      <td style="width:20%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'modificator' ) {
          $params['sort'] = 'modificator_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'modificator_rev' ) {
          $params['sort'] = 'modificator';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'modificator';
          $picture ='&nbsp;';

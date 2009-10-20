@@ -64,6 +64,7 @@ class cs_institution_index_view extends cs_index_view {
     }
 
    function _getTableheadAsHTML () {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
 
@@ -71,10 +72,10 @@ class cs_institution_index_view extends cs_index_view {
       $html .= '      <td class="head" style="width:70%;" colspan="2">';
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $picture ='&nbsp;';
@@ -87,10 +88,10 @@ class cs_institution_index_view extends cs_index_view {
       $html .= '      <td style="width:30%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'modificator' ) {
          $params['sort'] = 'modificator_rev';
-         $picture = '&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'modificator_rev' ) {
          $params['sort'] = 'modificator';
-         $picture = '&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $picture = '&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'modificator';
          $picture ='&nbsp;';
@@ -276,6 +277,7 @@ class cs_institution_index_view extends cs_index_view {
    }
 
    function _getPrintableTableHeadAsHTML() {
+      include_once('functions/misc_functions.php');
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
 
@@ -294,10 +296,10 @@ class cs_institution_index_view extends cs_index_view {
       }
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
-         $text = $this->_translator->getMessage('COMMON_TITLE').'&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_TITLE').'&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'title_rev' ) {
          $params['sort'] = 'title';
-         $text = $this->_translator->getMessage('COMMON_TITLE').'&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_TITLE').'&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'title';
          $text = $this->_translator->getMessage('COMMON_TITLE');
@@ -308,10 +310,10 @@ $html .= $text;
       $html .= '      <td width="20%" class="head" colspan="2">';
       if ( $this->getSortKey() == 'modificator' ) {
          $params['sort'] = 'modificator_rev';
-         $text = $this->_translator->getMessage('COMMON_MODIFIED_BY').'&nbsp;<img src="images/sort_up.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_MODIFIED_BY').'&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
       } elseif ( $this->getSortKey() == 'modificator_rev' ) {
          $params['sort'] = 'modificator';
-         $text = $this->_translator->getMessage('COMMON_MODIFIED_BY').'&nbsp;<img src="images/sort_down.gif" alt="&lt;" border="0"/>';
+         $text = $this->_translator->getMessage('COMMON_MODIFIED_BY').'&nbsp;<img src="' . getSortImage('down') . '" alt="&lt;" border="0"/>';
       } else {
          $params['sort'] = 'modificator';
          $text = $this->_translator->getMessage('COMMON_MODIFIED_BY');
