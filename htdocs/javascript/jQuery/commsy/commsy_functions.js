@@ -262,8 +262,12 @@ function showHidePaneContentTopBar(e,inputObj){
       if (navigator.userAgent.indexOf("MSIE") == -1){
     	 obj.slideUp(200);
       } else {
-         obj.animate({height: "0%", opacity: 0}, 200);
-      }
+         if(navigator.userAgent.indexOf("MSIE 6") != -1){
+	        obj.slideUp(200);
+	     } else {
+	        obj.animate({height: "0%", opacity: "0"}, 200);
+	     }
+	  }      
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'0',100000);
       }
