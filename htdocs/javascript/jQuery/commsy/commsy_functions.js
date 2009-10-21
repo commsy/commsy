@@ -259,8 +259,8 @@ function showHidePaneContentTopBar(e,inputObj){
       if(jQuery('#showHideButton' + numericId).length > 0){
          img.attr('src', img.attr('src').replace('up','down'));
       }
-      obj.slideUp(200);
-      //obj.animate({height: "toggle", opacity: 0}, 200);
+      //obj.slideUp(200);
+      obj.animate({height: "0%", opacity: 0}, 200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'0',100000);
       }
@@ -276,8 +276,8 @@ function showHidePaneContentTopBar(e,inputObj){
       if(jQuery('#showHideButton' + numericId).length > 0){
          img.attr('src', img.attr('src').replace('down','up'));
       }
-      obj.slideDown(200);
-      //obj.animate({height: "toggle", opacity: 1}, 200);
+      //obj.slideDown(200);
+      obj.animate({height: "100%", opacity: 1}, 200);
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'1',100000);
       }
