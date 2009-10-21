@@ -172,8 +172,8 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
             } else {
                newItem.html('<img src="images/commsyicons/16x16/new_home_big_gray.png" style="cursor:default;" alt="' + new_action_message + '" title="' + new_action_message + '"/>');
             }
+            newItem.css('width', '18px');
             newItem.css('float', 'right');
-            klick.css('width', temp_div.width());
             topBar.append(newItem);
          } else {
             if((modArray[commsy_panel_index] != 'user')){
