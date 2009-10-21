@@ -140,43 +140,78 @@ if ( $external_tool == 'homepage' ) {
            and !empty($c_etchat_enable)
            and $c_etchat_enable
          ) {
-   $current_context = $environment->getCurrentContextItem();
    $current_user = $environment->getCurrentUserItem();
 
-   // save last login
-   include_once('functions/date_functions.php');
-   $current_user->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
-   $current_user->setChangeModificationOnSave(false);
-   $current_user->save();
+   if ( $current_user->isUser() ) {
+      $current_context = $environment->getCurrentContextItem();
 
-   if ( !$environment->inPortal()
-        and !$environment->inServer()
-      ) {
-      $portal_user_item = $current_user->getRelatedCommSyUserItem();
-      if ( isset($portal_user_item) ) {
-         $portal_user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
-         $portal_user_item->setChangeModificationOnSave(false);
-         $portal_user_item->save();
-         unset($portal_user_item);
+      // save last login
+      include_once('functions/date_functions.php');
+      $current_user->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
+      $current_user->setChangeModificationOnSave(false);
+      $current_user->save();
+
+      if ( !$environment->inPortal()
+           and !$environment->inServer()
+         ) {
+         $portal_user_item = $current_user->getRelatedCommSyUserItem();
+         if ( isset($portal_user_item) ) {
+            $portal_user_item->setLastLoginPlugin(getCurrentDateTimeInMySQL(),'etchat');
+            $portal_user_item->setChangeModificationOnSave(false);
+            $portal_user_item->save();
+            unset($portal_user_item);
+         }
       }
-   }
 
-   $etchat_manager = $environment->getETChatManager();
-   if ( $etchat_manager->insertRoom($current_context) ) {
-      $inser_user = $etchat_manager->insertUser($current_user);
-      if (!$inser_user) {
-         pr('CHAT_ERROR');
-      } else {
-         session_start();
-         $_SESSION['user_id'] = $current_user->getItemID();
-         $_SESSION['username'] = $current_user->getFullname();
-         $_SESSION['user_priv'] = 'gast';
-         $_SESSION['room_id'] = $current_context->getItemID();
+      $etchat_manager = $environment->getETChatManager();
+      if ( $etchat_manager->insertRoom($current_context) ) {
+         $inser_user = $etchat_manager->insertUser($current_user);
+         if (!$inser_user) {
+            include_once('functions/error_functions.php');
+            trigger_error($external_tool.': can not insert user ('.$current_user->getUserID().')',E_USER_ERROR);
+         } else {
+            session_start();
+            $_SESSION['user_id'] = $current_user->getItemID();
+            $_SESSION['username'] = $current_user->getFullname();
+            $_SESSION['user_priv'] = 'gast';
+            $_SESSION['room_id'] = $current_context->getItemID();
 
-         $url = $c_etchat_url.'/chat.php?room_id='.$current_context->getItemID();
-         include_once('functions/misc_functions.php');
-         redirect_with_url($url);
+            $url = $c_etchat_url.'/chat.php?room_id='.$current_context->getItemID();
+            include_once('functions/misc_functions.php');
+            redirect_with_url($url);
+         }
       }
+   } else {
+      // da neues Fenster, geht das nicht
+      /*
+      $session_item = $environment->getSessionItem();
+      $cid = $environment->getCurrentContextID();
+      $mod = 'home';
+      $fct = 'index';
+      $params = array();
+      if ( !empty($session_item)
+           and $session_item->issetValue('history')
+         ) {
+         $history = $session_item->getValue('history');
+         if ( !empty($history[0]['context']) ) {
+            $cid = $history[0]['context'];
+         }
+         if ( !empty($history[0]['module']) ) {
+            $mod = $history[0]['module'];
+         }
+         if ( !empty($history[0]['function']) ) {
+            $fct = $history[0]['function'];
+         }
+         if ( !empty($history[0]['parameter']) ) {
+            $params = $history[0]['parameter'];
+         }
+      }
+      redirect($cid,$mod,$fct,$params);
+      */
+
+      // also Fehlermeldung
+      include_once('functions/error_functions.php');
+      trigger_error($external_tool.': user ('.$current_user->getUserID().') can not login as guest',E_USER_ERROR);
    }
 } else {
    include_once('functions/error_functions.php');
