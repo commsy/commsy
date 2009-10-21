@@ -236,60 +236,60 @@ class cs_page_room_view extends cs_page_view {
                                        '',
                                        $image,
                                        $this->_translator->getMessage('COMMON_CONFIGURATION')).LF;
-         $show_user_config = false;
-         // tasks
-         $manager = $this->_environment->getTaskManager();
-         $manager->resetLimits();
-         $manager->setContextLimit($this->_environment->getCurrentContextID());
-         $manager->setStatusLimit('REQUEST');
-         $manager->select();
-         $tasks = $manager->get();
-         $task = $tasks->getFirst();
-         $show_user_config = false;
-         $count_new_accounts = 0;
-         while($task){
-            $mode = $task->getTitle();
-            $task = $tasks->getNext();
-            if ($mode == 'TASK_USER_REQUEST'){
-               $count_new_accounts ++;
-               $show_user_config = true;
-            }
-         }
-         if ($show_user_config){
-            $params = array();
-            $params['selstatus']='1';
-            if ($count_new_accounts < 16){
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/account_'.$count_new_accounts.'_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
-               } else {
-                  $image = '<img src="images/account_'.$count_new_accounts.'_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
-               }
-            }else{
-               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-                  $image = '<img src="images/commsyicons_msie6/account_16_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
-               } else {
-                  $image = '<img src="images/account_16_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
-               }
-            }
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'account',
-                                       'index',
-                                       $params,
-                                       $image,
-                                       $this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
-         }else{
-            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-               $image = '<img src="images/commsyicons_msie6/config_account_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
-            } else {
-               $image = '<img src="images/config_account_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
-            }
-            $html .= ahref_curl($this->_environment->getCurrentContextID(),
-                                       'account',
-                                       'index',
-                                       '',
-                                       $image,
-                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
-         }
+//         $show_user_config = false;
+//         // tasks
+//         $manager = $this->_environment->getTaskManager();
+//         $manager->resetLimits();
+//         $manager->setContextLimit($this->_environment->getCurrentContextID());
+//         $manager->setStatusLimit('REQUEST');
+//         $manager->select();
+//         $tasks = $manager->get();
+//         $task = $tasks->getFirst();
+//         $show_user_config = false;
+//         $count_new_accounts = 0;
+//         while($task){
+//            $mode = $task->getTitle();
+//            $task = $tasks->getNext();
+//            if ($mode == 'TASK_USER_REQUEST'){
+//               $count_new_accounts ++;
+//               $show_user_config = true;
+//            }
+//         }
+//         if ($show_user_config){
+//            $params = array();
+//            $params['selstatus']='1';
+//            if ($count_new_accounts < 16){
+//               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+//                  $image = '<img src="images/commsyicons_msie6/account_'.$count_new_accounts.'_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+//               } else {
+//                  $image = '<img src="images/account_'.$count_new_accounts.'_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+//               }
+//            }else{
+//               if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+//                  $image = '<img src="images/commsyicons_msie6/account_16_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+//               } else {
+//                  $image = '<img src="images/account_16_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts).'"/>';
+//               }
+//            }
+//            $html .= ahref_curl($this->_environment->getCurrentContextID(),
+//                                       'account',
+//                                       'index',
+//                                       $params,
+//                                       $image,
+//                                       $this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK',$count_new_accounts)).LF;
+//         }else{
+//            if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
+//               $image = '<img src="images/commsyicons_msie6/config_account_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+//            } else {
+//               $image = '<img src="images/config_account_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('HOME_LOGIN_NEW_ACCOUNT_LINK').'"/>';
+//            }
+//            $html .= ahref_curl($this->_environment->getCurrentContextID(),
+//                                       'account',
+//                                       'index',
+//                                       '',
+//                                       $image,
+//                                       $this->_translator->getMessage('ACCOUNT_INDEX')).LF;
+//         }
       }
 
      // Einstellungen
