@@ -480,7 +480,7 @@ class cs_page_view extends cs_view {
       if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
          $this->_is_print_page = true;
       }
-      $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+      $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
       if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
       }
@@ -515,7 +515,7 @@ class cs_page_view extends cs_view {
       if ( isset($_GET['mode']) and $_GET['mode']=='print' ) {
          $this->_is_print_page = true;
       }
-      $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+      $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
       if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
       }
@@ -791,7 +791,7 @@ class cs_page_view extends cs_view {
       }
       $retour .= '   <title>'.$this->_text_as_html_short($this->_name_room).$between.$this->_text_as_html_short($this->_name_page).'</title>'.LF;
       if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-         $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+         $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
          if ( isset($this->_form_view) ) {
             $views[] = $this->_form_view;
          }
@@ -880,7 +880,7 @@ class cs_page_view extends cs_view {
 
       // bug in IE7
       // script must be directly before body end tag
-      $views = array_merge($this->_views, $this->_views_left, $this->_views_right);
+      $views = array_merge($this->_views, $this->_views_left, $this->_views_right, $this->_views_overlay);
       if ( isset($this->_form_view) ) {
          $views[] = $this->_form_view;
       }
@@ -2028,21 +2028,21 @@ class cs_page_view extends cs_view {
      // forget password
       elseif (!empty($cs_mod) and $cs_mod == 'password_forget') {
          if ( !empty($this->_current_user) and ($this->_current_user->getUserID() == 'guest' and $this->_current_user->isGuest()) ) {
-   } else {
+         } else {
             $params = array();
             $params['iid'] = $this->_current_user->getItemID();
-      if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
-         $portal_user = $this->_environment->getPortalUserItem();
-         $fullname = $portal_user->getFullname();
+            if ( $this->_environment->inProjectRoom() or $this->_environment->inCommunityRoom()) {
+               $portal_user = $this->_environment->getPortalUserItem();
+               $fullname = $portal_user->getFullname();
                unset($portal_user);
-      } else {
-         $fullname = $this->_current_user->getFullname();
-      }
-   }
+            } else {
+               $fullname = $this->_current_user->getFullname();
+            }
+         }
          $html .= '<div class="myarea_content" style="font-size:8pt;">'.LF;
          include_once('classes/cs_password_forget_page.php');
-   $left_page = new cs_password_forget_page($this->_environment);
-   $html .= $left_page->execute();
+         $left_page = new cs_password_forget_page($this->_environment);
+         $html .= $left_page->execute();
          unset($left_page);
          $html .= '</div>'.LF;
       }
