@@ -164,11 +164,6 @@ if ($command != 'error') { // only if user is allowed to edit colors
       // save room_item
       $context_item->save();
 
-      // switch CommSy6 / CommSy7
-      if ( $redirect ) {
-         redirect($environment->getCurrentContextID(),'configuration','index');
-      }
-
       $form_view->setItemIsSaved();
       $is_saved = true;
       if ( !empty($_POST)) {
