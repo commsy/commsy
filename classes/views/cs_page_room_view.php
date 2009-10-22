@@ -228,7 +228,7 @@ class cs_page_room_view extends cs_page_view {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/config_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
          } else {
-            $image = '<img src="images/config_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
+            $image = '<img src="images/config_home_background.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION').'"/>';
          }
          $html .= ahref_curl($this->_environment->getCurrentContextID(),
                                        'configuration',
@@ -308,7 +308,7 @@ class cs_page_room_view extends cs_page_view {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
             $image = '<img src="images/commsyicons_msie6/pmwiki_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
          } else {
-            $image = '<img src="images/pmwiki_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
+            $image = '<img src="images/pmwiki_home_background.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_WIKI_LINK').'"/>';
          }
          $title = $this->_translator->getMessage('COMMON_WIKI_LINK').': '.$current_context->getWikiTitle();
          $url_session_id = '';
@@ -337,7 +337,7 @@ class cs_page_room_view extends cs_page_view {
                if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                   $image = '<img src="images/commsyicons_msie6/etchat_home.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                } else {
-                  $image = '<img src="images/etchat_home.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
+                  $image = '<img src="images/etchat_home_background.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CHAT_CHAT').'" title="'.$this->_translator->getMessage('CHAT_CHAT').'"/>';
                }
                $html .=  ' '.ahref_curl($this->_environment->getCurrentContextID(),
                                    'context',
@@ -377,9 +377,9 @@ class cs_page_room_view extends cs_page_view {
 
       if ( $show_rss_link ) {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $html .= '&nbsp;<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.gif" width="15" height="15" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
+            $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.gif" width="15" height="15" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
          } else {
-            $html .= '&nbsp;<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
+            $html .= '<a href="rss.php?cid='.$current_context_item->getItemID().$hash_string.'" target="_blank"><img src="images/rss.png" width="15" height="15" style="vertical-align:bottom;" alt="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '" title="' . $this->_translator->getMessage('RSS_SUBSCRIBE_LINK') . '"/></a>';
          }
       }
 
