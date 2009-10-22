@@ -510,6 +510,7 @@ $message["COMMON_ONE_TOPIC"]["en"] = "%_TOPIC_SUB_NOMS_BIG";
 $message["COMMON_ONE_USER"]["en"] = "User";
 $message["COMMON_ONLY_FILES"]["en"] = "only with files";
 $message["COMMON_OPENED_SINCE"]["en"] = "open since";
+$message["COMMON_OR"]["en"] = "or";
 $message["COMMON_PAGE"]["en"] = "Page";
 $message["COMMON_PAGETITLE_ACCOUNT"]["en"] = "Accounts";
 $message["COMMON_PAGETITLE_AGB"]["en"] = "Terms and Conditions";

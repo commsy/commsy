@@ -302,6 +302,19 @@ class cs_auth_source_item extends cs_item {
       return $retour;
    }
 
+   public function setContactFon ($value) {
+      $this->_addExtra('CONTACT_FON',$value);
+   }
+
+   function getContactFon () {
+      $retour = '';
+      $value = $this->_getExtra('CONTACT_FON');
+      if ( !empty($value) ) {
+          $retour = $value;
+      }
+      return $retour;
+   }
+
    function save() {
       $manager = $this->_environment->getManager($this->_type);
       $this->_save($manager);

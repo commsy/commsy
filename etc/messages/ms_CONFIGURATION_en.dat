@@ -16,6 +16,7 @@ $message["CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE"]["en"] = "Change use
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT"]["en"] = "no source";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT_TYPE"]["en"] = "no type";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_NEW"]["en"] = "Add new source";
+$message["CONFIGURATION_AUTHENTICATION_CONACT_FON_TITLE"]["en"] = "contact fon number";
 $message["CONFIGURATION_AUTHENTICATION_CONACT_MAIL_TITLE"]["en"] = "Contact email address";
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNPASSWD"]["en"] = "Database column containing passwords";
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNUSERID"]["en"] = "Database column containing usernames";

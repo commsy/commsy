@@ -16,6 +16,7 @@ $message["CONFIGURATION_AUTHENTICATION_CHANGE_USERID_TITLE"]["de"] = "UserID än
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT"]["de"] = "keine Quelle";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT_TYPE"]["de"] = "kein Typ";
 $message["CONFIGURATION_AUTHENTICATION_CHOICE_NEW"]["de"] = "Neue Quelle eingeben";
+$message["CONFIGURATION_AUTHENTICATION_CONACT_FON_TITLE"]["de"] = "Kontakt-Telefonnummer";
 $message["CONFIGURATION_AUTHENTICATION_CONACT_MAIL_TITLE"]["de"] = "Kontakt-E-Mail-Adresse";
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNPASSWD"]["de"] = "Datenbank-Spalte mit Passwörtern";
 $message["CONFIGURATION_AUTHENTICATION_DBCOLUMNUSERID"]["de"] = "Datenbank-Spalte mit Benutzernamen";

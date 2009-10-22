@@ -189,6 +189,9 @@ else {
             if ( isset($_POST['contact_mail']) ) {
                $auth_item->setContactEMail($_POST['contact_mail']);
             }
+            if ( isset($_POST['contact_fon']) ) {
+               $auth_item->setContactFon($_POST['contact_fon']);
+            }
 
             // special data
             $auth_data_array = array();

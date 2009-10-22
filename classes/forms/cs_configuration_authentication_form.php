@@ -339,6 +339,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       }
 
       if ( !$this->_commsy_default and !empty($this->_auth_type) ) {
+         $this->_form->addTextfield('contact_fon','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CONACT_FON_TITLE'),'',255,40,false,'','','','','','',$disabled);
          $this->_form->addTextfield('contact_mail','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CONACT_MAIL_TITLE'),'',255,40,false,'','','','','','',$disabled);
          $this->_form->addTextfield('change_password_url','',$translator->getMessage('CONFIGURATION_AUTHENTICATION_CHANGE_PASSWORD_URL'),'',255,40,false,'','','','','','',$disabled);
          $this->_form->addEmptyLine();
@@ -432,6 +433,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_values['title'] = $this->_item->getTitle();
          $this->_values['change_password_url'] = $this->_item->getPasswordChangeLink();
          $this->_values['contact_mail'] = $this->_item->getContactEMail();
+         $this->_values['contact_fon'] = $this->_item->getContactFon();
          $current_context = $this->_environment->getCurrentContextItem();
          if ( $this->_item->getItemID() == $current_context->getAuthDefault() ) {
             $this->_values['default'] = 1;

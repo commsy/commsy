@@ -58,6 +58,7 @@ class cs_password_forget_form extends cs_rubric_form {
                    and $auth_source_item->allowChangePassword()
                  )
                  or $auth_source_item->allowAddAccount()
+                 or $auth_source_item->getContactFon() != ''
                  or $auth_source_item->getContactEMail() != ''
                  or $auth_source_item->getPasswordChangeLink() != ''
                ) {
@@ -113,18 +114,36 @@ class cs_password_forget_form extends cs_rubric_form {
                       )
                ) {
                $change_password = false;
+               $fon = $auth_source_item->getContactFon();
                $email = $auth_source_item->getContactEMail();
                $passwd_link = $auth_source_item->getPasswordChangeLink();
-               if ( !empty($email)
-                    and !empty($passwd_link)
+               if ( empty($email)
+                    and empty($fon)
+                    and empty($passwd_link)
                   ) {
-                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_EMAIL_PASSWD',$email,$passwd_link);
-               } elseif ( !empty($email) ) {
-                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_EMAIL',$email);
-               } elseif ( !empty($passwd_link) ) {
-                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_PASSWD',$passwd_link);
-               } else {
                   $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_NO',$auth_source_item->getTitle());
+               } else {
+                  $text = $this->_translator->getMessage('PASSWORD_FORGET_TEXT_BEGIN');
+                  $first = true;
+                  if ( !empty($fon) ) {
+                     $text .= LF.' '.$this->_translator->getMessage('PASSWORD_FORGET_TEXT_FON',$fon);
+                     $first = false;
+                  }
+                  if ( !empty($email) ) {
+                     if ( !$first ) {
+                        $text .= LF.' '.$this->_translator->getMessage('COMMON_OR');
+                     }
+                     $text .= LF.' '.$this->_translator->getMessage('PASSWORD_FORGET_TEXT_MAIL',$email);
+                     $first = false;
+                  }
+                  if ( !empty($passwd_link) ) {
+                     if ( !$first ) {
+                        $text .= LF.' '.$this->_translator->getMessage('COMMON_OR');
+                     }
+                     $text .= LF.' '.$this->_translator->getMessage('PASSWORD_FORGET_TEXT_PASSWORD',$passwd_link);
+                     $first = false;
+                  }
+                  $text .= '.'.LF;
                }
             }
          }
