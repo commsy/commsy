@@ -348,7 +348,7 @@ class cs_page_room_view extends cs_page_view {
                                    'chat',
                                    '',
                                    '',
-                                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"');
+                                   'onclick="window.open(href, target, \'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, copyhistory=yes, width=970, height=600\');"').LF;
             }
          }
       }
