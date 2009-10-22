@@ -64,6 +64,7 @@ class cs_password_forget_form extends cs_rubric_form {
                $temp_array['value'] = $auth_source_item->getItemID();
                $this->_count_auth_source_list_add_account++;
             } else {
+               $this->_count_auth_source_list_add_account++;
                $temp_array['value'] = 'disabled';
             }
             $temp_array['text'] = $auth_source_item->getTitle();

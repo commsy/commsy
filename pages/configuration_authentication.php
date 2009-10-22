@@ -183,12 +183,10 @@ else {
                  and !empty($_POST['auth_type']) ) {
                $auth_item->setSourceType($_POST['auth_type']);
             }
-            if ( isset($_POST['change_password_url'])
-                 and !empty($_POST['change_password_url']) ) {
+            if ( isset($_POST['change_password_url']) ) {
                $auth_item->setPasswordChangeLink($_POST['change_password_url']);
             }
-            if ( isset($_POST['contact_mail'])
-                 and !empty($_POST['contact_mail']) ) {
+            if ( isset($_POST['contact_mail']) ) {
                $auth_item->setContactEMail($_POST['contact_mail']);
             }
 
