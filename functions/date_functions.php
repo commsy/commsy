@@ -495,11 +495,13 @@ function datetime2Timestamp ( $datetime ) {
 function isDatetimeCorrect ( $language, $date, $time='' ) {
    $retour = false;
    $date_result = convertDateFromInput($date,$language);
-   if ( !empty($time)) {
-      $time_result = convertTimeFromInput($time);
-   } else {
+   if ( empty($time)
+        or preg_replace('/[A-Za-z ]/', '', $time) != $time
+      ) {
       $time_result['conforms'] = '1';
       $time_result['datetime'] = '00:00:00';
+   } else {
+      $time_result = convertTimeFromInput($time);
    }
    if ( empty($date_result['error'])
         and empty($time_result['error'])
