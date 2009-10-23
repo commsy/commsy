@@ -650,19 +650,17 @@ jQuery(document).ready(function() {
 		   							   firstDay: 1, 
 		   							   //initStatus: 'Wähle ein Datum',
 		   							   isRTL: false};
-   if(picker_language == 'de'){
+   if(datepicker_language == 'de'){
       jQuery.datepicker.setDefaults($.datepicker.regional['de']);
    } else {
 	  jQuery.datepicker.setDefaults($.datepicker.regional['en']);
    }
    if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-	   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true, alt: 'Datum', title: 'Datum'});
-	   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true});
-	   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true});
+	   datepicker_image = 'images/commsyicons/datepicker.png';
    } else {
-	   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
-	   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
-	   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
+	   datepicker_image = 'images/commsyicons/datepicker.gif';
    }
-   
+   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 });

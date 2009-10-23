@@ -538,7 +538,8 @@ class cs_page_view extends cs_view {
       $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
       $retour .= '   <script type="text/javascript">'.LF;
       $retour .= '      <!--'.LF;
-      $retour .= '   var picker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;
+      $retour .= '   var datepicker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;
+      $retour .= '   var datepicker_choose = \''.$this->_translator->getMessage('COMMON_DATEPICKER_CHOOSE').'\';'.LF;
       $retour .= '      -->'.LF;
       $retour .= '   </script>'.LF;
       $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions.js"></script>'.LF;
