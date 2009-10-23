@@ -598,3 +598,71 @@ function callStudyLogSortByTag(tag) {
 function callStudyLogSortByTagId(tagId) {
    getFlashMovie("study_log").callStudyLogSortByTagId(tagId);
 } 
+
+jQuery(document).ready(function() {
+   jQuery.datepicker.regional['de'] = {//clearText: 'löschen',
+		   							   //clearStatus: 'aktuelles Datum löschen',
+		   							   //closeText: 'schließen',
+									   //closeStatus: 'ohne Änderungen schließen',
+									   //prevText: '',
+									   //prevStatus: 'letzten Monat zeigen',
+									   //nextText: '',
+									   //nextStatus: 'nächsten Monat zeigen',
+									   //currentText: 'heute',
+									   //currentStatus: '',
+									   monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+									   monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+									   //monthStatus: 'anderen Monat anzeigen',
+									   //yearStatus: 'anderes Jahr anzeigen',
+									   //weekHeader: 'Wo',
+									   //weekStatus: 'Woche des Monats',
+									   dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+									   dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+									   dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+									   //dayStatus: 'Setze DD als ersten Wochentag',
+									   //dateStatus: 'Wähle D, M d',
+									   dateFormat: 'dd.mm.yy',
+									   firstDay: 1, 
+									   //initStatus: 'Wähle ein Datum',
+									   isRTL: false};
+   jQuery.datepicker.regional['en'] = {//clearText: 'löschen',
+		   							   //clearStatus: 'aktuelles Datum löschen',
+		   							   //closeText: 'schließen',
+		   							   //closeStatus: 'ohne Änderungen schließen',
+		   							   //prevText: '',
+		   							   //prevStatus: 'letzten Monat zeigen',
+		   							   //nextText: '',
+		   							   //nextStatus: 'nächsten Monat zeigen',
+		   							   //currentText: 'heute',
+		   							   //currentStatus: '',
+		   							   //monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+		   							   //monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+		   							   //monthStatus: 'anderen Monat anzeigen',
+		   							   //yearStatus: 'anderes Jahr anzeigen',
+		   							   //weekHeader: 'Wo',
+		   							   //weekStatus: 'Woche des Monats',
+		   							   //dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+		   							   //dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		   							   //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+		   							   //dayStatus: 'Setze DD als ersten Wochentag',
+		   							   //dateStatus: 'Wähle D, M d',
+		   							   dateFormat: 'dd.mm.yy',
+		   							   firstDay: 1, 
+		   							   //initStatus: 'Wähle ein Datum',
+		   							   isRTL: false};
+   if(picker_language == 'de'){
+      jQuery.datepicker.setDefaults($.datepicker.regional['de']);
+   } else {
+	  jQuery.datepicker.setDefaults($.datepicker.regional['en']);
+   }
+   if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
+	   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true, alt: 'Datum', title: 'Datum'});
+	   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true});
+	   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.png', buttonImageOnly: true});
+   } else {
+	   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
+	   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
+	   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: 'images/commsyicons/datepicker.gif', buttonImageOnly: true});
+   }
+   
+});
