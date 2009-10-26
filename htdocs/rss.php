@@ -686,9 +686,12 @@ if ( isset($_GET['cid']) ) {
          } else {
             $pre_title = $curr_context->getTitle().': ';
          }
+         //----------------------
+         // schneller Bugfix
          if(!isset($title)){
          	$title = '';
          }
+         //----------------------
          $title = $pre_title.$title;
          unset($pre_title);
       }
