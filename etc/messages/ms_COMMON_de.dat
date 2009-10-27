@@ -673,7 +673,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>Bsp: (:image bild.jpg width=150 alt=Text lfloat:)</li>
 </ul><br/><span style=&quot;font-weight:bold&quot;>Videos:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
-    <li>(:wmplayer DATEINAME play=true width=ZAHL:) für wma,wmv, avi, ...</li>
+    <li>(:wmplayer DATEINAME play=true width=ZAHL:) für wma, wmv, avi, ...</li>
     <li>(:quicktime DATEINAME play=true width=ZAHL:) für mov, wav, mpeg, ...</li>
     <li>(:flash DATEINAME play=true width=ZAHL:) für swf und flv</li>
     <li>(:youtube FILM-ID:) oder (:wmplayer FILM-ID:) für Videos auf youtube</li>
@@ -692,6 +692,7 @@ $message["COMMON_TEXT_INCLUDING_MEDIA_TEXT"]["de"] = "<ol style=&quot;font-weigh
     <li>Bsp: (:youtube pQHX-SjgQvQ play=false:)</li>
 </ul><br/><span style=&quot;font-weight:bold&quot;>Musik:</span>
 <ul style=&quot;font-weight:normal; padding-left:15px; margin:0px;&quot;>
+    <li>(:wmplayer DATEINAME play=true width=ZAHL:) für wma-Dateien</li>
     <li>(:mp3 DATEINAME.mp3:) für mp3-Dateien</li>
     <li>Argumente:
     <ul>
