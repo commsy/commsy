@@ -4145,6 +4145,9 @@ class cs_context_item extends cs_item {
    }
 
    public function _cronUnlinkFiles () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $cron_array = array();
       $cron_array['title'] = 'unlink files';
       $cron_array['description'] = 'unlink files not needed anymore';
@@ -4156,6 +4159,11 @@ class cs_context_item extends cs_item {
          $cron_array['success'] = true;
          $cron_array['success_text'] = 'cron done';
       }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 

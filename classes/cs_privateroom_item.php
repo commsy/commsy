@@ -300,6 +300,9 @@ class cs_privateroom_item extends cs_room_item {
     * return array result of cron job
     */
    function _sendPrivateRoomNewsletter () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'privateroom newsletter';
       $retour['description'] = 'send activity newsletter to private room user';
@@ -609,6 +612,11 @@ class cs_privateroom_item extends cs_room_item {
             $retour['success_text'] = 'no user in room want the newsletter';
          }
       }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 

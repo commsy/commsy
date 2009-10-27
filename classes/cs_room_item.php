@@ -818,6 +818,9 @@ class cs_room_item extends cs_context_item {
    }
 
    function _cronScanFiles () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'scan files';
       $retour['description'] = 'scan files for virus';
@@ -905,10 +908,17 @@ class cs_room_item extends cs_context_item {
          $retour['success_text'] = 'no files to scan';
       }
 
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 
    function _cronIndexFiles () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'indexing files';
       $retour['description'] = 'indexing of uploaded files for search';
@@ -944,10 +954,18 @@ class cs_room_item extends cs_context_item {
       } else {
          $retour['success_text'] = 'indexing is not enabled';
       }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 
    public function _cronControlLinkItems () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'control link-items';
       $retour['description'] = 'delete link items, if first or second item doen\'t exists';
@@ -971,10 +989,17 @@ class cs_room_item extends cs_context_item {
          $retour['success_text'] = 'nothing to do';
       }
 
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 
    public function _cronControlLinks () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'control links';
       $retour['description'] = 'delete links, if from or to item doen\'t exists';
@@ -997,6 +1022,10 @@ class cs_room_item extends cs_context_item {
          $retour['success'] = true;
          $retour['success_text'] = 'nothing to do';
       }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
 
       return $retour;
    }

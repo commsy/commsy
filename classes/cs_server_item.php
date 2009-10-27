@@ -167,6 +167,9 @@ class cs_server_item extends cs_guide_item {
    }
 
    function _cronCleanTempDirectory () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $temp_folder = 'var/temp';
       $cron_array = array();
       $cron_array['title'] = 'clean temporary directory "'.$temp_folder.'"';
@@ -186,6 +189,10 @@ class cs_server_item extends cs_guide_item {
          $cron_array['success_text'] = 'failed to clean dir: '.$temp_folder;
       }
 
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 
@@ -195,6 +202,9 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronPageImpression () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $cron_array = array();
       $cron_array['title'] = 'page impression cron';
       $cron_array['description'] = 'count page impressions';
@@ -236,6 +246,10 @@ class cs_server_item extends cs_guide_item {
       unset($log_manager);
       unset($portal_list);
 
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 
@@ -245,6 +259,9 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronLog () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $cron_array = array();
       $cron_array['title'] = 'log cron';
       $cron_array['description'] = 'move old logs to log archive';
@@ -284,6 +301,11 @@ class cs_server_item extends cs_guide_item {
          unset($log_archive_manager);
       }
       unset($log_DB);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 
@@ -293,6 +315,9 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronLogArchive () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $cron_array = array();
       $cron_array['title'] = 'log archive cron';
       $cron_array['description'] = 'delete old logs in log_archive';
@@ -314,6 +339,11 @@ class cs_server_item extends cs_guide_item {
       }
 
       unset($log_DB);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 
@@ -323,6 +353,9 @@ class cs_server_item extends cs_guide_item {
     * @return array results of running this cron
     */
    function _cronRoomActivity () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $quotient = 4;
       $cron_array = array();
       $cron_array['title'] = 'activity points cron';
@@ -348,6 +381,11 @@ class cs_server_item extends cs_guide_item {
       }
       unset($portal_manager);
       unset($room_manager);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
+
       return $cron_array;
    }
 
@@ -357,6 +395,9 @@ class cs_server_item extends cs_guide_item {
    * @return array results of running this cron
    */
    function _cronReallyDelete () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $cron_array = array();
       $cron_array['title'] = 'delete items';
       $cron_array['description'] = 'delete items older than x days';
@@ -398,6 +439,10 @@ class cs_server_item extends cs_guide_item {
          unset($manager);
       }
       unset($item_type_array);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $cron_array['time'] = $time;
 
       return $cron_array;
    }

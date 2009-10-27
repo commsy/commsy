@@ -953,6 +953,9 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function _cronCheckTimeLabels () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'check time labels';
       $retour['description'] = 'checks switching between two time lables';
@@ -1005,10 +1008,18 @@ class cs_portal_item extends cs_guide_item {
          $retour['success_text'] = 'nothing to do';
       }
       unset($time_list);
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 
    function _cronRenewContinuousLinks () {
+      include_once('functions/misc_functions.php');
+      $time_start = getmicrotime();
+
       $retour = array();
       $retour['title'] = 'renew links';
       $retour['description'] = 'renew links between continuous rooms and current time label';
@@ -1042,6 +1053,11 @@ class cs_portal_item extends cs_guide_item {
             $retour['success_text'] = 'nothing to do';
          }
       }
+
+      $time_end = getmicrotime();
+      $time = round($time_end - $time_start,0);
+      $retour['time'] = $time;
+
       return $retour;
    }
 
