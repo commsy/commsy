@@ -2169,7 +2169,12 @@ class cs_form_view extends cs_view {
                   $tempMessage = getMessage('COMMON_CONFIGURATION_ROOM_OPENING_FORM_TITLE');
                   break;
                case 'PROJECT_EDIT': // Raumeröffnungen (Portal)
-                  $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+               	//$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+               	if($this->current_iid != 'NEW'){
+               		$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+               	} else {
+                     $tempMessage = getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
+               	}
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {
@@ -2251,7 +2256,12 @@ class cs_form_view extends cs_view {
                   }
                   break;
                case 'MYROOM_EDIT': // room edit in myroom
-                  $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  //$tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  if($this->current_iid != 'NEW'){
+                     $tempMessage = getMessage('COMMON_ROOM_EDIT_FORM_TITLE');
+                  } else {
+                     $tempMessage = getMessage('COMMON_NEW_ROOM_EDIT_FORM_TITLE');
+                  }
                   if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
                      $tempMessage = '<img src="images/commsyicons_msie6/32x32/room.gif" style="vertical-align:bottom;"/>&nbsp;'.$tempMessage;
                   } else {

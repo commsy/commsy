@@ -1593,9 +1593,15 @@ class cs_page_room_view extends cs_page_view {
                   if ( !$session->issetValue('cookie')
                     or $session->getValue('cookie') == '0' ) {
                     $html .= 'var session_id = "' . $session->getSessionID() . '";' . LF;
-               } else {
-                     $html .= 'var session_id = false;' . LF;
-               }
+                  } else {
+                    $html .= 'var session_id = false;' . LF;
+                  }
+                  // Test auf Gemeinschaftsraum
+                  if($context_item->isCommunityRoom()){
+                  	$html .= 'var is_community_room = true;' . LF;
+                  } else {
+                  	$html .= 'var is_community_room = false;' . LF;
+                  }
                } else {
                   $modify = 0;
                   $html .= 'var new_action_message="' . getMessage('COMMON_NO_ACTION_NEW',$this->_translator->getMessage('COMMON_NEW_ITEM')) . '";'.LF;

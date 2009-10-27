@@ -459,6 +459,7 @@ $message["COMMON_NEW_M_BIG"]["de"] = "Neuen";
 $message["COMMON_NEW_N"]["de"] = "neues";
 $message["COMMON_NEW_N_BIG"]["de"] = "Neues";
 $message["COMMON_NEW_PROJECT"]["de"] = "neuer %_PROJECT_SUB_NOMS_BIG";
+$message["COMMON_NEW_ROOM_EDIT_FORM_TITLE"]["de"] = "Neuen Raum erstellen";
 $message["COMMON_NEW_SECTION_EDIT"]["de"] = "Neuen Abschnitt erstellen";
 $message["COMMON_NEW_STEP_EDIT"]["de"] = "Neuen Arbeitsschritt erstellen";
 $message["COMMON_NEW_TODO_EDIT"]["de"] = "Neue Aufgabe erstellen";

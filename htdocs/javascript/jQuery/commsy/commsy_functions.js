@@ -165,12 +165,22 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
             var newItem = jQuery('<span></span>')
             if(modify == 1){
                if(session_id){
+            	  if(modArray[commsy_panel_index] == 'room'){
+            	     if(is_community_room){
+            	        modArray[commsy_panel_index] = 'project';
+            	     }
+            	  }
             	  if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
                      newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW&SID=' + session_id + '" title="' + new_action_message + '"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
             	  } else {
             		 newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW&SID=' + session_id + '" title="' + new_action_message + '"><img src="images/commsyicons_msie6/16x16/new_home_big.gif"/></a>');
             	  }
                } else {
+            	  if(modArray[commsy_panel_index] == 'room'){
+            	     if(is_community_room){
+             	        modArray[commsy_panel_index] = 'project';
+                     }
+             	  }
             	  if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
             	     newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW" title="' + new_action_message + '"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
             	  } else {
