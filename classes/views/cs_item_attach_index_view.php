@@ -1119,10 +1119,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html .= 'cookie_value = elem.name + \'=1\' '.LF;
       $html .= 'else '.LF;
       $html .= 'cookie_value = elem.name + \'=0\''.LF;
-      // jQuery
-      //$html .= 'document.cookie=cookie_value; '.LF;
-      $html .= 'jQuery.cookie(cookie_value); '.LF;
-      // jQuery
+      $html .= 'document.cookie=cookie_value; '.LF;
       $html .= '} '.LF;
       $html .= '</script>'.LF;
       $params = $this->_environment->getCurrentParameterArray();
