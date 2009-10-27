@@ -4,6 +4,7 @@ $message["DATE_BACK_TO_CALENDAR"]["de"] = "zum Kalender";
 $message["DATE_ENDDAY"]["de"] = "Tag (Ende)";
 $message["DATE_ENDTIME"]["de"] = "Uhrzeit (Ende)";
 $message["DATE_ENTER"]["de"] = "Teilnahme zusagen";
+$message["DATE_EXPORT_ITEM_ZIP"]["de"] = "Termin";
 $message["DATE_EXPORT_ZIP"]["de"] = "Termine";
 $message["DATE_IMPORT_FORM1"]["de"] = "Externe Termine importieren (Schritt 1 von 2)";
 $message["DATE_IMPORT_FORM2"]["de"] = "Externe Termine importieren (Schritt 2 von 2)";

@@ -266,11 +266,31 @@ function getCSS ( $file, $file_url ) {
      }
 
      //send zipfile by header
+     $translator = $environment->getTranslationObject();
+     if($environment->getCurrentModule() == 'announcement'){
+        $current_module = $translator->getMessage('ANNOUNCEMENT_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'material'){
+        $current_module = $translator->getMessage('MATERIAL_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'date'){
+        $current_module = $translator->getMessage('DATE_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'discussion'){
+        $current_module = $translator->getMessage('DISCUSSION_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'todo'){
+        $current_module = $translator->getMessage('TODO_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'group'){
+        $current_module = $translator->getMessage('GROUP_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'topic'){
+        $current_module = $translator->getMessage('TOPIC_EXPORT_ITEM_ZIP');
+     } elseif($environment->getCurrentModule() == 'user'){
+        $current_module = $translator->getMessage('USER_EXPORT_ITEM_ZIP');
+     } else {
+        $current_module = $environment->getCurrentModule();
+     }
      if(isset($params['iid'])) {
-        $downloadfile = $environment->getCurrentModule().'_'.$params['iid'].'.zip';
+        $downloadfile = $current_module.'_'.$params['iid'].'.zip';
      }
      else {
-        $downloadfile = $environment->getCurrentModule().'_'.$environment->getCurrentFunction().'.zip';
+        $downloadfile = $current_module.'_'.$environment->getCurrentFunction().'.zip';
      }
 
     header('Content-type: application/zip');

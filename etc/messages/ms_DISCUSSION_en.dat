@@ -8,6 +8,7 @@ $message["DISCUSSION_CLOSE_TITLE"]["en"] = "Closing summary post";
 $message["DISCUSSION_DISCARTICLE_COUNT"]["en"] = "Number of items";
 $message["DISCUSSION_EDIT"]["en"] = "Edit discussion";
 $message["DISCUSSION_ENTER_NEW"]["en"] = "Add new discussion";
+$message["DISCUSSION_EXPORT_ITEM_ZIP"]["en"] = "Discussion";
 $message["DISCUSSION_EXPORT_ZIP"]["en"] = "Discussions";
 $message["DISCUSSION_FORM_TYPE_1"]["en"] = "Discussion";
 $message["DISCUSSION_FORM_TYPE_2"]["en"] = "style";

@@ -6,6 +6,7 @@ $message["GROUP_DISCUSSIONS"]["de"] = "zugeordnete Wiki-Foren";
 $message["GROUP_EDIT"]["de"] = "Gruppe bearbeiten";
 $message["GROUP_ENTER"]["de"] = "Beitreten";
 $message["GROUP_ENTER_NEW"]["de"] = "Gruppe eingeben";
+$message["GROUP_EXPORT_ITEM_ZIP"]["de"] = "Gruppe";
 $message["GROUP_HEADER"]["de"] = "Gruppen";
 $message["GROUP_INDEX"]["de"] = "Gruppen";
 $message["GROUP_LEAVE"]["de"] = "Austreten";

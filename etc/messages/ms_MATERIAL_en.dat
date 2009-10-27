@@ -44,6 +44,7 @@ $message["MATERIAL_EDITION_DESC"]["en"] = "/2/";
 $message["MATERIAL_EDITOR"]["en"] = "Editors";
 $message["MATERIAL_EDITOR_DESC"]["en"] = "/Müller, Michael; Meier, Christine/";
 $message["MATERIAL_ENTER_NEW"]["en"] = "Enter material";
+$message["MATERIAL_EXPORT_ITEM_ZIP"]["en"] = "Material";
 $message["MATERIAL_EXPORT_TO_WIKI"]["en"] = "Show in wiki";
 $message["MATERIAL_EXPORT_TO_WIKI_LINK"]["en"] = "Page in wiki";
 $message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["en"] = "The following material - also edited by you - from the CommSy-Room &quot;%1&quot; was published to the room-wiki:<br/>

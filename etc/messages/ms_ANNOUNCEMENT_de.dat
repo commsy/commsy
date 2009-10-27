@@ -4,6 +4,7 @@ $message["ANNOUNCEMENT_CHANGE_BUTTON"]["de"] = "Ankündigung speichern";
 $message["ANNOUNCEMENT_DETAIL"]["de"] = "Ankündigung";
 $message["ANNOUNCEMENT_EDIT"]["de"] = "Ankündigung ändern";
 $message["ANNOUNCEMENT_ENTER_NEW"]["de"] = "Ankündigung erstellen";
+$message["ANNOUNCEMENT_EXPORT_ITEM_ZIP"]["de"] = "Ankündigung";
 $message["ANNOUNCEMENT_EXPORT_ZIP"]["de"] = "Ankündigungen";
 $message["ANNOUNCEMENT_INDEX"]["de"] = "Ankündigungen";
 $message["ANNOUNCEMENT_SAVE_BUTTON"]["de"] = "Ankündigung speichern";

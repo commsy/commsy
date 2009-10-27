@@ -7,6 +7,7 @@ $message["TOPIC_DEACTIVATE_PATH"]["de"] = "Pfad deaktivieren";
 $message["TOPIC_EDIT"]["de"] = "%_TOPICS_SUB_NOMS_LOW bearbeiten";
 $message["TOPIC_ENTER"]["de"] = "Beitreten";
 $message["TOPIC_ENTER_NEW"]["de"] = "%_TOPICS_SUB_NOMS_LOW eingeben";
+$message["TOPIC_EXPORT_ITEM_ZIP"]["de"] = "Thema";
 $message["TOPIC_INDEX"]["de"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["TOPIC_LEAVE"]["de"] = "Austreten";
 $message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["de"] = "Den ausgewählten %_TOPICS_SUB_AKKPL_BIG haben sich keine Personen zu geordnet, d.h. die Adressatenliste dieser E-Mail ist leer.";

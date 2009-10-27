@@ -8,6 +8,7 @@ $message["DISCUSSION_CLOSE_TITLE"]["de"] = "Abschlussbeitrag";
 $message["DISCUSSION_DISCARTICLE_COUNT"]["de"] = "Anzahl der Beiträge";
 $message["DISCUSSION_EDIT"]["de"] = "Diskussion bearbeiten";
 $message["DISCUSSION_ENTER_NEW"]["de"] = "Diskussion eröffnen";
+$message["DISCUSSION_EXPORT_ITEM_ZIP"]["de"] = "Diskussion";
 $message["DISCUSSION_EXPORT_ZIP"]["de"] = "Diskussionen";
 $message["DISCUSSION_FORM_TYPE_1"]["de"] = "Art der";
 $message["DISCUSSION_FORM_TYPE_2"]["de"] = "Diskussion";

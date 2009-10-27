@@ -4,6 +4,7 @@ $message["DATE_BACK_TO_CALENDAR"]["en"] = "calendar";
 $message["DATE_ENDDAY"]["en"] = "Day (end)";
 $message["DATE_ENDTIME"]["en"] = "Time (end)";
 $message["DATE_ENTER"]["en"] = "Accept participation";
+$message["DATE_EXPORT_ITEM_ZIP"]["en"] = "Date";
 $message["DATE_EXPORT_ZIP"]["en"] = "Dates";
 $message["DATE_IMPORT_FORM1"]["en"] = "Import events from external source (step 1 of 2)";
 $message["DATE_IMPORT_FORM2"]["en"] = "Import events from external source (step 2 of 2)";

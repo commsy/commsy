@@ -7,6 +7,7 @@ $message["TOPIC_DEACTIVATE_PATH"]["en"] = "Deactivate path";
 $message["TOPIC_EDIT"]["en"] = "Edit %_TOPICS_SUB_NOMS_LOW";
 $message["TOPIC_ENTER"]["en"] = "Join";
 $message["TOPIC_ENTER_NEW"]["en"] = "Add new %_TOPICS_SUB_NOMS_LOW";
+$message["TOPIC_EXPORT_ITEM_ZIP"]["en"] = "Topic";
 $message["TOPIC_INDEX"]["en"] = "%_TOPICS_SUB_NOMPL_BIG";
 $message["TOPIC_LEAVE"]["en"] = "Leave";
 $message["TOPIC_MAIL_NO_RECIPIENTS_ERROR"]["en"] = "There are no receipients for this mail because no persons joined the selected %_TOPICS_SUB_AKKPL_LOW.";

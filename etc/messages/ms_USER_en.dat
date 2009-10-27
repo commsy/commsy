@@ -61,6 +61,7 @@ $message["USER_EMAIL_HIDDEN"]["en"] = "hidden";
 $message["USER_EMAIL_HIDDEN2"]["en"] = "E-mail address hidden";
 $message["USER_EMAIL_VALID_ERROR"]["en"] = "The e-mail address is not valid";
 $message["USER_EMAIL_VISIBILITY_VALUE"]["en"] = "Hide e-mail address in this workspace";
+$message["USER_EXPORT_ITEM_ZIP"]["en"] = "User";
 $message["USER_FIRSTNAME"]["en"] = "First name";
 $message["USER_FULLNAME"]["en"] = "Name";
 $message["USER_GET_MAIL_BODY"]["en"] = "%1 requests an account [%2].

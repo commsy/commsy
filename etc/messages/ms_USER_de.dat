@@ -60,6 +60,7 @@ $message["USER_EMAIL_HIDDEN"]["de"] = "verborgen";
 $message["USER_EMAIL_HIDDEN2"]["de"] = "E-Mail-Adresse verborgen";
 $message["USER_EMAIL_VALID_ERROR"]["de"] = "Die Emailadresse hat ein ungültiges Format";
 $message["USER_EMAIL_VISIBILITY_VALUE"]["de"] = "E-Mail Adresse in diesem Raum verbergen";
+$message["USER_EXPORT_ITEM_ZIP"]["de"] = "Person";
 $message["USER_FIRSTNAME"]["de"] = "Vorname";
 $message["USER_FULLNAME"]["de"] = "Name";
 $message["USER_GET_MAIL_BODY"]["de"] = "%1 hat sich mit der Kennung [%2] angemeldet.

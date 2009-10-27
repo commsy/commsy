@@ -6,6 +6,7 @@ $message["GROUP_DISCUSSIONS"]["en"] = "assigned wiki-forums";
 $message["GROUP_EDIT"]["en"] = "Edit group";
 $message["GROUP_ENTER"]["en"] = "Join";
 $message["GROUP_ENTER_NEW"]["en"] = "group";
+$message["GROUP_EXPORT_ITEM_ZIP"]["en"] = "Group";
 $message["GROUP_HEADER"]["en"] = "Groups";
 $message["GROUP_INDEX"]["en"] = "Groups";
 $message["GROUP_LEAVE"]["en"] = "Leave";
