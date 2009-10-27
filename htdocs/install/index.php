@@ -796,6 +796,7 @@ $schreibe12 = \"".$sec_key."\";
      // DATENBANK INSTALLIEREN
    $file_content = file_get_contents("../../docs/db_dump_mysql.sql");
    include_once("../../etc/cs_config.php");
+   include_once("../../etc/commsy/default.php");
    /* nicht mysqli verwenden: TBD
    include_once('../../classes/db_mysql_connector.php');
    $db_connector = new db_mysql_connector($db["normal"]);
