@@ -76,6 +76,7 @@ class class_life extends cs_plugin {
                curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/logmeout/" . $session_id);
                curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
                curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+               curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
 
                // proxy
                $proxy = '';
@@ -126,6 +127,7 @@ class class_life extends cs_plugin {
                   curl_setopt($cURL, CURLOPT_URL, $this->_url_to_life."/changeprofile/" . $session_id);
                   curl_setopt($cURL, CURLOPT_RETURNTRANSFER, 1);
                   curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
+                  curl_setopt($cURL, CURLOPT_SSL_VERIFYHOST, false);
 
                   // proxy
                   $proxy = '';

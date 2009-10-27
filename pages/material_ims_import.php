@@ -94,6 +94,7 @@ else {
             curl_setopt($ch,CURLOPT_HEADER,0);
             curl_setopt($ch,CURLOPT_URL,$file_url);
             curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+            curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
             $proxy = $c_proxy_ip;
             if ( !empty($c_proxy_port) ) {
                $proxy = $c_proxy_ip.':'.$c_proxy_port;

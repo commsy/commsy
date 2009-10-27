@@ -68,6 +68,7 @@ class misc_2zip {
          curl_setopt($ch,CURLOPT_HEADER,0);
          curl_setopt($ch,CURLOPT_URL,$file_url);
          curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,false);
          global $c_proxy_ip;
          global $c_proxy_port;
          if ( !empty($c_proxy_ip) ) {
