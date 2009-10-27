@@ -224,6 +224,9 @@ class cs_topic_form extends cs_rubric_form {
          } elseif ( isset($item) ) {
             $link_manager->setLinkedItemLimit($item);
             $topic_item = $item;
+         }  else {
+            $topic_manager = $this->_environment->getManager(CS_TOPIC_TYPE);
+            $topic_item = $topic_manager->getNewItem();
          }
          $link_manager->sortbySortingPlace();
          $link_manager->select();
