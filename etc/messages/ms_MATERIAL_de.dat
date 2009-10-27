@@ -54,6 +54,7 @@ Die öffentliche Version im Raum-Wiki finden Sie unter:<br/>
 <br/>
 %3";
 $message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["de"] = "Material-Export ins Wiki";
+$message["MATERIAL_EXPORT_ZIP"]["de"] = "Materialien";
 $message["MATERIAL_FACULTY"]["de"] = "Fakultät";
 $message["MATERIAL_FACULTY_DESC"]["de"] = "/Fachbereich Informatik/";
 $message["MATERIAL_FILES"]["de"] = "Dateien";

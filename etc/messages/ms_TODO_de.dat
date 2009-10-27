@@ -9,6 +9,7 @@ $message["TODO_ENTER"]["de"] = "Zuständigkeit signalisieren";
 $message["TODO_ENTER_NEW"]["de"] = "Aufgabe stellen";
 $message["TODO_EXPORT"]["de"] = "Aufgaben exportieren";
 $message["TODO_EXPORT_FILENAME"]["de"] = "Aufgaben";
+$message["TODO_EXPORT_ZIP"]["de"] = "Aufgaben";
 $message["TODO_HEADER"]["de"] = "Aufgaben";
 $message["TODO_INDEX"]["de"] = "Aufgaben";
 $message["TODO_IN_POGRESS"]["de"] = "in Bearbeitung";

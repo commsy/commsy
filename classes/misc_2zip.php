@@ -131,7 +131,22 @@ class misc_2zip {
          $item_type = $item_manager->getItemType($this->_item_id);
          $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$item_type.'_'.$this->_item_id.'.zip';
       } else {
-         $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$this->_environment->getCurrentModule().'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
+      	$translator = $this->_environment->getTranslationObject();
+      	if($this->_environment->getCurrentModule() == 'announcement'){
+      	   $current_module = $translator->getMessage('ANNOUNCEMENT_EXPORT_ZIP');
+      	} elseif($this->_environment->getCurrentModule() == 'material'){
+            $current_module = $translator->getMessage('MATERIAL_EXPORT_ZIP');
+         } elseif($this->_environment->getCurrentModule() == 'date'){
+            $current_module = $translator->getMessage('DATE_EXPORT_ZIP');
+         } elseif($this->_environment->getCurrentModule() == 'discussion'){
+            $current_module = $translator->getMessage('DISCUSSION_EXPORT_ZIP');
+         } elseif($this->_environment->getCurrentModule() == 'todo'){
+            $current_module = $translator->getMessage('TODO_EXPORT_ZIP');
+         } else {
+      		$current_module = $this->_environment->getCurrentModule();
+      	}
+         //$zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$this->_environment->getCurrentModule().'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
+         $zipfile = $export_temp_folder.DIRECTORY_SEPARATOR.$current_module.'_'.$this->_environment->getCurrentFunction().'_'.$this->_environment->getCurrentContextID().'_'.time().'.zip';
       }
       if ( file_exists(realpath($zipfile)) ) {
          unlink($zipfile);

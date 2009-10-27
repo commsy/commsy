@@ -9,6 +9,7 @@ $message["TODO_ENTER"]["en"] = "Self-assign for this task";
 $message["TODO_ENTER_NEW"]["en"] = "Enter task";
 $message["TODO_EXPORT"]["en"] = "Export tasks";
 $message["TODO_EXPORT_FILENAME"]["en"] = "Todos";
+$message["TODO_EXPORT_ZIP"]["en"] = "Todos";
 $message["TODO_HEADER"]["en"] = "Tasks";
 $message["TODO_INDEX"]["en"] = "Tasks";
 $message["TODO_IN_POGRESS"]["en"] = "In progress";
