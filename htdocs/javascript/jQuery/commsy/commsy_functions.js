@@ -664,3 +664,17 @@ jQuery(document).ready(function() {
    jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
    jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
 });
+
+//jQuery(document).ready(function() {
+//	jQuery("a[name^='calendar_link']").hover(
+//	    function() {
+//	    	name_array = jQuery(this).attr('name').split('_');
+//	    	id = name_array[name_array.length-1];
+//	    	jQuery('#calendar_hover_'+id).animate({opacity: "show", top: "-75"}, "slow");
+//	    },
+//	    function() {
+//	    	name_array = jQuery(this).attr('name').split('_');
+//	    	id = name_array[name_array.length-1];
+//	    	jQuery('#calendar_hover_'+id).animate({opacity: "hide", top: "-85"}, "fast");
+//	    });
+//});

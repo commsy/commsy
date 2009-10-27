@@ -887,14 +887,24 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            'detail',
                            $params,
                            $title,
-              $hover);
+                           $hover, // Sunbird-Vorbereitung -> hover durch '' ersetzen
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid']);
          }else{
             $title = ahref_curl( $this->_environment->getCurrentContextID(),
                            CS_DATE_TYPE,
                            'detail',
                            $params,
                            $title,
-              $hover);
+                           $hover, // Sunbird-Vorbereitung -> hover durch '' ersetzen
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid']);
 
          }
       $mod = $this->_with_modifying_actions;
@@ -924,6 +934,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            '');
          }
       }
+      // Sunbird-Vorbereitung
+      //$jQuery_hover = '<div id="calendar_hover_' . $params['iid'] . '" style="width: 180px; height: 45px;position: relative; top: -85px;left: -15px;text-align: center;padding: 20px 12px 10px;font-style: normal;z-index: 2;display: none;">' . $hover . '</div>';
+      //$title = $title . $jQuery_hover;
       unset($params);
       return $title;
    }
