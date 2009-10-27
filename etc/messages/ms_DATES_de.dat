@@ -21,6 +21,7 @@ $message["DATES_END_DAY"]["de"] = "Datum ";
 $message["DATES_END_TIME"]["de"] = "Uhrzeit";
 $message["DATES_ENTER_NEW"]["de"] = "Neuen Termin eingeben";
 $message["DATES_EXPORT"]["de"] = "Termine exportieren";
+$message["DATES_EXPORT_FILENAME"]["de"] = "Termine";
 $message["DATES_FEBRUARY_LONG"]["de"] = "Februar";
 $message["DATES_FEBRUARY_SHORT"]["de"] = "Feb";
 $message["DATES_FROM_TIME_LOWER"]["de"] = "von";

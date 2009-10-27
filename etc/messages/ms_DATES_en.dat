@@ -21,6 +21,7 @@ $message["DATES_END_DAY"]["en"] = "date ";
 $message["DATES_END_TIME"]["en"] = "time";
 $message["DATES_ENTER_NEW"]["en"] = "Enter new event";
 $message["DATES_EXPORT"]["en"] = "Export events";
+$message["DATES_EXPORT_FILENAME"]["en"] = "Dates";
 $message["DATES_FEBRUARY_LONG"]["en"] = "February";
 $message["DATES_FEBRUARY_SHORT"]["en"] = "Feb";
 $message["DATES_FROM_TIME_LOWER"]["en"] = "from";

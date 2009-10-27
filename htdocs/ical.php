@@ -251,7 +251,11 @@ if ( isset($_GET['cid']) ) {
                      }
          $item = $item_list->getNext();
    }
-    $dateiname = 'dates_'.$_GET['cid'];
+   if($current_module==CS_DATE_TYPE){
+      $dateiname = $translator->getMessage('DATES_EXPORT_FILENAME').'_'.$_GET['cid'];
+   } elseif ($current_module==CS_TODO_TYPE){
+   	$dateiname = $translator->getMessage('TODO_EXPORT_FILENAME').'_'.$_GET['cid'];
+   }
    #echo $iCal->getOutput();
    $iCal->outputFile($dateiname);
   } else {
