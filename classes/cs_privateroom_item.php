@@ -34,6 +34,7 @@ class cs_privateroom_item extends cs_room_item {
 
    var $_user_item = NULL;
    var $_check_customized_room_id_array = false;
+   private $_home_conf_done = false;
 
    /**
     * Constructor
@@ -55,25 +56,35 @@ class cs_privateroom_item extends cs_room_item {
       $this->_default_home_conf_array[CS_USER_TYPE] = 'tiny';
       $this->_default_home_conf_array[CS_DISCUSSION_TYPE] = 'none';
       $this->_default_home_conf_array[CS_TODO_TYPE] = 'none';
+   }
 
-      // rubric plugins
-      $i = count($this->_default_rubrics_array)-1;
-      $plugin_list = $this->_environment->getRubrikPluginClassList();
-      if ( $plugin_list->isNotEmpty() ) {
-         $plugin = $plugin_list->getFirst();
-         while ( $plugin ) {
-            if ( $plugin->inPrivateRoom() ) {
-               $i++;
-               $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
-               $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
-               $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
+   private function _addPluginInRubricArray () {
+      if ( !$this->_home_conf_done ) {
+         $i = count($this->_default_rubrics_array)-1;
+         $portal_id = $this->getContextID();
+         $plugin_list = $this->_environment->getRubrikPluginClassList($portal_id);
+         if ( isset($plugin_list)
+              and $plugin_list->isNotEmpty()
+            ) {
+            $plugin = $plugin_list->getFirst();
+            while ( $plugin ) {
+               if ( $plugin->inPrivateRoom()
+                    and $this->isPluginOn($plugin)
+                  ) {
+                  $i++;
+                  $this->_plugin_rubrics_array[] = $plugin->getIdentifier();
+                  $this->_default_rubrics_array[$i] = $plugin->getIdentifier();
+                  $this->_default_home_conf_array[$plugin->getIdentifier()] = $plugin->getHomeStatusDefault();
+               }
+               $plugin = $plugin_list->getNext();
             }
-            $plugin = $plugin_list->getNext();
          }
+         $this->_home_conf_done = true;
       }
    }
 
    function getHomeConf () {
+      $this->_addPluginInRubricArray();
       $rubrics = parent::getHomeConf();
       $retour = array();
       foreach (explode(',',$rubrics) as $rubric){

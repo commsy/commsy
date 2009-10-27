@@ -1729,6 +1729,9 @@ class cs_context_item extends cs_item {
     */
    function isPluginOn ($identifier) {
       $retour = false;
+      if ( is_object($identifier) ) {
+         $identifier = $identifier->getIdentifier();
+      }
       $plugin_config = $this->_getPluginConfig($identifier);
       if ($plugin_config == 1) {
          $retour = true;

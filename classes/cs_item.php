@@ -880,7 +880,6 @@ class cs_item {
    *
    * @param string key
    * @access private
-   * @author CommSy Development Group
    */
    function _getValue($key) {
       if(!isset($this->_data[$key])) {

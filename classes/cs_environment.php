@@ -1515,12 +1515,24 @@ class cs_environment {
       return $retour;
    }
 
-   function getRubrikPluginClassList () {
-      $retour = $this->_rubric_plugin_class_list;
+   function getRubrikPluginClassList ( $cid = '' ) {
+      $key = $cid;
+      if ( empty($key) ) {
+         $key = 'all';
+      }
+      $retour = '';
+      if ( !empty($this->_rubric_plugin_class_list[$key]) ) {
+         $retour = $this->_rubric_plugin_class_list[$key];
+      }
       if ( empty($retour) ) {
+         if ( !empty($cid) ) {
+            // only portal
+            $portal_manager = $this->getPortalManager();
+            $portal_item = $portal_manager->getItem($cid);
+         }
          global $c_plugin_array;
          include_once('classes/cs_list.php');
-         $this->_rubric_plugin_class_list = new cs_list();
+         $this->_rubric_plugin_class_list[$key] = new cs_list();
          if ( isset($c_plugin_array)
               and !empty($c_plugin_array)
             ) {
@@ -1529,13 +1541,19 @@ class cs_environment {
                if ( !empty($plugin_class)
                     and method_exists($plugin_class,'isRubricPlugin')
                     and $plugin_class->isRubricPlugin()
+                    and ( empty($cid)
+                          or ( isset($portal_item)
+                               and $portal_item->isPluginOn($plugin)
+                             )
+                        )
                   ) {
-                  $this->_rubric_plugin_class_list->add($plugin_class);
+                  $this->_rubric_plugin_class_list[$key]->add($plugin_class);
                }
             }
          }
-         $retour = $this->_rubric_plugin_class_list;
+         $retour = $this->_rubric_plugin_class_list[$key];
       }
+
       return $retour;
    }
 

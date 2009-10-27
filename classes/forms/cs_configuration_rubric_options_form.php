@@ -74,6 +74,18 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
 
      $room = $this->_environment->getCurrentContextItem();
      $default_rubrics = $room->getAvailableDefaultRubricArray();
+     $plugin_list = $this->_environment->getRubrikPluginClassList($this->_environment->getCurrentPortalID());
+     if ( isset($plugin_list)
+          and $plugin_list->isNotEmpty()
+        ) {
+        $plugin_class = $plugin_list->getFirst();
+        while ( $plugin_class ) {
+           if ( !in_array($plugin_class->getIdentifier(),$default_rubrics) ) {
+              $default_rubrics[] = mb_strtolower($plugin_class->getIdentifier());
+           }
+           $plugin_class = $plugin_list->getNext();
+        }
+     }
      if ( count($default_rubrics) > 8 ) {
         $count = 8;
      } else {

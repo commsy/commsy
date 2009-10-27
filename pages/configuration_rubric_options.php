@@ -115,10 +115,12 @@ else {
          } else {
             $count = count($default_rubrics);
          }
+         $rubric_array_for_plugin = array();
          for ($i=0; $i<$count; $i++){
             $rubric = '';
             if (!empty($_POST['rubric_'.$i])){
                if ($_POST['rubric_'.$i] != 'none') {
+                  $rubric_array_for_plugin[] = $_POST['rubric_'.$i];
                   $temp_array[$i] = $_POST['rubric_'.$i].'_';
                   if ( !empty($_POST['show_'.$i]) ) {
                      $temp_array[$i] .= $_POST['show_'.$i];
@@ -130,6 +132,22 @@ else {
             }
          }
          $room_item->setHomeConf(implode($temp_array,','));
+
+         // plugins
+         $plugin_list = $environment->getRubrikPluginClassList($environment->getCurrentPortalID());
+         if ( isset($plugin_list)
+              and $plugin_list->isNotEmpty()
+            ) {
+            $plugin_class = $plugin_list->getFirst();
+            while ( $plugin_class ) {
+               if (in_array(mb_strtolower($plugin_class->getIdentifier()),$rubric_array_for_plugin)) {
+                  $room_item->setPluginOn(mb_strtolower($plugin_class->getIdentifier()));
+               } else {
+                  $room_item->setPluginOff(mb_strtolower($plugin_class->getIdentifier()));
+               }
+               $plugin_class = $plugin_list->getNext();
+            }
+         }
 
          // save room_item
          $room_item->save();
@@ -148,9 +166,8 @@ else {
    } elseif ( isset($room_item) ) {
       $form->setItem($room_item);
    }
-      $form->prepareForm();
-      $form->loadValues();
-
+   $form->prepareForm();
+   $form->loadValues();
 
    // Display form
    $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),$environment->getCurrentFunction(),''));
