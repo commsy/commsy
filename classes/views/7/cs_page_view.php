@@ -619,15 +619,7 @@ class cs_page_view extends cs_view {
             ) {
             $retour .= '   <script type="text/javascript"> jsMath = {Controls: {cookie: {scale: 120}}} </script>'.LF;
             global $c_jsmath_url;
-            $retour .= '   <script type="text/javascript" src="'.$c_jsmath_url.'/plugins/autoload.js"></script>'.LF;
-            $retour .= '   <script type="text/javascript">'.LF;
-            $retour .= '      window.addEvent(\'domready\', function () {'.LF;
-            $retour .= '         if (jsMath.Autoload) {'.LF;
-            $retour .= '            jsMath.Autoload.Check();'.LF;
-            $retour .= '            jsMath.Process(document);'.LF;
-            $retour .= '         }'.LF;
-            $retour .= '      });'.LF;
-            $retour .= '   </script>'.LF;
+            $retour .= '   <script type="text/javascript" src="'.$c_jsmath_url.'/jsMath.js"></script>'.LF;
          }
          if ($current_user->isAutoSaveOn() and $this->_environment->getCurrentModule() == CS_DISCUSSION_TYPE ){
             $current_context = $this->_environment->getCurrentContextItem();

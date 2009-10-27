@@ -956,9 +956,9 @@ class misc_text_converter {
             }
             $source = $file->getUrl();
             if(($file->getExtension() == 'jpg') or ($file->getExtension() == 'gif') or ($file->getExtension() == 'png')){
-            	$image_text = '<a href="'.$source.'"'.$target.' rel="lightbox">'.$icon.$name.'</a>'.$kb;
+               $image_text = '<a href="'.$source.'"'.$target.' rel="lightbox">'.$icon.$name.'</a>'.$kb;
             } else {
-            	$image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
+               $image_text = '<a href="'.$source.'"'.$target.'>'.$icon.$name.'</a>'.$kb;
             }
          }
       }
@@ -1621,8 +1621,13 @@ class misc_text_converter {
    private function _formatMath1 ( $text, $array ) {
       $retour = '';
       if ( !empty($array[0]) and !empty($array[1]) ) {
+         $div_number = $this->_getDivNumber();
          $image_text = '';
-         $image_text = '<span class="math">'.$array[1].'</span>';
+         $image_text .= '<span id="has_math_'.$div_number.'">'.LF;
+         $image_text .= '<span class="math">'.$array[1].'</span>'.LF;
+         $image_text .= '</span>'.LF;
+         $image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
+
          if ( !empty($image_text) ) {
             $text = str_replace($array[0],$image_text,$text);
          }
@@ -1636,13 +1641,19 @@ class misc_text_converter {
    // see http://www.math.union.edu/~dpvc/jsMath/
    private function _formatMath2 ( $text, $array ) {
       $retour = '';
-      $image_text = '';
-      $image_text = '<div class="math">'.$array[1].'</div>';
-      if ( !empty($image_text) ) {
-         $text = str_replace($array[0],$image_text,$text);
-      }
+      if ( !empty($array[0]) and !empty($array[1]) ) {
+         $div_number = $this->_getDivNumber();
+         $image_text = '';
+         $image_text .= '<div id="has_math_'.$div_number.'">'.LF;
+         $image_text .= '<div class="math">'.$array[1].'</div>'.LF;
+         $image_text .= '</div>'.LF;
+         $image_text .= '<script type="text/javascript">jsMath.ProcessBeforeShowing(\'has_math_'.$div_number.'\');</script>'.LF;
+         if ( !empty($image_text) ) {
+            $text = str_replace($array[0],$image_text,$text);
+         }
 
-      $retour = $text;
+         $retour = $text;
+      }
       return $retour;
    }
 
