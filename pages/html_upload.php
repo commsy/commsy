@@ -21,6 +21,12 @@
 
 set_time_limit(0);
 
+if ( !isset($environment)
+     and isset($this->_environment)
+   ) {
+   $environment = $this->_environment;
+}
+
 function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
 
    $handle = @opendir($dir);
@@ -89,6 +95,13 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
          }
       }
+      if ( strstr($filecontent,"'".$name."'") ) {
+         $trefferlowercase = mb_strtolower($name, 'UTF-8');
+         $treffer = "'".$name."'";
+         global $c_single_entry_point;
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
+         $filecontent = str_replace($treffer, "'".$replacement."'", $filecontent);
+      }
    }
    return $filecontent;
 }
@@ -96,7 +109,7 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
 $zip = new ZipArchive;
 
 $source_file = $file->getDiskFileName();
-$target_directory = 'var/'.$this->_environment->getCurrentPortalID().'/'.$this->_environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+$target_directory = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
 
 global $export_temp_folder;
 if ( !isset($export_temp_folder) ) {
@@ -122,10 +135,10 @@ if ( $res === TRUE ) {
 }
 unset($zip);
 if($file->getHasHTML() == 2) {
-   $pfad = 'var/'.$this->_environment->getCurrentPortalID().'/'.$this->_environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+   $pfad = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
    $namearray['filename'] = array();
    $namearray['dirname'] = array();
-   $namearray = listfilenames($pfad,2,$file,$this->_environment,$namearray);
-   replace_files($pfad,2,$file,$this->_environment,$namearray);
+   $namearray = listfilenames($pfad,2,$file,$environment,$namearray);
+   replace_files($pfad,2,$file,$environment,$namearray);
 }
 ?>

@@ -21,32 +21,38 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-
-
 if ( !empty($_GET['iid']) ) {
-
-
    $file_manager = $environment->getFileManager();
    $file = $file_manager->getItem($_GET['iid']);
-   if((file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.htm')) and empty($_GET['file'])) {
-   		$filename = 'index.htm';
-   } elseif((file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.html')) and empty($_GET['file'])) {
-   		$filename = 'index.html';
-   } else {
-   		$filename = $_GET['file'];
-   }
-   if(file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename)) {
-	   	    $filecontent = file_get_contents('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
 
-	    	echo $filecontent;
-                 exit;
-	   //include('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
+   // is zip unpacked?
+   $dir = './var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder();
+   if ( !is_dir($dir) ) {
+      include_once('pages/html_upload.php');
+   }
+
+   if ( file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.htm')
+        and empty($_GET['file'])
+      ) {
+      $filename = 'index.htm';
+   } elseif((file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/index.html')) and empty($_GET['file'])) {
+      $filename = 'index.html';
    } else {
-   		include_once('functions/error_functions.php');trigger_error("material_showzip: File not found!", E_USER_ERROR);
+      $filename = $_GET['file'];
+   }
+   if (file_exists('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename)) {
+      $filecontent = file_get_contents('./var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/'.$filename);
+      echo $filecontent;
+      exit;
+   } else {
+      include_once('functions/error_functions.php');
+      trigger_error("material_showzip: File not found!", E_USER_ERROR);
+      trigger_error("material_showzip: File (./var/".$environment->getCurrentPortalID()."/".$environment->getCurrentContextID()."/html_".$file->getDiskFileNameWithoutFolder()."/".$filename.") not found!", E_USER_ERROR);
    }
    unset($iid);
 } else {
-   include_once('functions/error_functions.php');trigger_error("material_showzip: Have no valid Item ID", E_USER_ERROR);
+   include_once('functions/error_functions.php');
+   trigger_error("material_showzip: Have no valid Item ID", E_USER_ERROR);
 }
 
 ?>
