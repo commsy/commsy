@@ -373,7 +373,7 @@ class cs_detail_view extends cs_view {
 
 
 
-   function getBuzzwordSizeLogarithmic( $count, $mincount=0, $maxcount=30, $minsize=8, $maxsize=16, $tresholds=0 ) {
+   function getBuzzwordSizeLogarithmic( $count, $mincount=0, $maxcount=30, $minsize=10, $maxsize=20, $tresholds=0 ) {
       if( empty($tresholds) ) {
          $tresholds = $maxsize-$minsize;
          $treshold = 1;
