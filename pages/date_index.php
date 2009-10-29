@@ -385,7 +385,7 @@ if ( isset($_GET['option'])
    foreach ( $room_modules as $module ) {
       $link_name = explode('_', $module);
       if ( $link_name[1] != 'none' ) {
-         if ($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) {
+         if (($context_item->_is_perspective($link_name[0]) and $context_item->withRubric($link_name[0])) or ($link_name[0] == 'user')) {
             // Find current institution selection
             $string = 'sel'.$link_name[0];
             if ( isset($_GET[$string]) and $_GET[$string] !='-2') {
