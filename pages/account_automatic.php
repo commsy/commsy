@@ -45,6 +45,9 @@ if (!empty($_GET['iid'])) {
 
 $user_manager = $environment->getUserManager();
 $user = $user_manager->getItem($iid);
+if ( isset($user) ) {
+   $last_status = $user->getStatus();
+}
 $current_user = $environment->getCurrentUserItem();
 
 // error if user is already deleted
@@ -193,6 +196,21 @@ if ($command == 'automatic') {
       if (isset($group)) {
          $group->setModificatorItem($current_user);
          $group->save();
+      }
+   }
+
+   // if commsy user is re-opend, re-open own room user
+   if ( $environment->inPortal()
+        and isset($last_status)
+        and ( empty($last_status)
+              or $last_status == 0
+            )
+      ) {
+      $user_own_room = $user->getRelatedPrivateRoomUserItem();
+      if ( isset($user_own_room) ) {
+         $user_own_room->makeModerator();
+         $user_own_room->makeContactPerson2();
+         $user_own_room->save();
       }
    }
 

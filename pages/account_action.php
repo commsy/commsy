@@ -40,6 +40,9 @@ function performAction ( $environment, $action_array, $post_array ) {
 
    foreach ( $action_array['selected_ids'] as $user_item_id ) {
       $user = $user_manager->getItem($user_item_id);
+      if ( isset($user) ) {
+         $last_status = $user->getStatus();
+      }
 
       if ( $action_array['action'] == 'USER_ACCOUNT_DELETE' ) {
          if ( $environment->inPortal() or $environment->inServer() ) {
@@ -318,6 +321,21 @@ function performAction ( $environment, $action_array, $post_array ) {
          }
          unset($user_list);
          unset($user_item);
+      }
+
+      // if commsy user is re-opend, re-open own room user
+      if ( $environment->inPortal()
+           and isset($last_status)
+           and ( empty($last_status)
+                 or $last_status == 0
+               )
+         ) {
+         $user_own_room = $user->getRelatedPrivateRoomUserItem();
+         if ( isset($user_own_room) ) {
+            $user_own_room->makeModerator();
+            $user_own_room->makeContactPerson2();
+            $user_own_room->save();
+         }
       }
 
       // send email

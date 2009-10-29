@@ -437,11 +437,13 @@ class cs_privateroom_manager extends cs_context_manager {
                         AND user.auth_source="'.encode(AS_DB,$user_item->getAuthSource()).'"
                         AND user.deletion_date IS NULL
                         AND user.user_id="'.encode(AS_DB,$user_item->getUserID()).'"';
+            /*
             if (!$this->_all_room_limit) {
                $query .= ' AND user.status >= "2"';
             } else {
                $query .= ' AND user.status >= "1"';
             }
+            */
 
             $query .= ' WHERE 1';
             $query .= ' AND '.$this->_db_table.'.type = "privateroom"';
