@@ -39,8 +39,6 @@ class cs_server_item extends cs_guide_item {
    function cs_server_item ($environment) {
       $this->cs_guide_item($environment);
       $this->_type = CS_SERVER_TYPE;
-#      $this->_default_rubrics_array[0] = CS_PORTAL_TYPE;
-#      $this->_default_home_conf_array[CS_PORTAL_TYPE] = 'tiny';
    }
 
    function isServer () {
@@ -750,8 +748,11 @@ class cs_server_item extends cs_guide_item {
             case 'CONFIGURATION_UPDATE':
                $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM');
                break;
+            case 'CONFIGURATION_HTMLTEXTAREA':
+               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
+               break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item ('.__LINE__.')";
+               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item (".__LINE__.")";
                break;
          }
          $retour = $tempMessage;

@@ -52,7 +52,11 @@ foreach ( $table_array as $table ) {
    $this->_flushHTML($table.BRLF);
 
    // count entries
-   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   if ( $table == 'materials' or $table == 'section' ) {
+      $result = $this->_select('SELECT count(*) AS count FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   } else {
+      $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   }
    if ( !empty($result[0]['count']) ) {
       $count = $result[0]['count'];
    } else {
@@ -68,7 +72,11 @@ foreach ( $table_array as $table ) {
       $i = 0;
 
       while ( $i<$count ) {
-         $sql = 'SELECT item_id, description FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         if ( $table == 'materials' or $table == 'section' ) {
+            $sql = 'SELECT item_id, version_id, description FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         } else {
+            $sql = 'SELECT item_id, description FROM '.$table.' WHERE description LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         }
          $i = $i + $interval;
          $result = $this->_select($sql);
          if ( !empty($result) ) {
@@ -82,7 +90,15 @@ foreach ( $table_array as $table ) {
                   $desc = preg_replace('~<!-- KFC TEXT [a-z0-9]* -->~u','',$desc);
                   $fck_text = '<!-- KFC TEXT '.getSecurityHash($desc).' -->';
                   $desc = $fck_text.$desc.$fck_text;
-                  $sql = 'UPDATE '.$table.' SET description = "'.addslashes($desc).'" WHERE item_id = "'.$row['item_id'].'";';
+                  $sql  = 'UPDATE '.$table.' SET description = "'.addslashes($desc).'" WHERE item_id = "'.$row['item_id'].'"';
+                  if ( isset($row['version_id']) ) {
+                     $version_id = $row['version_id'];
+                     if ( empty($version_id) ) {
+                        $version_id = '0';
+                     }
+                     $sql .= ' AND version_id="'.$version_id.'"';
+                  }
+                  $sql .= ';';
                   $success1 = $this->_select($sql);
                   $success = $success and $success1;
                   $counter++;
@@ -106,7 +122,11 @@ $table_array[] = 'materials';
 foreach ( $table_array as $table ) {
    $counter = 0;
    $this->_flushHTML($table.BRLF);
-   $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   if ( $table == 'materials' or $table == 'section' ) {
+      $result = $this->_select('SELECT count(*) AS count FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   } else {
+      $result = $this->_select('SELECT count(item_id) AS count FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL;');
+   }
    if ( !empty($result[0]['count']) ) {
       $count = $result[0]['count'];
    } else {
@@ -122,7 +142,11 @@ foreach ( $table_array as $table ) {
       $i = 0;
 
       while ( $i<$count ) {
-         $sql = 'SELECT item_id, extras FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         if ( $table == 'materials' or $table == 'section' ) {
+            $sql = 'SELECT item_id, version_id, extras FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         } else {
+            $sql = 'SELECT item_id, extras FROM '.$table.' WHERE extras LIKE \'%<!-- KFC TEXT %\' and deletion_date IS NULL and deleter_id IS NULL ORDER BY item_id LIMIT '.$i.','.$interval.';';
+         }
          $i = $i + $interval;
          $result = $this->_select($sql);
          if ( !empty($result) ) {
@@ -169,7 +193,15 @@ foreach ( $table_array as $table ) {
                   }
                   if ($changed) {
                      $extras = serialize($extra_array);
-                     $sql = 'UPDATE '.$table.' SET extras = "'.addslashes($extras).'" WHERE item_id = "'.$row['item_id'].'";';
+                     $sql = 'UPDATE '.$table.' SET extras = "'.addslashes($extras).'" WHERE item_id = "'.$row['item_id'].'"';
+                     if ( isset($row['version_id']) ) {
+                        $version_id = $row['version_id'];
+                        if ( empty($version_id) ) {
+                           $version_id = '0';
+                        }
+                        $sql .= ' AND version_id="'.$version_id.'"';
+                     }
+                     $sql .= ';';
                      $success1 = $this->_select($sql);
                      $success = $success and $success1;
                      $counter++;
