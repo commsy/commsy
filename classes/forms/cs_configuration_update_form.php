@@ -149,6 +149,31 @@ class cs_configuration_update_form extends cs_rubric_form {
             }
          }
       }
+      if ( !empty($this->_script_array) ) {
+         $scripts = false;
+         foreach ($this->_script_array as $key => $script_array) {
+            if ( !empty($script_array) ) {
+               $scripts = true;
+            }
+         }
+         if ( !$scripts ) {
+            $current_version_array = explode('_to_',$key);
+            if ( !empty($current_version_array[1])) {
+               $current_version = $current_version_array[1];
+               $current_code_version = getCommSyVersion();
+               if ( !strstr($current_code_version,'beta')
+                    and !strstr($current_code_version,' ')
+                    and substr_count($current_code_version,'.') == 2
+                  ) {
+                  $current_context = $this->_environment->getServerItem();
+                  $current_context->setDBVersion($current_version);
+                  $current_context->save();
+
+                  redirect($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),$this->_environment->getCurrentFunction(),array());
+               }
+            }
+         }
+      }
    }
 
    /** create the form, INTERNAL

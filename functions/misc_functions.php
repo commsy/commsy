@@ -87,12 +87,12 @@ function getCommSyVersion() {
       $temp2 = mb_substr($temp1, 4);
       $temp3 = mb_substr($temp2, 0, mb_strlen($temp2)-1);
       $temp4 = strtr($temp3, '-', '.');
-      $commsyversion = $temp4;
+      $commsyversion = trim($temp4);
    }
    if ( empty($commsyversion) ) {
       $fp = fopen('version','r','1');      // file system access is quite expensive, but the best we can do
       $version = fgets($fp,'50');
-      $commsyversion = $version;
+      $commsyversion = trim($version);
    }
    return $commsyversion;
 }
@@ -1113,7 +1113,7 @@ function getSortImage($direction){
    global $environment;
    $room = $environment->getCurrentContextItem();
    $color = $room->getColorArray();
-   
+
    $tabs_background_color = $color['tabs_background'];
    if ( $tabs_background_color[0] == '#' ) {
       $tabs_background_color = substr($tabs_background_color,1);
@@ -1121,7 +1121,7 @@ function getSortImage($direction){
    $r = hexdec($tabs_background_color[0].$tabs_background_color[1]);
    $g = hexdec($tabs_background_color[2].$tabs_background_color[3]);
    $b = hexdec($tabs_background_color[4].$tabs_background_color[5]);
-   
+
    $HSL = array();
 
    $var_R = ($r / 255);
