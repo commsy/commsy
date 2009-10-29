@@ -62,6 +62,14 @@ class cs_agb_form extends cs_rubric_form {
       }
       if ( !empty($text_array[mb_strtoupper($language, 'UTF-8')]) ) {
          $this->_agb_text = $this->_environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($language, 'UTF-8')]);
+      } else {
+         foreach($text_array as $key => $value){
+            if(!empty($value)){
+               $this->_agb_text = $this->_environment->getTextConverter()->cleanDataFromTextArea($text_array[mb_strtoupper($key, 'UTF-8')]);
+               $this->_agb_text .= '<br/><br/><b>'.$this->_translator->getMessage('AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE').'</b>';
+               break;
+            }
+         }
       }
    }
 

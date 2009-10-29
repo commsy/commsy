@@ -10,4 +10,5 @@ $message["AGB_CONFIRMATION_GUIDE"]["en"] = "Terms and
 Conditions";
 $message["AGB_CONFIRMATION_LINK_INPUT"]["en"] = "Terms and Conditions";
 $message["AGB_MUST_BE_ACCEPTED_FAILURE_TEXT"]["en"] = "Please accept the <span style=&quot;font-weight:bold;&quot;>Terms and Conditions</span>, this is a mandatory part of the admission process.";
+$message["AGB_NO_AGS_FOUND_IN_SELECTED_LANGUAGE"]["en"] = "No Terms and Conditions were found in your language.";
 ?>
