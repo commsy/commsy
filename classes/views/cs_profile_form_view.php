@@ -90,8 +90,11 @@ class cs_profile_form_view extends cs_form_view {
       }
       $params['profile_page'] = 'newsletter';
       $private_room = $current_user_item->getOwnRoom();
-      if ( !$private_room->isPrivateRoomNewsletterActive()
-           and !$current_user_item->isRoomMember()
+      if ( !isset( $private_room )
+           or (
+                !$private_room->isPrivateRoomNewsletterActive()
+                and !$current_user_item->isRoomMember()
+              )
          ) {
          $title = '<a title="'.$this->_translator->getMessageInLang($this->_language,'COMMON_NO_ACTION').'" class="disabled">'.$this->_translator->getMessageInLang($this->_language,'PROFILE_NEWSLETTER_DATA').'</a>';
       } else {
@@ -562,7 +565,7 @@ class cs_profile_form_view extends cs_form_view {
          if (isset($form_element['with_dhtml']) and $form_element['with_dhtml']){
             $html .= '</ul>'.LF;
             $html .= '<script type="text/javascript">'.LF;
-			$html .= 'jQuery(document).ready(function(){jQuery(\'#MySortableRoom\').sortable();$("#MySortableRoom").disableSelection();});';
+         $html .= 'jQuery(document).ready(function(){jQuery(\'#MySortableRoom\').sortable();$("#MySortableRoom").disableSelection();});';
 //            $html .='var MySortables = Sortables.extend({
 //                        start: function(event, element) {
 //                           if (event.target.tagName != \'A\'
@@ -588,7 +591,7 @@ class cs_profile_form_view extends cs_form_view {
 //                        }
 //                        });
 //                     });'.'</script>';
-         	$html .= '</script>';
+            $html .= '</script>';
          }
 
       }
