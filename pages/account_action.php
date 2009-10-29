@@ -21,8 +21,10 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
+$formal_data = array();
 
 function performAction ( $environment, $action_array, $post_array ) {
+   global $formal_data;
    // perform action
    $user_manager = $environment->getUserManager();
    $admin = $user_manager->getItem($action_array['user_item_id']);
@@ -286,6 +288,8 @@ function performAction ( $environment, $action_array, $post_array ) {
          $send_to = $user->getEmail();
       }
 
+      $formal_data_send_to[] = $user->getFullName()." &lt;".$send_to."&gt;";
+      
       // change task status
       if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
            or $action_array['action'] == 'USER_ACCOUNT_LOCK'
@@ -346,7 +350,15 @@ function performAction ( $environment, $action_array, $post_array ) {
          $mail->set_from_name($admin->getFullname());
          $mail->set_reply_to_email($admin->getEmail());
          $mail->set_reply_to_name($admin->getFullname());
-
+         
+         if(!isset($formal_data_from)){
+            $formal_data_from = array(getMessage('MAIL_FROM'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
+            $formal_data[] = $formal_data_from;
+         }
+         if(!isset($formal_data_reply)){
+            $formal_data_reply = array(getMessage('REPLY_TO'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
+            $formal_data[] = $formal_data_reply;
+         }
          // subject and body
          // language
          $translator = $environment->getTranslationObject();
@@ -410,9 +422,15 @@ function performAction ( $environment, $action_array, $post_array ) {
 
          if ( isset($subject) and !empty($subject) ) {
             $mail->set_subject($subject);
+            if(!isset($formal_data_subject)){
+               $formal_data_subject = array(getMessage('MAIL_SUBJECT'), $subject);
+            }
          }
          if ( isset($content) and !empty($content) ) {
             $mail->set_message($content);
+            if(!isset($formal_data_message)){
+               $formal_data_message = array(getMessage('COMMON_MAIL_CONTENT').":", $content);
+            }
          }
          $mail->set_to($send_to);
 
@@ -490,10 +508,12 @@ function performAction ( $environment, $action_array, $post_array ) {
 
          $mail->send();
          unset($mail);
-      }
-
+      } 
       unset($user);
    }
+   $formal_data[] = array(getMessage('MAIL_TO'), implode(",", $formal_data_send_to));
+   $formal_data[] = $formal_data_subject;
+   $formal_data[] = $formal_data_message;
    unset($user_manager);
    unset($admin);
 }
@@ -566,31 +586,38 @@ if ( $command != 'error' ) {
               or !isset($_POST['with_mail'])
             ) {
             performAction($environment,$action_array,$_POST);
-            redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
+            //redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = false;
+            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+            unset($params);
+            $detail_view->setFormalData($formal_data);
+            $page->add($detail_view);
          }
-      }
-
-      // display form
-      if ( $environment->getCurrentModule() == 'account') {
-         $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = true;
-         $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
-         unset($params);
       } else {
+         // display form
+         if ( $environment->getCurrentModule() == 'account') {
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(CONFIGURATION_FORM_VIEW,$params);
+            unset($params);
+         } else {
+            $params = array();
+            $params['environment'] = $environment;
+            $params['with_modifying_actions'] = true;
+            $form_view = $class_factory->getClass(FORM_VIEW,$params);
+            unset($params);
+         }
          $params = array();
-         $params['environment'] = $environment;
-         $params['with_modifying_actions'] = true;
-         $form_view = $class_factory->getClass(FORM_VIEW,$params);
-         unset($params);
-      }
-      $params = array();
-      $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'action',$params));
-      $form_view->setForm($form);
-      if ( $environment->inPortal() or $environment->inServer() ){
-         $page->addForm($form_view);
-      } else {
-         $page->add($form_view);
+         $form_view->setAction(curl($environment->getCurrentContextID(),$environment->getCurrentModule(),'action',$params));
+         $form_view->setForm($form);
+         if ( $environment->inPortal() or $environment->inServer() ){
+            $page->addForm($form_view);
+         } else {
+            $page->add($form_view);
+         }
       }
    }
 }
