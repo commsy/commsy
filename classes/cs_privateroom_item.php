@@ -997,5 +997,21 @@ class cs_privateroom_item extends cs_room_item {
    public function getTitlePure () {
       return parent::getTitle();
    }
+   
+   public function withActivatingContent(){
+      //$result = false;
+      //$manager = $this->_environment->getMyRoomManager();
+      //$user = $this->_environment->getCurrentUserItem();
+      //$project_list = $manager->getRelatedContextListForUser($user->getUserID(),$user->getAuthSource(),$this->_environment->getCurrentPortalID());
+      //$project = $project_list->getFirst();
+      //while($project){
+      //   if($project->withActivatingContent()){
+      //      $result = true;
+      //   }
+      //   $project = $project_list->getNext();
+      //}
+      //return $result;
+      return true;
+   }
 }
 ?>

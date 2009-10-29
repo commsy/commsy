@@ -368,7 +368,7 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
 
-      if ($current_context->withActivatingContent()){
+      if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
          $this->_form->addCheckbox('mode','','','',getMessage('COMMON_NOT_ACCESSIBLE'),'');
