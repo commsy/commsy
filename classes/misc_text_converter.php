@@ -1727,7 +1727,7 @@ class misc_text_converter {
          	if($this->_environment->getCurrentBrowser() != 'MSIE'){
             	$retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
          	} else {
-         		$retour .= '<iframe align="center" src="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
+         		$retour .= '<iframe src="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
          	}
          }
       }
