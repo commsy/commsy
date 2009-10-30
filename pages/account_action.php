@@ -586,14 +586,17 @@ if ( $command != 'error' ) {
               or !isset($_POST['with_mail'])
             ) {
             performAction($environment,$action_array,$_POST);
-            //redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
-            $params = array();
-            $params['environment'] = $environment;
-            $params['with_modifying_actions'] = false;
-            $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
-            unset($params);
-            $detail_view->setFormalData($formal_data);
-            $page->add($detail_view);
+            if($_GET['mod'] != 'user'){
+               redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
+            } else {
+               $params = array();
+               $params['environment'] = $environment;
+               $params['with_modifying_actions'] = false;
+               $detail_view = $class_factory->getClass(MAIL_VIEW,$params);
+               unset($params);
+               $detail_view->setFormalData($formal_data);
+               $page->add($detail_view);
+            }
          }
       } else {
          // display form
