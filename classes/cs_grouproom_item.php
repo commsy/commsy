@@ -844,6 +844,10 @@ class cs_grouproom_item extends cs_room_item {
       return $retour;
    }
 
+   public function showChatLink(){
+      return $this->getLinkedProjectItem()->showChatLink();
+   }
+   
    ################################################################
    # mail to moderation, if the group room status changed
    # - delete
