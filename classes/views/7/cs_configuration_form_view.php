@@ -875,7 +875,9 @@ class cs_configuration_form_view extends cs_form_view {
       $this->_count_form_elements++;
 
       include_once('functions/misc_functions.php');
-      $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
+      if($this->_environment->getCurrentModule() != 'account'){
+         $html = plugin_hook_output_all('getTextAreaAsHTML',$form_element);
+      }
 
       if ( empty($html) ) {
          global $c_html_textarea;

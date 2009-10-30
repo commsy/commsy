@@ -592,7 +592,7 @@ if ( $command != 'error' ) {
               or !isset($_POST['with_mail'])
             ) {
             performAction($environment,$action_array,$_POST);
-            if($_GET['mod'] != 'user'){
+            if($environment->getCurrentModule() != 'user'){
                redirect($action_array['backlink']['cid'],$action_array['backlink']['mod'],$action_array['backlink']['fct'],$action_array['backlink']['par']);
             } else {
                $params = array();
