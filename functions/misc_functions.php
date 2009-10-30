@@ -555,6 +555,18 @@ function pr_xml ($value) {
    echo('</pre>'.LF.LF);
 }
 
+/** print value in mode print_r only for one user
+ * methode to test and debug
+ *
+ * @param   $value
+ */
+function pr_user ($value, $user) {
+   global $environment;
+   if($environment->getCurrentUser()->getUserID() == $user){
+      pr($value);
+   }
+}
+
 /** checks if url is valid
  *
  * @return   boolean  is URL valid [= commsy conform]
