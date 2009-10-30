@@ -511,9 +511,15 @@ function performAction ( $environment, $action_array, $post_array ) {
       } 
       unset($user);
    }
-   $formal_data[] = array(getMessage('MAIL_TO'), implode(",", $formal_data_send_to));
-   $formal_data[] = $formal_data_subject;
-   $formal_data[] = $formal_data_message;
+   if(isset($formal_data_send_to)){
+      $formal_data[] = array(getMessage('MAIL_TO'), implode(",", $formal_data_send_to));
+   }
+   if(isset($formal_data_subject)){
+      $formal_data[] = $formal_data_subject;
+   }
+   if(isset($formal_data_message)){
+      $formal_data[] = $formal_data_message;
+   }
    unset($user_manager);
    unset($admin);
 }
