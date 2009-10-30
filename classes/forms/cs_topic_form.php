@@ -105,6 +105,63 @@ class cs_topic_form extends cs_rubric_form {
      $this->_path_activated = false;
    }
 
+   function setPathItems($items){
+      $this->_link_item_array = array();
+      $item_manager = $this->_environment->getItemManager();
+      foreach($items as $item){
+         $temp_item = $item_manager->getItem($item);
+         $temp_manager = $this->_environment->getManager($temp_item->getItemType());
+         $temp_item = $temp_manager->getItem($item);
+         $temp_array = array();
+         $temp_item_type = mb_strtoupper($temp_item->getItemType(), 'UTF-8');
+         switch ( $temp_item_type )
+         {
+            case 'ANNOUNCEMENT':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
+               break;
+            case 'DATES':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_DATES');
+               break;
+            case 'DATE':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_DATES');
+               break;
+            case 'INSTITUTION':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_INSTITUTION');
+               break;
+            case 'DISCUSSION':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_DISCUSSION');
+               break;
+            case 'USER':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_USER');
+               break;
+            case 'GROUP':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_GROUP');
+               break;
+            case 'MATERIAL':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_MATERIAL');
+               break;
+            case 'PROJECT':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_PROJECT');
+               break;
+            case 'TODO':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_TODO');
+               break;
+            case 'TOPIC':
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_TOPIC');
+               break;
+            default:
+               $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topic_form('.__LINE__.') ');
+               break;
+         }
+         $temp_array['text'] .= ': '.$temp_item->getTitle();
+         $temp_array['value'] = $item;
+         $this->_link_item_array[] = $temp_array;
+      }
+      if(!empty($items)){
+         $this->_path_button_disable = false;
+      }
+   }
+   
    public function resetPathItems () {
       $this->_path_reset_items = true;
    }

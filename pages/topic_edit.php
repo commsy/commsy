@@ -134,6 +134,9 @@ else {
       include_once('include/inc_right_boxes_handling.php');
 
       // PATH
+      if($current_iid == 'NEW'){
+         $form->setPathItems($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));
+      }
       if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
          $form->activatePath();
          $_POST['path_active'] = 1;
