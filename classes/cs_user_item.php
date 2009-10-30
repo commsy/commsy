@@ -1205,7 +1205,9 @@ class cs_user_item extends cs_item {
       if ( $this->_environment->inCommunityRoom() ) {  // Community room
          if ( $user_item->isRoot()
               or ( $user_item->isGuest() and $this->isVisibleForAll() )
-              or ( $user_item->getContextID() == $this->getContextID()
+              or ( ($user_item->getContextID() == $this->getContextID() 
+                    or $user_item->getContextID() == $this->_environment->getCurrentContextID()
+                   )
                    and ( ( $user_item->isUser()
                            and $this->isVisibleForLoggedIn()
                          )
