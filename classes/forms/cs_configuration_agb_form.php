@@ -119,7 +119,7 @@ class cs_configuration_agb_form extends cs_rubric_form {
                                    '60',
                                    $this->_text_area_height,
                                    '',
-                                   'true'
+                                   false
                                   );
       }
 
@@ -160,13 +160,16 @@ class cs_configuration_agb_form extends cs_rubric_form {
     */
    function _checkValues () {
       if ($this->_form_post['agb_status'] == 1) {
-         $first = true;
+         $no_language_set = true;
          foreach ($this->_languages as $language) {
-            if (empty($this->_values['agb_text_'.cs_strtoupper($language)])) {
-               if ($first) {
-                  $this->_error_array[] = getMessage('CONFIGURATION_AGB_TEXT_ERROR');
-                  $first = false;
-               }
+            if (!empty($this->_values['agb_text_'.cs_strtoupper($language)])) {
+               $no_language_set = false;
+               break;
+            }
+         }
+         if($no_language_set){
+            $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AGB_TEXT_ERROR');
+            foreach ($this->_languages as $language) {
                $this->_form->setFailure('agb_text_'.cs_strtoupper($language),'');
             }
          }
