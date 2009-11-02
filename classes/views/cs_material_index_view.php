@@ -452,7 +452,9 @@ class cs_material_index_view extends cs_index_view {
                 $year_text = '';
             }
             $title = $title.' <span style="font-size:8pt;">('.$this->_getItemAuthor($item).$year_text.')</span>';
-         }else{
+         } elseif(!empty($author_text)) {
+            $title = $title.' <span style="font-size:8pt;">('.$this->_getItemAuthor($item).')</span>';
+         } else {
             $title = $title.LF;
          }
          if ( !$this->_environment->inPrivateRoom() and !$item->isNotActivated()) {
