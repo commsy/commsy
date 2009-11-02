@@ -270,142 +270,144 @@ class cs_topic_form extends cs_rubric_form {
       $this->_file_array = $file_array;
 
       // PATH
-      if ( isset($this->_item)
-           or isset($item)
-           or $this->_path_reset_items
-         ) {
-         $link_manager = $this->_environment->getLinkItemManager();
-         $link_manager->setContextLimit($this->_environment->getCurrentContextID());
-         if ( isset($this->_item) ) {
-            $link_manager->setLinkedItemLimit($this->_item);
-            $topic_item = $this->_item;
-         } elseif ( isset($item) ) {
-            $link_manager->setLinkedItemLimit($item);
-            $topic_item = $item;
-         }  else {
-            $topic_manager = $this->_environment->getManager(CS_TOPIC_TYPE);
-            $topic_item = $topic_manager->getNewItem();
-         }
-         $link_manager->sortbySortingPlace();
-         $link_manager->select();
-         $link_item_list = $link_manager->get();
-
-         if ( !$link_item_list->isEmpty() ) {
-            $counter = 1;
-            $link_item = $link_item_list->getFirst();
-            while ($link_item) {
-               $this->_link_item_place_array[$counter] = $link_item->getItemID();
-               if ( $link_item->getSortingPlace() ) {
-                  $this->_link_item_check_array[] = $link_item->getItemID();
+      if($this->_environment->getCurrentContextItem()->withPath()){
+         if ( isset($this->_item)
+              or isset($item)
+              or $this->_path_reset_items
+            ) {
+            $link_manager = $this->_environment->getLinkItemManager();
+            $link_manager->setContextLimit($this->_environment->getCurrentContextID());
+            if ( isset($this->_item) ) {
+               $link_manager->setLinkedItemLimit($this->_item);
+               $topic_item = $this->_item;
+            } elseif ( isset($item) ) {
+               $link_manager->setLinkedItemLimit($item);
+               $topic_item = $item;
+            }  else {
+               $topic_manager = $this->_environment->getManager(CS_TOPIC_TYPE);
+               $topic_item = $topic_manager->getNewItem();
+            }
+            $link_manager->sortbySortingPlace();
+            $link_manager->select();
+            $link_item_list = $link_manager->get();
+   
+            if ( !$link_item_list->isEmpty() ) {
+               $counter = 1;
+               $link_item = $link_item_list->getFirst();
+               while ($link_item) {
+                  $this->_link_item_place_array[$counter] = $link_item->getItemID();
+                  if ( $link_item->getSortingPlace() ) {
+                     $this->_link_item_check_array[] = $link_item->getItemID();
+                  }
+                  $linked_item = $link_item->getLinkedItem($topic_item);
+                  $temp_array = array();
+                  $item_type = $linked_item->getItemType();
+                  if ($item_type == 'date') {
+                     $item_type .= 's';
+                  }
+   
+                  $temp_item_type = mb_strtoupper($item_type, 'UTF-8');
+                  switch ( $temp_item_type )
+                  {
+                     case 'ANNOUNCEMENT':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
+                        break;
+                     case 'DATES':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_DATES');
+                        break;
+                     case 'INSTITUTION':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_INSTITUTION');
+                        break;
+                     case 'DISCUSSION':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_DISCUSSION');
+                        break;
+                     case 'USER':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_USER');
+                        break;
+                     case 'GROUP':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_GROUP');
+                        break;
+                     case 'MATERIAL':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_MATERIAL');
+                        break;
+                     case 'PROJECT':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_PROJECT');
+                        break;
+                     case 'TODO':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_TODO');
+                        break;
+                     case 'TOPIC':
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_TOPIC');
+                        break;
+                     default:
+                        $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topc_form('.__LINE__.') ');
+                        break;
+                  }
+                  $temp_array['text'] .= ': '.$linked_item->getTitle();
+   
+                  $link_item_sort_array[] = $link_item->getItemID();
+                  $temp_array['value'] = $link_item->getItemID();
+                  $this->_link_item_array[] = $temp_array;
+                  $link_item = $link_item_list->getNext();
+                  $counter++;
                }
-               $linked_item = $link_item->getLinkedItem($topic_item);
+            }
+            if ( isset($this->_form_post['place_array'])
+                 and !empty($this->_form_post['place_array']) ) {
                $temp_array = array();
-               $item_type = $linked_item->getItemType();
-               if ($item_type == 'date') {
-                  $item_type .= 's';
+               $place_array_inv = array_flip($this->_form_post['place_array']);
+               foreach ($this->_link_item_array as $item) {
+                  $temp_array[$place_array_inv[$item['value']]-1] = $item;
                }
-
-               $temp_item_type = mb_strtoupper($item_type, 'UTF-8');
-               switch ( $temp_item_type )
-               {
-                  case 'ANNOUNCEMENT':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_ANNOUNCEMENT');
-                     break;
-                  case 'DATES':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_DATES');
-                     break;
-                  case 'INSTITUTION':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_INSTITUTION');
-                     break;
-                  case 'DISCUSSION':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_DISCUSSION');
-                     break;
-                  case 'USER':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_USER');
-                     break;
-                  case 'GROUP':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_GROUP');
-                     break;
-                  case 'MATERIAL':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_MATERIAL');
-                     break;
-                  case 'PROJECT':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_PROJECT');
-                     break;
-                  case 'TODO':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_TODO');
-                     break;
-                  case 'TOPIC':
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_TOPIC');
-                     break;
-                  default:
-                     $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_topc_form('.__LINE__.') ');
-                     break;
-               }
-               $temp_array['text'] .= ': '.$linked_item->getTitle();
-
-               $link_item_sort_array[] = $link_item->getItemID();
-               $temp_array['value'] = $link_item->getItemID();
-               $this->_link_item_array[] = $temp_array;
-               $link_item = $link_item_list->getNext();
-               $counter++;
+               ksort($temp_array);
+               $this->_link_item_array = $temp_array;
             }
-         }
-         if ( isset($this->_form_post['place_array'])
-              and !empty($this->_form_post['place_array']) ) {
-            $temp_array = array();
-            $place_array_inv = array_flip($this->_form_post['place_array']);
-            foreach ($this->_link_item_array as $item) {
-               $temp_array[$place_array_inv[$item['value']]-1] = $item;
-            }
-            ksort($temp_array);
-            $this->_link_item_array = $temp_array;
-         }
-         if ( $this->_path_reset_items ) {
-            $session = $this->_environment->getSessionItem();
-            if ( $session->issetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids')) {
-               $entry_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
-               $entry_link_array = array();
-               $link_manager = $this->_environment->getLinkItemManager();
-               foreach ( $entry_array as $entry_id ) {
-                  $link_item = $link_manager->getItemByFirstAndSecondID($topic_item->getItemID(),$entry_id);
-                  if ( !empty($link_item) ) {
-                     $entry_link_array[$entry_id] = $link_item->getItemID();
+            if ( $this->_path_reset_items ) {
+               $session = $this->_environment->getSessionItem();
+               if ( $session->issetValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids')) {
+                  $entry_array = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_linked_items_index_selected_ids');
+                  $entry_link_array = array();
+                  $link_manager = $this->_environment->getLinkItemManager();
+                  foreach ( $entry_array as $entry_id ) {
+                     $link_item = $link_manager->getItemByFirstAndSecondID($topic_item->getItemID(),$entry_id);
+                     if ( !empty($link_item) ) {
+                        $entry_link_array[$entry_id] = $link_item->getItemID();
+                     }
+                     unset($link_item);
                   }
-                  unset($link_item);
-               }
-               unset($link_manager);
-               $temp_link_item_array = array();
-               $temp_link_value_array = array();
-               foreach ( $this->_link_item_array as $link_item ) {
-                  if ( in_array($link_item['value'],$entry_link_array) ) {
-                     $temp_link_item_array[] = $link_item;
-                     $temp_link_value_array[] = $link_item['value'];
+                  unset($link_manager);
+                  $temp_link_item_array = array();
+                  $temp_link_value_array = array();
+                  foreach ( $this->_link_item_array as $link_item ) {
+                     if ( in_array($link_item['value'],$entry_link_array) ) {
+                        $temp_link_item_array[] = $link_item;
+                        $temp_link_value_array[] = $link_item['value'];
+                     }
+                  }
+                  foreach ( $entry_array as $value ) {
+                     if ( empty($entry_link_array[$value]) ) {
+                        $item_manager = $this->_environment->getItemManager();
+                        $item_type = $item_manager->getItemType($value);
+                        $manager = $this->_environment->getManager(type2Module($item_type));
+                        $item = $manager->getItem($value);
+                        $temp_item = array();
+                        $temp_item['text'] = $item->getTitle();
+                        $temp_item['value'] = $item->getItemID();
+                        $this->_path_new_id_array[] = $item->getItemID();
+                        $temp_link_item_array[] = $temp_item;
+                        unset($temp_item);
+                        unset($item);
+                        unset($manager);
+                        unset($item_manager);
+                     }
                   }
                }
-               foreach ( $entry_array as $value ) {
-                  if ( empty($entry_link_array[$value]) ) {
-                     $item_manager = $this->_environment->getItemManager();
-                     $item_type = $item_manager->getItemType($value);
-                     $manager = $this->_environment->getManager(type2Module($item_type));
-                     $item = $manager->getItem($value);
-                     $temp_item = array();
-                     $temp_item['text'] = $item->getTitle();
-                     $temp_item['value'] = $item->getItemID();
-                     $this->_path_new_id_array[] = $item->getItemID();
-                     $temp_link_item_array[] = $temp_item;
-                     unset($temp_item);
-                     unset($item);
-                     unset($manager);
-                     unset($item_manager);
-                  }
-               }
+               unset($session);
+               $this->_link_item_array = $temp_link_item_array;
             }
-            unset($session);
-            $this->_link_item_array = $temp_link_item_array;
-         }
-         if ( isset($this->_link_item_array) and !empty($this->_link_item_array) ) {
-            $this->_path_button_disable = false;
+            if ( isset($this->_link_item_array) and !empty($this->_link_item_array) ) {
+               $this->_path_button_disable = false;
+            }
          }
       }
    }
