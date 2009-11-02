@@ -188,7 +188,9 @@ if ( isset($_GET['cid']) ) {
       $room_array = Array();
       $item = $project_list->getFirst();
       while ($item) {
-         $room_array[] = $item->getItemID();
+         if($item->mayEnter($user_item)){
+            $room_array[] = $item->getItemID();
+         }
          $item = $project_list->getNext();
       }
       unset($item);
