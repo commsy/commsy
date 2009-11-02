@@ -848,6 +848,10 @@ class cs_grouproom_item extends cs_room_item {
       return $this->getLinkedProjectItem()->withChatLink();
    }
    
+   public function withMaterialImportLink(){
+      return $this->getLinkedProjectItem()->withMaterialImportLink();
+   }
+   
    ################################################################
    # mail to moderation, if the group room status changed
    # - delete
