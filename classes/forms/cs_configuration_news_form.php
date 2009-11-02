@@ -52,8 +52,12 @@ class cs_configuration_news_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->_headline = getMessage('SERVER_NEWS_LINK');
-
+      global $environment;
+      if ( $environment->getCurrentContextItem()->isPortal() ) {
+         $this->_headline = getMessage('PORTAL_NEWS_LINK');
+      } else {
+         $this->_headline = getMessage('SERVER_NEWS_LINK');
+      }
       $show_array = array();
       $temp_array['text']  = getMessage('COMMON_YES');
       $temp_array['value'] = 1;
@@ -74,7 +78,7 @@ class cs_configuration_news_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('iid','');
       $this->_form->addRadioGroup('show',getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
-      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',200,'62',true);
+      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE').'<span class="required">*</span>','',200,'62',false);
       $this->_form->addTextArea('text','',getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),'');
       $this->_form->addTextfield('link','',getMessage('SERVER_CONFIGURATION_NEWS_LINK'),getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'62',false);
 
@@ -113,6 +117,15 @@ class cs_configuration_news_form extends cs_rubric_form {
             } else {
                $this->_values['show_server'] = -1;
             }
+         }
+      }
+   }
+   
+   function _checkValues(){
+      if($_POST['show'] == '1'){
+         if(empty($_POST['title'])){
+            $this->_error_array[] = getMessage('COMMON_ERROR_FIELD', getMessage('COMMON_TITLE'));
+            $this->_form->setFailure('title','');
          }
       }
    }
