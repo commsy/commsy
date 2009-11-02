@@ -243,7 +243,7 @@ $message["CONFIGURATION_SORT_ROOMS_ACTIVITY"]["en"] = "by activity (default)";
 $message["CONFIGURATION_SORT_ROOMS_TITLE"]["en"] = "by title";
 $message["CONFIGURATION_SPONSOR_DESC"]["en"] = "Configure the sponsoring notices and advertisements here.";
 $message["CONFIGURATION_SPONSOR_LINK"]["en"] = "Sponsoring and adverteisement";
-$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>buzzwords</span> or the <span class=&quot;bold&quot;>netnavigation</span> (with <span class=&quot;bold&quot;>paths</span>) for structuring entries.";
+$message["CONFIGURATION_STRUCTURE_OPTIONS_DESC"]["en"] = "Use <span class=&quot;bold&quot;>tags</span>, <span class=&quot;bold&quot;>categories</span> or the <span class=&quot;bold&quot;>netnavigation</span> (with <span class=&quot;bold&quot;>paths</span>) for structuring entries.";
 $message["CONFIGURATION_STRUCTURE_OPTIONS_TITLE"]["en"] = "Structural auxilaries";
 $message["CONFIGURATION_TAGS_FORM_TITLE"]["en"] = "Configure categories and tags";
 $message["CONFIGURATION_TAG_EDIT"]["en"] = "Permissions";
