@@ -385,12 +385,14 @@ class cs_portal_item extends cs_guide_item {
          $manager->setTimeLimit($time_obj->getItemID());
          $manager->select();
          $id_array2 = $manager->getIdArray();
-         $id_array3 = array_diff($id_array1,$id_array2);
-         if ( !empty($id_array3) ) {
-            $manager->resetLimits();
-            $manager->setIDArrayLimit($id_array3);
-            $manager->select();
-            $this->_room_list_continuous_nlct = $manager->get();
+         if ( is_array($id_array1) and is_array($id_array2) ) {
+            $id_array3 = array_diff($id_array1,$id_array2);
+            if ( !empty($id_array3) ) {
+               $manager->resetLimits();
+               $manager->setIDArrayLimit($id_array3);
+               $manager->select();
+               $this->_room_list_continuous_nlct = $manager->get();
+            }
          }
          unset($manager);
       }

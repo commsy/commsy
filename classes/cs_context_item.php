@@ -4155,7 +4155,19 @@ class cs_context_item extends cs_item {
       $cron_array['success_text'] = 'cron failed';
 
       $file_manager = $this->_environment->getFileManager();
-      if ( $file_manager->deleteUnneededFiles($this->getItemID()) ) {
+      $portal_id = '';
+      if ( $this->isProjectRoom()
+           or $this->isGroupRoom()
+           or $this->isCommunityRoom()
+           or $this->isPrivateRoom()
+         ) {
+         $portal_id = $this->getContextID();
+      } elseif ( $this->isPortal()
+                 or $this->isServer()
+               ) {
+         $portal_id = $this->getItemID();
+      }
+      if ( $file_manager->deleteUnneededFiles($this->getItemID(),$portal_id) ) {
          $cron_array['success'] = true;
          $cron_array['success_text'] = 'cron done';
       }
