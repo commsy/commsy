@@ -844,8 +844,8 @@ class cs_grouproom_item extends cs_room_item {
       return $retour;
    }
 
-   public function showChatLink(){
-      return $this->getLinkedProjectItem()->showChatLink();
+   public function withChatLink(){
+      return $this->getLinkedProjectItem()->withChatLink();
    }
    
    ################################################################

@@ -77,7 +77,7 @@ $translator = $environment->getTranslationObject();
    # Chat
    ############################################
    $context_item = $environment->getCurrentContextItem();
-   if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() and !$context_item->isGrouproom()) {
+   if ( $context_item->withChatLink() and !$context_item->isPortal() and !$context_item->isPrivateroom() ) {
       $link_item = new cs_link();
       $link_item->setTitle(getMessage('CHAT_CONFIGURATION_LINK'));
       if(($environment->getCurrentBrowser() == 'MSIE') && (mb_substr($environment->getCurrentBrowserVersion(),0,1) == '6')){
