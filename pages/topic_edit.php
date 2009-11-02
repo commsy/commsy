@@ -134,8 +134,11 @@ else {
       include_once('include/inc_right_boxes_handling.php');
 
       // PATH
-      if($current_iid == 'NEW'){
-         $form->setPathItems($session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids'));
+      if($current_iid == 'NEW' and $context_item->withPath()){
+         $path_items = $session->getValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
+         if(!empty($path_items)){
+            $form->setPathItems($path_items);
+         }
       }
       if ( isOption($command, $translator->getMessage('TOPIC_ACTIVATE_PATH')) ) {
          $form->activatePath();

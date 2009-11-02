@@ -275,6 +275,7 @@ class cs_topic_form extends cs_rubric_form {
            or $this->_path_reset_items
          ) {
          $link_manager = $this->_environment->getLinkItemManager();
+         $link_manager->setContextLimit($this->_environment->getCurrentContextID());
          if ( isset($this->_item) ) {
             $link_manager->setLinkedItemLimit($this->_item);
             $topic_item = $this->_item;
