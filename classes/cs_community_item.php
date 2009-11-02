@@ -898,10 +898,10 @@ class cs_community_item extends cs_room_item {
          $mail->send();
          $translator->setSelectedLanguage($save_language);
          unset($save_language);
-         unset($current_portal);
-         unset($current_user);
          unset($mail);
       }
+      unset($current_portal);
+      unset($current_user);
    }
 
    function getCountUsedAccounts ($start, $end) {
