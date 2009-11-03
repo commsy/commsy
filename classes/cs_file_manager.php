@@ -715,9 +715,15 @@ class cs_file_manager extends cs_manager {
                   }
                }
             }
-            $file_id_array = array_unique($file_id_array);
-            $file_id_array2 = array_unique($file_id_array2);
-            $file_id_diff = array_diff($file_id_array,$file_id_array2);
+            if ( !empty($file_id_array) ) {
+               $file_id_array = array_unique($file_id_array);
+            }
+            if ( !empty($file_id_array2) ) {
+               $file_id_array2 = array_unique($file_id_array2);
+               $file_id_diff = array_diff($file_id_array,$file_id_array2);
+            } else {
+               $file_id_diff = array();
+            }
 
             $disc_manager = $this->_environment->getDiscManager();
             foreach ($result as $query_result) {
