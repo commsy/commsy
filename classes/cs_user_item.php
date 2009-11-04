@@ -582,24 +582,27 @@ class cs_user_item extends cs_item {
    }
 
    public function getPictureUrl ( $full = false ) {
+   	$retour = '';
       $params['picture'] = $this->getPicture();
-      $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
-      unset($params);
-      if ( $full ) {
-         $domain_and_path = '';
-         global $c_commsy_domain;
-         global $c_commsy_url_path;
-         if ( !empty($c_commsy_domain) ) {
-            $domain_and_path .= $c_commsy_domain;
-         }
-         if ( !empty($c_commsy_url_path) ) {
-            $domain_and_path .= $c_commsy_url_path;
-         }
-         $domain_and_path .= '/';
-         $domain_and_path = str_replace('//','/',$domain_and_path);
-         if ( !empty($domain_and_path) ) {
-            $retour = $domain_and_path.$retour;
-         }
+      if ( !empty($params['picture']) ) {
+	      $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
+	      unset($params);
+	      if ( $full ) {
+	         $domain_and_path = '';
+	         global $c_commsy_domain;
+	         global $c_commsy_url_path;
+	         if ( !empty($c_commsy_domain) ) {
+	            $domain_and_path .= $c_commsy_domain;
+	         }
+	         if ( !empty($c_commsy_url_path) ) {
+	            $domain_and_path .= $c_commsy_url_path;
+	         }
+	         $domain_and_path .= '/';
+	         $domain_and_path = str_replace('//','/',$domain_and_path);
+	         if ( !empty($domain_and_path) ) {
+	            $retour = $domain_and_path.$retour;
+	         }
+	      }
       }
       return $retour;
    }
