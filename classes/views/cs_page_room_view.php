@@ -621,9 +621,9 @@ class cs_page_room_view extends cs_page_view {
          }
       }
 //      CommSy 7 -> '+'-Link in Rubrileiste fuer Moderatoren
-      if($current_user_item->isModerator()){
-         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'configuration', 'rubric_options', '', '+', '','','','','','','class="navlist"');
-      }
+//      if($current_user_item->isModerator()){
+//         $html .= ahref_curl($this->_environment->getCurrentContextID(), 'configuration', 'rubric_options', '', '+', '','','','','','','class="navlist"');
+//      }
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
