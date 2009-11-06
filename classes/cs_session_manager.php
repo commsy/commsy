@@ -100,7 +100,10 @@ class cs_session_manager {
     * @return object cs_session_item the session item
     */
    function get ($session_id) {
-      $this->deleteOldSessions();
+   	// don't delete session on every site request
+   	if ( 1 == rand(1,100) ) {
+         $this->deleteOldSessions();
+   	}
       $session_arrays = array();
       $session_item = NULL;
       $query = 'SELECT session_value FROM session WHERE session_id="'.encode(AS_DB,$session_id).'";';
