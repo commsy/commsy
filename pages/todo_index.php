@@ -524,12 +524,12 @@ while ($item) {
    $item = $step_list->getNext();
 }      
 
+// caching
 $link_manager = $environment->getLinkManager();
 $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
 $file_manager = $environment->getFileManager();
 $file_manager->setIDArrayLimit($file_id_array);
 $file_manager->select();
-
 
 if (isset($_GET['select']) and $_GET['select']=='all'){
    $item = $list->getFirst();

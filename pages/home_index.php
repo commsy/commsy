@@ -209,7 +209,23 @@ if ( $context_item->isLocked() ) {
                         $list = $manager->get();
                         $short_list_view->setList($list);
                         $short_list_view->setCountAll($count_all);
-                     break;
+                        $item = $list->getFirst();
+                        $tmp_id_array = array();
+                        while ($item){
+                           $tmp_id_array[] = $item->getItemID();
+                           $item = $list->getNext();
+                        }
+                        $step_manager = $environment->getStepManager();
+                        $step_list = $step_manager->getAllStepItemListByIDArray($tmp_id_array);
+                        $item = $step_list->getFirst();
+                        while ($item){
+                           $sub_id_array[] = $item->getItemID();
+                           $item = $step_list->getNext();
+                        }
+                        unset($step_list);
+                        unset($step_manager);
+                        unset($manager);
+                        break;
                   case CS_TOPIC_TYPE:
                         $short_list_view = $class_factory->getClass(TOPIC_SHORT_VIEW,$param_class_array);
                         $manager = $environment->getTopicManager();
