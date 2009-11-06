@@ -63,8 +63,8 @@ if ( isset($_GET['cid']) ) {
                  if ($current_module==CS_DATE_TYPE){
                     $dates_manager = $environment->getDatesManager();
          $dates_manager->setContextLimit($context_item->getItemID());
-         //$dates_manager->setFutureLimit();
          $dates_manager->setWithoutDateModeLimit();
+         $dates_manager->setNotOlderThanMonthLimit(6);
          $dates_manager->select();
          $item_list = $dates_manager->get();
            }else{
@@ -254,7 +254,7 @@ if ( isset($_GET['cid']) ) {
    if($current_module==CS_DATE_TYPE){
       $dateiname = $translator->getMessage('DATES_EXPORT_FILENAME').'_'.$_GET['cid'];
    } elseif ($current_module==CS_TODO_TYPE){
-   	$dateiname = $translator->getMessage('TODO_EXPORT_FILENAME').'_'.$_GET['cid'];
+      $dateiname = $translator->getMessage('TODO_EXPORT_FILENAME').'_'.$_GET['cid'];
    }
    #echo $iCal->getOutput();
    $iCal->outputFile($dateiname);

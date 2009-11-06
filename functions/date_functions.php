@@ -52,6 +52,10 @@ function getCurrentDateTimeMinusDaysInMySQL ( $days ) {
    return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), date('m'), (date('d')-$days), date('Y')));
 }
 
+function getCurrentDateTimeMinusMonthsInMySQL ( $months ) {
+   return date('Y-m-d H:i:s', mktime(date('H'), date('i'), date('s'), (date('m')-$months), date('d'), date('Y')));
+}
+
    function convertDateFromInput ( $date,$language) {
       $region = '';
       $converted = array();

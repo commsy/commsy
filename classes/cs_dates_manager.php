@@ -64,6 +64,7 @@ class cs_dates_manager extends cs_manager {
    var $_day_limit2 = NULL;
    var $_year_limit = NULL;
    var $_date_mode_limit = 1;
+   private $_not_older_than_limit = NULL;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -94,6 +95,16 @@ class cs_dates_manager extends cs_manager {
       $this->_day_limit2 = NULL;
       $this->_year_limit = NULL;
       $this->_date_mode_limit = 1;
+      $this->_not_older_than_limit = NULL;
+   }
+
+   public function setNotOlderThanMonthLimit ( $month ) {
+      if ( !empty($month)
+           and is_numeric($month)
+         ) {
+         include_once('functions/date_functions.php');
+         $this->_not_older_than_limit = getCurrentDateTimeMinusMonthsInMySQL($month);
+      }
    }
 
    /** set age limit
@@ -438,6 +449,11 @@ class cs_dates_manager extends cs_manager {
       // only files limit -> entries with files
       if ( isset($this->_only_files_limit) and $this->_only_files_limit ) {
          $query .= ' AND lf.deleter_id IS NULL AND lf.deletion_date IS NULL';
+      }
+
+      // $this->_not_older_than_limit
+      if ( isset($this->_not_older_than_limit) ) {
+         $query .= ' AND '.$this->_db_table.'.datetime_start > "'.$this->_not_older_than_limit.'"';
       }
 
       if ( isset($this->_sort_order) ) {
