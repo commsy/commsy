@@ -228,13 +228,23 @@ class cs_step_manager extends cs_manager {
             $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
          }
       }
-     // perform query
-     $result = $this->_db_connector->performQuery($query);
-     if (!isset($result)) {
-         include_once('functions/error_functions.php');trigger_error('Problems selecting step from query: "'.$query.'"',E_USER_WARNING);
-     } else {
-         return $result;
-     }
+      
+      // perform query
+      if ( isset($this->_cached_sql[$query]) ) {
+      	$result = $this->_cached_sql[$query];
+      } else {
+         $result = $this->_db_connector->performQuery($query);
+	      if (!isset($result)) {
+	         include_once('functions/error_functions.php');
+	         trigger_error('Problems selecting step from query: "'.$query.'"',E_USER_WARNING);
+	      } else {
+	     	   // sql caching
+	     	   if ( $this->_cache_on ) {
+	     	   	$this->_cached_sql[$query] = $result;
+	     	   }
+	      }
+      }
+    	return $result;
    }
 
    /** build a new todo item
@@ -248,17 +258,25 @@ class cs_step_manager extends cs_manager {
 
     function getItem ($item_id) {
         $step = NULL;
-        $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
-        $result = $this->_db_connector->performQuery($query);
-        if (!isset($result) or empty($result[0])) {
-           include_once('functions/error_functions.php');trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
+        if ( !empty($this->_cached_items[$item_id]) ) {
+        	  $step = $this->_cached_items[$item_id];
         } else {
-           $step = $this->_buildItem($result[0]);
+	        $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
+	        $result = $this->_db_connector->performQuery($query);
+	        if (!isset($result) or empty($result[0])) {
+	           include_once('functions/error_functions.php');
+	           trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
+	        } else {
+	           $step = $this->_buildItem($result[0]);
+               if ( $this->_cache_on
+                    and isset($step) 
+                  ) {
+               	$this->_cached_items[$step->getItemID()] = $step;
+               }            	
+	        }
         }
         return $step;
      }
-
-
 
   /** get a list of step in newest version
     *
@@ -304,11 +322,19 @@ class cs_step_manager extends cs_manager {
          $query .= " AND step.deletion_date IS NULL";
          $result = $this->_db_connector->performQuery($query);
          if (!isset($result)) {
-            include_once('functions/error_functions.php');trigger_error('Problems selecting list of step items from query: "'.$query.'"',E_USER_WARNING);
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting list of step items from query: "'.$query.'"',E_USER_WARNING);
          } else {
             $step_list = new cs_step_list();
             foreach ($result as $rs) {
-               $step_list->append($this->_buildItem($rs));
+            	$step_item = $this->_buildItem($rs);
+            	if ( isset($step_item) ) {
+                  $step_list->append($step_item);
+                  if ( $this->_cache_on ) {
+                  	$this->_cached_items[$step_item->getItemID()] = $step_item;
+                  }            	
+            	}
+            	unset($step_item);
             }
          }
          if ( $this->_cache_on ) {
@@ -395,7 +421,8 @@ class cs_step_manager extends cs_manager {
               'todo_item_id="'.encode(AS_DB,$item->getTodoID()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
-        include_once('functions/error_functions.php');trigger_error('Problems creating step from query: "'.$query.'"',E_USER_WARNING);
+        include_once('functions/error_functions.php');
+        trigger_error('Problems creating step from query: "'.$query.'"',E_USER_WARNING);
      }
      unset($item);
   }

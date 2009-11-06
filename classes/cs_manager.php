@@ -124,6 +124,7 @@ class cs_manager {
 
    var $_cached_items = array();
    var $_cache_on = true;
+   var $_cached_sql = array();
 
    public $_class_factory = NULL;
    public $_id_array_limit = NULL;

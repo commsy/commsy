@@ -515,6 +515,15 @@ while ($item){
 $noticed_manager = $environment->getNoticedManager();
 $noticed_manager->getLatestNoticedByIDArray($id_array);
 $noticed_manager->getLatestNoticedAnnotationsByIDArray($id_array);
+
+$step_manager = $environment->getStepManager();
+$step_list = $step_manager->getAllStepItemListByIDArray($id_array);
+$item = $step_list->getFirst();
+while ($item) {
+   $id_array[] = $item->getItemID();
+   $item = $step_list->getNext();
+}      
+
 $link_manager = $environment->getLinkManager();
 $file_id_array = $link_manager->getAllFileLinksForListByIDs($id_array);
 $file_manager = $environment->getFileManager();
