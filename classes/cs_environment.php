@@ -1507,10 +1507,15 @@ class cs_environment {
       if ( !is_array($plugin) ) {
          if ( empty($this->_plugin_class_array[$plugin]) ) {
             $plugin_class_name = 'class_'.$plugin;
-            include_once('plugins/'.$plugin.'/'.$plugin_class_name.'.php');
-            $this->_plugin_class_array[$plugin] = new $plugin_class_name($this);
+            $plugin_filename = 'plugins/'.$plugin.'/'.$plugin_class_name.'.php';
+            if ( file_exists($plugin_filename) ) {
+               include_once($plugin_filename);
+               $this->_plugin_class_array[$plugin] = new $plugin_class_name($this);
+            }
          }
-         $retour = $this->_plugin_class_array[$plugin];
+         if ( !empty($this->_plugin_class_array[$plugin]) ) {
+            $retour = $this->_plugin_class_array[$plugin];
+         }
       }
       return $retour;
    }
