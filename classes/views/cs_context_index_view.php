@@ -181,7 +181,8 @@ class cs_context_index_view extends cs_index_view {
       }else{
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
       }
-      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModerator($item).'</td>'.LF;
+      #$html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModerator($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getContactPersonString($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;" colspan="2">'.$this->_getItemActivity($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
@@ -243,7 +244,10 @@ class cs_context_index_view extends cs_index_view {
       return $html.' '.$title.$info_text;
    }
 
-
+   function _getContactPersonString ($item) {
+      $retour = $this->_text_as_html_short($this->_compareWithSearchText($item->getContactPersonString()));
+      return $retour;
+   }
 
 
 
