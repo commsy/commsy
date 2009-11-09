@@ -691,7 +691,7 @@ if ( isset($_GET['cid']) ) {
          //----------------------
          // schneller Bugfix
          if(!isset($title)){
-         	$title = '';
+            $title = '';
          }
          //----------------------
          $title = $pre_title.$title;
@@ -738,6 +738,16 @@ if ( isset($_GET['cid']) ) {
    header('Content-type: application/rss+xml; charset=UTF-8');
 
    echo($rss);
+
+   # logging
+   if ( !empty($_GET['hid']) ) {
+      $l_current_user_item = $hash_manager->getUserByRSSHash($_GET['hid']);
+      if ( !empty($l_current_user_item) ) {
+         $environment->setCurrentUserItem($l_current_user_item);
+      }
+   }
+   include_once('include/inc_log.php');
+
    exit();
 } else {
    chdir('..');

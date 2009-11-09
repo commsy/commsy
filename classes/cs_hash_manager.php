@@ -95,7 +95,7 @@ class cs_hash_manager extends cs_manager {
       if (!empty($result) ) {
          $retour = $context_item->mayEnterByUserItemID($result[0]['user_item_id']);
          if ( !$retour ) {
-            $this->deleteHashesForUser($result[0]);
+            $this->deleteHashesForUser($result[0]['user_item_id']);
          }
       }
       return $retour;
@@ -199,7 +199,7 @@ class cs_hash_manager extends cs_manager {
      $result = $this->_db_connector->performQuery($query);
      if(!empty($result))
      {
-           $retour = $result[0];
+           $retour = $result[0]['user_item_id'];
      }
       return $retour;
    }

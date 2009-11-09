@@ -258,6 +258,16 @@ if ( isset($_GET['cid']) ) {
    }
    #echo $iCal->getOutput();
    $iCal->outputFile($dateiname);
+
+   # logging
+   if ( !empty($_GET['hid']) ) {
+      $l_current_user_item = $hash_manager->getUserByICalHash($_GET['hid']);
+      if ( !empty($l_current_user_item) ) {
+         $environment->setCurrentUserItem($l_current_user_item);
+      }
+   }
+   include_once('include/inc_log.php');
+
   } else {
    include_once('etc/cs_constants.php');
    include_once('etc/cs_config.php');

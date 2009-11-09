@@ -444,6 +444,11 @@ class cs_user_manager extends cs_manager {
      *
      */
    function _performQuery($mode = 'select') {
+      if ( !empty($this->_user_limit)
+           and mb_strtoupper($this->_user_limit) == 'GUEST'
+         ) {
+         return array();
+      }
 
       if ($mode == 'count') {
          $query = 'SELECT count(DISTINCT user.item_id) AS count';

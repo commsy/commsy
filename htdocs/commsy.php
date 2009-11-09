@@ -1092,39 +1092,7 @@ if ( $environment->getCurrentFunction() != 'getfile'
 /*********** LOGGING ***********/
 
 // Log information to database. If this part is changed, change it in page material_getfile.php, too!
-$array = array();
-if ( isset($_GET['iid']) ) {
-   $array['iid'] = $_GET['iid'];
-} elseif ( isset($_POST['iid']) ) {
-   $array['iid'] = $_POST['iid'];
-}
-if ( isset($_SERVER['HTTP_USER_AGENT']) ) {
-   $array['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-} else {
-   $array['user_agent'] = 'No Info';
-}
-
-if ( isset($_POST) ) {
-   $post_content = array2XML($_POST);
-} else {
-   $post_content = '';
-}
-$array['remote_addr']      = $_SERVER['REMOTE_ADDR'];
-$array['script_name']      = $_SERVER['SCRIPT_NAME'];
-$array['query_string']     = $_SERVER['QUERY_STRING'];
-$array['request_method']   = $_SERVER['REQUEST_METHOD'];
-$array['post_content']     = $post_content;
-$array['user_item_id']     = $current_user->getItemID();
-$array['user_user_id']     = $current_user->getUserID();
-$array['context_id']       = $environment->getCurrentContextID();
-$array['module']           = $current_module;
-$array['function']         = $current_function;
-$array['parameter_string'] = $environment->getCurrentParameterString();
-
-$log_manager = $environment->getLogManager();
-$log_manager->saveArray($array);
-unset($log_manager);
-
+include_once('include/inc_log.php');
 
 /*********** ROOM ACTIVITY ***********/
 $activity_points = 1;

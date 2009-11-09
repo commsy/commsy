@@ -77,43 +77,14 @@ if ( !empty($_GET['iid']) ) {
    unset($current_user_item);
 
    if ( $send_file ) {
-         /*********** LOGGING ***********/
-      // this has been copied directly from commsy.php
-      // to ensure that the download is logged.
-
-      // Log information to database
-      $array = array();
-      if ( isset($_GET['iid']) ) {
-         $array['iid'] = $_GET['iid'];
-      } else {
-         $array['iid'] = -1;
-      }
-      if ( isset($_SERVER['HTTP_USER_AGENT']) ) {
-         $array['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-      } else {
-         $array['user_agent'] = 'No Info';
-      }
-
-      $array['remote_addr']      = $_SERVER['REMOTE_ADDR'];
-      $array['script_name']      = $_SERVER['SCRIPT_NAME'];
-      $array['query_string']     = $_SERVER['QUERY_STRING'];
-      $array['request_method']   = $_SERVER['REQUEST_METHOD'];
-      $array['user_item_id']     = $current_user->getItemID();
-      $array['user_user_id']     = $current_user->getUserID();
-      $array['context_id']       = $environment->getCurrentContextID();
-      $array['module']           = $current_module;
-      $array['function']         = $current_function;
-      $array['parameter_string'] = $environment->getCurrentParameterString();
-
-      $log_manager = $environment->getLogManager();
-      $log_manager->saveArray($array);
-      unset($log_manager);
-      unset($iid);
-
       # File Download
       $file_manager = $environment->getFileManager();
       $file = $file_manager->getItem($_GET['iid']);
       if ( isset($file) ) {
+
+         # logging
+         include_once('include/inc_log.php');
+
          $file->setContextID($environment->getCurrentContextID());
          if ( $file->isOnDisk() ) {
             header('Content-type: '.$file->getMime());
@@ -121,16 +92,12 @@ if ( !empty($_GET['iid']) ) {
             // header('Pragma: no-cache');
             header('Expires: 0');
             @readfile($file->getDiskFileName());
-            exit();
          } else {
             include_once('functions/error_functions.php');
             trigger_error("material_getfile: File ".$file->getDiskFileName()." does not seem to be on disk
             <br />environment reports context id ".$environment->getCurrentContextID()."
             <br />file item reports room id ".$file->getContextID()." and context id ".$file->getContextID(), E_USER_ERROR);
          }
-         $log_manager = $environment->getLogManager();
-         $log_manager->saveArray($array);
-         unset($log_manager);
          exit();
       } else {
          $params = array();
