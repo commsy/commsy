@@ -226,6 +226,19 @@ class cs_room_item extends cs_context_item {
       $this->_unsetExtra('CONTACT_PERSONS');
    }
 
+   public function renewContactPersonString () {
+      $this->emptyContactPersonString();
+      $moderator_list = $this->getContactModeratorList();
+      $current_moderator = $moderator_list->getFirst();
+      while ( $current_moderator ) {
+         $contact_name = $current_moderator->getFullname();
+         $this->setContactPerson($contact_name);
+         $current_moderator = $moderator_list->getNext();
+      }
+      $this->setChangeModificationOnSave(false);
+      $this->save();
+   }
+
    /** close a room
    * this method sets the status of the room to closed
    */

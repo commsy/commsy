@@ -209,7 +209,7 @@ if ($command == 'automatic') {
       $user_own_room = $user->getRelatedPrivateRoomUserItem();
       if ( isset($user_own_room) ) {
          $user_own_room->makeModerator();
-         $user_own_room->makeContactPerson2();
+         $user_own_room->makeContactPerson();
          $user_own_room->save();
       }
    }

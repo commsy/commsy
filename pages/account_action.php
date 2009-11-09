@@ -273,11 +273,11 @@ function performAction ( $environment, $action_array, $post_array ) {
          ################################
 
       } elseif ( $action_array['action'] == 'USER_MAKE_CONTACT_PERSON' ) {
-         $user->makeContactPerson2();
+         $user->makeContactPerson();
          $user->save();
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_UNMAKE_CONTACT_PERSON' ) {
-         $user->makeNoContactPerson2();
+         $user->makeNoContactPerson();
          $user->save();
          $send_to = $user->getEmail();
       } elseif ( $action_array['action'] == 'USER_EMAIL_SEND' ) {
@@ -289,7 +289,7 @@ function performAction ( $environment, $action_array, $post_array ) {
       }
 
       $formal_data_send_to[] = $user->getFullName()." &lt;".$send_to."&gt;";
-      
+
       // change task status
       if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
            or $action_array['action'] == 'USER_ACCOUNT_LOCK'
@@ -337,7 +337,7 @@ function performAction ( $environment, $action_array, $post_array ) {
          $user_own_room = $user->getRelatedPrivateRoomUserItem();
          if ( isset($user_own_room) ) {
             $user_own_room->makeModerator();
-            $user_own_room->makeContactPerson2();
+            $user_own_room->makeContactPerson();
             $user_own_room->save();
          }
       }
@@ -350,7 +350,7 @@ function performAction ( $environment, $action_array, $post_array ) {
          $mail->set_from_name($admin->getFullname());
          $mail->set_reply_to_email($admin->getEmail());
          $mail->set_reply_to_name($admin->getFullname());
-         
+
          if(!isset($formal_data_from)){
             $formal_data_from = array(getMessage('MAIL_FROM'), $admin->getFullname()." &lt;".$admin->getEmail()."&gt;");
             $formal_data[] = $formal_data_from;
@@ -508,7 +508,7 @@ function performAction ( $environment, $action_array, $post_array ) {
 
          $mail->send();
          unset($mail);
-      } 
+      }
       unset($user);
    }
    if(isset($formal_data_send_to)){

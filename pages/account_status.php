@@ -297,9 +297,9 @@ if ( empty($command) and empty($command_delete) ) {
          if ( $status == 'user' ) {
             $user->makeUser();
             if (!empty($_POST['contact_person'])) {
-               $user->makeContactPerson2();
+               $user->makeContactPerson();
             } else {
-               $user->makeNoContactPerson2();
+               $user->makeNoContactPerson();
             }
 
             ################################
@@ -342,9 +342,9 @@ if ( empty($command) and empty($command_delete) ) {
          } elseif ( $status == 'moderator' ) {
             $user->makeModerator();
             if (!empty($_POST['contact_person'])) {
-               $user->makeContactPerson2();
+               $user->makeContactPerson();
             } else {
-               $user->makeNoContactPerson2();
+               $user->makeNoContactPerson();
             }
 
             ################################
@@ -414,7 +414,7 @@ if ( empty($command) and empty($command_delete) ) {
             $user_own_room = $user->getRelatedPrivateRoomUserItem();
             if ( isset($user_own_room) ) {
                $user_own_room->makeModerator();
-               $user_own_room->makeContactPerson2();
+               $user_own_room->makeContactPerson();
                $user_own_room->save();
             }
          }

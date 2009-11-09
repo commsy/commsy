@@ -457,26 +457,26 @@ class cs_guide_list_view extends cs_list_view_plain {
     * @return string contact moderators
     */
    function _getContactModerators ($item) {
-/*      $mod_list = $item->getContactModeratorList();
-
       $html = '';
+      $mod_string = trim($item->getContactPersonString());
+      if ( empty($mod_string) ) {
+         $mod_list = $item->getContactModeratorList();
 
-      $moderator = $mod_list->getFirst();
-      if ($moderator) {
-         while ($moderator) {
-            $html .= '<span class="small_font">'.$this->_text_as_html_short($this->_compareWithSearchText($moderator->getFirstname().' '.$moderator->getLastname())).'</span>';
-            $moderator = $mod_list->getNext();
-
-            if ($moderator) {
-                     $html .= '<span class="small_font">'.', </span>';
+         $moderator = $mod_list->getFirst();
+         if ($moderator) {
+            while ($moderator) {
+               if ( !empty($mod_string) ) {
+                  $mod_string .= ', ';
+               }
+               $mod_string .= $moderator->getFullname();
+               $moderator = $mod_list->getNext();
             }
          }
-      } else {
-        $html .= '<span class="small_font">'.$this->_translator->getMessage('COMMON_NO_CONTACT_MODERATOR').'</span>'.LF;
-      }*/
-      $html = '<span class="small_font">'.$this->_text_as_html_short($this->_compareWithSearchText($item->getContactPersonString())).'</span>';
-
-      //$html = $item->getContactPersonString();
+      }
+      if ( !empty($mod_string) ) {
+         $mod_string = $this->_text_as_html_short($this->_compareWithSearchText($mod_string));
+         $html = '<span class="small_font">'.$mod_string.'</span>';
+      }
 
       return $html;
    }
@@ -632,7 +632,7 @@ class cs_guide_list_view extends cs_list_view_plain {
       //$html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" onChange="javascript:document.indexform.submit()">'.LF;
       $html .= '   <select style="width: '.$width.'; font-size:8pt; margin-bottom:0px;" name="selroom" size="1" id="submit_form">'.LF;
       // jQuery
-      
+
       $html .= '      <option value="1"';
       if ( !isset($selroom) || ($selroom == 1 or $selroom == 2) ) {
          $html .= ' selected="selected"';

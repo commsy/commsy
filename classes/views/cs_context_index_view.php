@@ -181,7 +181,6 @@ class cs_context_index_view extends cs_index_view {
       }else{
          $html .= '      <td colspan="2" '.$style.' style="font-size:10pt;">'.$this->_getItemTitle($item).'</td>'.LF;
       }
-      #$html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getItemModerator($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getContactPersonString($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;" colspan="2">'.$this->_getItemActivity($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
@@ -245,11 +244,14 @@ class cs_context_index_view extends cs_index_view {
    }
 
    function _getContactPersonString ($item) {
-      $retour = $this->_text_as_html_short($this->_compareWithSearchText($item->getContactPersonString()));
+      $retour = trim($item->getContactPersonString());
+      if ( !empty($retour) ) {
+         $retour = $this->_text_as_html_short($this->_compareWithSearchText($retour));
+      } else {
+         $retour = $this->_getItemModerator($item);
+      }
       return $retour;
    }
-
-
 
    /** get the moderator of the item
     * this method returns the item moderator in the right formatted style

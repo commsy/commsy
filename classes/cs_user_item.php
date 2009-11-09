@@ -38,6 +38,7 @@ class cs_user_item extends cs_item {
    var $_picture_delete = false;
 
    var $_old_status = NULL;
+   var $_old_contact = NULL;
 
    var $_changed_values = array();
 
@@ -60,6 +61,7 @@ class cs_user_item extends cs_item {
       $this->_data = $data_array;
       if ( isset($data_array['status']) and !empty($data_array['status']) ) {
          $this->_old_status = $data_array['status'];
+         $this->_old_contact = $data_array['is_contact'];
       }
    }
 
@@ -274,24 +276,6 @@ class cs_user_item extends cs_item {
 
    function makeNoContactPerson(){
       $this->_setValue("is_contact", '0');
-   }
-
-   function makeContactPerson2(){
-      $this->_setValue("is_contact", '1');
-      if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
-         $room_item = $this->_environment->getCurrentContextItem();
-         $room_item->setContactPerson($this->getFullName());
-         $room_item->save();
-      }
-   }
-
-   function makeNoContactPerson2(){
-      $this->_setValue("is_contact", '0');
-      if (!$this->_environment->inServer() and !$this->_environment->inPortal()){
-         $room_item = $this->_environment->getCurrentContextItem();
-         $room_item->unsetContactPerson($this->getFullName());
-         $room_item->save();
-      }
    }
 
    function getContactStatus(){
@@ -582,27 +566,27 @@ class cs_user_item extends cs_item {
    }
 
    public function getPictureUrl ( $full = false ) {
-   	$retour = '';
+      $retour = '';
       $params['picture'] = $this->getPicture();
       if ( !empty($params['picture']) ) {
-	      $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
-	      unset($params);
-	      if ( $full ) {
-	         $domain_and_path = '';
-	         global $c_commsy_domain;
-	         global $c_commsy_url_path;
-	         if ( !empty($c_commsy_domain) ) {
-	            $domain_and_path .= $c_commsy_domain;
-	         }
-	         if ( !empty($c_commsy_url_path) ) {
-	            $domain_and_path .= $c_commsy_url_path;
-	         }
-	         $domain_and_path .= '/';
-	         $domain_and_path = str_replace('//','/',$domain_and_path);
-	         if ( !empty($domain_and_path) ) {
-	            $retour = $domain_and_path.$retour;
-	         }
-	      }
+         $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
+         unset($params);
+         if ( $full ) {
+            $domain_and_path = '';
+            global $c_commsy_domain;
+            global $c_commsy_url_path;
+            if ( !empty($c_commsy_domain) ) {
+               $domain_and_path .= $c_commsy_domain;
+            }
+            if ( !empty($c_commsy_url_path) ) {
+               $domain_and_path .= $c_commsy_url_path;
+            }
+            $domain_and_path .= '/';
+            $domain_and_path = str_replace('//','/',$domain_and_path);
+            if ( !empty($domain_and_path) ) {
+               $retour = $domain_and_path.$retour;
+            }
+         }
       }
       return $retour;
    }
@@ -898,7 +882,7 @@ class cs_user_item extends cs_item {
     */
    function reject () {
       $this->_setValue('status', 0);
-      $this->makeNoContactPerson2();
+      $this->makeNoContactPerson();
    }
 
    /** request a user
@@ -1129,8 +1113,24 @@ class cs_user_item extends cs_item {
 
       plugin_hook('user_save', $this);
 
+      // ContactPersonString
+      $context_item = $this->getContextItem();
+      if ( isset($context_item)
+           and !$context_item->isPortal()
+           and !$context_item->isServer()
+           and ( !isset($this->_old_status)
+                 or !isset($this->_old_contact)
+                 or $this->_old_status != $this->getStatus()
+                 or $this->_old_contact != $this->getContactStatus()
+               )
+         ) {
+         $context_item->renewContactPersonString();
+         unset($context_item);
+      }
+
       // set old status to current status
       $this->_old_status = $this->getStatus();
+      $this->_old_contact = $this->getContactStatus();
 
       if(($this->getStatus() == 2) or ($this->getStatus() == 3)){
         // wenn $this->getStatus() einen freigeschalteten Benutzer angibt
@@ -1190,12 +1190,28 @@ class cs_user_item extends cs_item {
          }
       }
 
-      $this->makeNoContactPerson2();
+      $this->makeNoContactPerson();
       $user_manager = $this->_environment->getUserManager();
       $this->_delete($user_manager);
 
+      // ContactPersonString
+      $context_item = $this->getContextItem();
+      if ( isset($context_item)
+           and !$context_item->isPortal()
+           and !$context_item->isServer()
+           and ( !isset($this->_old_status)
+                 or !isset($this->_old_contact)
+                 or $this->_old_status != $this->getStatus()
+                 or $this->_old_contact != $this->getContactStatus()
+               )
+         ) {
+         $context_item->renewContactPersonString();
+         unset($context_item);
+      }
+
       // set old status to current status
       $this->_old_status = $this->getStatus();
+      $this->_old_contact = $this->getContactStatus();
 
       if ( $this->_environment->getCurrentPortalID() == $this->getContextID() ) {
          $id_manager = $this->_environment->getExternalIdManager();
@@ -1208,7 +1224,7 @@ class cs_user_item extends cs_item {
       if ( $this->_environment->inCommunityRoom() ) {  // Community room
          if ( $user_item->isRoot()
               or ( $user_item->isGuest() and $this->isVisibleForAll() )
-              or ( ($user_item->getContextID() == $this->getContextID() 
+              or ( ($user_item->getContextID() == $this->getContextID()
                     or $user_item->getContextID() == $this->_environment->getCurrentContextID()
                    )
                    and ( ( $user_item->isUser()
