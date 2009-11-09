@@ -163,6 +163,22 @@ class cs_update_view extends cs_view {
       return $retour;
    }
 
+   private function _existsIndex ( $table, $field ) {
+      $retour = false;
+      $sql = 'SHOW INDEX FROM '.$table;
+      $result = $this->_select($sql);
+      foreach ( $result as $field_array ) {
+         if ( !empty($field_array)
+              and !empty($field_array['Column_name'])
+              and $field_array['Column_name'] == $field
+            ) {
+            $retour = true;
+            break;
+         }
+      }
+      return $retour;
+   }
+
    /** get content of plugin as HTML
     * this method returns the content of the plugin in HTML-Code
     *
