@@ -47,4 +47,9 @@ $sql = 'ALTER TABLE links ADD INDEX to_item_id (to_item_id);';
 if ( !$this->_existsIndex('links','to_item_id') ) {
    $success = $success AND $this->_select($sql);
 }
+
+$sql = 'ALTER TABLE links ADD INDEX link_type (link_type);';
+if ( !$this->_existsIndex('links','to_item_id') ) {
+   $success = $success AND $this->_select($sql);
+}
 ?>
