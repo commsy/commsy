@@ -670,9 +670,15 @@ jQuery(document).ready(function() {
    } else {
 	   datepicker_image = 'images/commsyicons/datepicker.gif';
    }
-   jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
-   jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
-   jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+   if(jQuery("input[name='dayStart']").length){
+      jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+	}
+   if(jQuery("input[name='dayEnd']").length){
+      jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+   }
+   if(jQuery("input[name='dayActivateStart']").length){
+      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_ch$
+   }
 });
 
 //jQuery(document).ready(function() {
