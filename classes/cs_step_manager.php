@@ -169,7 +169,7 @@ class cs_step_manager extends cs_manager {
      }
      $query .= ' FROM step';
 
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
      // fifth, insert limits into the select statement
      if ( isset($this->_todo_item_id_limit) and !empty($this->_todo_item_id_limit) ) {
@@ -228,23 +228,23 @@ class cs_step_manager extends cs_manager {
             $query .= ' LIMIT '.$this->_from_limit.', '.$this->_interval_limit;
          }
       }
-      
+
       // perform query
       if ( isset($this->_cached_sql[$query]) ) {
-      	$result = $this->_cached_sql[$query];
+         $result = $this->_cached_sql[$query];
       } else {
          $result = $this->_db_connector->performQuery($query);
-	      if (!isset($result)) {
-	         include_once('functions/error_functions.php');
-	         trigger_error('Problems selecting step from query: "'.$query.'"',E_USER_WARNING);
-	      } else {
-	     	   // sql caching
-	     	   if ( $this->_cache_on ) {
-	     	   	$this->_cached_sql[$query] = $result;
-	     	   }
-	      }
+         if (!isset($result)) {
+            include_once('functions/error_functions.php');
+            trigger_error('Problems selecting step from query: "'.$query.'"',E_USER_WARNING);
+         } else {
+              // sql caching
+              if ( $this->_cache_on ) {
+                 $this->_cached_sql[$query] = $result;
+              }
+         }
       }
-    	return $result;
+       return $result;
    }
 
    /** build a new todo item
@@ -259,21 +259,21 @@ class cs_step_manager extends cs_manager {
     function getItem ($item_id) {
         $step = NULL;
         if ( !empty($this->_cached_items[$item_id]) ) {
-        	  $step = $this->_cached_items[$item_id];
+             $step = $this->_cached_items[$item_id];
         } else {
-	        $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
-	        $result = $this->_db_connector->performQuery($query);
-	        if (!isset($result) or empty($result[0])) {
-	           include_once('functions/error_functions.php');
-	           trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
-	        } else {
-	           $step = $this->_buildItem($result[0]);
+           $query = "SELECT * FROM step WHERE step.item_id = '".encode(AS_DB,$item_id)."'";
+           $result = $this->_db_connector->performQuery($query);
+           if (!isset($result) or empty($result[0])) {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting one step item from query: "'.$query.'"',E_USER_WARNING);
+           } else {
+              $step = $this->_buildItem($result[0]);
                if ( $this->_cache_on
-                    and isset($step) 
+                    and isset($step)
                   ) {
-               	$this->_cached_items[$step->getItemID()] = $step;
-               }            	
-	        }
+                  $this->_cached_items[$step->getItemID()] = $step;
+               }
+           }
         }
         return $step;
      }
@@ -327,14 +327,14 @@ class cs_step_manager extends cs_manager {
          } else {
             $step_list = new cs_step_list();
             foreach ($result as $rs) {
-            	$step_item = $this->_buildItem($rs);
-            	if ( isset($step_item) ) {
+               $step_item = $this->_buildItem($rs);
+               if ( isset($step_item) ) {
                   $step_list->append($step_item);
                   if ( $this->_cache_on ) {
-                  	$this->_cached_items[$step_item->getItemID()] = $step_item;
-                  }            	
-            	}
-            	unset($step_item);
+                     $this->_cached_items[$step_item->getItemID()] = $step_item;
+                  }
+               }
+               unset($step_item);
             }
          }
          if ( $this->_cache_on ) {

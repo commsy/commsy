@@ -279,7 +279,7 @@ class cs_tag_manager extends cs_manager {
         }
      }
      $query .= ' FROM '.$this->_db_table;
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
       // insert limits into the select statement
       if( !empty($this->_id_array_limit) ) {

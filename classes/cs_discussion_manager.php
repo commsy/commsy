@@ -233,7 +233,7 @@ class cs_discussion_manager extends cs_manager {
          $query .= ' INNER JOIN item_link_file AS lf ON discussionarticles.item_id = lf.item_iid';
       }
 
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
       if (!$this->_show_not_activated_entries_limit) {
          $query .= ' AND (discussions.modification_date IS NULL OR discussions.modification_date <= "'.getCurrentDateTimeInMySQL().'")';

@@ -396,7 +396,7 @@ class cs_labels_manager extends cs_manager {
      if (!empty($this->_type_limit)) {
         $query .= ' WHERE labels.type="'.encode(AS_DB,$this->_type_limit).'"';
      } else {
-        $query .= ' WHERE 1=1';
+        $query .= ' WHERE 1';
      }
      if (!empty($this->_dossier_limit)) {
         $query .= ' AND labels.name="'.encode(AS_DB,$this->_dossier_limit).'"';

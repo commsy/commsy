@@ -590,7 +590,7 @@ class cs_link_manager extends cs_manager {
    function getCountExistingLinkItemsOfUser($user_id){
      $query = 'SELECT count(link_items.item_id) AS count';
      $query .= ' FROM link_items';
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
      if (isset($this->_room_limit)) {
         $query .= ' AND link_items.context_id = "'.encode(AS_DB,$this->_room_limit).'"';

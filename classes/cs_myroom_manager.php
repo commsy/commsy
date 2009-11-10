@@ -248,7 +248,7 @@ class cs_myroom_manager extends cs_context_manager {
          $query .= ' LEFT JOIN links AS room_time ON room_time.from_item_id='.$this->_db_table.'.item_id AND room_time.link_type="in_time"';
        }
      }
-      $query .= ' WHERE 1=1';
+      $query .= ' WHERE 1';
       if ( isset($this->_topic_limit) ){
          if($this->_topic_limit == -1){
             $query .= ' AND (l41.first_item_id IS NULL AND l41.second_item_id IS NULL)';

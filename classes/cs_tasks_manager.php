@@ -140,7 +140,7 @@ class cs_tasks_manager extends cs_manager {
      }
      $query .= ' FROM tasks';
      // now joins if necessary
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
      // insert limits into the select statement
      if (isset($this->_room_limit)) {

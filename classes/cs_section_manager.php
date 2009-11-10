@@ -186,7 +186,7 @@ class cs_section_manager extends cs_manager {
 #        $query .= ' LEFT JOIN labels AS groups ON l2.to_item_id=groups.item_id AND groups.type="group"';
      }
 
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
      // fifth, insert limits into the select statement
      if ( isset($this->_material_item_id_limit) and !empty($this->_material_item_id_limit) ) {

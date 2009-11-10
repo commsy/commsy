@@ -137,7 +137,7 @@ class cs_annotations_manager extends cs_manager {
      }
      $query .= ' FROM annotations';
 
-     $query .= ' WHERE 1=1';
+     $query .= ' WHERE 1';
 
      if ( isset($this->_linked_item_id) and !empty($this->_linked_item_id) ) {
         $query .= ' AND annotations.linked_item_id='.encode(AS_DB,$this->_linked_item_id);

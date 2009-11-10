@@ -55,7 +55,7 @@ class cs_portal_manager extends cs_context_manager {
       }
 
       $query .= ' FROM '.$this->_db_table;
-      $query .= ' WHERE 1=1';
+      $query .= ' WHERE 1';
 
       // insert limits into the select statement
       if ($this->_delete_limit == true) {
