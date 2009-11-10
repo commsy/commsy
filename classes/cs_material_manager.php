@@ -472,9 +472,15 @@ class cs_material_manager extends cs_manager {
       }
       $cancel = false;
       if (!$this->_handle_tmp_manual){
-         $query = 'CREATE TEMPORARY TABLE tmp3'.$temp_number.' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
+         $query  = 'CREATE TEMPORARY TABLE tmp3'.$temp_number.' (item_id INT(11) NOT NULL, version_id INT(11) NOT NULL, PRIMARY KEY (item_id, version_id));';
          $result = $this->_db_connector->performQuery($query);
-         $query = 'INSERT INTO tmp3'.$temp_number.' (item_id,version_id) SELECT item_id,MAX(version_id) FROM materials GROUP BY item_id;';
+         $query  = 'INSERT INTO tmp3'.$temp_number.' (item_id,version_id) SELECT item_id,MAX(version_id) FROM materials';
+         if ( isset($this->_room_limit) ) {
+            $query .= ' WHERE '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_room_limit).'"';
+         } else {
+            $query .= ' WHERE '.$this->_db_table.'.context_id = "'.encode(AS_DB,$this->_environment->getCurrentContextID()).'"';
+         }
+         $query .= ' GROUP BY item_id;';
          $result = $this->_db_connector->performQuery($query);
       }
       $query = '';

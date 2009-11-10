@@ -442,6 +442,7 @@ if ($mode == '') {
 
    // Get data from database
    $material_manager = $environment->getMaterialManager();
+   $material_manager->create_tmp_table($environment->getCurrentContextID());
    $material_manager->setContextLimit($environment->getCurrentContextID());
    $material_manager->setPublicLimit(6);
    $count_all = $material_manager->getCountAll();
@@ -467,6 +468,7 @@ if ($mode == '') {
    $ids = $material_manager->getIDs();       // returns an array of item ids
    $material_manager->select();
    $list = $material_manager->get();        // returns a cs_list of material_items
+   $material_manager->delete_tmp_table();
    $count_all_shown = count($ids);
 
    // Get available labels

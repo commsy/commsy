@@ -230,31 +230,6 @@ class cs_date_form extends cs_rubric_form {
       }
       $this->_group_array = $label_array;
 
-//      // materials
-//      $material_array = array();
-//      if (isset($this->_session_material_array)) {
-//         $material_manager = $this->_environment->getMaterialManager();
-//         foreach ( $this->_session_material_array as $material ) {
-//            $material_item = $material_manager->getItem($material['iid']);
-//            $temp_array['text'] = $material_item->getTitle();
-//            $temp_array['value'] = '<VALUE><ID>'.$material['iid'].'</ID><VERSION>'.$material['vid'].'</VERSION></VALUE>';
-//            $material_array[] = $temp_array;
-//         }
-//      } elseif (isset($this->_item)) {
-//         $material_list = $this->_item->getMaterialList();
-//         $material_array_for_session = array();
-//         if ($material_list->getCount() > 0) {
-//            $material_item = $material_list->getFirst();
-//            while ($material_item) {
-//               $temp_array['text'] = $material_item->getTitle();
-//               $temp_array['value'] = '<VALUE><ID>'.$material_item->getItemID().'</ID><VERSION>'.$material_item->getVersionID().'</VERSION></VALUE>';
-//               $material_array[] = $temp_array;
-//               $material_item = $material_list->getNext();
-//            }
-//         }
-//      }
-//      $this->_material_array = $material_array;
-
       $this->setHeadline($this->_headline);
 
       // files

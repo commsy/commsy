@@ -175,8 +175,6 @@ class cs_discussionarticle_item extends cs_item {
       return $this->_getLinkedItems($environment->getMaterialManager(), CS_MATERIAL_TYPE);
    }
 
-
-
   /** save discussion article
    * this methode saves the discussion article
    */
