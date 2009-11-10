@@ -95,6 +95,12 @@ class cs_item {
       return $this->_context_item;
    }
 
+   public function setContextItem ( $context_item ) {
+      if ( is_object($context_item) ) {
+         $this->_context_item = $context_item;
+      }
+   }
+
    public function setCacheOff () {
       $this->_cache_on = false;
    }

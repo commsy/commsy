@@ -1118,6 +1118,8 @@ class cs_user_item extends cs_item {
       if ( isset($context_item)
            and !$context_item->isPortal()
            and !$context_item->isServer()
+           and $this->getUserID()
+           and mb_strtoupper($this->getUserID()) != 'GUEST'
            and ( !isset($this->_old_status)
                  or !isset($this->_old_contact)
                  or $this->_old_status != $this->getStatus()

@@ -70,7 +70,7 @@ class cs_tag_manager extends cs_manager {
   var $_internal_data = NULL;
 
   var $_object_data = NULL;
-  
+
   var $_cached_sql = array();
 
   /** constructor: cs_tag_manager
@@ -341,27 +341,27 @@ class cs_tag_manager extends cs_manager {
 
      // sixth, perform query
      if ( isset($this->_cached_sql[$query]) ) {
-	      $result = $this->_cached_sql[$query];	
+         $result = $this->_cached_sql[$query];
      } else {
-	     $result = $this->_db_connector->performQuery($query);
-	     if ( !isset($result) ) {
-	        if ($mode == 'count') {
-	           include_once('functions/error_functions.php');
-	           trigger_error('Problems counting '.$this->_db_table.'.', E_USER_WARNING);
-	        } elseif ($mode == 'id_array') {
-	           include_once('functions/error_functions.php');
-	           trigger_error('Problems selecting '.$this->_db_table.' ids.', E_USER_WARNING);
-	        } else {
-	           include_once('functions/error_functions.php');
-	           trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
-	        }
-	     } else {
-	     	  if ( $this->_cache_on ) {
-	     	     $this->_cached_sql[$query] = $result;	
-	     	  }
-	     }
+        $result = $this->_db_connector->performQuery($query);
+        if ( !isset($result) ) {
+           if ($mode == 'count') {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems counting '.$this->_db_table.'.', E_USER_WARNING);
+           } elseif ($mode == 'id_array') {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting '.$this->_db_table.' ids.', E_USER_WARNING);
+           } else {
+              include_once('functions/error_functions.php');
+              trigger_error('Problems selecting '.$this->_db_table.'.', E_USER_WARNING);
+           }
+        } else {
+             if ( $this->_cache_on ) {
+                $this->_cached_sql[$query] = $result;
+             }
+        }
      }
-	  return $result;
+     return $result;
   }
 
   /** get all tags and cache it - INTERNAL
@@ -667,8 +667,10 @@ class cs_tag_manager extends cs_manager {
       $tag_root_item_old = $this->getRootTagItemFor($old_id);
       if ( isset($tag_root_item_old) ) {
          $tag_root_item_new = $this->getRootTagItemFor($new_id);
-         $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
-         unset($tag_root_item_new);
+         if ( isset($tag_root_item_new) ) {
+            $retour[$tag_root_item_old->getItemID()] = $tag_root_item_new->getItemID();
+            unset($tag_root_item_new);
+         }
       }
       unset($tag_root_item_old);
 

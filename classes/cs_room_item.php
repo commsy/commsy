@@ -232,7 +232,11 @@ class cs_room_item extends cs_context_item {
       $current_moderator = $moderator_list->getFirst();
       while ( $current_moderator ) {
          $contact_name = $current_moderator->getFullname();
-         $this->setContactPerson($contact_name);
+         if ( !empty($contact_name)
+              and mb_strtoupper($contact_name) != 'GUEST'
+            ) {
+            $this->setContactPerson($contact_name);
+         }
          $current_moderator = $moderator_list->getNext();
       }
       $this->setChangeModificationOnSave(false);

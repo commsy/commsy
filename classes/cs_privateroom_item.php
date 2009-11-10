@@ -215,7 +215,6 @@ class cs_privateroom_item extends cs_room_item {
       if ( empty($item_id) ) {
          $this->setContinuous();
          $this->setServiceLinkActive();
-         $this->setContactPerson($current_user->getFullName());
       }
 
       $this->_save($manager);
@@ -228,6 +227,7 @@ class cs_privateroom_item extends cs_room_item {
          }
          $new_room_user = $current_user->cloneData();
          $new_room_user->setContextID($this->getItemID());
+         $new_room_user->setContextItem($this);
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
          $new_room_user->setVisibleToLoggedIn();
@@ -235,7 +235,10 @@ class cs_privateroom_item extends cs_room_item {
          $new_room_user->setCreatorID2ItemID();
          $this->generateLayoutImages();
       }
+
+      // why saving for the second time?
       $this->_save($manager);
+
       if ( empty($item_id) ) {
          $this->initTagRootItem();
       }
@@ -997,7 +1000,7 @@ class cs_privateroom_item extends cs_room_item {
    public function getTitlePure () {
       return parent::getTitle();
    }
-   
+
    public function withActivatingContent(){
       //$result = false;
       //$manager = $this->_environment->getMyRoomManager();
