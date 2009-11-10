@@ -163,8 +163,8 @@ class cs_annotation_form extends cs_rubric_form {
             $this->_form->addButtonBar('option',$this->_translator->getMessage('ANNOTATION_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
          }
       } else {
-         $this->_form->addTitleField('title','',$this->_number.'.','',200,46,true);
-         $this->_form->addTextArea('description','','','',60);
+         $this->_form->addTitleField('annotation_title','',$this->_number.'.','',200,46,true);
+         $this->_form->addTextArea('annotation_description','','','',60);
          $this->_form->addButton('option',$this->_translator->getMessage('ANNOTATION_ADD_NEW_BUTTON'),'');
       }
    }
