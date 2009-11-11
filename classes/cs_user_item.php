@@ -565,11 +565,14 @@ class cs_user_item extends cs_item {
       return $retour;
    }
 
-   public function getPictureUrl ( $full = false ) {
+   public function getPictureUrl ( $full = false, $amp = true ) {
       $retour = '';
       $params['picture'] = $this->getPicture();
       if ( !empty($params['picture']) ) {
          $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
+         if ( !$amp ) {
+            $retour = str_replace('&amp;','&',$retour);
+         }
          unset($params);
          if ( $full ) {
             $domain_and_path = '';
@@ -579,10 +582,11 @@ class cs_user_item extends cs_item {
                $domain_and_path .= $c_commsy_domain;
             }
             if ( !empty($c_commsy_url_path) ) {
-               $domain_and_path .= $c_commsy_url_path;
+               $domain_and_path .= $c_commsy_url_path.'/';
             }
-            $domain_and_path .= '/';
-            $domain_and_path = str_replace('//','/',$domain_and_path);
+            if ( substr($domain_and_path,strlen($domain_and_path)-1) != '/' ) {
+               $domain_and_path .= '/';
+            }
             if ( !empty($domain_and_path) ) {
                $retour = $domain_and_path.$retour;
             }

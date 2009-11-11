@@ -153,7 +153,7 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
          $address .= '.php';
       }
    }
-   if ($amp_flag) {
+   if (!empty($amp_flag) and $amp_flag) {
       $amp_flag = '&amp;';
    } else {
       $amp_flag = '&';
