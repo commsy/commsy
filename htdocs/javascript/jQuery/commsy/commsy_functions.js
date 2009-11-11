@@ -33,7 +33,7 @@ function handleWidth_new(id,max_width,link_name){
    var inner_div = jQuery('#' + 'inner_'+id);
    var width = inner_div.scrollWidth;
    var height = inner_div.scrollHeight;
-      
+
    if (width > max_width){
       inner_div.style.width = max_width+'px';
       if (navigator.userAgent.indexOf("MSIE") != -1){
@@ -68,13 +68,13 @@ function initTextFormatingInformation(item_id,is_shown){
          jQuery('#creator_information'+item_id).slideDown(200);
          jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('more','less'));
       }
-	});
+   });
    jQuery('#toggle'+item_id).mouseover(function(){
       jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('.gif','_over.gif'));
-	});
+   });
    jQuery('#toggle'+item_id).mouseout(function(){
       jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('_over.gif','.gif'));
-	});
+   });
 }
 
 function initCreatorInformations(item_id,is_shown){
@@ -91,13 +91,13 @@ function initCreatorInformations(item_id,is_shown){
          jQuery('#creator_information'+item_id).slideDown(200);
          jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('more','less'));
       }
-	});
+   });
    jQuery('#toggle'+item_id).mouseover(function(){
       jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('.gif','_over.gif'));
-	});
+   });
    jQuery('#toggle'+item_id).mouseout(function(){
       jQuery('#toggle'+item_id).attr('src', jQuery('#toggle'+item_id).attr('src').replace('_over.gif','.gif'));
-	});
+   });
 }
 
 function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
@@ -165,33 +165,33 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
             var newItem = jQuery('<span></span>')
             if(modify == 1){
                if(session_id){
-            	  if(modArray[commsy_panel_index] == 'room'){
-            	     if(is_community_room){
-            	        modArray[commsy_panel_index] = 'project';
-            	     }
-            	  }
-            	  if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
+                 if(modArray[commsy_panel_index] == 'room'){
+                    if(is_community_room){
+                       modArray[commsy_panel_index] = 'project';
+                    }
+                 }
+                 if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
                      newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW&SID=' + session_id + '" title="' + new_action_message + '"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
-            	  } else {
-            		 newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW&SID=' + session_id + '" title="' + new_action_message + '"><img src="images/commsyicons_msie6/16x16/new_home_big.gif"/></a>');
-            	  }
+                 } else {
+                   newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW&SID=' + session_id + '" title="' + new_action_message + '"><img src="images/commsyicons_msie6/16x16/new_home_big.gif"/></a>');
+                 }
                } else {
-            	  if(modArray[commsy_panel_index] == 'room'){
-            	     if(is_community_room){
-             	        modArray[commsy_panel_index] = 'project';
+                 if(modArray[commsy_panel_index] == 'room'){
+                    if(is_community_room){
+                        modArray[commsy_panel_index] = 'project';
                      }
-             	  }
-            	  if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-            	     newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW" title="' + new_action_message + '"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
-            	  } else {
-            		 newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW" title="' + new_action_message + '"><img src="images/commsyicons_msie6/16x16/new_home_big.gif"/></a>');
-            	  }
+                  }
+                 if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
+                    newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW" title="' + new_action_message + '"><img src="images/commsyicons/16x16/new_home_big.png"/></a>');
+                 } else {
+                   newItem.html('<a href="commsy.php?cid=' + contextID + '&mod=' + modArray[commsy_panel_index] + '&fct=edit&iid=NEW" title="' + new_action_message + '"><img src="images/commsyicons_msie6/16x16/new_home_big.gif"/></a>');
+                 }
                }
             } else {
                if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
                   newItem.html('<img src="images/commsyicons/16x16/new_home_big_gray.png" style="cursor:default;" alt="' + new_action_message + '" title="' + new_action_message + '"/>');
                } else {
-            	  newItem.html('<img src="images/commsyicons_msie6/16x16/new_home_big_gray.gif" style="cursor:default;" alt="' + new_action_message + '" title="' + new_action_message + '"/>');
+                 newItem.html('<img src="images/commsyicons_msie6/16x16/new_home_big_gray.gif" style="cursor:default;" alt="' + new_action_message + '" title="' + new_action_message + '"/>');
                }
             }
             newItem.css('width', '18px');
@@ -282,14 +282,14 @@ function showHidePaneContentTopBar(e,inputObj){
          img.attr('src', img.attr('src').replace('up','down'));
       }
       if (navigator.userAgent.indexOf("MSIE") == -1){
-    	 obj.slideUp(200);
+        obj.slideUp(200);
       } else {
          if(navigator.userAgent.indexOf("MSIE 6") != -1){
-	        obj.slideUp(200);
-	     } else {
-	        obj.animate({height: "0%", opacity: "0"}, 200);
-	     }
-	  }      
+           obj.slideUp(200);
+        } else {
+           obj.animate({height: "0%", opacity: "0"}, 200);
+        }
+     }
       if(cookieNames[numericId]){
          Set_Cookie(cookieNames[numericId],'0',100000);
       }
@@ -306,7 +306,7 @@ function showHidePaneContentTopBar(e,inputObj){
          img.attr('src', img.attr('src').replace('down','up'));
       }
       if (navigator.userAgent.indexOf("MSIE") == -1){
-     	 obj.slideDown(200);
+         obj.slideDown(200);
       } else {
          obj.animate({height: "100%", opacity: 1}, 200);
       }
@@ -535,10 +535,10 @@ function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
             img.attr('src', 'images/arrow_netnavigation_down.gif');
          }
 
-	     topBar.attr('class', 'tpBar');
-	     temp_div.append(topBar);
-	     temp_div.append(outerContentDiv);
-	     rubric_index++;
+        topBar.attr('class', 'tpBar');
+        temp_div.append(topBar);
+        temp_div.append(outerContentDiv);
+        rubric_index++;
       }
       count_rubrics[item_id] = rubric_index;
    }
@@ -607,77 +607,77 @@ function callStudyLogSortByTag(tag) {
 }
 function callStudyLogSortByTagId(tagId) {
    getFlashMovie("study_log").callStudyLogSortByTagId(tagId);
-} 
+}
 
 jQuery(document).ready(function() {
    jQuery.datepicker.regional['de'] = {//clearText: 'löschen',
-		   							   //clearStatus: 'aktuelles Datum löschen',
-		   							   //closeText: 'schließen',
-									   //closeStatus: 'ohne Änderungen schließen',
-									   //prevText: '',
-									   //prevStatus: 'letzten Monat zeigen',
-									   //nextText: '',
-									   //nextStatus: 'nächsten Monat zeigen',
-									   //currentText: 'heute',
-									   //currentStatus: '',
-									   monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
-									   monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
-									   //monthStatus: 'anderen Monat anzeigen',
-									   //yearStatus: 'anderes Jahr anzeigen',
-									   //weekHeader: 'Wo',
-									   //weekStatus: 'Woche des Monats',
-									   dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-									   dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-									   dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-									   //dayStatus: 'Setze DD als ersten Wochentag',
-									   //dateStatus: 'Wähle D, M d',
-									   dateFormat: 'dd.mm.yy',
-									   firstDay: 1, 
-									   //initStatus: 'Wähle ein Datum',
-									   isRTL: false};
+                                 //clearStatus: 'aktuelles Datum löschen',
+                                 //closeText: 'schließen',
+                              //closeStatus: 'ohne Änderungen schließen',
+                              //prevText: '',
+                              //prevStatus: 'letzten Monat zeigen',
+                              //nextText: '',
+                              //nextStatus: 'nächsten Monat zeigen',
+                              //currentText: 'heute',
+                              //currentStatus: '',
+                              monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+                              monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+                              //monthStatus: 'anderen Monat anzeigen',
+                              //yearStatus: 'anderes Jahr anzeigen',
+                              //weekHeader: 'Wo',
+                              //weekStatus: 'Woche des Monats',
+                              dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+                              dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                              dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                              //dayStatus: 'Setze DD als ersten Wochentag',
+                              //dateStatus: 'Wähle D, M d',
+                              dateFormat: 'dd.mm.yy',
+                              firstDay: 1,
+                              //initStatus: 'Wähle ein Datum',
+                              isRTL: false};
    jQuery.datepicker.regional['en'] = {//clearText: 'löschen',
-		   							   //clearStatus: 'aktuelles Datum löschen',
-		   							   //closeText: 'schließen',
-		   							   //closeStatus: 'ohne Änderungen schließen',
-		   							   //prevText: '',
-		   							   //prevStatus: 'letzten Monat zeigen',
-		   							   //nextText: '',
-		   							   //nextStatus: 'nächsten Monat zeigen',
-		   							   //currentText: 'heute',
-		   							   //currentStatus: '',
-		   							   //monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
-		   							   //monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
-		   							   //monthStatus: 'anderen Monat anzeigen',
-		   							   //yearStatus: 'anderes Jahr anzeigen',
-		   							   //weekHeader: 'Wo',
-		   							   //weekStatus: 'Woche des Monats',
-		   							   //dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-		   							   //dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-		   							   //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-		   							   //dayStatus: 'Setze DD als ersten Wochentag',
-		   							   //dateStatus: 'Wähle D, M d',
-		   							   dateFormat: 'dd.mm.yy',
-		   							   firstDay: 1, 
-		   							   //initStatus: 'Wähle ein Datum',
-		   							   isRTL: false};
-   if(datepicker_language == 'de'){
+                                 //clearStatus: 'aktuelles Datum löschen',
+                                 //closeText: 'schließen',
+                                 //closeStatus: 'ohne Änderungen schließen',
+                                 //prevText: '',
+                                 //prevStatus: 'letzten Monat zeigen',
+                                 //nextText: '',
+                                 //nextStatus: 'nächsten Monat zeigen',
+                                 //currentText: 'heute',
+                                 //currentStatus: '',
+                                 //monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+                                 //monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+                                 //monthStatus: 'anderen Monat anzeigen',
+                                 //yearStatus: 'anderes Jahr anzeigen',
+                                 //weekHeader: 'Wo',
+                                 //weekStatus: 'Woche des Monats',
+                                 //dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+                                 //dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                                 //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+                                 //dayStatus: 'Setze DD als ersten Wochentag',
+                                 //dateStatus: 'Wähle D, M d',
+                                 dateFormat: 'dd.mm.yy',
+                                 firstDay: 1,
+                                 //initStatus: 'Wähle ein Datum',
+                                 isRTL: false};
+   if(window.datepicker_language !== undefined && datepicker_language == 'de'){
       jQuery.datepicker.setDefaults($.datepicker.regional['de']);
    } else {
-	  jQuery.datepicker.setDefaults($.datepicker.regional['en']);
+     jQuery.datepicker.setDefaults($.datepicker.regional['en']);
    }
    if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-	   datepicker_image = 'images/commsyicons/datepicker.png';
+      datepicker_image = 'images/commsyicons/datepicker.png';
    } else {
-	   datepicker_image = 'images/commsyicons/datepicker.gif';
+      datepicker_image = 'images/commsyicons/datepicker.gif';
    }
    if(jQuery("input[name='dayStart']").length){
       jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
-	}
+   }
    if(jQuery("input[name='dayEnd']").length){
       jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
    }
    if(jQuery("input[name='dayActivateStart']").length){
-      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_ch$
+      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
    }
 });
 
