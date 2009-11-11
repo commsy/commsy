@@ -509,7 +509,7 @@ class cs_detail_view extends cs_view {
             } elseif ( isset($item) and $item->isNotActivated() and isset($_GET['path'])){
                $activating_date = $item->getActivatingDate();
                if (strstr($activating_date,'9999-00-00')){
-               	  $activating_text = getMessage('COMMON_NOT_ACTIVATED');
+                  $activating_text = getMessage('COMMON_NOT_ACTIVATED');
                }else{
                   $activating_text = getMessage('COMMON_ACTIVATING_DATE').' '.getDateInLang($item->getActivatingDate());
                }
@@ -2120,10 +2120,10 @@ class cs_detail_view extends cs_view {
       $item_manager = $this->_environment->getItemManager();
       $ids_not_activated = array();
       foreach($ids as $index => $id){
-      	$item = $item_manager->getItem($id);
-      	if($item->isNotActivated()){
-      		$ids_not_activated[] = $id;
-      	}
+         $item = $item_manager->getItem($id);
+         if($item->isNotActivated()){
+            $ids_not_activated[] = $id;
+         }
       }
       $count_all = count($ids);
       // Determine the position if it is not (correctly) given
@@ -2144,65 +2144,65 @@ class cs_detail_view extends cs_view {
          $this->setPosition($pos);
       }
 
-	  $pos_index_start = 0;
-	  $pos_index_left = $pos-1;
-	  $pos_index_right = $pos+1;
-	  $pos_index_end = $count_all-1;
+      $pos_index_start = 0;
+      $pos_index_left = $pos-1;
+      $pos_index_right = $pos+1;
+      $pos_index_end = $count_all-1;
       // prepare browsing
       if ( $pos > 0 ) { // can I browse to the left / start?
          for ($index = $pos-1, $max_count = 0; $index >= $max_count; $index--) {
-         	if(in_array($ids[$index], $ids_not_activated)){
-         		$pos_index_left--;
-         	} else {
-         		break;
-         	}
-		 }
-		 if($pos_index_left >= 0){
-         	$browse_left = $ids[$pos_index_left];
-		 } else {
-		 	$browse_left = 0;      // 0 means: do not browse
-		 }
-		 for ($index = 0, $max_count = $pos-1; $index <= $max_count; $index++) {
-         	if(in_array($ids[$index], $ids_not_activated)){
-         		$pos_index_start++;
-         	} else {
-         		break;
-         	}
-		 }
-		 if($pos_index_left >= 0){
-         	$browse_start = $ids[$pos_index_start];
-		 } else {
-         	$browse_start = 0;     // 0 means: do not browse
-		 }
+            if(in_array($ids[$index], $ids_not_activated)){
+               $pos_index_left--;
+            } else {
+               break;
+            }
+       }
+       if($pos_index_left >= 0){
+            $browse_left = $ids[$pos_index_left];
+       } else {
+          $browse_left = 0;      // 0 means: do not browse
+       }
+       for ($index = 0, $max_count = $pos-1; $index <= $max_count; $index++) {
+            if(in_array($ids[$index], $ids_not_activated)){
+               $pos_index_start++;
+            } else {
+               break;
+            }
+       }
+       if($pos_index_left >= 0){
+            $browse_start = $ids[$pos_index_start];
+       } else {
+            $browse_start = 0;     // 0 means: do not browse
+       }
       } else {
          $browse_left = 0;      // 0 means: do not browse
          $browse_start = 0;     // 0 means: do not browse
       }
       if ( $pos >= 0 and $pos < $count_all-1 ) { // can I browse to the right / end?
         for ($index = $pos+1, $max_count = $count_all-1; $index <= $max_count; $index++) {
-         	if(in_array($ids[$index], $ids_not_activated)){
-         		$pos_index_right++;
-         	} else {
-         		break;
-         	}
-		 }
-		 if($pos_index_right < sizeof($ids)){
-         	$browse_right = $ids[$pos_index_right];
-		 } else {
-		 	$browse_right = 0;   // 0 means: do not browse
-		 }
-		 for ($index = $count_all-1, $max_count = $pos+1; $index >= $max_count; $index--) {
-         	if(in_array($ids[$index], $ids_not_activated)){
-         		$pos_index_end--;
-         	} else {
-         		break;
-         	}
-		 }
-		 if($pos_index_right < sizeof($ids)){
-         	$browse_end = $ids[$pos_index_end];
-		 } else {
-         	$browse_end = 0;     // 0 means: do not browse
-		 }
+            if(in_array($ids[$index], $ids_not_activated)){
+               $pos_index_right++;
+            } else {
+               break;
+            }
+       }
+       if($pos_index_right < sizeof($ids)){
+            $browse_right = $ids[$pos_index_right];
+       } else {
+          $browse_right = 0;   // 0 means: do not browse
+       }
+       for ($index = $count_all-1, $max_count = $pos+1; $index >= $max_count; $index--) {
+            if(in_array($ids[$index], $ids_not_activated)){
+               $pos_index_end--;
+            } else {
+               break;
+            }
+       }
+       if($pos_index_right < sizeof($ids)){
+            $browse_end = $ids[$pos_index_end];
+       } else {
+            $browse_end = 0;     // 0 means: do not browse
+       }
       } else {
          $browse_right = 0;     // 0 means: do not browse
          $browse_end = 0;       // 0 means: do not browse

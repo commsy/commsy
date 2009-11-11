@@ -70,12 +70,23 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_number = $value;
    }
 
+   public function unsetDetailMode () {
+      $this->_detail_mode = false;
+   }
+
+   public function isDetailModeActive () {
+      return $this->_detail_mode == true;
+   }
+
+   public function reset () {
+      $this->unsetDetailMode();
+      parent::reset();
+   }
+
    /** set materials from session
     * set an array with the materials from the session
     *
     * @param array array of materials out of session
-    *
-    * @author CommSy Development Group
     */
    function setSessionMaterialArray ($value) {
       $this->_session_material_array = (array)$value;
@@ -145,7 +156,7 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_form->addHidden('ref_iid','');
       $this->_form->addHidden('version','');
       if ( !$this->_detail_mode ) {
-         $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),'',200,46);
+         $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),'',200,46,true);
          $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'',60);
 
          // buttons
@@ -178,8 +189,13 @@ class cs_annotation_form extends cs_rubric_form {
       $this->_values = array();
       if (isset($this->_item)) {
          $this->_values['iid'] = $this->_item->getItemID();
-         $this->_values['title'] = $this->_item->getTitle(); // no encode here - encode in form-views
-         $this->_values['description'] = $this->_item->getDescription();
+         if ( !$this->_detail_mode ) {
+            $this->_values['title'] = $this->_item->getTitle(); // no encode here - encode in form-views
+            $this->_values['description'] = $this->_item->getDescription();
+         } else {
+            $this->_values['annotation_title'] = $this->_item->getTitle();
+            $this->_values['annotation_description'] = $this->_item->getDescription();
+         }
          $this->_values['ref_iid'] = $this->_item->getLinkedItemID();
          $this->_values['version'] = $this->_item->getLinkedVersionID();
          $this->_setValuesForRubricConnections();
@@ -201,6 +217,12 @@ class cs_annotation_form extends cs_rubric_form {
          }
       } elseif (isset($this->_form_post)) {
          $this->_values = $this->_form_post;
+         if ( empty($this->_values['title']) and !empty($this->_values['annotation_title']) ) {
+            $this->_values['title'] = $this->_values['annotation_title'];
+         }
+         if ( empty($this->_values['description']) and !empty($this->_values['annotation_description']) ) {
+            $this->_values['description'] = $this->_values['annotation_description'];
+         }
       }
       if ( isset($this->_ref_iid) ) {
          $this->_values['ref_iid'] = $this->_ref_iid;

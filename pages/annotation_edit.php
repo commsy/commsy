@@ -179,8 +179,9 @@ else {
       $form = $class_factory->getClass(ANNOTATION_FORM,$class_params);
       unset($class_params);
 
-      if ( $session->issetValue('annotation_history_function')
-           and $session->getValue('annotation_history_function') == 'detail'
+      if ( !empty($_GET['mode'])
+           and $_GET['mode'] == 'annotate'
+           and !empty($_POST)
          ) {
          $form->setDetailMode(1);
       }
@@ -257,9 +258,8 @@ else {
            (isOption($command, getMessage('ANNOTATION_SAVE_BUTTON'))
             or isOption($command, getMessage('ANNOTATION_CHANGE_BUTTON'))
             or isOption($command, getMessage('ANNOTATION_ADD_NEW_BUTTON'))
-            ) ) {
-
-
+            )
+         ) {
          $correct = $form->check();
          if ( $correct ) {
             // Create new item
@@ -331,6 +331,14 @@ else {
             // Redirect
             cleanup_session($current_iid);
             redirect($context,$module,$function, $param, $anchor);
+         } elseif ( $form->isDetailModeActive() ) {
+            $form->reset();
+            if ( !empty($_POST) ) {
+               $form->setFormPost($_POST);
+            }
+            $form->prepareForm();
+            $form->loadValues();
+            $form->check();
          }
       }
 
