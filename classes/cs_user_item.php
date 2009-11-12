@@ -569,8 +569,8 @@ class cs_user_item extends cs_item {
       $retour = '';
       $params['picture'] = $this->getPicture();
       if ( !empty($params['picture']) ) {
-         $retour = curl($this->_environment->getCurrentContextID(),'picture','getfile',$params,'');
-         if ( !$amp ) {
+         $retour = curl($this->getContextID(),'picture','getfile',$params,'');
+         if ( !$amp and strstr($retour,'&amp;') ) {
             $retour = str_replace('&amp;','&',$retour);
          }
          unset($params);
