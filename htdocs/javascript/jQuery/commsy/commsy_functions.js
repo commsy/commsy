@@ -4,7 +4,7 @@ jQuery(document).ready(function() {
          jQuery(this).parents("form").map(function () {
             this.submit();
          });
-      })
+      });
    });
 
    jQuery("input[id='submit_form'][type='checkbox']").each(function(i) {
@@ -12,7 +12,7 @@ jQuery(document).ready(function() {
          jQuery(this).parents("form").map(function () {
             this.submit();
          });
-      })
+      });
    });
 
    jQuery("a[id='submit_form']").each(function(i) {
@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
          jQuery(this).parents("form").map(function () {
             this.submit();
          });
-      })
+      });
    });
 });
 
@@ -162,7 +162,7 @@ function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeA
          klick.css('height', '100%');
 
          if((contentDiv.attr('id') == 'homeheader') && (modArray[commsy_panel_index] != 'user')){
-            var newItem = jQuery('<span></span>')
+            var newItem = jQuery('<span></span>');
             if(modify == 1){
                if(session_id){
                  if(modArray[commsy_panel_index] == 'room'){
@@ -356,7 +356,7 @@ function slidePane(slideValue,id,name){
       height = innerHeight;
    }
    if(document.all){
-      activePane.css('filter', 'alpha(opacity=' + Math.round((height / subDiv.height())*100) + ')')
+      activePane.css('filter', 'alpha(opacity=' + Math.round((height / subDiv.height())*100) + ')');
    }else{
       var opacity = (height / subDiv.height());
       if(opacity==0){
@@ -445,7 +445,7 @@ function handleWidth(id,max_width,link_name){
 function right_box_send(form_id,option,value) {
   document.getElementById(option).value = value;
   //jQuery('#'.option).val(value);
-  document.getElementById(form_id).submit()
+  document.getElementById(form_id).submit();
   //jQuery('#'.form_id).submit();
 }
 
