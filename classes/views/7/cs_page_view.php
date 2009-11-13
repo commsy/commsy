@@ -533,16 +533,28 @@ class cs_page_view extends cs_view {
       $left_menue_status = $session->getValue('left_menue_status');
       $retour  = '';
       // jQuery
-      $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
-      $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-ui-1.7.2.custom.min.js"></script>'.LF;
-      $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
-      $retour .= '   <script type="text/javascript">'.LF;
-      $retour .= '      <!--'.LF;
-      $retour .= '   var datepicker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;
-      $retour .= '   var datepicker_choose = \''.$this->_translator->getMessage('COMMON_DATEPICKER_CHOOSE').'\';'.LF;
-      $retour .= '      -->'.LF;
-      $retour .= '   </script>'.LF;
-      $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions.js"></script>'.LF;
+      if(!(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6'))){
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-1.3.2.min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-ui-1.7.2.custom.min.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
+         $retour .= '   <script type="text/javascript">'.LF;
+         $retour .= '      <!--'.LF;
+         $retour .= '   var datepicker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;
+         $retour .= '   var datepicker_choose = \''.$this->_translator->getMessage('COMMON_DATEPICKER_CHOOSE').'\';'.LF;
+         $retour .= '      -->'.LF;
+         $retour .= '   </script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/commsy/commsy_functions.js"></script>'.LF;
+      } else {
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyFunctions.js"></script>'.LF;
+         $retour .= '   <script src="javascript/mootools-release-1.11.js" type="text/javascript"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyPanels7.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyTemplateInformation.js"></script>'.LF;
+         $retour .= '   <script src="javascript/slimbox/js/slimbox.js" type="text/javascript"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyNetnavigation.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyCreatorInformation.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/CommSyTextFormatingInformation.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" media="screen" type="text/css" href="javascript/slimbox/css/slimbox.css"/>'.LF;
+      }
       // jQuery
       if (!$this->_environment->inServer()){
          // jQuery

@@ -47,7 +47,7 @@
    These cookie functions are downloaded from
    http://www.mach5.com/support/analyzer/manual/html/General/CookiesJavaScript.htm
    */
-   function Get_Cookie_old(name) {
+   function Get_Cookie(name) {
       var start = document.cookie.indexOf(name+"=");
       var len = start+name.length+1;
       if ((!start) && (name != document.cookie.substring(0,name.length))){
@@ -64,7 +64,7 @@
    }
 
    // This function has been slightly modified
-   function Set_Cookie_old(name,value,expires,path,domain,secure) {
+   function Set_Cookie(name,value,expires,path,domain,secure) {
       expires = expires * 60*60*24*1000;
       var today = new Date();
       var expires_date = new Date( today.getTime() + (expires) );
@@ -76,11 +76,11 @@
        document.cookie = cookieString;
    }
 
-   function cancelXpWidgetEvent_old(){
+   function cancelXpWidgetEvent(){
       return false;
    }
 
-   function showHidePaneContent_old(e,inputObj){
+   function showHidePaneContent(e,inputObj){
       if(!inputObj)inputObj = this;
 
       var img = inputObj;
@@ -130,7 +130,7 @@
       return true;
    }
 
-   function showHidePaneContentTopBar_old(e,inputObj){
+   function showHidePaneContentTopBar(e,inputObj){
       if(!inputObj)inputObj = this;
 
       var numericId = inputObj.id.replace(/[^0-9]/g,'');
@@ -198,7 +198,7 @@
       return true;
    }
 
-   function slidePane_old(slideValue,id,name){
+   function slidePane(slideValue,id,name){
       if(slideValue!=xpPanel_currentDirection[id]){
          return false;
       }
@@ -252,13 +252,13 @@
       }
    }
 
-   function preInitCommSyPanels_old(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
+   function preInitCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
       window.addEvent('domready', function(){
          initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray);
       });
    }
 
-   function initCommSyPanels_old(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
+   function initCommSyPanels(panelTitles,panelDesc,panelDisplayed,cookieArray,sizeArray){
       commsy_pane = document.getElementById('commsy_panels');
       var divs = commsy_pane.getElementsByTagName('DIV');
       commsy_panel_index=0;
@@ -380,7 +380,7 @@
       }
    }
 
-   function mouseoverTopbarBar_old(){
+   function mouseoverTopbarBar(){
 		var numericId = this.id.replace(/[^0-9]/g,'');
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;
@@ -388,7 +388,7 @@
       document.body.style.cursor = "pointer";
    }
 
-   function mouseoutTopbarBar_old(){
+   function mouseoutTopbarBar(){
       var numericId = this.id.replace(/[^0-9]/g,'');
       var img = document.getElementById('showHideButton' + numericId);
       var src = img.src;

@@ -23,25 +23,25 @@
 //    along with CommSy.
 
    var layer_id;
-   function mouseoverTopbar_old(){
+   function mouseoverTopbar(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('.gif','_over.gif');
    }
 
-   function mouseoutTopbar_old(){
+   function mouseoutTopbar(){
       var img = this;
       var src = img.src;
       img.src = img.src.replace('_over.gif','.gif');
    }
 
-   function buildRoomLayer_old(e,inputObj){
+   function buildRoomLayer(e,inputObj){
       var div = document.getElementById(layer_id);
       var height = document.body.offsetHeight - 140;
       div.style.height = height + "px";
    }
 
-   function initDeleteLayer_old(){
+   function initDeleteLayer(){
       layer_id = "delete";
       buildRoomLayer();
    }
@@ -51,13 +51,13 @@
 //      text.value = "";
 //   }
 
-   function initLayer_old(id){
+   function initLayer(id){
       var div = document.getElementById(id);
       var height = document.body.offsetHeight;
       div.style.height = height + "px";
    }
 
-   function handleWidth_old(id,max_width,link_name){
+   function handleWidth(id,max_width,link_name){
       window.addEvent('domready', function(){
       var div = document.getElementById(id);
       var inner_div = document.getElementById('inner_'+id);
@@ -76,7 +76,7 @@
       });
    }
 
-function right_box_send_old(form_id,option,value)
+function right_box_send(form_id,option,value)
 {
   document.getElementById(option).value = value;
   document.getElementById(form_id).submit()

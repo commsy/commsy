@@ -24,7 +24,7 @@
 
    var context_id;
 
-   function cs_toggle_template_old(){
+   function cs_toggle_template(){
       var id = document.getElementsByName('template_select').namedItem('template_select');
       alert(id.value);
       document.getElementById('template_extention').innerHTML = template_array[id.value];
@@ -33,7 +33,7 @@
 	  }
    }
 
-   function initToggleTemplate_old(id){
+   function initToggleTemplate(id){
       context_id = id;
       window.addEvent('domready', function(){
          var id = document.getElementsByName('template_select').namedItem('template_select');
@@ -44,7 +44,7 @@
       });
    }
 
-   function showTemplateInformation_old(){
+   function showTemplateInformation(){
       var mySlide = new Fx.Slide('template_information_box',{duration: 200});
       mySlide.hide();
       $('toggle'+context_id).addEvent('click', function(e){

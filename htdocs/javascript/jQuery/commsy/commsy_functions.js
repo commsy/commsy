@@ -610,74 +610,76 @@ function callStudyLogSortByTagId(tagId) {
 }
 
 jQuery(document).ready(function() {
-   jQuery.datepicker.regional['de'] = {//clearText: 'löschen',
-                                 //clearStatus: 'aktuelles Datum löschen',
-                                 //closeText: 'schließen',
-                              //closeStatus: 'ohne Änderungen schließen',
-                              //prevText: '',
-                              //prevStatus: 'letzten Monat zeigen',
-                              //nextText: '',
-                              //nextStatus: 'nächsten Monat zeigen',
-                              //currentText: 'heute',
-                              //currentStatus: '',
-                              monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
-                              monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
-                              //monthStatus: 'anderen Monat anzeigen',
-                              //yearStatus: 'anderes Jahr anzeigen',
-                              //weekHeader: 'Wo',
-                              //weekStatus: 'Woche des Monats',
-                              dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-                              dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-                              dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-                              //dayStatus: 'Setze DD als ersten Wochentag',
-                              //dateStatus: 'Wähle D, M d',
-                              dateFormat: 'dd.mm.yy',
-                              firstDay: 1,
-                              //initStatus: 'Wähle ein Datum',
-                              isRTL: false};
-   jQuery.datepicker.regional['en'] = {//clearText: 'löschen',
-                                 //clearStatus: 'aktuelles Datum löschen',
-                                 //closeText: 'schließen',
-                                 //closeStatus: 'ohne Änderungen schließen',
-                                 //prevText: '',
-                                 //prevStatus: 'letzten Monat zeigen',
-                                 //nextText: '',
-                                 //nextStatus: 'nächsten Monat zeigen',
-                                 //currentText: 'heute',
-                                 //currentStatus: '',
-                                 //monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
-                                 //monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
-                                 //monthStatus: 'anderen Monat anzeigen',
-                                 //yearStatus: 'anderes Jahr anzeigen',
-                                 //weekHeader: 'Wo',
-                                 //weekStatus: 'Woche des Monats',
-                                 //dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
-                                 //dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-                                 //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
-                                 //dayStatus: 'Setze DD als ersten Wochentag',
-                                 //dateStatus: 'Wähle D, M d',
-                                 dateFormat: 'dd.mm.yy',
-                                 firstDay: 1,
-                                 //initStatus: 'Wähle ein Datum',
-                                 isRTL: false};
-   if(window.datepicker_language !== undefined && datepicker_language == 'de'){
-      jQuery.datepicker.setDefaults($.datepicker.regional['de']);
-   } else {
-     jQuery.datepicker.setDefaults($.datepicker.regional['en']);
-   }
    if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
-      datepicker_image = 'images/commsyicons/datepicker.png';
-   } else {
-      datepicker_image = 'images/commsyicons/datepicker.gif';
-   }
-   if(jQuery("input[name='dayStart']").length){
-      jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
-   }
-   if(jQuery("input[name='dayEnd']").length){
-      jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
-   }
-   if(jQuery("input[name='dayActivateStart']").length){
-      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+	   jQuery.datepicker.regional['de'] = {//clearText: 'löschen',
+	                                 //clearStatus: 'aktuelles Datum löschen',
+	                                 //closeText: 'schließen',
+	                              //closeStatus: 'ohne Änderungen schließen',
+	                              //prevText: '',
+	                              //prevStatus: 'letzten Monat zeigen',
+	                              //nextText: '',
+	                              //nextStatus: 'nächsten Monat zeigen',
+	                              //currentText: 'heute',
+	                              //currentStatus: '',
+	                              monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+	                              monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+	                              //monthStatus: 'anderen Monat anzeigen',
+	                              //yearStatus: 'anderes Jahr anzeigen',
+	                              //weekHeader: 'Wo',
+	                              //weekStatus: 'Woche des Monats',
+	                              dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+	                              dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+	                              dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+	                              //dayStatus: 'Setze DD als ersten Wochentag',
+	                              //dateStatus: 'Wähle D, M d',
+	                              dateFormat: 'dd.mm.yy',
+	                              firstDay: 1,
+	                              //initStatus: 'Wähle ein Datum',
+	                              isRTL: false};
+	   jQuery.datepicker.regional['en'] = {//clearText: 'löschen',
+	                                 //clearStatus: 'aktuelles Datum löschen',
+	                                 //closeText: 'schließen',
+	                                 //closeStatus: 'ohne Änderungen schließen',
+	                                 //prevText: '',
+	                                 //prevStatus: 'letzten Monat zeigen',
+	                                 //nextText: '',
+	                                 //nextStatus: 'nächsten Monat zeigen',
+	                                 //currentText: 'heute',
+	                                 //currentStatus: '',
+	                                 //monthNames: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+	                                 //monthNamesShort: ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'],
+	                                 //monthStatus: 'anderen Monat anzeigen',
+	                                 //yearStatus: 'anderes Jahr anzeigen',
+	                                 //weekHeader: 'Wo',
+	                                 //weekStatus: 'Woche des Monats',
+	                                 //dayNames: ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'],
+	                                 //dayNamesShort: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+	                                 //dayNamesMin: ['So','Mo','Di','Mi','Do','Fr','Sa'],
+	                                 //dayStatus: 'Setze DD als ersten Wochentag',
+	                                 //dateStatus: 'Wähle D, M d',
+	                                 dateFormat: 'dd.mm.yy',
+	                                 firstDay: 1,
+	                                 //initStatus: 'Wähle ein Datum',
+	                                 isRTL: false};
+	   if(window.datepicker_language !== undefined && datepicker_language == 'de'){
+	      jQuery.datepicker.setDefaults($.datepicker.regional['de']);
+	   } else {
+	     jQuery.datepicker.setDefaults($.datepicker.regional['en']);
+	   }
+	   if (navigator.userAgent.indexOf("MSIE 6.0") == -1){
+	      datepicker_image = 'images/commsyicons/datepicker.png';
+	   } else {
+	      datepicker_image = 'images/commsyicons/datepicker.gif';
+	   }
+	   if(jQuery("input[name='dayStart']").length){
+	      jQuery("input[name='dayStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+	   }
+	   if(jQuery("input[name='dayEnd']").length){
+	      jQuery("input[name='dayEnd']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+	   }
+	   if(jQuery("input[name='dayActivateStart']").length){
+	      jQuery("input[name='dayActivateStart']").datepicker({showOn: 'button', buttonImage: datepicker_image, buttonImageOnly: true, buttonText: datepicker_choose});
+	   }
    }
 });
 

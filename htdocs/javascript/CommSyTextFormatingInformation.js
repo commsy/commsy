@@ -14,7 +14,7 @@
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
 
-function initTextFormatingInformation_old(id,show){
+function initTextFormatingInformation(id,show){
    var item_id = id;
       var is_shown = show;
          var mySlide = new Fx.Slide('creator_information'+item_id,{duration: 200});

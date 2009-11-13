@@ -40,7 +40,7 @@
    var netnavigation_currentDirection = new Array();
 
 
-   function showHideRubricContent_old(e,inputObj){
+   function showHideRubricContent(e,inputObj){
       if(!inputObj){
          inputObj = this;
       }
@@ -71,7 +71,7 @@
 
 
 
-   function slideRubric_old(slideValue,id){
+   function slideRubric(slideValue,id){
       if(slideValue != netnavigation_currentDirection[id]){
          return false;
       }
@@ -127,7 +127,7 @@
    }
 
 
-   function initDhtmlNetnavigation_old(element_id,panelTitles,rubric, item_id){
+   function initDhtmlNetnavigation(element_id,panelTitles,rubric, item_id){
       var netnavigation = document.getElementById(element_id + item_id);
       var netnavigation_divs = netnavigation.getElementsByTagName('DIV');
       var divs = netnavigation_divs[0].getElementsByTagName('DIV');
