@@ -2627,4 +2627,10 @@ function pr_soap($client){
    pr($client->__getLastResponseHeaders());
    pr($client->__getLastResponse());
 }
+
+function pr_user_soap($client, $user){
+   pr_user($client->__getLastRequestHeaders(), $user);
+   pr_user($client->__getLastResponseHeaders(), $user);
+   pr_user($client->__getLastResponse(), $user);
+}
 ?>
