@@ -47,13 +47,13 @@ $message["MATERIAL_ENTER_NEW"]["en"] = "Enter material";
 $message["MATERIAL_EXPORT_ITEM_ZIP"]["en"] = "Material";
 $message["MATERIAL_EXPORT_TO_WIKI"]["en"] = "Show in wiki";
 $message["MATERIAL_EXPORT_TO_WIKI_LINK"]["en"] = "Page in wiki";
-$message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["en"] = "The following material - also edited by you - from the CommSy-Room &quot;%1&quot; was published to the room-wiki:<br/>
+$message["MATERIAL_EXPORT_WIKI_MAIL_BODY"]["en"] = "The following material - also edited by you - from the CommSy-Room &quot;%1&quot; was published to the room-wiki by %2:<br/>
 <br/>
-&quot;%2&quot;<br/>
+&quot;%3&quot;<br/>
 <br/>
 You can view the published version in the room-wiki at:<br/>
 <br/>
-%3";
+%4";
 $message["MATERIAL_EXPORT_WIKI_MAIL_SUBJECT"]["en"] = "Material-export to wiki";
 $message["MATERIAL_EXPORT_ZIP"]["en"] = "Materials";
 $message["MATERIAL_FACULTY"]["en"] = "Faculty";
