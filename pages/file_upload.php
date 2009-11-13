@@ -57,7 +57,7 @@ if ( !empty($_POST['version'])
    $version = $_GET['version'];
 }
 
-if ( $version_id > 0 ) {
+if ( $version > 0 ) {
    $manager = $environment->getMaterialManager();
 } else {
    $item_manager = $environment->getItemManager();
