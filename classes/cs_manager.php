@@ -1044,6 +1044,8 @@ class cs_manager {
                $retour[$query_result['item_id']] = $current_data_array[$query_result['item_id']];
                $do_it = false;
             } elseif ( DBTable2Type($this->_db_table) == CS_LINK_TYPE
+                       and !empty($id_array[$query_result['from_item_id']])
+                       and !empty($id_array[$query_result['to_item_id']])
                        and in_array(array($id_array[$query_result['from_item_id']],$id_array[$query_result['to_item_id']]),$current_data_array)
                      ) {
                $do_it = false;
