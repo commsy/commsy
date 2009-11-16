@@ -428,6 +428,13 @@ class cs_profile_form extends cs_rubric_form {
             // text and options
             // auth source
             $this->_form->addSubHeadline('subheadline',$this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE'));
+            $current_portal = $this->_environment->getCurrentPortalItem();
+            $title = '';
+            if ( isset($current_portal) ) {
+               $title = $current_portal->getTitle();
+               unset($current_portal);
+            }
+            $this->_form->addText('text',$this->_translator->getMessageInLang($this->_language,'COMMON_HINTS'),$this->_translator->getMessageInLang($this->_language,'ACCOUNT_MERGE_TEXT',$title));
             if ( count($this->_auth_source_array) == 1 ) {
                $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
             } elseif( $this->_show_auth_source ) {
