@@ -1000,264 +1000,272 @@ class cs_authentication {
 
    function mergeAccount ($account_new,$auth_source_new,$account_old,$auth_source_old) {
 
-      // separate rooms in
-      // - rooms where old user and new user are in
-      // - rooms where only old user is in
-      include_once('classes/cs_list.php');
-      $list_only = new cs_list();
-      $list_double = new cs_list();
+      if ( $account_new == $account_old
+           and $auth_source_new == $auth_source_old
+         ) {
+         include_once('functions/error_functions.php');
+         trigger_error('you can not merge your account with yourself',E_USER_WARNING);
+      } else {
 
-      $user_new_project_array = array();
-      $user_new_community_array = array();
+         // separate rooms in
+         // - rooms where old user and new user are in
+         // - rooms where only old user is in
+         include_once('classes/cs_list.php');
+         $list_only = new cs_list();
+         $list_double = new cs_list();
 
-      $user_manager = $this->_environment->getUserManager();
-      $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-      $user_manager->setAuthSourceLimit($auth_source_old);
-      $user_manager->setUserIdLimit($account_old);
-      $user_manager->select();
-      $user_list = $user_manager->get();
-      $user_old = $user_list->getFirst();
-      $privateroom_manager = $this->_environment->getPrivateRoomManager();
-      $private_room_item_old = $privateroom_manager->getRelatedOwnRoomForUser($user_old,$this->_environment->getCurrentPortalID());
+         $user_new_project_array = array();
+         $user_new_community_array = array();
 
-      $user_old_project_list = $user_old->getRelatedProjectList();
-      $user_old_community_list = $user_old->getRelatedCommunityList();
-      // grouproom with projectroom
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+         $user_manager->setAuthSourceLimit($auth_source_old);
+         $user_manager->setUserIdLimit($account_old);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $user_old = $user_list->getFirst();
+         $privateroom_manager = $this->_environment->getPrivateRoomManager();
+         $private_room_item_old = $privateroom_manager->getRelatedOwnRoomForUser($user_old,$this->_environment->getCurrentPortalID());
 
-      $user_manager = $this->_environment->getUserManager();
-      $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
-      $user_manager->setAuthSourceLimit($auth_source_new);
-      $user_manager->setUserIdLimit($account_new);
-      $user_manager->select();
-      $user_list = $user_manager->get();
-      $user_new = $user_list->getFirst();
+         $user_old_project_list = $user_old->getRelatedProjectList();
+         $user_old_community_list = $user_old->getRelatedCommunityList();
+         // grouproom with projectroom
 
-      $user_new_project_list = $user_new->getRelatedProjectList();
-      $user_new_community_list = $user_new->getRelatedCommunityList();
-      // grouproom with projectroom
+         $user_manager = $this->_environment->getUserManager();
+         $user_manager->setContextLimit($this->_environment->getCurrentPortalID());
+         $user_manager->setAuthSourceLimit($auth_source_new);
+         $user_manager->setUserIdLimit($account_new);
+         $user_manager->select();
+         $user_list = $user_manager->get();
+         $user_new = $user_list->getFirst();
 
-      if ($user_new_project_list->isNotEmpty()) {
-         $user_new_room = $user_new_project_list->getFirst();
-         while ($user_new_room) {
-            $user_new_project_array[] = $user_new_room->getItemID();
-            $user_new_room = $user_new_project_list->getNext();
+         $user_new_project_list = $user_new->getRelatedProjectList();
+         $user_new_community_list = $user_new->getRelatedCommunityList();
+         // grouproom with projectroom
+
+         if ($user_new_project_list->isNotEmpty()) {
+            $user_new_room = $user_new_project_list->getFirst();
+            while ($user_new_room) {
+               $user_new_project_array[] = $user_new_room->getItemID();
+               $user_new_room = $user_new_project_list->getNext();
+            }
+            unset($user_new_room);
          }
-         unset($user_new_room);
-      }
-      if ($user_new_community_list->isNotEmpty()) {
-         $user_new_room = $user_new_community_list->getFirst();
-         while ($user_new_room) {
-            $user_new_community_array[] = $user_new_room->getItemID();
-            $user_new_room = $user_new_community_list->getNext();
+         if ($user_new_community_list->isNotEmpty()) {
+            $user_new_room = $user_new_community_list->getFirst();
+            while ($user_new_room) {
+               $user_new_community_array[] = $user_new_room->getItemID();
+               $user_new_room = $user_new_community_list->getNext();
+            }
+            unset($user_new_room);
          }
-         unset($user_new_room);
-      }
 
-      if ($user_old_project_list->isNotEmpty()) {
-         $user_old_room = $user_old_project_list->getFirst();
-         while ($user_old_room) {
-            if (in_array($user_old_room->getItemID(),$user_new_project_array)) {
-               $list_double->add($user_old_room);
-            } else {
-               $list_only->add($user_old_room);
-            }
-            $user_old_room = $user_old_project_list->getNext();
-         }
-         unset($user_old_room);
-      }
-      if ($user_old_community_list->isNotEmpty()) {
-         $user_old_room = $user_old_community_list->getFirst();
-         while ($user_old_room) {
-            if (in_array($user_old_room->getItemID(),$user_new_community_array)) {
-               $list_double->add($user_old_room);
-            } else {
-               $list_only->add($user_old_room);
-            }
-            $user_old_room = $user_old_community_list->getNext();
-         }
-         unset($user_old_room);
-      }
-
-      // room list only -> change user id, auth source and name
-      if ($list_only->isNotEmpty()) {
-         $room = $list_only->getFirst();
-         while ($room) {
-            $room_user = $room->getUserByUserID($account_old,$auth_source_old);
-            $room_user->setUserID($account_new);
-            $room_user->setAuthSource($auth_source_new);
-            if (isset($user_new)) {
-               $room_user->setFirstname($user_new->getFirstname());
-               $room_user->setLastname($user_new->getLastname());
-            }
-            $room_user->save();
-            $room = $list_only->getNext();
-         }
-      }
-
-      // portal must be the last room
-      $list_double->add($this->_environment->getCurrentPortalItem());
-
-      // room list double -> change user item id
-      if ($list_double->isNotEmpty()) {
-         $room = $list_double->getFirst();
-         while ($room) {
-            $room_user_old = $room->getUserByUserID($account_old,$auth_source_old);
-            $room_user_new = $room->getUserByUserID($account_new,$auth_source_new);
-            if ( isset($room_user_old) ) {
-               $id_old = $room_user_old->getItemID();
-               $status_old = $room_user_old->getStatus();
-            }
-            if ( isset($room_user_new) ) {
-               $id_new = $room_user_new->getItemID();
-               $status_new = $room_user_new->getStatus();
-            }
-
-            if ( isset($status_old) and isset($status_new) and $status_old > $status_new) {
-               $room_user_new->setStatus($status_old);
-               $room_user_new->save();
-            }
-
-            $manager_array = array();
-            $manager_array[] = CS_ANNOTATION_TYPE;
-            $manager_array[] = CS_ANNOUNCEMENT_TYPE;
-            $manager_array[] = CS_DATE_TYPE;
-            $manager_array[] = CS_DISCARTICLE_TYPE;
-            $manager_array[] = CS_DISCUSSION_TYPE;
-            $manager_array[] = CS_FILE_TYPE;
-            $manager_array[] = CS_LABEL_TYPE;
-            $manager_array[] = CS_LINK_TYPE;
-            $manager_array[] = CS_LINKITEM_TYPE;
-            $manager_array[] = CS_LINKMODITEM_TYPE;
-            $manager_array[] = CS_MATERIAL_TYPE;
-            $manager_array[] = CS_READER_TYPE;
-            $manager_array[] = CS_ROOM_TYPE;
-            $manager_array[] = CS_SECTION_TYPE;
-            $manager_array[] = CS_TASK_TYPE;
-            $manager_array[] = CS_PORTAL_TYPE;
-            $manager_array[] = CS_TODO_TYPE;
-            $manager_array[] = CS_TAG_TYPE;
-            $manager_array[] = CS_TAG2TAG_TYPE;
-            #$manager_array[] = CS_LOG_TYPE;
-            #$manager_array[] = CS_LOGARCHIVE_TYPE;
-            $manager_array[] = CS_ITEM_TYPE;
-
-            if ( isset($id_new) and !empty($id_new)
-                 and isset($id_old) and !empty($id_old)
-               ) {
-               foreach ($manager_array as $manager_type) {
-                  $manager = $this->_environment->getManager($manager_type);
-                  $manager->mergeAccounts($id_new,$id_old);
-                  unset($manager);
-               }
-            }
-            if ( isset($room_user_old) ) {
-               if ( !$room->isPortal() ) {
-                  $room_user_old->delete();
+         if ($user_old_project_list->isNotEmpty()) {
+            $user_old_room = $user_old_project_list->getFirst();
+            while ($user_old_room) {
+               if (in_array($user_old_room->getItemID(),$user_new_project_array)) {
+                  $list_double->add($user_old_room);
                } else {
-                  $portal_user_item_old = $room_user_old;
+                  $list_only->add($user_old_room);
                }
+               $user_old_room = $user_old_project_list->getNext();
             }
-            unset($room);
-            unset($room_user_old);
-            unset($room_user_new);
-            $room = $list_double->getNext();
+            unset($user_old_room);
          }
-      }
-
-      #######################
-      # merge private rooms #
-      #######################
-
-      $private_room_item_new = $privateroom_manager->getRelatedOwnRoomForUser($user_new,$this->_environment->getCurrentPortalID());
-      $user_private_room_new = $private_room_item_new->getUserByUserID($account_new,$auth_source_new);
-      $creator_id = $user_private_room_new->getItemID();
-      $old_room_id = $private_room_item_old->getItemID();
-      $new_room_id = $private_room_item_new->getItemID();
-      $new_id_array = array();
-
-      // copy data
-      $data_type_array   = array();
-      $data_type_array[] = CS_DATE_TYPE;
-      $data_type_array[] = CS_LABEL_TYPE;
-      $data_type_array[] = CS_MATERIAL_TYPE;
-      $data_type_array[] = CS_FILE_TYPE;
-      $data_type_array[] = CS_TAG_TYPE;
-      #$data_type_array[] = CS_ANNOUNCEMENT_TYPE;
-      #$data_type_array[] = CS_TODO_TYPE;
-      #$data_type_array[] = CS_HOMEPAGE_TYPE;
-
-      foreach ($data_type_array as $type) {
-         $manager = $this->_environment->getManager($type);
-         $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id);
-         $new_id_array = $new_id_array + $id_array;
-      }
-      unset($data_type_array);
-
-      // copy secondary data
-      $data_type_array   = array();
-      $data_type_array[] = CS_ANNOTATION_TYPE;
-      $data_type_array[] = CS_SECTION_TYPE;
-      #$data_type_array[] = CS_DISCARTICLE_TYPE;
-
-      foreach ($data_type_array as $type) {
-         $manager = $this->_environment->getManager($type);
-         $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id,$new_id_array);
-         $new_id_array = $new_id_array + $id_array;
-      }
-      unset($data_type_array);
-
-      // copy links
-      $data_type_array   = array();
-      $data_type_array[] = CS_LINK_TYPE;
-      $data_type_array[] = CS_LINKITEM_TYPE;
-      $data_type_array[] = CS_LINKITEMFILE_TYPE;
-      $data_type_array[] = CS_TAG2TAG_TYPE;
-      #$data_type_array[] = CS_LINKHOMEPAGEFILE_TYPE;
-      #$data_type_array[] = CS_LINKHOMEPAGEHOMEPAGE_TYPE;
-
-      foreach ($data_type_array as $type) {
-         $manager = $this->_environment->getManager($type);
-         $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id,$new_id_array);
-         $new_id_array = $new_id_array + $id_array;
-      }
-      unset($data_type_array);
-
-      // link modifier item
-      $manager = $this->_environment->getLinkModifierItemManager();
-      foreach ($id_array as $value) {
-         if ( !mb_stristr($value,CS_FILE_TYPE) ) {
-            $manager->markEdited($value,$creator_id);
+         if ($user_old_community_list->isNotEmpty()) {
+            $user_old_room = $user_old_community_list->getFirst();
+            while ($user_old_room) {
+               if (in_array($user_old_room->getItemID(),$user_new_community_array)) {
+                  $list_double->add($user_old_room);
+               } else {
+                  $list_only->add($user_old_room);
+               }
+               $user_old_room = $user_old_community_list->getNext();
+            }
+            unset($user_old_room);
          }
-      }
 
-      // now change all old item ids in descriptions with new IDs
-      // copy data
-      $data_type_array   = array();
-      #$data_type_array[] = CS_ANNOUNCEMENT_TYPE;
-      $data_type_array[] = CS_DATE_TYPE;
-      $data_type_array[] = CS_LABEL_TYPE;
-      $data_type_array[] = CS_MATERIAL_TYPE;
-      #$data_type_array[] = CS_TODO_TYPE;
-      $data_type_array[] = CS_ANNOTATION_TYPE;
-      #$data_type_array[] = CS_DISCARTICLE_TYPE;
-      $data_type_array[] = CS_SECTION_TYPE;
-      #$data_type_array[] = CS_HOMEPAGE_TYPE;
-      foreach ($data_type_array as $type) {
-         $manager = $this->_environment->getManager($type);
-         $manager->refreshInDescLinks($new_room_id,$new_id_array);
-      }
-      unset($data_type_array);
+         // room list only -> change user id, auth source and name
+         if ($list_only->isNotEmpty()) {
+            $room = $list_only->getFirst();
+            while ($room) {
+               $room_user = $room->getUserByUserID($account_old,$auth_source_old);
+               $room_user->setUserID($account_new);
+               $room_user->setAuthSource($auth_source_new);
+               if (isset($user_new)) {
+                  $room_user->setFirstname($user_new->getFirstname());
+                  $room_user->setLastname($user_new->getLastname());
+               }
+               $room_user->save();
+               $room = $list_only->getNext();
+            }
+         }
 
-      // delete old private room
-      $private_room_item_old->delete();
+         // portal must be the last room
+         $list_double->add($this->_environment->getCurrentPortalItem());
 
-      // delete auth information
-      $auth_manager = $this->getAuthManager($auth_source_old);
-      $auth_manager->delete($account_old);
+         // room list double -> change user item id
+         if ($list_double->isNotEmpty()) {
+            $room = $list_double->getFirst();
+            while ($room) {
+               $room_user_old = $room->getUserByUserID($account_old,$auth_source_old);
+               $room_user_new = $room->getUserByUserID($account_new,$auth_source_new);
+               if ( isset($room_user_old) ) {
+                  $id_old = $room_user_old->getItemID();
+                  $status_old = $room_user_old->getStatus();
+               }
+               if ( isset($room_user_new) ) {
+                  $id_new = $room_user_new->getItemID();
+                  $status_new = $room_user_new->getStatus();
+               }
 
-      // delete portal user
-      if ( isset($portal_user_item_old) ) {
-         $portal_user_item_old->delete();
+               if ( isset($status_old) and isset($status_new) and $status_old > $status_new) {
+                  $room_user_new->setStatus($status_old);
+                  $room_user_new->save();
+               }
+
+               $manager_array = array();
+               $manager_array[] = CS_ANNOTATION_TYPE;
+               $manager_array[] = CS_ANNOUNCEMENT_TYPE;
+               $manager_array[] = CS_DATE_TYPE;
+               $manager_array[] = CS_DISCARTICLE_TYPE;
+               $manager_array[] = CS_DISCUSSION_TYPE;
+               $manager_array[] = CS_FILE_TYPE;
+               $manager_array[] = CS_LABEL_TYPE;
+               $manager_array[] = CS_LINK_TYPE;
+               $manager_array[] = CS_LINKITEM_TYPE;
+               $manager_array[] = CS_LINKMODITEM_TYPE;
+               $manager_array[] = CS_MATERIAL_TYPE;
+               $manager_array[] = CS_READER_TYPE;
+               $manager_array[] = CS_ROOM_TYPE;
+               $manager_array[] = CS_SECTION_TYPE;
+               $manager_array[] = CS_TASK_TYPE;
+               $manager_array[] = CS_PORTAL_TYPE;
+               $manager_array[] = CS_TODO_TYPE;
+               $manager_array[] = CS_TAG_TYPE;
+               $manager_array[] = CS_TAG2TAG_TYPE;
+               #$manager_array[] = CS_LOG_TYPE;
+               #$manager_array[] = CS_LOGARCHIVE_TYPE;
+               $manager_array[] = CS_ITEM_TYPE;
+
+               if ( isset($id_new) and !empty($id_new)
+                    and isset($id_old) and !empty($id_old)
+                  ) {
+                  foreach ($manager_array as $manager_type) {
+                     $manager = $this->_environment->getManager($manager_type);
+                     $manager->mergeAccounts($id_new,$id_old);
+                     unset($manager);
+                  }
+               }
+               if ( isset($room_user_old) ) {
+                  if ( !$room->isPortal() ) {
+                     $room_user_old->delete();
+                  } else {
+                     $portal_user_item_old = $room_user_old;
+                  }
+               }
+               unset($room);
+               unset($room_user_old);
+               unset($room_user_new);
+               $room = $list_double->getNext();
+            }
+         }
+
+         #######################
+         # merge private rooms #
+         #######################
+
+         $private_room_item_new = $privateroom_manager->getRelatedOwnRoomForUser($user_new,$this->_environment->getCurrentPortalID());
+         $user_private_room_new = $private_room_item_new->getUserByUserID($account_new,$auth_source_new);
+         $creator_id = $user_private_room_new->getItemID();
+         $old_room_id = $private_room_item_old->getItemID();
+         $new_room_id = $private_room_item_new->getItemID();
+         $new_id_array = array();
+
+         // copy data
+         $data_type_array   = array();
+         $data_type_array[] = CS_DATE_TYPE;
+         $data_type_array[] = CS_LABEL_TYPE;
+         $data_type_array[] = CS_MATERIAL_TYPE;
+         $data_type_array[] = CS_FILE_TYPE;
+         $data_type_array[] = CS_TAG_TYPE;
+         #$data_type_array[] = CS_ANNOUNCEMENT_TYPE;
+         #$data_type_array[] = CS_TODO_TYPE;
+         #$data_type_array[] = CS_HOMEPAGE_TYPE;
+
+         foreach ($data_type_array as $type) {
+            $manager = $this->_environment->getManager($type);
+            $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id);
+            $new_id_array = $new_id_array + $id_array;
+         }
+         unset($data_type_array);
+
+         // copy secondary data
+         $data_type_array   = array();
+         $data_type_array[] = CS_ANNOTATION_TYPE;
+         $data_type_array[] = CS_SECTION_TYPE;
+         #$data_type_array[] = CS_DISCARTICLE_TYPE;
+
+         foreach ($data_type_array as $type) {
+            $manager = $this->_environment->getManager($type);
+            $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id,$new_id_array);
+            $new_id_array = $new_id_array + $id_array;
+         }
+         unset($data_type_array);
+
+         // copy links
+         $data_type_array   = array();
+         $data_type_array[] = CS_LINK_TYPE;
+         $data_type_array[] = CS_LINKITEM_TYPE;
+         $data_type_array[] = CS_LINKITEMFILE_TYPE;
+         $data_type_array[] = CS_TAG2TAG_TYPE;
+         #$data_type_array[] = CS_LINKHOMEPAGEFILE_TYPE;
+         #$data_type_array[] = CS_LINKHOMEPAGEHOMEPAGE_TYPE;
+
+         foreach ($data_type_array as $type) {
+            $manager = $this->_environment->getManager($type);
+            $id_array = $manager->copyDataFromRoomToRoom($old_room_id,$new_room_id,$creator_id,$new_id_array);
+            $new_id_array = $new_id_array + $id_array;
+         }
+         unset($data_type_array);
+
+         // link modifier item
+         $manager = $this->_environment->getLinkModifierItemManager();
+         foreach ($id_array as $value) {
+            if ( !mb_stristr($value,CS_FILE_TYPE) ) {
+               $manager->markEdited($value,$creator_id);
+            }
+         }
+
+         // now change all old item ids in descriptions with new IDs
+         // copy data
+         $data_type_array   = array();
+         #$data_type_array[] = CS_ANNOUNCEMENT_TYPE;
+         $data_type_array[] = CS_DATE_TYPE;
+         $data_type_array[] = CS_LABEL_TYPE;
+         $data_type_array[] = CS_MATERIAL_TYPE;
+         #$data_type_array[] = CS_TODO_TYPE;
+         $data_type_array[] = CS_ANNOTATION_TYPE;
+         #$data_type_array[] = CS_DISCARTICLE_TYPE;
+         $data_type_array[] = CS_SECTION_TYPE;
+         #$data_type_array[] = CS_HOMEPAGE_TYPE;
+         foreach ($data_type_array as $type) {
+            $manager = $this->_environment->getManager($type);
+            $manager->refreshInDescLinks($new_room_id,$new_id_array);
+         }
+         unset($data_type_array);
+
+         // delete old private room
+         $private_room_item_old->delete();
+
+         // delete auth information
+         $auth_manager = $this->getAuthManager($auth_source_old);
+         $auth_manager->delete($account_old);
+
+         // delete portal user
+         if ( isset($portal_user_item_old) ) {
+            $portal_user_item_old->delete();
+         }
       }
    }
 
