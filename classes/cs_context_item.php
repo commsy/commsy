@@ -321,6 +321,7 @@ class cs_context_item extends cs_item {
    function getDescriptionByLanguage ($language) {
       $retour = '';
       if ($language == 'browser') {
+         // ???
       }
       $desc_array = $this->getDescriptionArray();
       if ( !empty($desc_array[cs_strtoupper($language)]) ) {
