@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHTML('db: add contact_person to rooom'.BRLF);
+$this->_flushHTML('db: add contact_persons to rooom'.BRLF);
 
 $success = true;
 
@@ -33,9 +33,9 @@ $column_array = array();
 while ($row = mysql_fetch_assoc($result) ) {
    $column_array[] = $row['Field'];
 }
-if ( in_array('contact_person',$column_array) ) {
+if ( in_array('contact_persons',$column_array) ) {
 } else {
-   $query = "ALTER TABLE room ADD contact_person VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
+   $query = "ALTER TABLE room ADD contact_persons VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
    $result = $this->_select($query);
 }
 
