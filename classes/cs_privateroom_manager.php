@@ -25,7 +25,7 @@
 
 /** upper class of the room manager
  */
-include_once('classes/cs_context_manager.php');
+include_once('classes/cs_room2_manager.php');
 
 /** misc functions are needed for extras field in database table
  */
@@ -34,7 +34,7 @@ include_once('functions/misc_functions.php');
 /** class for database connection to the database table "community"
  * this class implements a database manager for the table "community"
  */
-class cs_privateroom_manager extends cs_context_manager {
+class cs_privateroom_manager extends cs_room2_manager {
 
   /**
    * integer - containing the age of community as a limit

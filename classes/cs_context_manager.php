@@ -164,6 +164,10 @@ class cs_context_manager extends cs_manager {
          include_once('functions/text_functions.php');
          $db_array['extras'] = mb_unserialize($db_array['extras']);
       }
+      if (isset($db_array['description'])){
+         include_once('functions/text_functions.php');
+         $db_array['description'] = mb_unserialize($db_array['description']);
+      }
       $item = $this->_getNewRoomItem($db_array['type']);
       $item->_setItemData(encode(FROM_DB,$db_array));
       return $item;
@@ -490,7 +494,6 @@ class cs_context_manager extends cs_manager {
                'creation_date="'.$current_datetime.'",'.
                'modification_date="'.$current_datetime.'",'.
                'title="'.encode(AS_DB,$item->getTitle()).'",'.
-#               'short_title="'.encode(AS_DB,$item->getShortTitle()).'",'.
                'extras="'.encode(AS_DB,serialize($item->getExtraInformation())).'",'.
                'type="'.encode(AS_DB,$item->getRoomType()).'",'.
                'status="'.encode(AS_DB,$item->getStatus()).'"';

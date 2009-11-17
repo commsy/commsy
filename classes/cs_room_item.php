@@ -184,24 +184,62 @@ class cs_room_item extends cs_context_item {
       return $retour;
    }
 
+//   function setContactPerson ($fullname) {
+//      if ( !empty($fullname) ) {
+//         $value = '';
+//         if ($this->_issetExtra('CONTACT_PERSONS')) {
+//            $value = $this->_getExtra('CONTACT_PERSONS');
+//         }
+//         if(!mb_stristr($value,$fullname)){
+//            $value .= $fullname.', ';
+//            $this->_setExtra('CONTACT_PERSONS',$value);
+//         }
+//      }
+//   }
+//
+//   function getContactPersonString () {
+//      $return = '';
+//      if ($this->_issetExtra('CONTACT_PERSONS')) {
+//         $return = $this->_getExtra('CONTACT_PERSONS');
+//      }
+//      if(mb_strlen($return)>2 and mb_strstr($return,', ')){
+//         $return = mb_substr($return,0,(mb_strlen($return)-2));
+//      }
+//      return $return;
+//   }
+//
+//
+//   function unsetContactPerson ($fullname) {
+//      if ( !empty($fullname) ) {
+//         $value = '';
+//         if ($this->_issetExtra('CONTACT_PERSONS')) {
+//            $value = $this->_getExtra('CONTACT_PERSONS');
+//         }
+//         if(mb_stristr($value,$fullname.', ')){
+//            $value = str_replace($fullname.', ','',$value);
+//         }
+//         $this->_setExtra('CONTACT_PERSONS',$value);
+//      }
+//   }
+//
+//   public function emptyContactPersonString () {
+//      $this->_unsetExtra('CONTACT_PERSONS');
+//   }
+
    function setContactPerson ($fullname) {
       if ( !empty($fullname) ) {
          $value = '';
-         if ($this->_issetExtra('CONTACT_PERSONS')) {
-            $value = $this->_getExtra('CONTACT_PERSONS');
-         }
+         $value = $this->_getValue('contact_persons');
          if(!mb_stristr($value,$fullname)){
             $value .= $fullname.', ';
-            $this->_setExtra('CONTACT_PERSONS',$value);
+            $this->_setValue('contact_persons',$value);
          }
       }
    }
 
    function getContactPersonString () {
       $return = '';
-      if ($this->_issetExtra('CONTACT_PERSONS')) {
-         $return = $this->_getExtra('CONTACT_PERSONS');
-      }
+      $return = $this->_getValue('contact_persons');
       if(mb_strlen($return)>2 and mb_strstr($return,', ')){
          $return = mb_substr($return,0,(mb_strlen($return)-2));
       }
@@ -212,18 +250,16 @@ class cs_room_item extends cs_context_item {
    function unsetContactPerson ($fullname) {
       if ( !empty($fullname) ) {
          $value = '';
-         if ($this->_issetExtra('CONTACT_PERSONS')) {
-            $value = $this->_getExtra('CONTACT_PERSONS');
-         }
+         $value = $this->_getValue('contact_persons');
          if(mb_stristr($value,$fullname.', ')){
             $value = str_replace($fullname.', ','',$value);
          }
-         $this->_setExtra('CONTACT_PERSONS',$value);
+         $this->_setValue('contact_persons',$value);
       }
    }
 
    public function emptyContactPersonString () {
-      $this->_unsetExtra('CONTACT_PERSONS');
+      $this->_unsetValue('contact_persons');
    }
 
    public function renewContactPersonString () {
@@ -238,6 +274,20 @@ class cs_room_item extends cs_context_item {
             $this->setContactPerson($contact_name);
          }
          $current_moderator = $moderator_list->getNext();
+      }
+      $this->setChangeModificationOnSave(false);
+      $this->save();
+   }
+   
+   public function renewDescription () {
+      if ($this->_issetExtra('DESCRIPTION')) {
+         $this->setDescriptionArray($this->_getExtra('DESCRIPTION'));
+         $this->_unsetExtra('DESCRIPTION');
+      } else {
+         $description_array = $this->getDescriptionArray();
+         if(empty($description_array)){
+            $this->setDescriptionArray(array());
+         }
       }
       $this->setChangeModificationOnSave(false);
       $this->save();
@@ -1095,6 +1145,26 @@ class cs_room_item extends cs_context_item {
          }
       }
       return $retour;
+   }
+   
+  /** det description array
+    *
+    * @return array description text in different languages
+    */
+   function getDescriptionArray () {
+      $retour = $this->_getValue('description');
+      if(empty($retour)){
+         $retour = array();
+      }
+      return $retour;
+   }
+   
+  /** set description array
+    *
+    * @param array value description text in different languages
+    */
+   function setDescriptionArray ($value) {
+      $this->_setValue('description',(array)$value);
    }
 }
 ?>

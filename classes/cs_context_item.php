@@ -349,10 +349,12 @@ class cs_context_item extends cs_item {
       }
       if ( empty($retour) ) {
          $desc_array = $this->getDescriptionArray();
-         foreach ($desc_array as $desc) {
-            if (!empty($desc)) {
-               $retour = $desc;
-               break;
+         if(!empty($desc_array)){
+            foreach ($desc_array as $desc) {
+               if (!empty($desc)) {
+                  $retour = $desc;
+                  break;
+               }
             }
          }
       }

@@ -29,7 +29,7 @@
 $success = true;
 
 // headline
-$this->_flushHTML('copy contacts to room item'.BRLF);
+$this->_flushHTML('copy description to db'.BRLF);
 
 $old_memory = ini_get("memory_limit");
 ini_set("memory_limit","1000M");
@@ -55,7 +55,7 @@ while ( $portal ) {
 
    $room = $room_list->getFirst();
    while ( $room ) {
-      $room->renewContactPersonString();
+      $room->renewDescription();
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
@@ -71,7 +71,7 @@ while ( $portal ) {
 
    $room = $room_list->getFirst();
    while ( $room ) {
-      $room->renewContactPersonString();
+      $room->renewDescription();
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
@@ -87,7 +87,7 @@ while ( $portal ) {
 
    $room = $room_list->getFirst();
    while ( $room ) {
-      $room->renewContactPersonString();
+      $room->renewDescription();
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
@@ -103,10 +103,11 @@ while ( $portal ) {
 
    $room = $room_list->getFirst();
    while ( $room ) {
-      $room->renewContactPersonString();
+      $room->renewDescription();
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
+   
    $portal = $portal_list->getNext();
    $this->_flushHTML(BRLF);
 }

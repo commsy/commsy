@@ -18,7 +18,7 @@
 //
 //    You have received a copy of the GNU General Public License
 //    along with CommSy.
-
+include_once('functions/development_functions.php');
 set_time_limit(0);
 
 if ( !isset($environment)
@@ -28,7 +28,6 @@ if ( !isset($environment)
 }
 
 function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
-
    $handle = @opendir($dir);
    while ( $file = @readdir($handle) ) {
       if ( preg_match("~^\.{1,2}$~u", $file) ) {
@@ -36,12 +35,14 @@ function listfilenames ($dir, $pos=2,$fileitem,$environment,$namearray) {
       }
       $newfilename = mb_strtolower($file, 'UTF-8');
       rename($dir.$file,$dir.$newfilename);
+      $oldfilename = $file;
       $file = $newfilename;
       if ( is_dir($dir.$file) ) {
          $namearray = listfilenames($dir.$file."/", $pos + 3,$fileitem,$environment,$namearray);
       } else {
          $extension = mb_strtolower(mb_substr(strrchr($dir.$file,"."),1), 'UTF-8');
          if ( is_file($dir.$file) ) {
+            $namearray['oldfilename'][] = $oldfilename;
             $namearray['filename'][] = $file;
             $namearray['dirname'][] = $dir;
          }
@@ -76,21 +77,24 @@ function replace_files ($dir, $pos=2,$fileitem,$environment,$namearray) {
 
 function replacement($environment,$file,$pfad,$datei,$namearray) {
    $filecontent = file_get_contents($pfad.$datei);
-
+   logToFile($pfad.$datei);
    $path = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
    $linkpath = "";
    if ( $path != $pfad ) {
       $linkpath = str_replace($path,'',$pfad);
    }
-   foreach ( $namearray['filename'] as $name ) {
+   foreach ( $namearray['oldfilename'] as $name ) {
       //!'(.*?)show.gif!
-      $pattern = "~[\./\wÄÖÜäöü_-]{0,}".$name."~isu";
+      $pattern = "~[\\\./\d\wÄÖÜäöü_-]{0,}".$name."~isu";
+      //$pattern = "~".$name."~isu";
+      logToFile($pattern);
       preg_match_all($pattern, $filecontent, $current_treffer);
       foreach ( $current_treffer[0] as $treffer ) {
          $trefferlowercase = mb_strtolower($treffer, 'UTF-8');
          global $c_single_entry_point;
-         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
-
+         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
+         //$replacement = str_replace('\\', '/', $replacement);
          if ( !mb_stristr($filecontent,$replacement) ) {
             $filecontent = str_replace($treffer, $replacement, $filecontent);
          }
@@ -99,10 +103,13 @@ function replacement($environment,$file,$pfad,$datei,$namearray) {
          $trefferlowercase = mb_strtolower($name, 'UTF-8');
          $treffer = "'".$name."'";
          global $c_single_entry_point;
-         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
+         //$replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$trefferlowercase;
+         $replacement = $c_single_entry_point.'?cid='.$environment->getCurrentContextID().'&mod=material&fct=showzip_file&iid='.$file->getFileID().'&file='.$linkpath.$namearray['filename'][$index];
+         //$replacement = str_replace('\\', '/', $replacement);
          $filecontent = str_replace($treffer, "'".$replacement."'", $filecontent);
       }
    }
+   logToFile($filecontent);
    return $filecontent;
 }
 
@@ -136,6 +143,7 @@ if ( $res === TRUE ) {
 unset($zip);
 if($file->getHasHTML() == 2) {
    $pfad = 'var/'.$environment->getCurrentPortalID().'/'.$environment->getCurrentContextID().'/html_'.$file->getDiskFileNameWithoutFolder().'/';
+   $namearray['oldfilename'] = array();
    $namearray['filename'] = array();
    $namearray['dirname'] = array();
    $namearray = listfilenames($pfad,2,$file,$environment,$namearray);
