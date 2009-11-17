@@ -1,16 +1,24 @@
 <?php
 function logToFile($message){
-   global $c_enable_logging_to_file, $c_logging_file;
-   if($c_enable_logging_to_file and (isset($c_logging_file) and ($c_logging_file != ''))){
-      $logfile = fopen($c_logging_file, "a");
-      $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $message;   
-      fwrite($logfile, $str . "\n");
-      fclose($logfile);
+   if(!is_array($message)){
+      global $c_enable_logging_to_file, $c_logging_file;
+      if($c_enable_logging_to_file and (isset($c_logging_file) and ($c_logging_file != ''))){
+         $logfile = fopen($c_logging_file, "a");
+         $str = "[" . date("Y/m/d h:i:s", mktime()) . "] " . $message;   
+         fwrite($logfile, $str . "\n");
+         fclose($logfile);
+      }
+   } else {
+      logArrayToFile($message);
    }
 }
 
 function debugToFile($message){
-   logToFile('DEBUG --- ' . $message);
+   if(!is_array($message)){
+      logToFile('DEBUG --- ' . $message);
+   } else {
+      debugArrayToFile($message);
+   }
 }
 
 function logArrayToFile($array, $var_name = 'ARRAY'){
