@@ -23,21 +23,25 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHTML('db: add contact_persons to rooom'.BRLF);
+$this->_flushHTML('db: add contact_persons and description to room and room_privat'.BRLF);
 
 $success = true;
 
-$query = "SHOW COLUMNS FROM room";
-$result = $this->_select($query);
-$column_array = array();
-while ($row = mysql_fetch_assoc($result) ) {
-   $column_array[] = $row['Field'];
+if ( !$this->_existsField('room','contact_persons') ) {
+   $sql = "ALTER TABLE room ADD contact_persons VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
+   $success = $success AND $this->_select($sql);
 }
-if ( in_array('contact_persons',$column_array) ) {
-} else {
-   $query = "ALTER TABLE room ADD contact_persons VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
-   $result = $this->_select($query);
+if ( !$this->_existsField('room','description') ) {
+   $sql = "ALTER TABLE room ADD description TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
+   $success = $success AND $this->_select($sql);
 }
-
+if ( !$this->_existsField('room_privat','contact_persons') ) {
+   $sql = "ALTER TABLE room_privat ADD contact_persons VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;";
+   $success = $success AND $this->_select($sql);
+}
+if ( !$this->_existsField('room_privat','description') ) {
+   $sql = "ALTER TABLE room_privat ADD description TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;";
+   $success = $success AND $this->_select($sql);
+}
 $this->_flushHTML(BRLF);
 ?>
