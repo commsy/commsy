@@ -23,7 +23,7 @@
 //    along with CommSy.
 
 // headline
-$this->_flushHTML('db: add contact_persons and description to room and room_privat'.BRLF);
+$this->_flushHeadline('db: add contact_persons and description to room and room_privat');
 
 $success = true;
 

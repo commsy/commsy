@@ -29,7 +29,7 @@
 $success = true;
 
 // headline
-$this->_flushHTML('copy contacts to room item'.BRLF);
+$this->_flushHeadline('copy contacts to room item');
 
 $old_memory = ini_get("memory_limit");
 ini_set("memory_limit","1000M");
@@ -44,9 +44,10 @@ while ( $portal ) {
    $this->_flushHTML(BRLF);
    $this->_flushHTML($this->_environment->getTextConverter()->text_as_html_short($portal->getTitle()).BRLF);
 
-   // RoomManager
-   $room_manager = $this->_environment->getRoomManager();
+   // ProjectManager
+   $room_manager = $this->_environment->getProjectManager();
    $room_manager->setContextLimit($portal->getItemID());
+   $room_manager->setDeleteLimit(false);
    $room_manager->select();
    $room_list = $room_manager->get();
 
@@ -59,10 +60,11 @@ while ( $portal ) {
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
-   
+
    // CommunityManager
    $room_manager = $this->_environment->getCommunityManager();
    $room_manager->setContextLimit($portal->getItemID());
+   $room_manager->setDeleteLimit(false);
    $room_manager->select();
    $room_list = $room_manager->get();
 
@@ -75,10 +77,11 @@ while ( $portal ) {
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
-   
+
    // GroupRoomManager
    $room_manager = $this->_environment->getGroupRoomManager();
    $room_manager->setContextLimit($portal->getItemID());
+   $room_manager->setDeleteLimit(false);
    $room_manager->select();
    $room_list = $room_manager->get();
 
@@ -91,10 +94,11 @@ while ( $portal ) {
       $room = $room_list->getNext();
       $this->_updateProgressBar($count);
    }
-   
+
    // PrivateRoomManager
    $room_manager = $this->_environment->getPrivateRoomManager();
    $room_manager->setContextLimit($portal->getItemID());
+   $room_manager->setDeleteLimit(false);
    $room_manager->select();
    $room_list = $room_manager->get();
 

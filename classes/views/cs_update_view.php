@@ -74,6 +74,12 @@ class cs_update_view extends cs_view {
       return LF;
    }
 
+   private function _flushHeadline ( $value ) {
+      echo('<h3>'.$value.'</h3>');
+      flush();
+      return LF;
+   }
+
    private function _getScriptWithPath () {
       return $this->_path.'/'.$this->_folder.'/'.$this->_script;
    }
@@ -116,7 +122,7 @@ class cs_update_view extends cs_view {
    private function _getProcessedTimeInHTML ($time_start) {
       $time_end = $this->_getMicroTime();
       $time = round($time_end - $time_start,3);
-      $retour = BRLF."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60)).BRLF;
+      $retour = BRLF."Execution time: ".mb_sprintf("%02d:%02d:%02d", (int)($time/3600), (int)(fmod($time,3600)/60), (int)fmod(fmod($time,3600), 60)).BRLF.BRLF;
       return $retour;
    }
 

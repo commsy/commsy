@@ -31,7 +31,7 @@ set_time_limit(0);
 $success = true;
 
 // headline
-$this->_flushHTML('db: set index'.BRLF);
+$this->_flushHeadline('db: set index');
 
 $sql = 'ALTER TABLE hash ADD INDEX rss (rss);';
 if ( !$this->_existsIndex('hash','rss') ) {
@@ -50,6 +50,11 @@ if ( !$this->_existsIndex('links','to_item_id') ) {
 
 $sql = 'ALTER TABLE links ADD INDEX link_type (link_type);';
 if ( !$this->_existsIndex('links','to_item_id') ) {
+   $success = $success AND $this->_select($sql);
+}
+
+$sql = 'ALTER TABLE room ADD INDEX type (type);';
+if ( !$this->_existsIndex('room','type') ) {
    $success = $success AND $this->_select($sql);
 }
 ?>
