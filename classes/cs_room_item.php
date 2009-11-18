@@ -239,9 +239,12 @@ class cs_room_item extends cs_context_item {
 
    function getContactPersonString () {
       $return = '';
-      $return = $this->_getValue('contact_persons');
-      if(mb_strlen($return)>2 and mb_strstr($return,', ')){
-         $return = mb_substr($return,0,(mb_strlen($return)-2));
+      $return = trim($this->_getValue('contact_persons'));
+      if ( !empty($return)
+           and mb_strstr($return,',')
+           and mb_substr($return,mb_strlen($return)-1) == ','
+         ) {
+         $return = mb_substr($return,0,(mb_strlen($return)-1));
       }
       return $return;
    }
@@ -278,7 +281,7 @@ class cs_room_item extends cs_context_item {
       $this->setChangeModificationOnSave(false);
       $this->save();
    }
-   
+
    public function renewDescription () {
       if ($this->_issetExtra('DESCRIPTION')) {
          $this->setDescriptionArray($this->_getExtra('DESCRIPTION'));
@@ -1146,7 +1149,7 @@ class cs_room_item extends cs_context_item {
       }
       return $retour;
    }
-   
+
   /** det description array
     *
     * @return array description text in different languages
@@ -1158,7 +1161,7 @@ class cs_room_item extends cs_context_item {
       }
       return $retour;
    }
-   
+
   /** set description array
     *
     * @param array value description text in different languages
