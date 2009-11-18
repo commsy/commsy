@@ -632,11 +632,13 @@ class cs_material_detail_view extends cs_detail_view {
          $temp_array[] = $link;
          $formal_data1[] = $temp_array;
       }
-      if ($item->isExportToWiki()) {
-         $temp_array = array();
-         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
-         $temp_array[] = $item->getExportToWikiLink();
-         $formal_data1[] = $temp_array;
+      if($context_item->existWiki()){
+	      if ($item->isExportToWiki()) {
+	         $temp_array = array();
+	         $temp_array[] = $this->_translator->getMessage('MATERIAL_EXPORT_TO_WIKI_LINK');
+	         $temp_array[] = $item->getExportToWikiLink();
+	         $formal_data1[] = $temp_array;
+	      }
       }
 
       // Sections
