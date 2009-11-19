@@ -175,6 +175,7 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    }
 
    if ( !empty($filehack) ) {
+      /*
       global $environment;
       if ( isset($environment)
            and mb_strtoupper($environment->getCurrentOperatingSystem(), 'UTF-8') == mb_strtoupper('Mac OS', 'UTF-8')
@@ -185,8 +186,9 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
          if ( withUmlaut($filehack) ) {
             $filehack = toggleUmlaut($filehack);
          }
-         $filehack = rawurlencode($filehack);
       }
+      */
+      $filehack = rawurlencode($filehack);
       $address .= '/'.$filehack;
    }
 
