@@ -1182,8 +1182,7 @@ function checkColorArray($color_array){
    foreach($color_array as $key => $color){
       if($key != 'schema' and $color[0] != '#'){
          $color = strtolower($color);
-         if($color === '') {$color_array[$key] = '#ffffff';}
-         elseif($color === 'black') {$color_array[$key] = '#000000';}
+         if($color === 'black') {$color_array[$key] = '#000000';}
          elseif($color === 'aliceblue') {$color_array[$key] = '#f0f8ff';}
          elseif($color === 'blueviolet') {$color_array[$key] = '#8a2be2';}
          elseif($color === 'cadetblue') {$color_array[$key] = '#5f9ea0';}
