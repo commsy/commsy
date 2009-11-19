@@ -175,19 +175,6 @@ function _curl( $amp_flag, $context_id, $module, $function, $parameter, $fragmen
    }
 
    if ( !empty($filehack) ) {
-      /*
-      global $environment;
-      if ( isset($environment)
-           and mb_strtoupper($environment->getCurrentOperatingSystem(), 'UTF-8') == mb_strtoupper('Mac OS', 'UTF-8')
-           and mb_strtoupper($environment->getCurrentBrowser(), 'UTF-8') == mb_strtoupper('SAFARI', 'UTF-8')
-         ) {
-         $filehack = rawurldecode($filehack);
-         include_once('functions/text_functions.php');
-         if ( withUmlaut($filehack) ) {
-            $filehack = toggleUmlaut($filehack);
-         }
-      }
-      */
       $filehack = rawurlencode($filehack);
       $address .= '/'.$filehack;
    }
