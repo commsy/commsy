@@ -1178,7 +1178,7 @@ function getSortImage($direction){
    }
 }
 
-function checkcolorarray($color_array){
+function checkColorArray($color_array){
    foreach($color_array as $key => $color){
       if($key != 'schema' and $color[0] != '#'){
          $color = strtolower($color);

@@ -277,6 +277,8 @@ if ($command != 'error') { // only if user is allowed to edit colors
                $color['warning'] = '#FC1D12';
                $color['schema']='SCHEMA_OWN';
 
+               $color = checkColorArray($color);
+               
                // logo: save and/or delete current logo
                if ( isset($_POST['delete_bgimage']) ) {
                   $disc_manager = $environment->getDiscManager();
