@@ -289,6 +289,9 @@ foreach ($rubric_array as $rubric) {
       /*Vorbereitung der Manager und Abzählen aller Einträge */
       if ($rubric!=CS_PROJECT_TYPE and $rubric!=CS_MYROOM_TYPE){
          $rubric_manager->setContextLimit($environment->getCurrentContextID());
+      } elseif($rubric == CS_PROJECT_TYPE) {
+         $rubric_manager->setContextLimit($environment->getCurrentPortalID());
+         $rubric_manager->setCommunityroomLimit($environment->getCurrentContextID());
       }
       if ($rubric == CS_DATE_TYPE) {
          $rubric_manager->setWithoutDateModeLimit();
