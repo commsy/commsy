@@ -291,6 +291,9 @@ if ( isOption($command, getMessage('COMMON_ITEM_NEW_ATTACH')) or
          $selected_ids[] = $key;
       }
    }
+   if ( !isset($selected_ids) ) {
+      $selected_ids = array();
+   }
    if ( !empty($_POST['shown']) ) {
       $drop_array = array();
       foreach ( $_POST['shown'] as $id => $value) {
