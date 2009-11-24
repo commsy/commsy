@@ -683,16 +683,15 @@ jQuery(document).ready(function() {
    }
 });
 
-//jQuery(document).ready(function() {
-//	jQuery("a[name^='calendar_link']").hover(
-//	    function() {
-//	    	name_array = jQuery(this).attr('name').split('_');
-//	    	id = name_array[name_array.length-1];
-//	    	jQuery('#calendar_hover_'+id).animate({opacity: "show", top: "-75"}, "slow");
-//	    },
-//	    function() {
-//	    	name_array = jQuery(this).attr('name').split('_');
-//	    	id = name_array[name_array.length-1];
-//	    	jQuery('#calendar_hover_'+id).animate({opacity: "hide", top: "-85"}, "fast");
-//	    });
-//});
+jQuery(document).ready(function() {
+	jQuery("a[name^='calendar_link']").hover(
+		function() {
+			jQuery(this).next("em").animate({opacity: "show", top: "-75"}, "slow");
+		}, function() {
+			jQuery(this).next("em").animate({opacity: "hide", top: "-85"}, "fast");
+		});
+});
+
+jQuery(document).ready(function() {
+	jQuery('#calender_frame').scrollTo(jQuery('#calendar_time_8'), 0);
+});
