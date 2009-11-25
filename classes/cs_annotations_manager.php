@@ -38,7 +38,7 @@ include_once('classes/cs_manager.php');
  * this class implements a database manager for the table "annotations"
  */
 class cs_annotations_manager extends cs_manager {
-
+   
   /**
    * object manager - containing object to the select links for annotations
    */
@@ -435,13 +435,15 @@ class cs_annotations_manager extends cs_manager {
    }
 
    function deleteAnnotationsofUser($uid) {
+      $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT annotations.* FROM annotations WHERE annotations.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE annotations SET';
             $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
+            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' modification_date = "'.$current_datetime.'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !$result2 ) {

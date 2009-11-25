@@ -1161,6 +1161,7 @@ class cs_material_manager extends cs_manager {
    }
 
    function deleteMaterialsOfUser($uid) {
+      $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT materials.* FROM materials WHERE materials.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( isset($result) ) {
@@ -1171,6 +1172,7 @@ class cs_material_manager extends cs_manager {
             $insert_query .= ' author = "",';
             $insert_query .= ' publishing_date = "",';
             $insert_query .= ' extras = "",';
+            $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';
             $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
             $result2 = $this->_db_connector->performQuery($insert_query);

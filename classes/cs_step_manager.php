@@ -529,12 +529,14 @@ class cs_step_manager extends cs_manager {
 
 
    function deleteStepsOfUser($uid) {
+      $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT step.* FROM step WHERE step.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE step SET';
             $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);

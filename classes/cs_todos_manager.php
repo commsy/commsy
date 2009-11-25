@@ -563,6 +563,7 @@ class cs_todos_manager extends cs_manager {
    }
 
    function deleteTodosOfUser($uid) {
+      $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT todos.* FROM todos WHERE todos.creator_id = "'.encode(AS_DB,$uid).'"';
       $result = $this->_db_connector->performQuery($query);
       if (!empty($result)) {
@@ -570,6 +571,7 @@ class cs_todos_manager extends cs_manager {
             $insert_query = 'UPDATE todos SET';
             $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);

@@ -1078,6 +1078,7 @@ class cs_labels_manager extends cs_manager {
    }
 
    function deleteLabelsOfUser($uid) {
+      $current_datetime = getCurrentDateTimeInMySQL();
       $query  = 'SELECT labels.* FROM labels WHERE labels.creator_id = "'.$uid.'"';
       $result = $this->_db_connector->performQuery($query);
       if ( !empty($result) ) {
@@ -1087,6 +1088,7 @@ class cs_labels_manager extends cs_manager {
                $insert_query = 'UPDATE labels SET';
                $insert_query .= ' name = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
                $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+               $insert_query .= ' modification_date = "'.$current_datetime.'",';
                $insert_query .= ' public = "1"';
                $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';
                $result2 = $this->_db_connector->performQuery($insert_query);
