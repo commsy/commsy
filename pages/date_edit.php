@@ -577,6 +577,8 @@ else {
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
             }
 
+            $dates_item->setColor($_POST['colorpicker']);
+            
             $item_files_upload_to = $dates_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
 

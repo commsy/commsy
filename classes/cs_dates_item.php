@@ -301,6 +301,28 @@ class cs_dates_item extends cs_item {
       return $this->_getValue('date_mode');
    }
 
+  /** set color of a dates
+    * this method sets the color of the dates
+    *
+    * @param string value color of the dates
+    *
+    * @author CommSy Development Group
+    */
+   function setColor($value) {
+      $this->_setValue('color', $value);
+   }
+
+   /** get color of a dates
+    * this method returns the color of the dates
+    *
+    * @return string color of a dates
+    *
+    * @author CommSy Development Group
+    */
+   function getColor() {
+      return $this->_getValue('color');
+   }
+   
    function issetPrivatDate(){
       return $this->_getValue('date_mode')==1;
    }

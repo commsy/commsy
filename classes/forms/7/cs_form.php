@@ -1049,7 +1049,9 @@ class cs_form {
                           $button_name = '',
                           $align = 'left',
                           $anchor='',
-                          $extention = '' ) {
+                          $extention = '',
+                          $drop_down = false,
+                          $show_drop_down = false) {
 
                 $element['type']  = 'text';
                 $element['name']  = $name;
@@ -1069,6 +1071,8 @@ class cs_form {
                         $element['text-align'] = $align;
                 }
                 $element['anchor'] = $anchor;
+                $element['drop_down'] = $drop_down;
+                $element['show_drop_down'] = $show_drop_down;
                 $this -> _formElements -> addElement($element);
         }
 

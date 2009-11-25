@@ -80,6 +80,8 @@ class cs_date_form extends cs_rubric_form {
 
    var $_session_tag_array = array();
 
+   var $_color = '#FFFF80';
+   
   /** constructor: cs_date_form
     * the only available constructor
     *
@@ -271,7 +273,6 @@ class cs_date_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-
       $current_context = $this->_environment->getCurrentContextItem();
       // dates
       $this->_form->addHidden('iid','');
@@ -283,6 +284,7 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,getMessage('DATES_TIME_DAY_START'),getMessage('DATES_START_DAY'),getMessage('DATES_START_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
       $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,getMessage('DATES_TIME_DAY_END'),getMessage('DATES_END_DAY'),getMessage('DATES_END_TIME'),getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
       $this->_form->addTextfield('place','',getMessage('DATES_PLACE'),getMessage('DATES_PLACE_DESC'),100,50);
+
       $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
@@ -342,7 +344,11 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->combine('vertical');
       $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
-
+      #$this->_form->addTextfield('colour','',getMessage('DATES_COLOUR'),getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
+      #$this->_form->combine();
+      #pr('--->'.$this->_color.'<---');
+      $this->_form->addText('colorpicker',getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
+          
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
@@ -435,6 +441,10 @@ class cs_date_form extends cs_rubric_form {
          if ( !isset($this->_values['public']) ) {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
+         if ( !empty($this->_form_post['colorpicker']) ) {
+            $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $_POST['colorpicker'] . '" name="colorpicker">';
+            $this->_color = $_POST['colorpicker'];
+         }
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
@@ -517,6 +527,11 @@ class cs_date_form extends cs_rubric_form {
             }
          }
 
+         if ( $this->_item->getColor() != '' ) {
+            $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $this->_item->getColor() . '" name="colorpicker">';
+            $this->_color = $this->_item->getColor();
+         }
+         
       } else {
          $temp_array['dayStart'] = $this->_private_date_starting_date;
          $temp_array['timeStart'] = $this->_private_date_starting_time;

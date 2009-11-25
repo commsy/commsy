@@ -576,7 +576,8 @@ class cs_dates_manager extends cs_manager {
                'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'",'.
                'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'",'.
                'place="'.encode(AS_DB,$item->getPlace()).'",'.
-               'date_mode="'.encode(AS_DB,$item->getDateMode()).'"'.
+               'date_mode="'.encode(AS_DB,$item->getDateMode()).'",'.
+               'color="'.encode(AS_DB,$item->getColor()).'"'.
                ' WHERE item_id="'.encode(AS_DB,$item->getItemID()).'"';
 
       $result = $this->_db_connector->performQuery($query);
@@ -650,7 +651,8 @@ class cs_dates_manager extends cs_manager {
               'datetime_start="'.encode(AS_DB,$item->getDateTime_start()).'", '.
               'datetime_end="'.encode(AS_DB,$item->getDateTime_end()).'", '.
               'place="'.encode(AS_DB,$item->getPlace()).'", '.
-              'date_mode="'.encode(AS_DB,$item->getDateMode()).'"';
+              'date_mode="'.encode(AS_DB,$item->getDateMode()).'", '.
+              'color="'.encode(AS_DB,$item->getColor()).'"';
      $result = $this->_db_connector->performQuery($query);
      if ( !isset($result) ) {
         include_once('functions/error_functions.php');trigger_error('Problems creating dates.',E_USER_WARNING);
