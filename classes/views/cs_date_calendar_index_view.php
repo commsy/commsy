@@ -1997,11 +1997,53 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $width = '100%';
       $html .= '</tr>'.LF;
       $html .= '<tr>'.LF;
-      $html .= '<th style="width:18px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_0"><div style="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
-      for($index=0; $index <6; $index++){
-         $html .= '<th style="width:14%; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
+      $html .= '<th style="width:18px; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_0"><div style="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;"></div></th>'.LF;
+      for($index=0; $index <7; $index++){
+         $week_start = $this->_week_start + ( 3600 * 24 * $index);
+         $startday = date ( "d", $week_start);
+         $first_char = mb_substr($startday,0,1);
+         if ($first_char == '0'){
+            $startday = mb_substr($startday,1,2);
+         }
+         $startmonth = date ( "Ymd", $week_start );
+         $first_char = mb_substr($startmonth,0,1);
+         if ($first_char == '0'){
+            $startmonth = mb_substr($startmonth,1,2);
+         }
+         $startyear = date ( "Y", $week_start );
+         $params = array();
+         $params['iid'] = 'NEW';
+         $params['day'] = $startday;
+         $parameter_array = $this->_environment->getCurrentParameterArray();
+         $params['month'] = $startmonth;
+         $params['year'] = $startyear;
+         $params['week'] = $this->_week_start;
+         $params['presentation_mode'] = '1';
+         #if ($i != 0){
+         #   $params['time'] = $index;
+         #} else{
+            $params['time'] = 0;
+         #}
+         $params['modus_from'] = 'calendar';
+         $anAction ='';
+         if ($i == 0){
+            $image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
+         }else{
+            $image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
+         }
+         if ( $this->_with_modifying_actions ) {
+            $anAction = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_DATE_TYPE,
+                           'edit',
+                           $params,
+                           $image);
+         }
+         if ($index == 7) {
+            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-bottom:1px solid black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></th>'.LF;
+         } else {
+            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></th>'.LF;
+         }
       }
-      $html .= '<th style="width:14%; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
       $html .= '</tr>'.LF;
       $html .= '</thead>'.LF;
       $html .= '<tbody id="calendar_body">'.LF;
