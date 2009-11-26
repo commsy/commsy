@@ -641,6 +641,8 @@ class misc_text_converter {
    #private function _parseArgs ($x) {
    public function _parseArgs ($x) {
       $z = array();
+      $x = str_replace('&#39;', "'", $x);
+      $x = str_replace('&quot;', '"', $x);
       preg_match_all('~([-+]|(?>(\\w+)[:=]{0,1}))?("[^"]*"|\'[^\']*\'|\\S+)~u',$x, $terms, PREG_SET_ORDER);
       foreach($terms as $t) {
          $v = preg_replace('~^([\'"])?(.*)\\1$~u', '$2', $t[3]);
