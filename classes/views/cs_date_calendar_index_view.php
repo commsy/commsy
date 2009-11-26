@@ -383,10 +383,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= $this->_getTableheadAsHTML();
       $html .='<tr>'.LF;
       $html .='<td colspan="3" style="padding-top:2px; vertical-align:top; ">'.LF;
-      $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
+      #$html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
 #      $html .= '<table class="list" style="width: 100%; border-collapse: collapse; border: 0px;" summary="Layout">'.LF;
       if ($this->_presentation_mode == '2'){
+         $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
          $html .= $this->_getMonthContentAsHTML();
+         $html .= '</table>'.LF;
       }else{
          // SUNBIRD UMSTELLUNG
          $with_javascript = false;
@@ -396,13 +398,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and false){
+         if($with_javascript and true){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
+            $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
             $html .= $this->_getWeekContentAsHTML();
+            $html .= '</table>'.LF;
          }
       }
-      $html .= '</table>'.LF;
+      #$html .= '</table>'.LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
       $html .= '</table>'.BRLF;
@@ -1920,8 +1924,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       //Create the html part of the calendar
       //title row with weekdays
-      $html  = '   <tr class="calendar_head">'.LF;
-      $html .= '      <td class="calendar_head_first" style="width:19px; text-align:center; padding:0px;">'.'</td>'.LF;
+      $html .= '<table id="calender_week_table" class="list" style="width: 100%; border-collapse: collapse; border:0px;" summary="Layout">'.LF;
+      $html .= '<thead style="border-right: 1px solid black;">'.LF;
+      $html .= '   <tr class="calendar_head">'.LF;
+      $html .= '      <th class="calendar_head_first" id="calendar_head_0" style="width:18px; text-align:center; padding:0px;"><div style="border-left:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
       $display_date_array = array();
       for ($i = 1; $i <8; $i++){
          $startday = date ("d",$week_start);
@@ -1948,12 +1954,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             case 7: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
          }
             if ($i == 7){
-               $html .= '      <td class="calendar_head"
-                                   style="width:128px; text-align:center; padding:0px;">';
+               $html .= '      <th class="calendar_head" id="calendar_head_last" style="text-align:center; padding:0px;">';
             } else {
-               $html .= '      <td class="calendar_head"
-                                   style="width:128px;
-                                   text-align:center; padding:0px;">';
+               $html .= '      <th class="calendar_head" id="calendar_head_' . $i . '" style="width:14%; text-align:center; padding:0px;">';
             }
             switch ( $text ){
                case 'COMMON_DATE_WEEKVIEW_MONDAY':
@@ -1980,11 +1983,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                default:
                   break;
             }
-            if ($i == 7){
-               $html .= '</td><td class="calendar_head" style="border-right: 0px solid black;"></td>'.LF;
-            } else {
-               $html .= '</td>'.LF;
-            }
+            #if ($i == 7){
+            #   $html .= '</th>'.LF;
+            #} else {
+               $html .= '</th>'.LF;
+            #}
             
             
          $week_start = $week_start + ( 3600 * 24);
@@ -1992,16 +1995,25 @@ class cs_date_calendar_index_view extends cs_room_index_view {
        
       $session = $this->_environment->getSession();
       $width = '100%';
-      $html .= '   </tr>'.LF;
-      $html .= '   <tr>'.LF;
-      $html .= '   <td colspan="9" style="padding:0px;">'.LF;
-      $html .= '<div id="calender_frame" style="width:100%; height:500px; overflow:auto; background-color:#dddddd; border:1px solid black;">'.LF;
-      $html .= '<div id="calender_main" style="position:relative;">'.LF;
-      $html .= '<table cellpadding="0" cellspacing="0" style="width:100%;">'.LF;
+      $html .= '</tr>'.LF;
+      $html .= '<tr>'.LF;
+      $html .= '<th style="width:18px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_0"><div style="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
+      for($index=0; $index <6; $index++){
+         $html .= '<th style="width:14%; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
+      }
+      $html .= '<th style="width:14%; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-bottom:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
+      $html .= '</tr>'.LF;
+      $html .= '</thead>'.LF;
+      $html .= '<tbody id="calendar_body">'.LF;
+      #$html .= '<tr>'.LF;
+      #$html .= '<td colspan="9" style="padding:0px;">'.LF;
+      #$html .= '<div id="calender_frame" style="width:100%; height:500px; overflow:auto; background-color:#dddddd;">'.LF;
+      #$html .= '<div id="calender_main" style="position:relative;">'.LF;
+      #$html .= '<table id="calender_table" cellpadding="0" cellspacing="0" style="width:100%;">'.LF;
       for($index=0; $index <24; $index++){
          
-      $html .= '   <tr>'.LF;
-      $html .= '      <td style="height: 40px; width:18px; border-right:solid 1px black; border-bottom:solid 1px black; font-size: 8pt; padding:0px;" id="calendar_time_' . $index . '">' . $index . '</td>'.LF;
+      $html .= '<tr>'.LF;
+      $html .= '<td style="height: 40px; width:18px; font-size: 8pt; padding:0px;" id="calendar_time_' . $index . '"><div style="border-left:solid 1px black; border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%;">' . $index . '</div></td>'.LF;
       for($index_day=0; $index_day <7; $index_day++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index_day);
          $startday = date ( "d", $week_start);
@@ -2042,11 +2054,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         $html .= '<td style="height: 40px; width:128px; border-right:solid 1px black; border-bottom:solid 1px black; padding:0px;" id="calendar_entry_' . $index . '"><div><span>'.$anAction.'</span></div></td>'.LF;
+         #if($index_day != 7){
+            $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div style="border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></td>'.LF;
+         #} else {
+         #   $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div style="border-bottom:solid 1px black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></td>'.LF;
+         #}
       }
       $html .= '</tr>'.LF;
       }
-      $html .= '</table>'.LF;
+      #$html .= '</table>'.LF;
       #$html .= '<div style="position: absolute; top: 0px; left: 19px; width:128px; height:400px; background-color:red; z-index:1000;">Termin</div>'.LF;
       #pr($display_date_array);
       for ($day = 1; $day<9; $day++){
@@ -2105,17 +2121,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                } else {
                   $color = '#FFFF80';
                }
-               $html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
-               $html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
-               $html .= '</div>'.LF;
+               #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
+               #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
+               #$html .= '</div>'.LF;
                $left_position = $left_position + $width + 4;
             }
          }
       }
-      $html .= '</div>'.LF;
-      $html .= '</div>'.LF;
-      $html .= '   </td>'.LF;
-      $html .= '   </tr>'.LF;
+      #$html .= '</div>'.LF;
+      #$html .= '</div>'.LF;
+      #$html .= '</td>'.LF;
+      $html .= '</tr>'.LF;
       
       $time = 5;
       for($i = 0; $i<24; $i++){
@@ -2355,9 +2371,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $time = $time+1;
          #$html .= '   </tr>'.LF;
       }
-      $html .= '   <tr class="calendar_head" style="height: 20px;">'.LF;
-      $html .= '      <td  colspan="9" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</td>'.LF;
-      $html .= '   </tr>'.LF;
+      $html .= '</tbody>'.LF;
+      $html .= '<tfoot>'.LF;
+      $html .= '<tr class="calendar_head" style="height: 20px;">'.LF;
+      $html .= '<th  colspan="8" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</th>'.LF;
+      $html .= '</tr>'.LF;
+      $html .= '</tfoot>'.LF;
+      $html .= '</table>'.LF;
       return $html;
    }
 

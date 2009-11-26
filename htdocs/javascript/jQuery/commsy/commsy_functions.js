@@ -693,5 +693,10 @@ jQuery(document).ready(function() {
 });
 
 jQuery(document).ready(function() {
-	jQuery('#calender_frame').scrollTo(jQuery('#calendar_time_8'), 0);
+	jQuery('#calender_week_table').scrollable({tableHeight:500});
+	jQuery('#calendar_body').scrollTo(jQuery('#calendar_time_8'), 0);
+	jQuery('#calender_week_table').css('border', '1px solid black');
+	$(window).resize(function(){
+		jQuery('#calender_week_table').css('width', '100%');
+	});
 });

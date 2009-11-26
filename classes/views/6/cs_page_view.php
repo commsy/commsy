@@ -637,6 +637,7 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery-ui-1.7.2.custom.min.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/css/jQueryUI/smoothness/jquery-ui-1.7.2.custom.css"/>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/jquery.scrollTo-1.4.2/jquery.scrollTo-min.js"></script>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/scrolltable/jquery.scrollabletable.min.js"></script>'.LF;
          $retour .= '   <script type="text/javascript">'.LF;
          $retour .= '      <!--'.LF;
          $retour .= '   var datepicker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;
