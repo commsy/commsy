@@ -2039,9 +2039,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $image);
          }
          if ($index == 7) {
-            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-bottom:1px solid black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></th>'.LF;
+            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></th>'.LF;
          } else {
-            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_' . $index . '"><div style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></th>'.LF;
+            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></th>'.LF;
          }
       }
       $html .= '</tr>'.LF;
@@ -2097,7 +2097,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $image);
          }
          #if($index_day != 7){
-            $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div style="border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></td>'.LF;
+            $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div id="calendar_entry_date_div_' . $index . '_' . $index_day . '" style="border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></td>'.LF;
          #} else {
          #   $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div style="border-bottom:solid 1px black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></td>'.LF;
          #}
@@ -2107,184 +2107,122 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #$html .= '</table>'.LF;
       #$html .= '<div style="position: absolute; top: 0px; left: 19px; width:128px; height:400px; background-color:red; z-index:1000;">Termin</div>'.LF;
       #pr($display_date_array);
-      for ($day = 1; $day<9; $day++){
-         $day_entries = $day-1;
-         $left_position = 0;
-         if ( isset($display_date_array[$day_entries]) ){
-            foreach($display_date_array[$day_entries] as $date){
-               $start_hour = mb_substr($date->getStartingTime(),0,2);
-               if(mb_substr($start_hour,0,1) == '0'){
-                  $start_hour = mb_substr($start_hour,1,1);
-               }
-               $start_minutes = mb_substr($date->getStartingTime(),3,2);
-               if(mb_substr($start_minutes,0,1) == '0'){
-                  $start_minutes = mb_substr($start_minutes,1,1);
-               }
-               
-               if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
-                  $end_hour = 23;
-                  $end_minutes = 60;
-               } else {
-                  $end_hour = mb_substr($date->getEndingTime(),0,2);
-                  $end_minutes = mb_substr($date->getEndingTime(),3,2);
-               }
-               if(mb_substr($end_hour,0,1) == '0'){
-                  $end_hour = mb_substr($end_hour,1,1);
-               }
-               if(mb_substr($end_minutes,0,1) == '0'){
-                  $end_minutes = mb_substr($end_minutes,1,1);
-               }
-               
-               // umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
-               $start_minutes = $start_hour*60 + $start_minutes;
-               $end_minutes = $end_hour*60 + $end_minutes;
-               
-               $start_quaters = mb_substr(($start_minutes / 15),0,2);
-               $start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
-               $end_quaters = mb_substr(($end_minutes / 15),0,2);
-               $end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
-               
-               #pr($day);
-               #pr(count($display_date_array[$day_entries]));
-               #pr($start_hour . ' - ' . $start_minutes . ' - ' . $start_minutes . ' - ' . $start_quaters . ' - ' . $start_quaters_addon);
-               #pr($end_hour . ' - ' . $end_minutes . ' - ' . $end_minutes . ' - ' . $end_quaters . ' - ' . $end_quaters_addon);
-               #pr('-------------');
-               
-               #if($start_quaters != 0){
-               #   $top = ($start_quaters-1)*10 + ($start_quaters_addon-1);
-               #} else {
-                  $top = $start_quaters*10;
-               #}
-               $left = 19 + 129*($day_entries-1) + $left_position;
-               $width = 129 / count($display_date_array[$day_entries]) - 4;
-               $height = ($end_quaters - $start_quaters) * 10;
-               if($date->getColor() != ''){
-                  $color = $date->getColor();
-               } else {
-                  $color = '#FFFF80';
-               }
-               #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
-               #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
-               #$html .= '</div>'.LF;
-               $left_position = $left_position + $width + 4;
-            }
-         }
-      }
+      
       #$html .= '</div>'.LF;
       #$html .= '</div>'.LF;
       #$html .= '</td>'.LF;
       $html .= '</tr>'.LF;
       
-      $time = 5;
-      for($i = 0; $i<24; $i++){
-         if ($i == 0){
-            #$html .= '   <tr class="listcalendar" style="height:1.2em;">'.LF;
-         }else{
-            #$html .= '   <tr class="listcalendar" style="height:2em;">'.LF;
-         }
-         for ($j = 1; $j<9; $j++){
-            $date_text = array();
-            $date_text_new = array();
-            $date_show = array();
-            $date_show_new = array();
-            $count_entries = array();
-            $is_entry = false;
-            $day_entries = $j-1;
-            $count_dates_index = 0;
-            if ( isset($display_date_array[$day_entries]) ){
-               foreach($display_date_array[$day_entries] as $date){
-                  $starting_time = $date->getStartingTime();
-                  if (empty($starting_time)){
-                     // Termine für den ganzen Tag
-                     $length = mb_strlen($date->getTitle());
-                     if ( $length > 20 ) {
-                        $new_date = mb_substr($date->getTitle(),0,20).'...';
-                     } else {
-                        $new_date = $date->getTitle();
-                     }
-                     $title = '- '.$this->_getItemTitle($date,$new_date);
-                     if (isset($date_text[1]) and !empty($date_text[1]) ){
-                        $date_text[1] .= '<br/>'.$title;
-                     }else{
-                        $date_text[1] = $title;
-                     }
-                  }else{
-                     // Termine mit Zeitangabe
-                     $display_start_time = mb_substr($date->getStartingTime(),0,2);
-                     $first_char = mb_substr($display_start_time,0,1);
-                     if ($first_char == '0'){
-                        $display_start_time = mb_substr($display_start_time,1,2);
-                     }
-                     if ( $display_start_time=='0' or !is_numeric($display_start_time) ){
-                        $display_start_time ='6';
-                     }
-                     if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
-                        $length = mb_strlen($date->getTitle());
-                        if ($length > 20) {
-                           $new_date = mb_substr($date->getTitle(),0,19).'...';
-                        } else {
-                           $new_date = $date->getTitle();
-                        }
-                      } else {
-                        $length = mb_strlen($date->getTitle());
-                        if ( $length > 20 ) {
-                           $new_date = mb_substr($date->getTitle(),0,19).'...';
-                        } else {
-                           $new_date = $date->getTitle();
-                        }
-                     }
-                     $title = '- '.$this->_getItemTitle($date,$new_date);
-                     if (isset($date_text[$display_start_time]) and !empty($date_text[$display_start_time]) ){
-                        $date_text[$display_start_time] .= '<br/>'.$title;
-                        $date_text_new[$display_start_time][$count_dates_index] .= '<br/>'.$title;
-                        $count_entries[$display_start_time] = $count_entries[$display_start_time]+1;
-                     }else{
-                        $date_text[$display_start_time] = $title;
-                        $date_text_new[$display_start_time][$count_dates_index] = $title;
-                        $count_entries[$display_start_time] = 1;
-                     }
-                     $ending_time = $date->getEndingTime();
-                     if ( !empty($ending_time) ){
-                        $display_ending_time = mb_substr($date->getEndingTime(),0,2);
-                        $first_char = mb_substr($display_ending_time,0,1);
-                        if ($first_char == '0'){
-                           $display_ending_time = mb_substr($display_ending_time,1,2);
-                        }
-                        if ( !is_numeric($display_ending_time)
-                             and is_numeric($display_start_time)
-                           ) {
-                           $display_ending_time = $display_start_time+1;
-                        }
-                        $display_ending_minutes = mb_substr($date->getEndingTime(),3,2);
-                        if ($display_ending_minutes !='00'){
-                           $display_ending_time++;
-                        }
-                        if ($display_ending_time < $display_start_time){
-                           $display_ending_time = 24;
-                        }
-                        $start_day = $date->getStartingDay();
-                        $end_day = $date->getEndingDay();
-                        if ($start_day < $end_day){
-                           $display_ending_time = 24;
-
-                        }
-                        $k = $display_start_time;
-                        while ($k < $display_ending_time) {
-                           if (isset($date_show[$k])){
-                              $value = $date_show[$k];
-                              $date_show[$k] = $value+1;
-                              $date_show_new[$k][$count_dates_index] = 1;
-                           } else {
-                              $date_show[$k] = 1;
-                              $date_show_new[$k][$count_dates_index] = 1;
-                           }
-                           $k = $k+1;
-                        }
-                     }
-                  }
-                  $count_dates_index++;
-               }
-            }
+//      $time = 5;
+//      for($i = 0; $i<24; $i++){
+//         if ($i == 0){
+//            #$html .= '   <tr class="listcalendar" style="height:1.2em;">'.LF;
+//         }else{
+//            #$html .= '   <tr class="listcalendar" style="height:2em;">'.LF;
+//         }
+//         for ($j = 1; $j<9; $j++){
+//            $date_text = array();
+//            $date_text_new = array();
+//            $date_show = array();
+//            $date_show_new = array();
+//            $count_entries = array();
+//            $is_entry = false;
+//            $day_entries = $j-1;
+//            $count_dates_index = 0;
+//            if ( isset($display_date_array[$day_entries]) ){
+//               foreach($display_date_array[$day_entries] as $date){
+//                  $starting_time = $date->getStartingTime();
+//                  if (empty($starting_time)){
+//                     // Termine für den ganzen Tag
+//                     $length = mb_strlen($date->getTitle());
+//                     if ( $length > 20 ) {
+//                        $new_date = mb_substr($date->getTitle(),0,20).'...';
+//                     } else {
+//                        $new_date = $date->getTitle();
+//                     }
+//                     $title = '- '.$this->_getItemTitle($date,$new_date);
+//                     if (isset($date_text[1]) and !empty($date_text[1]) ){
+//                        $date_text[1] .= '<br/>'.$title;
+//                     }else{
+//                        $date_text[1] = $title;
+//                     }
+//                  }else{
+//                     // Termine mit Zeitangabe
+//                     $display_start_time = mb_substr($date->getStartingTime(),0,2);
+//                     $first_char = mb_substr($display_start_time,0,1);
+//                     if ($first_char == '0'){
+//                        $display_start_time = mb_substr($display_start_time,1,2);
+//                     }
+//                     if ( $display_start_time=='0' or !is_numeric($display_start_time) ){
+//                        $display_start_time ='6';
+//                     }
+//                     if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
+//                        $length = mb_strlen($date->getTitle());
+//                        if ($length > 20) {
+//                           $new_date = mb_substr($date->getTitle(),0,19).'...';
+//                        } else {
+//                           $new_date = $date->getTitle();
+//                        }
+//                      } else {
+//                        $length = mb_strlen($date->getTitle());
+//                        if ( $length > 20 ) {
+//                           $new_date = mb_substr($date->getTitle(),0,19).'...';
+//                        } else {
+//                           $new_date = $date->getTitle();
+//                        }
+//                     }
+//                     $title = '- '.$this->_getItemTitle($date,$new_date);
+//                     if (isset($date_text[$display_start_time]) and !empty($date_text[$display_start_time]) ){
+//                        $date_text[$display_start_time] .= '<br/>'.$title;
+//                        $date_text_new[$display_start_time][$count_dates_index] .= '<br/>'.$title;
+//                        $count_entries[$display_start_time] = $count_entries[$display_start_time]+1;
+//                     }else{
+//                        $date_text[$display_start_time] = $title;
+//                        $date_text_new[$display_start_time][$count_dates_index] = $title;
+//                        $count_entries[$display_start_time] = 1;
+//                     }
+//                     $ending_time = $date->getEndingTime();
+//                     if ( !empty($ending_time) ){
+//                        $display_ending_time = mb_substr($date->getEndingTime(),0,2);
+//                        $first_char = mb_substr($display_ending_time,0,1);
+//                        if ($first_char == '0'){
+//                           $display_ending_time = mb_substr($display_ending_time,1,2);
+//                        }
+//                        if ( !is_numeric($display_ending_time)
+//                             and is_numeric($display_start_time)
+//                           ) {
+//                           $display_ending_time = $display_start_time+1;
+//                        }
+//                        $display_ending_minutes = mb_substr($date->getEndingTime(),3,2);
+//                        if ($display_ending_minutes !='00'){
+//                           $display_ending_time++;
+//                        }
+//                        if ($display_ending_time < $display_start_time){
+//                           $display_ending_time = 24;
+//                        }
+//                        $start_day = $date->getStartingDay();
+//                        $end_day = $date->getEndingDay();
+//                        if ($start_day < $end_day){
+//                           $display_ending_time = 24;
+//
+//                        }
+//                        $k = $display_start_time;
+//                        while ($k < $display_ending_time) {
+//                           if (isset($date_show[$k])){
+//                              $value = $date_show[$k];
+//                              $date_show[$k] = $value+1;
+//                              $date_show_new[$k][$count_dates_index] = 1;
+//                           } else {
+//                              $date_show[$k] = 1;
+//                              $date_show_new[$k][$count_dates_index] = 1;
+//                           }
+//                           $k = $k+1;
+//                        }
+//                     }
+//                  }
+//                  $count_dates_index++;
+//               }
+//            }
             #pr($date_text);
             #pr($date_text_new);
             #pr($date_show);
@@ -2409,10 +2347,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //               $html .= '      </td>';
 //            }
                            #pr('===' . $html . '===');
-         }
-         $time = $time+1;
-         #$html .= '   </tr>'.LF;
-      }
+//         }
+//         $time = $time+1;
+//         #$html .= '   </tr>'.LF;
+//      }
       $html .= '</tbody>'.LF;
       $html .= '<tfoot>'.LF;
       $html .= '<tr class="calendar_head" style="height: 20px;">'.LF;
@@ -2420,6 +2358,89 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</tr>'.LF;
       $html .= '</tfoot>'.LF;
       $html .= '</table>'.LF;
+             
+      $date_array_for_jQuery = array();
+      $date_index = 0;
+      for ($day = 1; $day<9; $day++){
+         $day_entries = $day-1;
+         $left_position = 0;
+         if ( isset($display_date_array[$day_entries]) ){
+            foreach($display_date_array[$day_entries] as $date){
+               $start_hour = mb_substr($date->getStartingTime(),0,2);
+               if(mb_substr($start_hour,0,1) == '0'){
+                  $start_hour = mb_substr($start_hour,1,1);
+               }
+               $start_minutes = mb_substr($date->getStartingTime(),3,2);
+               if(mb_substr($start_minutes,0,1) == '0'){
+                  $start_minutes = mb_substr($start_minutes,1,1);
+               }
+               
+               if(($date->getStartingDay() != $date->getEndingDay()) and ($date->getEndingDay() != '')){
+                  $end_hour = 23;
+                  $end_minutes = 60;
+               } else {
+                  $end_hour = mb_substr($date->getEndingTime(),0,2);
+                  $end_minutes = mb_substr($date->getEndingTime(),3,2);
+               }
+               if(mb_substr($end_hour,0,1) == '0'){
+                  $end_hour = mb_substr($end_hour,1,1);
+               }
+               if(mb_substr($end_minutes,0,1) == '0'){
+                  $end_minutes = mb_substr($end_minutes,1,1);
+               }
+               
+               // umrechnen in Minuten, für jede viertelstunde 10 px drauf nach vier noch einen pixel drauf
+               $start_minutes = $start_hour*60 + $start_minutes;
+               $end_minutes = $end_hour*60 + $end_minutes;
+               
+               $start_quaters = mb_substr(($start_minutes / 15),0,2);
+               $start_quaters_addon = mb_substr(($start_quaters / 4),0,2);
+               $end_quaters = mb_substr(($end_minutes / 15),0,2);
+               $end_quaters_addon = mb_substr(($end_quaters / 4),0,2);
+               
+               #pr($day);
+               #pr(count($display_date_array[$day_entries]));
+               #pr($start_hour . ' - ' . $start_minutes . ' - ' . $start_minutes . ' - ' . $start_quaters . ' - ' . $start_quaters_addon);
+               #pr($end_hour . ' - ' . $end_minutes . ' - ' . $end_minutes . ' - ' . $end_quaters . ' - ' . $end_quaters_addon);
+               #pr('-------------');
+               
+               #if($start_quaters != 0){
+               #   $top = ($start_quaters-1)*10 + ($start_quaters_addon-1);
+               #} else {
+                  $top = $start_quaters*10;
+               #}
+               $left = 19 + 129*($day_entries-1) + $left_position;
+               $width = 129 / count($display_date_array[$day_entries]) - 4;
+               #pr(count($display_date_array[$day_entries]));
+               $height = ($end_quaters - $start_quaters) * 10;
+               if($date->getColor() != ''){
+                  $color = $date->getColor();
+               } else {
+                  $color = '#FFFF80';
+               }
+               #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
+               #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
+               #$html .= '</div>'.LF;
+               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $this->_getItemTitle($date,$date->getTitle()) . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\')';
+               $date_index++;
+               $left_position = $left_position + $width + 4;
+            }
+         }
+      }
+      $html .= '<script type="text/javascript">'.LF;
+      $html .= '<!--'.LF;
+      $html .= 'var calendar_dates = new Array(';
+      $last = count($date_array_for_jQuery)-1;
+      for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
+      	$html .= $date_array_for_jQuery[$index];
+      	#pr($date_array_for_jQuery[$index]);
+      	if($index < $last){
+      	  $html .= ',';
+      	}
+      }
+      $html .= ');'.LF;
+      $html .= '-->'.LF;
+      $html .= '</script>'.LF;
       return $html;
    }
 
