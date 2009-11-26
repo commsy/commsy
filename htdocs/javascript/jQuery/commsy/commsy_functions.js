@@ -694,9 +694,48 @@ jQuery(document).ready(function() {
 
 jQuery(document).ready(function() {
 	jQuery('#calender_week_table').scrollable({tableHeight:500});
+	draw_dates();
 	jQuery('#calendar_body').scrollTo(jQuery('#calendar_time_8'), 0);
 	jQuery('#calender_week_table').css('border', '1px solid black');
 	$(window).resize(function(){
 		jQuery('#calender_week_table').css('width', '100%');
+		draw_dates();
 	});
 });
+
+function draw_dates(){
+	jQuery('div[name=calendar_date]').remove();
+	var left_position = 0;
+	var current_day = '';
+	for (var i = 0; i < calendar_dates.length; i++) {
+		var day = calendar_dates[i][0]-1;
+		if(current_day != day){
+			current_day = day;
+			left_position = 0;
+		}
+		var title = calendar_dates[i][1];
+		var start_quaters = calendar_dates[i][2];
+		var end_quaters = calendar_dates[i][3];
+		var dates_on_day = calendar_dates[i][4];
+		var color = calendar_dates[i][5];
+		
+		if(start_quaters % 4 == 0){
+			var start_div = start_quaters / 4;
+			var top = 0;
+		} else {
+			var start_div = (start_quaters - start_quaters % 4) / 4;
+			var top = (start_quaters % 4) * 10;
+		}
+		
+		var height = (end_quaters - start_quaters) * 10 + ((end_quaters - start_quaters) / 4)-1;
+		var width = (jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() / dates_on_day);
+			
+		var left = left_position * (width) +1;
+	    left_position++;
+	    if(start_quaters == 0 && end_quaters == 0){
+	    	jQuery('#calendar_day_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden;">' + title + '</div>');
+	    } else {
+	    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden;">' + title + '</div>');
+	    }
+    }
+}
