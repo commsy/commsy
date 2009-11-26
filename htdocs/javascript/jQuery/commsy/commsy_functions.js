@@ -704,6 +704,7 @@ jQuery(document).ready(function() {
 });
 
 function draw_dates(){
+   //alert(jQuery('#calendar_entry_date_div_10_2').width());
 	jQuery('div[name=calendar_date]').remove();
 	var left_position = 0;
 	var current_day = '';
@@ -728,9 +729,22 @@ function draw_dates(){
 		}
 		
 		var height = (end_quaters - start_quaters) * 10 + ((end_quaters - start_quaters) / 4)-1;
-		var width = (jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() / dates_on_day);
-			
-		var left = left_position * (width) +1;
+		
+		if(jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() % dates_on_day == 0){
+		   var width = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() / dates_on_day;
+		   var width_rest = 0;
+		} else {
+		   var width = (jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() % dates_on_day) / dates_on_day;
+		   var width_rest = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() % dates_on_day
+		}
+		width = width-2-width_rest;
+		
+		//if(left_position == 0){
+		//   var left = left_position * width + 2;
+		//} else {
+		   var left = (left_position * width) + ((left_position+1) * 2);
+		//}
+		
 	    left_position++;
 	    if(start_quaters == 0 && end_quaters == 0){
 	    	jQuery('#calendar_day_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden;">' + title + '</div>');
