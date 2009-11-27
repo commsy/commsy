@@ -1256,7 +1256,8 @@ class misc_text_converter {
          $source = str_replace('&amp;','&',$source);
          $source = urlencode($source);
          $div_number = $this->_getDivNumber();
-         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
+         $translator = $this->_environment->getTranslationObject();
+         $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
          $image_text .= '<script type="text/javascript">'.LF;
          $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
          $image_text .= '  so.addParam(\'wmode\',\'opaque\');'.LF;
@@ -1699,7 +1700,8 @@ class misc_text_converter {
 //               //$retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&set_id=' . $flickr_set . '" width="500" height="500"> </object>'.LF;
 //            }
 //         } else {
-//            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+//            $translator = $this->_environment->getTranslationObject();
+//            $retour .= $translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
 //         }
          $flickr_link_array = split('/', $array[1]);
 // Zweite Version - allerdings wird ein API-Key benötigt.
@@ -1723,14 +1725,15 @@ class misc_text_converter {
 //               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?user_id=' . $flicker_id . '&tags=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
 //            }
 //         } else {
-//            $retour .= $this->_translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
+//            $translator = $this->_environment->getTranslationObject();
+//            $retour .= $translator->getMessage('WIKI_FLICKR_NO_ID_FOUND');
 //         }
          if($flickr_link_array[5] == 'sets'){
-         	if($this->_environment->getCurrentBrowser() != 'MSIE'){
-            	$retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
-         	} else {
-         		$retour .= '<iframe src="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
-         	}
+            if($this->_environment->getCurrentBrowser() != 'MSIE'){
+               $retour .= '<object type="text/html" data="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" width="500" height="500"> </object>'.LF;
+            } else {
+               $retour .= '<iframe src="http://www.flickr.com/slideShow/index.gne?set_id=' . $flickr_link_array[6] . '" frameBorder="0" width="500" height="500" scrolling="no"></iframe>'.LF;
+            }
          }
       }
       return $retour;
@@ -2272,7 +2275,8 @@ class misc_text_converter {
                $image_text .= '</div>'.LF;
             } else {
                $div_number = $this->_getDivNumber();
-               $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.getMessage('COMMON_GET_FLASH').'</div>'.LF;
+               $translator = $this->_environment->getTranslationObject();
+               $image_text .= '<div id="id'.$div_number.'" style="'.$float.' padding:10px;">'.$translator->getMessage('COMMON_GET_FLASH').'</div>'.LF;
                $image_text .= '<script type="text/javascript">'.LF;
                $image_text .= '  var so = new SWFObject(\'mediaplayer.swf\',\'mpl\',\''.$args['width'].'\',\''.$args['height'].'\',\'8\');'.LF;
                $image_text .= '  so.addParam(\'allowfullscreen\',\'true\');'.LF;

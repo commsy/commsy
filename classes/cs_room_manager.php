@@ -321,24 +321,26 @@ class cs_room_manager extends cs_context_manager {
          $query .= ')';
       }
 
-     if (isset($this->_order)) {
-        if ($this->_order == 'date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
-        } elseif ($this->_order == 'creation_date') {
-           $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
-        } elseif ($this->_order == 'activity') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
-        } elseif ($this->_order == 'activity_rev') {
-           $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
-        } elseif ($this->_order == 'title') {
-           $query .= ' ORDER BY '.$this->_db_table.'.title ASC';
-        } elseif ($this->_order == 'title_rev') {
-           $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+     if ($mode != 'count') {
+        if (isset($this->_order)) {
+           if ($this->_order == 'date') {
+              $query .= ' ORDER BY '.$this->_db_table.'.modification_date DESC, '.$this->_db_table.'.title ASC';
+           } elseif ($this->_order == 'creation_date') {
+              $query .= ' ORDER BY '.$this->_db_table.'.creation_date ASC, '.$this->_db_table.'.title ASC';
+           } elseif ($this->_order == 'activity') {
+              $query .= ' ORDER BY '.$this->_db_table.'.activity ASC, '.$this->_db_table.'.title ASC';
+           } elseif ($this->_order == 'activity_rev') {
+              $query .= ' ORDER BY '.$this->_db_table.'.activity DESC, '.$this->_db_table.'.title ASC';
+           } elseif ($this->_order == 'title') {
+              $query .= ' ORDER BY '.$this->_db_table.'.title ASC';
+           } elseif ($this->_order == 'title_rev') {
+              $query .= ' ORDER BY '.$this->_db_table.'.title DESC';
+           } else {
+              $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
+           }
         } else {
            $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
         }
-     } else {
-        $query .= ' ORDER BY '.$this->_db_table.'.title, '.$this->_db_table.'.modification_date DESC';
      }
 
      if ($mode == 'select') {

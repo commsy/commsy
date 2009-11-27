@@ -799,7 +799,7 @@ class cs_authentication {
          $user_item->setUserId($uid);
          $user_item->reject();
          $translator = $this->_environment->getTranslationObject();
-         $user_item->setLastname($translator->getMessage('GUEST'));
+         $user_item->setLastname('GUEST');
       } else {
          $user_manager->resetLimits();
          $user_manager->setUserIDLimit($uid);
