@@ -398,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and false){
+         if($with_javascript and true){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -2041,7 +2041,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          if ($index == 7) {
             $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></th>'.LF;
          } else {
-            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></th>'.LF;
+            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative; overflow:hidden;"><span>'.$anAction.'</span></div></th>'.LF;
          }
       }
       $html .= '</tr>'.LF;
