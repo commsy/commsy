@@ -130,6 +130,21 @@ class cs_grouproom_item extends cs_room_item {
          // create first moderator
          $current_user = $this->_environment->getCurrentUser();
          $new_room_user = $current_user->cloneData();
+         
+         // Fixed: Picture of Creator was not copied when creating a group-room
+         $picture = $current_user->getPicture();
+         if( !empty($picture) ) {
+            $value_array = explode('_', $picture);                 // extracting
+            $value_array[0] = 'cid'.$this->getItemID();            // replacing cid
+            $new_picture_name = implode('_', $value_array);        // rebuild
+            $disc_manager = $this->_environment->getDiscManager();
+            $disc_manager->copyImageFromRoomToRoom(                // copy image
+               $picture,
+               $this->getItemID());
+            $new_room_user->setPicture($new_picture_name);
+         }
+         // ~Fixed 
+         
          $new_room_user->setContextID($this->getItemID());
          $new_room_user->makeModerator();
          $new_room_user->makeContactPerson();
