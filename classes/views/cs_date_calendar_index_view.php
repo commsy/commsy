@@ -398,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and true){
+         if($with_javascript and false){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -1924,10 +1924,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       //Create the html part of the calendar
       //title row with weekdays
-      $html .= '<table id="calender_week_table" class="list" style="width: 100%; border-collapse: collapse; border:0px;" summary="Layout">'.LF;
-      $html .= '<thead style="border-right: 1px solid black;">'.LF;
-      $html .= '   <tr class="calendar_head">'.LF;
-      $html .= '      <th class="calendar_head_first" id="calendar_head_0" style="width:18px; text-align:center; padding:0px;"><div style="border-left:1px solid black; padding:0px; width:100%; height:100%;">&nbsp;</div></th>'.LF;
+      $html .= '<div id="calender_frame" style="width:100%; background-color:#dddddd; border:1px solid black; padding:0px;">'.LF;
+      $html .= '<div id="calender_dates" style="width:100%; clear:both;">'.LF;
+      $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       $display_date_array = array();
       for ($i = 1; $i <8; $i++){
          $startday = date ("d",$week_start);
@@ -1953,11 +1952,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             case 6: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
             case 7: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
          }
-            if ($i == 7){
-               $html .= '      <th class="calendar_head" id="calendar_head_last" style="text-align:center; padding:0px;">';
-            } else {
-               $html .= '      <th class="calendar_head" id="calendar_head_' . $i . '" style="width:14%; text-align:center; padding:0px;">';
-            }
+            $html .='<div class="calendar_entry" id="calendar_entry"><div class="data">'.LF;
             switch ( $text ){
                case 'COMMON_DATE_WEEKVIEW_MONDAY':
                   $html .= $this->_translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
@@ -1983,21 +1978,16 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                default:
                   break;
             }
-            #if ($i == 7){
-            #   $html .= '</th>'.LF;
-            #} else {
-               $html .= '</th>'.LF;
-            #}
-            
+            $html .= '</div></div>'.LF;
             
          $week_start = $week_start + ( 3600 * 24);
       }
        
       $session = $this->_environment->getSession();
       $width = '100%';
-      $html .= '</tr>'.LF;
-      $html .= '<tr>'.LF;
-      $html .= '<th style="width:18px; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;" id="calendar_day_0"><div style="border-left:1px solid black; border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%;"></div></th>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="calender_days" style="width:100%; clear:both;">'.LF;
+      $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       for($index=0; $index <7; $index++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index);
          $startday = date ( "d", $week_start);
@@ -2019,11 +2009,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          $params['year'] = $startyear;
          $params['week'] = $this->_week_start;
          $params['presentation_mode'] = '1';
-         #if ($i != 0){
-         #   $params['time'] = $index;
-         #} else{
-            $params['time'] = 0;
-         #}
+         $params['time'] = 0;
          $params['modus_from'] = 'calendar';
          $anAction ='';
          if ($i == 0){
@@ -2038,24 +2024,12 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         if ($index == 7) {
-            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></th>'.LF;
-         } else {
-            $html .= '<th style="width:14%; height:30px; font-size: 8pt; padding:0px; background-color:#DDDDDD;"><div id="calendar_day_' . $index . '"style="border-right:1px solid black; border-bottom:1px solid black; padding:0px; width:100%; height:100%; position:relative; overflow:hidden;"><span>'.$anAction.'</span></div></th>'.LF;
-         }
+         $html .= '<div class="calendar_entry" id="calendar_entry"><div class="data" id="calendar_entry_date_div_' . $index . '">'.$anAction.'</div></div>'.LF;
       }
-      $html .= '</tr>'.LF;
-      $html .= '</thead>'.LF;
-      $html .= '<tbody id="calendar_body">'.LF;
-      #$html .= '<tr>'.LF;
-      #$html .= '<td colspan="9" style="padding:0px;">'.LF;
-      #$html .= '<div id="calender_frame" style="width:100%; height:500px; overflow:auto; background-color:#dddddd;">'.LF;
-      #$html .= '<div id="calender_main" style="position:relative;">'.LF;
-      #$html .= '<table id="calender_table" cellpadding="0" cellspacing="0" style="width:100%;">'.LF;
-      for($index=0; $index <24; $index++){
-         
-      $html .= '<tr>'.LF;
-      $html .= '<td style="height: 40px; width:18px; font-size: 8pt; padding:0px;" id="calendar_time_' . $index . '"><div style="border-left:solid 1px black; border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%;">' . $index . '</div></td>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="calender_main" style="height:450px; overflow:auto; clear:both;">'.LF;
+      for($index=0; $index <24; $index++){ 
+      $html .= '<div class="calendar_time" id="calendar_time_' . $index . '"><div class="data">' . $index . '.00</div></div>'.LF;
       for($index_day=0; $index_day <7; $index_day++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index_day);
          $startday = date ( "d", $week_start);
@@ -2096,269 +2070,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         #if($index_day != 7){
-            $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div id="calendar_entry_date_div_' . $index . '_' . $index_day . '" style="border-right:solid 1px black; border-bottom:solid 1px black; padding:0px; width:100%; height:100%; position:relative;"><span>'.$anAction.'</span></div></td>'.LF;
-         #} else {
-         #   $html .= '<td style="height: 40px; width:14%; padding:0px;" id="calendar_entry_' . $index . '_' . $index_day . '"><div style="border-bottom:solid 1px black; padding:0px; width:100%; height:100%;"><span>'.$anAction.'</span></div></td>'.LF;
-         #}
+         $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '">' . $anAction . '</div></div>'.LF;
       }
-      $html .= '</tr>'.LF;
       }
-      #$html .= '</table>'.LF;
-      #$html .= '<div style="position: absolute; top: 0px; left: 19px; width:128px; height:400px; background-color:red; z-index:1000;">Termin</div>'.LF;
-      #pr($display_date_array);
-      
-      #$html .= '</div>'.LF;
-      #$html .= '</div>'.LF;
-      #$html .= '</td>'.LF;
-      $html .= '</tr>'.LF;
-      
-//      $time = 5;
-//      for($i = 0; $i<24; $i++){
-//         if ($i == 0){
-//            #$html .= '   <tr class="listcalendar" style="height:1.2em;">'.LF;
-//         }else{
-//            #$html .= '   <tr class="listcalendar" style="height:2em;">'.LF;
-//         }
-//         for ($j = 1; $j<9; $j++){
-//            $date_text = array();
-//            $date_text_new = array();
-//            $date_show = array();
-//            $date_show_new = array();
-//            $count_entries = array();
-//            $is_entry = false;
-//            $day_entries = $j-1;
-//            $count_dates_index = 0;
-//            if ( isset($display_date_array[$day_entries]) ){
-//               foreach($display_date_array[$day_entries] as $date){
-//                  $starting_time = $date->getStartingTime();
-//                  if (empty($starting_time)){
-//                     // Termine für den ganzen Tag
-//                     $length = mb_strlen($date->getTitle());
-//                     if ( $length > 20 ) {
-//                        $new_date = mb_substr($date->getTitle(),0,20).'...';
-//                     } else {
-//                        $new_date = $date->getTitle();
-//                     }
-//                     $title = '- '.$this->_getItemTitle($date,$new_date);
-//                     if (isset($date_text[1]) and !empty($date_text[1]) ){
-//                        $date_text[1] .= '<br/>'.$title;
-//                     }else{
-//                        $date_text[1] = $title;
-//                     }
-//                  }else{
-//                     // Termine mit Zeitangabe
-//                     $display_start_time = mb_substr($date->getStartingTime(),0,2);
-//                     $first_char = mb_substr($display_start_time,0,1);
-//                     if ($first_char == '0'){
-//                        $display_start_time = mb_substr($display_start_time,1,2);
-//                     }
-//                     if ( $display_start_time=='0' or !is_numeric($display_start_time) ){
-//                        $display_start_time ='6';
-//                     }
-//                     if ( isset($count_entries[$display_start_time]) and $count_entries[$display_start_time] > 1 ) {
-//                        $length = mb_strlen($date->getTitle());
-//                        if ($length > 20) {
-//                           $new_date = mb_substr($date->getTitle(),0,19).'...';
-//                        } else {
-//                           $new_date = $date->getTitle();
-//                        }
-//                      } else {
-//                        $length = mb_strlen($date->getTitle());
-//                        if ( $length > 20 ) {
-//                           $new_date = mb_substr($date->getTitle(),0,19).'...';
-//                        } else {
-//                           $new_date = $date->getTitle();
-//                        }
-//                     }
-//                     $title = '- '.$this->_getItemTitle($date,$new_date);
-//                     if (isset($date_text[$display_start_time]) and !empty($date_text[$display_start_time]) ){
-//                        $date_text[$display_start_time] .= '<br/>'.$title;
-//                        $date_text_new[$display_start_time][$count_dates_index] .= '<br/>'.$title;
-//                        $count_entries[$display_start_time] = $count_entries[$display_start_time]+1;
-//                     }else{
-//                        $date_text[$display_start_time] = $title;
-//                        $date_text_new[$display_start_time][$count_dates_index] = $title;
-//                        $count_entries[$display_start_time] = 1;
-//                     }
-//                     $ending_time = $date->getEndingTime();
-//                     if ( !empty($ending_time) ){
-//                        $display_ending_time = mb_substr($date->getEndingTime(),0,2);
-//                        $first_char = mb_substr($display_ending_time,0,1);
-//                        if ($first_char == '0'){
-//                           $display_ending_time = mb_substr($display_ending_time,1,2);
-//                        }
-//                        if ( !is_numeric($display_ending_time)
-//                             and is_numeric($display_start_time)
-//                           ) {
-//                           $display_ending_time = $display_start_time+1;
-//                        }
-//                        $display_ending_minutes = mb_substr($date->getEndingTime(),3,2);
-//                        if ($display_ending_minutes !='00'){
-//                           $display_ending_time++;
-//                        }
-//                        if ($display_ending_time < $display_start_time){
-//                           $display_ending_time = 24;
-//                        }
-//                        $start_day = $date->getStartingDay();
-//                        $end_day = $date->getEndingDay();
-//                        if ($start_day < $end_day){
-//                           $display_ending_time = 24;
-//
-//                        }
-//                        $k = $display_start_time;
-//                        while ($k < $display_ending_time) {
-//                           if (isset($date_show[$k])){
-//                              $value = $date_show[$k];
-//                              $date_show[$k] = $value+1;
-//                              $date_show_new[$k][$count_dates_index] = 1;
-//                           } else {
-//                              $date_show[$k] = 1;
-//                              $date_show_new[$k][$count_dates_index] = 1;
-//                           }
-//                           $k = $k+1;
-//                        }
-//                     }
-//                  }
-//                  $count_dates_index++;
-//               }
-//            }
-            #pr($date_text);
-            #pr($date_text_new);
-            #pr($date_show);
-            #pr($date_show_new);
-//            if($j==1){
-//               if ($i == 0){
-//                  $entry_html = '      <td class="calendar_content_without_time" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:1em; width:1.5em;">';
-//                  $entry_html .= '      </td>';
-//               }else{
-//                  $entry_html = '      <td class="calendar_content" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em; width:1.5em;">';
-//                  $entry_html .= $time;
-//                  $entry_html .= '      </td>';
-//               }
-//            }elseif ($j==7 or $j == 8){
-//               if ($i == 0){
-//                  $entry_html = '      <td class="calendar_content_without_time" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:1em; width:14%;">';
-//               }else{
-//                  $entry_html = '      <td class="calendar_content" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em; width:14%;">';
-//#                  $entry_html = '      <td class="calendar_content_weekend" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em; width:7.2em;">';
-//               }
-//            }else{
-//               if ($i == 0){
-//                  $entry_html = '      <td class="calendar_content_without_time" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:1em; width:14%;">';
-//               }else{
-//                  $entry_html = '      <td class="calendar_content" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em; width:14%;">';
-//               }
-//            }
-//            for($index = 0; $index < $count_dates_index; $index++){
-//               if (isset($date_text_new[1][$index]) and !empty($date_text_new[1][$index]) and $i == 0){
-//                  $entry_html .= '<div style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:1em;">';
-//                  $entry_html .= $date_text_new[1][$index];
-//                  $entry_html .= '</div>';
-//                  $is_entry = true;
-//               }elseif( isset($date_text_new[$time][$index]) and !empty($date_text_new[$time][$index]) and $i != 0 ){
-//                  $css_text = '';
-//                  if( isset($date_show_new[$time][$index]) and !empty($date_show_new[$time][$index]) ){
-//                     switch ($date_show_new[$time][$index]){
-//                        case 1: $css_text = 'background-color:#F0F000;'; break;
-//                        default: $css_text = ''; break;
-//                     }
-//                  }
-//                  #$entry_html = '      <td class="calendar_content_with_entry" style="'.$css_text.' spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em; width:14%;">';
-//                  $entry_html .= '<div" style="'.$css_text.' spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em;">';
-//                  $entry_html .= $date_text_new[$time][$index];
-//                  $entry_html .= '</div>';
-//                  $is_entry = true;
-//               }elseif( isset($date_show_new[$time][$index]) and !empty($date_show_new[$time][$index]) and $i != 0 ){
-//                  $css_text = '';
-//                  switch ($date_show_new[$time][$index]){
-//                     case 1: $css_text = 'background-color:#F0F000;'; break;
-//                     default: $css_text = ''; break;
-//                  }
-//                  $entry_html .= '<div style="'.$css_text.' spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em;">&nbsp;</div>';
-//               } else {
-//                  $entry_html .= '<div spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:2em;">&nbsp;</div>';
-//               }
-//               $html .= $entry_html;
-//               if ($j != 1){
-//                  $count = $j-2;
-//                  $week_start = $this->_week_start + ( 3600 * 24 * $count);
-//                  $startday = date ( "d", $week_start);
-//                  $first_char = mb_substr($startday,0,1);
-//                  if ($first_char == '0'){
-//                     $startday = mb_substr($startday,1,2);
-//                  }
-//                  $startmonth = date ( "Ymd", $week_start );
-//                  $first_char = mb_substr($startmonth,0,1);
-//                  if ($first_char == '0'){
-//                     $startmonth = mb_substr($startmonth,1,2);
-//                  }
-//                  $startyear = date ( "Y", $week_start );
-//                  $params = array();
-//                  $params['iid'] = 'NEW';
-//                  $params['day'] = $startday;
-//                  $parameter_array = $this->_environment->getCurrentParameterArray();
-//                  $params['month'] = $startmonth;
-//                  $params['year'] = $startyear;
-//                  $params['week'] = $this->_week_start;
-//                  $params['presentation_mode'] = '1';
-//                  if ($i != 0){
-//                     $params['time'] = $time;
-//                  } else{
-//                     $params['time'] = 0;
-//                  }
-//                  $params['modus_from'] = 'calendar';
-//                  $anAction ='';
-//                  if ($i == 0){
-//                     $image = '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>';
-//                  }else{
-//                     $image = '<img style="width:'.$width.'; height:2.2em;" src="images/spacer.gif" alt="" border="0"/>';
-//                  }if ($is_entry){
-//                     if ($i == 0){
-//                        $image = '<img style="width:'.$width.'; height:0.5em;" src="images/spacer.gif" alt="" border="0"/>';
-//                     }else{
-//                        $image = '<img style="width:'.$width.'; height:1.2em;" src="images/spacer.gif" alt="" border="0"/>';
-//                     }
-//                  }
-//                  if ( $this->_with_modifying_actions ) {
-//                     $anAction = ahref_curl( $this->_environment->getCurrentContextID(),
-//                                    CS_DATE_TYPE,
-//                                    'edit',
-//                                    $params,
-//                                    $image);
-//                  }
-//                  if ($is_entry){
-//                     if ($i == 0){
-//                        $html .= '      <div style="width:'.$width.'; height: 1em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
-//                     }else{
-//                        $html .= '      <div style="width:'.$width.'; height: 1.2em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
-//                     }
-//                  }else{
-//                     if ($i == 0){
-//                        $html .= '      <div style="width:'.$width.'; height: 1em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
-//                     }else{
-//                        $html .= '      <div style="width:'.$width.'; height: 2.2em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
-//                     }
-//                  }
-//                  
-//               }
-//            }
-//            if ($j != 1){
-//               $html .= '      </td>';
-//            }
-                           #pr('===' . $html . '===');
-//         }
-//         $time = $time+1;
-//         #$html .= '   </tr>'.LF;
-//      }
-      $html .= '</tbody>'.LF;
-      $html .= '<tfoot>'.LF;
-      $html .= '<tr class="calendar_head" style="height: 20px;">'.LF;
-      $html .= '<th  colspan="8" class="calendar_head_all_first" style="text-align:left; font-size:8pt;">'.$this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES').'</th>'.LF;
-      $html .= '</tr>'.LF;
-      $html .= '</tfoot>'.LF;
-      $html .= '</table>'.LF;
-             
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
       $date_array_for_jQuery = array();
       $date_index = 0;
       for ($day = 1; $day<9; $day++){
