@@ -706,17 +706,19 @@ jQuery(document).ready(function() {
 var scrollbar_width = 12;
 
 jQuery(document).ready(function() {
-	jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
-	resize_calendar();
-	//draw_dates();
-	jQuery('#calender_main')[0].scrollTo(321);
-	$(window).resize(function(){
-		//jQuery('#calender_frame').css('width', '100%');
-		//jQuery('#calender_main').css('width', '100%');
-		//jQuery('jScrollPaneContainer').width('100%');
+	if(jQuery('#calender_main').length){
+		jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
 		resize_calendar();
-		//draw_dates();
-	});
+		draw_dates();
+		jQuery('#calender_main')[0].scrollTo(321);
+		$(window).resize(function(){
+			//jQuery('#calender_frame').css('width', '100%');
+			//jQuery('#calender_main').css('width', '100%');
+			//jQuery('jScrollPaneContainer').width('100%');
+			resize_calendar();
+			draw_dates();
+		});
+	}
 });
 
 function resize_calendar(){
@@ -728,33 +730,34 @@ function resize_calendar(){
 	var entry_width = main_width * 0.14;
 	var entry_width_array = entry_width.toString().split('.');
 	entry_width = entry_width_array[0];
-	//alert(main_width + ' - ' + time_width + ' - ' + entry_width);
-	jQuery('#calender_main').width(frame_width - scrollbar_width);
-	jQuery('[class=calender_hour]').width(frame_width - scrollbar_width);
-	jQuery('[class=calendar_time]').width(time_width);
-	jQuery('[class=calendar_entry]').width(entry_width);
-	//jQuery('#calender_main').css('width',frame_width - scrollbar_width);
-	//jQuery('[class=calender_hour]').css('width'.frame_width - scrollbar_width);
-	//jQuery('[class=calendar_time]').css('width',time_width);
-	//jQuery('[class=calendar_entry]').css('width',entry_width);
+	jQuery('#calender_main').css({width: frame_width - scrollbar_width+'px'});
+	jQuery('.calender_hour').css({width: frame_width - scrollbar_width+'px'});
+	jQuery('.calendar_time').css({width: time_width+'px'});
+	jQuery('[id^=calendar_entry]').css({width: entry_width+'px'});
 }
 
 function draw_dates(){
 	jQuery('div[name=calendar_date]').remove();
 	var left_position = 0;
 	var current_day = '';
-	if(calendar_dates){
+	if(typeof(calendar_dates) != 'undefined'){
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0]-1;
 			if(current_day != day){
 				current_day = day;
 				left_position = 0;
 			}
+			if(i+1 < calendar_dates.length){
+				var next_day = calendar_dates[i+1][0]-1;
+			} else {
+				var next_day = day;
+			}
 			var title = calendar_dates[i][1];
 			var start_quaters = calendar_dates[i][2];
 			var end_quaters = calendar_dates[i][3];
 			var dates_on_day = calendar_dates[i][4];
 			var color = calendar_dates[i][5];
+			var color_border = calendar_dates[i][6];
 			
 			if(start_quaters % 4 == 0){
 				var start_div = start_quaters / 4;
@@ -763,13 +766,14 @@ function draw_dates(){
 				var start_div = (start_quaters - start_quaters % 4) / 4;
 				var top = (start_quaters % 4) * 10;
 			}
+			top = top+1;
 			
-			var height = (end_quaters - start_quaters) * 10 + ((end_quaters - start_quaters) / 4)-1;
+			var height = (end_quaters - start_quaters) * 10; // + ((end_quaters - start_quaters) / 4)-1;
 			
-			var start_spacer = 2;
-			var end_spacer = 2;
-			var between_space = (dates_on_day -1) * 2;
-			var width = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() - (start_spacer + end_spacer) - between_space;
+			var start_spacer = 0;
+			var end_spacer = 0;
+			var between_space = (dates_on_day -1) * 0;
+			var width = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() - 1; // - (start_spacer + end_spacer) - between_space;
 			
 			if(width % dates_on_day == 0){
 			   width = width / dates_on_day;
@@ -782,20 +786,22 @@ function draw_dates(){
 			//if(left_position == 0){
 			//   var left = left_position * width + 2;
 			//} else {
-			   var left = (left_position * width) + ((left_position+1) * 2);
+			   var left = (left_position * width)+1;// + ((left_position+1) * 2);
 			//}
 			   
 			// Ausgleich border
 			width = width-2;
-			height = height-2;
-			   
+			height = height-2-1;
+			
+	    	if(day != next_day){
+	    		width = width + width_rest;
+			}
 		    left_position++;
+		    
 		    if(start_quaters == 0 && end_quaters == 0){
-		    	jQuery('#calendar_day_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height:' + (jQuery('#calendar_day_'+day).height()-4) + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid #cccccc;"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
-		    	jQuery('#calendar_day_'+day).css('background-color', 'red');
+		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height:' + (jQuery('#calendar_day_'+day).height()-4) + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
 		    } else {
-		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid #cccccc;"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
-		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).css('background-color', 'red');
+		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
 		    }
 	    }
 	}

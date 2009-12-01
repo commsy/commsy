@@ -1924,7 +1924,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       //Create the html part of the calendar
       //title row with weekdays
-      $html .= '<div id="calender_frame" style="width:100%; background-color:#dddddd; border:1px solid black; padding:0px;">'.LF;
+      $html .= '<div id="calender_frame" style="width:100%; background-color:#ffffff; border:1px solid black; padding:0px;">'.LF;
       $html .= '<div id="calender_dates" style="width:100%; clear:both;">'.LF;
       $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       $display_date_array = array();
@@ -2029,7 +2029,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</div>'.LF;
       $html .= '<div id="calender_main" style="height:450px; overflow:auto; clear:both;">'.LF;
       for($index=0; $index <24; $index++){ 
-      $html .= '<div class="calendar_time" id="calendar_time_' . $index . '"><div class="data">' . $index . '.00</div></div>'.LF;
+      $html .= '<div class="calendar_time" id="calendar_time_' . $index . '"><div class="data">' . $index . '</div></div>'.LF;
       for($index_day=0; $index_day <7; $index_day++){
          $week_start = $this->_week_start + ( 3600 * 24 * $index_day);
          $startday = date ( "d", $week_start);
@@ -2134,10 +2134,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                } else {
                   $color = '#FFFF80';
                }
+               $color_border = '#CCCCCC';
                #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
                #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
                #$html .= '</div>'.LF;
-               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $this->_getItemTitle($date,$date->getTitle()) . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\')';
+               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $this->_getItemTitle($date,$date->getTitle()) . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\')';
                $date_index++;
                $left_position = $left_position + $width + 4;
             }
