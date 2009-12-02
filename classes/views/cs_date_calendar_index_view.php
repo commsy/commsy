@@ -398,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and true){
+         if($with_javascript and false){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
