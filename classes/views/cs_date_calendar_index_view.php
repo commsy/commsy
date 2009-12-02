@@ -2089,6 +2089,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html_javascript .= '--></script>'.LF;
       $html .= $html_javascript;
       $html .= '</div>'.LF;
+      $html .= '<div style="border-top:1px solid black;">' . $this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES') . '</div>';
       $html .= '</div>'.LF;
       $date_array_for_jQuery = array();
       $date_index = 0;
