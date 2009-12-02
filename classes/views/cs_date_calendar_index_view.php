@@ -398,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and false){
+         if($with_javascript and true){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -2028,6 +2028,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       }
       $html .= '</div>'.LF;
       $html .= '<div id="calender_main" style="height:450px; overflow:auto; clear:both;">'.LF;
+      $current_element = 0;
+      $html_javascript = '<script type="text/javascript"><!--'.LF;
+      $html_javascript .= 'var new_dates = new Array('.LF;
       for($index=0; $index <24; $index++){ 
       $html .= '<div class="calendar_time" id="calendar_time_' . $index . '"><div class="data">' . $index . '</div></div>'.LF;
       for($index_day=0; $index_day <7; $index_day++){
@@ -2070,9 +2073,21 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                            $params,
                            $image);
          }
-         $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '">' . $anAction . '</div></div>'.LF;
+         #$html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '">' . $anAction . '</div></div>'.LF;
+         $html .= '<div class="calendar_entry" id="calendar_entry_' . $index . '"><div class="data" id="calendar_entry_date_div_' . $index . '_' . $index_day . '"></div></div>'.LF;
+
+         $html_javascript .= 'new Array(\'#calendar_entry_date_div_' . $index . '_' . $index_day . '\',\'<div name="calendar_new_date" style="position:absolute; top: 0px; left: 0px; height: 100%; width: 100%; z-index:900;"><div style="width:100%; text-align:left;">' . $anAction . '</div></div>\')';
+         if($current_element < (24*7)-1){
+            $html_javascript .= ','.LF;
+         } else {
+            $html_javascript .= LF;
+         }
+         $current_element++;
       }
       }
+      $html_javascript .= ');'.LF;
+      $html_javascript .= '--></script>'.LF;
+      $html .= $html_javascript;
       $html .= '</div>'.LF;
       $html .= '</div>'.LF;
       $date_array_for_jQuery = array();

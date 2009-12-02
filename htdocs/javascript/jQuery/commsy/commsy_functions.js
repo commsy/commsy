@@ -708,6 +708,7 @@ var scrollbar_width = 12;
 jQuery(document).ready(function() {
 	if(jQuery('#calender_main').length){
 		jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
+		addNewDateLinks();
 		resize_calendar();
 		draw_dates();
 		jQuery('#calender_main')[0].scrollTo(321);
@@ -750,7 +751,7 @@ function draw_dates(){
 			if(i+1 < calendar_dates.length){
 				var next_day = calendar_dates[i+1][0]-1;
 			} else {
-				var next_day = day;
+				var next_day = 'none';
 			}
 			var title = calendar_dates[i][1];
 			var start_quaters = calendar_dates[i][2];
@@ -773,8 +774,9 @@ function draw_dates(){
 			var start_spacer = 0;
 			var end_spacer = 0;
 			var between_space = (dates_on_day -1) * 0;
-			var width = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width() - 1; // - (start_spacer + end_spacer) - between_space;
-			
+			var width_div = jQuery('#calendar_entry_date_div_' + start_div + '_'+day).width()-1;
+			var width = width_div; // - (start_spacer + end_spacer) - between_space;
+
 			if(width % dates_on_day == 0){
 			   width = width / dates_on_day;
 			   var width_rest = 0;
@@ -792,10 +794,10 @@ function draw_dates(){
 			// Ausgleich border
 			width = width-2;
 			height = height-2-1;
-			
-	    	if(day != next_day){
-	    		width = width + width_rest;
-			}
+
+	    	if(next_day == 'none'){
+	    		width = width + width_rest + (width_div - ((width + 2) * dates_on_day));
+	    	}
 		    left_position++;
 		    
 		    if(start_quaters == 0 && end_quaters == 0){
@@ -804,5 +806,13 @@ function draw_dates(){
 		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
 		    }
 	    }
+	}
+}
+
+function addNewDateLinks(){
+	if(typeof(new_dates) != 'undefined'){
+		for (var i = 0; i < new_dates.length; i++) {
+			jQuery(new_dates[i][0]).append(new_dates[i][1]);
+		}
 	}
 }
