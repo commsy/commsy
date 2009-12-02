@@ -24,6 +24,8 @@
 
 function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
    global $environment;
+   #global $result_html;
+   global $file;
    if ( $privatrooms ) {
       $room_manager = $environment->getPrivateRoomManager();
    } else {
@@ -76,11 +78,15 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
          }
          unset($user);
       }
-      echo('<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
+      #echo('<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
+      #$result_html .= '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF;
+      fwrite($file, '<h4>'.$title.' - '.$type.' - '.$environment->getTextConverter()->text_as_html_short($portal_name).'<h4>'.LF);
       if ( $active ) {
          displayCronResults($room->runCron());
       } else {
-         echo('not active'.BRLF);
+         #echo('not active'.BRLF);
+         #$result_html .= 'not active'.BRLF;
+         fwrite($file, 'not active'.BRLF);
       }
       unset($room);
    }
@@ -88,6 +94,8 @@ function performRoomIDArray ($id_array,$portal_name,$privatrooms = false) {
 }
 
 function displayCronResults ( $array ) {
+   #global $result_html;
+   global $file;
    $html = '';
    foreach ($array as $cron_status => $crons) {
       $html .= '<table border="0" summary="Layout">'.LF;
@@ -142,12 +150,29 @@ function displayCronResults ( $array ) {
       $html .= '</tr>'.LF;
       $html .= '</table>'.LF;
    }
-   echo($html.BRLF);
+   #$result_html .= $html;
+   fwrite($file, $html);
+   //echo($html.BRLF);
    flush();
 }
 
 set_time_limit(0);
 header("Content-Type: text/html; charset=utf-8");
+
+#$result_html = '';
+if(!isset($context_id)){
+   $filename = 'cronresult';
+} else {
+   $filename = 'cronresult_'.$context_id;
+}
+
+$file_contents = file_get_contents('../var/'.$filename);
+if(stristr($file_contents, '-----CRON-OK-----')){
+   unlink('../var/'.$filename);
+} else {
+   rename('../var/'.$filename, '../var/'.$filename.'_error_'.date('dmY'));
+}
+$file = fopen('../var/'.$filename,'w+');
 
 $memory_limit2 = 640 * 1024 * 1024;
 $memory_limit = ini_get('memory_limit');
@@ -164,7 +189,9 @@ if ( $memory_limit < $memory_limit2 ) {
    ini_set('memory_limit',$memory_limit2);
    $memory_limit3 = ini_get('memory_limit');
    if ( $memory_limit3 != $memory_limit2 ) {
-      echo('Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.');
+      #echo('Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.');
+      #$result_html .= 'Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.'.LF;
+      fwrite($file, 'Waring: Can not set memory limit. Script may stop. Please try 640M in your php.ini.'.LF);
    }
 }
 
@@ -188,7 +215,9 @@ if ( !empty($_GET['cid']) ) {
    $context_id = $_GET['cid'];
 }
 
-echo('<h1>CommSy Cron Jobs</h1>'.LF);
+#echo('<h1>CommSy Cron Jobs</h1>'.LF);
+#$result_html .= '<h1>CommSy Cron Jobs</h1>'.LF;
+fwrite($file, '<h1>CommSy Cron Jobs</h1>'.LF);
 
 // server
 // cron for server are:
@@ -199,9 +228,13 @@ $server_item = $environment->getServerItem();
 if ( !isset($context_id)
      or ($context_id == $environment->getServerID())
    ) {
-   echo('<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
+   #echo('<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
+   #$result_html .= '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF;
+   fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($server_item->getTitle()).' - Server<h4>'.LF);
    displayCronResults($server_item->runCron());
-   echo('<hr/>'.BRLF);
+   #echo('<hr/>'.BRLF);
+   #$result_html .= '<hr/>'.BRLF;
+   fwrite($file, '<hr/>'.BRLF);
 }
 
 // portals and rooms
@@ -219,29 +252,49 @@ foreach ( $portal_id_array as $portal_id ) {
 
       // portal
       $portal = $portal_manager->getItem($portal_id);
-      echo('<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
+      #echo('<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
+      #$result_html .= '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF;
+      fwrite($file, '<h4>'.$environment->getTextConverter()->text_as_html_short($portal->getTitle()).' - Portal<h4>'.LF);
       displayCronResults($portal->runCron());
-      echo('<hr/>'.LF);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
 
       // community rooms
-      echo('<h4>Community Rooms</h4>'.LF);
+      #echo('<h4>Community Rooms</h4>'.LF);
+      #$result_html .= '<h4>Community Rooms</h4>'.LF;
+      fwrite($file, '<h4>Community Rooms</h4>'.LF);
       performRoomIDArray($portal->getCommunityIDArray(),$portal->getTitle());
-      echo('<hr/>'.LF);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
 
       // project rooms
-      echo('<h4>Project Rooms</h4>'.LF);
+      #echo('<h4>Project Rooms</h4>'.LF);
+      #$result_html .= '<h4>Project Rooms</h4>'.LF;
+      fwrite($file, '<h4>Project Rooms</h4>'.LF);
       performRoomIDArray($portal->getProjectIDArray(),$portal->getTitle());
-      echo('<hr/>'.LF);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
 
       // group rooms
-      echo('<h4>Group Rooms</h4>'.LF);
+      #echo('<h4>Group Rooms</h4>'.LF);
+      #$result_html .= '<h4>Group Rooms</h4>'.LF;
+      fwrite($file, '<h4>Group Rooms</h4>'.LF);
       performRoomIDArray($portal->getGroupIDArray(),$portal->getTitle());
-      echo('<hr/>'.LF);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
 
       // private rooms
-      echo('<h4>Private Rooms</h4>'.LF);
+      #echo('<h4>Private Rooms</h4>'.LF);
+      #$result_html .= '<h4>Private Rooms</h4>'.LF;
+      fwrite($file, '<h4>Private Rooms</h4>'.LF);
       performRoomIDArray($portal->getPrivateIDArray(),$portal->getTitle(),true);
-      echo('<hr/>'.LF);
+      #echo('<hr/>'.LF);
+      #$result_html .= '<hr/>'.LF;
+      fwrite($file, '<hr/>'.LF);
 
       // unset
       unset($portal);
@@ -251,17 +304,31 @@ foreach ( $portal_id_array as $portal_id ) {
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:i:s');
 $time = round($time_end - $time_start,0);
-echo('<hr/>'.LF);
-echo('<h1>CRON END</h1>'.LF);
-echo('<h2>Time</h2>'.LF);
-echo('Start: '.$start_time.BRLF);
-echo('End: '.$end_time.BRLF);
+#echo('<hr/>'.LF);
+#$result_html .= '<hr/>'.LF;
+fwrite($file, '<hr/>'.LF);
+#echo('<h1>CRON END</h1>'.LF);
+#$result_html .= '<h1>CRON END</h1>'.LF;
+fwrite($file, '<h1>CRON END</h1>'.LF);
+#echo('<h2>Time</h2>'.LF);
+#$result_html .= '<h2>Time</h2>'.LF;
+fwrite($file, '<h2>Time</h2>'.LF);
+#echo('Start: '.$start_time.BRLF);
+#$result_html .= 'Start: '.$start_time.BRLF;
+fwrite($file, 'Start: '.$start_time.BRLF);
+#echo('End: '.$end_time.BRLF);
+#$result_html .= 'End: '.$end_time.BRLF;
+fwrite($file, 'End: '.$end_time.BRLF);
 if ( $time < 60 ) {
-   echo('Total execution time: '.$time.' seconds'.LF);
+   #echo('Total execution time: '.$time.' seconds'.LF);
+   #$result_html .= 'Total execution time: '.$time.' seconds'.LF;
+   fwrite($file, 'Total execution time: '.$time.' seconds'.LF);
 } elseif ( $time < 3600 ) {
    $time2 = floor($time / 60);
    $sec2 = $time % 60;
-   echo('Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
+   #echo('Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
+   #$result_html .= 'Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF;
+   fwrite($file, 'Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
 } else {
    $hour = floor($time / 3600);
    $sec = $time % 3660;
@@ -269,9 +336,20 @@ if ( $time < 60 ) {
       $minutes = floor($sec / 60);
       $sec = $sec % 60;
    }
-   echo('Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
+   #echo('Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
+   #$result_html .= 'Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF;
+   fwrite($file, 'Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
 }
-echo('<h2>Memory</h2>'.LF);
-echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
-echo('Current of memory allocated: '.memory_get_usage().BRLF);
+#echo('<h2>Memory</h2>'.LF);
+#$result_html .= '<h2>Memory</h2>'.LF;
+fwrite($file, '<h2>Memory</h2>'.LF);
+#echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
+#$result_html .= 'Peak of memory allocated: '.memory_get_peak_usage().BRLF;
+fwrite($file, 'Peak of memory allocated: '.memory_get_peak_usage().BRLF);
+#echo('Current of memory allocated: '.memory_get_usage().BRLF);
+#$result_html .= 'Current of memory allocated: '.memory_get_usage().BRLF;
+fwrite($file, 'Current of memory allocated: '.memory_get_usage().BRLF);
+#fwrite($file, $result_html);
+fwrite($file, '-----CRON-OK-----');
+fclose($file);
 ?>
