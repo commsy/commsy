@@ -860,11 +860,17 @@ class cs_grouproom_item extends cs_room_item {
    }
 
    public function withChatLink(){
-      return $this->getLinkedProjectItem()->withChatLink();
+      $linked_project_item = $this->getLinkedProjectItem();
+      if(isset($linked_project_item)){
+         return $this->getLinkedProjectItem()->withChatLink();
+      }
    }
    
    public function withMaterialImportLink(){
-      return $this->getLinkedProjectItem()->withMaterialImportLink();
+      $linked_project_item = $this->getLinkedProjectItem();
+      if(isset($linked_project_item)){
+         return $this->getLinkedProjectItem()->withMaterialImportLink();
+      }
    }
    
    ################################################################
