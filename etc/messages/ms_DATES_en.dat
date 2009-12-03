@@ -1,6 +1,7 @@
 <?php
 $message["DATES_ABBO"]["en"] = "Subscribe to events";
-$message["DATES_ADDON"]["en"] = "Preferences";
+$message["DATES_ADDON"]["en"] = "Calendar options";
+$message["DATES_ADDON_COLOR_NONE"]["en"] = "default";
 $message["DATES_ADDON_DESC"]["en"] = "Colors and recurring dates";
 $message["DATES_APRIL_LONG"]["en"] = "April";
 $message["DATES_APRIL_SHORT"]["en"] = "Apr";

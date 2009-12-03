@@ -1,6 +1,7 @@
 <?php
 $message["DATES_ABBO"]["de"] = "Termine abonnieren";
-$message["DATES_ADDON"]["de"] = "Einstellungen";
+$message["DATES_ADDON"]["de"] = "Kalenderoptionen";
+$message["DATES_ADDON_COLOR_NONE"]["de"] = "Vorgabe";
 $message["DATES_ADDON_DESC"]["de"] = "Farben und Serientermine";
 $message["DATES_APRIL_LONG"]["de"] = "April";
 $message["DATES_APRIL_SHORT"]["de"] = "Apr";
