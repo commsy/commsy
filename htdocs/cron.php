@@ -166,11 +166,13 @@ if(!isset($context_id)){
    $filename = 'cronresult_'.$context_id;
 }
 
-$file_contents = file_get_contents('../var/'.$filename);
-if(stristr($file_contents, '-----CRON-OK-----')){
-   unlink('../var/'.$filename);
-} else {
-   rename('../var/'.$filename, '../var/'.$filename.'_error_'.date('dmY'));
+if ( file_exists('../var/'.$filename) ) {
+   $file_contents = file_get_contents('../var/'.$filename);
+   if(stristr($file_contents, '-----CRON-OK-----')){
+      unlink('../var/'.$filename);
+   } else {
+      rename('../var/'.$filename, '../var/'.$filename.'_error_'.date('dmY'));
+   }
 }
 $file = fopen('../var/'.$filename,'w+');
 
@@ -215,7 +217,7 @@ if ( !empty($_GET['cid']) ) {
    $context_id = $_GET['cid'];
 }
 
-#echo('<h1>CommSy Cron Jobs</h1>'.LF);
+echo('<h1>CommSy Cron Jobs</h1>'.LF);
 #$result_html .= '<h1>CommSy Cron Jobs</h1>'.LF;
 fwrite($file, '<h1>CommSy Cron Jobs</h1>'.LF);
 
@@ -304,29 +306,29 @@ foreach ( $portal_id_array as $portal_id ) {
 $time_end = getmicrotime();
 $end_time = date('d.m.Y H:i:s');
 $time = round($time_end - $time_start,0);
-#echo('<hr/>'.LF);
+echo('<hr/>'.LF);
 #$result_html .= '<hr/>'.LF;
 fwrite($file, '<hr/>'.LF);
-#echo('<h1>CRON END</h1>'.LF);
+echo('<h1>CRON END</h1>'.LF);
 #$result_html .= '<h1>CRON END</h1>'.LF;
 fwrite($file, '<h1>CRON END</h1>'.LF);
-#echo('<h2>Time</h2>'.LF);
+echo('<h2>Time</h2>'.LF);
 #$result_html .= '<h2>Time</h2>'.LF;
 fwrite($file, '<h2>Time</h2>'.LF);
-#echo('Start: '.$start_time.BRLF);
+echo('Start: '.$start_time.BRLF);
 #$result_html .= 'Start: '.$start_time.BRLF;
 fwrite($file, 'Start: '.$start_time.BRLF);
-#echo('End: '.$end_time.BRLF);
+echo('End: '.$end_time.BRLF);
 #$result_html .= 'End: '.$end_time.BRLF;
 fwrite($file, 'End: '.$end_time.BRLF);
 if ( $time < 60 ) {
-   #echo('Total execution time: '.$time.' seconds'.LF);
+   echo('Total execution time: '.$time.' seconds'.LF);
    #$result_html .= 'Total execution time: '.$time.' seconds'.LF;
    fwrite($file, 'Total execution time: '.$time.' seconds'.LF);
 } elseif ( $time < 3600 ) {
    $time2 = floor($time / 60);
    $sec2 = $time % 60;
-   #echo('Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
+   echo('Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
    #$result_html .= 'Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF;
    fwrite($file, 'Total execution time: '.$time2.' minutes '.$sec2.' seconds'.LF);
 } else {
@@ -336,17 +338,17 @@ if ( $time < 60 ) {
       $minutes = floor($sec / 60);
       $sec = $sec % 60;
    }
-   #echo('Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
+   echo('Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
    #$result_html .= 'Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF;
    fwrite($file, 'Total execution time: '.$hour.' hours '.$minutes.' minutes '.$sec.' seconds'.LF);
 }
-#echo('<h2>Memory</h2>'.LF);
+echo('<h2>Memory</h2>'.LF);
 #$result_html .= '<h2>Memory</h2>'.LF;
 fwrite($file, '<h2>Memory</h2>'.LF);
-#echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
+echo('Peak of memory allocated: '.memory_get_peak_usage().BRLF);
 #$result_html .= 'Peak of memory allocated: '.memory_get_peak_usage().BRLF;
 fwrite($file, 'Peak of memory allocated: '.memory_get_peak_usage().BRLF);
-#echo('Current of memory allocated: '.memory_get_usage().BRLF);
+echo('Current of memory allocated: '.memory_get_usage().BRLF);
 #$result_html .= 'Current of memory allocated: '.memory_get_usage().BRLF;
 fwrite($file, 'Current of memory allocated: '.memory_get_usage().BRLF);
 #fwrite($file, $result_html);
