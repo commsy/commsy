@@ -264,6 +264,15 @@ var $_clipboard_id_array=array();
          $temp_array[] = $this->_text_as_html_short($place);
          $formal_data[] = $temp_array;
       }
+      
+      // Color
+      $color = $item->getColor();
+      if (!empty($color)) {
+         $temp_array = array();
+         $temp_array[] = $this->_translator->getMessage('DATES_COLOR');
+         $temp_array[] = '<img src="images/spacer.gif" style="background-color:' . $this->_text_as_html_short($color) . '; height:10px; width:10px;"/>';
+         $formal_data[] = $temp_array;
+      }
 
       // Files
       $files = $this->_getFilesForFormalData($item);
