@@ -270,7 +270,7 @@ var $_clipboard_id_array=array();
       if (!empty($color)) {
          $temp_array = array();
          $temp_array[] = $this->_translator->getMessage('DATES_COLOR');
-         $temp_array[] = '<img src="images/spacer.gif" style="background-color:' . $this->_text_as_html_short($color) . '; height:10px; width:10px;"/>';
+         $temp_array[] = '<img src="images/spacer.gif" style="height:10px; width:10px; background-color:' . $this->_text_as_html_short($color) . '; border:1px solid #cccccc;"/>';
          $formal_data[] = $temp_array;
       }
 

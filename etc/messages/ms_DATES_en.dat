@@ -10,6 +10,7 @@ $message["DATES_AUGUST_LONG"]["en"] = "August";
 $message["DATES_AUGUST_SHORT"]["en"] = "Aug";
 $message["DATES_CHANGE_BUTTON"]["en"] = "Save event";
 $message["DATES_CHANGE_CALENDAR"]["en"] = "Calendar";
+$message["DATES_COLOR"]["en"] = "Color";
 $message["DATES_COLOUR"]["en"] = "Colour";
 $message["DATES_COLOUR_DESC"]["en"] = "Colour-settings for this date";
 $message["DATES_COMMON_DISPLAY"]["en"] = "List";
