@@ -721,7 +721,9 @@ class cs_form {
                                 $button_text = '',
                                 $button_name = '',
                                 $disabled = false,
-                                $extention = '' ) {
+                                $extention = '',
+                                $drop_down = false,
+                                $show_drop_down = false) {
 
                 $element['type']  = 'radio';
                 $element['name']  = $name;
@@ -739,6 +741,8 @@ class cs_form {
                 }
                 $element['is_disabled'] = $disabled;
                 $element['extention']   = $extention;
+                $element['drop_down'] = $drop_down;
+                $element['show_drop_down'] = $show_drop_down;
 
                 $this -> _formElements -> addElement($element);
         }

@@ -285,6 +285,29 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,getMessage('DATES_TIME_DAY_END'),getMessage('DATES_END_DAY'),getMessage('DATES_END_TIME'),getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
       $this->_form->addTextfield('place','',getMessage('DATES_PLACE'),getMessage('DATES_PLACE_DESC'),100,50);
 
+      $radio_values = array();
+      $radio_values[0]['text'] = '<img src="images/spacer.gif" style="background-color:#999999;"/>';
+      $radio_values[0]['value'] = '#999999';
+      $radio_values[1]['text'] = '<img src="images/spacer.gif" style="background-color:#cc0000;"/>';
+      $radio_values[1]['value'] = '#cc0000';
+      $radio_values[2]['text'] = '<img src="images/spacer.gif" style="background-color:#ff6600;"/>';
+      $radio_values[2]['value'] = '#ff6600';
+      $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc33;"/>';
+      $radio_values[3]['value'] = '#ffcc33';
+      $radio_values[4]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc00;"/>';
+      $radio_values[4]['value'] = '#ffcc00';
+      $radio_values[5]['text'] = '<img src="images/spacer.gif" style="background-color:#33cc00;"/>';
+      $radio_values[5]['value'] = '#33cc00';
+      $radio_values[6]['text'] = '<img src="images/spacer.gif" style="background-color:#00cccc;"/>';
+      $radio_values[6]['value'] = '#00cccc';
+      $radio_values[7]['text'] = '<img src="images/spacer.gif" style="background-color:#3366ff;"/>';
+      $radio_values[7]['value'] = '#3366ff';
+      $radio_values[8]['text'] = '<img src="images/spacer.gif" style="background-color:#6633ff;"/>';
+      $radio_values[8]['value'] = '#6633ff';
+      $radio_values[9]['text'] = '<img src="images/spacer.gif" style="background-color:#cc33cc;"/>';
+      $radio_values[9]['value'] = '#cc33cc';
+      $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,false);
+      
       $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
@@ -347,8 +370,8 @@ class cs_date_form extends cs_rubric_form {
       #$this->_form->addTextfield('colour','',getMessage('DATES_COLOUR'),getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
-      $this->_form->addText('colorpicker',getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
-          
+      #$this->_form->addText('colorpicker',getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
+      
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
          $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
@@ -528,7 +551,8 @@ class cs_date_form extends cs_rubric_form {
          }
 
          if ( $this->_item->getColor() != '' ) {
-            $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $this->_item->getColor() . '" name="colorpicker">';
+            //$this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $this->_item->getColor() . '" name="colorpicker">';
+            $this->_values['date_addon_color'] = $this->_item->getColor();
             $this->_color = $this->_item->getColor();
          }
          

@@ -577,7 +577,9 @@ else {
                $session->unsetValue('cid'.$environment->getCurrentContextID().'_linked_items_index_selected_ids');
             }
 
-            $dates_item->setColor($_POST['colorpicker']);
+            if(isset($_POST['date_addon_color'])){
+               $dates_item->setColor($_POST['date_addon_color']);
+            }
             
             $item_files_upload_to = $dates_item;
             include_once('include/inc_fileupload_edit_page_save_item.php');
