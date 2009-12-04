@@ -2207,7 +2207,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if($date->getColor() != ''){
                   $color = $date->getColor();
                } else {
-                  $color = '#ffcc33';
+                  $color = '#ffff66';
                }
                $color_border = '#CCCCCC';
                #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';

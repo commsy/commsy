@@ -292,10 +292,10 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[1]['value'] = '#cc0000';
       $radio_values[2]['text'] = '<img src="images/spacer.gif" style="background-color:#ff6600; border:1px solid #cccccc;"/>';
       $radio_values[2]['value'] = '#ff6600';
-      $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffff66; border:1px solid #cccccc;"/>';
-      $radio_values[3]['value'] = '#ffff66';
-      $radio_values[4]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc00; border:1px solid #cccccc;"/>';
-      $radio_values[4]['value'] = '#ffcc00';
+      $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc00; border:1px solid #cccccc;"/>';
+      $radio_values[3]['value'] = '#ffcc00';
+      $radio_values[4]['text'] = '<img src="images/spacer.gif" style="background-color:#ffff66; border:1px solid #cccccc;"/>';
+      $radio_values[4]['value'] = '#ffff66';
       $radio_values[5]['text'] = '<img src="images/spacer.gif" style="background-color:#33cc00; border:1px solid #cccccc;"/>';
       $radio_values[5]['value'] = '#33cc00';
       $radio_values[6]['text'] = '<img src="images/spacer.gif" style="background-color:#00cccc; border:1px solid #cccccc;"/>';
