@@ -80,7 +80,7 @@ class cs_date_form extends cs_rubric_form {
 
    var $_session_tag_array = array();
 
-   var $_color = '#FFFF80';
+   #var $_color = '#FFFF80';
    
   /** constructor: cs_date_form
     * the only available constructor
@@ -306,9 +306,6 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[8]['value'] = '#6633ff';
       $radio_values[9]['text'] = '<img src="images/spacer.gif" style="background-color:#cc33cc; border:1px solid #cccccc;"/>';
       $radio_values[9]['value'] = '#cc33cc';
-      $radio_values[10]['text'] = '<div style="height:100%; vertical-align:middle; display:inline;">' . $this->_translator->getMessage('DATES_ADDON_COLOR_NONE') . '</div>';
-      //$radio_values[10]['text'] =  '<img src="images/spacer.gif" style="border:1px solid #cccccc;"/>';
-      $radio_values[10]['value'] = '';
       $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,false);
       
       $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),'','',10);
@@ -467,10 +464,11 @@ class cs_date_form extends cs_rubric_form {
          if ( !isset($this->_values['public']) ) {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
-         if ( !empty($this->_form_post['colorpicker']) ) {
-            $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $_POST['colorpicker'] . '" name="colorpicker">';
-            $this->_color = $_POST['colorpicker'];
-         }
+         #if ( !empty($this->_form_post['colorpicker']) ) {
+         #   $this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $_POST['colorpicker'] . '" name="colorpicker">';
+         #   $this->_color = $_POST['colorpicker'];
+         #}
+         $this->_values['date_addon_color'] = $this->_form_post['date_addon_color'];
       } elseif ( isset($this->_item) ) {
          $this->_values['iid'] = $this->_item->getItemID();
          $this->_values['title'] = $this->_item->getTitle();
@@ -556,7 +554,7 @@ class cs_date_form extends cs_rubric_form {
          if ( $this->_item->getColor() != '' ) {
             //$this->_values['colorpicker'] = '<br/><br/><INPUT class="color" value="' . $this->_item->getColor() . '" name="colorpicker">';
             $this->_values['date_addon_color'] = $this->_item->getColor();
-            $this->_color = $this->_item->getColor();
+            #$this->_color = $this->_item->getColor();
          }
          
       } else {
@@ -577,6 +575,7 @@ class cs_date_form extends cs_rubric_form {
                $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
             }
          }
+         $this->_values['date_addon_color'] = '#ffcc33';
       }
    }
 
