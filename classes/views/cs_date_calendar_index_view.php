@@ -398,7 +398,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and false){
+         if($with_javascript and true){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -953,6 +953,62 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       // Sunbird-Vorbereitung
       //$jQuery_hover = '<div id="calendar_hover_' . $params['iid'] . '" style="width: 180px; height: 45px;position: relative; top: -85px;left: -15px;text-align: center;padding: 20px 12px 10px;font-style: normal;z-index: 2;display: none;">' . $hover . '</div>';
       //$title = $title . $jQuery_hover;
+      unset($params);
+      return $title;
+   }
+   
+  /** get the link to the item
+    * this method returns the item title in the right formatted style
+    *
+    * @return string title
+    *
+    * @author CommSy Development Group
+    */
+   function _getItemLink($item, $text) {
+      $text = $this->_compareWithSearchText($text);
+      $params = array();
+      $params['iid'] = $item->getItemID();
+      $params['mode'] = 'private';
+      $parameter_array = $this->_environment->getCurrentParameterArray();
+      if (isset ($parameter_array['year'])){
+         $params['year'] = $parameter_array['year'];
+      }
+      if (isset ($parameter_array['month'])){
+         $params['month'] = $parameter_array['month'];
+      }
+       if (isset ($parameter_array['week'])){
+         $params['week'] = $parameter_array['week'];
+      }
+      if (isset ($parameter_array['presentation_mode'])){
+         $params['presentation_mode'] = $parameter_array['presentation_mode'];
+      }
+      if ( $item->issetPrivatDate() ){
+           $title ='<i>'.$title.'</i>';
+           $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_DATE_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid']);
+         }else{
+            $title = ahref_curl( $this->_environment->getCurrentContextID(),
+                           CS_DATE_TYPE,
+                           'detail',
+                           $params,
+                           $text,
+                           '',
+                           '',
+                           '',
+                           '',
+                           '',
+                           'calendar_link_' . $params['iid']);
+
+         }
       unset($params);
       return $title;
    }
@@ -2093,6 +2149,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '</div>'.LF;
       $date_array_for_jQuery = array();
       $date_index = 0;
+      $tooltips = array();
+      $tooltip_date = '';
+      $tooltip_last_id = '';
       for ($day = 1; $day<9; $day++){
          $day_entries = $day-1;
          $left_position = 0;
@@ -2148,18 +2207,176 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                if($date->getColor() != ''){
                   $color = $date->getColor();
                } else {
-                  $color = '#FFFF80';
+                  $color = '#ffcc33';
                }
                $color_border = '#CCCCCC';
                #$html .= '<div style="position: absolute; top: ' . $top . 'px; left: ' . $left . 'px; width:' . $width . 'px; height:' . $height . 'px; background-color:' . $color . '; z-index:1000; overflow:hidden; border:1px solid #dddddd;">';
                #$html .= '<div style="width:1000px;">' . $this->_getItemTitle($date,$date->getTitle()) . '</div>';
                #$html .= '</div>'.LF;
-               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $this->_getItemTitle($date,$date->getTitle()) . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\')';
+               $link = $this->_getItemLink($date, $date->getTitle());
+               $link_array = split('"', $link);
+               $href = $link_array[1];
+               $date_array_for_jQuery[] = 'new Array(' . $day_entries . ',\'' . $link . '\',' . $start_quaters . ',' . $end_quaters . ',' . count($display_date_array[$day_entries]) . ',\'' . $color . '\'' . ',\'' . $color_border . '\'' . ',\'' . $href . '\'' . ',\'sticky_' . $date_index . '\')';
+               $tooltip = array();
+               $tooltip['title'] = $date->getTitle();
+               
+               if($date->getItemID() != $tooltip_last_id){
+                  $tooltip_last_id = $date->getItemID();
+                  // set up style of days and times
+                  $parse_time_start = convertTimeFromInput($date->getStartingTime());
+                  $conforms = $parse_time_start['conforms'];
+                  if ($conforms == TRUE) {
+                     $start_time_print = getTimeLanguage($parse_time_start['datetime']);
+                  } else {
+                     $start_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingTime()));
+                  }
+            
+                  $parse_time_end = convertTimeFromInput($date->getEndingTime());
+                  $conforms = $parse_time_end['conforms'];
+                  if ($conforms == TRUE) {
+                     $end_time_print = getTimeLanguage($parse_time_end['datetime']);
+                  } else {
+                     $end_time_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getEndingTime()));
+                  }
+            
+                 $parse_day_start = convertDateFromInput($date->getStartingDay(),$this->_environment->getSelectedLanguage());
+                  $conforms = $parse_day_start['conforms'];
+                  if ($conforms == TRUE) {
+                    $start_day_print = $date->getStartingDayName().', '.$this->_translator->getDateInLang($parse_day_start['datetime']);
+                  } else {
+                     $start_day_print = $this->_text_as_html_short($this->_compareWithSearchText($date->getStartingDay()));
+                  }
+            
+                  $parse_day_end = convertDateFromInput($date->getEndingDay(),$this->_environment->getSelectedLanguage());
+                  $conforms = $parse_day_end['conforms'];
+                  if ($conforms == TRUE) {
+                     $end_day_print =$date->getEndingDayName().', '.$this->_translator->getDateInLang($parse_day_end['datetime']);
+                  } else {
+                     $end_day_print =$this->_text_as_html_short($this->_compareWithSearchText($date->getEndingDay()));
+                  }
+                  //formating dates and times for displaying
+                  $date_print ="";
+                  $time_print ="";
+            
+                  if ($end_day_print != "") { //with ending day
+                     $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_day_print;
+                     if ($parse_day_start['conforms']
+                         and $parse_day_end['conforms']) { //start and end are dates, not strings
+                       $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
+                     }
+            
+                     if ($start_time_print != "" and $end_time_print =="") { //starting time given
+                        $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                         if ($parse_time_start['conforms'] == true) {
+                           $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                     } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+                        $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
+                        if ($parse_time_end['conforms'] == true) {
+                           $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                     } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+                        if ($parse_time_end['conforms'] == true) {
+                           $end_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                        if ($parse_time_start['conforms'] == true) {
+                           $start_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                        $date_print = $this->_translator->getMessage('DATES_AS_OF').' '.$start_day_print.', '.$start_time_print.'<br />'.
+                                      $this->_translator->getMessage('DATES_TILL').' '.$end_day_print.', '.$end_time_print;
+                        if ($parse_day_start['conforms']
+                            and $parse_day_end['conforms']) {
+                           $date_print .= ' ('.getDifference($parse_day_start['timestamp'], $parse_day_end['timestamp']).' '.$this->_translator->getMessage('DATES_DAYS').')';
+                        }
+                     }
+            
+                  } else { //without ending day
+                     $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
+                     if ($start_time_print != "" and $end_time_print =="") { //starting time given
+                         $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                         if ($parse_time_start['conforms'] == true) {
+                           $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                     } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+                        $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
+                        if ($parse_time_end['conforms'] == true) {
+                           $time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                     } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+                        if ($parse_time_end['conforms'] == true) {
+                           $end_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                        if ($parse_time_start['conforms'] == true) {
+                           $start_time_print .= ' '.$this->_translator->getMessage('DATES_OCLOCK');
+                        }
+                        $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     }
+                  }
+            
+                  if ($parse_day_start['timestamp'] == $parse_day_end['timestamp'] and $parse_day_start['conforms'] and $parse_day_end['conforms']) {
+                     $date_print = $this->_translator->getMessage('DATES_ON_DAY').' '.$start_day_print;
+                     if ($start_time_print != "" and $end_time_print =="") { //starting time given
+                         $time_print = $this->_translator->getMessage('DATES_AS_OF_LOWER').' '.$start_time_print;
+                     } elseif ($start_time_print == "" and $end_time_print !="") { //endtime given
+                        $time_print = $this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     } elseif ($start_time_print != "" and $end_time_print !="") { //all times given
+                        $time_print = $this->_translator->getMessage('DATES_FROM_TIME_LOWER').' '.$start_time_print.' '.$this->_translator->getMessage('DATES_TILL').' '.$end_time_print;
+                     }
+                  }
+            
+                  // Date and time
+                  $temp_array = array();
+                  $temp_array[] = $this->_translator->getMessage('DATES_DATETIME');
+                  if ($time_print != '') {
+                     $temp_array[] = $date_print.BRLF.$time_print;
+                  } else {
+                     $temp_array[] = $date_print;
+                  }
+                  $tooltip_date = $temp_array;
+               }
+               
+               $tooltip['date'] = $tooltip_date;
+               $tooltip['place'] = $date->getPlace();
+               $tooltip['participants'] = $date->getParticipantsItemList();
+               $tooltip['desc'] = $date->getDescription();
+               $tooltip['color'] = $color;
+               $tooltips['sticky_' . $date_index] = $tooltip;
                $date_index++;
                $left_position = $left_position + $width + 4;
             }
          }
       }
+      $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
+      foreach($tooltips as $id => $tooltip){
+         $html .= '<div id="' . $id . '" class="atip" style="padding:5px; border:2px solid ' . $tooltip['color'] . '">'.LF;
+         $html .= '<table>'.LF;
+         $html .= '<tr><td colspan="2"><b>' . $tooltip['title'] . '</b></td></tr>'.LF;
+         $html .= '<tr><td style="vertical-align:top;"><b>' . $this->_translator->getMessage('DATES_DATETIME') . ':</b></td><td>' .  $tooltip['date'][1] . '</td></tr>'.LF;
+         if($tooltip['place'] != ''){
+            $html .= '<tr><td><b>' . $this->_translator->getMessage('DATES_PLACE') . ':</b></td><td>' . $tooltip['place'] . '</td></tr>'.LF;
+         }
+         $html .= '<tr><td><b>' . $this->_translator->getMessage('DATE_PARTICIPANTS') . ':</b></td><td>'.LF;
+         if($tooltip['participants']->isEmpty()){
+            $html .= $this->_translator->getMessage('TODO_NO_PROCESSOR');
+         } else {
+            $participant = $tooltip['participants']->getFirst();
+            $count = $tooltip['participants']->getCount();
+            $counter = 1;
+            while ($participant) {
+               $html .= $participant->getFullName();
+               if ( $counter < $count) {
+                  $html .= ', ';
+               }
+               $participant = $tooltip['participants']->getNext();
+               $counter++;
+            }
+         }
+         $html .= '</td></tr>'.LF;
+         $html .= '<tr><td colspan="2">' . $tooltip['desc'] . '</td></tr>'.LF;
+         $html .= '</table>'.LF;
+         $html .= '</div>'.LF;
+      }
+      $html .= '</div></div>';
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var calendar_dates = new Array(';

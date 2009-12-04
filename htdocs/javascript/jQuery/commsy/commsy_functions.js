@@ -742,6 +742,7 @@ function draw_dates(){
 	jQuery('div[name=calendar_date]').remove();
 	var left_position = 0;
 	var current_day = '';
+	var tooltip_added = false;
 	if(typeof(calendar_dates) != 'undefined'){
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0]-1;
@@ -760,6 +761,8 @@ function draw_dates(){
 			var dates_on_day = calendar_dates[i][4];
 			var color = calendar_dates[i][5];
 			var color_border = calendar_dates[i][6];
+			var href = calendar_dates[i][7];
+			var tooltip = calendar_dates[i][8];
 			
 			if(start_quaters % 4 == 0){
 				var start_div = start_quaters / 4;
@@ -802,11 +805,13 @@ function draw_dates(){
 		    left_position++;
 		    
 		    if(start_quaters == 0 && end_quaters == 0){
-		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height:' + (jQuery('#calendar_day_'+day).height()-4) + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
+		    	jQuery('#calendar_entry_date_div_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + (top + 1) + 'px; left:' + left + 'px; height:' + (jQuery('#calendar_day_'+day).height()-4) + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;" data-tooltip="sticky1"><a href="' + href + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    } else {
-		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left;">' + title + '</div></div>');
+		    	jQuery('#calendar_entry_date_div_' + start_div + '_'+day).prepend('<div name="calendar_date" style="position:absolute; top:' + top + 'px; left:' + left + 'px; height:' + height + 'px; width:' + width + 'px; background-color:' + color + '; z-index:1000; overflow:hidden; border:1px solid ' + color_border + ';"><div style="width:1000px; text-align:left; position:absolute; top:0px; left:0px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:100%; width:100%;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>');
 		    }
+		    //jQuery('#mystickytooltip').append('<div id="sticky_' + start_div + '_' + day + '">Sticky Tooptip 1 content here...</div>');
 	    }
+		stickytooltip.init("*[data-tooltip]", "mystickytooltip")
 	}
 }
 
