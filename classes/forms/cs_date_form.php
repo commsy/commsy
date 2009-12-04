@@ -292,8 +292,8 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[1]['value'] = '#cc0000';
       $radio_values[2]['text'] = '<img src="images/spacer.gif" style="background-color:#ff6600; border:1px solid #cccccc;"/>';
       $radio_values[2]['value'] = '#ff6600';
-      $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc33; border:1px solid #cccccc;"/>';
-      $radio_values[3]['value'] = '#ffcc33';
+      $radio_values[3]['text'] = '<img src="images/spacer.gif" style="background-color:#ffff66; border:1px solid #cccccc;"/>';
+      $radio_values[3]['value'] = '#ffff66';
       $radio_values[4]['text'] = '<img src="images/spacer.gif" style="background-color:#ffcc00; border:1px solid #cccccc;"/>';
       $radio_values[4]['value'] = '#ffcc00';
       $radio_values[5]['text'] = '<img src="images/spacer.gif" style="background-color:#33cc00; border:1px solid #cccccc;"/>';
@@ -575,7 +575,7 @@ class cs_date_form extends cs_rubric_form {
                $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
             }
          }
-         $this->_values['date_addon_color'] = '#ffcc33';
+         $this->_values['date_addon_color'] = '#ffff66';
       }
    }
 
