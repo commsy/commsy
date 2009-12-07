@@ -920,7 +920,11 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $return .= '</div>';
       $return .= '<div style="position:absolute; top;0px; right:0px;">';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
-      $return .= $this->_translator->getMessage('DATES_CALENDARWEEK') . ': ' . date('W', $this->_week_start);
+      $calendar_week = date('W', $this->_week_start);
+      if($calendar_week[0] == '0'){
+         $calendar_week = $calendar_week[1];
+      }
+      $return .= $this->_translator->getMessage('DATES_CALENDARWEEK') . ': ' . $calendar_week;
       $return .= '</span>';
       $return .= '</div>';
       $return .= '</div>';
