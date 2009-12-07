@@ -9,6 +9,7 @@ $message["DATES_AS_OF"]["de"] = "Ab";
 $message["DATES_AS_OF_LOWER"]["de"] = "ab";
 $message["DATES_AUGUST_LONG"]["de"] = "August";
 $message["DATES_AUGUST_SHORT"]["de"] = "Aug";
+$message["DATES_CALENDARWEEK"]["de"] = "Kalenderwoche";
 $message["DATES_CHANGE_BUTTON"]["de"] = "Termin speichern";
 $message["DATES_CHANGE_CALENDAR"]["de"] = "Kalender";
 $message["DATES_COLOR"]["de"] = "Farbe";

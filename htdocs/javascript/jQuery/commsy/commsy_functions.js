@@ -736,6 +736,7 @@ function resize_calendar(){
 	jQuery('.calender_hour').css({width: frame_width - scrollbar_width+'px'});
 	jQuery('.calendar_time').css({width: time_width+'px'});
 	jQuery('[id^=calendar_entry]').css({width: entry_width+'px'});
+	jQuery('[id^=calendar_head]').css({width: entry_width+'px'});
 }
 
 function draw_dates(){
@@ -812,6 +813,22 @@ function draw_dates(){
 		    //jQuery('#mystickytooltip').append('<div id="sticky_' + start_div + '_' + day + '">Sticky Tooptip 1 content here...</div>');
 	    }
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip")
+	}
+	if(typeof(today) != 'undefined'){
+		if(today != ''){
+			var today_color = '#fdefbf'
+			jQuery.each(jQuery('[id^=calendar_head]'), function(){
+				if((jQuery(this).attr('id').indexOf(today)) != -1){
+					jQuery(this).css('background-color', today_color);
+					var today_array = jQuery(this).attr('id').split('_');
+					var today_index = today_array[2];
+					jQuery('#calendar_entry_' + today_index).css('background-color', today_color);
+					for ( var index = 0; index <= 23; index++) {
+						jQuery('#calendar_entry_' + index + '_' + today_index).css('background-color', today_color);
+					}
+				}
+			});
+		}
 	}
 }
 
