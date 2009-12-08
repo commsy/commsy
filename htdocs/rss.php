@@ -148,6 +148,10 @@ if ( isset($_GET['cid']) ) {
         <link>'.$path.$c_single_entry_point.'</link>
       </image>';
 
+   $rss_end =  '
+     </channel>
+  </rss>';
+
    $type_limit_array = array();
    if ( $context_item->withRubric(CS_USER_TYPE) ) {
       $type_limit_array[] = CS_USER_TYPE;
@@ -708,27 +712,36 @@ if ( isset($_GET['cid']) ) {
          $description = '';
       }
       if ( !empty($title) and !empty($link) ) {
-         $rss .= '
+         $rss_item = '';
+         $rss_item .= '
          <item>
            <title>'.encode(AS_RSS,$title).'</title>
            <description>'.encode(AS_RSS,$description).'</description>
            <link>'.$link.'</link>
            <pubDate>'.encode(AS_RSS,$date).'</pubDate>'.LF;
-         $rss .= '           <author>'.encode(AS_RSS,trim($author)).'</author>'.LF;
-         $rss .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
-         $rss .= '         </item>';
+         $rss_item .= '           <author>'.encode(AS_RSS,trim($author)).'</author>'.LF;
+         $rss_item .= '           <guid isPermaLink="false">'.$row['item_id'].'</guid>'.LF;
+         $rss_item .= '         </item>';
          $counter++;
          unset($title);
          unset($description);
          unset($link);
          unset($date);
          unset($author);
+
+         // check rss
+         include_once('classes/external_classes/rss_php.php');
+         $rss_parser = new rss_php;
+         $rss_parser->suppressErrors();
+         $rss_parser->loadRSS($rss.$rss_item.$rss_end);
+         if ( $rss_parser->isRSSOkay() ) {
+            $rss .= $rss_item;
+         }
+         unset($rss_item);
       }
    }
 
-   $rss .=	'
-     </channel>
-  </rss>';
+   $rss .= $rss_end;
 
    // debugging
    #pr($rss);
