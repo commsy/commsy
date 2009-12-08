@@ -774,7 +774,11 @@ function draw_dates(){
 			}
 			top = top+1;
 			
-			var height = (end_quaters - start_quaters) * 10; // + ((end_quaters - start_quaters) / 4)-1;
+			if(end_quaters != 0){
+				var height = (end_quaters - start_quaters) * 10; // + ((end_quaters - start_quaters) / 4)-1;
+			} else {
+				var height = 20;
+			}
 			
 			var start_spacer = 0;
 			var end_spacer = 0;
