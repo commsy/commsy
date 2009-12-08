@@ -210,6 +210,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
+      $html .='<tr>'.LF;
+      $html .='<td colspan="2">'.LF;
+      $html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+      $html .= '<option value="2"';
+      if ($this->_presentation_mode == '2'){
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
+      $html .= '      <option value="1"';
+      if ($this->_presentation_mode != '2'){
+         $html .= ' selected="selected"';
+      }
+      $html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
+      $html .= '   </select>'.LF;
+      $html .='</td>'.LF;
+      $html .='</tr>'.LF;
       $html .='</table>'.LF;
 
 
@@ -385,25 +401,40 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
       // SUNBIRD UMSTELLUNG
-      $session_item = $this->_environment->getSessionItem();
-      if($session_item->issetValue('javascript')){
-         if($session_item->getValue('javascript') == "1"){
-            $with_javascript = true;
-         }
-      }
-      if($with_javascript and $this->use_sunbird){
-         $html .= $this->_getTableheadAsHTMLWithJavascript();
+      
+      if ($this->_presentation_mode == '2'){
+         $html .= $this->_getTableheadMonthAsHTML();
       } else {
-         $html .= $this->_getTableheadAsHTML();
+         $session_item = $this->_environment->getSessionItem();
+         if($session_item->issetValue('javascript')){
+            if($session_item->getValue('javascript') == "1"){
+               $with_javascript = true;
+            }
+         }
+         if($with_javascript and $this->use_sunbird){
+            $html .= $this->_getTableheadAsHTMLWithJavascript();
+         } else {
+            $html .= $this->_getTableheadAsHTML();
+         }
       }
       $html .='<tr>'.LF;
       $html .='<td colspan="3" style="padding-top:2px; vertical-align:top; ">'.LF;
       #$html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
 #      $html .= '<table class="list" style="width: 100%; border-collapse: collapse; border: 0px;" summary="Layout">'.LF;
       if ($this->_presentation_mode == '2'){
-         $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
-         $html .= $this->_getMonthContentAsHTML();
-         $html .= '</table>'.LF;
+         $session_item = $this->_environment->getSessionItem();
+         if($session_item->issetValue('javascript')){
+            if($session_item->getValue('javascript') == "1"){
+               $with_javascript = true;
+            }
+         }
+         if($with_javascript and $this->use_sunbird){
+            $html .= $this->_getMonthContentAsHTMLWithJavaScript();
+         } else {
+            $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
+            $html .= $this->_getMonthContentAsHTML();
+            $html .= '</table>'.LF;
+         }
       }else{
          $with_javascript = false;
          $session_item = $this->_environment->getSessionItem();
@@ -683,8 +714,45 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       return $html;
    }
 
+   function _getTableheadMonthAsHTML() {
+      $params = $this->_getGetParamsAsArray();
+      // Optimierungsbedarf: Die $this->_translator->getMessage wird 11Mal!!! umsonst aufgerufen
+      $current_time = localtime();
+      $month = getLongMonthName($current_time[4]);
+      $html  = '   <tr>'.LF;
+      #$html .= '      <td class="infoborderyear"  style="vertical-align:bottom;">'.LF;
 
+      #// jQuery
+      #//$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" onChange="javascript:document.indexform.submit()">'.LF;
+      #$html .= '   <select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+      #// jQuery
+      
+      #$html .= '      <option value="2"';
+      #if ($this->_presentation_mode == '2'){
+      #   $html .= ' selected="selected"';
+      #}
+      #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
+      #$html .= '      <option value="1"';
+      #if ($this->_presentation_mode != '2'){
+      #   $html .= ' selected="selected"';
+      #}
+      #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
+      #$html .= '   </select>'.LF;
 
+      $html .= '</td>'.LF;
+      $html .= '<td colspan="2" class="infoborderweek"  style="vertical-align:bottom; text-align:right; white-space:nowrap;">'.LF;
+      #$html .= $this->_getWeekList();
+      #$html .= '&nbsp;&nbsp;&nbsp;';
+      $html .= $this->_getMonthList();
+      #$html .= '&nbsp;&nbsp;&nbsp;';
+      #$html .= $this->_getYearList();
+
+      $html .= '<noscript><input type="submit" style="font-size:10pt; width:2em;" name="room_change" value="'.$this->_translator->getMessage('COMMON_GO_BUTTON2').'"/></noscript>'.LF;
+
+      $html .= '</td>'.LF;
+      $html .= '   </tr>'.LF;
+      return $html;
+   }
 
    function _getYearList() {
       $prev_image = '<img src="images/browse_left3.gif" alt="&lt;" border="0"/>';
@@ -1605,6 +1673,271 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       unset($params);
       $html .= '   </td>'.LF;
       $html .= '   </tr>'.LF;
+      return $html;
+   }
+   
+   function _getMonthContentAsHTMLWithJavascript() {
+      $current_time = localtime();
+
+      //Do some time calculations
+      $month = mb_substr($this->_month,4,2);
+      $year = $this->_year;
+      $days = daysInMonth($month,$year);
+      $first_day_week_day = $this->weekDayofDate(1,$month,$year);
+
+      //Create array with correct daynumber/weekday relationship
+      $format_array = array();
+      $current_month = array();
+      //skip fields at beginning
+      $empty_fields = (($first_day_week_day + 6) % 7);
+      if($month != '01'){
+         $prev_month = $month - 1;
+         $prev_month_year = $year;
+      } else {
+         $prev_month = 12;
+         $prev_month_year = $year - 1;
+      }
+      $prev_month_days = daysInMonth($prev_month,$prev_month_year);
+      for ($i =0; $i < $empty_fields; $i++) {
+         $format_array[]['day'] = $prev_month_days-($empty_fields - $i)+1;
+         $current_month[] = false;
+      }
+      //fill days
+      for ($i =1; $i <= $days;$i++) {
+         $format_array[]['day'] = $i;
+         $current_month[] = true;
+      }
+      //skip at ending
+      $sum = $days + $empty_fields;
+      $remaining = 42 - $sum;
+      for ($i=0;$i<$remaining;$i++) {
+         $format_array[]['day'] = $i + 1;
+         $current_month[] = false;
+      }
+
+      //get Dates in month
+      $current_date = $this->_list->getFirst();
+      $finish = false;
+      while ($current_date) {
+         $start_date_month = '';
+    $start_date_day = '';
+    $start_date_year = '';
+    $end_date_month = '';
+    $end_date_day = '';
+    $end_date_year = '';
+         $start_date_array = convertDateFromInput($current_date->getStartingDay(),$this->_environment->getSelectedLanguage());
+    if ($start_date_array['conforms'] == true) {
+       $start_date_array = getDateFromString($start_date_array['timestamp']);
+       $start_date_month = $start_date_array['month'];
+       $start_date_day = $start_date_array['day'];
+       $start_date_year = $start_date_array['year'];
+    }
+    $end_date_array = convertDateFromInput($current_date->getEndingDay(),$this->_environment->getSelectedLanguage());
+    if ($end_date_array['conforms'] == true) {
+       $end_date_array = getDateFromString($end_date_array['timestamp']);
+       $end_date_month = $end_date_array['month'];
+       $end_date_day =   $end_date_array['day'];
+       $end_date_year = $end_date_array['year'];
+    }
+    if ($start_date_day != '') {
+
+            //date begins at least one month before currently displayed month, ends in currently displayed month
+            // OR date begins in a year before the current and ends in
+       if ( ($start_date_month < $month OR $start_date_year < $year) AND $end_date_month == $month AND $end_date_year == $year){
+               for ($i=0;$i < $end_date_day;$i++) {
+             $format_array[$empty_fields+$i]['dates'][] = $current_date;
+          }
+
+       //date begins in currently displayed month, ends aftet currently displayed month
+       //OR date begins in currently displayed year and ends after currently displayed year
+       } elseif ($start_date_month == $month AND $start_date_year == $year AND ($end_date_month > $month OR $end_date_year > $year ) ){
+          $rest_month = $days - $start_date_day;
+          for ($i=0;$i <= $rest_month;$i++) {
+             $format_array[$empty_fields+$start_date_day-1+$i]['dates'][] = $current_date;
+          }
+
+            //date begins before and ends after currently displayed month
+       } elseif ( ($start_date_month < $month OR ($start_date_year < $year)) AND ($end_date_month > $month OR ($end_date_year > $year))) {
+          for ($i=0;$i < $days;$i++) {
+             $format_array[$empty_fields+$i]['dates'][] = $current_date;
+          }
+       }
+
+       else { //Date spans in one month or is on a single day
+               $length = 0;
+          if ($end_date_day != '') {
+             $length = $end_date_day - $start_date_day;
+               }
+          for ($i=0; $i <= $length; $i++) {
+                  $format_array[$empty_fields+$start_date_day-1+$i]['dates'][] = $current_date;
+          }
+       }
+         }
+
+         $current_date = $this->_list->getNext();
+      }
+      //Create the html part of the calendar
+      //title row with weekdays
+      $html = '';
+      $html .= '<div id="calender_month_frame" style="width:100%; background-color:#ffffff; border:1px solid black; padding:0px;">'.LF;
+      $html .= '<div id="calender_month_head" style="width:100%; clear:both;">'.LF;
+      
+      #$html  = '   <tr class="calendar_head">'.LF;
+      #$html .= '      <td class="calendar_head_first" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_MONDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_TUESDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_WEDNESDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_THURSDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_FRIDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_SATURDAY').'</td>'.LF;
+      #$html .= '      <td class="calendar_head" style="border-right:0px solid black; width:14%; text-align:center;">'.$this->_translator->getMessage('COMMON_DATE_SUNDAY').'</td>'.LF;
+      #$html .= '   </tr>'.LF;
+
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_MONDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_TUESDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_WEDNESDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_THURSDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_FRIDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_SATURDAY').'</div>'.LF;
+      $html .= '<div class="calendar_entry_head">'.$this->_translator->getMessage('COMMON_DATE_SUNDAY').'</div>'.LF;
+      $html .= '</div>'.LF;
+      
+      $html .= '<div id="calender_month_entry" style="width:100%; clear:both; border:1px solid black;">'.LF;
+      #$html .= '   <tr class="listcalendar" style="height:8em;">'.LF;
+      //rest of table
+//      for ($i=0;$i<42;$i++) {
+//         if ( !$finish ) {
+//            $dates_on_day = isset($format_array[$i]['dates'])?$format_array[$i]['dates']:'';
+//            if ($current_time[3]==$format_array[$i]['day'] and $current_time[4]+1==$month and $current_time[5]+1900==$year){
+//               #$html .= '      <td class="calendar_content_focus" style="border: spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:8em; width:14%;">';
+//            } elseif( (($i+1) % 7 == 0) or (($i+2) % 7 == 0) ) {
+//               #$html .= '      <td class="calendar_content" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:8em; width:14%;">';
+//#               $html .= '      <td class="calendar_content_weekend" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:8em; width:14%;">';
+//            }else {
+//               #$html .= '      <td class="calendar_content" style="spacing:0px; padding:1px 1px 0px 2px; vertical-align:top; height:8em; width:14%;">';
+//            }
+//            if ( empty($format_array[$i]['day']) ) {
+//               #$html .= '&nbsp;';
+//            } else {
+//               #$html .= LF.'         <div style="font-size:9px; text-align:right;">'.$format_array[$i]['day'].'</div>'.LF;
+//            }
+//            if ( !empty($dates_on_day) ) {
+//               #$html .= '         <div style="font-size: 11px; text-align:left;">';
+//               $entries = count($dates_on_day);
+//               $new_date = '';
+//               foreach ($dates_on_day as $date) {
+//                  if ( $entries < 4 ) {
+//                     $length = mb_strlen($date->getTitle());
+//                     if ( $length > 20 ) {
+//                        $new_date = mb_substr($date->getTitle(),0,20).'<br />&nbsp;&nbsp;';
+//                        if ( $length > 40 ) {
+//                           $new_date .= mb_substr($date->getTitle(),20,20).'...';
+//                        } else {
+//                           $new_date .= mb_substr($date->getTitle(),20,$length-20);
+//                        }
+//                     } else {
+//                        $new_date = $date->getTitle();
+//                     }
+//                  } else {
+//                     $length = mb_strlen($date->getTitle());
+//                     if ($length > 20) {
+//                        $new_date = mb_substr($date->getTitle(),0,20).'...';
+//                     } else {
+//                        $new_date = $date->getTitle();
+//                     }
+//                  }
+//                  #$html .= '- '.$this->_getItemTitle($date,$new_date).'<br />';
+//               }
+//               $entries = 0;
+//               #$html .= '</div>'.LF;
+//            }
+//            $session = $this->_environment->getSession();
+//            $width = '100%';
+//            if (!empty($dates_on_day)){
+//               $entries = count($dates_on_day);
+//               $link_lines = 6-$entries;
+//               $params = array();
+//               $params['iid'] = 'NEW';
+//               $params['day'] = $format_array[$i]['day'];
+//               $parameter_array = $this->_environment->getCurrentParameterArray();
+//               $params['month'] = $this->_month;
+//               $params['year'] = $year;
+//               $params['presentation_mode'] = $this->_presentation_mode;
+//          $params['modus_from'] = 'calendar';
+//               if ( $this->_with_modifying_actions and !empty($format_array[$i]['day'])) {
+//                  $anAction = ahref_curl( $this->_environment->getCurrentContextID(),
+//                                 CS_DATE_TYPE,
+//                                 'edit',
+//                                 $params,
+//                                 '<img style="width:'.$width.'; height:1em;" src="images/spacer.gif" alt="" border="0"/>');
+//
+//                  if ($link_lines > 0){
+//                     for($j=1; $j<$link_lines; $j++){
+//                       #$html .= '      <div style="width:'.$width.'; height: 1em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
+//                     }
+//                  }
+//                  #$html .= '      <div style="width:'.$width.'; height: 1em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
+//                  #$html .= '      <div style="width:'.$width.'; height: 1em;"><span style="width:'.$width.'; height: 1em;">'.$anAction.'</span></div>'.LF;
+//               }
+//       }else{
+//               $params = array();
+//               $params['iid'] = 'NEW';
+//               $params['day'] = $format_array[$i]['day'];
+//               $parameter_array = $this->_environment->getCurrentParameterArray();
+//               $params['month'] = $this->_month;
+//               $params['year'] = $year;
+//          $params['modus_from'] = 'calendar';
+//               $params['presentation_mode'] = $this->_presentation_mode;
+//               if ( $this->_with_modifying_actions and !empty($format_array[$i]['day'])) {
+//                  $anAction = ahref_curl( $this->_environment->getCurrentContextID(),
+//                                 CS_DATE_TYPE,
+//                                 'edit',
+//                                 $params,
+//                                 '<img style="width:'.$width.'; height:7em;" src="images/spacer.gif" alt="" border="0"/>');
+//
+//                  #$html .= '         <div style="margin-right:0px; width:'.$width.'; height: 7em;"><span style="width:'.$width.'; height: 7em;">'.$anAction.'</span></div>'.LF;
+//               }
+//            }
+//
+//            #$html .= '      </td>'.LF;
+//       if (($i+1) % 7 == 0) {
+//               #$html .= '   </tr>'.LF;
+//               if ($i != 41 and isset($format_array[$i+1]['day']) and !empty($format_array[$i+1]['day'])) {
+//                  #$html .= '   <tr class="listcalendar" style="height:8em;">'.LF;
+//          }else{
+//                  $finish = true;
+//               }
+//            }
+//         }
+//      }
+      $i = 0;
+      for ($index_week = 0; $index_week < 6; $index_week++) {
+         for ($index_day = 0; $index_day < 7; $index_day++) {
+            $html .= '<div class="calendar_month_entry" id="calendar_month_entry_' . $index_week .'_' . $index_day . '" style="';
+            if(!$current_month[$i]){
+               $html .= 'background-color:#dddddd;';
+            }
+            if($index_day == 0){
+      	     $html .= 'clear:both;';
+   	      }
+      	   $html .= '">' . $format_array[$i]['day'] . '</div>'.LF;
+      	   $i++;
+   	   }
+      }
+      //Create the html part of the calendar
+      //title row with weekdays
+      #$html .= '   <tr class="calendar_head">'.LF;
+      #$html .= '      <td  colspan="5" class="calendar_head_all" style="text-align:left;">'.$this->_translator->getMessage('DATES_TIPP_FOR_ENTRIES').'</td>'.LF;
+      #$html .= '      <td  colspan="2" class="calendar_head_all"  style="vertical-align:bottom; text-align:right;">';
+      $params = $this->_environment->getCurrentParameterArray();
+#      $params['mode']='print';
+#      $html .= '> '.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('COMMON_LIST_PRINTVIEW'),'','','','','','','class="calendar_head_all"').BRLF;
+      unset($params);
+      #$html .= '   </td>'.LF;
+      #$html .= '   </tr>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '<div id="calender_month_footer" style="width:100%; clear:both; border:1px solid black;">'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
       return $html;
    }
 
