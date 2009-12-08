@@ -709,6 +709,7 @@ jQuery(document).ready(function() {
 	if(jQuery('#calender_main').length){
 		jQuery('#calender_main').jScrollPane({scrollbarWidth: scrollbar_width});
 		jQuery('.jScrollPaneContainer').css('border-top', '1px solid black');
+		jQuery('#calender_frame').css('background-color',jQuery('[id^=calendar_head]').css('background-color'));
 		addNewDateLinks();
 		resize_calendar();
 		draw_dates();
@@ -735,6 +736,7 @@ function resize_calendar(){
 	jQuery('#calender_main').css({width: frame_width - scrollbar_width+'px'});
 	jQuery('.calender_hour').css({width: frame_width - scrollbar_width+'px'});
 	jQuery('.calendar_time').css({width: time_width+'px'});
+	jQuery('.calendar_time_head').css({width: time_width+'px'});
 	jQuery('[id^=calendar_entry]').css({width: entry_width+'px'});
 	jQuery('[id^=calendar_head]').css({width: entry_width+'px'});
 }
@@ -823,7 +825,7 @@ function draw_dates(){
 			var today_color = '#fdefbf'
 			jQuery.each(jQuery('[id^=calendar_head]'), function(){
 				if((jQuery(this).attr('id').indexOf(today)) != -1){
-					jQuery(this).css('background-color', today_color);
+					//jQuery(this).css('background-color', today_color);
 					var today_array = jQuery(this).attr('id').split('_');
 					var today_index = today_array[2];
 					jQuery('#calendar_entry_' + today_index).css('background-color', today_color);

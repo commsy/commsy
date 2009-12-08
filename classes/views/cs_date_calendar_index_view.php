@@ -2170,7 +2170,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       //title row with weekdays
       $html .= '<div id="calender_frame" style="width:100%; background-color:#ffffff; border:1px solid black; padding:0px;">'.LF;
       $html .= '<div id="calender_dates" style="width:100%; clear:both;">'.LF;
-      $html .= '<div class="calendar_time" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
+      $html .= '<div class="calendar_time_head" id="calendar_time"><div class="data">&nbsp;</div></div>'.LF;
       $display_date_array = array();
       for ($i = 1; $i <8; $i++){
          $startday = date ("d",$week_start);
@@ -2199,7 +2199,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
             case 6: $text = 'COMMON_DATE_WEEKVIEW_SATURDAY'; break;
             case 7: $text = 'COMMON_DATE_WEEKVIEW_SUNDAY'; break;
          }
-            $html .='<div class="calendar_entry" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data">'.LF;
+            $html .='<div class="calendar_entry_head" id="calendar_head_' . ($i-1) . '_' . date("dmY", $week_start) . '"><div class="data">'.LF;
             switch ( $text ){
                case 'COMMON_DATE_WEEKVIEW_MONDAY':
                   $html .= $this->_translator->getMessage('COMMON_DATE_WEEKVIEW_MONDAY',    $display_startday, $startmonth);
@@ -2336,7 +2336,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html_javascript .= '--></script>'.LF;
       $html .= $html_javascript;
       $html .= '</div>'.LF;
-      $html .= '<div style="border-top:1px solid black;">' . $this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES') . '</div>';
+      $html .= '<div class="calendar_footer">&nbsp;' . $this->_translator->getMessage('DATES_WEEK_TIPP_FOR_ENTRIES') . '</div>';
       $html .= '</div>'.LF;
       $date_array_for_jQuery = array();
       $date_index = 0;

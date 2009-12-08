@@ -62,7 +62,3 @@ a.jScrollArrowDown:hover {
 a.jScrollActiveArrowButton, a.jScrollActiveArrowButton:hover {
    /*background-color: #f00;*/
 }
-
-div.calendar_time {height: 40px; width:2%; float:left; clear:both;}
-div.calendar_entry {height: 40px; width:14%; float:left;}
-div.data {border-right:1px solid black; border-bottom:1px solid black; width:100%; height:100%; position:relative;}
