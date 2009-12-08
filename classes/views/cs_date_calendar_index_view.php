@@ -44,7 +44,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_week_start;
 
    // SUNBIRD
-   var $use_sunbird = true;
+   var $use_sunbird = false;
    // SUNBIRD
    
    /** set the content of the list view
@@ -402,7 +402,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
       // SUNBIRD UMSTELLUNG
       
-      if ($this->_presentation_mode == '2'){
+      if ($this->_presentation_mode == '2' and $this->use_sunbird){
          $html .= $this->_getTableheadMonthAsHTML();
       } else {
          $session_item = $this->_environment->getSessionItem();
