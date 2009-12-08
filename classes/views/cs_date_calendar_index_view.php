@@ -43,6 +43,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    var $_presentation_mode = '1';
    var $_week_start;
 
+   // SUNBIRD
+   var $use_sunbird = true;
+   // SUNBIRD
+   
    /** set the content of the list view
     * this method sets the whole entries of the list view
     *
@@ -381,14 +385,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 
       $html .= '<table style="width: 100%; border-collapse: collapse;">'.LF;
       // SUNBIRD UMSTELLUNG
-      $use_javascript = false;
       $session_item = $this->_environment->getSessionItem();
       if($session_item->issetValue('javascript')){
          if($session_item->getValue('javascript') == "1"){
             $with_javascript = true;
          }
       }
-      if($with_javascript and $use_javascript){
+      if($with_javascript and $this->use_sunbird){
          $html .= $this->_getTableheadAsHTMLWithJavascript();
       } else {
          $html .= $this->_getTableheadAsHTML();
@@ -409,7 +412,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                $with_javascript = true;
             }
          }
-         if($with_javascript and $use_javascript){
+         if($with_javascript and $this->use_sunbird){
             $html .= $this->_getWeekContentAsHTMLWithJavaScript();
          } else {
             $html .= '<table class="list" style="width: 100%; border-collapse: collapse;" summary="Layout">'.LF;
@@ -891,7 +894,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 '').LF;
       unset($params['year']);
       unset($params['month']);
-      $params['week'] = time();
+      $day = date('D');
+      if($day == 'Mon'){
+         $params['week'] = time();
+      } elseif ($day == 'Tue'){
+         $params['week'] = time() - (3600 * 24);
+      } elseif ($day == 'Wed'){
+         $params['week'] = time() - (3600 * 24 * 2);
+      } elseif ($day == 'Thu'){
+         $params['week'] = time() - (3600 * 24 * 3);
+      } elseif ($day == 'Fri'){
+         $params['week'] = time() - (3600 * 24 * 4);
+      } elseif ($day == 'Sat'){
+         $params['week'] = time() - (3600 * 24 * 5);
+      } elseif ($day == 'Sun'){
+         $params['week'] = time() - (3600 * 24 * 6);
+      }
       $params['presentation_mode'] = '1';
       $today = '           '.ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
