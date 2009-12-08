@@ -777,7 +777,7 @@ function draw_dates(){
 			if(end_quaters != 0){
 				var height = (end_quaters - start_quaters) * 10; // + ((end_quaters - start_quaters) / 4)-1;
 			} else {
-				var height = 20;
+				var height = 40;
 			}
 			
 			var start_spacer = 0;
