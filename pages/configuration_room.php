@@ -53,7 +53,7 @@ if (empty($command) and $room->getDeletionDate()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ERROR_ROOM_IS_DELETED'));
+   $errorbox->setText($translator->getMessage('ERROR_ROOM_IS_DELETED'));
    $page->add($errorbox);
    $command = 'error';
 }
@@ -71,8 +71,43 @@ if ( $current_user->isModerator() or $current_user->isRoot() ) {
          $room->undelete();
       }elseif ($status == 'archive') {
          $room->close();
+         
+         // Fix: Find Group-Rooms if existing
+         if( $room->isGrouproomActive() ) {
+            $groupRoomList = $room->getGroupRoomList();
+            
+            if( !$groupRoomList->isEmpty() ) {
+               $room_item = $groupRoomList->getFirst();
+               
+               while($room_item) {
+                  // All GroupRooms have to be closed too
+                  $room_item->close();
+                  $room_item->save();
+                  
+                  $room_item = $groupRoomList->getNext();
+               }
+            }
+         }
+         // ~Fix
       }elseif ($status == 'open') {
          $room->open();
+         
+         // Fix: Find Group-Rooms if existing
+         if( $room->isGrouproomActive() ) {
+            $groupRoomList = $room->getGroupRoomList();
+            
+            if( !$groupRoomList->isEmpty() ) {
+               $room_item = $groupRoomList->getFirst();
+               
+               while($room_item) {
+                  // All GroupRooms have to be opened too
+                  $room_item->open();
+                  $room_item->save();
+                  
+                  $room_item = $groupRoomList->getNext();
+               }
+            }
+         }
       } else {
          include_once('functions/error_functions.php');trigger_error('automatic mode is not defined, E_USER_ERROR');
       }

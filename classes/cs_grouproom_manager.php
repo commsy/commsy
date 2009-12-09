@@ -232,7 +232,9 @@ class cs_grouproom_manager extends cs_room2_manager {
 
       // project room limit
       if ( isset($this->_project_room_limit) and !empty($this->_project_room_limit) ) {
-         $query .= ' AND extras LIKE "%<PROJECT_ROOM_ITEM_ID>'.encode(AS_DB,$this->_project_room_limit).'</PROJECT_ROOM_ITEM_ID>%"';
+         // Fixed: There were no PROJECT_ROOM_ITEM_ID - Tags in extras column
+         //$query .= ' AND extras LIKE "%<PROJECT_ROOM_ITEM_ID>'.encode(AS_DB,$this->_project_room_limit).'</PROJECT_ROOM_ITEM_ID>%"';
+         $query .= ' AND extras LIKE "%s:20:\"PROJECT_ROOM_ITEM_ID\";i:' . encode(AS_DB, $this->_project_room_limit) .  ';%"';
       }
 
       if ( isset($this->_sort_order) ) {
@@ -268,9 +270,10 @@ class cs_grouproom_manager extends cs_room2_manager {
             $query .= ' LIMIT '.encode(AS_DB,$this->_from_limit).', '.encode(AS_DB,$this->_interval_limit);
          }
       }
-
+      
       // perform query
       $result = $this->_db_connector->performQuery($query);
+      
       if (!isset($result)) {
          include_once('functions/error_functions.php');trigger_error('Problems selecting '.$this->_db_table.' items from query: "'.$query.'"',E_USER_WARNING);
       } else {

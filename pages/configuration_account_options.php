@@ -24,6 +24,9 @@
 //
 include_once('functions/text_functions.php');
 
+// Get the translator object
+$translator = $environment->getTranslationObject();
+
 $room_item = $environment->getCurrentContextItem();
 $current_user = $environment->getCurrentUserItem();
 $is_saved = false;
@@ -65,7 +68,7 @@ if ($current_user->isGuest()) {
    $params['with_modifying_actions'] = true;
    $errorbox = $class_factory->getClass(ERRORBOX_VIEW,$params);
    unset($params);
-   $errorbox->setText(getMessage('ACCESS_NOT_GRANTED'));
+   $errorbox->setText($translator->getMessage('ACCESS_NOT_GRANTED'));
    $page->add($errorbox);
 }else{
    // option contains the name of the submit button, if this
@@ -91,17 +94,16 @@ if ($current_user->isGuest()) {
 
    $form_view->setAction(curl($environment->getCurrentContextID(),'configuration','account_options',''));
 
-   if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
+   if ( isOption($command, $translator->getMessage('COMMON_CANCEL_BUTTON')) ) {
       redirect($environment->getCurrentContextID(),'configuration', 'index', '');
    }
 
    /* we called ourself as result of a form post */
-   elseif ( isOption($command,getMessage('PREFERENCES_SAVE_BUTTON'))) {
+   elseif ( isOption($command,$translator->getMessage('PREFERENCES_SAVE_BUTTON'))) {
       $form->setFormPost($_POST);
       $form->prepareForm();
       $form->loadValues();
       if ( $form->check() ) {
-
          global $c_use_soap_for_wiki;
          if ( isset($_POST['status']) ) {
             if ($_POST['status'] == '') {
@@ -110,12 +112,50 @@ if ($current_user->isGuest()) {
                   $wiki_manager = $environment->getWikiManager();
                   $wiki_manager->openWiki();
                }
+               
+               // Fix: Find Group-Rooms if existing
+               if( $current_context->isGrouproomActive() ) {
+                  $groupRoomList = $current_context->getGroupRoomList();
+                  
+                  if( !$groupRoomList->isEmpty() ) {
+                     $room_item = $groupRoomList->getFirst();
+                     
+                     while($room_item) {
+                        // All GroupRooms have to be opened too
+                        $room_item->open();
+                        $room_item->save();
+                        
+                        $room_item = $groupRoomList->getNext();
+                     }
+                  }
+               }
+               // ~Fix
+               
+               
             } elseif ($_POST['status'] == 2) {
                $current_context->close();
                if($current_context->existWiki() and $c_use_soap_for_wiki){
                   $wiki_manager = $environment->getWikiManager();
                   $wiki_manager->closeWiki();
                }
+               
+               // Fix: Find Group-Rooms if existing
+               if( $current_context->isGrouproomActive() ) {
+                  $groupRoomList = $current_context->getGroupRoomList();
+                  
+                  if( !$groupRoomList->isEmpty() ) {
+                     $room_item = $groupRoomList->getFirst();
+                     
+                     while($room_item) {
+                        // All GroupRooms have to be closed too
+                        $room_item->close();
+                        $room_item->save();
+                        
+                        $room_item = $groupRoomList->getNext();
+                     }
+                  }
+               }
+               // ~Fix
             }
          }else{
             $current_context->open();
@@ -123,6 +163,24 @@ if ($current_user->isGuest()) {
                $wiki_manager = $environment->getWikiManager();
                $wiki_manager->openWiki();
             }
+            
+            // Fix: Find Group-Rooms if existing
+            if( $current_context->isGrouproomActive() ) {
+               $groupRoomList = $current_context->getGroupRoomList();
+               
+               if( !$groupRoomList->isEmpty() ) {
+                  $room_item = $groupRoomList->getFirst();
+                  
+                  while($room_item) {
+                     // All GroupRooms have to be opened too
+                     $room_item->open();
+                     $room_item->save();
+                     
+                     $room_item = $groupRoomList->getNext();
+                  }
+               }
+            }
+            // ~Fix
          }
 
 
