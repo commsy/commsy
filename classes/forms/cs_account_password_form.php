@@ -50,7 +50,7 @@ class cs_account_password_form extends cs_rubric_form {
     * this methods init the data (text and options) for the form
     */
    function _initForm () {
-      $this->_headline = getMessage('USER_PASSWORD_CHANGE_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('USER_PASSWORD_CHANGE_HEADLINE');
 
       $session = $this->_environment->getSessionItem();
       if ( isset($session)
@@ -108,6 +108,21 @@ class cs_account_password_form extends cs_rubric_form {
             $user_manager->select();
             $user_list = $user_manager->get();
             unset($user_manager);
+            
+            /*
+             * Fix: if user is root, user_manager result is empty, because
+             * commsy_id(server id) does not fit context_id(portal_id)
+             */            
+            if(   isset($user_list)   
+                  and $user_list->isEmpty()
+                  and $this->_environment->getCurrentUserItem()->isRoot()
+               ) {
+                  $user_manager = $this->_environment->getUserManager();
+                  $this->_item = $user_manager->getRootUser();
+                  unset($user_manager);
+            }
+            // ~Fix
+            
             if ( !empty($user_list)
                  and $user_list->isNotEmpty()
                  and $user_list->getCount() == 1
@@ -117,6 +132,7 @@ class cs_account_password_form extends cs_rubric_form {
             unset($user_list);
          }
       }
+      
       if (!empty($this->_form_post)) {
          $this->_values = $this->_form_post;
          $this->_values['fullname_text'] = $this->_values['fullname'];
@@ -129,6 +145,7 @@ class cs_account_password_form extends cs_rubric_form {
          $this->_values['fullname_text'] = $this->_item->getFullname();
          $this->_values['user_id_text'] = $this->_item->getUserID();
       } else {
+         // if $this->_form_post is empty and $this->_item is empty
          include_once('functions/error_functions.php');trigger_error('lost values',E_USER_WARNING);
       }
    }
@@ -138,7 +155,7 @@ class cs_account_password_form extends cs_rubric_form {
     */
    function _checkValues () {
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
-         $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password');
          $this->_form->setFailure('password2');
       }
