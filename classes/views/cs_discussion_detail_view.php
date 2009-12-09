@@ -380,9 +380,9 @@ class cs_discussion_detail_view extends cs_detail_view {
          $html .= '<a title="'.$this->_translator->getMessage('DISCARTICLE_ENTER_NEW').'" href="#form">'.$image.'</a>'.LF;
       } elseif ($discussion_type == 'simple') {
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section_grey.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ENTER_NEW').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ENTER_NEW').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section_grey.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ENTER_NEW').'"/>';
          }
          $html .= '<span class="disabled">'.$image.'</span>'.LF;
       }
@@ -443,9 +443,9 @@ class cs_discussion_detail_view extends cs_detail_view {
          }
          $params['ref_did'] = $subitem->getItemID();
          if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+            $image = '<img src="images/commsyicons_msie6/22x22/new_section.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
          } else {
-            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
+            $image = '<img src="images/commsyicons/22x22/new_section.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('DISCARTICLE_ANSWER_NEW').'"/>';
          }
          $html .= ahref_curl(  $this->_environment->getCurrentContextID(),
                                     'discarticle',
@@ -605,7 +605,7 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
                $html .='</td>'.LF;
                $html .='</tr>'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+               /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
                   $html .='<tr>'.LF;
                   $html .='<td class="discarticleCreatorInformation" style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
                   $mode = 'short';
@@ -625,14 +625,14 @@ class cs_discussion_detail_view extends cs_detail_view {
                   $html .='</table>'.LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               } else {
+               /*} else {
                   $html .='</table>'.LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
                   $html .='</table>'.LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               }
+               }*/
             }else{
                $image = $this->_getItemPicture($current_item->getModificatorItem());
                $html .= '<td rowspan="3" style="width:60px; vertical-align:top; padding:20px 5px 5px 5px;">'.$image.'</td>'.LF;
@@ -666,7 +666,8 @@ class cs_discussion_detail_view extends cs_detail_view {
                $html .= $this->_getSubItemAsHTML($current_item, $pos_number).LF;
                $html .='</td>'.LF;
                $html .='</tr>'.LF;
-               if(!(isset($_GET['mode']) and $_GET['mode']=='print')){
+               
+               /*if(!(isset($_GET['mode']) and $_GET['mode']=='print')){*/
                   $html .='<tr>'.LF;
                   $html .='<td style="padding-top:5px; padding-bottom:30px; vertical-align:top; ">'.LF;
                   $mode = 'short';
@@ -679,12 +680,12 @@ class cs_discussion_detail_view extends cs_detail_view {
                   }
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               }else{
+               /*}else{
                   $html .='<tr>'.LF;
                   $html .='<td style="padding-top:5px; padding-bottom:40px; vertical-align:top; ">'.LF;
                   $html .='</td>'.LF;
                   $html .='</tr>'.LF;
-               }
+               }*/
             }
             // set reader
        $reader_manager = $this->_environment->getReaderManager();
