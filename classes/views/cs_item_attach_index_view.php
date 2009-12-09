@@ -304,6 +304,9 @@ class cs_item_attach_index_view extends cs_item_index_view {
 
       $phone = $this->_compareWithSearchText($item->getTelephone());
       $handy = $this->_compareWithSearchText($item->getCellularphone());
+      $name = $this->_compareWithSearchText($item->getFullname());
+      $email = $this->_compareWithSearchText($item->getEmail());
+      
       $html  = '   <tr>'.LF;
       $checked_item_array = $this->_checked_ids;
       $key = $item->getItemID();
@@ -327,15 +330,16 @@ class cs_item_attach_index_view extends cs_item_index_view {
       }
       $text .= '         <input type="hidden" name="shown['.$this->_text_as_form($key).']" value="1"/>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt; width:1%;">'.$text.'</td>'.LF;
-      $html .= '      <td '.$style.' style="font-size:10pt; width:40%;">'.$this->_getItemFullname($item).'</td>'.LF;
+      $html .= '      <td '.$style.' style="font-size:10pt; width:40%;">'.$this->_text_as_html_short($name)./*$this->_getItemFullname($item).*/'</td>'.LF;
       $html .= '      <td  '.$style.' style="font-size:8pt; width:24%;">'.$this->_text_as_html_short($phone).LF;
       if (!empty($handy)){
          $html .= BRLF.$this->_text_as_html_short($handy).'</td>'.LF;
       }else{
          $html .='</td>'.LF;
       }
-      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_getItemEmail($item).'</td>'.LF;
+      $html .= '      <td  '.$style.' style="font-size:8pt; width:35%;">'.$this->_text_as_html_short($email)./*$this->_getItemEmail($item).*/'</td>'.LF;
       $html .= '   </tr>'.LF;
+      
       return $html;
    }
 
@@ -856,11 +860,11 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $html .= '</div>'.LF;
       $html .='<div style="width:70%;">'.LF;
       $html .='<div>'.LF;
-      $tempMessage = getMessage('CAMPUS_SEARCH_INDEX');
+      $tempMessage = $this->_translator->getMessage('CAMPUS_SEARCH_INDEX');
       if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+          $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
       }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+         $html .= '<h2 class="pagetitle">'.$this->_translator->getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
       }else{
           $html .= '<h2 class="pagetitle">'.$tempMessage;
       }
@@ -880,7 +884,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
       $params = $this->_environment->getCurrentParameterArray();
       if ( isset($params['search']) and !empty($params['search']) ){
             $html_text .='<div class="restriction">';
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_SEARCH_RESTRICTION').':</span> ';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_SEARCH_RESTRICTION').':</span> ';
             $html_text .= '<span><a title="'.urldecode($params['search']).'">'.chunkText(urldecode($params['search']),13).'</a></span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
@@ -1001,7 +1005,7 @@ class cs_item_attach_index_view extends cs_item_index_view {
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
-         $html_text .= '<span class="infocolor">'.getMessage('COMMON_RUBRIC').': </span>';
+         $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_RUBRIC').': </span>';
          $html_text .='</td>'.LF;
          $html_text .='<td style="text-align:right;">'.LF;
          switch ( mb_strtoupper($this->getChoosenRubric(), 'UTF-8') ){
@@ -1053,10 +1057,10 @@ class cs_item_attach_index_view extends cs_item_index_view {
             $this->_additional_selects = true;
             $html_text ='<tr>'.LF;
             $html_text .='<td>'.LF;
-            $html_text .= '<span class="infocolor">'.getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
+            $html_text .= '<span class="infocolor">'.$this->_translator->getMessage('COMMON_ACTIVATION_RESTRICTION').': </span>';
             $html_text .='</td>'.LF;
             $html_text .='<td style="text-align:right;">'.LF;
-            $html_text .= '<span>'.getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
+            $html_text .= '<span>'.$this->_translator->getMessage('COMMON_SHOW_ONLY_ACTIVATED_ENTRIES').'</span>';
             $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
             $new_params = $params;
             $new_params['selactivatingstatus'] = 1;
