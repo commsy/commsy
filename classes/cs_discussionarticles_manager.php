@@ -96,7 +96,10 @@ class cs_discussionarticles_manager extends cs_manager {
   var $_all_discarticle_list = NULL;
   var $_cached_discussion_item_ids = array();
 
-
+   /*
+    * Translation Object
+    */
+  private $_translator = null;
 
   /** constructor: cs_discussionarticles_manager
     * the only available constructor, initial values for internal variables
@@ -106,6 +109,7 @@ class cs_discussionarticles_manager extends cs_manager {
   function cs_discussionarticles_manager ($environment) {
       $this->cs_manager($environment);
       $this->_db_table = 'discussionarticles';
+      $this->_translator = $environment->getTranslationObject();
    }
 
   /** reset limits
@@ -211,7 +215,7 @@ class cs_discussionarticles_manager extends cs_manager {
      if ($this->_sort_position){
         $query .= ' ORDER BY discussionarticles.position ASC';
      }else{
-        $query .= ' ORDER BY discussionarticles.creation_date ASC, discussionarticles.subject DESC';
+        $query .= ' ORDER BY discussionarticles.creation_date ASC, item_id ASC, discussionarticles.subject DESC';
      }
       if ($mode == 'select') {
          if (isset($this->_interval_limit) and isset($this->_from_limit)) {
@@ -477,9 +481,9 @@ class cs_discussionarticles_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE discussionarticles SET';
-            $insert_query .= ' subject = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' subject = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {
