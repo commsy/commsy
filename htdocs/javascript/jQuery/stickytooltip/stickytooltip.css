@@ -8,6 +8,7 @@ display:none;
 border:0px solid black; /*Border around tooltip*/
 background:white;
 z-index:3000;
+width:450px;
 }
 
 .stickytooltip .stickystatus{ /*Style for footer bar within tooltip*/

@@ -862,9 +862,9 @@ function draw_dates_month(){
 				current_date = day+month
 				top_position = 0;
 			}
-			var top = 20 * top_position;
+			var top = (20 * top_position) + (1 * top_position) + 18;
 			var width = jQuery('#calendar_month_entry_' + day + '_' + month).width() -2;
-			jQuery('#calendar_month_entry_' + day + '_' + month).append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:20px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:20px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>')
+			jQuery('#calendar_month_entry_' + day + '_' + month).append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:18px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:18px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>')
 			top_position++;
 		}
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip");
