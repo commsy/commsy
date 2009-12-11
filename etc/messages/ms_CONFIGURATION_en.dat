@@ -293,6 +293,9 @@ $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC"]["en"] = "Wild-cards for ye
 <br/>Format (from to): DD.MM";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_TITLE"]["en"] = "Clock pulse %1";
 $message["CONFIGURATION_TIME_FORM_HEADLINE"]["en"] = "Clock pulse";
+$message["CONFIGURATION_TODO_NEW_STATUS_BUTTON"]["en"] = "New progress status";
+$message["CONFIGURATION_TODO_STATUS_CHANGE_BUTTON"]["en"] = "Change progress status";
+$message["CONFIGURATION_TODO_STATUS_MANAGEMENT_DESC"]["en"] = "For todos there exists three progress status: &quot;not started&quot;, &quot;in progress&quot; an &quot;done&quot;. Here you can add additional status.";
 $message["CONFIGURATION_UPDATE_ALL"]["en"] = "perform all";
 $message["CONFIGURATION_UPDATE_BUTTON"]["en"] = "Perform update";
 $message["CONFIGURATION_UPDATE_DESC"]["en"] = "If you have installed a new version, you can perform needed update scripts here.";

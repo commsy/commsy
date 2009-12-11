@@ -33,6 +33,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
    * array - containing the 2 choices of the public field
    */
    var $_public_array = array();
+   var $_status_array = array();
 
    /** constructor
     * the only available constructor
@@ -57,6 +58,20 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
          $this->_headline = $image.' '.$this->_headline;
       }
       $this->setHeadline($this->_headline);
+
+      // Get available extra todo status
+      $context_item = $this->_environment->getCurrentContextItem();
+      $todo_status_array = $context_item->getExtraToDoStatusArray();
+
+      $status_array = array();
+      foreach ($todo_status_array as $key=>$value){
+         $temp_array['text']  = $value;
+         $temp_array['value'] = $key;
+         $status_array[] = $temp_array;
+      }
+      $this->_status_array = $status_array;
+
+
    }
 
    /** create the form, INTERNAL
@@ -106,7 +121,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         } else {
            $output = true;
         }
-        //Todooption
+        //Todo option
         $radio_values = array();
         $radio_values[0]['text'] = '<img src="images/configuration_todo_no_management.gif" alt="picture_todo_no_management" style=" width:150px; border:1px solid black; vertical-align: middle;"/>';
         $radio_values[0]['value'] = '1';
@@ -115,6 +130,22 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         $this->_form->addRadioGroup('todo_management',$this->_translator->getMessage('TODO_INDEX'),'',$radio_values,'',true,true,'','',false,' style="vertical-align:top;"');
         $this->_form->combine();
         $this->_form->addExplanation('todos',$this->_translator->getMessage('CONFIGURATION_TDOD_MANAGEMENT_DESC'));
+
+        $this->_form->combine();
+        $this->_form->addExplanation('todos_status',$this->_translator->getMessage('CONFIGURATION_TODO_STATUS_MANAGEMENT_DESC'));
+        $this->_form->addTextField('new_status','','','','',32,'');
+        $this->_form->combine('horizontal');
+        $this->_form->addButton('option',getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'),'','','200');
+        $i = 0;
+        foreach ($this->_status_array as $status){
+           $i++;
+           $this->_form->addTextField('status'.'#'.$status['value'],$status['text'],'','','',32);
+           $this->_form->combine('horizontal');
+           $this->_form->addButton('option'.'#'.$status['value'],getMessage('CONFIGURATION_TODO_STATUS_CHANGE_BUTTON'),'','','200');
+           $this->_form->combine('horizontal');
+           $this->_form->addButton('option'.'#'.$status['value'],getMessage('COMMON_DELETE_BUTTON'),'','','100');
+        }
+
      }
 
      if ( $current_context->withRubric(CS_GROUP_TYPE)

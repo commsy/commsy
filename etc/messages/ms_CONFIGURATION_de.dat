@@ -289,6 +289,9 @@ $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_DESC"]["de"] = "Platzhalter für 
 <br/>Format bei &quot;von bis&quot;: TT.MM";
 $message["CONFIGURATION_TIME_FORM_ELEMENT_TEXT_TITLE"]["de"] = "Zeittakt %1";
 $message["CONFIGURATION_TIME_FORM_HEADLINE"]["de"] = "Zeittakte";
+$message["CONFIGURATION_TODO_NEW_STATUS_BUTTON"]["de"] = "Neuer Bearbeitungsstatus";
+$message["CONFIGURATION_TODO_STATUS_CHANGE_BUTTON"]["de"] = "Bearbeitungsstatus bearbeiten";
+$message["CONFIGURATION_TODO_STATUS_MANAGEMENT_DESC"]["de"] = "In der Aufgabenrubrik gibt es normalerweise drei Bearbeitungsstatus: &quot;nicht bearbeitet&quot;, &quot;in Berabeitung&quot; und &quot;erledigt&quot;. Hier können Sie bei Bedarf noch eigene zusätzliche Status definieren.";
 $message["CONFIGURATION_UPDATE_ALL"]["de"] = "alle ausführen";
 $message["CONFIGURATION_UPDATE_BUTTON"]["de"] = "Update durchführen";
 $message["CONFIGURATION_UPDATE_DESC"]["de"] = "Ausführung ggf. notwendiger Update-Scripte nach einem Update.";

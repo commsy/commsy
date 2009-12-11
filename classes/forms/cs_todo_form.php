@@ -164,7 +164,17 @@ class cs_todo_form extends cs_rubric_form {
       $temp_array['text']  = getMessage('TODO_DONE');
       $temp_array['value'] = '3';
       $status_array[] = $temp_array;
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      $extra_status_array = $context_item->getExtraToDoStatusArray();
+      foreach ($extra_status_array as $key => $value){
+         $temp_array['text']  = $value;
+         $temp_array['value'] = $key;
+         $status_array[] = $temp_array;
+      }
       $this->_status_array = $status_array;
+
+
 
       // headline
       if ( !empty($this->_item) ) {
@@ -256,7 +266,22 @@ class cs_todo_form extends cs_rubric_form {
 
       }
 
-      $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
+      $this->_form->addSelect('status',
+                                     $this->_status_array,
+                                     '',
+                                     getMessage('TODO_STATUS'),
+                                     getMessage('TODO_STATUS_DESC'),
+                                     0,
+                                     false,
+                                     true,
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '',
+                                     '17'
+                               );
+#      $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
       $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'');
 
 

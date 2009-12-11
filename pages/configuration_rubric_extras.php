@@ -29,6 +29,20 @@ if (!empty($_POST['option'])) {
    $command = '';
 }
 
+$change_id = 0;
+$delete_id = 0;
+foreach ($_POST as $key => $post_var){
+   $iid = mb_substr(strchr($key,'#'),1);
+   if (!empty($iid) and mb_stristr($key,'option') ) {
+      if ( isOption($post_var, $translator->getMessage('COMMON_DELETE_BUTTON')) ){
+         $delete_id = $iid;
+      } elseif ( isOption($post_var, $translator->getMessage('CONFIGURATION_TODO_STATUS_CHANGE_BUTTON')) ) {
+         $change_id = $iid;
+      }
+   }
+}
+
+
 $context_item = $environment->getCurrentContextItem();
 $is_saved = false;
 
@@ -71,14 +85,7 @@ if ($command != 'error') {
      $command = '';
    }
 
-   // Cancel editing
-#	if ( isOption($command, getMessage('COMMON_CANCEL_BUTTON')) ) {
-#	   redirect($environment->getCurrentContextID(),'configuration','dates');
-#	}
-
-   // Show form and/or save item
-#    else {
-       // Initialize the form
+        // Initialize the form
       $class_params= array();
       $class_params['environment'] = $environment;
       $form = $class_factory->getClass(CONFIGURATION_RUBRIC_EXTRAS_FORM,$class_params);
@@ -135,6 +142,52 @@ if ($command != 'error') {
       $form->setItem($context_item);
       $form->prepareForm();
       $form->loadValues();
+
+      if ( !empty($delete_id) or !empty($change_id) ){
+        if (!empty ($_POST)){
+             foreach ($_POST as $key => $post_var){
+               $iid = mb_substr(strchr($key,'#'),1);
+               if (!empty($iid) and mb_stristr($key,'status') and $iid == $change_id) {
+                  $context_item = $environment->getCurrentContextItem();
+                  $status_array = $context_item->getExtraToDoStatusArray();
+                  $status_array[$iid] = $post_var;
+                  $context_item->setExtraToDoStatusArray($status_array);
+                  $context_item->save();
+               } elseif(!empty($iid) and $iid == $delete_id) {
+                  $context_item = $environment->getCurrentContextItem();
+                  $status_array = $context_item->getExtraToDoStatusArray();
+                  unset($status_array[$iid]);
+                  $context_item->setExtraToDoStatusArray($status_array);
+                  $context_item->save();
+               }
+            }
+         }
+
+         $params = array();
+         if (empty($delete_id)) {
+           $params['focus_element_onload'] = $change_id;
+         }
+         redirect($environment->getCurrentContextID(),'configuration', 'rubric_extras', $params);
+      }elseif (!empty($command) and isOption($command, getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'))){
+          if (isset($_POST['new_status']) and !empty($_POST['new_status'])){
+             $context_item = $environment->getCurrentContextItem();
+             $status_array = $context_item->getExtraToDoStatusArray();
+             $status_number = 5;
+             foreach ($status_array as $key => $value){
+                if ($key >= $status_number){
+                  $status_number = $key+1;
+                }
+             }
+             $status_array[$status_number] = $_POST['new_status'];
+             $context_item->setExtraToDoStatusArray($status_array);
+             $context_item->save();
+             $params = array();
+             $params['focus_element_onload'] = 'new_status';
+             redirect($environment->getCurrentContextID(),
+                'configuration', 'rubric_extras', $params);
+          }
+       }
+
       if (isset($context_item) and !$context_item->mayEditRegular($current_user)) {
          $form_view->warnChanger();
          $params = array();

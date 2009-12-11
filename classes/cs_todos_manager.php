@@ -199,7 +199,7 @@ class cs_todos_manager extends cs_manager {
       }
       if (isset($this->_status_limit)) {
          if ($this->_status_limit == 4){
-            $query .= ' AND (todos.status = "1" OR todos.status="2")';
+            $query .= ' AND (todos.status != "3")';
          }else{
             $query .= ' AND (todos.status = "'.encode(AS_DB,$this->_status_limit).'" )';
          }

@@ -109,11 +109,17 @@ class cs_todo_item extends cs_item {
    function getStatus () {
       $value = $this->_getValue('status');
       if ($value =='2') {
-        return getMessage('TODO_IN_POGRESS');
+         return getMessage('TODO_IN_POGRESS');
       } elseif ($value =='3') {
-        return getMessage('TODO_DONE');
+         return getMessage('TODO_DONE');
       } else {
-        return getMessage('TODO_NOT_STARTED');
+         $context_item = $this->_environment->getCurrentContextItem();
+         $extra_status_array = $context_item->getExtraToDoStatusArray();
+         if (isset($extra_status_array[$value])){
+            return $extra_status_array[$value];
+         }else{
+            return getMessage('TODO_NOT_STARTED');
+         }
       }
    }
 

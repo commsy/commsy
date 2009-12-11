@@ -44,7 +44,7 @@ class cs_todo_index_view extends cs_room_index_view {
       $this->cs_room_index_view($params);
       $this->setTitle($this->_translator->getMessage('TODO_HEADER'));
       $this->setActionTitle($this->_translator->getMessage('COMMON_TODO'));
-      $this->setColspan(5);
+      $this->setColspan(6);
     }
 
 
@@ -621,6 +621,22 @@ class cs_todo_index_view extends cs_room_index_view {
          $html .= ' selected="selected"';
       }
       $html .= '>'.$this->_translator->getMessage('TODO_DONE').'</option>'.LF;
+
+      $context_item = $this->_environment->getCurrentContextItem();
+      $extra_status_array = $context_item->getExtraToDoStatusArray();
+      if (!empty($extra_status_array)){
+         $html .= '      <option value="-2" disabled="disabled"';
+         $html .= '>------------------</option>'.LF;
+         foreach ($extra_status_array as $key => $value){
+            $html .= '      <option value="'.$key.'"';
+            if (  isset($selstatus) and $selstatus == $key ) {
+               $html .= ' selected="selected"';
+            }
+            $html .= '>'.$value.'</option>'.LF;
+         }
+
+      }
+
       $html .= '      <option value="-2" disabled="disabled"';
       $html .= '>------------------</option>'.LF;
       $html .= '      <option value="4"';

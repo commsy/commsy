@@ -2091,6 +2091,25 @@ class cs_context_item extends cs_item {
       $this->_setModeratorLinkActivity(-1);
    }
 
+
+
+   function getExtraToDoStatusArray(){
+      $retour = array();
+      if ( $this->_issetExtra('TODOEXTRASTATUSARRAY') ) {
+         $retour = $this->_getExtra('TODOEXTRASTATUSARRAY');
+      }
+      return $retour;
+   }
+
+   function setExtraToDoStatusArray($array){
+      if(!$this->_issetExtra('TODOEXTRASTATUSARRAY')){
+         $this->_addExtra('TODOEXTRASTATUSARRAY',$array);
+      } else {
+         $this->_setExtra('TODOEXTRASTATUSARRAY',$array);
+      }
+      return ;
+   }
+
    function setTemplateAvailability($value) {
          if(!$this->_issetExtra('TEMPLATE_AVAILABILITY'))
          {
@@ -2223,6 +2242,10 @@ class cs_context_item extends cs_item {
       }
       return $retour and $this->isHomepageLinkActive();
    }
+
+
+
+
 
    ##########################################
    # Wiki - Raum-Wiki
