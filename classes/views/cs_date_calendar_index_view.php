@@ -210,22 +210,22 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$params,$this->_translator->getMessage('DATES_COMMON_DISPLAY')).LF;
       $html .='</td>'.LF;
       $html .='</tr>'.LF;
-      $html .='<tr>'.LF;
-      $html .='<td colspan="2">'.LF;
-      $html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
-      $html .= '<option value="2"';
-      if ($this->_presentation_mode == '2'){
-         $html .= ' selected="selected"';
-      }
-      $html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
-      $html .= '      <option value="1"';
-      if ($this->_presentation_mode != '2'){
-         $html .= ' selected="selected"';
-      }
-      $html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
-      $html .= '   </select>'.LF;
-      $html .='</td>'.LF;
-      $html .='</tr>'.LF;
+      #$html .='<tr>'.LF;
+      #$html .='<td colspan="2">'.LF;
+      #$html .= '<select style="width: 10em; font-size:10pt;" name="presentation_mode" size="1" id="submit_form">'.LF;
+      #$html .= '<option value="2"';
+      #if ($this->_presentation_mode == '2'){
+      #   $html .= ' selected="selected"';
+      #}
+      #$html .= '>'.$this->_translator->getMessage('DATE_MONTH_PRESENTATION').'</option>'.LF;
+      #$html .= '      <option value="1"';
+      #if ($this->_presentation_mode != '2'){
+      #   $html .= ' selected="selected"';
+      #}
+      #$html .= '>'.$this->_translator->getMessage('DATE_WEEK_PRESENTATION').'</option>'.LF;
+      #$html .= '   </select>'.LF;
+      #$html .='</td>'.LF;
+      #$html .='</tr>'.LF;
       $html .='</table>'.LF;
 
 
@@ -328,33 +328,40 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= $this->_getListActionsAsHTML();
       $html .='</div>';
       $html .='<div>';
-      $date = date("Y-m-d");
-      $date_array = explode('-',$date);
-      $month = mb_substr($this->_month,4,2);
-      $first_char = mb_substr($month,0,1);
-      if ($first_char == '0'){
-         $month = mb_substr($month,1,2);
-      }
-      $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
-            $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
-            $this->_translator->getMessage('DATES_MARCH_LONG'),
-            $this->_translator->getMessage('DATES_APRIL_LONG'),
-            $this->_translator->getMessage('DATES_MAY_LONG'),
-            $this->_translator->getMessage('DATES_JUNE_LONG'),
-            $this->_translator->getMessage('DATES_JULY_LONG'),
-            $this->_translator->getMessage('DATES_AUGUST_LONG'),
-            $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
-            $this->_translator->getMessage('DATES_OCTOBER_LONG'),
-            $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
-            $this->_translator->getMessage('DATES_DECEMBER_LONG'));
-      $tempMessage = $month_array[$month-1].' '.$this->_year;
-      if ($this->_clipboard_mode){
-          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
-      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
-         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
-      }else{
-          $html .= '<h2 class="pagetitle">'.$tempMessage;
-      }
+      
+      if($this->use_sunbird){
+      	$html .= $this->_getSwitchIconBar();
+      } else {
+	      $date = date("Y-m-d");
+	      $date_array = explode('-',$date);
+	      $month = mb_substr($this->_month,4,2);
+	      $first_char = mb_substr($month,0,1);
+	      if ($first_char == '0'){
+	         $month = mb_substr($month,1,2);
+	      }
+	      $month_array = array($this->_translator->getMessage('DATES_JANUARY_LONG'),
+	            $this->_translator->getMessage('DATES_FEBRUARY_LONG'),
+	            $this->_translator->getMessage('DATES_MARCH_LONG'),
+	            $this->_translator->getMessage('DATES_APRIL_LONG'),
+	            $this->_translator->getMessage('DATES_MAY_LONG'),
+	            $this->_translator->getMessage('DATES_JUNE_LONG'),
+	            $this->_translator->getMessage('DATES_JULY_LONG'),
+	            $this->_translator->getMessage('DATES_AUGUST_LONG'),
+	            $this->_translator->getMessage('DATES_SEPTEMBER_LONG'),
+	            $this->_translator->getMessage('DATES_OCTOBER_LONG'),
+	            $this->_translator->getMessage('DATES_NOVEMBER_LONG'),
+	            $this->_translator->getMessage('DATES_DECEMBER_LONG'));
+	      $tempMessage = $month_array[$month-1].' '.$this->_year;
+	      if ($this->_clipboard_mode){
+	          $html .= '<h2 class="pagetitle">'.getMessage('CLIPBOARD_HEADER').' ('.$tempMessage.')';
+	      }elseif ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions' ) {
+	         $html .= '<h2 class="pagetitle">'.getMessage('COMMON_ASSIGN').' ('.$tempMessage.')';
+	      }else{
+	          $html .= '<h2 class="pagetitle">'.$tempMessage;
+	      }
+   	  }
+      
+      
       $html .= '</h2>'.LF;
       $html .='</div>'.LF;
       $html .='</div>';
@@ -1871,7 +1878,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    
    function _getMonthContentAsHTMLWithJavascript() {
       $current_time = localtime();
-
+	  $today = '';
+	  
       //Do some time calculations
       $month = mb_substr($this->_month,4,2);
       $year = $this->_year;
@@ -2064,6 +2072,10 @@ class cs_date_calendar_index_view extends cs_room_index_view {
 //            if (!empty($dates_on_day)){
 //               $entries = count($dates_on_day);
 //               $link_lines = 6-$entries;
+
+         if($format_array[$i]['day'].$current_month[$i].$current_year[$i] == date("dmY")){
+            $today = $format_array[$i]['day'].$current_month[$i].$current_year[$i];
+         }
 
          if(isset($format_array[$i]['dates']) and !empty($format_array[$i]['dates'])){
             foreach($format_array[$i]['dates'] as $date){
@@ -2334,7 +2346,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
          }
       }
       $html .= ');'.LF;
-      //$html .= 'var today = "' . $today . '";' .LF;
+      $html .= 'var today = "' . $today . '";' .LF;
       $html .= '-->'.LF;
       $html .= '</script>'.LF;
       
@@ -3338,6 +3350,61 @@ class cs_date_calendar_index_view extends cs_room_index_view {
         $ret['year'] = $year +1;
       }
       return $ret;
+   }
+   
+   function _getSwitchIconBar(){
+      $params = $this->_environment->getCurrentParameterArray();
+      if($params['presentation_mode'] == 1){
+	      $day = date('D');
+	      if($day == 'Mon'){
+	         $params['week'] = time();
+	      } elseif ($day == 'Tue'){
+	         $params['week'] = time() - (3600 * 24);
+	      } elseif ($day == 'Wed'){
+	         $params['week'] = time() - (3600 * 24 * 2);
+	      } elseif ($day == 'Thu'){
+	         $params['week'] = time() - (3600 * 24 * 3);
+	      } elseif ($day == 'Fri'){
+	         $params['week'] = time() - (3600 * 24 * 4);
+	      } elseif ($day == 'Sat'){
+	         $params['week'] = time() - (3600 * 24 * 5);
+	      } elseif ($day == 'Sun'){
+	         $params['week'] = time() - (3600 * 24 * 6);
+	      }
+      } elseif($params['presentation_mode'] == 2){
+      	$params['month'] = date("Ymd");
+      }
+      $today = ahref_curl($this->_environment->getCurrentContextID(),
+                                CS_DATE_TYPE,
+                                'index',
+                                $params,
+                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_today.png" style="height:22px;"/><br/>Heute</div>',
+                                '').LF;
+      unset($params['week']);
+      unset($params['month']);
+      $params['presentation_mode'] = '1';
+      $params['week'] = $this->_week;
+      $week = ahref_curl($this->_environment->getCurrentContextID(),
+                                CS_DATE_TYPE,
+                                'index',
+                                $params,
+                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_week.png" style="height:22px;"/><br/>Woche</div>',
+                                '').LF;
+      unset($params['week']);
+      $params['presentation_mode'] = '2';
+      $params['month'] = $this->_month;
+      $month = ahref_curl($this->_environment->getCurrentContextID(),
+                                CS_DATE_TYPE,
+                                'index',
+                                $params,
+                                '<div style="float:left; text-align:center;"><img src="images/commsyicons/date_month.png" style="height:22px;"/><br/>Monat</div>',
+                                '').LF;
+      unset($params['month']);
+    $header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle">
+<img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>
+ Termine
+</h2></div>';
+   	return $header . $today . $week . $month;
    }
 }
 ?>
