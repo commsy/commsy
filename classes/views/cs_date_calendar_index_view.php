@@ -1005,7 +1005,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 '').LF;
       #return getMessage('COMMON_WEEK').':'.$left.$html.$right;
       $return = '<div style="width:100%; height:30px; position:relative">';
-      $return .= '<div style="position:absolute; bottom:0px; left:0px;">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $return .= date('d.m.Y', $this->_week_start) . ' - ';
@@ -1295,7 +1295,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $next_image,
                                 '').LF;
       $return = '<div style="width:100%; height:40px; position:relative;">';
-      $return .= '<div style="position:absolute; bottom:0px; left:0px;">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px; z-index:1000;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $return .= $month_array[$month -1] . ' ' . $year;
