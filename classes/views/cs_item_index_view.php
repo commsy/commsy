@@ -365,7 +365,7 @@ var $_sel_rubric = '';
    function _getStatus($item){
       $user = $this->_environment->getCurrentUser();
       $context = $this->_environment->getCurrentContextItem();
-      if ($context->withTodoManagment()){
+      if ($context->withTodoManagement()){
          $step_html = '';
          $step_minutes = 0;
          $step_item_list = $item->getStepItemList();

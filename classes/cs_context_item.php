@@ -497,7 +497,7 @@ class cs_context_item extends cs_item {
    }
 
 
-   function withTodoManagment(){
+   function withTodoManagement(){
       $retour = false;
       if ($this->_issetExtra('TODOMANAGEMENT') ){
          $re = $this->_getExtra('TODOMANAGEMENT');

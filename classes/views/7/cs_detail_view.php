@@ -1251,7 +1251,7 @@ class cs_detail_view extends cs_view {
              or !$this->_environment->inPrivateRoom()
            )
            and !( $rubric == CS_TODO_TYPE
-                  and !$current_context->withTodoManagment()
+                  and !$current_context->withTodoManagement()
                 )
          ) {
 
@@ -1268,7 +1268,7 @@ class cs_detail_view extends cs_view {
          if ( $rubric == CS_TODO_TYPE
               and $this->_with_modifying_actions
             ) {
-            if ( $current_context->withTodoManagment() ){
+            if ( $current_context->withTodoManagement() ){
                $html .= $this->_getTodoFormAsHTML();
             }
             $html .= '</div>'.LF;

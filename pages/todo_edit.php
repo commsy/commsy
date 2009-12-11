@@ -314,7 +314,7 @@ else {
                $todo_item->setPlannedTime($minutes);
             }
 
-            if (isset($_POST['dayEnd'])) {
+            if (isset($_POST['dayEnd']) and !empty($_POST['dayEnd'])) {
                $date2 = convertDateFromInput($_POST['dayEnd'],$environment->getSelectedLanguage());
                if (!empty($_POST['timeEnd'])) {
                   $time_end = $_POST['timeEnd'];
@@ -330,6 +330,8 @@ else {
                } else {
                   $todo_item->setDate($date2['display']. ' '.$time2['display']);
                }
+            }else{
+               $todo_item->setDate('9999-00-00 00:00:00');
             }
 
             // files

@@ -1732,7 +1732,10 @@ EOD;
             $parameter_array = $this->_environment->getCurrentParameterArray();
             if (
                 (isset($parameter_array['attribute_limit']) and $parameter_array['attribute_limit']!='0')
-                or (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
+                or (
+                   (isset($parameter_array['selstatus']) and $parameter_array['selstatus']!='0')
+                   or ($this->_environment->getCurrentModule() == CS_TODO_TYPE)
+                   )
                 or (isset($parameter_array['selgroup']) and $parameter_array['selgroup']!='0')
                 or (isset($parameter_array['selrubric']) and !empty($parameter_array['selrubric']))
                 or (isset($parameter_array['selrestriction']) and !empty($parameter_array['selrestriction']))

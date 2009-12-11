@@ -121,7 +121,12 @@ class cs_todo_index_view extends cs_room_index_view {
       $params = $this->_getGetParamsAsArray();
       $params['from'] = 1;
       $html = '   <tr class="head">'.LF;
-      $html .= '      <td class="head" style="width:40%;" colspan="2">';
+      $context = $this->_environment->getCurrentContextItem();
+      if ($context->withTodoManagement()){
+         $html .= '      <td class="head" style="width:35%;" colspan="2">';
+      }else{
+         $html .= '      <td class="head" style="width:40%;" colspan="2">';
+      }
       if ( $this->getSortKey() == 'title' ) {
          $params['sort'] = 'title_rev';
          $picture = '&nbsp;<img src="' . getSortImage('up') . '" alt="&lt;" border="0"/>';
@@ -142,6 +147,7 @@ class cs_todo_index_view extends cs_room_index_view {
       }
       $html .= $picture;
       $html .= '</td>'.LF;
+
 
       $html .= '      <td style="width:15%; font-size:8pt;" class="head">';
       if ( $this->getSortKey() == 'status' ) {
@@ -187,8 +193,15 @@ class cs_todo_index_view extends cs_room_index_view {
       $html .= $picture;
       $html .= '</td>'.LF;
 
+      if ($context->withTodoManagement()){
+         $html .= '<td style="width:8%; font-size:8pt;" class="head">'.LF;
+         $html .= $this->_translator->getMessage('TODO_PROCESS');
+         $html .= '</td>'.LF;
+      }
 
-      $html .= '      <td style="width:35%; font-size:8pt;" class="head">';
+
+
+      $html .= '      <td style="width:33%; font-size:8pt;" class="head">';
       $text = $this->_translator->getMessage('TODO_RESPONSIBILITY');
       $html .= $text;
       $html .= '</td>'.LF;
@@ -203,10 +216,19 @@ class cs_todo_index_view extends cs_room_index_view {
 
    function _getTablefootAsHTML() {
       $html  = '   <tr class="list">'.LF;
+      $context = $this->_environment->getCurrentContextItem();
       if ( $this->hasCheckboxes() and $this->_has_checkboxes != 'list_actions') {
-         $html .= '<td class="foot_left" colspan="3"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         if ($context->withTodoManagement()){
+            $html .= '<td class="foot_left" colspan="4"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         }else{
+            $html .= '<td class="foot_left" colspan="3"><input style="font-size:8pt;" type="submit" name="option" value="'.$this->_translator->getMessage('COMMON_ATTACH_BUTTON').'" /> <input type="submit"  style="font-size:8pt;" name="option" value="'.$this->_translator->getMessage('COMMON_CANCEL_BUTTON').'"/>';
+         }
       }else{
-         $html .= '<td class="foot_left" colspan="3" style="vertical-align:middle;">'.LF;
+         if ($context->withTodoManagement()){
+            $html .= '<td class="foot_left" colspan="4" style="vertical-align:middle;">'.LF;
+         }else{
+            $html .= '<td class="foot_left" colspan="3" style="vertical-align:middle;">'.LF;
+         }
          $html .= '<span class="select_link">[</span>';
          $params = $this->_environment->getCurrentParameterArray();
          $params['select'] = 'all';
@@ -347,6 +369,10 @@ class cs_todo_index_view extends cs_room_index_view {
       }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getStatus($item).'</td>'.LF;
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getDateInLang($item).'</td>'.LF;
+      $context = $this->_environment->getCurrentContextItem();
+      if ($context->withTodoManagement()){
+         $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getProcess($item).'</td>'.LF;
+      }
       $html .= '      <td '.$style.' style="font-size:8pt;">'.$this->_getProcessors($item).'</td>'.LF;
       $html .= '   </tr>'.LF;
 
@@ -397,7 +423,105 @@ class cs_todo_index_view extends cs_room_index_view {
       if ($status !=$this->_translator->getMessage('TODO_DONE') and $original_date < $actual_date){
          $date = '<span class="required">'.$date.'</span>';
       }
+      if ($original_date == '9999-00-00 00:00:00'){
+      	 $date = $this->_translator->getMessage('TODO_NO_END_DATE');
+      }
       return $date;
+   }
+
+   function _getProcess($item){
+      $step_html = '';
+      $step_minutes = 0;
+      $step_item_list = $item->getStepItemList();
+      if ( $step_item_list->isEmpty() ) {
+         $status = $this->_compareWithSearchText($item->getStatus());
+      } else {
+         $step = $step_item_list->getFirst();
+         $count = $step_item_list->getCount();
+         $counter = 0;
+         while ($step) {
+            $counter++;
+            $step_minutes = $step_minutes + $step->getMinutes();
+            $step = $step_item_list->getNext();
+         }
+      }
+      $done_time = '';
+      $done_percentage = 100;
+      if ($item->getPlannedTime() > 0){
+         $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
+      }
+
+      $tmp_message = $this->_translator->getMessage('COMMON_MINUTES');
+      $step_minutes_text = $step_minutes;
+      if (($step_minutes/60)>1 and ($step_minutes/60)<=8){
+         $step_minutes_text = '';
+         $exact_minutes = $step_minutes/60;
+         $step_minutes = round($exact_minutes,1);
+         if ($step_minutes != $exact_minutes){
+            $step_minutes_text .= 'ca. ';
+         }
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+         $step_minutes_text .= $step_minutes;
+         $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
+         if ($step_minutes == 1){
+            $tmp_message = $this->_translator->getMessage('COMMON_HOUR');
+         }
+       }elseif(($step_minutes/60)>8){
+         $exact_minutes = ($step_minutes/60)/8;
+         $step_minutes = round($exact_minutes,1);
+         $step_minutes_text = '';
+         if ($step_minutes != $exact_minutes){
+            $step_minutes_text .= 'ca. ';
+         }
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+         $step_minutes_text .= $step_minutes;
+         $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
+         if ($step_minutes == 1){
+            $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+         }
+      }else{
+         $step_minutes = round($step_minutes,1);
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $step_minutes = str_replace('.',',',$step_minutes);
+         }
+      }
+      $shown_time = $step_minutes_text.' '.$tmp_message;
+      $display_time_text = $shown_time.' - '.round($done_percentage).'% '.$this->_translator->getMessage('TODO_DONE');
+
+      if($done_percentage <= 100){
+         $style = ' height: 8px; background-color: #75ab05; ';
+         $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin-left: 0px; height: 8px; width: 60px;">'.LF;
+         if ( $done_percentage >= 30 ) {
+            $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+         } else {
+            $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
+         }
+         $done_time .= '      </div>'.LF;
+      }elseif($done_percentage <= 120){
+         $done_percentage = (100 / $done_percentage) *100;
+         $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
+         $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      </div>'.LF;
+         $done_time .= '</div>'.LF;
+      }else{
+         $done_percentage = (100 / $done_percentage) *100;
+         $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
+         $done_time .= '         <div title="'.$display_time_text.'" style="width: 60px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
+         $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
+         $done_time .= '      </div>'.LF;
+         $done_time .= '</div>'.LF;
+      }
+      if ($item->getPlannedTime() > 0){
+         $process = $done_time;
+      }else{
+      	$process = $shown_time;
+      }
+      return $process;
    }
 
    /** get the status of the item
@@ -409,62 +533,7 @@ class cs_todo_index_view extends cs_room_index_view {
     */
    function _getStatus($item){
       $user = $this->_environment->getCurrentUser();
-      $context = $this->_environment->getCurrentContextItem();
-      if ($context->withTodoManagment()){
-         $step_html = '';
-         $step_minutes = 0;
-         $step_item_list = $item->getStepItemList();
-         if ( $step_item_list->isEmpty() ) {
-            $status = $this->_compareWithSearchText($item->getStatus());
-         } else {
-            $step = $step_item_list->getFirst();
-            $count = $step_item_list->getCount();
-            $counter = 0;
-            while ($step) {
-               $counter++;
-               $step_minutes = $step_minutes + $step->getMinutes();
-               $step = $step_item_list->getNext();
-            }
-         }
-         $done_time = '';
-
-         $done_percentage = 100;
-         if ($item->getPlannedTime() > 0){
-            $done_percentage = $step_minutes / $item->getPlannedTime() * 100;
-         }
-
-         if($done_percentage <= 100){
-            $style = ' height: 8px; background-color: #75ab05; ';
-            $done_time .= '      <div style="border: 1px solid #444;  margin-left: 0px; height: 8px; width: 70px;">'.LF;
-            if ( $done_percentage >= 30 ) {
-               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
-            } else {
-               $done_time .= '         <div style="font-size: 2pt; '.$style.'width:'.$done_percentage.'%; color:#000000;">&nbsp;</div>'.LF;
-            }
-            $done_time .= '      </div>'.LF;
-         }elseif($done_percentage <= 120){
-            $done_percentage = (100 / $done_percentage) *100;
-            $style = ' height: 10px; border: 1px solid #444; background-color: #f2f030; ';
-            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
-            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:10px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
-            $done_time .= '      </div>'.LF;
-            $done_time .= '</div>'.LF;
-         }else{
-            $done_percentage = (100 / $done_percentage) *100;
-            $style = ' height: 8px; border: 1px solid #444; background-color: #f23030; ';
-            $done_time .= '         <div style="width: 70px; font-size: 2pt; '.$style.' color:#000000;">'.LF;
-            $done_time .= '      <div style="border-right: 1px solid #444; margin-left: 0px; height:8px;  background-color:none; width:'.$done_percentage.'%;">'.LF;
-            $done_time .= '      </div>'.LF;
-            $done_time .= '</div>'.LF;
-         }
-         if ($step_minutes >0 ){
-            $status = $done_time;
-         }else{
-            $status = $this->_compareWithSearchText($item->getStatus());
-         }
-      }else{
-         $status = $this->_compareWithSearchText($item->getStatus());
-      }
+      $status = $this->_compareWithSearchText($item->getStatus());
       return $status;
    }
 

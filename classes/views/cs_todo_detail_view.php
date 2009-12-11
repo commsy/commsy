@@ -76,6 +76,11 @@ class cs_todo_detail_view extends cs_detail_view {
          $date = '<span class="required">'.$date.'</span>';
       }
 
+      if ($original_date == '9999-00-00 00:00:00'){
+      	 $date = $this->_translator->getMessage('TODO_NO_END_DATE_LONG');
+      }
+
+
       // Members
       $member_html = '';
       $members = $item->getProcessorItemList();
@@ -151,7 +156,7 @@ class cs_todo_detail_view extends cs_detail_view {
       $temp_array[0] = $this->_translator->getMessage('TODO_STATUS');
       $temp_array[1] = $item->getStatus();
       $formal_data[] = $temp_array;
-      if ($context->withTodoManagment()){
+      if ($context->withTodoManagement()){
          $step_html = '';
          $step_minutes = 0;
          $step_item_list = $item->getStepItemList();
@@ -302,7 +307,52 @@ class cs_todo_detail_view extends cs_detail_view {
             $temp_array[1] = $minutes.' '.$tmp_message;
             $formal_data[] = $temp_array;
          }
-         if ($done_percentage >0 ){
+
+         elseif ($item->getPlannedTime() == 0 and $done_percentage >0 ){
+            $tmp_message = $this->_translator->getMessage('COMMON_MINUTES');
+            $done_time = $step_minutes;
+            if (($step_minutes/60)>1 and ($step_minutes/60)<=8){
+               $step_minutes_text = '';
+               $exact_minutes = $step_minutes/60;
+               $step_minutes = round($exact_minutes,1);
+               if ($step_minutes != $exact_minutes){
+                  $done_time .= 'ca. ';
+               }
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
+               }
+               $done_time .= $step_minutes;
+               $tmp_message = $this->_translator->getMessage('COMMON_HOURS');
+               if ($step_minutes == 1){
+                  $tmp_message = $this->_translator->getMessage('COMMON_HOUR');
+               }
+
+            }elseif(($step_minutes/60)>8){
+               $exact_minutes = ($step_minutes/60)/8;
+               $step_minutes = round($exact_minutes,1);
+               $done_time = '';
+               if ($step_minutes != $exact_minutes){
+                  $done_time .= 'ca. ';
+               }
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
+               }
+               $done_time .= $step_minutes;
+               $tmp_message = $this->_translator->getMessage('COMMON_DAYS');
+               if ($step_minutes == 1){
+                  $tmp_message = $this->_translator->getMessage('COMMON_DAY');
+               }
+            }else{
+               $step_minutes = round($step_minutes,1);
+               if ($this->_translator->getSelectedLanguage() == 'de'){
+                  $step_minutes = str_replace('.',',',$step_minutes);
+               }
+            }
+            $done_time .= ' '.$tmp_message;
+         }
+
+
+         if ($done_percentage >0 or $item->getPlannedTime() > 0){
             $temp_array[0] = $this->_translator->getMessage('TODO_DONE_MINUTES');
             $temp_array[1] = $done_time;
             $formal_data[] = $temp_array;
@@ -326,7 +376,7 @@ class cs_todo_detail_view extends cs_detail_view {
       }
 
 
-      if ($context->withTodoManagment()){
+      if ($context->withTodoManagement()){
          $temp_array = array();
          $formal_data = array();
          $temp_array[0] = $this->_translator->getMessage('TODO_STEPS');

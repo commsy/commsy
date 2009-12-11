@@ -88,7 +88,8 @@ class cs_todo_item extends cs_item {
    * @return datetime date of a todo
    */
    function getDate () {
-      return $this->_getValue('end_date');
+   	  $date = $this->_getValue('end_date');
+      return $date;
    }
 
   /** set date of a todo
@@ -158,7 +159,7 @@ class cs_todo_item extends cs_item {
 
       // steps
       $context_item = $this->_environment->getCurrentContextItem();
-      if ($context_item->withTodoManagment()){
+      if ($context_item->withTodoManagement()){
          $step_list = clone $this->getStepItemList();
          if ( $step_list->isNotEmpty() ) {
             $step_item = $step_list->getFirst();

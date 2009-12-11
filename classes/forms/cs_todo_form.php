@@ -237,10 +237,10 @@ class cs_todo_form extends cs_rubric_form {
                               getMessage('TODO_DATE'),
                               getMessage('DATES_END_DAY'),
                               getMessage('DATES_END_TIME'),
-                              getMessage('TODO_TIME_DAY_END_DESC'),true,false);
+                              getMessage('TODO_TIME_DAY_END_DESC'),false,false);
 
       $current_context = $this->_environment->getCurrentContextItem();
-      if($current_context->withTodoManagment()){
+      if($current_context->withTodoManagement()){
          $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
 
          $time_type = array();
@@ -413,12 +413,12 @@ class cs_todo_form extends cs_rubric_form {
 
          $this->_values['minutes'] = $minutes;
 
-         if (!$this->_item->getDate() == '') {
+         if ($this->_item->getDate() != '' and $this->_item->getDate() != '9999-00-00 00:00:00') {
             $this->_values['end_date_time'][] = getDateInLang($this->_item->getDate());
          } else {
             $this->_values['end_date_time'][]= '';
          }
-         if (!$this->_item->getDate()== '') {
+         if ($this->_item->getDate() != '' and $this->_item->getDate() != '9999-00-00 00:00:00') {
             $this->_values['end_date_time'][] = getTimeInLang($this->_item->getDate());
          } else {
             $this->_values['end_date_time'][]= '';
@@ -460,6 +460,7 @@ class cs_todo_form extends cs_rubric_form {
             }
          }
       } else {
+         $this->_values['status'] = '1';
          if ($current_context->withActivatingContent()){
             if ( !isset($this->_values['private_editing']) ) {
                $this->_values['private_editing'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'0':'1'; //In projectrooms everybody can edit the item by default, else default is creator only

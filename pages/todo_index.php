@@ -132,7 +132,7 @@ if ( isset($_GET['interval']) ) {
 if ( isset($_GET['sort']) ) {
    $sort = $_GET['sort'];
 } else {
-   $sort = 'date_rev';
+   $sort = 'date';
 }
 
 // Search / Select Area
@@ -216,7 +216,7 @@ if ( isset($_GET['option']) and isOption($_GET['option'],getMessage('COMMON_RESE
    if ( isset($_GET['selstatus']) and $_GET['selstatus'] !='-2') {
       $selstatus = $_GET['selstatus'];
    } else {
-      $selstatus = 0;
+      $selstatus = 4;
    }
 }
 
@@ -522,7 +522,7 @@ $item = $step_list->getFirst();
 while ($item) {
    $id_array[] = $item->getItemID();
    $item = $step_list->getNext();
-}      
+}
 
 // caching
 $link_manager = $environment->getLinkManager();
