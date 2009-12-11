@@ -10,6 +10,7 @@ $message["DATES_AS_OF_LOWER"]["en"] = "as of";
 $message["DATES_AUGUST_LONG"]["en"] = "August";
 $message["DATES_AUGUST_SHORT"]["en"] = "Aug";
 $message["DATES_CALENDARWEEK"]["en"] = "Calendarweek";
+$message["DATES_CALENDARWEEKS"]["en"] = "Calendarweeks";
 $message["DATES_CHANGE_BUTTON"]["en"] = "Save event";
 $message["DATES_CHANGE_CALENDAR"]["en"] = "Calendar";
 $message["DATES_COLOR"]["en"] = "Color";
