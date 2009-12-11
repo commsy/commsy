@@ -330,7 +330,8 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .='<div>';
       
       if($this->use_sunbird){
-      	$html .= $this->_getSwitchIconBar();
+      	//$html .= $this->_getSwitchIconBar();
+      	$html .= '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       } else {
 	      $date = date("Y-m-d");
 	      $date_array = explode('-',$date);
@@ -1003,15 +1004,18 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $next_image,
                                 '').LF;
       #return getMessage('COMMON_WEEK').':'.$left.$html.$right;
-      $return = '<div style="width:100%; height:1.5em; position:relative">';
-      $return .= '<div style="position:absolute; top;0px; left:0px;">';
+      $return = '<div style="width:100%; height:30px; position:relative">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $return .= date('d.m.Y', $this->_week_start) . ' - ';
       $return .= date('d.m.Y', $this->_week_start + ( 3600 * 24 * 6));
       $return .= '</span>';
       $return .= '</div>';
-      $return .= '<div style="position:absolute; top;0px; right:0px;">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px; width:100%; text-align:center;">';
+      $return .= $this->_getSwitchIconBar();
+      $return .= '</div>';
+      $return .= '<div style="position:absolute; bottom:0px; right:0px;">';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $calendar_week = date('W', $this->_week_start);
       if($calendar_week[0] == '0'){
@@ -1290,14 +1294,17 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 $params,
                                 $next_image,
                                 '').LF;
-      $return = '<div style="width:100%; height:1.5em; position:relative">';
-      $return .= '<div style="position:absolute; top;0px; left:0px;">';
+      $return = '<div style="width:100%; height:40px; position:relative;">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px;">';
       $return .= $left . $today . $right . '&nbsp;&nbsp;';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $return .= $month_array[$month -1] . ' ' . $year;
       $return .= '</span>';
       $return .= '</div>';
-      $return .= '<div style="position:absolute; top;0px; right:0px;">';
+      $return .= '<div style="position:absolute; bottom:0px; left:0px; width:100%; text-align:center;">';
+      $return .= $this->_getSwitchIconBar();
+      $return .= '</div>';
+      $return .= '<div style="position:absolute; bottom:0px; right:0px;">';
       $return .= '<span style="color: #2e4e73; font-size:1.3em;">';
       $calendar_week = date('W', $this->_week_start);
       if($calendar_week[0] == '0'){
@@ -3353,7 +3360,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
    
    function _getSwitchIconBar(){
-   	  $header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
+   	  //$header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       $params = $this->_environment->getCurrentParameterArray();
       if($params['presentation_mode'] == 1){
 	      $day = date('D');
@@ -3379,7 +3386,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_today.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_TODAY') . '</div>',
+                                $this->_translator->getMessage('DATES_CALENDAR_LINK_TODAY'),
                                 '').LF;
       unset($params['week']);
       unset($params['month']);
@@ -3389,7 +3396,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_week.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_WEEK') . '</div>',
+                                $this->_translator->getMessage('DATES_CALENDAR_LINK_WEEK'),
                                 '').LF;
       unset($params['week']);
       $params['presentation_mode'] = '2';
@@ -3398,10 +3405,15 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center;"><img src="images/commsyicons/date_month.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_MONTH') . '</div>',
+                                $this->_translator->getMessage('DATES_CALENDAR_LINK_MONTH'),
                                 '').LF;
       unset($params['month']);
-   	return $header . $today . $week . $month;
+      $return = '<div id="switch_icon_bar" style="width:150px; margin:auto; text-align:center;">';
+      $return .= '<div id="switch_icon_bar_today" style="text-align:center; height:25px; width:75px; float:left; background-image:url(images/commsyicons/date_today.png); background-repeat:no-repeat; background-position: 50% 0%;">' . $today . '</div>';
+      $return .= '<div id="switch_icon_bar_week" style="text-align:center; height:25px; width:75px; float:left; background-image:url(images/commsyicons/date_week.png); background-repeat:no-repeat; background-position: 50% 0%;">' . $week  . '</div>';
+      $return .= '<div id="switch_icon_bar_month" style="text-align:center; height:25px; width:75px; float:left; background-image:url(images/commsyicons/date_month.png); background-repeat:no-repeat; background-position: 50% 0%;">' . $month . '</div>';
+      $return .= '</div>';
+      return $return;
    }
 }
 ?>
