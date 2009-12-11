@@ -869,6 +869,17 @@ function draw_dates_month(){
 		}
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip");
 	}
+	if(typeof(today) != 'undefined'){
+      if(today != ''){
+         var today_color = '#fdefbf'
+         var day = today.substring(0,2);
+         if(day.substring(0,1) == 0){
+            day = day.substring(1,2);
+         }
+         var month = today.substring(2,4);
+         jQuery('#calendar_month_entry_' + day + '_' + month).css('background-color', today_color);
+      }
+   }
 }
 
 function addNewDateLinks(){

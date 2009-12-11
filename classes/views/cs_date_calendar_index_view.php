@@ -3353,6 +3353,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    }
    
    function _getSwitchIconBar(){
+   	  $header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       $params = $this->_environment->getCurrentParameterArray();
       if($params['presentation_mode'] == 1){
 	      $day = date('D');
@@ -3378,7 +3379,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_today.png" style="height:22px;"/><br/>Heute</div>',
+                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_today.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_TODAY') . '</div>',
                                 '').LF;
       unset($params['week']);
       unset($params['month']);
@@ -3388,7 +3389,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_week.png" style="height:22px;"/><br/>Woche</div>',
+                                '<div style="float:left; text-align:center; padding-right:20px;"><img src="images/commsyicons/date_week.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_WEEK') . '</div>',
                                 '').LF;
       unset($params['week']);
       $params['presentation_mode'] = '2';
@@ -3397,13 +3398,9 @@ class cs_date_calendar_index_view extends cs_room_index_view {
                                 CS_DATE_TYPE,
                                 'index',
                                 $params,
-                                '<div style="float:left; text-align:center;"><img src="images/commsyicons/date_month.png" style="height:22px;"/><br/>Monat</div>',
+                                '<div style="float:left; text-align:center;"><img src="images/commsyicons/date_month.png" style="height:22px;"/><br/>' . $this->_translator->getMessage('DATES_CALENDAR_LINK_MONTH') . '</div>',
                                 '').LF;
       unset($params['month']);
-    $header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle">
-<img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>
- Termine
-</h2></div>';
    	return $header . $today . $week . $month;
    }
 }
