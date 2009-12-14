@@ -109,7 +109,7 @@ class cs_configuration_extra_form extends cs_rubric_form {
 
       $this->_array_extra[22]['text']  = $this->_translator->getMessage('HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE');
       $this->_array_extra[22]['value'] = 'HOMEPAGE_CONFIGURATION_EXTRA_HOMEPAGE';
-      #$this->_array_extra[23]['text']  = getMessage('CONFIGURATION_EXTRA_PDA');
+      #$this->_array_extra[23]['text']  = $this->_translator->getMessage('CONFIGURATION_EXTRA_PDA');
       #$this->_array_extra[23]['value'] = 'CONFIGURATION_EXTRA_PDA';
       global $c_pmwiki;
       if ( isset($c_pmwiki) and  $c_pmwiki ) {
@@ -200,6 +200,12 @@ class cs_configuration_extra_form extends cs_rubric_form {
          if ( !$room_list->isEmpty() ) {
             $room = $room_list->getFirst();
             while ($room) {
+               // skip entry if room is grouproom
+               if( $room->isGroupRoom() ) {
+                  $room = $room_list->getNext();
+                  continue;
+               }
+               
                $type = '';
                if ( $room->isProjectRoom() ) {
                   $type = ' ('.$translator->getMessage('ROOM_TYPE_PROJECT').')';

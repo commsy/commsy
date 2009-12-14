@@ -689,6 +689,7 @@ class cs_grouproom_item extends cs_room_item {
    }
 
    public function getUsageInfoHeaderForRubric($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
          if ( empty($retour) ) {
@@ -700,7 +701,7 @@ class cs_grouproom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -719,6 +720,7 @@ class cs_grouproom_item extends cs_room_item {
    }
 
    public function getUsageInfoHeaderForRubricForm($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
          if ( empty($retour) ) {
@@ -730,7 +732,7 @@ class cs_grouproom_item extends cs_room_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -857,20 +859,6 @@ class cs_grouproom_item extends cs_room_item {
          $retour = '';
       }
       return $retour;
-   }
-
-   public function withChatLink(){
-      $linked_project_item = $this->getLinkedProjectItem();
-      if(isset($linked_project_item)){
-         return $this->getLinkedProjectItem()->withChatLink();
-      }
-   }
-   
-   public function withMaterialImportLink(){
-      $linked_project_item = $this->getLinkedProjectItem();
-      if(isset($linked_project_item)){
-         return $this->getLinkedProjectItem()->withMaterialImportLink();
-      }
    }
    
    ################################################################
@@ -1104,6 +1092,78 @@ class cs_grouproom_item extends cs_room_item {
          $mail->send();
          $translator->setSelectedLanguage($save_language);
          unset($save_language);
+      }
+   }
+   
+   #######################################################
+   # linking calls for extras to the parent project room #
+   #######################################################
+   public function withAds() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withAds();
+      }
+   }
+   
+   public function withGrouproomFunctions() {
+      // grouprooms can not have grouprooms
+      return false;
+   }
+   
+   public function withLogArchive() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withLogArchive();
+      }
+   }
+   
+   public function withPDAView() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withPDAView();
+      }
+   }
+   
+   public function withHomepageLink() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withHomepageLink();
+      }
+   }
+   
+   public function withWikiFunctions() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withWikiFunctions();
+      }
+   }
+   
+   public function withChatLink(){
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withChatLink();
+      }
+   }
+   
+   public function withMaterialImportLink() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withMaterialImportLink();
+      }
+   }
+   
+   public function withActivatingContent() {
+      // point to linked project item
+      $linked_project_item = $this->getLinkedProjectItem();
+      if( isset($linked_project_item) ) {
+         return $linked_project_item->withActivatingContent();
       }
    }
 }
