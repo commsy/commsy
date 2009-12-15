@@ -730,6 +730,22 @@ class cs_todo_index_view extends cs_room_index_view {
          $html_text .='</td>'.LF;
          $html_text .='</tr>'.LF;
          $html .= $html_text;
+      }else{
+         $this->_additional_selects = true;
+         $html_text ='<tr>'.LF;
+         $html_text .='<td>'.LF;
+         $html_text .= '<span class="infocolor">'.getMessage('TODO_STATUS').': </span>';
+         $html_text .='</td>'.LF;
+         $html_text .='<td style="text-align:right;">'.LF;
+         $status_text = $this->_translator->getMessage('TODO_NOT_DONE');
+         $html_text .= '<span><a title="'.$status_text.'">'.$status_text.'</a></span>';
+         $picture = '<img src="images/delete_restriction.gif" alt="x" border="0"/>';
+         $new_params = $params;
+         unset($new_params['selstatus']);
+         $html_text .= '&nbsp;'.ahref_curl($this->_environment->getCurrentContextID(),$this->_environment->getCurrentModule(),'index',$new_params,$picture,$this->_translator->getMessage('COMMON_DELETE_RESTRICTIONS')).LF;
+         $html_text .='</td>'.LF;
+         $html_text .='</tr>'.LF;
+         $html .= $html_text;
       }
       return $html;
    }
