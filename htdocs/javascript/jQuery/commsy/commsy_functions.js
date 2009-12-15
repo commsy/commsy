@@ -751,7 +751,7 @@ function resize_calendar_month(){
 	jQuery('.calendar_month_entry').css({width: entry_width +'px'});
 	jQuery('.calender_month_footer').css({width: (frame_width - frame_rest) - 1 +'px'});
 	var switch_icon_bar_width = jQuery('#switch_icon_bar_today').width() + jQuery('#switch_icon_bar_week').width() + jQuery('#switch_icon_bar_month').width() + 40; // +40 -> padding
-   jQuery('#switch_icon_bar').css({width: switch_icon_bar_width+'px'});
+	jQuery('#switch_icon_bar').css({width: switch_icon_bar_width+'px'});
 }
 
 function draw_dates(){
