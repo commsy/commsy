@@ -260,7 +260,7 @@ var $_count_entries = 0;
             #   $html.= '<div style="padding-bottom:0px;">'.LF;
             #}
             if($with_div){
-               $html .= '<div id="tag_tree_' . $item->getItemID() . '">';
+               $html .= '<div id="tag_tree">';
             }
             $html .= '<ul>'.LF; // oberstes <ul>
             $current_item = $list->getFirst();

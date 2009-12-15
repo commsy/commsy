@@ -928,7 +928,7 @@ class cs_detail_view extends cs_view {
       $tag_item = $tag_list->getFirst();
       if ( isset ($tag_item) ){
          $params = $this->_environment->getCurrentParameterArray();
-         $text .= '<div id="tag_tree_' . $tag_item->getItemID() . '"><ul>'; // oberstes <ul>
+         $text .= '<div id="tag_tree"><ul>'; // oberstes <ul>
          while( $tag_item ){
             //$text .= '<div style="margin-bottom:5px;">'; // oberstes <ul>
             #$text .= '<div id="tag_tree_' . $tag_item->getItemID() . '"><ul>'; // oberstes <ul>
