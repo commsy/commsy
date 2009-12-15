@@ -49,6 +49,9 @@ $new_room->setPluginConfig($old_room->getPluginConfig());
 // config of colors
 $new_room->setColorArray($old_room->getColorArray());
 
+//ToDos
+$new_room->setExtraToDoStatusArray($old_room->getExtraToDoStatusArray());
+
 // config of usage infos
 $new_room->setUsageInfoArray($old_room->getUsageInfoArray());
 $new_room->setUsageInfoHeaderArray($old_room->getUsageInfoHeaderArray());
