@@ -288,7 +288,12 @@ function performAction ( $environment, $action_array, $post_array ) {
          $send_to = $user->getEmail();
       }
 
-      $formal_data_send_to[] = $user->getFullName()." &lt;".$send_to."&gt;";
+      if($user->isEmailVisible()){
+         $formal_data_send_to[] = $user->getFullName()." &lt;".$send_to."&gt;";
+      } else {
+         $translator = $environment->getTranslationObject();
+         $formal_data_send_to[] = $user->getFullName()." &lt;".$translator->getMessage('USER_EMAIL_HIDDEN')."&gt;";
+      }
 
       // change task status
       if ( $action_array['action'] == 'USER_ACCOUNT_DELETE'
@@ -434,7 +439,7 @@ function performAction ( $environment, $action_array, $post_array ) {
          }
          $mail->set_to($send_to);
 
-         // cc / bcc
+         #// cc / bcc
          $cc_string = '';
          $bcc_string = '';
          $cc_array = array();

@@ -94,7 +94,11 @@ class cs_account_action_form extends cs_rubric_form {
             }
             $user = $user_manager->getItem($id);
             if ( !empty($user) ) {
-               $this->_name .= $user->getFullname().' ('.$user->getEmail().')';
+               if($user->isEmailVisible()){
+                  $this->_name .= $user->getFullname().' ('.$user->getEmail().')';
+               } else {
+                  $this->_name .= $user->getFullname().' ('.$translator->getMessage('USER_EMAIL_HIDDEN').')';
+               }
             }
          }
          $translate = false;
