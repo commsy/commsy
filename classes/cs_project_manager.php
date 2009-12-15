@@ -213,18 +213,19 @@ class cs_project_manager extends cs_room2_manager {
       if ( isset($this->_room_type) ) {
          ############################################
          # FLAG: group room
+         # sinnfrei? 15.12.2009 ij
          ###################BEGIN####################
-         $current_portal = $this->_environment->getCurrentPortalItem();
-         if ( !isset($current_portal) and isset($this->_room_limit) ) {
-            $portal_manager = $this->_environment->getPortalManager();
-            $current_portal = $portal_manager->getItem($this->_room_limit);
-         }
-         if ( $this->_room_type == CS_PROJECT_TYPE
-              and isset($current_portal)
-              and $current_portal->withGroupRoomFunctions()
-            ) {
-            $query .= ' AND ('.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'" or '.$this->_db_table.'.type = "'.CS_GROUPROOM_TYPE.'")';
-         } else {
+         #$current_portal = $this->_environment->getCurrentPortalItem();
+         #if ( !isset($current_portal) and isset($this->_room_limit) ) {
+         #   $portal_manager = $this->_environment->getPortalManager();
+         #   $current_portal = $portal_manager->getItem($this->_room_limit);
+         #}
+         #if ( $this->_room_type == CS_PROJECT_TYPE
+         #     and isset($current_portal)
+         #     and $current_portal->withGroupRoomFunctions()
+         #   ) {
+         #   $query .= ' AND ('.$this->_db_table.'.type = "'.encode(AS_DB,$this->_room_type).'" or '.$this->_db_table.'.type = "'.CS_GROUPROOM_TYPE.'")';
+         #} else {
          ####################END#####################
          # FLAG: group room
          ############################################
@@ -232,7 +233,7 @@ class cs_project_manager extends cs_room2_manager {
          ############################################
          # FLAG: group room
          ##################BEGIN####################
-         }
+         #}
          ###################END######################
          # FLAG: group room
          ############################################
