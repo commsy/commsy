@@ -919,7 +919,7 @@ function addNewDateLinks(){
 
 jQuery(document).ready(function() {
 	if(jQuery('[id^=tag_tree]').length){
-		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+		$.ui.dynatree.nodedatadefaults["icon"] = false;
 		jQuery('[id^=tag_tree]').each(function(){
 			jQuery(this).dynatree({
 				fx: { height: "toggle", duration: 200 },
