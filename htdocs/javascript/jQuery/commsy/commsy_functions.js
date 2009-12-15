@@ -738,8 +738,7 @@ function resize_calendar(){
 	jQuery('.calendar_time_head').css({width: time_width+'px'});
 	jQuery('[id^=calendar_entry]').css({width: entry_width+'px'});
 	jQuery('[id^=calendar_head]').css({width: entry_width+'px'});
-	var switch_icon_bar_width = jQuery('#switch_icon_bar_today').width() + jQuery('#switch_icon_bar_week').width() + jQuery('#switch_icon_bar_month').width(); // +40 -> padding
-	jQuery('#switch_icon_bar').css({width: switch_icon_bar_width+'px'});
+	getSwitchIconBar();
 }
 
 function resize_calendar_month(){
@@ -750,7 +749,20 @@ function resize_calendar_month(){
 	jQuery('.calendar_month_entry_head').css({width: entry_width +'px'});
 	jQuery('.calendar_month_entry').css({width: entry_width +'px'});
 	jQuery('.calender_month_footer').css({width: (frame_width - frame_rest) - 1 +'px'});
-	var switch_icon_bar_width = jQuery('#switch_icon_bar_today').width() + jQuery('#switch_icon_bar_week').width() + jQuery('#switch_icon_bar_month').width(); // +40 -> padding
+	getSwitchIconBar();
+}
+
+function getSwitchIconBar(){
+	//alert(jQuery('#calendar_switch').width());
+	//alert(jQuery('#calendar_calendarweek').width());
+	if(jQuery('#calendar_switch').width() >= jQuery('#calendar_calendarweek').width()){
+		var add_width = jQuery('#calendar_switch').width() - jQuery('#calendar_calendarweek').width();
+		jQuery('#switch_float').css('float', 'right');
+	} else {
+		var add_width = jQuery('#calendar_calendarweek').width() - jQuery('#calendar_switch').width();
+		jQuery('#switch_float').css('float', 'left');
+	}
+	var switch_icon_bar_width = jQuery('#switch_icon_bar_today').width() + jQuery('#switch_icon_bar_week').width() + jQuery('#switch_icon_bar_month').width() + add_width ; // +40 -> padding
 	jQuery('#switch_icon_bar').css({width: switch_icon_bar_width+'px'});
 }
 
