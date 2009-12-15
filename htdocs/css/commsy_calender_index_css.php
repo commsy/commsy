@@ -177,6 +177,7 @@ div.calendar_time_head {height: 1.2em; width:2%; float:left; clear:both; color: 
 div.calendar_entry {height: 40px; width:14%; float:left; background-color:#ffffff;}
 div.calendar_entry_head {height: 1.2em; width:14%; float:left; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold; text-align:center;}
 div.data {border-right:1px solid black; border-bottom:1px solid black; width:100%; height:100%; position:relative;}
+div.data_head {border-right:1px solid black; border-bottom:2px solid black; width:100%; height:100%; position:relative;}
 div.calendar_footer {height:1.2em; border-top:1px solid black; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold;}
 div.calendar_month_entry {height: 80px; width:14%; float:left; background-color:#ffffff; border-bottom:1px solid black; border-right:1px solid black;}
 div.calendar_month_entry_head {height: 1.2em; width:14%; float:left; color: <?php echo($color['headline_text'])?>; background-color:<?php echo($color['tabs_background'])?>; font-weight:bold; text-align:center; border-right: 1px solid black; border-bottom: 1px solid black;}
