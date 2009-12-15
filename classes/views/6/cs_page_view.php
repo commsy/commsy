@@ -642,6 +642,8 @@ class cs_page_view extends cs_view {
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/mousewheel/jquery.mousewheel.js"></script>'.LF;
          $retour .= '   <script type="text/javascript" src="javascript/jQuery/stickytooltip/stickytooltip.js"></script>'.LF;
          $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/stickytooltip/stickytooltip.css"/>'.LF;
+         $retour .= '   <script type="text/javascript" src="javascript/jQuery/dynatree/jquery.dynatree.js"></script>'.LF;
+         $retour .= '   <link rel="stylesheet" type="text/css" href="javascript/jQuery/dynatree/skin/ui.dynatree.css"/>'.LF;
          $retour .= '   <script type="text/javascript">'.LF;
          $retour .= '      <!--'.LF;
          $retour .= '   var datepicker_language = \''.$this->_translator->getSelectedLanguage().'\';'.LF;

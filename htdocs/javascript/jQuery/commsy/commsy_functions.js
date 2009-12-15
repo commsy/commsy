@@ -853,6 +853,8 @@ function draw_dates_month(){
 	if(typeof(calendar_dates) != 'undefined'){
 		var top_position = 0;
 		var current_date = '';
+		var added_scrollpane = false;
+		var added_jscrollpane = false;
 		for (var i = 0; i < calendar_dates.length; i++) {
 			var day = calendar_dates[i][0];
 			var month = calendar_dates[i][1];
@@ -865,12 +867,31 @@ function draw_dates_month(){
 			if(day+month != current_date){
 				current_date = day+month
 				top_position = 0;
+				//added_scrollpane = false;
+				//added_jscrollpane = false;
+				jQuery('#calendar_month_entry_' + day + '_' + month).append('<div id="calendar_month_entry_' + day + '_' + month + '_scroll" style="position:absolute; top:18px; left:0px; height:62px;"></div>');
+				if(dates_on_day >= 4){
+					//jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').jScrollPane({scrollbarWidth: scrollbar_width});
+				}
 			}
-			var top = (20 * top_position) + (1 * top_position) + 18;
+			//if(!added_scrollpane){
+			//	jQuery('#calendar_month_entry_' + day + '_' + month).append('<div id="calendar_month_entry_' + day + '_' + month + '_scroll" style="position:absolute; top:18px; left:0px; height:10px; background.color:red;"></div>');
+			//	added_scrollpane = true;
+			//}
+			//if(dates_on_day >= 4 && !added_jscrollpane){
+			//	jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').jScrollPane();
+			//	added_jscrollpane = true;
+			//}
+			var top = (20 * top_position) + (1 * top_position);
 			var width = jQuery('#calendar_month_entry_' + day + '_' + month).width() -2;
-			jQuery('#calendar_month_entry_' + day + '_' + month).append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:18px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:18px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>')
+			jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').append('<div style="position: absolute; top:' + top + 'px; left:0px; width:' + width + 'px; height:18px; background-color:' + color + '; border:1px solid ' + color_border + '; overflow:hidden;"><div style="position:absolute; top:0px; left:0px; width:1000px;">' + title + '</div><div style="position:absolute; top:0px; left:0px; height:18px; width:100%; z-index:10000;"><a href="' + href + '" data-tooltip="' + tooltip + '"><img src="images/spacer.gif" style="height:100%; width:100%;"/></a></div></div>')
 			top_position++;
+			//if(dates_on_day >= 4 && !added_scrollpane){
+			//	jQuery('#calendar_month_entry_' + day + '_' + month + '_scroll').jScrollPane();
+			//	added_scrollpane = true;
+			//}
 		}
+		jQuery('#calendar_month_entry_1_12_scroll').jScrollPane();
 		stickytooltip.init("*[data-tooltip]", "mystickytooltip");
 	}
 	if(typeof(today) != 'undefined'){
@@ -892,4 +913,70 @@ function addNewDateLinks(){
 			jQuery(new_dates[i][0]).append(new_dates[i][1]);
 		}
 	}
+}
+
+jQuery(document).ready(function() {
+	if(jQuery('[id^=tag_tree]').length){
+		jQuery.ui.dynatree.nodedatadefaults["icon"] = false;
+		jQuery('[id^=tag_tree]').each(function(){
+			jQuery(this).dynatree({
+				fx: { height: "toggle", duration: 200 },
+				checkbox: true,
+				onActivate: function(dtnode){
+					if( dtnode.data.url ){
+						window.location(dtnode.data.url);
+					}
+					if( dtnode.data.StudyLog ){
+						callStudyLogSortByTagId(dtnode.data.StudyLog);
+					}
+				},
+				onSelect: function(select, dtnode){
+					if( dtnode.data.checkbox ){
+						jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked', select);
+					}
+				}
+			});
+			var max_visible_nodes = 20;
+			var max_expand_level = getExpandLevel(jQuery(this), max_visible_nodes);
+			jQuery(this).dynatree("getRoot").visit(function(dtnode){
+				if(dtnode.getLevel() < max_expand_level){
+					dtnode.expand(true);
+				}
+				if( !dtnode.data.checkbox ){
+					dtnode.data.hideCheckbox = true;
+					dtnode.render(true);
+				} else {
+					dtnode.select(jQuery("[#taglist_" + dtnode.data.checkbox).attr('checked'));
+				}
+			});
+		});
+	}
+});
+
+function getExpandLevel(tree, maxVisible){
+	var return_counter = 1;
+	var counter = 0;
+	var level = 0;
+	tree.dynatree("getRoot").visit(function(dtnode){
+		counter++;
+		if(dtnode.getLevel() > level){
+			level = dtnode.getLevel();
+		}
+	});
+	var return_level = level;
+	if(counter > maxVisible){
+		for (var max_level = level; max_level > 0; max_level--) {
+			return_counter = 0;
+			tree.dynatree("getRoot").visit(function(dtnode){
+				if(dtnode.getLevel() <= max_level){
+					return_counter++;
+				}
+			});
+			if(return_counter <= maxVisible){
+				return_level = max_level;
+				break;
+			}
+		}
+	}
+	return return_level;
 }

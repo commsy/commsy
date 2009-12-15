@@ -2336,7 +2336,18 @@ class cs_form_view extends cs_view {
                    or $this->_environment->getCurrentModule() == CS_TODO_TYPE
                 )
             ){
-               $html .= $this->_getTagBoxAsHTML();
+               $session_item = $this->_environment->getSessionItem();
+               if($session_item->issetValue('javascript')){
+                  if($session_item->getValue('javascript') == "1"){
+                     $with_javascript = true;
+                  }
+               }
+               // UMSTELLUNG MUSEUM
+               if($with_javascript and true){
+                  $html .= $this->_getTagBoxAsHTMLWithJavaScript();
+               } else {
+                  $html .= $this->_getTagBoxAsHTML();
+               }
             }
             if ($this->_environment->getCurrentModule() != 'account' and
                 $this->_environment->getCurrentModule() != CS_PROJECT_TYPE and
@@ -2839,7 +2850,181 @@ class cs_form_view extends cs_view {
       return $html;
    }
 
+   function _getTagBoxAsHTMLWithJavascript(){
+      // MUSEUM
+      $current_context = $this->_environment->getCurrentContextItem();
+      $current_user = $this->_environment->getCurrentUserItem();
+      $params = $this->_environment->getCurrentParameterArray();
+      $session = $this->_environment->getSessionItem();
+      $tag_ids = array();
+      if ($session->issetValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids')){
+         $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
+      }
+      $count_tag_ids = count($tag_ids);
+      $tag_manager = $this->_environment->getTagManager();
+      $tag_manager->reset();
+      $tag_manager->setContextLimit($this->_environment->getCurrentContextID());
+      $tag_list = $tag_manager->getItemList($tag_ids);
+      $tag_entry = $tag_list->getFirst();
+      $item_id_array = array();
+      while($tag_entry){
+         $item_id_array[] = $tag_entry->getItemID();
+         $tag_entry = $tag_list->getNext();
+      }
+      $html  = '';
+      $html .= '<div style="margin-bottom:1px;" class="right_box">'.LF;
+      $error_display = false;
+      if ( isset($this->_error_array) and !empty($this->_error_array) ){
+         foreach ($this->_error_array as $error){
+            if ($error == getMessage('COMMON_ERROR_TAG_ENTRY')){
+               $error_display = true;
+            }
+         }
+      }
+      $current_context = $this->_environment->getCurrentContextItem();
+      $html_text = '';
+      if ($current_context->isTagMandatory()){
+        $html_text = '* ';
+      }
+      $color = $current_context->getColorArray();
+      if ($error_display){
+         $html .= '<div class="right_box_title" style="color:'.$color['warning'].';">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+      }else{
+         $html .= '<div class="right_box_title">'.$html_text.getMessage('COMMON_ATTACHED_TAGS').' ('.$count_tag_ids.')</div>';
+      }
+      $html .= '<div class="right_box_main" >'.LF;
 
+      $text = '';
+      $tag2tag_manager = $this->_environment->getTag2TagManager();
+      $tag_manager = $this->_environment->getTagManager();
+      $tag_item = $tag_list->getFirst();
+      if ( isset ($tag_item) ){
+         $params = $this->_environment->getCurrentParameterArray();
+         #$text .= '<div id="tag_tree_' . $tag_item->getItemID() . '"><ul>'; // oberstes <ul>
+         $text .= '<div id="tag_tree"><ul>'; // oberstes <ul>
+         while( $tag_item ){
+            #$text .= '<div style="margin-bottom:5px;">';
+            $count_all = 1;
+            $shown_tag_array = $tag2tag_manager->getFatherItemIDArray($tag_item->getItemID());
+            $i = 1;
+            if( !empty($shown_tag_array) ) {
+               $count_all = count($shown_tag_array);
+               $shown_tag_array = array_reverse($shown_tag_array);
+               foreach( $shown_tag_array as $shown_tag ){
+                  $father_tag_item = $tag_manager->getItem($shown_tag);
+                  $count = $count_all - $i + 1;
+                  $ebene = $i-1;
+                  $font_size = round(13 - (($count*0.2)+$count));
+                  $font_weight = 'normal';
+                  $font_style = 'normal';
+                  if ($font_size < 8){
+                     $font_size = 8;
+                  }
+                  $font_color = 20 + $this->getTagColorLogarithmic($count);
+                  $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+                  #if (($ebene*15) <= 30){
+                  #   #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                  #   $text .= '<li id="' . $father_tag_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+                  #}else{
+                  #   #$text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                  #   $text .= '<li id="' . $father_tag_item->getItemID() . '" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
+                  #}
+                  $params['seltag'] = 'yes';
+                  if ( isset($father_tag_item) ) {
+                     $params['seltag_'.($count_all-$i)] = $father_tag_item->getItemID();
+                  }
+                  $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+                                $this->_environment->getCurrentModule(),
+                                'index',
+                                $params,
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
+                                $this->_text_as_html_short($father_tag_item->getTitle()),
+                                '',
+                                '',
+                                '',
+                                '',
+                                '',
+                                'style="color:'.$color.'"').LF;
+                  $link = curl($this->_environment->getCurrentContextID(),
+                                $this->_environment->getCurrentModule(),
+                                'index',
+                                $params);
+                  if (($ebene*15) <= 30){
+                     #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                     $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+                  }else{
+                     #$text .= '<div style="padding-left:40px; color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                     $text .= '<li id="' . $father_tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">'.LF;
+                  }
+                  $text .= $title_link;
+                  #$text .= '</div>';
+                  $text .= '<ul>'.LF;
+                  $i++;
+               }
+            }
+            $params['seltag'] = 'yes';
+            $params['seltag_'.($count_all-1)] = $tag_item->getItemID();
+            $count = $count_all - $i + 1;
+            $ebene = $i-1;
+            $font_size = 13;
+            $font_weight = 'normal';
+            $font_style = 'normal';
+            $font_color = 20 + $this->getTagColorLogarithmic($count);
+            $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+            $title_link = ahref_curl($this->_environment->getCurrentContextID(),
+                             $this->_environment->getCurrentModule(),
+                             'index',
+                             $params,
+                             $this->_text_as_html_short($tag_item->getTitle()),
+                             $this->_text_as_html_short($tag_item->getTitle()),
+                             '',
+                             '',
+                             '',
+                             '',
+                             '',
+                             'style="color:'.$color.'"').LF;
+            $link = curl($this->_environment->getCurrentContextID(),
+                                $this->_environment->getCurrentModule(),
+                                'index',
+                                $params);
+            #$text .= '<div style="padding-left:'.($ebene*15).'px; color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+            $text .= '<li id="' . $tag_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+            $text .= $title_link;
+            #$text .= '</div>';
+            #$text .= '</div>';
+            for ($index = 1; $index < $i; $index++) {
+               $text .= '</li></ul>'.LF;
+            }
+            $tag_item = $tag_list->getNext();
+         }
+         $text .= '</li></ul></div>'; // oberstes <ul>
+      }
+      if ( empty($text) ){
+         $html .= '   <div style="padding:0px 5px; font-size:8pt;" class="disabled">'.$this->_translator->getMessage('COMMON_NONE').'</div>'.LF;
+      }else{
+         $html .= $text;
+      }
+      $html .= '<div style="width:235px; font-size:8pt; text-align:right; padding-top:5px;">';
+      $params = $this->_environment->getCurrentParameterArray();
+      $session = $this->_environment->getSessionItem();
+      if ($session->issetValue('javascript')) {
+         $javascript = $session->getValue('javascript');
+         if ($javascript == 1) {
+            $html .= '<a href="javascript:right_box_send(\'edit\',\'right_box_option\',\''.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'\');">'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'</a>'.LF;
+         }else{
+            $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'"/>';
+         }
+      }else{
+         $html .= '<input id="right_box_option" type="submit" style="font-size:8pt;" name="right_box_option" value="'.$this->_translator->getMessage('COMMON_TAG_NEW_ATTACH').'"/>';
+      }
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+      $html .= '</div>'.LF;
+
+      unset($current_user);
+      return $html;
+   }
+   
    function _getAllLinkedItemsAsHTML ($spaces=0) {
       $html = '';
       $current_context = $this->_environment->getCurrentContextItem();

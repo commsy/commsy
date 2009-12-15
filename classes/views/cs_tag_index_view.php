@@ -237,6 +237,149 @@ var $_count_entries = 0;
       return $html;
    }
 
+   function _getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$selected_id = 0, $father_id_array, $distance = 0, $with_div=false) {
+      // MUSEUM
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      $i = 0;
+      while($i <= count($father_id_array)){
+        if (isset($params['seltag_'.$i])){
+           unset($params['seltag_'.$i]);
+        }
+        $i++;
+      }
+      $this->_count_entries = 0;
+      $is_selected = false;
+      if ( isset($item) ) {
+         $list = $item->getChildrenList();
+         if ( isset($list) and !$list->isEmpty() ) {
+            $this->_count_entries++;
+            #if ($ebene == 1){
+            #   $html.= '<div style="padding-bottom:5px;">'.LF;
+            #}else{
+            #   $html.= '<div style="padding-bottom:0px;">'.LF;
+            #}
+            if($with_div){
+               $html .= '<div id="tag_tree_' . $item->getItemID() . '">';
+            }
+            $html .= '<ul>'.LF; // oberstes <ul>
+            $current_item = $list->getFirst();
+            $distance = $distance +1;
+            $font_weight ='normal';
+            $font_color = 30;
+            $font_style = 'normal';
+            while ( $current_item ) {
+               $is_selected = false;
+               $id = $current_item->getItemID();
+               if ( empty($selected_id) ){
+                  $tag2tag_manager = $this->_environment->getTag2TagManager();
+                  $count = count($tag2tag_manager->getFatherItemIDArray($id));
+                  $font_size = round(13 - (($count*0.2)+$count));
+                  if ($font_size < 8){
+                     $font_size = 8;
+                  }
+                  $font_color = 20 + $this->getTagColorLogarithmic($count);
+               }else{
+                  if ( in_array($id,$father_id_array) ){
+                     $tag2tag_manager = $this->_environment->getTag2TagManager();
+                     $id_array = $tag2tag_manager->getFatherItemIDArray($id);
+                     $count = 0;
+                     foreach($id_array as $temp_id){
+                        if ( !in_array($temp_id,$father_id_array) ){
+                           $count ++;
+                        }
+                     }
+                     if( !isset($id_array[0]) and isset($father_id_array[0]) ){
+                        $count = 1;
+                     }
+#                     $font_size = 14;
+                     $font_size = round(13 - (($count*0.2)+$count));
+                     if ($font_size < 8){
+                        $font_size = 8;
+                     }
+                     $font_color = 20 + $this->getTagColorLogarithmic($count);
+                     $font_weight = 'bold';
+                     $font_style = 'normal';
+                  }else{
+                     $tag2tag_manager = $this->_environment->getTag2TagManager();
+                     $id_array = $tag2tag_manager->getFatherItemIDArray($id);
+                     $count = 0;
+                     $found = false;
+                     if ( isset($id_array[0]) ){
+                        foreach($id_array as $temp_id){
+                           if ( !in_array($temp_id,$father_id_array) ){
+                              $count ++;
+                           }else{
+                             $found = true;
+                           }
+                        }
+                        if (!$found){
+                           $count = $count + count($father_id_array);
+                        }
+                     }elseif( !isset($id_array[0]) and isset($father_id_array[0]) ){
+                        $count = count($father_id_array);
+                     }
+                     $font_size = 14 - $this->getTagSizeLogarithmic($count);
+                     $font_size = round(13 - (($count*0.2)+$count));
+                     if ($font_size < 8){
+                        $font_size = 8;
+                     }
+                     $font_color = 20 + $this->getTagColorLogarithmic($count);
+                     $font_weight='normal';
+                     $font_style = 'normal';
+                  }
+               }
+               if ($current_item->getItemID() == $selected_id){
+                  $is_selected = true;
+                  $font_size = 14;
+                  $font_color = 20;
+                  $font_style = 'normal';
+               }
+               $font_color = 20;
+               $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+               $this->_count_entries++;
+
+               if (($ebene*15) <= 30){
+                  #$html .= '<div style="padding-left:'.($ebene*30).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               }else{
+                  #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="checkbox: \'' . $current_item->getItemID() . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               }
+               $title = $this->_text_as_html_short($current_item->getTitle());
+               $params['seltag_'.$ebene] = $current_item->getItemID();
+               if( isset($params['seltag']) ){
+                  $i = $ebene+1;
+                  while( isset($params['seltag_'.$i]) ){
+                     unset($params['seltag_'.$i]);
+                     $i++;
+                  }
+               }
+               $params['seltag'] = 'yes';
+               $checkbox = '         <input style="font-size:8pt; padding-left:0px; padding-right:0px; margin-left:0px; margin-right:0px; display:none;" type="checkbox" name="taglist['.$current_item->getItemID().']" id="taglist_'.$current_item->getItemID().'" value="1"';
+               if ( isset($this->_checked_tag_array) and !empty($this->_checked_tag_array) and in_array($current_item->getItemID(), $this->_checked_tag_array)) {
+                  $checkbox .= ' checked="checked"'.LF;
+               }
+               $checkbox .= '/>'.LF;
+               $checkbox .= '         <input type="hidden" name="shown['.$this->_text_as_form($current_item->getItemID()).']" value="1"/>'.LF;
+               $html .= '<div class="entry" style="white-space:nowrap; font-size:'.$font_size.'px;">'.LF;
+               $html .= $checkbox;
+               $html .= $title;
+               $html .= '</div>'.LF;
+               #$html .= '</div>';
+               $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $selected_id, $father_id_array, $distance);
+               $current_item = $list->getNext();
+               $html.='</li>'.LF;
+            }
+            #$html.='</div>'.LF;
+            $html.='</ul>'.LF;
+            if($with_div){
+               $html .= '</div>'.LF;
+            }
+         }
+      }
+      return $html;
+   }
 
    function _getContentAsHTML() {
       if( $this->_environment->getCurrentFunction() == 'edit'){
@@ -273,7 +416,20 @@ var $_count_entries = 0;
          $father_id_array = $tag2tag_manager->getFatherItemIDArray($selected_id);
       }
       $html .= '<div style="padding:5px;">';
-      $html_text = $this->_getTagContentAsHTML($root_item,0,$selected_id, $father_id_array);
+      
+      $session_item = $this->_environment->getSessionItem();
+      if($session_item->issetValue('javascript')){
+         if($session_item->getValue('javascript') == "1"){
+            $with_javascript = true;
+         }
+      }
+      // UMSTELLUNG MUSEUM
+      if($with_javascript and true){
+         $html_text = $this->_getTagContentAsHTMLWithJavascript($root_item,0,$selected_id, $father_id_array,0,true);
+      } else {
+         $html_text = $this->_getTagContentAsHTML($root_item,0,$selected_id, $father_id_array);
+      }
+      
       if ( empty($html_text) ){
          $html_text = '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }

@@ -81,7 +81,20 @@ class cs_home_tag_view extends cs_view {
       $params = $this->_environment->getCurrentParameterArray();
       $father_id_array = array();
       $html_text = '';
-      $html_text .= $this->_getTagContentAsHTML($root_item,0);
+      
+      $session_item = $this->_environment->getSessionItem();
+      if($session_item->issetValue('javascript')){
+         if($session_item->getValue('javascript') == "1"){
+            $with_javascript = true;
+         }
+      }
+      // UMSTELLUNG MUSEUM
+      if($with_javascript and true){
+         $html_text .= $this->_getTagContentAsHTMLWithJavascript($root_item,0,0,true);
+      } else {
+         $html_text .= $this->_getTagContentAsHTML($root_item,0);
+      }
+      
       if ( empty($html_text) ){
          $html_text .= '<span class="disabled" style="font-size:10pt;">'.getMessage('COMMON_NO_ENTRIES').'</span>';
       }
@@ -160,6 +173,86 @@ class cs_home_tag_view extends cs_view {
                $current_item = $list->getNext();
             }
             $html.='</div>'.LF;
+         }
+      }
+      return $html;
+   }
+   
+   function _getTagContentAsHTMLWithJavascript($item = NULL, $ebene = 0,$distance = 0, $with_div=false) {
+      // MUSEUM
+      $html = '';
+      $params = $this->_environment->getCurrentParameterArray();
+      if ( isset($item) ) {
+         $list = $item->getChildrenList();
+         if ( isset($list) and !$list->isEmpty() ) {
+            #if ($ebene == 1){
+            #   $html.= '<div style="padding-bottom:5px;">'.LF;
+            #}else{
+            #   $html.= '<div style="padding-bottom:0px;">'.LF;
+            #}
+            if($with_div){
+               $html .= '<div id="tag_tree_' . $item->getItemID() . '">';
+            }
+            $html .= '<ul>'.LF; // oberstes <ul>
+            $current_item = $list->getFirst();
+            $distance = $distance +1;
+            $font_weight ='normal';
+            $font_color = 30;
+            $font_style = 'normal';
+            $i = 1;
+            while ( $current_item ) {
+               $id = $current_item->getItemID();
+               $tag2tag_manager = $this->_environment->getTag2TagManager();
+               $count = count($tag2tag_manager->getFatherItemIDArray($id));
+#                  $font_size = 14 - $this->getTagSizeLogarithmic($count);
+               $font_size = round(13 - (($count*0.2)+$count));
+               if ($font_size < 8){
+                  $font_size = 8;
+               }
+               $font_color = 20 + $this->getTagColorLogarithmic($count);
+               $color = 'rgb('.$font_color.'%,'.$font_color.'%,'.$font_color.'%);';
+               #if (($ebene*15) <= 30){
+               #   #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               #}else{
+               #   #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+               #   $html .= '<li id="' . $current_item->getItemID() . '" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               #}
+               $title = $this->_text_as_html_short($current_item->getTitle());
+               $params['seltag_'.$ebene] = $current_item->getItemID();
+               if( isset($params['seltag']) ){
+                  $i = $ebene+1;
+                  while( isset($params['seltag_'.$i]) ){
+                     unset($params['seltag_'.$i]);
+                     $i++;
+                  }
+               }
+               $params['seltag'] = 'yes';
+               $link = curl($this->_environment->getCurrentContextID(),
+                             'campus_search',
+                             'index',
+                             $params);
+               if (($ebene*15) <= 30){
+                  #$html .= '<div style="padding-left:'.($ebene*15).'px; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">';
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               }else{
+                  #$html .= '<div style="padding-left:40px; font-size:'.$font_size.'px; font-style:'.$font_style.'; font-weight:'.$font_weight.';">';
+                  $html .= '<li id="' . $current_item->getItemID() . '" data="url: \'' . $link . '\'" style="color:'.$color.'; font-style:'.$font_style.'; font-size:'.$font_size.'px; font-weight:'.$font_weight.';">'.LF;
+               }
+               $html .= ahref_curl($this->_environment->getCurrentContextID(),
+                             'campus_search',
+                             'index',
+                             $params,
+                             $title,$title,'','','','','','style="color:'.$color.'"').LF;
+               $html .= $this->_getTagContentAsHTMLWithJavascript($current_item, $ebene+1, $distance);
+               $current_item = $list->getNext();
+               $i++;
+               $html.='</li>'.LF;
+            }
+            $html.='</ul>'.LF;
+            if($with_div){
+               $html .= '</div>'.LF;
+            }
          }
       }
       return $html;
