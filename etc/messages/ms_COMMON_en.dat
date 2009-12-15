@@ -260,6 +260,7 @@ $message["COMMON_DATE_WEEKVIEW_TUESDAY"]["en"] = "Tue, %2 %1";
 $message["COMMON_DATE_WEEKVIEW_WEDNESDAY"]["en"] = "Wed, %2 %1";
 $message["COMMON_DAY"]["en"] = "day";
 $message["COMMON_DAYS"]["en"] = "days";
+$message["COMMON_DAYS_AKK"]["en"] = "days";
 $message["COMMON_DEFAULT"]["en"] = "Default";
 $message["COMMON_DELETED_USER"]["en"] = "deleted account";
 $message["COMMON_DELETE_BOX_DESCRIPTION"]["en"] = "You are about to delete an item from the workspace.

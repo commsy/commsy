@@ -489,9 +489,33 @@ class cs_todo_index_view extends cs_room_index_view {
             $step_minutes = str_replace('.',',',$step_minutes);
          }
       }
-      $shown_time = $step_minutes_text.' '.$tmp_message;
-      $display_time_text = $shown_time.' - '.round($done_percentage).'% '.$this->_translator->getMessage('TODO_DONE');
 
+      $display_plannend_time = $item->getPlannedTime();
+      $shown_time = $step_minutes_text.' '.$tmp_message;
+      $display_time_text_addon = $display_plannend_time.' '.$this->_translator->getMessage('COMMON_MINUTES');
+      if (($display_plannend_time/60)>1){
+         $display_time_text_addon = round($display_plannend_time/60);
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $display_time_text_addon = str_replace('.',',',$display_time_text_addon);
+         }
+         if ($display_time_text_addon == 1){
+            $display_time_text_addon .= ' '.$this->_translator->getMessage('COMMON_HOUR');
+         }else{
+            $display_time_text_addon .= ' '.$this->_translator->getMessage('COMMON_HOURS');
+         }
+      }
+      if ($display_plannend_time/60>8){
+         $display_time_text_addon = round($display_plannend_time/60/8,1);
+         if ($this->_translator->getSelectedLanguage() == 'de'){
+            $display_time_text_addon = str_replace('.',',',$display_time_text_addon);
+         }
+         if ($display_time_text_addon == 1){
+            $display_time_text_addon .= ' '.$this->_translator->getMessage('COMMON_DAY');
+         }else{
+            $display_time_text_addon .= ' '.$this->_translator->getMessage('COMMON_DAYS_AKK');
+         }
+      }
+      $display_time_text = $shown_time.' '.$this->_translator->getMessage('COMMON_FROM2').' '.$display_time_text_addon.' - '.round($done_percentage).'% '.$this->_translator->getMessage('TODO_DONE');
       if($done_percentage <= 100){
          $style = ' height: 8px; background-color: #75ab05; ';
          $done_time .= '      <div title="'.$display_time_text.'" style="border: 1px solid #444;  margin-left: 0px; height: 8px; width: 60px;">'.LF;
