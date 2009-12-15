@@ -673,7 +673,7 @@ class cs_todo_index_view extends cs_room_index_view {
          }
       }
       $params = $this->_environment->getCurrentParameterArray();
-      if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0'){
+      if ( isset($params['selstatus']) and $params['selstatus'] != '-1' and $params['selstatus'] != '0' and !empty($params['selstatus']) ){
          $this->_additional_selects = true;
          $html_text ='<tr>'.LF;
          $html_text .='<td>'.LF;
@@ -688,6 +688,13 @@ class cs_todo_index_view extends cs_room_index_view {
             $status_text = $this->_translator->getMessage('TODO_DONE');
          }elseif(isset($params['selstatus']) and $params['selstatus'] == 4){
             $status_text = $this->_translator->getMessage('TODO_NOT_DONE');
+         }elseif(isset($params['selstatus']) and $params['selstatus'] != 0){
+            $context_item = $this->_environment->getCurrentContextItem();
+            $todo_status_array = $context_item->getExtraToDoStatusArray();
+            $status_text = '';
+            if (isset($todo_status_array[$params['selstatus']])){
+               $status_text = $todo_status_array[$params['selstatus']];
+            }
          }else{
             $status_text = '';
          }
