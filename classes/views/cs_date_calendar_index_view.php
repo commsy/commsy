@@ -2305,9 +2305,7 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       #$html .= '   </td>'.LF;
       #$html .= '   </tr>'.LF;
       #$html .= '</div>'.LF;
-      $html .= '<div id="calendar_month_footer" class="calendar_month_footer">'.LF;
-      $html .= 'FOOTER'.LF;
-      $html .= '</div>'.LF;
+      $html .= '<div id="calendar_month_footer" class="calendar_month_footer">' . $this->_translator->getMessage('DATES_TIPP_FOR_ENTRIES') . '</div>'.LF;
       $html .= '</div>'.LF;
       
       $html .= '<div id="mystickytooltip" class="stickytooltip"><div style="border:1px solid #cccccc;">';
@@ -2344,12 +2342,13 @@ class cs_date_calendar_index_view extends cs_room_index_view {
       $html .= '<script type="text/javascript">'.LF;
       $html .= '<!--'.LF;
       $html .= 'var calendar_dates = new Array(';
-      $last = count($date_array_for_jQuery)-1;
-      for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
-         $html .= $date_array_for_jQuery[$index];
-         #pr($date_array_for_jQuery[$index]);
-         if($index < $last){
-           $html .= ',';
+      if(isset($date_array_for_jQuery) and !empty($date_array_for_jQuery)){
+         $last = count($date_array_for_jQuery)-1;
+         for ($index = 0; $index < count($date_array_for_jQuery); $index++) {
+            $html .= $date_array_for_jQuery[$index];
+            if($index < $last){
+              $html .= ',';
+            }
          }
       }
       $html .= ');'.LF;
@@ -3362,25 +3361,27 @@ class cs_date_calendar_index_view extends cs_room_index_view {
    function _getSwitchIconBar(){
    	  //$header = '<div style="float:left;padding-right:50px;"><h2 class="pagetitle"><img style="vertical-align: bottom;" src="images/commsyicons/32x32/date.png"/>' . $this->_translator->getMessage('DATES') . '</h2></div>';
       $params = $this->_environment->getCurrentParameterArray();
-      if($params['presentation_mode'] == 1){
-	      $day = date('D');
-	      if($day == 'Mon'){
-	         $params['week'] = time();
-	      } elseif ($day == 'Tue'){
-	         $params['week'] = time() - (3600 * 24);
-	      } elseif ($day == 'Wed'){
-	         $params['week'] = time() - (3600 * 24 * 2);
-	      } elseif ($day == 'Thu'){
-	         $params['week'] = time() - (3600 * 24 * 3);
-	      } elseif ($day == 'Fri'){
-	         $params['week'] = time() - (3600 * 24 * 4);
-	      } elseif ($day == 'Sat'){
-	         $params['week'] = time() - (3600 * 24 * 5);
-	      } elseif ($day == 'Sun'){
-	         $params['week'] = time() - (3600 * 24 * 6);
-	      }
-      } elseif($params['presentation_mode'] == 2){
-      	$params['month'] = date("Ymd");
+      if(isset($params['presentation_mode'])){
+         if($params['presentation_mode'] == 1){
+   	      $day = date('D');
+   	      if($day == 'Mon'){
+   	         $params['week'] = time();
+   	      } elseif ($day == 'Tue'){
+   	         $params['week'] = time() - (3600 * 24);
+   	      } elseif ($day == 'Wed'){
+   	         $params['week'] = time() - (3600 * 24 * 2);
+   	      } elseif ($day == 'Thu'){
+   	         $params['week'] = time() - (3600 * 24 * 3);
+   	      } elseif ($day == 'Fri'){
+   	         $params['week'] = time() - (3600 * 24 * 4);
+   	      } elseif ($day == 'Sat'){
+   	         $params['week'] = time() - (3600 * 24 * 5);
+   	      } elseif ($day == 'Sun'){
+   	         $params['week'] = time() - (3600 * 24 * 6);
+   	      }
+         } elseif($params['presentation_mode'] == 2){
+         	$params['month'] = date("Ymd");
+         }
       }
       $today = ahref_curl($this->_environment->getCurrentContextID(),
                                 CS_DATE_TYPE,
