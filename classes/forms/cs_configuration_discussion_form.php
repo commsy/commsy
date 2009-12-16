@@ -58,19 +58,18 @@ class cs_configuration_discussion_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-
      $radio_values = array();
-     $radio_values[0]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_1').
+     $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_DISCUSSION_DESC_1').
               '<br/><img src="images/configuration_discussion_not_threaded.gif" alt="picture_simple" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[0]['value'] = '1';
-      $radio_values[1]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_2').
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_DISCUSSION_DESC_2').
               '<br/><img src="images/configuration_discussion_threaded.gif" alt="picture_threaded" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[1]['value'] = '2';
-     $radio_values[2]['text'] = getMessage('CONFIGURATION_DISCUSSION_DESC_3').'<br />'.getMessage('CONFIGURATION_DISCUSSION_WARNING').''.BRLF.BRLF;
+     $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_DISCUSSION_DESC_3').'<br />'.$this->_translator->getMessage('CONFIGURATION_DISCUSSION_WARNING').''.BRLF.BRLF;
      $radio_values[2]['value'] = '3';
-      $this->_form->addRadioGroup('discussion_status',getMessage('CONFIGURATION_DISCUSSION'),'',$radio_values,'',true,false);
+      $this->_form->addRadioGroup('discussion_status',$this->_translator->getMessage('CONFIGURATION_DISCUSSION'),'',$radio_values,'',true,false);
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

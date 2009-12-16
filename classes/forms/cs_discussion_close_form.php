@@ -60,7 +60,7 @@ class cs_discussion_close_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('DISCUSSION_CLOSE_TITLE');
+         $this->_headline = $this->_translator->getMessage('DISCUSSION_CLOSE_TITLE');
       }
    }
 
@@ -80,11 +80,11 @@ class cs_discussion_close_form extends cs_rubric_form {
       else {
          $title = '';
       }
-      $this->_form->addTitleField('subject',getMessage('DISCUSSION_CLOSE_TITLE'),getMessage('COMMON_SUBJECT'),getMessage('COMMON_TITLE_DESC'),200,40,true);
-      $this->_form->addTextArea('summary','',getMessage('DISCUSSION_CLOSE'),'',51);
+      $this->_form->addTitleField('subject',$this->_translator->getMessage('DISCUSSION_CLOSE_TITLE'),$this->_translator->getMessage('COMMON_SUBJECT'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,40,true);
+      $this->_form->addTextArea('summary','',$this->_translator->getMessage('DISCUSSION_CLOSE'),'',51);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('DISCUSSION_CLOSE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('DISCUSSION_CLOSE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

@@ -67,7 +67,7 @@ class cs_account_status_form extends cs_rubric_form {
    function _initForm () {
       // if an item is given - first call of the form
       if ( !empty($this->_item) ) {
-         $this->_headline = getMessage('ADMIN_USER_FORM_TITLE',$this->_item->getFullname());
+         $this->_headline = $this->_translator->getMessage('ADMIN_USER_FORM_TITLE',$this->_item->getFullname());
          $this->_user_id = $this->_item->getUserID();
          $this->_user_fullname = $this->_item->getFullname();
          $this->_user_status = $this->_item->getStatus();
@@ -77,7 +77,7 @@ class cs_account_status_form extends cs_rubric_form {
 
       // if form posts are given - second call of the form
       else {
-         $this->_headline = getMessage('ADMIN_USER_FORM_TITLE',$this->_form_post['fullname']);
+         $this->_headline = $this->_translator->getMessage('ADMIN_USER_FORM_TITLE',$this->_form_post['fullname']);
 
          if ( !empty($this->_form_post['lastlogin'])
               and $this->_form_post['lastlogin'] != '0000-00-00 00:00:00' ) {
@@ -117,20 +117,20 @@ class cs_account_status_form extends cs_rubric_form {
 
       // prepare status options for the form
       if ( $this->_user_status == 1 ) {
-         $this->_options[0]['text']  = getMessage('USER_STATUS_REJECT');
+         $this->_options[0]['text']  = $this->_translator->getMessage('USER_STATUS_REJECT');
          $this->_options[0]['value'] = 'reject';
       } else {
-         $this->_options[0]['text']  = getMessage('USER_STATUS_CLOSED');
+         $this->_options[0]['text']  = $this->_translator->getMessage('USER_STATUS_CLOSED');
          $this->_options[0]['value'] = 'close';
       }
-      $this->_options[1]['text']  = getMessage('USER_STATUS_USER');
+      $this->_options[1]['text']  = $this->_translator->getMessage('USER_STATUS_USER');
       $this->_options[1]['value'] = 'user';
-      $this->_options[2]['text']  = getMessage('USER_STATUS_MODERATOR');
+      $this->_options[2]['text']  = $this->_translator->getMessage('USER_STATUS_MODERATOR');
       $this->_options[2]['value'] = 'moderator';
 
       // prepare lastlogin information
       if ( empty($this->_user_lastlogin) or ($this->_user_lastlogin == '0000-00-00 00:00:00') ) {
-         $this->_user_lastlogin = getMessage('USER_NEVER_LOGIN');
+         $this->_user_lastlogin = $this->_translator->getMessage('USER_NEVER_LOGIN');
       } else {
          $this->_user_lastlogin = getDateTimeInLang($this->_user_lastlogin);
       }
@@ -153,48 +153,48 @@ class cs_account_status_form extends cs_rubric_form {
 
       // content form fields
       $this->_form->addText('fullname_text',
-                            getMessage('USER_FULLNAME'),
+                            $this->_translator->getMessage('USER_FULLNAME'),
                             $this->_user_fullname
                            );
       $this->_form->addText('user_id_text',
-                            getMessage('USER_USER_ID'),
+                            $this->_translator->getMessage('USER_USER_ID'),
                             $this->_user_id
                            );
       if ( $this->_environment->inPortal() ) {
          $this->_form->addText('lastlogin_text',
-                               getMessage('USER_LASTLOGIN'),
+                               $this->_translator->getMessage('USER_LASTLOGIN'),
                                $this->_user_lastlogin,
-                               getMessage('USER_LASTLOGIN_ADMIN_DESC')
+                               $this->_translator->getMessage('USER_LASTLOGIN_ADMIN_DESC')
                               );
       }
       switch ( $this->_status_message ){
          case 'USER_STATUS_MODERATOR':
-            $tempMessage = getMessage('USER_STATUS_MODERATOR');
+            $tempMessage = $this->_translator->getMessage('USER_STATUS_MODERATOR');
             break;
          case 'USER_STATUS_USER':
-            $tempMessage = getMessage('USER_STATUS_USER');
+            $tempMessage = $this->_translator->getMessage('USER_STATUS_USER');
             break;
          case 'USER_STATUS_REQUESTED':
-            $tempMessage = getMessage('USER_STATUS_REQUESTED');
+            $tempMessage = $this->_translator->getMessage('USER_STATUS_REQUESTED');
             break;
          case 'USER_STATUS_CLOSED':
-            $tempMessage = getMessage('USER_STATUS_CLOSED');
+            $tempMessage = $this->_translator->getMessage('USER_STATUS_CLOSED');
             break;
          case 'USER_STATUS_REJECT':
-            $tempMessage = getMessage('USER_STATUS_REJECT');
+            $tempMessage = $this->_translator->getMessage('USER_STATUS_REJECT');
             break;
          default:
-            $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_account_status_form(198) ');
+            $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_account_status_form(198) ');
             break;
       }
       $this->_form->addText('status_text',
-                            getMessage('USER_STATUS_NOW'),
+                            $this->_translator->getMessage('USER_STATUS_NOW'),
                             $tempMessage,
-                            getMessage('USER_STATUS_DESC')
+                            $this->_translator->getMessage('USER_STATUS_DESC')
                            );
       $this->_form->addRadioGroup('status',
-                                  getMessage('USER_STATUS_NEW'),
-                                  getMessage('USER_STATUS_ADMIN_DESC'),
+                                  $this->_translator->getMessage('USER_STATUS_NEW'),
+                                  $this->_translator->getMessage('USER_STATUS_ADMIN_DESC'),
                                   $this->_options,
                                   $this->_selected,
                                   true,
@@ -203,16 +203,16 @@ class cs_account_status_form extends cs_rubric_form {
       $this->_form->addCheckbox('contact_person',
                                 1,
                                 '',
-                                getMessage('ROOM_CONTACT'),
-                                getMessage('ROOM_CONTACT'),
+                                $this->_translator->getMessage('ROOM_CONTACT'),
+                                $this->_translator->getMessage('ROOM_CONTACT'),
                                 ''
                                );
 
       // buttons
       $this->_form->addButtonBar('option',
-                                 getMessage('COMMON_CHANGE_BUTTON'),
-                                 getMessage('ADMIN_CANCEL_BUTTON'),
-                                 getMessage('ACCOUNT_DELETE_BUTTON')
+                                 $this->_translator->getMessage('COMMON_CHANGE_BUTTON'),
+                                 $this->_translator->getMessage('ADMIN_CANCEL_BUTTON'),
+                                 $this->_translator->getMessage('ACCOUNT_DELETE_BUTTON')
                                 );
    }
 
@@ -255,7 +255,7 @@ class cs_account_status_form extends cs_rubric_form {
               $moderator_list = $user_manager->get();
               $moderator_item = $moderator_list->getFirst();
               if ($moderator_item->getItemID() == $this->_form_post['iid']) {
-                 $this->_error_array[] = getMessage('ERROR_LAST_MODERATOR');
+                 $this->_error_array[] = $this->_translator->getMessage('ERROR_LAST_MODERATOR');
                  $this->_form->setFailure('status');
               }
            }

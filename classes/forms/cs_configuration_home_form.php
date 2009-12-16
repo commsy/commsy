@@ -54,7 +54,7 @@ class cs_configuration_home_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->setHeadline(getMessage('CONFIGURATION_ROOM_HOME'));
+      $this->setHeadline($this->_translator->getMessage('CONFIGURATION_ROOM_HOME'));
 
       if (!$this->_environment->inPrivateRoom() ){
         $room = $this->_environment->getCurrentContextItem();
@@ -72,17 +72,17 @@ class cs_configuration_home_form extends cs_rubric_form {
           }
          $this->_rubricArray = $rubric_array;
 
-          $view_mod_array[0]['text'] = getMessage('MODULE_CONFIG_SHORT');
+          $view_mod_array[0]['text'] = $this->_translator->getMessage('MODULE_CONFIG_SHORT');
           $view_mod_array[0]['value'] = 'short';
-          $view_mod_array[1]['text'] = getMessage('MODULE_CONFIG_TINY');
+          $view_mod_array[1]['text'] = $this->_translator->getMessage('MODULE_CONFIG_TINY');
           $view_mod_array[1]['value'] = 'tiny';
-          $view_mod_array[2]['text'] = getMessage('MODULE_CONFIG_NO');
+          $view_mod_array[2]['text'] = $this->_translator->getMessage('MODULE_CONFIG_NO');
           $view_mod_array[2]['value'] = 'nodisplay';
           $this->_optionArray = $view_mod_array;
 
-          $view_mod_array2[0]['text'] = getMessage('MODULE_CONFIG_SHORT');
+          $view_mod_array2[0]['text'] = $this->_translator->getMessage('MODULE_CONFIG_SHORT');
           $view_mod_array2[0]['value'] = 'short';
-          $view_mod_array2[1]['text'] = getMessage('MODULE_CONFIG_TINY');
+          $view_mod_array2[1]['text'] = $this->_translator->getMessage('MODULE_CONFIG_TINY');
           $view_mod_array2[1]['value'] = 'tiny';
           $this->_optionArray2 = $view_mod_array2;
 
@@ -99,37 +99,37 @@ class cs_configuration_home_form extends cs_rubric_form {
                 $tempMessage = '';
                 switch (mb_strtoupper($this->_rubricArray[$i]['text'], 'UTF-8')){
                    case 'ANNOUNCEMENT':
-                      $tempMessage = getMessage('ANNOUNCEMENT_INDEX');
+                      $tempMessage = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                       break;
                    case 'DATE':
-                      $tempMessage = getMessage('DATE_INDEX');
+                      $tempMessage = $this->_translator->getMessage('DATE_INDEX');
                       break;
                    case 'DISCUSSION':
-                      $tempMessage = getMessage('DISCUSSION_INDEX');
+                      $tempMessage = $this->_translator->getMessage('DISCUSSION_INDEX');
                       break;
                    case 'GROUP':
-                      $tempMessage = getMessage('GROUP_INDEX');
+                      $tempMessage = $this->_translator->getMessage('GROUP_INDEX');
                       break;
                    case 'INSTITUTION':
-                      $tempMessage = getMessage('INSTITUTION_INDEX');
+                      $tempMessage = $this->_translator->getMessage('INSTITUTION_INDEX');
                       break;
                    case 'MATERIAL':
-                      $tempMessage = getMessage('MATERIAL_INDEX');
+                      $tempMessage = $this->_translator->getMessage('MATERIAL_INDEX');
                       break;
                    case 'PROJECT':
-                      $tempMessage = getMessage('PROJECT_INDEX');
+                      $tempMessage = $this->_translator->getMessage('PROJECT_INDEX');
                       break;
                    case 'TODO':
-                      $tempMessage = getMessage('TODO_INDEX');
+                      $tempMessage = $this->_translator->getMessage('TODO_INDEX');
                       break;
                    case 'TOPIC':
-                      $tempMessage = getMessage('TOPIC_INDEX');
+                      $tempMessage = $this->_translator->getMessage('TOPIC_INDEX');
                       break;
                    case 'USER':
-                      $tempMessage = getMessage('USER_INDEX');
+                      $tempMessage = $this->_translator->getMessage('USER_INDEX');
                       break;
                    default:
-                      $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_home_form(139)');
+                      $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_home_form(139)');
                       break;
                 }
                $this->_form->addSelect($this->_rubricArray[$i]['text'],
@@ -142,8 +142,8 @@ class cs_configuration_home_form extends cs_rubric_form {
              if ($this->_environment->inProjectRoom() or $this->_environment->inGroupRoom()){
                  $this->_form->addTextField('time_spread',
                                     '',
-                                    getMessage('INTERNAL_TIME_SPREAD'),
-                                    getMessage('INTERNAL_TIME_SPREAD_DESC'),
+                                    $this->_translator->getMessage('INTERNAL_TIME_SPREAD'),
+                                    $this->_translator->getMessage('INTERNAL_TIME_SPREAD_DESC'),
                                     '2',
                                     '3',
                                     true
@@ -152,19 +152,19 @@ class cs_configuration_home_form extends cs_rubric_form {
              $this->_form->addSelect('activity',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('COMMON_ACTIVITY'),
+                                            $this->_translator->getMessage('COMMON_ACTIVITY'),
                                             ''
                                );
              $this->_form->addSelect('actions',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('COMMON_ACTIONS'),
+                                            $this->_translator->getMessage('COMMON_ACTIONS'),
                                             ''
                                );
               $this->_form->addSelect('search',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('COMMON_SEARCH'),
+                                            $this->_translator->getMessage('COMMON_SEARCH'),
                                             ''
                                );
               $current_context = $this->_environment->getCurrentContextItem();
@@ -172,7 +172,7 @@ class cs_configuration_home_form extends cs_rubric_form {
                  $this->_form->addSelect('buzzwords',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('COMMON_BUZZWORDS'),
+                                            $this->_translator->getMessage('COMMON_BUZZWORDS'),
                                             ''
                                );
               }
@@ -180,57 +180,57 @@ class cs_configuration_home_form extends cs_rubric_form {
                  $this->_form->addSelect('tags',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('COMMON_TAGS'),
+                                            $this->_translator->getMessage('COMMON_TAGS'),
                                             ''
                                );
               }
               $this->_form->addSelect('usageinfos',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('PREFERENCES_USAGE_INFOS'),
+                                            $this->_translator->getMessage('PREFERENCES_USAGE_INFOS'),
                                             ''
                                );
               $this->_form->addSelect('homeextratools',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('HOME_EXTRA_TOOLS'),
+                                            $this->_translator->getMessage('HOME_EXTRA_TOOLS'),
                                             ''
                                );
 
               $this->_form->addSelect('preferences',
                                             $this->_optionArray2,
                                             '',
-                                            getMessage('ADMIN_INDEX'),
+                                            $this->_translator->getMessage('ADMIN_INDEX'),
                                             ''
                                );
 
            }
       if ( $this->_environment->inPrivateRoom() ){
               $radio_values = array();
-              $radio_values[0]['text'] = getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_1').
+              $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_1').
               '<br/><img src="images/private_room_normal_home.gif" alt="home_normal" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
               $radio_values[0]['value'] = '1';
-              $radio_values[1]['text'] = getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_2').
-              '<br/><img src="images/private_room_detailed_home.gif" alt="home_detailed" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_3').BRLF.BRLF;
+              $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_2').
+              '<br/><img src="images/private_room_detailed_home.gif" alt="home_detailed" style=" width:290px; border:1px solid black; vertical-align: middle;"/>'.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_DESC_3').BRLF.BRLF;
               $radio_values[1]['value'] = '2';
 
-              $this->_form->addRadioGroup('home_status',getMessage('CONFIGURATION_HOME_STATUS'),'',$radio_values,'',true,false);
+              $this->_form->addRadioGroup('home_status',$this->_translator->getMessage('CONFIGURATION_HOME_STATUS'),'',$radio_values,'',true,false);
       }
       if ($this->_environment->inPrivateRoom() ){
         $radio_values = array();
-        $radio_values[0]['text'] = '1 '.getMessage('CONFIGURATION_PRIVATEROOM_HOME_DAILY');
+        $radio_values[0]['text'] = '1 '.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_DAILY');
         $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = '7 '.getMessage('CONFIGURATION_PRIVATEROOM_HOME_WEEKLY');
+         $radio_values[1]['text'] = '7 '.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_WEEKLY');
         $radio_values[1]['value'] = '2';
-         $radio_values[2]['text'] = '30 '.getMessage('CONFIGURATION_PRIVATEROOM_HOME_WEEKLY');
+         $radio_values[2]['text'] = '30 '.$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_HOME_WEEKLY');
         $radio_values[2]['value'] = '3';
-        $this->_form->addRadioGroup('time_spread',getMessage('INTERNAL_TIME_SPREAD'),'',$radio_values,'',true,false);
+        $this->_form->addRadioGroup('time_spread',$this->_translator->getMessage('INTERNAL_TIME_SPREAD'),'',$radio_values,'',true,false);
       }
 
 
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

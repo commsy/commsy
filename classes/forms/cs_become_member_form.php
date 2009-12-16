@@ -56,14 +56,14 @@ class cs_become_member_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHeadline('title',getMessage('CONTEXT_JOIN'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('CONTEXT_JOIN'));
       if ($this->_with_code) {
          $this->_form->addTextfield('code','',$this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE'),'','',24,true);
       } else {
-         $this->_form->addTextArea('description','',getMessage('ACCOUNT_PROCESS_ROOM_REASON'),'',18,8);
+         $this->_form->addTextArea('description','',$this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_REASON'),'',18,8);
       }
       $context = $this->_environment->getCurrentContextItem();
-      $this->_form->addButtonBar('option',getMessage('USER_BECOME_MEMBER_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,7,6);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('USER_BECOME_MEMBER_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,7,6);
    }
 
    /** loads the selected and given values to the form
@@ -84,7 +84,7 @@ class cs_become_member_form extends cs_rubric_form {
          if ( $current_context_item->checkNewMembersWithCode()
               and $current_context_item->getCheckNewMemberCode() != $this->_form_post['code']
             ) {
-            $this->_error_array[] = getMessage('ACCOUNT_PROCESS_ROOM_CODE_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('ACCOUNT_PROCESS_ROOM_CODE_ERROR');
             $this->_form->setFailure('code','');
          }
       }
@@ -94,13 +94,13 @@ class cs_become_member_form extends cs_rubric_form {
     */
    function showAccountNotOpen ($user) {
       $this->_form = new cs_form();
-      $this->_form->addHeadline('title',getMessage('CONTEXT_JOIN'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('CONTEXT_JOIN'));
       if ($user->isRequested()) {
-         $this->_form->addText('text','',getMessage('ACCOUNT_NOT_ACCEPTED_YET'));
+         $this->_form->addText('text','',$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED_YET'));
       } elseif ($user->isRejected()) {
-         $this->_form->addText('text','',getMessage('ACCOUNT_NOT_ACCEPTED'));
+         $this->_form->addText('text','',$this->_translator->getMessage('ACCOUNT_NOT_ACCEPTED'));
       }
-      $this->_form->addButtonBar('option',getMessage('COMMON_FORWARD_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_FORWARD_BUTTON'));
    }
 }
 ?>

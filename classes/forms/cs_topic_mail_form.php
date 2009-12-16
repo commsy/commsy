@@ -66,9 +66,9 @@ class cs_topic_mail_form extends cs_rubric_form {
       if ( isset($_GET['iid']) ){
          $label_manager =  $this->_environment->getLabelManager();
          $topic_item = $label_manager->getItem($_GET['iid']);
-         $this->_headline = getMessage('EMAIL_TO_TOPIC_TITLE',$topic_item->getTitle());
+         $this->_headline = $this->_translator->getMessage('EMAIL_TO_TOPIC_TITLE',$topic_item->getTitle());
       } else {
-         $this->_headline = getMessage('EMAIL_TO_TOPIC_TITLE');
+         $this->_headline = $this->_translator->getMessage('EMAIL_TO_TOPIC_TITLE');
       }
 
       // context name
@@ -105,25 +105,25 @@ class cs_topic_mail_form extends cs_rubric_form {
 
       $this->_form->addHeadline('headline',$this->_headline);
       // topics
-      $this->_form->addTextField('subject','',getMessage('COMMON_MAIL_SUBJECT'),getMessage('COMMON_MAIL_SUBJECT_DESC'),'','53',true);
+      $this->_form->addTextField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),$this->_translator->getMessage('COMMON_MAIL_SUBJECT_DESC'),'','53',true);
       if ($this->_environment->inProjectRoom()){
-         $this->_form->addTextArea('mailcontent','',getMessage('COMMON_MAIL_CONTENT'),getMessage('COMMON_MAIL_CONTENT_DESC'), '58', '', '', true,'',false);
+         $this->_form->addTextArea('mailcontent','',$this->_translator->getMessage('COMMON_MAIL_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'), '58', '', '', true,'',false);
       } elseif ($this->_environment->inCommunityRoom()) {
-         $this->_form->addTextArea('mailcontent','',getMessage('COMMON_MAIL_CONTENT'),getMessage('COMMON_MAIL_CONTENT_DESC'), '58', '', '', true,'',false);
+         $this->_form->addTextArea('mailcontent','',$this->_translator->getMessage('COMMON_MAIL_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'), '58', '', '', true,'',false);
       }
       if (!empty($this->_topic_array)) {
-         $this->_form->addCheckBoxGroup(CS_TOPIC_TYPE,$this->_topic_array,'',getMessage('COMMON_RELEVANT_FOR'),getMessage('COMMON_RELEVANT_FOR_DESC'), true, false);
+         $this->_form->addCheckBoxGroup(CS_TOPIC_TYPE,$this->_topic_array,'',$this->_translator->getMessage('COMMON_RELEVANT_FOR'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_DESC'), true, false);
       }
 
       $yesno[][] = array();
-      $yesno['0']['text']  = getMessage('COMMON_YES');
-      $yesno['0']['value'] = getMessage('COMMON_YES');
-      $yesno['1']['text']  = getMessage('COMMON_NO');
-      $yesno['1']['value'] = getMessage('COMMON_NO');
-      $this->_form->addRadioGroup('copytosender',getMessage('MAILCOPY_TO_SENDER'),getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,getMessage('COMMON_NO'),true,false);
+      $yesno['0']['text']  = $this->_translator->getMessage('COMMON_YES');
+      $yesno['0']['value'] = $this->_translator->getMessage('COMMON_YES');
+      $yesno['1']['text']  = $this->_translator->getMessage('COMMON_NO');
+      $yesno['1']['value'] = $this->_translator->getMessage('COMMON_NO');
+      $this->_form->addRadioGroup('copytosender',$this->_translator->getMessage('MAILCOPY_TO_SENDER'),$this->_translator->getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,$this->_translator->getMessage('COMMON_NO'),true,false);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('COMMON_MAIL_SEND_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_MAIL_SEND_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -157,7 +157,7 @@ class cs_topic_mail_form extends cs_rubric_form {
          }
 
          if ($counter == 0) {
-		    $this->_error_array[] = getMessage('TOPIC_MAIL_NO_RECIPIENTS_ERROR');
+		    $this->_error_array[] = $this->_translator->getMessage('TOPIC_MAIL_NO_RECIPIENTS_ERROR');
             $this->_form->setFailure(CS_TOPIC_TYPE,'');
          }
       }

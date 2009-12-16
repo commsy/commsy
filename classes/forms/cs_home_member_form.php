@@ -147,20 +147,20 @@ class cs_home_member_form extends cs_rubric_form {
    function _checkValues () {
       // check email adresses for equality
       if ($this->_form_post['email'] != $this->_form_post['email_confirmation']) {
-         $this->_error_array[] = getMessage('USER_EMAIL_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');
          $this->_form->setFailure('email','');
          $this->_form->setFailure('email_confirmation','');
       } else {
          //check emails for validity
          if (isEmailValid($this->_form_post['email']) == false) {
-            $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
             $this->_form->setFailure('email','');
             $this->_form->setFailure('email_confirmation','');
          }
       }
       // password check
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
-         $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password','');
          $this->_form->setFailure('password2','');
       }
@@ -175,17 +175,17 @@ class cs_home_member_form extends cs_rubric_form {
             if (count($error_array) > 0) {
                $this->_error_array = array_merge($this->_error_array,$error_array);
             } else {
-               $this->_error_array[] = getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
             }
             $this->_form->setFailure('user_id','');
          } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-            $this->_error_array[] = getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+            $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
             $this->_form->setFailure('user_id','');
          }
       } elseif ( !empty($this->_form_post['auth_source']) ) {
-         $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_form_post['auth_source']);
+         $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR_NOT_AVAILABLE',$this->_form_post['auth_source']);
       } else {
-         $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR');
       }
    }
 }

@@ -185,12 +185,12 @@ var $_with_template_form_element3 = false;
 
    function _createForm () {
         // status
-        $this->_form->addText('status_desc',getMessage('ROOM_ARCHIVE_STATUS'),getMessage('ROOM_STATUS_LONG_DESCRIPTION'));
+        $this->_form->addText('status_desc',$this->_translator->getMessage('ROOM_ARCHIVE_STATUS'),$this->_translator->getMessage('ROOM_STATUS_LONG_DESCRIPTION'));
         $this->_form->addCheckbox('status',
                                      '2',
                                      false,
-                                     getMessage('ROOM_STATUS'),
-                                     getMessage('ROOM_STATUS_DESCRIPTION'),
+                                     $this->_translator->getMessage('ROOM_STATUS'),
+                                     $this->_translator->getMessage('ROOM_STATUS_DESCRIPTION'),
                                      '',
                                      '',
                                      '',
@@ -199,7 +199,7 @@ var $_with_template_form_element3 = false;
 
         $this->_form->addEmptyLine();
 
-        $this->_form->addText('template_desc',getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'),$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC'));
+        $this->_form->addText('template_desc',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_TITLE'),$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_ELEMENT_DESC'));
 
         // template functions
         if ($this->_with_template_form_element) {
@@ -232,12 +232,12 @@ var $_with_template_form_element3 = false;
            $this->_form->addSelect('template_availability',
                                $user_array,
                                '',
-                               getMessage('CONFIGURATION_TEMPLATE_GROUP'),
+                               $this->_translator->getMessage('CONFIGURATION_TEMPLATE_GROUP'),
                                '',0,'','','','','','','','','',$this->_disable_template_form_element);
 
       }
-      $this->_form->addTextArea('description','',getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,$this->_disable_template_form_element);
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,$this->_disable_template_form_element);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    function _prepareValues () {
@@ -261,7 +261,7 @@ var $_with_template_form_element3 = false;
          }
          $description = $current_context->getTemplateDescription();
          if ( empty($description) ){
-#            $this->_values['description'] = getMessage('COMMON_DEFAULT_TEMPLATE_DESCRIPTION');
+#            $this->_values['description'] = $this->_translator->getMessage('COMMON_DEFAULT_TEMPLATE_DESCRIPTION');
          }else{
             $this->_values['description'] = $description;
          }

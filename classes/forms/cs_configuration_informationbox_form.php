@@ -41,10 +41,10 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
    function _initForm () {
       $current_context= $this->_environment->getCurrentContextItem();
       $_show_information_box_array = array();
-      $temp_array['text']  = getMessage('COMMON_SHOW_INFORMATION_BOX_YES');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX_YES');
       $temp_array['value'] = 1;
       $_show_information_box_array[] = $temp_array;
-      $temp_array['text']  = getMessage('COMMON_SHOW_INFORMATION_BOX_NO');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX_NO');
       $temp_array['value'] = 0;
       $_show_information_box_array[] = $temp_array;
       $this->_show_information_box_array = $_show_information_box_array;
@@ -53,13 +53,13 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
 
    function _createForm () {
       $current_context= $this->_environment->getCurrentContextItem();
-      $this->_form->addTextField('item_id','',getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'),'',200,35,true);
+      $this->_form->addTextField('item_id','',$this->_translator->getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'),'',200,35,true);
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size','',getMessage('COMMON_INFORMATION_BOX_ID_ENTRY'));
-      $this->_form->addRadioGroup('show_information_box',getMessage('COMMON_SHOW_INFORMATION_BOX'),'',$this->_show_information_box_array);
+      $this->_form->addText('max_size','',$this->_translator->getMessage('COMMON_INFORMATION_BOX_ID_ENTRY'));
+      $this->_form->addRadioGroup('show_information_box',$this->_translator->getMessage('COMMON_SHOW_INFORMATION_BOX'),'',$this->_show_information_box_array);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    function _prepareValues () {
@@ -113,7 +113,7 @@ class cs_configuration_informationbox_form extends cs_rubric_form {
      }
      if(!$is_entry or $item->isDeleted()){
         $this->_form->setFailure('item_id','mandatory');
-        $this->_error_array[] = getMessage('COMMON_ERROR_INFORMATION_BOX_ID_ENTRY',getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'));
+        $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_INFORMATION_BOX_ID_ENTRY',$this->_translator->getMessage('COMMON_ATTACHED_ANNOUNCEMENT_ID'));
      }
    }
 

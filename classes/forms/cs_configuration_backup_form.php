@@ -72,9 +72,9 @@ class cs_configuration_backup_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
       $this->_form->addText('text',$this->_translator->getMessage('COMMON_ATTENTION'),$this->_translator->getMessage('PREFERENCES_BACKUP_DESC',getCommSyVersion()));
 
-      $this->_form->addFilefield('upload', getMessage('COMMON_FILE'),'');
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('COMMON_FILE'),'');
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_BACKUP_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_BACKUP_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

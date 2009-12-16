@@ -146,22 +146,22 @@ class cs_todo_form extends cs_rubric_form {
          $fullname = $current_user->getFullname();
       }
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
 
       $status_array = array();
-      $temp_array['text']  = getMessage('TODO_NOT_STARTED');
+      $temp_array['text']  = $this->_translator->getMessage('TODO_NOT_STARTED');
       $temp_array['value'] = '1';
       $status_array[] = $temp_array;
-      $temp_array['text']  = getMessage('TODO_IN_POGRESS');
+      $temp_array['text']  = $this->_translator->getMessage('TODO_IN_POGRESS');
       $temp_array['value'] = '2';
       $status_array[] = $temp_array;
-      $temp_array['text']  = getMessage('TODO_DONE');
+      $temp_array['text']  = $this->_translator->getMessage('TODO_DONE');
       $temp_array['value'] = '3';
       $status_array[] = $temp_array;
 
@@ -178,15 +178,15 @@ class cs_todo_form extends cs_rubric_form {
 
       // headline
       if ( !empty($this->_item) ) {
-         $this->_headline = getMessage('TODO_EDIT');
+         $this->_headline = $this->_translator->getMessage('TODO_EDIT');
       } elseif ( !empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('TODO_EDIT');
+            $this->_headline = $this->_translator->getMessage('TODO_EDIT');
          } else {
-            $this->_headline = getMessage('TODO_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('TODO_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('TODO_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('TODO_ENTER_NEW');
       }
 
       // groups
@@ -240,37 +240,47 @@ class cs_todo_form extends cs_rubric_form {
 
       // todo
       $this->_form->addHidden('iid','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,46,true);
-#      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,48,true);
+      $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,46,true);
+#      $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,48,true);
       $this->_form->addDateTimeField('end_date_time','',
                               'dayEnd','timeEnd',10,10,
-                              getMessage('TODO_DATE'),
-                              getMessage('DATES_END_DAY'),
-                              getMessage('DATES_END_TIME'),
-                              getMessage('TODO_TIME_DAY_END_DESC'),false,false);
+                              $this->_translator->getMessage('TODO_DATE'),
+                              $this->_translator->getMessage('DATES_END_DAY'),
+                              $this->_translator->getMessage('DATES_END_TIME'),
+                              $this->_translator->getMessage('TODO_TIME_DAY_END_DESC'),true,false);
+                              $this->_translator->getMessage('TODO_DATE'),
+                              $this->_translator->getMessage('DATES_END_DAY'),
+                              $this->_translator->getMessage('DATES_END_TIME'),
+                              $this->_translator->getMessage('TODO_TIME_DAY_END_DESC'),false,false);
 
       $current_context = $this->_environment->getCurrentContextItem();
+      if($current_context->withTodoManagment()){
+         $this->_form->addTextField('minutes','',$this->_translator->getMessage('TODO_TIME'),$this->_translator->getMessage('TODO_TIME_DESC'),5,5,false);
       if($current_context->withTodoManagement()){
-         $this->_form->addTextField('minutes','',getMessage('TODO_TIME'),getMessage('TODO_TIME_DESC'),5,5,false);
+         $this->_form->addTextField('minutes','',$this->_translator->getMessage('TODO_TIME'),$this->_translator->getMessage('TODO_TIME_DESC'),5,5,false);
 
          $time_type = array();
-         $time_type[] = array('text'  => getMessage('TODO_TIME_MINUTES'),
+         $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_MINUTES'),
                               'value' => '1');
-         $time_type[] = array('text'  => getMessage('TODO_TIME_HOURS'),
+         $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_HOURS'),
                               'value' => '2');
-         $time_type[] = array('text'  => getMessage('TODO_TIME_DAYS'),
+         $time_type[] = array('text'  => $this->_translator->getMessage('TODO_TIME_DAYS'),
                               'value' => '3');
          $this->_form->combine('horizontal');
-         $this->_form->addSelect('time_type',$time_type,'',getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
+         $this->_form->addSelect('time_type',$time_type,'',$this->_translator->getMessage('TODO_TIME_TYPE'),'', 1, false,false,false,'','','','',12,true);
 
 
       }
 
+<<<<<<< cs_todo_form.php
+      $this->_form->addRadioGroup('status',$this->_translator->getMessage('TODO_STATUS'),$this->_translator->getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
+=======
       $this->_form->addSelect('status',
                                      $this->_status_array,
                                      '',
-                                     getMessage('TODO_STATUS'),
-                                     getMessage('TODO_STATUS_DESC'),
+                                     $this->_translator->getMessage('TODO_STATUS'),
+                                     $this->_translator->getMessage('TODO_STATUS_DESC'),
                                      0,
                                      false,
                                      true,
@@ -281,8 +291,9 @@ class cs_todo_form extends cs_rubric_form {
                                      '',
                                      '17'
                                );
-#      $this->_form->addRadioGroup('status',getMessage('TODO_STATUS'),getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'');
+#      $this->_form->addRadioGroup('status',$this->_translator->getMessage('TODO_STATUS'),$this->_translator->getMessage('TODO_STATUS_DESC'),$this->_status_array,'',true);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
+>>>>>>> 1.8
 
 
       // rubric connections
@@ -308,11 +319,11 @@ class cs_todo_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -341,31 +352,31 @@ class cs_todo_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
 
       if ( !$this->_environment->inPrivateRoom() ){
          // public radio-buttons
          if ($current_context->withActivatingContent()){
-            $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+            $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
             $this->_form->combine();
-            $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
+            $this->_form->addCheckbox('hide',1,'',$this->_translator->getMessage('COMMON_HIDE'),$this->_translator->getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');
-            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
             $this->_form->combine('horizontal');
             $this->_form->addText('hide_end2','',')');
          }else{
              // public radio-buttons
              if ( !isset($this->_item) ) {
-                $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
              } else {
                 $current_user = $this->_environment->getCurrentUser();
                 $creator = $this->_item->getCreatorItem();
                 if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-                   $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                   $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
                 } else {
                    $this->_form->addHidden('public','');
                 }
@@ -385,9 +396,9 @@ class cs_todo_form extends cs_rubric_form {
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('TODO_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('TODO_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('TODO_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('TODO_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 
@@ -506,14 +517,14 @@ class cs_todo_form extends cs_rubric_form {
          $session = $this->_environment->getSessionItem();
          $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
          if (count($tag_ids) == 0){
-            $this->_error_array[] = getMessage('COMMON_ERROR_TAG_ENTRY',getMessage('MATERIAL_TAGS'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY',$this->_translator->getMessage('MATERIAL_TAGS'));
          }
       }
       if ( $current_context->isBuzzwordMandatory() ){
          $session = $this->_environment->getSessionItem();
          $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
          if (count($buzzword_ids) == 0){
-            $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY',$this->_translator->getMessage('MATERIAL_BUZZWORDS'));
          }
       }
       if ( !empty($this->_form_post['end_date_time'][0]) ) {
@@ -522,14 +533,14 @@ class cs_todo_form extends cs_rubric_form {
          }
          include_once('functions/date_functions.php');
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time'][0],$this->_form_post['end_date_time'][1]) ) {
-            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('end_date_time','');
          }
       }
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
          include_once('functions/date_functions.php');
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayStart'],$this->_form_post['timeStart']) ) {
-            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('start_date_time','');
          }
       }

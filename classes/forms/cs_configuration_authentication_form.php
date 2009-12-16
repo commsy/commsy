@@ -77,7 +77,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
    function _initForm () {
 
       // auth text choice
-      $this->_array_auth_source[0]['text']  = '*'.getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT');
+      $this->_array_auth_source[0]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT');
       $this->_array_auth_source[0]['value'] = -1;
 
       // auth sources
@@ -112,7 +112,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_array_auth_source[$counter]['text']  = '----------------------';
       $this->_array_auth_source[$counter]['value'] = 'disabled';
       $counter++;
-      $this->_array_auth_source[$counter]['text']  = getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_NEW');
+      $this->_array_auth_source[$counter]['text']  = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_NEW');
       $this->_array_auth_source[$counter]['value'] = 'new';
 
       // auth type
@@ -121,7 +121,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
            and $this->_form_post['auth_source'] == 'new' ) {
          $this->_auth_type_array = array();
          $counter = 0;
-         $this->_auth_type_array[$counter]['text']  = '*'.getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT_TYPE');
+         $this->_auth_type_array[$counter]['text']  = '*'.$this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_CHOOSE_TEXT_TYPE');
          $this->_auth_type_array[$counter]['value'] = -1;
          $counter++;
          $this->_auth_type_array[$counter]['text']  = '----------------------';
@@ -238,13 +238,13 @@ class cs_configuration_authentication_form extends cs_rubric_form {
       $this->_form->addSelect( 'auth_source',
                                $this->_array_auth_source,
                                '',
-                               getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE'),
+                               $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_SOURCE'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option');
       $context_item = $this->_environment->getCurrentContextItem();
 
@@ -256,16 +256,16 @@ class cs_configuration_authentication_form extends cs_rubric_form {
          $this->_form->addSelect( 'auth_type',
                                   $this->_auth_type_array,
                                   '',
-                                  getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE'),
+                                  $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_FORM_CHOOSE_AUTH_TYPE'),
                                   '',
                                   '',
                                   '',
                                   '',
                                   true,
-                                  getMessage('COMMON_CHOOSE_BUTTON'),
+                                  $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                   'option');
       }
-      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
+      $this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,20,true,'','','','','','',$disabled);
       if ( $this->_disable_default ) {
          $this->_form->addHidden('disable_default','yes');
          $this->_form->addHidden('default',1);
@@ -609,15 +609,15 @@ class cs_configuration_authentication_form extends cs_rubric_form {
    function _checkValues () {
       // check choosen auth source
       if (mb_strlen($this->_form_post['auth_source']) == 2 and $this->_form_post['auth_source'] != -1) {
-         $this->_error_array[] = getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
          $this->_form->setFailure('auth_source','');
       }
       if ( mb_strlen($this->_form_post['auth_source']) == 2 and
            $this->_form_post['auth_source'] == -1 and
            isset($this->_form_post['option']) and
-           isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))
+           isOption($this->_form_post['option'], $this->_translator->getMessage('COMMON_SAVE_BUTTON'))
          ) {
-         $this->_error_array[] = getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_CHOICE_ERROR');
          $this->_form->setFailure('auth_source','');
       }
 
@@ -628,7 +628,7 @@ class cs_configuration_authentication_form extends cs_rubric_form {
                   or strstr($this->_form_post['host'],'http://')
                 )
          ) {
-         $this->_error_array[] = getMessage('CONFIGURATION_AUTHENTICATION_HOST_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_AUTHENTICATION_HOST_ERROR');
          $this->_form->setFailure('host','');
       }
    }

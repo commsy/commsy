@@ -65,7 +65,7 @@ class cs_date_import_selection_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->setHeadline(getMessage('DATE_IMPORT_FORM2'));
+      $this->setHeadline($this->_translator->getMessage('DATE_IMPORT_FORM2'));
    }
 
    /** create the form, INTERNAL
@@ -75,18 +75,18 @@ class cs_date_import_selection_form extends cs_rubric_form {
     */
    function _createForm () {
 
-      $this->_form->addSelect('title',$this->_array,'',getMessage('COMMON_TITLE'),getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('description',$this->_array,'',getMessage('COMMON_DESCRIPTION'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('starttime',$this->_array,'',getMessage('DATE_STARTTIME'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('startday',$this->_array,'',getMessage('DATE_STARTDAY'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('endtime',$this->_array,'',getMessage('DATE_ENDTIME'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('endday',$this->_array,'',getMessage('DATE_ENDDAY'),'', 1, false,false,false,'','','','',15.3);
-      $this->_form->addSelect('location',$this->_array,'',getMessage('DATE_LOCATION'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('title',$this->_array,'',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATE_TITLE_DESC'), 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('description',$this->_array,'',$this->_translator->getMessage('COMMON_DESCRIPTION'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('starttime',$this->_array,'',$this->_translator->getMessage('DATE_STARTTIME'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('startday',$this->_array,'',$this->_translator->getMessage('DATE_STARTDAY'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('endtime',$this->_array,'',$this->_translator->getMessage('DATE_ENDTIME'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('endday',$this->_array,'',$this->_translator->getMessage('DATE_ENDDAY'),'', 1, false,false,false,'','','','',15.3);
+      $this->_form->addSelect('location',$this->_array,'',$this->_translator->getMessage('DATE_LOCATION'),'', 1, false,false,false,'','','','',15.3);
       $this->_form->addEmptyline();
 
-      $this->_form->addCheckbox('mode',getMessage('DATE_IMPORT_PUBLIC'),'',getMessage('DATE_IMPORT_PUBLIC'),getMessage('DATE_PUBLIC_NO'),''); //PREFERENCES_SHOW_TITLE_OPTION
+      $this->_form->addCheckbox('mode',$this->_translator->getMessage('DATE_IMPORT_PUBLIC'),'',$this->_translator->getMessage('DATE_IMPORT_PUBLIC'),$this->_translator->getMessage('DATE_PUBLIC_NO'),''); //PREFERENCES_SHOW_TITLE_OPTION
 
-      $this->_form->addButtonBar('option',getMessage('DATES_SELECTION_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_SELECTION_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

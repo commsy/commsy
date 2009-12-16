@@ -112,10 +112,10 @@ class cs_group_form extends cs_rubric_form {
          $fullname = $current_user->getFullname();
       }
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
@@ -129,12 +129,12 @@ class cs_group_form extends cs_rubric_form {
       }
 
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('GROUP_EDIT');
+         $this->_headline = $this->_translator->getMessage('GROUP_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('GROUP_EDIT');
+            $this->_headline = $this->_translator->getMessage('GROUP_EDIT');
          } else {
-            $this->_headline = getMessage('GROUP_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('GROUP_ENTER_NEW');
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
@@ -144,19 +144,19 @@ class cs_group_form extends cs_rubric_form {
                $genus = $rubric_array['EN']['GENUS'];
             }
             if ($genus =='M'){
-               $new = getMessage('COMMON_NEW_M_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
             }
             elseif ($genus =='F'){
-               $new =  getMessage('COMMON_NEW_F_BIG').' ';
+               $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
             }
             else {
-               $new = getMessage('COMMON_NEW_N_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
             }
 
             $this->_headline = $new.$this->_headline;
          }
       } else {
-         $this->_headline = getMessage('GROUP_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('GROUP_ENTER_NEW');
          $new='';
          $context_item = $this->_environment->getCurrentContextItem();
          $rubric_array = $context_item->_getRubricArray(CS_GROUP_TYPE);
@@ -166,13 +166,13 @@ class cs_group_form extends cs_rubric_form {
             $genus = $rubric_array['EN']['GENUS'];
          }
          if ($genus =='M'){
-            $new = getMessage('COMMON_NEW_M_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
          }
          elseif ($genus =='F'){
-            $new =  getMessage('COMMON_NEW_F_BIG').' ';
+            $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
          }
          else {
-            $new = getMessage('COMMON_NEW_N_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
          }
          $this->_headline = $new.$this->_headline;
       }
@@ -198,7 +198,7 @@ class cs_group_form extends cs_rubric_form {
       $discussion_array = $context_item->getWikiDiscussionArray();
 
       $discussion_notification_array = array();
-      $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_DISCUSSION_NOTIFICATION');
+      $temp_array['text'] = '*'.$this->_translator->getMessage('PREFERENCES_NO_DISCUSSION_NOTIFICATION');
       $temp_array['value'] = '-1';
       $discussion_notification_array[] = $temp_array;
       $temp_array['text'] = '--------------------';
@@ -256,22 +256,22 @@ class cs_group_form extends cs_rubric_form {
       // group
       $this->_form->addHidden('iid','');
       if (isset($this->_item) and $this->_item->isSystemLabel()) {
-         $this->_form->addTitleField('system_name',getMessage('COMMON_NAME'),$this->_item->getName(),getMessage('GROUP_ALL_NAME_DESC'),200,'',true,'','','','left','','',false);
+         $this->_form->addTitleField('system_name',$this->_translator->getMessage('COMMON_NAME'),$this->_item->getName(),$this->_translator->getMessage('GROUP_ALL_NAME_DESC'),200,'',true,'','','','left','','',false);
       } else {
-         $this->_form->addTitleField('name','',getMessage('COMMON_NAME'),getMessage('COMMON_NAME_DESC'),200,45,true);
+         $this->_form->addTitleField('name','',$this->_translator->getMessage('COMMON_NAME'),$this->_translator->getMessage('COMMON_NAME_DESC'),200,45,true);
       }
       $this->_setFormElementsForConnectedRubrics();
 
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'');
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'');
 
       $this->_form->addEmptyline();      // public radio-buttons
       $this->_form->addHidden('has_picture','');
-      $this->_form->addImage('picture_upload','',getMessage('USER_PICTURE_UPLOADFILE'), getMessage('GROUP_PICTURE_FILE_DESC'),$context_id);
+      $this->_form->addImage('picture_upload','',$this->_translator->getMessage('USER_PICTURE_UPLOADFILE'), $this->_translator->getMessage('GROUP_PICTURE_FILE_DESC'),$context_id);
 
       //delete picture
       if ( $this->_has_picture ) {
          $this->_form->combine();
-         $this->_form->addCheckbox('deletePicture',getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),getMessage('USER_DEL_PIC_BUTTON'),'');
+         $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,$this->_translator->getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
       }
       $this->_form->addHidden('picture_hidden','');
 
@@ -280,12 +280,12 @@ class cs_group_form extends cs_rubric_form {
       $context_item = $this->_environment->getCurrentContextItem();
       if($context_item->WikiEnableDiscussionNotificationGroups() == 1){
          if ( !empty ($this->_shown_discussion_notification_array) ) {
-            $this->_form->addCheckBoxGroup('discussion_notification_list',$this->_shown_discussion_notification_array,'',getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);
+            $this->_form->addCheckBoxGroup('discussion_notification_list',$this->_shown_discussion_notification_array,'',$this->_translator->getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'',false,false);
             $this->_form->combine();
          }
-         $this->_form->addSelect('discussion_notification',$this->_discussion_notification_array,'',getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'', 1, false,true,false,'','','','',16);
+         $this->_form->addSelect('discussion_notification',$this->_discussion_notification_array,'',$this->_translator->getMessage('PREFERENCES_DISCUSSION_NOTIFICATION'),'', 1, false,true,false,'','','','',16);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option',getMessage('PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON'),'','',160);
+         $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_DISCUSSION_NOTIFICATION_BUTTON'),'','',160);
       }
 
       #############################################
@@ -303,7 +303,7 @@ class cs_group_form extends cs_rubric_form {
             if ( !empty($this->_exists_group_room_id) ) {
                $this->_form->addHidden('group_room_id',$this->_exists_group_room_id);
             }
-            $this->_form->addCheckbox('group_room_activate','1',$checked,getMessage('GROUPROOM_FORM_CHECKBOX_TITLE'),getMessage('GROUPROOM_FORM_CHECKBOX_TEXT'),'','',$dead);
+            $this->_form->addCheckbox('group_room_activate','1',$checked,$this->_translator->getMessage('GROUPROOM_FORM_CHECKBOX_TITLE'),$this->_translator->getMessage('GROUPROOM_FORM_CHECKBOX_TEXT'),'','',$dead);
          }
       }
       #############################################
@@ -312,12 +312,12 @@ class cs_group_form extends cs_rubric_form {
 
       // public radio-buttons
       if ( !isset($this->_item) ) {
-         $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+         $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
       } else {
          $current_user = $this->_environment->getCurrentUser();
          $creator = $this->_item->getCreatorItem();
          if ( ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) and !$this->_item->isSystemLabel() ) {
-            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+            $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
          } else {
             $this->_form->addHidden('public','');
          }
@@ -334,9 +334,9 @@ class cs_group_form extends cs_rubric_form {
       }
 
       if ( $id == 0 or (isset($this->_item) and $this->_item->isSystemLabel()) )  {
-         $this->_form->addButtonBar('option',getMessage('GROUP_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('GROUP_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('GROUP_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('GROUP_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 
@@ -359,7 +359,7 @@ class cs_group_form extends cs_rubric_form {
             $this->_values['public'] = ($this->_environment->inProjectRoom() OR $this->_environment->inGroupRoom())?'1':'0'; //In projectrooms everybody can edit the item by default, else default is creator only
          }
          if (!isset($this->_values['name'])) { //if group ist group for all members, we set name hier
-            $this->_values['name'] = getMessage('ALL_MEMBERS');
+            $this->_values['name'] = $this->_translator->getMessage('ALL_MEMBERS');
          }
        if ( isset($this->_values['picture_hidden']) and !empty($this->_values['picture_hidden']) ) {
           $this->_values['picture_upload'] = $this->_values['picture_hidden'];
@@ -372,7 +372,7 @@ class cs_group_form extends cs_rubric_form {
          if (!$this->_item->isSystemLabel()) {
             $this->_values['name'] = $this->_item->getName();
          } else {
-            $this->_values['name'] = getMessage('ALL_MEMBERS');
+            $this->_values['name'] = $this->_translator->getMessage('ALL_MEMBERS');
          }
          if ( !isset($this->_exists_group_room) or ! $this->_exists_group_room ) {
             $this->_values['description'] = $this->_item->getDescription();

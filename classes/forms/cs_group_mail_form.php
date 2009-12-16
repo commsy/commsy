@@ -61,9 +61,9 @@ class cs_group_mail_form extends cs_rubric_form {
       if ( isset($_GET['iid']) ){
          $label_manager =  $this->_environment->getLabelManager();
          $group_item = $label_manager->getItem($_GET['iid']);
-         $this->_headline = getMessage('GROUPS_EMAIL_TO_GROUP_TITLE').' "'.$group_item->getTitle().'"';
+         $this->_headline = $this->_translator->getMessage('GROUPS_EMAIL_TO_GROUP_TITLE').' "'.$group_item->getTitle().'"';
       } else {
-         $this->_headline = getMessage('GROUPS_EMAIL_TO_GROUP_TITLE');
+         $this->_headline = $this->_translator->getMessage('GROUPS_EMAIL_TO_GROUP_TITLE');
       }
       // groups
       $label_manager =  $this->_environment->getLabelManager();
@@ -99,10 +99,10 @@ class cs_group_mail_form extends cs_rubric_form {
       $this->_form->addTextArea('mailcontent','',$this->_translator->getMessage('COMMON_MAIL_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'), '58', '', '', true,'',false);
 	  $this->_initCheckBoxGroup();
       $yesno[][] = array();
-      $yesno['0']['text']  = getMessage('COMMON_YES');
-      $yesno['0']['value'] = getMessage('COMMON_YES');
-      $yesno['1']['text']  = getMessage('COMMON_NO');
-      $yesno['1']['value'] = getMessage('COMMON_NO');
+      $yesno['0']['text']  = $this->_translator->getMessage('COMMON_YES');
+      $yesno['0']['value'] = $this->_translator->getMessage('COMMON_YES');
+      $yesno['1']['text']  = $this->_translator->getMessage('COMMON_NO');
+      $yesno['1']['value'] = $this->_translator->getMessage('COMMON_NO');
       $this->_form->addRadioGroup('copytosender',$this->_translator->getMessage('MAILCOPY_TO_SENDER'),$this->_translator->getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,$this->_translator->getMessage('COMMON_NO'),true,false);
 
       // buttons
@@ -131,7 +131,7 @@ class cs_group_mail_form extends cs_rubric_form {
     */
    function _initCheckBoxGroup () {
       if (isset($this->_group_array)) {
-            $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',getMessage('COMMON_RELEVANT_FOR'),getMessage('COMMON_RELEVANT_FOR_DESC'), true, false);
+            $this->_form->addCheckBoxGroup('groups',$this->_group_array,'',$this->_translator->getMessage('COMMON_RELEVANT_FOR'),$this->_translator->getMessage('COMMON_RELEVANT_FOR_DESC'), true, false);
       }
    }
 
@@ -151,7 +151,7 @@ class cs_group_mail_form extends cs_rubric_form {
          }
 
          if ($counter == 0) {
-		    $this->_error_array[] = getMessage('GROUP_MAIL_NO_RECIPIENTS_ERROR');
+		    $this->_error_array[] = $this->_translator->getMessage('GROUP_MAIL_NO_RECIPIENTS_ERROR');
             $this->_form->setFailure('groups','');
          }
       }

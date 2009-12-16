@@ -50,7 +50,7 @@ class cs_configuration_ims_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->_headline = getMessage('SERVER_IMS_LINK');
+      $this->_headline = $this->_translator->getMessage('SERVER_IMS_LINK');
    }
 
    /** create the form, INTERNAL
@@ -62,7 +62,7 @@ class cs_configuration_ims_form extends cs_rubric_form {
 
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('user_id',$this->_ims_user_id);
-      $this->_form->addCheckbox('exist','1',false,getMessage('SERVER_CONFIGURATION_IMS_USER_EXIST'),'','','','','onclick="cs_toggle()"');
+      $this->_form->addCheckbox('exist','1',false,$this->_translator->getMessage('SERVER_CONFIGURATION_IMS_USER_EXIST'),'','','','','onclick="cs_toggle()"');
 
       $this->_form->addText('user_id_text',$this->_translator->getMessage('SERVER_CONFIGURATION_IMS_USERID'),$this->_ims_user_id,'');
       $this->_form->addPassword('password1', '', $this->_translator->getMessage('SERVER_CONFIGURATION_IMS_PASSWORD'), '', 15, 20,false);
@@ -118,7 +118,7 @@ class cs_configuration_ims_form extends cs_rubric_form {
    function _checkValues () {
       if (!empty($this->_form_post['exist'])) {
          if ($this->_form_post['password1'] != $this->_form_post['password2'] OR $this->_form_post['password1'] == '') {
-            $this->_error_array[] = getMessage('IMS_PASSWORD_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('IMS_PASSWORD_ERROR');
             $this->_form->setFailure('password1');
             $this->_form->setFailure('password2');
          }

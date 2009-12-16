@@ -45,11 +45,11 @@ class cs_configuration_service_form extends cs_rubric_form {
     */
    function _initForm () {
       $this->_initially_enable_email_textfield = false;
-      $this->_headline = getMessage('CONFIGURATION_SERVICE_TITLE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_SERVICE_TITLE');
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/config/service.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons_msie6/32x32/config/service.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/32x32/config/service.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons/32x32/config/service.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       }
       if ( !empty($image) ) {
          $this->_headline = $image.' '.$this->_headline;
@@ -176,7 +176,7 @@ class cs_configuration_service_form extends cs_rubric_form {
 
       //check emails for validity. Empty fields are accepted, too.
       if (!empty($this->_form_post['serviceemail']) and isEmailValid($this->_form_post['serviceemail']) == false) {
-         $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
          $this->_form->setFailure('email','');
          $this->_form->setFailure('email_confirmation','');
       }

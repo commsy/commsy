@@ -89,21 +89,21 @@ class cs_mail_process_form extends cs_rubric_form {
       $this->_form->addHidden('hints_text','');
       $this->_form->addHidden('senderName','');
       $this->_form->addHidden('senderAddress','');
-      $this->_form->addTitleField('subject','',getMessage('COMMON_MAIL_SUBJECT'),'',200,'46',true);
+      $this->_form->addTitleField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),'',200,'46',true);
       if ( $this->_hints != NULL ) {
-         $this->_form->addText('hints',getMessage('COMMON_HINTS'),'');
+         $this->_form->addText('hints',$this->_translator->getMessage('COMMON_HINTS'),'');
       }
 
       if ( sizeof($this->_receiver_array) > 1 ) {
-         $this->_form->addCheckBoxGroup('receivers',$this->_receiver_array,'',getMessage('COMMON_MAIL_RECEIVER'),getMessage('COMMON_MAIL_RECEIVER_DESC'), true, false);
+         $this->_form->addCheckBoxGroup('receivers',$this->_receiver_array,'',$this->_translator->getMessage('COMMON_MAIL_RECEIVER'),$this->_translator->getMessage('COMMON_MAIL_RECEIVER_DESC'), true, false);
       } else {
-         $this->_form->addText('receiver',getMessage('COMMON_MAIL_RECEIVER'),'');
+         $this->_form->addText('receiver',$this->_translator->getMessage('COMMON_MAIL_RECEIVER'),'');
          $this->_form->addHidden('receivers',$this->_receiver_array);
       }
-      $this->_form->addTextArea('content','',getMessage('COMMON_CONTENT'),'','60', '15', '', true,false,false);
+      $this->_form->addTextArea('content','',$this->_translator->getMessage('COMMON_CONTENT'),'','60', '15', '', true,false,false);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('MAIL_SEND_BUTTON'),getMessage('MAIL_NOT_SEND_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('MAIL_SEND_BUTTON'),$this->_translator->getMessage('MAIL_NOT_SEND_BUTTON'));
    }
 
    /** loads the selected and given values to the form

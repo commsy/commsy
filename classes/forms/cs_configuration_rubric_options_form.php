@@ -98,15 +98,15 @@ class cs_configuration_rubric_options_form extends cs_rubric_form {
         $desc = '';
         if ($first) {
            $first = false;
-           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',getMessage('MODULE_CONFIG_SHORT'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_SHORT',$this->_translator->getMessage('MODULE_CONFIG_SHORT'));
            $second = true;
         } elseif ($second) {
            $second = false;
-           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',getMessage('MODULE_CONFIG_TINY'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_TINY',$this->_translator->getMessage('MODULE_CONFIG_TINY'));
            $third = true;
         } elseif ($third) {
            $third = false;
-           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',getMessage('MODULE_CONFIG_NONE'));
+           $desc = $this->_translator->getMessage('INTERNAL_MODULE_CONF_DESC_NONE',$this->_translator->getMessage('MODULE_CONFIG_NONE'));
         }
      }
 

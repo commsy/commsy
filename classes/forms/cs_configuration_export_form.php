@@ -55,10 +55,10 @@ class cs_configuration_export_form extends cs_rubric_form {
    function _createForm () {
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('name_hidden','');
-      $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
+      $this->_form->addText('name_title',$this->_translator->getMessage('COMMON_ROOM'),'');
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PORTAL_EXPORT_ROOM_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PORTAL_EXPORT_ROOM_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

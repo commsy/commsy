@@ -56,9 +56,9 @@ class cs_configuration_plugins_form extends cs_rubric_form {
       // headline
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_PLUGIN_LINK');
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/config/plugin.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons_msie6/32x32/config/plugin.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/32x32/config/plugin.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons/32x32/config/plugin.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       }
       if ( !empty($image) ) {
          $this->_headline = $image.' '.$this->_headline;
@@ -85,11 +85,11 @@ class cs_configuration_plugins_form extends cs_rubric_form {
                ) {
                $temp_array = array();
                $temp_array2 = array();
-               $temp_array2['text']  = getMessage('COMMON_ON');
+               $temp_array2['text']  = $this->_translator->getMessage('COMMON_ON');
                $temp_array2['value'] = 1;
                $temp_array[] = $temp_array2;
                $temp_array2 = array();
-               $temp_array2['text']  = getMessage('COMMON_OFF');
+               $temp_array2['text']  = $this->_translator->getMessage('COMMON_OFF');
                $temp_array2['value'] = -1;
                $temp_array[] = $temp_array2;
 

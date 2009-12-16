@@ -51,13 +51,13 @@ class cs_configuration_chat_form extends cs_rubric_form {
       // form fields
       $this->_form->addHidden('iid','');
       $desc = '<img src="images/chat_screenshot.gif" alt="Chat Screenshot" style=" border:1px solid black; vertical-align: middle;"/>';
-      $this->_form->addCheckbox('chatlink',1,'',getMessage('CHAT_CONFIGURATION_CHAT'),getMessage('CHAT_CONFIGURATION_CHAT_VALUE'),'');
-      $desc = getMessage('CHAT_CONFIGURATION_DESCRIPTION');
-      $desc .= '<br/><img src="images/chat_screenshot.gif" alt="'.getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
-      $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+      $this->_form->addCheckbox('chatlink',1,'',$this->_translator->getMessage('CHAT_CONFIGURATION_CHAT'),$this->_translator->getMessage('CHAT_CONFIGURATION_CHAT_VALUE'),'');
+      $desc = $this->_translator->getMessage('CHAT_CONFIGURATION_DESCRIPTION');
+      $desc .= '<br/><img src="images/chat_screenshot.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
+      $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

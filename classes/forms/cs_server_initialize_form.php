@@ -57,7 +57,7 @@ class cs_server_initialize_form extends cs_rubric_form {
     */
    function _initForm () {
       // headline
-      $this->_headline = getMessage('SERVER_INITIALIZE_FORM_TITLE');
+      $this->_headline = $this->_translator->getMessage('SERVER_INITIALIZE_FORM_TITLE');
 
       // language options
       $languages = $this->_environment->getAvailableLanguageArray();
@@ -79,18 +79,18 @@ class cs_server_initialize_form extends cs_rubric_form {
       $this->_form->addHeadline('headline',$this->_headline);
 
       // text and options
-      $this->_form->addText('hints',getMessage('COMMON_HINTS'),getMessage('SERVER_INITIALIZE_FORM_HINTS'));
-      $this->_form->addTextField('firstname','',getMessage('USER_FIRSTNAME'),'','','',true);
-      $this->_form->addTextField('lastname','',getMessage('USER_LASTNAME'),'','','',true);
-      $this->_form->addTextField('email','',getMessage('USER_EMAIL'),getMessage('USER_EMAIL_DESC'),'','',true);
-      $this->_form->addText('user_id',getMessage('USER_USER_ID'),'root');
+      $this->_form->addText('hints',$this->_translator->getMessage('COMMON_HINTS'),$this->_translator->getMessage('SERVER_INITIALIZE_FORM_HINTS'));
+      $this->_form->addTextField('firstname','',$this->_translator->getMessage('USER_FIRSTNAME'),'','','',true);
+      $this->_form->addTextField('lastname','',$this->_translator->getMessage('USER_LASTNAME'),'','','',true);
+      $this->_form->addTextField('email','',$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_EMAIL_DESC'),'','',true);
+      $this->_form->addText('user_id',$this->_translator->getMessage('USER_USER_ID'),'root');
       $this->_form->addHidden('user_id','root');
-      $this->_form->addPassword('password','',getMessage('USER_PASSWORD'),'','','',true);
-      $this->_form->addPassword('password2','',getMessage('USER_PASSWORD2'),getMessage('USER_PASSWORD2_DESC'),'','',true);
-      $this->_form->addSelect('language',$this->_language_options,'',getMessage('USER_LANGUAGE'),getMessage('USER_LANGUAGE_DESC'),'','',true);
+      $this->_form->addPassword('password','',$this->_translator->getMessage('USER_PASSWORD'),'','','',true);
+      $this->_form->addPassword('password2','',$this->_translator->getMessage('USER_PASSWORD2'),$this->_translator->getMessage('USER_PASSWORD2_DESC'),'','',true);
+      $this->_form->addSelect('language',$this->_language_options,'',$this->_translator->getMessage('USER_LANGUAGE'),$this->_translator->getMessage('USER_LANGUAGE_DESC'),'','',true);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('COMMON_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -116,7 +116,7 @@ class cs_server_initialize_form extends cs_rubric_form {
    function _checkValues () {
       // password check
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
-         $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password','');
          $this->_form->setFailure('password2','');
       }

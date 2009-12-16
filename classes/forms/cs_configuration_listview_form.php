@@ -56,7 +56,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->setHeadline(getMessage('CONFIGURATION_LISTVIEW_HOME'));
+      $this->setHeadline($this->_translator->getMessage('CONFIGURATION_LISTVIEW_HOME'));
 
       $room = $this->_environment->getCurrentContextItem();
       $default_boxes = $room->getAvailableListBoxes();
@@ -85,18 +85,18 @@ class cs_configuration_listview_form extends cs_rubric_form {
       }
       $this->_detailBoxArray = $box_array;
 
-      $view_mod_array[0]['text'] = getMessage('MODULE_CONFIG_SHORT');
+      $view_mod_array[0]['text'] = $this->_translator->getMessage('MODULE_CONFIG_SHORT');
       $view_mod_array[0]['value'] = 'short';
-      $view_mod_array[1]['text'] = getMessage('MODULE_CONFIG_TINY');
+      $view_mod_array[1]['text'] = $this->_translator->getMessage('MODULE_CONFIG_TINY');
       $view_mod_array[1]['value'] = 'tiny';
-      $view_mod_array[2]['text'] = getMessage('MODULE_CONFIG_NO');
+      $view_mod_array[2]['text'] = $this->_translator->getMessage('MODULE_CONFIG_NO');
       $view_mod_array[2]['value'] = 'nodisplay';
       $this->_optionArray = $view_mod_array;
 
       $view_mod_array = array();
-      $view_mod_array[0]['text'] = getMessage('MODULE_CONFIG_SHORT');
+      $view_mod_array[0]['text'] = $this->_translator->getMessage('MODULE_CONFIG_SHORT');
       $view_mod_array[0]['value'] = 'short';
-      $view_mod_array[1]['text'] = getMessage('MODULE_CONFIG_TINY');
+      $view_mod_array[1]['text'] = $this->_translator->getMessage('MODULE_CONFIG_TINY');
       $view_mod_array[1]['value'] = 'tiny';
       $this->_optionArray2 = $view_mod_array;
 
@@ -104,7 +104,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
       $length[1]['value'] = '2';
       $length[2]['text'] = '50';
       $length[2]['value'] = '3';
-      $length[3]['text'] = getMessage('CONFIGURATION_LISTVIEW_LENGTH_ALL');
+      $length[3]['text'] = $this->_translator->getMessage('CONFIGURATION_LISTVIEW_LENGTH_ALL');
       $length[3]['value'] = '4';
       $this->_lengthArray = $length;
    }
@@ -114,28 +114,28 @@ class cs_configuration_listview_form extends cs_rubric_form {
     */
    function _createForm () {
              $with_usage_infos = false;
-             $this->_form->addSubHeadline('header_list',getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_LIST'));
+             $this->_form->addSubHeadline('header_list',$this->_translator->getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_LIST'));
              for ( $i = 0; $i < count($this->_boxArray); $i++ ) {
                 $tempMessage = '';
                 switch (mb_strtoupper($this->_boxArray[$i]['text'], 'UTF-8')){
                    case 'ACTIONS':
-                      $tempMessage = getMessage('COMMON_ACTIONS');
+                      $tempMessage = $this->_translator->getMessage('COMMON_ACTIONS');
                       break;
                    case 'SEARCH':
-                      $tempMessage = getMessage('COMMON_SEARCH');
+                      $tempMessage = $this->_translator->getMessage('COMMON_SEARCH');
                       break;
                    case 'BUZZWORDS':
-                      $tempMessage = getMessage('COMMON_BUZZWORD_BOX');
+                      $tempMessage = $this->_translator->getMessage('COMMON_BUZZWORD_BOX');
                       break;
                    case 'TAGS':
-                      $tempMessage = getMessage('COMMON_TAG_BOX');
+                      $tempMessage = $this->_translator->getMessage('COMMON_TAG_BOX');
                       break;
                    case 'USAGE':
-                      $tempMessage = getMessage('USAGE_INFO_HEADER');
+                      $tempMessage = $this->_translator->getMessage('USAGE_INFO_HEADER');
                       $with_usage_infos = true;
                       break;
                    default:
-                      $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
+                      $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
                       break;
                 }
                 if ( mb_strtoupper($this->_boxArray[$i]['text'], 'UTF-8') == 'ACTIONS' ){
@@ -158,35 +158,35 @@ class cs_configuration_listview_form extends cs_rubric_form {
                 $this->_form->addSelect('usage',
                                             $this->_optionArray,
                                             '',
-                                            getMessage('USAGE_INFO_HEADER'),
+                                            $this->_translator->getMessage('USAGE_INFO_HEADER'),
                                             ''
                                );
              }
              $this->_form->addSelect('length',
                                             $this->_lengthArray,
                                             '',
-                                            getMessage('CONFIGURATION_LISTVIEW_LENGTH'),
+                                            $this->_translator->getMessage('CONFIGURATION_LISTVIEW_LENGTH'),
                                             ''
                                );
              $this->_form->addEmptyLine();
-             $this->_form->addSubHeadline('header_detail',getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_DETAIL'));
+             $this->_form->addSubHeadline('header_detail',$this->_translator->getMessage('CONFIGURATION_LISTVIEWS_FORM_SUB_TITLE_DETAIL'));
              for ( $i = 0; $i < count($this->_detailBoxArray); $i++ ) {
                 $tempMessage = '';
                 switch (mb_strtoupper($this->_detailBoxArray[$i]['text'], 'UTF-8')){
                    case 'DETAILACTIONS':
-                      $tempMessage = getMessage('COMMON_ACTIONS');
+                      $tempMessage = $this->_translator->getMessage('COMMON_ACTIONS');
                       break;
                   case 'DETAILBUZZWORDS':
-                      $tempMessage = getMessage('COMMON_BUZZWORD_BOX');
+                      $tempMessage = $this->_translator->getMessage('COMMON_BUZZWORD_BOX');
                       break;
                    case 'DETAILTAGS':
-                      $tempMessage = getMessage('COMMON_TAG_BOX');
+                      $tempMessage = $this->_translator->getMessage('COMMON_TAG_BOX');
                       break;
                    case 'DETAILNETNAVIGATION':
-                      $tempMessage = getMessage('COMMON_NETNAVIGATION');
+                      $tempMessage = $this->_translator->getMessage('COMMON_NETNAVIGATION');
                       break;
                     default:
-                      $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
+                      $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_configuration_listview_form(122)');
                       break;
                 }
                 if ( mb_strtoupper($this->_detailBoxArray[$i]['text'], 'UTF-8') == 'DETAILACTIONS' ){
@@ -207,7 +207,7 @@ class cs_configuration_listview_form extends cs_rubric_form {
              }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

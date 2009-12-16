@@ -211,7 +211,7 @@ class cs_material_form extends cs_rubric_form {
 #      if ( $this->_bib_kind=='common' ) {
 #      }
 #      elseif ( $this->_bib_kind=='none' ) {
-#         $this->_form->addTextField('author','',getMessage('MATERIAL_AUTHORS'),getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
+#         $this->_form->addTextField('author','',$this->_translator->getMessage('MATERIAL_AUTHORS'),$this->_translator->getMessage('MATERIAL_AUTHORS_DESC'),200,35,false);
 #      }
       $context_item = $this->_environment->getCurrentContextItem();
       if (isset($this->_item)) {
@@ -454,7 +454,7 @@ class cs_material_form extends cs_rubric_form {
             $this->_form->combine();
             $this->_form->addCheckbox('hide',1,'',$this->_translator->getMessage('COMMON_HIDE'),$this->_translator->getMessage('COMMON_HIDE'),'');
             $this->_form->combine('horizontal');
-            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+            $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
             $this->_form->combine('horizontal');
             $this->_form->addText('hide_end2','',')');
          }else{
@@ -621,7 +621,7 @@ class cs_material_form extends cs_rubric_form {
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayStart']) and !empty($this->_form_post['hide'])){
          include_once('functions/date_functions.php');
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayStart'],$this->_form_post['timeStart']) ) {
-            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('start_date_time','');
          }
       }

@@ -50,10 +50,10 @@ class cs_configuration_path_form extends cs_rubric_form {
    function _createForm () {
       // form fields
       $this->_form->addHidden('iid','');
-      $this->_form->addCheckbox('path','yes','',getMessage('PREFERENCES_CONFIGURATION_PATH'),getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
+      $this->_form->addCheckbox('path','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_PATH'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

@@ -94,7 +94,7 @@ class cs_configuration_common_form extends cs_rubric_form {
          $this->_image_context_id = '';
       }
 
-      $this->_headline = getMessage('INTERNAL_META_TITLE');
+      $this->_headline = $this->_translator->getMessage('INTERNAL_META_TITLE');
       $this->setHeadline($this->_headline);
 
       if (isset($this->_form_post['description_text'])) {
@@ -139,7 +139,7 @@ class cs_configuration_common_form extends cs_rubric_form {
          $community_list = $current_portal->getCommunityList();
          $current_user = $this->_environment->getCurrentUserItem();
          $community_room_array = array();
-         $temp_array['text'] = '*'.getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
+         $temp_array['text'] = '*'.$this->_translator->getMessage('PREFERENCES_NO_COMMUNITY_ROOM');
          $temp_array['value'] = '-1';
          $community_room_array[] = $temp_array;
          $temp_array['text'] = '--------------------';
@@ -261,7 +261,7 @@ class cs_configuration_common_form extends cs_rubric_form {
       $this->_form->addHidden('with_html_textarea',$this->_with_html_textarea);
       $this->_form->addHidden('with_html_textarea_status',$this->_with_html_textarea_status);
 
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),'',50,46,true);
+      $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,46,true);
 
       $this->_form->addImage('logo',
                              '',
@@ -276,7 +276,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                                    '',
                                    false,
                                    '',
-                                   getMessage('LOGO_DELETE_OPTION'),
+                                   $this->_translator->getMessage('LOGO_DELETE_OPTION'),
                                    ''
                                   );
       }
@@ -311,7 +311,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                $this->_form->addCheckBoxGroup('communityroomlist',
                                               $this->_shown_community_room_array,
                                               '',
-                                              getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                              $this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),
                                               '',
                                               false,
                                               false
@@ -322,7 +322,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                $this->_form->addSelect('communityrooms',
                                        $this->_community_room_array,
                                        '',
-                                       getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                       $this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),
                                        '',
                                        1,
                                        false,
@@ -335,7 +335,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                                        13
                                       );
                $this->_form->combine('horizontal');
-               $this->_form->addButton('option',getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
+               $this->_form->addButton('option',$this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),'','',180);
             }
          }else{
 
@@ -343,7 +343,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                $this->_form->addCheckBoxGroup('communityroomlist',
                                               $this->_shown_community_room_array,
                                               '',
-                                              getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                              $this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),
                                               '',
                                               false,
                                               false
@@ -354,7 +354,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                $this->_form->addSelect('communityrooms',
                                        $this->_community_room_array,
                                        '',
-                                       getMessage('PREFERENCES_COMMUNITY_ROOMS'),
+                                       $this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS'),
                                        '',
                                        1,
                                        false,
@@ -368,7 +368,7 @@ class cs_configuration_common_form extends cs_rubric_form {
                                       );
                $this->_form->combine('horizontal');
                $this->_form->addButton('option',
-                                       getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),
+                                       $this->_translator->getMessage('PREFERENCES_ADD_COMMUNITY_ROOMS_BUTTON'),
                                        '',
                                        '',
                                        180
@@ -385,16 +385,16 @@ class cs_configuration_common_form extends cs_rubric_form {
       foreach ($tmpArray as $item){
          switch ( mb_strtoupper($item, 'UTF-8') ){
             case 'DE':
-               $languageArray[$zaehler]['text'] = getMessage('DE');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('DE');
                break;
             case 'EN':
-               $languageArray[$zaehler]['text'] = getMessage('EN');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('EN');
                break;
             case 'RU':
-               $languageArray[$zaehler]['text'] = getMessage('RU');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('RU');
                break;
             default:
-               // $languageArray[$zaehler]['text'] = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_common_form(449) ');
+               // $languageArray[$zaehler]['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_common_form(449) ');
                break;
          }
 
@@ -404,13 +404,13 @@ class cs_configuration_common_form extends cs_rubric_form {
       $this->_form->addSelect( 'description_text',
                                $languageArray,
                                '',
-                               getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
+                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
                                'option','','','13',true
                              );
 
@@ -454,8 +454,8 @@ class cs_configuration_common_form extends cs_rubric_form {
 
       // buttons
       $this->_form->addButtonBar('option',
-                                 getMessage('PREFERENCES_SAVE_BUTTON'),
-                                 getMessage('COMMON_CANCEL_BUTTON'),
+                                 $this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),
+                                 $this->_translator->getMessage('COMMON_CANCEL_BUTTON'),
                                  ''
                                 );
    } // End of function _createForm (ca. line 272)
@@ -548,8 +548,8 @@ class cs_configuration_common_form extends cs_rubric_form {
             ){
 
             $this->_form->setFailure('communityrooms','mandatory');
-            $this->_error_array[] = getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',
-                                               getMessage('PREFERENCES_COMMUNITY_ROOMS')
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_COMMUNITY_ROOM_ENTRY',
+                                               $this->_translator->getMessage('PREFERENCES_COMMUNITY_ROOMS')
                                               );
          }
       }

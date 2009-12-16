@@ -379,7 +379,7 @@ class cs_rubric_mail_form extends cs_rubric_form {
       $yesno['0']['value'] = $this->_translator->getMessage('COMMON_YES');
       $yesno['1']['text']  = $this->_translator->getMessage('COMMON_NO');
       $yesno['1']['value'] = $this->_translator->getMessage('COMMON_NO');
-      $this->_form->addRadioGroup('copytosender',getMessage('MAILCOPY_TO_SENDER'),$this->_translator->getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,$this->_translator->getMessage('COMMON_NO'),true,false);
+      $this->_form->addRadioGroup('copytosender',$this->_translator->getMessage('MAILCOPY_TO_SENDER'),$this->_translator->getMessage('MAILCOPY_TO_SENDER_DESC'),$yesno,$this->_translator->getMessage('COMMON_NO'),true,false);
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_MAIL_SEND_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));

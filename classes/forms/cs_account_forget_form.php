@@ -66,14 +66,14 @@ class cs_account_forget_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHeadline('title',getMessage('USER_ACCOUNT_FORGET_HEADLINE'));
-      $this->_form->addText('text','',getMessage('USER_ACCOUNT_FORGET_TEXT'));
+      $this->_form->addHeadline('title',$this->_translator->getMessage('USER_ACCOUNT_FORGET_HEADLINE'));
+      $this->_form->addText('text','',$this->_translator->getMessage('USER_ACCOUNT_FORGET_TEXT'));
       // auth source
       if ( count($this->_auth_source_array) == 1 ) {
          $this->_form->addHidden('auth_source',$this->_auth_source_array[0]['value']);
       }
-      $this->_form->addTextField('email','',getMessage('USER_EMAIL'),'','',21,true);
-      $this->_form->addButtonBar('option',getMessage('ACCOUNT_SEND_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.5,6);
+      $this->_form->addTextField('email','',$this->_translator->getMessage('USER_EMAIL'),'','',21,true);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('ACCOUNT_SEND_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.5,6);
    }
 
    /** loads the selected and given values to the form
@@ -100,12 +100,12 @@ class cs_account_forget_form extends cs_rubric_form {
 
          // check email adresses for equality
          if ($user_list->isEmpty() or $user_list->getCount() < 1) {
-            $this->_error_array[] = getMessage('ERROR_EMAIL_DOES_NOT_EXIST');
+            $this->_error_array[] = $this->_translator->getMessage('ERROR_EMAIL_DOES_NOT_EXIST');
             $this->_form->setFailure('email','');
          }
 
          if (isEmailValid($this->_form_post['email']) == false) {
-            $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
             $this->_form->setFailure('email','');
          }
       }
@@ -116,17 +116,17 @@ class cs_account_forget_form extends cs_rubric_form {
    function showMailSent($emailAddress) {
       $this->_form = new cs_form();
       $context = $this->_environment->getCurrentContextItem();
-      $this->_form->addText('text',getMessage('COMMON_HINTS'),getMessage('USER_ACCOUNT_FORGET_SUCCESS_TEXT',$emailAddress));
-      $this->_form->addButtonBar('option',getMessage('COMMON_FORWARD_BUTTON'));
+      $this->_form->addText('text',$this->_translator->getMessage('COMMON_HINTS'),$this->_translator->getMessage('USER_ACCOUNT_FORGET_SUCCESS_TEXT',$emailAddress));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_FORWARD_BUTTON'));
    }
 
    /** In case of mail server error the following page gets displayed.
      */
    function showMailFailure() {
       $this->_form = new cs_form();
-      $moderation_link = ahref_curl($this->_environment->getCurrentPortalID(),'mail','to_moderator','',getMessage('CONTEXT_MODERATOR'));
-      $this->_form->addText('text',getMessage('COMMON_HINTS'),getMessage('ERROR_MAIL_SERVER',$moderation_link));
-      $this->_form->addButtonBar('option',getMessage('COMMON_FORWARD_BUTTON'));
+      $moderation_link = ahref_curl($this->_environment->getCurrentPortalID(),'mail','to_moderator','',$this->_translator->getMessage('CONTEXT_MODERATOR'));
+      $this->_form->addText('text',$this->_translator->getMessage('COMMON_HINTS'),$this->_translator->getMessage('ERROR_MAIL_SERVER',$moderation_link));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_FORWARD_BUTTON'));
    }
 }
 ?>

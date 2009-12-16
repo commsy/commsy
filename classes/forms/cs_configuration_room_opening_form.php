@@ -48,7 +48,7 @@ var $_template_array = array();
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $this->_headline = getMessage('CONFIGURATION_ROOM_OPENING_LINK');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_ROOM_OPENING_LINK');
       $this->setHeadline($this->_headline);
       $room_manager = $this->_environment->getProjectManager();
       $room_manager->setContextLimit($this->_environment->getCurrentPortalID());
@@ -118,11 +118,11 @@ var $_template_array = array();
       // form fields
 #	  $this->_form->addHidden('iid','');
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_COMMUNITYROOM_OPENING_ALL');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_COMMUNITYROOM_OPENING_ALL');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_COMMUNITYROOM_OPENING_MODERATOR');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_COMMUNITYROOM_OPENING_MODERATOR');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('community_room_opening',getMessage('CONFIGURATION_COMMUNITYROOM_OPENING'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('community_room_opening',$this->_translator->getMessage('CONFIGURATION_COMMUNITYROOM_OPENING'),'',$radio_values,'',true,false);
          if ( $this->_with_template_form_element3 ) {
             $this->_form->addSelect('template_select_community',
                                     $this->_template_community_array,
@@ -140,22 +140,22 @@ var $_template_array = array();
                                     '12'
                                    );
            $this->_form->combine('vertical');
-           $this->_form->addText('template_select_desc_community','',getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'));
+           $this->_form->addText('template_select_desc_community','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'));
          }
          $this->_form->addEmptyLine();
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_PROJECTROOM_OPENING_PORTAL');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_PROJECTROOM_OPENING_PORTAL');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_PROJECTROOM_OPENING_COMMUNITYROOM');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PROJECTROOM_OPENING_COMMUNITYROOM');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('project_room_opening',getMessage('CONFIGURATION_PROJECTROOM_OPENING'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('project_room_opening',$this->_translator->getMessage('CONFIGURATION_PROJECTROOM_OPENING'),'',$radio_values,'',true,false);
 
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_PROJECTROOM_LINK_OPTIONAL');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_PROJECTROOM_LINK_OPTIONAL');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_PROJECTROOM_LINK_MANDATORY');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PROJECTROOM_LINK_MANDATORY');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('project_room_link',getMessage('CONFIGURATION_PROJECTROOM_LINK'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('project_room_link',$this->_translator->getMessage('CONFIGURATION_PROJECTROOM_LINK'),'',$radio_values,'',true,false);
 
         if ( $this->_with_template_form_element2 ) {
             $this->_form->addSelect('template_select',
@@ -174,21 +174,21 @@ var $_template_array = array();
                                     '12'
                                    );
            $this->_form->combine('vertical');
-           $this->_form->addText('template_select_desc','',getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'));
+           $this->_form->addText('template_select_desc','',$this->_translator->getMessage('CONFIGURATION_TEMPLATE_FORM_SELECT_DESC'));
         }
 
       // private room configuration
       $this->_form->addEmptyLine();
       $radio_values = array();
-      $radio_values[0]['text'] = getMessage('CONFIGURATION_PRIVATEROOM_LINK_ON');
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK_ON');
       $radio_values[0]['value'] = '1';
-      $radio_values[1]['text'] = getMessage('CONFIGURATION_PRIVATEROOM_LINK_OFF');
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK_OFF');
       $radio_values[1]['value'] = '-1';
-      $this->_form->addRadioGroup('private_room_link',getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false);
+      $this->_form->addRadioGroup('private_room_link',$this->_translator->getMessage('CONFIGURATION_PRIVATEROOM_LINK'),'',$radio_values,'',true,false);
 
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

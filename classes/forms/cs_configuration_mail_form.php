@@ -71,43 +71,43 @@ class cs_configuration_mail_form extends cs_rubric_form {
       }
 
       // mail text choice
-      $this->_array_mail_text[0]['text']  = '*'.getMessage('MAIL_CHOICE_CHOOSE_TEXT');
+      $this->_array_mail_text[0]['text']  = '*'.$this->_translator->getMessage('MAIL_CHOICE_CHOOSE_TEXT');
       $this->_array_mail_text[0]['value'] = -1;
 
       // mail salutation
       $this->_array_mail_text[1]['text']  = '----------------------';
       $this->_array_mail_text[1]['value'] = 'disabled';
-      $this->_array_mail_text[2]['text']  = getMessage('MAIL_CHOICE_HELLO');
+      $this->_array_mail_text[2]['text']  = $this->_translator->getMessage('MAIL_CHOICE_HELLO');
       $this->_array_mail_text[2]['value'] = 'MAIL_CHOICE_HELLO';
-      $this->_array_mail_text[3]['text']  = getMessage('MAIL_CHOICE_CIAO');
+      $this->_array_mail_text[3]['text']  = $this->_translator->getMessage('MAIL_CHOICE_CIAO');
       $this->_array_mail_text[3]['value'] = 'MAIL_CHOICE_CIAO';
 
       // user
       $this->_array_mail_text[4]['text']  = '----------------------';
       $this->_array_mail_text[4]['value'] = 'disabled';
-      $this->_array_mail_text[5]['text']  = getMessage('MAIL_CHOICE_USER_ACCOUNT_DELETE');
+      $this->_array_mail_text[5]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_DELETE');
       $this->_array_mail_text[5]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_DELETE';
-      $this->_array_mail_text[6]['text']  = getMessage('MAIL_CHOICE_USER_ACCOUNT_LOCK');
+      $this->_array_mail_text[6]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_LOCK');
       $this->_array_mail_text[6]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_LOCK';
-      $this->_array_mail_text[7]['text']  = getMessage('MAIL_CHOICE_USER_STATUS_USER');
+      $this->_array_mail_text[7]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_STATUS_USER');
       $this->_array_mail_text[7]['value'] = 'MAIL_CHOICE_USER_STATUS_USER';
-      $this->_array_mail_text[8]['text']  = getMessage('MAIL_CHOICE_USER_STATUS_MODERATOR');
+      $this->_array_mail_text[8]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_STATUS_MODERATOR');
       $this->_array_mail_text[8]['value'] = 'MAIL_CHOICE_USER_STATUS_MODERATOR';
-      $this->_array_mail_text[9]['text']  = getMessage('MAIL_CHOICE_USER_MAKE_CONTACT_PERSON');
+      $this->_array_mail_text[9]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_MAKE_CONTACT_PERSON');
       $this->_array_mail_text[9]['value'] = 'MAIL_CHOICE_USER_MAKE_CONTACT_PERSON';
-      $this->_array_mail_text[10]['text']  = getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
+      $this->_array_mail_text[10]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON');
       $this->_array_mail_text[10]['value'] = 'MAIL_CHOICE_USER_UNMAKE_CONTACT_PERSON';
       if ($this->_environment->inCommunityRoom()) {
-         $this->_array_mail_text[11]['text']  = getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
+         $this->_array_mail_text[11]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_PASSWORD');
          $this->_array_mail_text[11]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_PASSWORD';
       }
 
       if ($this->_environment->inCommunityRoom()) {
-         $this->_array_mail_text[12]['text']  = getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
+         $this->_array_mail_text[12]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_ACCOUNT_MERGE');
          $this->_array_mail_text[12]['value'] = 'MAIL_CHOICE_USER_ACCOUNT_MERGE';
       }
           if ($this->_environment->inPortal()) {
-         $this->_array_mail_text[13]['text']  = getMessage('MAIL_CHOICE_USER_PASSWORD_CHANGE');
+         $this->_array_mail_text[13]['text']  = $this->_translator->getMessage('MAIL_CHOICE_USER_PASSWORD_CHANGE');
          $this->_array_mail_text[13]['value'] = 'MAIL_CHOICE_USER_PASSWORD_CHANGE';
           }
 
@@ -116,9 +116,9 @@ class cs_configuration_mail_form extends cs_rubric_form {
       if ($this->_environment->inCommunityRoom() and $current_context->isOpenForGuests()) {
          $this->_array_mail_text[20]['text']  = '----------------------';
          $this->_array_mail_text[20]['value'] = 'disabled';
-         $this->_array_mail_text[21]['text']  = getMessage('MAIL_CHOICE_MATERIAL_WORLDPUBLIC');
+         $this->_array_mail_text[21]['text']  = $this->_translator->getMessage('MAIL_CHOICE_MATERIAL_WORLDPUBLIC');
          $this->_array_mail_text[21]['value'] = 'MAIL_CHOICE_MATERIAL_WORLDPUBLIC';
-         $this->_array_mail_text[22]['text']  = getMessage('MAIL_CHOICE_MATERIAL_NOT_WORLDPUBLIC');
+         $this->_array_mail_text[22]['text']  = $this->_translator->getMessage('MAIL_CHOICE_MATERIAL_NOT_WORLDPUBLIC');
          $this->_array_mail_text[22]['value'] = 'MAIL_CHOICE_MATERIAL_NOT_WORLDPUBLIC';
       }
 
@@ -126,19 +126,19 @@ class cs_configuration_mail_form extends cs_rubric_form {
       if ($this->_environment->inPortal()) {
          $this->_array_mail_text[30]['text']  = '----------------------';
          $this->_array_mail_text[30]['value'] = 'disabled';
-         $this->_array_mail_text[31]['text']  = getMessage('MAIL_CHOICE_ROOM_LOCK');
+         $this->_array_mail_text[31]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_LOCK');
          $this->_array_mail_text[31]['value'] = 'MAIL_CHOICE_ROOM_LOCK';
-         $this->_array_mail_text[32]['text']  = getMessage('MAIL_CHOICE_ROOM_UNLOCK');
+         $this->_array_mail_text[32]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_UNLOCK');
          $this->_array_mail_text[32]['value'] = 'MAIL_CHOICE_ROOM_UNLOCK';
-         $this->_array_mail_text[34]['text']  = getMessage('MAIL_CHOICE_ROOM_DELETE');
+         $this->_array_mail_text[34]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_DELETE');
          $this->_array_mail_text[34]['value'] = 'MAIL_CHOICE_ROOM_DELETE';
-         $this->_array_mail_text[35]['text']  = getMessage('MAIL_CHOICE_ROOM_OPEN');
+         $this->_array_mail_text[35]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_OPEN');
          $this->_array_mail_text[35]['value'] = 'MAIL_CHOICE_ROOM_OPEN';
       }
       if ($this->_environment->inCommunityRoom()) {
          $this->_array_mail_text[30]['text']  = '----------------------';
          $this->_array_mail_text[30]['value'] = 'disabled';
-         $this->_array_mail_text[33]['text']  = getMessage('MAIL_CHOICE_ROOM_UNLINK');
+         $this->_array_mail_text[33]['text']  = $this->_translator->getMessage('MAIL_CHOICE_ROOM_UNLINK');
          $this->_array_mail_text[33]['value'] = 'MAIL_CHOICE_ROOM_UNLINK';
       }
    }
@@ -160,13 +160,13 @@ class cs_configuration_mail_form extends cs_rubric_form {
       $this->_form->addSelect( 'mail_text',
                                $this->_array_mail_text,
                                '',
-                               getMessage('CONFIGURATION_MAIL_FORM_CHOOSE_MAIL'),
-                               getMessage('CONFIGURATION_MAIL_FORM_CHOOSE_MAIL_DESC'),
+                               $this->_translator->getMessage('CONFIGURATION_MAIL_FORM_CHOOSE_MAIL'),
+                               $this->_translator->getMessage('CONFIGURATION_MAIL_FORM_CHOOSE_MAIL_DESC'),
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option','','','',true);
       $context_item = $this->_environment->getCurrentContextItem();
 
@@ -346,15 +346,15 @@ class cs_configuration_mail_form extends cs_rubric_form {
    function _checkValues () {
       // check choosen mail text
       if (mb_strlen($this->_form_post['mail_text']) == 2 and $this->_form_post['mail_text'] != -1) {
-         $this->_error_array[] = getMessage('CONFIGURATION_MAIL_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_MAIL_CHOICE_ERROR');
          $this->_form->setFailure('mail_text','');
       }
       if ( mb_strlen($this->_form_post['mail_text']) == 2 and
            $this->_form_post['mail_text'] == -1 and
            isset($this->_form_post['option']) and
-           isOption($this->_form_post['option'], getMessage('COMMON_SAVE_BUTTON'))
+           isOption($this->_form_post['option'], $this->_translator->getMessage('COMMON_SAVE_BUTTON'))
          ) {
-         $this->_error_array[] = getMessage('CONFIGURATION_MAIL_CHOICE_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('CONFIGURATION_MAIL_CHOICE_ERROR');
          $this->_form->setFailure('mail_text','');
       }
    }

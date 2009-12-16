@@ -54,7 +54,7 @@ class cs_date_import_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->setHeadline(getMessage('DATE_IMPORT_FORM1'));
+      $this->setHeadline($this->_translator->getMessage('DATE_IMPORT_FORM1'));
    }
 
    /** create the form, INTERNAL
@@ -63,8 +63,8 @@ class cs_date_import_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-      $this->_form->addImage('dates_upload','',getMessage('DATES_UPLOADFILE'), getMessage('DATES_UPLOADFILE_DESC'));
-      $this->_form->addButtonBar('option',getMessage('DATES_IMPORT_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addImage('dates_upload','',$this->_translator->getMessage('DATES_UPLOADFILE'), $this->_translator->getMessage('DATES_UPLOADFILE_DESC'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_IMPORT_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form
@@ -91,11 +91,11 @@ class cs_date_import_form extends cs_rubric_form {
       if ( isset($file_elements[1]) and !empty($file_elements[1]) ){
          $file_type = mb_strtoupper( $file_elements[1] , 'UTF-8');
          if ($file_type != 'CSV') {
-            $this->_error_array[] = getMessage('DATES_WRONG_FILE_FORMAT');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_WRONG_FILE_FORMAT');
 	   $error = true;
          }
       }elseif ( !isset($file_elements[1]) ){
-            $this->_error_array[] = getMessage('NO_DATES_FILE_FOUND');
+            $this->_error_array[] = $this->_translator->getMessage('NO_DATES_FILE_FOUND');
 	   $error = true;
       }
       return $error;

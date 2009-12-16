@@ -50,9 +50,9 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
    function _initForm () {
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE');
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+         $image = '<img src="images/commsyicons_msie6/32x32/config/rubric_extras.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/32x32/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
+         $image = '<img src="images/commsyicons/32x32/config/rubric_extras.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('CONFIGURATION_RUBRIC_EXTRAS_TITLE').'"/>';
       }
       if ( !empty($image) ) {
          $this->_headline = $image.' '.$this->_headline;
@@ -84,7 +84,7 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
      if ( $current_context->withRubric(CS_DATE_TYPE) ) {
         // Terminoptionen
         $radio_values = array();
-        $desc = getMessage('CONFIGURATION_DATES_DESC');
+        $desc = $this->_translator->getMessage('CONFIGURATION_DATES_DESC');
         $radio_values[0]['text'] = '<img src="images/dates_presentation_normal.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
         $radio_values[0]['value'] = 'normal';
         $radio_values[1]['text'] = '<img src="images/dates_presentation_calendar.gif" width="150px;" style=" border:1px solid black; vertical-align: middle;"/>';
@@ -135,15 +135,15 @@ class cs_configuration_rubric_extras_form extends cs_rubric_form {
         $this->_form->addExplanation('todos_status',$this->_translator->getMessage('CONFIGURATION_TODO_STATUS_MANAGEMENT_DESC'));
         $this->_form->addTextField('new_status','','','','',32,'');
         $this->_form->combine('horizontal');
-        $this->_form->addButton('option',getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'),'','','200');
+        $this->_form->addButton('option',$this->_translator->getMessage('CONFIGURATION_TODO_NEW_STATUS_BUTTON'),'','','200');
         $i = 0;
         foreach ($this->_status_array as $status){
            $i++;
            $this->_form->addTextField('status'.'#'.$status['value'],$status['text'],'','','',32);
            $this->_form->combine('horizontal');
-           $this->_form->addButton('option'.'#'.$status['value'],getMessage('CONFIGURATION_TODO_STATUS_CHANGE_BUTTON'),'','','200');
+           $this->_form->addButton('option'.'#'.$status['value'],$this->_translator->getMessage('CONFIGURATION_TODO_STATUS_CHANGE_BUTTON'),'','','200');
            $this->_form->combine('horizontal');
-           $this->_form->addButton('option'.'#'.$status['value'],getMessage('COMMON_DELETE_BUTTON'),'','','100');
+           $this->_form->addButton('option'.'#'.$status['value'],$this->_translator->getMessage('COMMON_DELETE_BUTTON'),'','','100');
         }
 
      }

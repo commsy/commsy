@@ -54,15 +54,15 @@ class cs_configuration_news_form extends cs_rubric_form {
    function _initForm () {
       global $environment;
       if ( $environment->getCurrentContextItem()->isPortal() ) {
-         $this->_headline = getMessage('PORTAL_NEWS_LINK');
+         $this->_headline = $this->_translator->getMessage('PORTAL_NEWS_LINK');
       } else {
-         $this->_headline = getMessage('SERVER_NEWS_LINK');
+         $this->_headline = $this->_translator->getMessage('SERVER_NEWS_LINK');
       }
       $show_array = array();
-      $temp_array['text']  = getMessage('COMMON_YES');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_YES');
       $temp_array['value'] = 1;
       $show_array[] = $temp_array;
-      $temp_array['text']  = getMessage('COMMON_NO');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_NO');
       $temp_array['value'] = -1;
       $show_array[] = $temp_array;
       $this->_show_array = $show_array;
@@ -77,18 +77,18 @@ class cs_configuration_news_form extends cs_rubric_form {
 
       $this->setHeadline($this->_headline);
       $this->_form->addHidden('iid','');
-      $this->_form->addRadioGroup('show',getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
-      $this->_form->addTextfield('title','',getMessage('COMMON_TITLE').'<span class="required">*</span>','',200,'62',false);
-      $this->_form->addTextArea('text','',getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),'');
-      $this->_form->addTextfield('link','',getMessage('SERVER_CONFIGURATION_NEWS_LINK'),getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'62',false);
+      $this->_form->addRadioGroup('show',$this->_translator->getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
+      $this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE').'<span class="required">*</span>','',200,'62',false);
+      $this->_form->addTextArea('text','',$this->_translator->getMessage('SERVER_CONFIGURATION_NEWS_TEXT'),'');
+      $this->_form->addTextfield('link','',$this->_translator->getMessage('SERVER_CONFIGURATION_NEWS_LINK'),$this->_translator->getMessage('SERVER_CONFIGURATION_NEWS_LINK_DESC'),200,'62',false);
 
       if ( $this->_environment->inPortal() ) {
          $this->_form->addEmptyline();
-         $this->_form->addRadioGroup('show_server',getMessage('PORTAL_CONFIGURATION_NEWS_SHOW_SERVER'),'',$this->_show_array,'',false,true);
+         $this->_form->addRadioGroup('show_server',$this->_translator->getMessage('PORTAL_CONFIGURATION_NEWS_SHOW_SERVER'),'',$this->_show_array,'',false,true);
       }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form
@@ -124,7 +124,7 @@ class cs_configuration_news_form extends cs_rubric_form {
    function _checkValues(){
       if($_POST['show'] == '1'){
          if(empty($_POST['title'])){
-            $this->_error_array[] = getMessage('COMMON_ERROR_FIELD', getMessage('COMMON_TITLE'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_FIELD', $this->_translator->getMessage('COMMON_TITLE'));
             $this->_form->setFailure('title','');
          }
       }

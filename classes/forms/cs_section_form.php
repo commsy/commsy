@@ -104,15 +104,15 @@ class cs_section_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('SECTION_EDIT');
+         $this->_headline = $this->_translator->getMessage('SECTION_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('SECTION_EDIT');
+            $this->_headline = $this->_translator->getMessage('SECTION_EDIT');
          } else {
-            $this->_headline = getMessage('SECTION_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('SECTION_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('SECTION_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('SECTION_ENTER_NEW');
       }
 
       //sections
@@ -185,9 +185,9 @@ class cs_section_form extends cs_rubric_form {
       // news
       $this->_form->addHidden('iid','');
       $this->_form->addHidden('material_modification_date','');
-      $this->_form->addTitleField('title','',getMessage('COMMON_TITLE'),getMessage('COMMON_TITLE_DESC'),200,47,true);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60,20);
-      $this->_form->addSelect('number',$this->_section_array,(string)count($this->_section_array),getMessage('SECTION_OTHER_SECTIONS'),'','',false,false,false,'','',$this->_other_sections);
+      $this->_form->addTitleField('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('COMMON_TITLE_DESC'),200,47,true);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'',60,20);
+      $this->_form->addSelect('number',$this->_section_array,(string)count($this->_section_array),$this->_translator->getMessage('SECTION_OTHER_SECTIONS'),'','',false,false,false,'','',$this->_other_sections);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
@@ -211,11 +211,11 @@ class cs_section_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -243,10 +243,10 @@ class cs_section_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
       // buttons
       $id = 0;
@@ -258,9 +258,9 @@ class cs_section_form extends cs_rubric_form {
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('SECTION_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','',getMessage('MATERIAL_VERSION_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('SECTION_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','',$this->_translator->getMessage('MATERIAL_VERSION_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('SECTION_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','',getMessage('MATERIAL_VERSION_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('SECTION_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','',$this->_translator->getMessage('MATERIAL_VERSION_BUTTON'));
       }
    }
 

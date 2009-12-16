@@ -49,7 +49,7 @@ class cs_configuration_date_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-       $this->_headline = getMessage('CONFIGURATION_DATES_CHANGE');
+       $this->_headline = $this->_translator->getMessage('CONFIGURATION_DATES_CHANGE');
        $this->setHeadline($this->_headline);
        $current_user = $this->_environment->getCurrentUser();
        $fullname = $current_user->getFullname();
@@ -64,16 +64,16 @@ class cs_configuration_date_form extends cs_rubric_form {
    function _createForm () {
 
      $radio_values = array();
-           $desc =getMessage('CONFIGURATION_DATES_DESC');
-           $radio_values[0]['text'] = getMessage('CONFIGURATION_DATES_DESC_0').'<br/>'.
+           $desc =$this->_translator->getMessage('CONFIGURATION_DATES_DESC');
+           $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_DATES_DESC_0').'<br/>'.
               '<img src="images/dates_presentation_normal.gif" width="350px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[0]['value'] = 'normal';
-     $radio_values[1]['text'] = getMessage('CONFIGURATION_DATES_DESC_1').'<br/>'.
+     $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_DATES_DESC_1').'<br/>'.
              '<img src="images/dates_presentation_calendar.gif" width="350px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[1]['value'] = 'calendar';
-     $this->_form->addRadioGroup('dates_status',getMessage('CONFIGURATION_DATES'),$desc,$radio_values,'',true,false);
+     $this->_form->addRadioGroup('dates_status',$this->_translator->getMessage('CONFIGURATION_DATES'),$desc,$radio_values,'',true,false);
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

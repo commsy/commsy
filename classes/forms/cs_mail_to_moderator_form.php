@@ -52,7 +52,7 @@ class cs_mail_to_moderator_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->_headline = getMessage('MAIL_TO_MODERATOR_HEADLINE');
+      $this->_headline = $this->_translator->getMessage('MAIL_TO_MODERATOR_HEADLINE');
 
       $context_item = $this->_environment->getCurrentContextItem();
       $mod_list = $context_item->getModeratorList();
@@ -84,38 +84,38 @@ class cs_mail_to_moderator_form extends cs_rubric_form {
       $this->_form->addHeadline('headline',$this->_headline);
       $current_user = $this->_environment->getCurrentUserItem();
       if (!$current_user->isUser()) {
-         $this->_form->addTextField('sender_name','',getMessage('MAIL_SENDER_NAME'),'',200,'',true);
-         $this->_form->addTextField('sender_email','',getMessage('MAIL_SENDER_EMAIL'),'',200,'',true);
+         $this->_form->addTextField('sender_name','',$this->_translator->getMessage('MAIL_SENDER_NAME'),'',200,'',true);
+         $this->_form->addTextField('sender_email','',$this->_translator->getMessage('MAIL_SENDER_EMAIL'),'',200,'',true);
       } else {
          $this->_form->addHidden('sender_name','');
          $this->_form->addHidden('sender_email','');
          $this->_form->addHidden('sender_text_hidden','');
-         $this->_form->addText('sender_text',getMessage('MAIL_SENDER'),'');
+         $this->_form->addText('sender_text',$this->_translator->getMessage('MAIL_SENDER'),'');
       }
       if ( sizeof($this->_receiver_array) > 1 ) {
-         $this->_form->addCheckBoxGroup('receivers',$this->_receiver_array,'',getMessage('COMMON_MAIL_RECEIVER'),getMessage('COMMON_MAIL_RECEIVER_DESC'), true, false);
+         $this->_form->addCheckBoxGroup('receivers',$this->_receiver_array,'',$this->_translator->getMessage('COMMON_MAIL_RECEIVER'),$this->_translator->getMessage('COMMON_MAIL_RECEIVER_DESC'), true, false);
       } else {
-         $this->_form->addText('receiver',getMessage('COMMON_MAIL_RECEIVER'),$this->_receiver_array[0]['text']);
+         $this->_form->addText('receiver',$this->_translator->getMessage('COMMON_MAIL_RECEIVER'),$this->_receiver_array[0]['text']);
          $this->_form->addHidden('receiver_email',$this->_receiver_array[0]['value']);
       }
-      $this->_form->addTextField('subject','',getMessage('COMMON_MAIL_SUBJECT'),getMessage('COMMON_MAIL_SUBJECT_DESC'),200,'',true);
+      $this->_form->addTextField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),$this->_translator->getMessage('COMMON_MAIL_SUBJECT_DESC'),200,'',true);
 
       $context_item = $this->_environment->getCurrentContextItem();
       if ( $context_item->isCommunityRoom() ) {
-         $body_message = getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_COMMUNITY', $context_item->getTitle());
       } elseif ( $context_item->isProjectRoom() ) {
-         $body_message = getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PROJECT', $context_item->getTitle());
       } elseif ( $context_item->isGroupRoom() ) {
-         $body_message = getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_GROUPROOM', $context_item->getTitle());
       } elseif ( $context_item->isPortal() ) {
-         $body_message = getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_PORTAL', $context_item->getTitle());
       } elseif ( $context_item->isServer() ) {
-         $body_message = getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
+         $body_message = $this->_translator->getMessage('RUBRIC_EMAIL_ADDED_BODY_SERVER', $context_item->getTitle());
       }
-      $this->_form->addTextArea('content',$body_message,getMessage('COMMON_CONTENT'),getMessage('COMMON_MAIL_CONTENT_DESC'),'60','15','',true,false,false);
+      $this->_form->addTextArea('content',$body_message,$this->_translator->getMessage('COMMON_CONTENT'),$this->_translator->getMessage('COMMON_MAIL_CONTENT_DESC'),'60','15','',true,false,false);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('MAIL_SEND_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('MAIL_SEND_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

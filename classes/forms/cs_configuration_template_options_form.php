@@ -298,12 +298,12 @@ class cs_configuration_template_options_form extends cs_rubric_form {
            $this->_form->addSelect('template_availability',
                                $user_array,
                                '',
-                               getMessage('CONFIGURATION_TEMPLATE_GROUP'),
+                               $this->_translator->getMessage('CONFIGURATION_TEMPLATE_GROUP'),
                                '',0,'','','','','','','','','','');
 
       }
-      $this->_form->addTextArea('description','',getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,'');
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_TEMPLATE_DESCRIPTION'),'','','10','virtual',false,'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    function _prepareValues () {
@@ -322,7 +322,7 @@ class cs_configuration_template_options_form extends cs_rubric_form {
          }
          $description = $current_context->getTemplateDescription();
          if ( empty($description) ){
-#            $this->_values['description'] = getMessage('COMMON_DEFAULT_TEMPLATE_DESCRIPTION');
+#            $this->_values['description'] = $this->_translator->getMessage('COMMON_DEFAULT_TEMPLATE_DESCRIPTION');
          }else{
             $this->_values['description'] = $description;
          }

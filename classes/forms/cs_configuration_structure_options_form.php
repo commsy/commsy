@@ -55,34 +55,34 @@ var $_with_tags = false;
    function _createForm () {
 
       //buzzwords
-      $this->_form->addCheckbox('buzzword','yes','',getMessage('PREFERENCES_CONFIGURATION_BUZZWORD'),getMessage('PREFERENCES_CONFIGURATION_BUZZWORD_VALUE'),'','','','onclick="cs_toggleBuzzwords()"');
+      $this->_form->addCheckbox('buzzword','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_BUZZWORD'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_BUZZWORD_VALUE'),'','','','onclick="cs_toggleBuzzwords()"');
       $this->_form->combine();
-      $this->_form->addCheckbox('buzzword_show','yes','',getMessage('CONFIGURATION_SHOW_EXPANDED'),getMessage('CONFIGURATION_SHOW_EXPANDED'));
+      $this->_form->addCheckbox('buzzword_show','yes','',$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'),$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'));
       $this->_form->combine();
-      $this->_form->addCheckbox('buzzword_mandatory','yes','',getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'),getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'));
+      $this->_form->addCheckbox('buzzword_mandatory','yes','',$this->_translator->getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'),$this->_translator->getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'));
 
       //tags
-      $this->_form->addCheckbox('tags','yes','',getMessage('PREFERENCES_CONFIGURATION_TAGS'),getMessage('PREFERENCES_CONFIGURATION_TAGS_VALUE'),'','','','onclick="cs_toggleTags()"');
+      $this->_form->addCheckbox('tags','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_TAGS'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_TAGS_VALUE'),'','','','onclick="cs_toggleTags()"');
       $this->_form->combine();
-      $this->_form->addCheckbox('tags_show','yes','',getMessage('CONFIGURATION_SHOW_EXPANDED'),getMessage('CONFIGURATION_SHOW_EXPANDED'));
+      $this->_form->addCheckbox('tags_show','yes','',$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'),$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'));
       $this->_form->combine();
-      $this->_form->addCheckbox('tags_mandatory','yes','',getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'),getMessage('CONFIGURATION_TAG_MANDATORY'));
+      $this->_form->addCheckbox('tags_mandatory','yes','',$this->_translator->getMessage('CONFIGURATION_BUZZWORDS_MANDATORY'),$this->_translator->getMessage('CONFIGURATION_TAG_MANDATORY'));
       if ( $this->_environment->inPrivateRoom() ) {
          $this->_form->addHidden('tags_edit','1');
       } else {
       $this->_form->combine();
-         $this->_form->addCheckbox('tags_edit','yes','',getMessage('CONFIGURATION_TAG_EDIT'),getMessage('CONFIGURATION_TAG_EDIT_BY_MODERATOR'));
+         $this->_form->addCheckbox('tags_edit','yes','',$this->_translator->getMessage('CONFIGURATION_TAG_EDIT'),$this->_translator->getMessage('CONFIGURATION_TAG_EDIT_BY_MODERATOR'));
       }
 
       //netnavigation
-      $this->_form->addCheckbox('netnavigation','yes','',getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION'),getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION_VALUE'),'','','','onclick="cs_toggleNetnavigation()"');
+      $this->_form->addCheckbox('netnavigation','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_NETNAVIGATION_VALUE'),'','','','onclick="cs_toggleNetnavigation()"');
       $this->_form->combine();
-      $this->_form->addCheckbox('path','yes','',getMessage('TOPIC_INDEX'),getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
+      $this->_form->addCheckbox('path','yes','',$this->_translator->getMessage('TOPIC_INDEX'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_PATH_VALUE'),'');
       $this->_form->combine();
-      $this->_form->addCheckbox('netnavigation_show','yes','',getMessage('CONFIGURATION_SHOW_EXPANDED'),getMessage('CONFIGURATION_SHOW_EXPANDED'));
+      $this->_form->addCheckbox('netnavigation_show','yes','',$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'),$this->_translator->getMessage('CONFIGURATION_SHOW_EXPANDED'));
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

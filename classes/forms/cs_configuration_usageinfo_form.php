@@ -57,51 +57,51 @@ class cs_configuration_usageinfo_form extends cs_rubric_form {
           $room = $this->_environment->getCurrentContextItem();
           $default_rubrics = $room->getAvailableRubrics();
           $rubric_array = array();
-          $temp_array['text']  = getMessage('HOME_INDEX');
+          $temp_array['text']  = $this->_translator->getMessage('HOME_INDEX');
           $temp_array['value'] = 'home';
           $this->_array_info_text[0] = $temp_array;
           $i = 1;
           foreach ($default_rubrics as $rubric) {
                  $temp_array = array();
                   if ($this->_environment->inPrivateRoom() and $rubric =='user' ){
-                      $temp_array['text'] = getMessage('COMMON_MY_USER_DESCRIPTION');
+                      $temp_array['text'] = $this->_translator->getMessage('COMMON_MY_USER_DESCRIPTION');
                   } else {
                      switch ( mb_strtoupper($rubric, 'UTF-8') ){
                         case 'ANNOUNCEMENT':
-                           $temp_array['text'] = getMessage('ANNOUNCEMENT_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('ANNOUNCEMENT_INDEX');
                            break;
                         case 'DATE':
-                           $temp_array['text'] = getMessage('DATE_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('DATE_INDEX');
                            break;
                         case 'DISCUSSION':
-                           $temp_array['text'] = getMessage('DISCUSSION_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('DISCUSSION_INDEX');
                            break;
                         case 'INSTITUTION':
-                           $temp_array['text'] = getMessage('INSTITUTION_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('INSTITUTION_INDEX');
                            break;
                         case 'GROUP':
-                           $temp_array['text'] = getMessage('GROUP_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('GROUP_INDEX');
                            break;
                         case 'MYROOM':
-                           $temp_array['text'] = getMessage('MYROOM_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('MYROOM_INDEX');
                            break;
                         case 'MATERIAL':
-                           $temp_array['text'] = getMessage('MATERIAL_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('MATERIAL_INDEX');
                            break;
                         case 'PROJECT':
-                           $temp_array['text'] = getMessage('PROJECT_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('PROJECT_INDEX');
                            break;
                         case 'TODO':
-                           $temp_array['text'] = getMessage('TODO_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('TODO_INDEX');
                            break;
                         case 'TOPIC':
-                           $temp_array['text'] = getMessage('TOPIC_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('TOPIC_INDEX');
                            break;
                         case 'USER':
-                           $temp_array['text'] = getMessage('USER_INDEX');
+                           $temp_array['text'] = $this->_translator->getMessage('USER_INDEX');
                            break;
                         default:
-                           $temp_array['text'] = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_usageinfo_form(113) ');
+                           $temp_array['text'] = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_configuration_usageinfo_form(113) ');
                            break;
                      }
                   }
@@ -122,13 +122,13 @@ class cs_configuration_usageinfo_form extends cs_rubric_form {
       $this->_form->addSelect( 'info_text',
                                $this->_array_info_text,
                                '',
-                               getMessage('CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT'),
+                               $this->_translator->getMessage('CONFIGURATION_USAGEINFO_FORM_CHOOSE_TEXT'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option',
                                                            '',
                                                            '',
@@ -136,19 +136,19 @@ class cs_configuration_usageinfo_form extends cs_rubric_form {
 
                                                            $context_item = $this->_environment->getCurrentContextItem();
 
-         $this->_form->addTextfield('title','',getMessage('COMMON_TITLE'),'',50,'22','');
+         $this->_form->addTextfield('title','',$this->_translator->getMessage('COMMON_TITLE'),'',50,'22','');
      $desc = '<img src="images/configuration_usageinfo.gif" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF;
      if (isset($_POST['info_text']) and $_POST['info_text'] !='home' ){
              $this->_form->addTextArea('text','',$translator->getMessage('COMMON_USAGE_INFO_BODY'),$desc,'60','','','','',false);
-#         $this->_form->addCheckbox('show','value',false,getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
+#         $this->_form->addCheckbox('show','value',false,$this->_translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
              $this->_form->addEmptyLine();
          $this->_form->addTextArea('text_form','',$translator->getMessage('COMMON_USAGE_INFO_FORM_BODY'),$desc,'60','','','','',false);
-#         $this->_form->addCheckbox('show_form','value',false,getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
+#         $this->_form->addCheckbox('show_form','value',false,$this->_translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
      }else{
              $this->_form->addTextArea('text','',$translator->getMessage('COMMON_CONTENT'),$desc,'60','','','','',false);
-#         $this->_form->addCheckbox('show','value',false,getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
+#         $this->_form->addCheckbox('show','value',false,$this->_translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC'),'');
      }
-#            $this->_form->addCheckbox('show_global','value',false,getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_GLOBAL'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC_GLOBAL'),'');
+#            $this->_form->addCheckbox('show_global','value',false,$this->_translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_GLOBAL'),$translator->getMessage('CONFIGURATION_USAGEINFO_SHOW_USAGE_INFO_DESC_GLOBAL'),'');
       // buttons
         $this->_form->addButtonBar('option',$translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }

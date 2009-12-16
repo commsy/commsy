@@ -135,7 +135,7 @@ class cs_link_item_form extends cs_rubric_form {
     */
    function _initForm () {
       // headline
-      $this->_headline = getMessage('LINK_ITEM_NEW');
+      $this->_headline = $this->_translator->getMessage('LINK_ITEM_NEW');
    }
 
    /** create the form, INTERNAL
@@ -152,7 +152,7 @@ class cs_link_item_form extends cs_rubric_form {
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
 
-      $this->_form->addButtonBar('option',getMessage('LINK_ITEM_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('LINK_ITEM_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

@@ -96,10 +96,10 @@ class cs_institution_form extends cs_rubric_form {
          $fullname = $current_user->getFullname();
       }
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
@@ -113,12 +113,12 @@ class cs_institution_form extends cs_rubric_form {
 
       // headline
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('INSTITUTION_EDIT');
+         $this->_headline = $this->_translator->getMessage('INSTITUTION_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('INSTITUTION_EDIT');
+            $this->_headline = $this->_translator->getMessage('INSTITUTION_EDIT');
          } else {
-            $this->_headline = getMessage('INSTITUTION_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('INSTITUTION_ENTER_NEW');
             $new='';
             $context_item = $this->_environment->getCurrentContextItem();
             $rubric_array = $context_item->_getRubricArray(CS_INSTITUTION_TYPE);
@@ -128,19 +128,19 @@ class cs_institution_form extends cs_rubric_form {
                $genus = $rubric_array['EN']['GENUS'];
             }
             if ($genus =='M'){
-               $new = getMessage('COMMON_NEW_M_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
             }
             elseif ($genus =='F'){
-               $new =  getMessage('COMMON_NEW_F_BIG').' ';
+               $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
             }
             else {
-               $new = getMessage('COMMON_NEW_N_BIG').' ';
+               $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
             }
 
             $this->_headline = $new.$this->_headline;
          }
       } else {
-         $this->_headline = getMessage('INSTITUTION_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('INSTITUTION_ENTER_NEW');
          $new='';
          $context_item = $this->_environment->getCurrentContextItem();
          $rubric_array = $context_item->_getRubricArray(CS_INSTITUTION_TYPE);
@@ -150,13 +150,13 @@ class cs_institution_form extends cs_rubric_form {
             $genus = $rubric_array['EN']['GENUS'];
          }
          if ($genus =='M'){
-            $new = getMessage('COMMON_NEW_M_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_M_BIG').' ';
          }
          elseif ($genus =='F'){
-            $new =  getMessage('COMMON_NEW_F_BIG').' ';
+            $new =  $this->_translator->getMessage('COMMON_NEW_F_BIG').' ';
          }
          else {
-            $new = getMessage('COMMON_NEW_N_BIG').' ';
+            $new = $this->_translator->getMessage('COMMON_NEW_N_BIG').' ';
          }
          $this->_headline = $new.$this->_headline;
       }
@@ -172,25 +172,25 @@ class cs_institution_form extends cs_rubric_form {
 
       // institution
       $this->_form->addHidden('iid','');
-      $this->_form->addTitleField('name','',getMessage('COMMON_NAME'),getMessage('COMMON_NAME_DESC'),200,45,true);
-      $this->_form->addTextArea('description','',getMessage('COMMON_CONTENT'),'',60);
-      $this->_form->addImage('picture_upload','',getMessage('USER_PICTURE_UPLOADFILE'), getMessage('INSTITUTION_PICTURE_FILE_DESC'));
+      $this->_form->addTitleField('name','',$this->_translator->getMessage('COMMON_NAME'),$this->_translator->getMessage('COMMON_NAME_DESC'),200,45,true);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('COMMON_CONTENT'),'',60);
+      $this->_form->addImage('picture_upload','',$this->_translator->getMessage('USER_PICTURE_UPLOADFILE'), $this->_translator->getMessage('INSTITUTION_PICTURE_FILE_DESC'));
 
       //delete picture
       if ( $this->_has_picture) {
          $this->_form->combine();
-         $this->_form->addCheckbox('deletePicture',getMessage('USER_DEL_PIC'),false,getMessage('USER_DEL_PIC'),getMessage('USER_DEL_PIC_BUTTON'),'');
+         $this->_form->addCheckbox('deletePicture',$this->_translator->getMessage('USER_DEL_PIC'),false,$this->_translator->getMessage('USER_DEL_PIC'),$this->_translator->getMessage('USER_DEL_PIC_BUTTON'),'');
       }
       $this->_form->addHidden('picture_hidden','');
 
       // public radio-buttons
       if ( !isset($this->_item) ) {
-         $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+         $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
       } else {
          $current_user = $this->_environment->getCurrentUser();
          $creator = $this->_item->getCreatorItem();
          if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-            $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+            $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
          } else {
             $this->_form->addHidden('public','');
          }
@@ -208,9 +208,9 @@ class cs_institution_form extends cs_rubric_form {
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('INSTITUTION_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('INSTITUTION_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('INSTITUTION_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('INSTITUTION_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 

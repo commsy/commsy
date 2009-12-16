@@ -287,13 +287,13 @@ class cs_account_action_form extends cs_rubric_form {
       }
 
       // cc / bcc - values
-      $this->_cc_bcc_values[0]['text']  = getMessage('INDEX_ACTION_FORM_CC');
+      $this->_cc_bcc_values[0]['text']  = $this->_translator->getMessage('INDEX_ACTION_FORM_CC');
       $this->_cc_bcc_values[0]['value'] = 'cc';
-      $this->_cc_bcc_values[1]['text']  = getMessage('INDEX_ACTION_FORM_BCC',$admin->getFullname());
+      $this->_cc_bcc_values[1]['text']  = $this->_translator->getMessage('INDEX_ACTION_FORM_BCC',$admin->getFullname());
       $this->_cc_bcc_values[1]['value'] = 'bcc';
-      $this->_cc_bcc_values[2]['text']  = getMessage('INDEX_ACTION_FORM_CC_MODERATOR');
+      $this->_cc_bcc_values[2]['text']  = $this->_translator->getMessage('INDEX_ACTION_FORM_CC_MODERATOR');
       $this->_cc_bcc_values[2]['value'] = 'cc_moderator';
-      $this->_cc_bcc_values[3]['text']  = getMessage('INDEX_ACTION_FORM_BCC_MODERATOR');
+      $this->_cc_bcc_values[3]['text']  = $this->_translator->getMessage('INDEX_ACTION_FORM_BCC_MODERATOR');
       $this->_cc_bcc_values[3]['value'] = 'bcc_moderator';
    }
 
@@ -309,20 +309,20 @@ class cs_account_action_form extends cs_rubric_form {
       }
 
       if ( $this->_user_id != NULL ) {
-         $this->_form->addText('user_id',getMessage('USER_USER_ID'),$this->_user_id);
+         $this->_form->addText('user_id',$this->_translator->getMessage('USER_USER_ID'),$this->_user_id);
       }
       if ( $this->_name != NULL ) {
-         $this->_form->addText('name',getMessage('COMMON_NAME'),$this->_name);
+         $this->_form->addText('name',$this->_translator->getMessage('COMMON_NAME'),$this->_name);
       }
       if ( $this->_language != NULL) {
-         $this->_form->addText('language',getMessage('COMMON_LANGUAGE'),$this->_language);
+         $this->_form->addText('language',$this->_translator->getMessage('COMMON_LANGUAGE'),$this->_language);
       }
 
       if ( $this->_action_array['action'] != 'USER_EMAIL_SEND'
            and $this->_action_array['action'] != 'USER_EMAIL_ACCOUNT_PASSWORD'
            and $this->_action_array['action'] != 'USER_EMAIL_ACCOUNT_MERGE'
            ) {
-         $this->_form->addCheckbox('with_mail','1',true,getMessage('INDEX_ACTION_FORM_MAIL'),getMessage('INDEX_ACTION_FORM_MAIL_OPTION'),'','','','onclick="cs_toggle();"');
+         $this->_form->addCheckbox('with_mail','1',true,$this->_translator->getMessage('INDEX_ACTION_FORM_MAIL'),$this->_translator->getMessage('INDEX_ACTION_FORM_MAIL_OPTION'),'','','','onclick="cs_toggle();"');
       } else {
          $this->_form->addHidden('with_mail','1');
       }
@@ -332,59 +332,59 @@ class cs_account_action_form extends cs_rubric_form {
          $this->_form->addCheckbox('copy','copy',false,'',$this->_translator->getMessage('MAILCOPY_TO_SENDER'),'','','','');
       } else {
          if ( isset($this->_cc_bcc_values[2]) and isset($this->_cc_bcc_values[3]) ) {
-            $this->_form->addCheckbox('cc_moderator','cc_moderator',false,getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[2]['text'],'','','','');
+            $this->_form->addCheckbox('cc_moderator','cc_moderator',false,$this->_translator->getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[2]['text'],'','','','');
             $this->_form->combine('horizontal');
-            $this->_form->addCheckbox('bcc_moderator','bcc_moderator',false,getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[3]['text'],'','','','');
+            $this->_form->addCheckbox('bcc_moderator','bcc_moderator',false,$this->_translator->getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[3]['text'],'','','','');
          }
          $this->_form->combine();
-         $this->_form->addCheckbox('cc','cc',false,getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[0]['text'],'','','','');
+         $this->_form->addCheckbox('cc','cc',false,$this->_translator->getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[0]['text'],'','','','');
          $this->_form->combine('horizontal');
-         $this->_form->addCheckbox('bcc','bcc',false,getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[1]['text'],'','','','');
+         $this->_form->addCheckbox('bcc','bcc',false,$this->_translator->getMessage('INDEX_ACTION_FORM_CC_BCC'),$this->_cc_bcc_values[1]['text'],'','','','');
       }
-      $this->_form->addTextField('subject','',getMessage('COMMON_MAIL_SUBJECT'),'',200,'',false);
-      $this->_form->addTextArea('content','',getMessage('COMMON_CONTENT'),'',60,10, '', true,false,false);
+      $this->_form->addTextField('subject','',$this->_translator->getMessage('COMMON_MAIL_SUBJECT'),'',200,'',false);
+      $this->_form->addTextArea('content','',$this->_translator->getMessage('COMMON_CONTENT'),'',60,10, '', true,false,false);
 
       // buttons
       if ( $this->_action_array['action'] == 'USER_EMAIL_SEND'
            or $this->_action_array['action'] == 'USER_EMAIL_ACCOUNT_PASSWORD'
            or $this->_action_array['action'] == 'USER_EMAIL_ACCOUNT_MERGE') {
-         $this->_form->addButtonBar('option',getMessage('INDEX_ACTION_SEND_MAIL_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('INDEX_ACTION_SEND_MAIL_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','');
       } else {
          $tempMessage = "";
          switch( $this->_action_array['action'] )
          {
             case 'USER_ACCOUNT_DELETE':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_DELETE_BUTTON');
                break;
             case 'USER_ACCOUNT_FREE':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_FREE_BUTTON');
                break;
             case 'USER_ACCOUNT_LOCK':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_LOCK_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_ACCOUNT_LOCK_BUTTON');
                break;
             case 'USER_MAKE_CONTACT_PERSON':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_MAKE_CONTACT_PERSON_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_MAKE_CONTACT_PERSON_BUTTON');
                break;
             case 'USER_STATUS_EDITOR':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_STATUS_EDITOR_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_EDITOR_BUTTON');
                break;
             case 'USER_STATUS_MODERATOR':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_STATUS_MODERATOR_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_MODERATOR_BUTTON');
                break;
             case 'USER_STATUS_ORGANIZER':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_STATUS_ORGANIZER_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_ORGANIZER_BUTTON');
                break;
             case 'USER_STATUS_USER':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_STATUS_USER_BUTTON');
                break;
             case 'USER_UNMAKE_CONTACT_PERSON':
-               $tempMessage = getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
+               $tempMessage = $this->_translator->getMessage('INDEX_ACTION_PERFORM_USER_UNMAKE_CONTACT_PERSON_BUTTON');
                break;
             default:
-               $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_account_action_form(539) ');
+               $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_account_action_form(539) ');
                break;
          }
-         $this->_form->addButtonBar('option', $tempMessage, getMessage('COMMON_CANCEL_BUTTON'), '', '', '', '');
+         $this->_form->addButtonBar('option', $tempMessage, $this->_translator->getMessage('COMMON_CANCEL_BUTTON'), '', '', '', '');
       }
    }
 

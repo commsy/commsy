@@ -65,39 +65,39 @@ var $_with_tags = false;
     */
    function _createForm () {
 
-      $this->_form->addCheckbox('buzzword','yes','',getMessage('PREFERENCES_CONFIGURATION_BUZZWORD'),getMessage('PREFERENCES_CONFIGURATION_BUZZWORD_VALUE'),'','','','onclick="cs_toggle()"');
+      $this->_form->addCheckbox('buzzword','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_BUZZWORD'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_BUZZWORD_VALUE'),'','','','onclick="cs_toggle()"');
       $radio_values = array();
-      $radio_values[0]['text'] = getMessage('CONFIGURATION_BUZZWORDS_NOT_MANDATORY');
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_BUZZWORDS_NOT_MANDATORY');
       $radio_values[0]['value'] = '1';
-      $radio_values[1]['text'] = getMessage('CONFIGURATION_BUZZWORDS_MANDATORY');
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_BUZZWORDS_MANDATORY');
       $radio_values[1]['value'] = '2';
 
 
-      $this->_form->addRadioGroup('buzzword_mandatory',getMessage('CONFIGURATION_TAG_STATUS'),'',$radio_values,'',true,false,'','',$this->_with_buzzwords);
+      $this->_form->addRadioGroup('buzzword_mandatory',$this->_translator->getMessage('CONFIGURATION_TAG_STATUS'),'',$radio_values,'',true,false,'','',$this->_with_buzzwords);
 
       $this->_form->addEmptyLine();
-      $this->_form->addCheckbox('tags','yes','',getMessage('PREFERENCES_CONFIGURATION_TAGS'),getMessage('PREFERENCES_CONFIGURATION_TAGS_VALUE'),'','','','onclick="cs_toggle2()"');
+      $this->_form->addCheckbox('tags','yes','',$this->_translator->getMessage('PREFERENCES_CONFIGURATION_TAGS'),$this->_translator->getMessage('PREFERENCES_CONFIGURATION_TAGS_VALUE'),'','','','onclick="cs_toggle2()"');
 
       $radio_values = array();
-      $radio_values[0]['text'] = getMessage('CONFIGURATION_TAG_NOT_MANDATORY');
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_TAG_NOT_MANDATORY');
       $radio_values[0]['value'] = '1';
-      $radio_values[1]['text'] = getMessage('CONFIGURATION_TAG_MANDATORY');
+      $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_TAG_MANDATORY');
       $radio_values[1]['value'] = '2';
-      $this->_form->addRadioGroup('tag_mandatory',getMessage('CONFIGURATION_TAG_STATUS'),'',$radio_values,'',true,false,'','',$this->_with_tags);
+      $this->_form->addRadioGroup('tag_mandatory',$this->_translator->getMessage('CONFIGURATION_TAG_STATUS'),'',$radio_values,'',true,false,'','',$this->_with_tags);
 
       if ( $this->_environment->inPrivateRoom() ) {
          $this->_form->addHidden('tag_edit','1');
       } else {
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_TAG_EDIT_BY_ALL');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_TAG_EDIT_BY_ALL');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_TAG_EDIT_BY_MODERATOR');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_TAG_EDIT_BY_MODERATOR');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('tag_edit',getMessage('CONFIGURATION_TAG_EDIT'),'',$radio_values,'',true,false,'','',$this->_with_tags);
+         $this->_form->addRadioGroup('tag_edit',$this->_translator->getMessage('CONFIGURATION_TAG_EDIT'),'',$radio_values,'',true,false,'','',$this->_with_tags);
       }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

@@ -49,7 +49,7 @@ class cs_configuration_scribd_form extends cs_rubric_form {
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $this->_headline = getMessage('SERVER_IMS_LINK');
+      $this->_headline = $this->_translator->getMessage('SERVER_IMS_LINK');
    }
 
    /** create the form, INTERNAL
@@ -60,8 +60,8 @@ class cs_configuration_scribd_form extends cs_rubric_form {
       $this->setHeadline($this->_headline);
 
       $this->_form->addText('text',$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_TITLE'),$this->_translator->getMessage('COMMON_CONFIGURATION_SCRIBD_DESC',getCommSyVersion()));
-      $this->_form->addTextfield('scribd_api_key','',getMessage('API Key'),'',200,'40',false);
-      $this->_form->addTextfield('scribd_secret','',getMessage('Secret'),'',200,'40',false);
+      $this->_form->addTextfield('scribd_api_key','',$this->_translator->getMessage('API Key'),'',200,'40',false);
+      $this->_form->addTextfield('scribd_secret','',$this->_translator->getMessage('Secret'),'',200,'40',false);
 
       // buttons
       $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');

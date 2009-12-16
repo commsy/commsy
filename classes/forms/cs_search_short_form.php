@@ -148,10 +148,10 @@ class cs_search_short_form extends cs_form {
    function _initForm () {
 
       // headline
-      $this->_headline = getMessage('HOME_SEARCH_SHORT_TITLE');
+      $this->_headline = $this->_translator->getMessage('HOME_SEARCH_SHORT_TITLE');
 
       $this->_value_rubric_select[0]['value'] = 'all';
-      $this->_value_rubric_select[0]['text']  = getMessage('HOME_SEARCH_ALL_RUBRICS');
+      $this->_value_rubric_select[0]['text']  = $this->_translator->getMessage('HOME_SEARCH_ALL_RUBRICS');
       $context_item = $this->_environment->getCurrentContextItem();
       $current_room_modules = $context_item->getHomeConf();
       if ( !empty($current_room_modules) ){
@@ -176,40 +176,40 @@ class cs_search_short_form extends cs_form {
             switch ( $temp_link )
             {
                case 'ANNOUNCEMENT':
-                  $tempMessage = getMessage('COMMON_ANNOUNCEMENT_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_ANNOUNCEMENT_INDEX');
                   break;
                case 'DATE':
-                  $tempMessage = getMessage('COMMON_DATE_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_DATE_INDEX');
                   break;
                case 'DISCUSSION':
-                  $tempMessage = getMessage('COMMON_DISCUSSION_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_DISCUSSION_INDEX');
                   break;
                case 'GROUP':
-                  $tempMessage = getMessage('COMMON_GROUP_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_GROUP_INDEX');
                   break;
                case 'INSTITUTION':
-                  $tempMessage = getMessage('COMMON_INSTITUTION_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_INSTITUTION_INDEX');
                   break;
                case 'MATERIAL':
-                  $tempMessage = getMessage('COMMON_MATERIAL_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_MATERIAL_INDEX');
                   break;
                case 'MYROOM':
-                  $tempMessage = getMessage('COMMON_MYROOM_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_MYROOM_INDEX');
                   break;
                case 'PROJECT':
-                  $tempMessage = getMessage('COMMON_PROJECT_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_PROJECT_INDEX');
                   break;
                case 'TODO':
-                  $tempMessage = getMessage('COMMON_TODO_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_TODO_INDEX');
                   break;
                case 'TOPIC':
-                  $tempMessage = getMessage('COMMON_TOPIC_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_TOPIC_INDEX');
                   break;
                case 'USER':
-                  $tempMessage = getMessage('COMMON_USER_INDEX');
+                  $tempMessage = $this->_translator->getMessage('COMMON_USER_INDEX');
                   break;
                default:
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_search_short_form(212)');
+                  $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR' . ' cs_search_short_form(212)');
                   break;
             }
             $this->_value_rubric_select[$i]['text']  = $tempMessage;
@@ -224,11 +224,11 @@ class cs_search_short_form extends cs_form {
    function _createForm () {
       $this->_form->addHeadline('headline',$this->_headline,'');
       $this->_form->addHidden('modus','short');
-      $this->_form->addHidden('enter',getMessage('HOME_SEARCH_SHORT_BUTTON'));
+      $this->_form->addHidden('enter',$this->_translator->getMessage('HOME_SEARCH_SHORT_BUTTON'));
       $this->_form->addEmptyLine();
-      $this->_form->addTextfield('search_text','','','',255,30,false,'','','','left',getMessage('HOME_SEARCH_SHORT_TO'));
-      $this->_form->addCheckbox('only_files','1','','',getMessage('HOME_SEARCH_ONLY_FILES_TEXT'));
-      $this->_form->addSelect('selrubric', $this->_value_rubric_select,'','','','',false,'','',getMessage('HOME_SEARCH_SHORT_BUTTON'),'option','',getMessage('HOME_SEARCH_SHORT_IN'),'10.8');
+      $this->_form->addTextfield('search_text','','','',255,30,false,'','','','left',$this->_translator->getMessage('HOME_SEARCH_SHORT_TO'));
+      $this->_form->addCheckbox('only_files','1','','',$this->_translator->getMessage('HOME_SEARCH_ONLY_FILES_TEXT'));
+      $this->_form->addSelect('selrubric', $this->_value_rubric_select,'','','','',false,'','',$this->_translator->getMessage('HOME_SEARCH_SHORT_BUTTON'),'option','',$this->_translator->getMessage('HOME_SEARCH_SHORT_IN'),'10.8');
       $this->_form->addHidden('form_view','campus_search_short');
    }
 

@@ -64,7 +64,7 @@ class cs_language_unused_form extends cs_rubric_form {
    function _createForm () {
       $this->_form->addCheckboxGroup('unused_tags',$this->_unused_array,'',$this->_translator->getMessage('LANGUAGE_UNUSED_TAGS'));
       // buttons
-      $this->_form->addButtonBar('option',getMessage('LANGUAGE_DELETE_UNUSED_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('LANGUAGE_DELETE_UNUSED_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

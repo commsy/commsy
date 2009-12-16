@@ -193,24 +193,24 @@ class cs_date_form extends cs_rubric_form {
          $fullname = $current_user->getFullname();
       }
       $public_array = array();
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_YES');
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_YES');
       $temp_array['value'] = 1;
       $public_array[] = $temp_array;
-      $temp_array['text']  = getMessage('RUBRIC_PUBLIC_NO', $fullname);
+      $temp_array['text']  = $this->_translator->getMessage('RUBRIC_PUBLIC_NO', $fullname);
       $temp_array['value'] = 0;
       $public_array[] = $temp_array;
       $this->_public_array = $public_array;
 
       if (!empty($this->_item)) {
-         $this->_headline = getMessage('DATES_EDIT');
+         $this->_headline = $this->_translator->getMessage('DATES_EDIT');
       } elseif (!empty($this->_form_post)) {
          if (!empty($this->_form_post['iid'])) {
-            $this->_headline = getMessage('DATES_EDIT');
+            $this->_headline = $this->_translator->getMessage('DATES_EDIT');
          } else {
-            $this->_headline = getMessage('DATES_ENTER_NEW');
+            $this->_headline = $this->_translator->getMessage('DATES_ENTER_NEW');
          }
       } else {
-         $this->_headline = getMessage('DATES_ENTER_NEW');
+         $this->_headline = $this->_translator->getMessage('DATES_ENTER_NEW');
       }
 
       // groups
@@ -280,11 +280,17 @@ class cs_date_form extends cs_rubric_form {
          $this->_form->addHidden('seldisplay_mode','calendar');
       }
       $this->_form->addHidden('start_point',$this->_start_point);
-      $this->_form->addTitlefield('title','',getMessage('COMMON_TITLE'),getMessage('DATES_TITLE_DESC'),200,45,true);
-      $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,getMessage('DATES_TIME_DAY_START'),getMessage('DATES_START_DAY'),getMessage('DATES_START_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
-      $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,getMessage('DATES_TIME_DAY_END'),getMessage('DATES_END_DAY'),getMessage('DATES_END_TIME'),getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
-      $this->_form->addTextfield('place','',getMessage('DATES_PLACE'),getMessage('DATES_PLACE_DESC'),100,50);
+      $this->_form->addTitlefield('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATES_TITLE_DESC'),200,45,true);
+      $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,$this->_translator->getMessage('DATES_TIME_DAY_START'),$this->_translator->getMessage('DATES_START_DAY'),$this->_translator->getMessage('DATES_START_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
+      $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,$this->_translator->getMessage('DATES_TIME_DAY_END'),$this->_translator->getMessage('DATES_END_DAY'),$this->_translator->getMessage('DATES_END_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
+      $this->_form->addTextfield('place','',$this->_translator->getMessage('DATES_PLACE'),$this->_translator->getMessage('DATES_PLACE_DESC'),100,50);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
+      $this->_form->addTitlefield('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATES_TITLE_DESC'),200,45,true);
+      $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,$this->_translator->getMessage('DATES_TIME_DAY_START'),$this->_translator->getMessage('DATES_START_DAY'),$this->_translator->getMessage('DATES_START_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
+      $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,$this->_translator->getMessage('DATES_TIME_DAY_END'),$this->_translator->getMessage('DATES_END_DAY'),$this->_translator->getMessage('DATES_END_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
+      $this->_form->addTextfield('place','',$this->_translator->getMessage('DATES_PLACE'),$this->_translator->getMessage('DATES_PLACE_DESC'),100,50);
 
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
       $radio_values = array();
       $radio_values[0]['text'] = '<img src="images/spacer.gif" style="background-color:#999999; border:1px solid #cccccc;"/>';
       $radio_values[0]['value'] = '#999999';
@@ -308,7 +314,7 @@ class cs_date_form extends cs_rubric_form {
       $radio_values[9]['value'] = '#cc33cc';
       $this->_form->addRadioGroup('date_addon_color',$this->_translator->getMessage('DATES_ADDON'),$this->_translator->getMessage('DATES_ADDON_DESC'),$radio_values,'',false,true,'','',false,' style="vertical-align:top;"',true,false);
       
-      $this->_form->addTextArea('description','',getMessage('DATES_DESCRIPTION'),'','',10);
+      $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
 
       // rubric connections
       $this->_setFormElementsForConnectedRubrics();
@@ -330,11 +336,11 @@ class cs_date_form extends cs_rubric_form {
       }
       $meg_val = round($val/1048576);
       if ( !empty($this->_file_array) ) {
-         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',getMessage('MATERIAL_FILES'),getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
+         $this->_form->addCheckBoxGroup('filelist',$this->_file_array,'',$this->_translator->getMessage('MATERIAL_FILES'),$this->_translator->getMessage('MATERIAL_FILES_DESC', $meg_val),false,false);
          $this->_form->combine('vertical');
       }
       $this->_form->addHidden('MAX_FILE_SIZE', $val);
-      $this->_form->addFilefield('upload', getMessage('MATERIAL_FILES'), getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
+      $this->_form->addFilefield('upload', $this->_translator->getMessage('MATERIAL_FILES'), $this->_translator->getMessage('MATERIAL_UPLOAD_DESC',$meg_val), 12, false, $this->_translator->getMessage('MATERIAL_UPLOADFILE_BUTTON'),'option',$this->_with_multi_upload);
       $this->_form->combine('vertical');
       if ($this->_with_multi_upload) {
          // do nothing
@@ -362,36 +368,38 @@ class cs_date_form extends cs_rubric_form {
                $px = '336'; // camino
             }
          }
-         $this->_form->addButton('option',getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
+         $this->_form->addButton('option',$this->_translator->getMessage('MATERIAL_BUTTON_MULTI_UPLOAD_YES'),'','',$px.'px');
       }
       $this->_form->combine('vertical');
-      $this->_form->addText('max_size',$val,getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
+      $this->_form->addText('max_size',$val,$this->_translator->getMessage('MATERIAL_MAX_FILE_SIZE',$meg_val));
 
-      #$this->_form->addTextfield('colour','',getMessage('DATES_COLOUR'),getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
+      #$this->_form->addTextfield('colour','',$this->_translator->getMessage('DATES_COLOUR'),$this->_translator->getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
-      #$this->_form->addText('colorpicker',getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
+      $this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
+          
+      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
       
       if ($current_context->withActivatingContent() and !$current_context->isPrivateRoom()){
-         $this->_form->addCheckbox('private_editing',1,'',getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
+         $this->_form->addCheckbox('private_editing',1,'',$this->_translator->getMessage('COMMON_RIGHTS'),$this->_public_array[1]['text'],$this->_translator->getMessage('COMMON_RIGHTS_DESCRIPTION'),false,false,'','',true,false);
          $this->_form->combine();
-         $this->_form->addCheckbox('mode','','','',getMessage('COMMON_NOT_ACCESSIBLE'),'');
+         $this->_form->addCheckbox('mode','','','',$this->_translator->getMessage('COMMON_NOT_ACCESSIBLE'),'');
          $this->_form->combine();
-         $this->_form->addCheckbox('hide',1,'',getMessage('COMMON_HIDE'),getMessage('COMMON_HIDE'),'');
+         $this->_form->addCheckbox('hide',1,'',$this->_translator->getMessage('COMMON_HIDE'),$this->_translator->getMessage('COMMON_HIDE'),'');
          $this->_form->combine('horizontal');
-         $this->_form->addDateTimeField('start_activate_date_time','','dayActivateStart','timeActivateStart',9,4,getMessage('DATES_HIDING_DAY'),'('.getMessage('DATES_HIDING_DAY'),getMessage('DATES_HIDING_TIME'),getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
+         $this->_form->addDateTimeField('start_activate_date_time','','dayActivateStart','timeActivateStart',9,4,$this->_translator->getMessage('DATES_HIDING_DAY'),'('.$this->_translator->getMessage('DATES_HIDING_DAY'),$this->_translator->getMessage('DATES_HIDING_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),FALSE,FALSE,100,100,true,'left','',FALSE);
          $this->_form->combine('horizontal');
          $this->_form->addText('hide_end2','',')');
       }else{
           // public radio-buttons
-          $this->_form->addCheckbox('mode','','',getMessage('COMMON_DATE_STATUS'),getMessage('DATES_NON_PUBLIC_FORM'),'');
+          $this->_form->addCheckbox('mode','','',$this->_translator->getMessage('COMMON_DATE_STATUS'),$this->_translator->getMessage('DATES_NON_PUBLIC_FORM'),'');
           if ( !isset($this->_item) ) {
-             $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+             $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
           } else {
              $current_user = $this->_environment->getCurrentUser();
              $creator = $this->_item->getCreatorItem();
              if ($current_user->getItemID() == $creator->getItemID() or $current_user->isModerator()) {
-                $this->_form->addRadioGroup('public',getMessage('RUBRIC_PUBLIC'),getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
+                $this->_form->addRadioGroup('public',$this->_translator->getMessage('RUBRIC_PUBLIC'),$this->_translator->getMessage('RUBRIC_PUBLIC_DESC'),$this->_public_array);
              } else {
                 $this->_form->addHidden('public','');
              }
@@ -408,9 +416,9 @@ class cs_date_form extends cs_rubric_form {
          }
       }
       if ( $id == 0 )  {
-         $this->_form->addButtonBar('option',getMessage('DATES_SAVE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_SAVE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
       } else {
-         $this->_form->addButtonBar('option',getMessage('DATES_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','');
+         $this->_form->addButtonBar('option',$this->_translator->getMessage('DATES_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','');
       }
    }
 
@@ -590,12 +598,12 @@ class cs_date_form extends cs_rubric_form {
       include_once('functions/date_functions.php');
       if ( !empty($this->_form_post['start_date_time'][0])
            and !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['start_date_time'][0],$this->_form_post['start_date_time'][1]) ) {
-         $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+         $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
          $this->_form->setFailure('start_date_time','');
       }
       if ( !empty($this->_form_post['end_date_time'][0])
            and !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['end_date_time']['dayEnd'],$this->_form_post['end_date_time']['timeEnd']) ) {
-         $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+         $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
          $this->_form->setFailure('end_date_time','');
       }
       $current_context = $this->_environment->getCurrentContextItem();
@@ -603,19 +611,19 @@ class cs_date_form extends cs_rubric_form {
          $session = $this->_environment->getSessionItem();
          $tag_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_tag_ids');
          if (count($tag_ids) == 0){
-            $this->_error_array[] = getMessage('COMMON_ERROR_TAG_ENTRY',getMessage('MATERIAL_TAGS'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_TAG_ENTRY',$this->_translator->getMessage('MATERIAL_TAGS'));
          }
       }
       if ( $current_context->isBuzzwordMandatory() ){
          $session = $this->_environment->getSessionItem();
          $buzzword_ids = $session->getValue('cid'.$this->_environment->getCurrentContextID().'_'.$this->_environment->getCurrentModule().'_buzzword_ids');
          if (count($buzzword_ids) == 0){
-            $this->_error_array[] = getMessage('COMMON_ERROR_BUZZWORD_ENTRY',getMessage('MATERIAL_BUZZWORDS'));
+            $this->_error_array[] = $this->_translator->getMessage('COMMON_ERROR_BUZZWORD_ENTRY',$this->_translator->getMessage('MATERIAL_BUZZWORDS'));
          }
       }
       if ($current_context->withActivatingContent() and !empty($this->_form_post['dayActivateStart']) and !empty($this->_form_post['hide'])){
          if ( !isDatetimeCorrect($this->_environment->getSelectedLanguage(),$this->_form_post['dayActivateStart'],$this->_form_post['timeActivateStart']) ) {
-            $this->_error_array[] = getMessage('DATES_DATE_NOT_VALID');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_DATE_NOT_VALID');
             $this->_form->setFailure('start_activate_date_time','');
          }
       }
@@ -628,7 +636,7 @@ class cs_date_form extends cs_rubric_form {
       $date_start = convertDateFromInput($this->_form_post['dayStart'],$lang);
       $date_end = convertDateFromInput($this->_form_post['dayEnd'],$lang);
       if ($date_start['error'] == true OR $date_end['error'] == true) {
-         $this->_error_array[] = getMessage('DATES_WRONG_DATE_FORMAT');
+         $this->_error_array[] = $this->_translator->getMessage('DATES_WRONG_DATE_FORMAT');
          $error = true;
       }
       return $error;
@@ -665,7 +673,7 @@ class cs_date_form extends cs_rubric_form {
 
       if($date_start['conforms'] != '') {
          if ($date_end['conforms'] != '' and (($end_timestamp - $start_timestamp) < 0)) {
-            $this->_error_array[] = getMessage('DATES_END_DATE_BEFORE_START_DATE');
+            $this->_error_array[] = $this->_translator->getMessage('DATES_END_DATE_BEFORE_START_DATE');
          }
       }
    }

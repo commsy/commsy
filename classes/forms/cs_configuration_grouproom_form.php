@@ -48,16 +48,14 @@ class cs_configuration_grouproom_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-
-
       // form fields
       $picture = '<br/><br/><img src="images/configuration_grouproom.gif" alt="picture_threaded" style=" width:290px; border:1px solid black; vertical-align: middle;"/>';
       $this->_form->addHidden('iid','');
-      $this->_form->addCheckbox('grouproom',1,'',getMessage('GROUPROOM_CONFIGURATION_CHOICE_TITLE'),getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
-      $this->_form->addText('grouproom_text',getMessage('GROUPROOM_EXPLANATION_TITLE'),getMessage('GROUPROOM_EXPLANATION_VALUE').$picture);
+      $this->_form->addCheckbox('grouproom',1,'',$this->_translator->getMessage('GROUPROOM_CONFIGURATION_CHOICE_TITLE'),$this->_translator->getMessage('GROUPROOM_CONFIGURATION_CHOICE_VALUE'),'');
+      $this->_form->addText('grouproom_text',$this->_translator->getMessage('GROUPROOM_EXPLANATION_TITLE'),$this->_translator->getMessage('GROUPROOM_EXPLANATION_VALUE').$picture);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

@@ -30,7 +30,6 @@ include_once('functions/text_functions.php');
  * this class implements an interface for the creation of a form in the commsy style: get an account step 1
  */
 class cs_account_change_form extends cs_rubric_form {
-
   /**
    * string - containing the headline of the form
    */
@@ -92,7 +91,7 @@ class cs_account_change_form extends cs_rubric_form {
          $i=0;
          $options = array();
          $options[$i]['value'] = 'browser';
-         $options[$i]['text'] = getMessage('USER_BROWSER_LANGUAGE');
+         $options[$i]['text'] = $this->_translator->getMessage('USER_BROWSER_LANGUAGE');
          $i++;
          $options[$i]['value'] = 'disabled';
          $options[$i]['text'] = '------------------';
@@ -120,25 +119,25 @@ class cs_account_change_form extends cs_rubric_form {
     */
    function _createForm () {
       // text and options
-      $this->_form->addHeadline('merge_account',getMessage('ACCOUNT_CHANGE'));
+      $this->_form->addHeadline('merge_account',$this->_translator->getMessage('ACCOUNT_CHANGE'));
       if ($this->_account_change) {
-         $this->_form->addTextField('user_id','',getMessage('USER_USER_ID'),'',100,21,true);
+         $this->_form->addTextField('user_id','',$this->_translator->getMessage('USER_USER_ID'),'',100,21,true);
       } else {
-         $this->_form->addText('user_id_text',getMessage('USER_USER_ID'),'&nbsp;'.$this->_user->getUserID(),'');
+         $this->_form->addText('user_id_text',$this->_translator->getMessage('USER_USER_ID'),'&nbsp;'.$this->_user->getUserID(),'');
       }
 
       if (!empty($this->_language_options)) {
-         $this->_form->addSelect('language',$this->_language_options,'',getMessage('USER_LANGUAGE'),'','','',true,'','','','','','12.6');
+         $this->_form->addSelect('language',$this->_language_options,'',$this->_translator->getMessage('USER_LANGUAGE'),'','','',true,'','','','','','12.6');
       }
       if ($this->_email_account) {
-         $this->_form->addCheckbox('email_account_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
+         $this->_form->addCheckbox('email_account_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_GET_ACCOUNT'),'','','','','');
       }
       if ($this->_email_room) {
-         $this->_form->addCheckbox('email_room_want','1',false,getMessage('USER_EMAIL'),getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
+         $this->_form->addCheckbox('email_room_want','1',false,$this->_translator->getMessage('USER_EMAIL'),$this->_translator->getMessage('USER_MAIL_OPEN_ROOM_PO'),'','','','','');
       }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('ACCOUNT_CHANGE_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('ACCOUNT_CHANGE_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,5.3,6.2);
    }
 
    /** loads the selected and given values to the form
@@ -174,7 +173,7 @@ class cs_account_change_form extends cs_rubric_form {
       if ( !empty($this->_form_post['email'])
            and !isEmailValid($this->_form_post['email'])
          ) {
-         $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
          $this->_form->setFailure('email','');
       }
 
@@ -186,14 +185,14 @@ class cs_account_change_form extends cs_rubric_form {
             $authentication = $this->_environment->getAuthenticationObject();
             $this->_user = $this->_environment->getPortalUserItem();
             if ($this->_user->getUserID() != $this->_form_post['user_id'] and !$authentication->is_free($this->_form_post['user_id'],$auth_source)) {
-               $this->_error_array[] = getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             } elseif ( withUmlaut($this->_form_post['user_id']) ) {
-               $this->_error_array[] = getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
+               $this->_error_array[] = $this->_translator->getMessage('USER_USER_ID_ERROR_UMLAUT',$this->_form_post['user_id']);
                $this->_form->setFailure('user_id','');
             }
          } else {
-            $this->_error_array[] = getMessage('USER_AUTH_SOURCE_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_AUTH_SOURCE_ERROR');
          }
       }
    }

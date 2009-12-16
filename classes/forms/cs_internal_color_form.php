@@ -66,7 +66,7 @@ class cs_internal_color_form extends cs_rubric_form {
    function _initForm () {
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_DEFAULT');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_DEFAULT');
       $temp_array['value'] = 'COMMON_COLOR_DEFAULT';
       $this->_array_info_text[] = $temp_array;
 
@@ -76,59 +76,59 @@ class cs_internal_color_form extends cs_rubric_form {
       $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_1');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_1');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_1';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_1')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_2');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_2');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_2';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_2')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_3');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_3');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_3';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_3')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_4');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_4');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_4';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_4')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_5');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_5');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_5';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_5')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_6');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_6');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_6';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_6')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_7');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_7');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_7';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_7')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_8');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_8');
        $temp_array['value'] = 'COMMON_COLOR_SCHEMA_8';
-       $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_8')] = $temp_array;
+       $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_8')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_9');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_9');
        $temp_array['value'] = 'COMMON_COLOR_SCHEMA_9';
-       $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_9')] = $temp_array;
+       $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_9')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_10');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_10');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_10';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_10')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_10')] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_11');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_11');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_11';
-      $array_info_text_temp[getMessage('COMMON_COLOR_SCHEMA_11')] = $temp_array;
+      $array_info_text_temp[$this->_translator->getMessage('COMMON_COLOR_SCHEMA_11')] = $temp_array;
 
       ksort($array_info_text_temp);
       foreach($array_info_text_temp as $entry){
@@ -140,7 +140,7 @@ class cs_internal_color_form extends cs_rubric_form {
       $this->_array_info_text[] = $temp_array;
 
       $temp_array = array();
-      $temp_array['text']  = getMessage('COMMON_COLOR_SCHEMA_OWN');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_COLOR_SCHEMA_OWN');
       $temp_array['value'] = 'COMMON_COLOR_SCHEMA_OWN';
       $this->_array_info_text[] = $temp_array;
 
@@ -155,13 +155,13 @@ class cs_internal_color_form extends cs_rubric_form {
       $this->_form->addSelect( 'color_choice',
                                $this->_array_info_text,
                                '',
-                               getMessage('CONFIGURATION_COLOR_FORM_CHOOSE_TEXT'),
+                               $this->_translator->getMessage('CONFIGURATION_COLOR_FORM_CHOOSE_TEXT'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_CHOOSE_BUTTON'),
                                'option',
          '',
          '',
@@ -169,139 +169,139 @@ class cs_internal_color_form extends cs_rubric_form {
                                true);
       if ( !empty($this->_form_post['color_choice']) ) {
          if ( $this->_form_post['color_choice']== 'COMMON_COLOR_DEFAULT' ) {
-            $desc = '<img src="images/color_schema_default.gif" alt="'.getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_default.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']== 'COMMON_COLOR_SCHEMA_1' ) {
-            $desc = '<img src="images/color_schema_1.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_1').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_1.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_1').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_3' ) {
-            $desc = '<img src="images/color_schema_3.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_3').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_3.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_3').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_2' ) {
-            $desc = '<img src="images/color_schema_2.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_2').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_2.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_2').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_4' ) {
-            $desc = '<img src="images/color_schema_4.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_4').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_4.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_4').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_5' ) {
-            $desc = '<img src="images/color_schema_5.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_5').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_5.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_5').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_6' ) {
-            $desc = '<img src="images/color_schema_6.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_6').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_6.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_6').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_7' ) {
-            $desc = '<img src="images/color_schema_7.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_7').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_7.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_7').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_8' ) {
-            $desc = '<img src="images/color_schema_8.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_8').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_8.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_8').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_9' ) {
-            $desc = '<img src="images/color_schema_9.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_9').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_9.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_9').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_10' ) {
-            $desc = '<img src="images/color_schema_10.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_10').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_10.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_10').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_11' ) {
-            $desc = '<img src="images/color_schema_11.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_11').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_11.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_11').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $this->_form_post['color_choice']=='COMMON_COLOR_SCHEMA_OWN' ) {
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
-            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
-#            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_1'),'','',10);
+            $this->_form->addTextField('color_2','',$this->_translator->getMessage('COMMON_COLOR_2'),'','',10);
+#            $this->_form->addTextField('color_3','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_3','');
-#            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_4'),'','',10);
+#            $this->_form->addTextField('color_4','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_4','');
-            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_5','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
-            $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
-            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
-#            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_9','',$this->_translator->getMessage('COMMON_COLOR_9'),'','',10);
+            $this->_form->addTextField('color_8','',$this->_translator->getMessage('COMMON_COLOR_8'),'','',10);
+            $this->_form->addTextField('color_6','',$this->_translator->getMessage('COMMON_COLOR_6'),'','',10);
+#            $this->_form->addTextField('color_7','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_7','');
             $this->_form->addEmptyLine();
 
-            $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
-            $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
-#            $this->_form->addTextField('color_12','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_10','',$this->_translator->getMessage('COMMON_COLOR_10'),'','',10);
+            $this->_form->addTextField('color_11','',$this->_translator->getMessage('COMMON_COLOR_11'),'','',10);
+#            $this->_form->addTextField('color_12','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_12','');
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
-            $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
-            $this->_form->addTextField('color_15','',getMessage('COMMON_COLOR_15'),'','',10);
-            $this->_form->addTextField('color_16','',getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_13','',$this->_translator->getMessage('COMMON_COLOR_13'),'','',10);
+            $this->_form->addTextField('color_14','',$this->_translator->getMessage('COMMON_COLOR_14'),'','',10);
+            $this->_form->addTextField('color_15','',$this->_translator->getMessage('COMMON_COLOR_15'),'','',10);
+            $this->_form->addTextField('color_16','',$this->_translator->getMessage('COMMON_COLOR_16'),'','',10);
          }
       } else{
          $context_item = $this->_environment->getCurrentContextItem();
          $color = $context_item->getColorArray();
          if ( $color['schema']== 'DEFAULT' ) {
-            $desc = '<img src="images/color_schema_default.gif" alt="'.getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_default.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_DEFAULT').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ($color['schema']== 'SCHEMA_1' ) {
-            $desc = '<img src="images/color_schema_1.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_1').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_1.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_1').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_3' ) {
-            $desc = '<img src="images/color_schema_3.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_3').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_3.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_3').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_2' ) {
-            $desc = '<img src="images/color_schema_2.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_2').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_2.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_2').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_4' ) {
-            $desc = '<img src="images/color_schema_4.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_4').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_4.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_4').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_5' ) {
-            $desc = '<img src="images/color_schema_5.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_5').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_5.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_5').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_6' ) {
-            $desc = '<img src="images/color_schema_6.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_6').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_6.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_6').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_7' ) {
-            $desc = '<img src="images/color_schema_7.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_7').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_7.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_7').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_8' ) {
-            $desc = '<img src="images/color_schema_8.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_8').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_8.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_8').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_9' ) {
-            $desc = '<img src="images/color_schema_9.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_9').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_9.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_9').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_10' ) {
-            $desc = '<img src="images/color_schema_10.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_10').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_10.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_10').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_11' ) {
-            $desc = '<img src="images/color_schema_11.gif" alt="'.getMessage('COMMON_COLOR_SCHEMA_11').'" style=" border:1px solid black; vertical-align: middle;"/>';
-            $this->_form->addText('example',getMessage('COMMON_COLOR_EXAMPLE'),$desc);
+            $desc = '<img src="images/color_schema_11.gif" alt="'.$this->_translator->getMessage('COMMON_COLOR_SCHEMA_11').'" style=" border:1px solid black; vertical-align: middle;"/>';
+            $this->_form->addText('example',$this->_translator->getMessage('COMMON_COLOR_EXAMPLE'),$desc);
          }elseif ( $color['schema']=='SCHEMA_OWN' ) {
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_1','',getMessage('COMMON_COLOR_1'),'','',10);
-            $this->_form->addTextField('color_2','',getMessage('COMMON_COLOR_2'),'','',10);
-#            $this->_form->addTextField('color_3','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_1','',$this->_translator->getMessage('COMMON_COLOR_1'),'','',10);
+            $this->_form->addTextField('color_2','',$this->_translator->getMessage('COMMON_COLOR_2'),'','',10);
+#            $this->_form->addTextField('color_3','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_3','');
-#            $this->_form->addTextField('color_4','',getMessage('COMMON_COLOR_4'),'','',10);
+#            $this->_form->addTextField('color_4','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_4','');
-            $this->_form->addTextField('color_5','',getMessage('COMMON_COLOR_5'),'','',10);
+            $this->_form->addTextField('color_5','',$this->_translator->getMessage('COMMON_COLOR_5'),'','',10);
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_9','',getMessage('COMMON_COLOR_9'),'','',10);
-            $this->_form->addTextField('color_8','',getMessage('COMMON_COLOR_8'),'','',10);
-            $this->_form->addTextField('color_6','',getMessage('COMMON_COLOR_6'),'','',10);
-#            $this->_form->addTextField('color_7','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_9','',$this->_translator->getMessage('COMMON_COLOR_9'),'','',10);
+            $this->_form->addTextField('color_8','',$this->_translator->getMessage('COMMON_COLOR_8'),'','',10);
+            $this->_form->addTextField('color_6','',$this->_translator->getMessage('COMMON_COLOR_6'),'','',10);
+#            $this->_form->addTextField('color_7','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_7','');
             $this->_form->addEmptyLine();
 
-            $this->_form->addTextField('color_10','',getMessage('COMMON_COLOR_10'),'','',10);
-            $this->_form->addTextField('color_11','',getMessage('COMMON_COLOR_11'),'','',10);
-#            $this->_form->addTextField('color_12','',getMessage('COMMON_COLOR_4'),'','',10);
+            $this->_form->addTextField('color_10','',$this->_translator->getMessage('COMMON_COLOR_10'),'','',10);
+            $this->_form->addTextField('color_11','',$this->_translator->getMessage('COMMON_COLOR_11'),'','',10);
+#            $this->_form->addTextField('color_12','',$this->_translator->getMessage('COMMON_COLOR_4'),'','',10);
             $this->_form->addHidden('color_12','');
             $this->_form->addEmptyLine();
-            $this->_form->addTextField('color_13','',getMessage('COMMON_COLOR_13'),'','',10);
-            $this->_form->addTextField('color_14','',getMessage('COMMON_COLOR_14'),'','',10);
-            $this->_form->addTextField('color_15','',getMessage('COMMON_COLOR_15'),'','',10);
-            $this->_form->addTextField('color_16','',getMessage('COMMON_COLOR_16'),'','',10);
+            $this->_form->addTextField('color_13','',$this->_translator->getMessage('COMMON_COLOR_13'),'','',10);
+            $this->_form->addTextField('color_14','',$this->_translator->getMessage('COMMON_COLOR_14'),'','',10);
+            $this->_form->addTextField('color_15','',$this->_translator->getMessage('COMMON_COLOR_15'),'','',10);
+            $this->_form->addTextField('color_16','',$this->_translator->getMessage('COMMON_COLOR_16'),'','',10);
          }
 
       }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('COMMON_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_SAVE_BUTTON'),'');
 
    }
 

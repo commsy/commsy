@@ -56,7 +56,7 @@ class cs_configuration_autoaccounts_form extends cs_rubric_form {
    function _initForm () {
       $this->_headline = $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_FORM_HEADLINE');
       $this->setHeadline($this->_headline);
-      $this->seperators = array(array('text' => $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
+      $this->seperators = array(array('text' => $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT'), 'value' => $this->_translator->getMessage('CONFIGURATION_AUTOACCOUNTS_SEPERATOR_AUTO_SELECT')), array('text' => ';', 'value' => ';'), array('text' => ',', 'value' => ','));
       $this->auth_source = array();
       $portal = $this->_environment->getCurrentPortalItem();
       $auth_source_list = $portal->getAuthSourceList();

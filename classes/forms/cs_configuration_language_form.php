@@ -77,10 +77,9 @@ class cs_configuration_language_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _createForm () {
-
       $this->_form->addCheckboxGroup('languages',$this->_language_array,'',$this->_translator->getMessage('COMMON_LANGUAGE'),'',true,'','','','','','','',true);
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

@@ -81,14 +81,14 @@ class cs_configuration_move_form extends cs_rubric_form {
      $this->_form->addHidden('type','');
      $this->_form->addHidden('iid','');
      $this->_form->addHidden('name_hidden','');
-     $this->_form->addText('name_title',getMessage('COMMON_ROOM'),'');
-     $this->_form->addRadioGroup('portal_id',getMessage('COMMON_PORTAL'),getMessage('CONFIGURATION_MOVE_PORTAL_DESC'),$this->_portal_array,'',true,false);
+     $this->_form->addText('name_title',$this->_translator->getMessage('COMMON_ROOM'),'');
+     $this->_form->addRadioGroup('portal_id',$this->_translator->getMessage('COMMON_PORTAL'),$this->_translator->getMessage('CONFIGURATION_MOVE_PORTAL_DESC'),$this->_portal_array,'',true,false);
      if ($this->_with_linked_checkbox) {
-       $this->_form->addCheckbox('with_linked_rooms',1,'',getMessage('CONFIGURATION_MOVE_LINKED_ROOM_TITLE'),getMessage('CONFIGURATION_MOVE_LINKED_ROOM_VALUE'),'');
+       $this->_form->addCheckbox('with_linked_rooms',1,'',$this->_translator->getMessage('CONFIGURATION_MOVE_LINKED_ROOM_TITLE'),$this->_translator->getMessage('CONFIGURATION_MOVE_LINKED_ROOM_VALUE'),'');
      }
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PORTAL_MOVE_ROOM_REGISTER_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PORTAL_MOVE_ROOM_REGISTER_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'));
    }
 
    /** loads the selected and given values to the form

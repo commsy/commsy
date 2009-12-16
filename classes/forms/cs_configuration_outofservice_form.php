@@ -93,10 +93,10 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
       }
 
       $show_array = array();
-      $temp_array['text']  = getMessage('COMMON_YES');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_YES');
       $temp_array['value'] = 1;
       $show_array[] = $temp_array;
-      $temp_array['text']  = getMessage('COMMON_NO');
+      $temp_array['text']  = $this->_translator->getMessage('COMMON_NO');
       $temp_array['value'] = -1;
       $show_array[] = $temp_array;
       $this->_show_array = $show_array;
@@ -117,7 +117,7 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
       $this->_form->addHidden('with_html_textarea',$this->_with_html_textarea);
       $this->_form->addHidden('with_html_textarea_status',$this->_with_html_textarea_status);
 
-      $this->_form->addRadioGroup('oos_show',getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
+      $this->_form->addRadioGroup('oos_show',$this->_translator->getMessage('SERVER_CONFIGURATION_NEWS_SHOW'),'',$this->_show_array,'',true,true);
 
       // description
       $languageArray = array();
@@ -127,13 +127,13 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
       foreach ($tmpArray as $item){
          switch ( mb_strtoupper($item, 'UTF-8') ){
             case 'DE':
-               $languageArray[$zaehler]['text'] = getMessage('DE');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('DE');
                break;
             case 'EN':
-               $languageArray[$zaehler]['text'] = getMessage('EN');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('EN');
                break;
             case 'RU':
-               $languageArray[$zaehler]['text'] = getMessage('RU');
+               $languageArray[$zaehler]['text'] = $this->_translator->getMessage('RU');
                break;
             default:
                break;
@@ -145,13 +145,13 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
       $this->_form->addSelect( 'oos_text',
                                $languageArray,
                                '',
-                               getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
+                               $this->_translator->getMessage('CONFIGURATION_CHOOSE_LANGUAGE'),
                                '',
                                '',
                                '',
                                '',
                                true,
-                               getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
+                               $this->_translator->getMessage('COMMON_LANGUAGE_CHOOSE_BUTTON'),
                                'option','','','13',true
                              );
 
@@ -190,8 +190,8 @@ class cs_configuration_outofservice_form extends cs_rubric_form {
 
       // buttons
       $this->_form->addButtonBar( 'option',
-                                  getMessage('PREFERENCES_SAVE_BUTTON'),
-                                  getMessage('COMMON_CANCEL_BUTTON')
+                                  $this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),
+                                  $this->_translator->getMessage('COMMON_CANCEL_BUTTON')
                                  );
    } // End of function _createForm (ca. line 194)
 

@@ -102,12 +102,12 @@ class cs_password_change_form extends cs_rubric_form {
          $current_user = $this->_environment->getCurrentUserItem();
          $authentication = $this->_environment->getAuthenticationObject();
          if ( !$authentication->isAccountGranted($current_user->getUserID(),$this->_form_post['password_old'],$current_user->getAuthSource()) ) {
-            $this->_error_array[] = getMessage('USER_OLD_PASSWORD_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_OLD_PASSWORD_ERROR');
             $this->_form->setFailure('password_old');
          }
       }
       if ($this->_form_post['password'] != $this->_form_post['password2']) {
-         $this->_error_array[] = getMessage('USER_PASSWORD_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_PASSWORD_ERROR');
          $this->_form->setFailure('password');
          $this->_form->setFailure('password2');
       }

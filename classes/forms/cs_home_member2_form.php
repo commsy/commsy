@@ -63,18 +63,18 @@ class cs_home_member2_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-      $this->_form->addHeadline('title',getMessage('ACCOUNT_FORM_TITLE2'));
-      $this->_form->addText('desc',getMessage('ACCOUNT_FORM_TITLE2_DESC'),'');
+      $this->_form->addHeadline('title',$this->_translator->getMessage('ACCOUNT_FORM_TITLE2'));
+      $this->_form->addText('desc',$this->_translator->getMessage('ACCOUNT_FORM_TITLE2_DESC'),'');
       $this->_form->addHidden('user_id',$this->_user_id);
       $this->_form->addHidden('auth_source',$this->_auth_source);
-      $this->_form->addTextField('firstname','',getMessage('USER_FIRSTNAME'),'','',21,true,'','','','left','',13);
-      $this->_form->addTextField('lastname','',getMessage('USER_LASTNAME'),'','',21,true,'','','','left','',13);
-      $this->_form->addTextField('email','',getMessage('USER_EMAIL'),'','',21,true,'','','','left','',13);
-      $this->_form->addTextField('email_confirmation','',getMessage('USER_EMAIL_CONFIRMATION'),'','',21,true,'','','','left','',13);
+      $this->_form->addTextField('firstname','',$this->_translator->getMessage('USER_FIRSTNAME'),'','',21,true,'','','','left','',13);
+      $this->_form->addTextField('lastname','',$this->_translator->getMessage('USER_LASTNAME'),'','',21,true,'','','','left','',13);
+      $this->_form->addTextField('email','',$this->_translator->getMessage('USER_EMAIL'),'','',21,true,'','','','left','',13);
+      $this->_form->addTextField('email_confirmation','',$this->_translator->getMessage('USER_EMAIL_CONFIRMATION'),'','',21,true,'','','','left','',13);
       $this->_form->addHidden('language','');
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('ACCOUNT_GET_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.5,6.5);
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('ACCOUNT_GET_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),'','','','',false,6.5,6.5);
    }
 
 
@@ -95,13 +95,13 @@ class cs_home_member2_form extends cs_rubric_form {
    function _checkValues () {
       // check email adresses for equality
       if ($this->_form_post['email'] != $this->_form_post['email_confirmation']) {
-         $this->_error_array[] = getMessage('USER_EMAIL_ERROR');
+         $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_ERROR');
          $this->_form->setFailure('email','');
          $this->_form->setFailure('email_confirmation','');
       } else {
          //check emails for validity
          if (isEmailValid($this->_form_post['email']) == false) {
-            $this->_error_array[] = getMessage('USER_EMAIL_VALID_ERROR');
+            $this->_error_array[] = $this->_translator->getMessage('USER_EMAIL_VALID_ERROR');
             $this->_form->setFailure('email','');
             $this->_form->setFailure('email_confirmation','');
          }

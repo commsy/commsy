@@ -100,13 +100,13 @@ class cs_tag_form extends cs_rubric_form {
          $this->_second_sort_tree = $this->_values_tree;
       }
       $sort_actions = array();
-      $temp_array['text']  = getMessage('TAG_ACTIONS_UNDER');
+      $temp_array['text']  = $this->_translator->getMessage('TAG_ACTIONS_UNDER');
       $temp_array['value'] = 3;
       $sort_actions[] = $temp_array;
-      $temp_array['text']  = getMessage('TAG_ACTIONS_BEFORE');
+      $temp_array['text']  = $this->_translator->getMessage('TAG_ACTIONS_BEFORE');
       $temp_array['value'] = 1;
       $sort_actions[] = $temp_array;
-      $temp_array['text']  = getMessage('TAG_ACTIONS_AFTER');
+      $temp_array['text']  = $this->_translator->getMessage('TAG_ACTIONS_AFTER');
       $temp_array['value'] = 2;
       $sort_actions[] = $temp_array;
       $this->_sort_actions = $sort_actions;
@@ -161,7 +161,7 @@ class cs_tag_form extends cs_rubric_form {
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sort2',$this->_second_sort_tree,'','','', 1, false,false,false,'','','','',11);
       $this->_form->combine('horizontal');
-      $this->_form->addButton('option',getMessage('TAG_SORT_BUTTON'),'','',80);
+      $this->_form->addButton('option',$this->_translator->getMessage('TAG_SORT_BUTTON'),'','',80);
       $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON')),'','',3);
       $this->_form->addSelect('sel1',$this->_first_sort_tree,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');

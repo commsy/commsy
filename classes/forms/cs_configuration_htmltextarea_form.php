@@ -50,11 +50,11 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->_headline = getMessage('CONFIGURATION_HTMLTEXTAREA_CHANGE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_HTMLTEXTAREA_CHANGE');
       if(($this->_environment->getCurrentBrowser() == 'MSIE') && (mb_substr($this->_environment->getCurrentBrowserVersion(),0,1) == '6')){
-         $image = '<img src="images/commsyicons_msie6/32x32/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons_msie6/32x32/config/htmltextarea.gif" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       } else {
-         $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
+         $image = '<img src="images/commsyicons/32x32/config/htmltextarea.png" style="vertical-align:bottom;" alt="'.$this->_translator->getMessage('COMMON_CONFIGURATION_HTMLTEXTAREA_FORM_TITLE').'"/>';
       }
       if ( !empty($image) ) {
          $this->_headline = $image.' '.$this->_headline;
@@ -71,19 +71,19 @@ class cs_configuration_htmltextarea_form extends cs_rubric_form {
    function _createForm () {
 
      $radio_values = array();
-      $radio_values[0]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_0').
+      $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_0').
               '<img src="images/without_html_text_area.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[0]['value'] = '3';
-     $radio_values[1]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_2').
+     $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_2').
              '<img src="images/html_text_area_min.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>'.BRLF.BRLF;
      $radio_values[1]['value'] = '2';
-     $radio_values[2]['text'] = getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_1').
+     $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_HTMLTEXTAREA_DESC_1').
              '<img src="images/html_text_area.gif" width="290px;" style=" border:1px solid black; vertical-align: middle;"/>';
      $radio_values[2]['value'] = '1';
 
-     $this->_form->addRadioGroup('html_status',getMessage('CONFIGURATION_HTMLTEXTAREA'),'',$radio_values,'',true,false);
+     $this->_form->addRadioGroup('html_status',$this->_translator->getMessage('CONFIGURATION_HTMLTEXTAREA'),'',$radio_values,'',true,false);
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

@@ -52,7 +52,7 @@ class cs_user_close_form extends cs_rubric_form {
     * @author CommSy Development Group
     */
    function _initForm () {
-      $this->setHeadline(getMessage('USER_CLOSE_FORM'));
+      $this->setHeadline($this->_translator->getMessage('USER_CLOSE_FORM'));
    }
 
    /** create the form, INTERNAL
@@ -65,11 +65,11 @@ class cs_user_close_form extends cs_rubric_form {
       // user
       $this->_form->addHidden('iid','');
       if ($this->_environment->inProjectRoom()){
-         $this->_form->addText('text','<span style="color:red;">'.getMessage('RUBRIC_WARN_CHANGER').'</span>',getMessage('USER_CLOSE_FORM_DESCRIPTION'),'');
+         $this->_form->addText('text','<span style="color:red;">'.$this->_translator->getMessage('RUBRIC_WARN_CHANGER').'</span>',$this->_translator->getMessage('USER_CLOSE_FORM_DESCRIPTION'),'');
       }else{
-         $this->_form->addText('text','<span style="color:red;">'.getMessage('RUBRIC_WARN_CHANGER').'</span>',getMessage('USER_CLOSE_FORM_DESCRIPTION2'),'');
+         $this->_form->addText('text','<span style="color:red;">'.$this->_translator->getMessage('RUBRIC_WARN_CHANGER').'</span>',$this->_translator->getMessage('USER_CLOSE_FORM_DESCRIPTION2'),'');
       }
-      $this->_form->addButtonBar('option',getMessage('COMMON_USER_REJECT_BUTTON'),getMessage('COMMON_CANCEL_BUTTON'),getMessage('COMMON_USER_AND_ENTRIES_DELETE_BUTTON'));
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('COMMON_USER_REJECT_BUTTON'),$this->_translator->getMessage('COMMON_CANCEL_BUTTON'),$this->_translator->getMessage('COMMON_USER_AND_ENTRIES_DELETE_BUTTON'));
    }
 
    /** loads the selected and given values to the form

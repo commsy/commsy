@@ -63,7 +63,7 @@ class cs_buzzwords_form extends cs_rubric_form {
     */
    function _initForm () {
       // headline
-      $this->_headline = getMessage('BUZZWORDS_EDIT_HEADER');
+      $this->_headline = $this->_translator->getMessage('BUZZWORDS_EDIT_HEADER');
       $this->setHeadline($this->_headline);
 
       // Get available buzzwords
@@ -106,25 +106,25 @@ class cs_buzzwords_form extends cs_rubric_form {
       $this->_form->addSubHeadline('headline1',cs_ucfirst($this->_translator->getMessage('COMMON_ADD_BUTTON')),'','',3);
       $this->_form->addTextField('new_buzzword','','','','',46,'');
       $this->_form->combine('horizontal');
-      $this->_form->addButton('option',getMessage('BUZZWORDS_NEW_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_NEW_BUTTON'))*7));
+      $this->_form->addButton('option',$this->_translator->getMessage('BUZZWORDS_NEW_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_NEW_BUTTON'))*7));
 
       $this->_form->addSubHeadline('headline3',cs_ucfirst($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON')),'','',3);
       $this->_form->addSelect('sel1',$this->_buzzword_array,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
       $this->_form->addSelect('sel2',$this->_buzzword_array,'','','', 1, false,false,false,'','','','',13.2);
       $this->_form->combine('horizontal');
-      $this->_form->addButton('option',getMessage('BUZZWORDS_COMBINE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON'))*9));
+      $this->_form->addButton('option',$this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_COMBINE_BUTTON'))*9));
       $this->_form->addEmptyline();
       $this->_form->addSubHeadline('headline2',cs_ucfirst($this->_translator->getMessage('COMMON_EDIT')),'','',3);
       foreach ($this->_buzzword_array as $buzzword){
          $i++;
          $this->_form->addTextField('buzzword'.'#'.$buzzword['value'],$buzzword['text'],$i.'.','','',32);
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('BUZZWORDS_CHANGE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'))*9));
+         $this->_form->addButton('option'.'#'.$buzzword['value'],$this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('BUZZWORDS_CHANGE_BUTTON'))*9));
          $this->_form->combine('horizontal');
-         $this->_form->addButton('right_box_option'.'#'.$buzzword['value'],getMessage('COMMON_ITEM_NEW_ATTACH'),'','',(mb_strlen($this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'))*7));
+         $this->_form->addButton('right_box_option'.'#'.$buzzword['value'],$this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'),'','',(mb_strlen($this->_translator->getMessage('COMMON_ITEM_NEW_ATTACH'))*7));
          $this->_form->combine('horizontal');
-         $this->_form->addButton('option'.'#'.$buzzword['value'],getMessage('COMMON_DELETE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('COMMON_DELETE_BUTTON'))*9));
+         $this->_form->addButton('option'.'#'.$buzzword['value'],$this->_translator->getMessage('COMMON_DELETE_BUTTON'),'','',(mb_strlen($this->_translator->getMessage('COMMON_DELETE_BUTTON'))*9));
       }
 
       $session = $this->_environment->getSession();

@@ -42,7 +42,7 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $this->_headline = getMessage('CONFIGURATION_PORTAL_HOME');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_PORTAL_HOME');
       $this->setHeadline($this->_headline);
    }
 
@@ -54,31 +54,31 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
       // form fields
 #	  $this->_form->addHidden('iid','');
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT_NOT');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_SHOW_ANNOUNCEMENT_NOT');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('announcement',getMessage('CONFIGURATION_ANNOUNCEMENT'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('announcement',$this->_translator->getMessage('CONFIGURATION_ANNOUNCEMENT'),'',$radio_values,'',true,false);
 
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_NO_SELECTION');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_NO_SELECTION');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_PRESELECT_COMMUNITY_ROOMS');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_PRESELECT_COMMUNITY_ROOMS');
          $radio_values[1]['value'] = '2';
-         $radio_values[2]['text'] = getMessage('CONFIGURATION_ONLY_COMMUNITY_ROOMS');
+         $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_ONLY_COMMUNITY_ROOMS');
          $radio_values[2]['value'] = '3';
-         $radio_values[3]['text'] = getMessage('CONFIGURATION_ONLY_PROJECT_ROOMS');
+         $radio_values[3]['text'] = $this->_translator->getMessage('CONFIGURATION_ONLY_PROJECT_ROOMS');
          $radio_values[3]['value'] = '4';
          $radio_values[4]['text'] = $this->_translator->getMessage('CONFIGURATION_PRESELECT_MY_ROOMS');
          $radio_values[4]['value'] = '5';
-         $this->_form->addRadioGroup('preselection',getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('preselection',$this->_translator->getMessage('CONFIGURATION_SELECTION'),'',$radio_values,'',true,false);
 
          $radio_values = array();
-         $radio_values[0]['text'] = getMessage('CONFIGURATION_SORT_ROOMS_ACTIVITY');
+         $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_SORT_ROOMS_ACTIVITY');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_SORT_ROOMS_TITLE');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_SORT_ROOMS_TITLE');
          $radio_values[1]['value'] = '2';
-         $this->_form->addRadioGroup('room_sort',getMessage('CONFIGURATION_SORT_ROOMS'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('room_sort',$this->_translator->getMessage('CONFIGURATION_SORT_ROOMS'),'',$radio_values,'',true,false);
 
          $radio_values = array();
          $radio_values[0]['text'] = 10;
@@ -87,12 +87,12 @@ class cs_configuration_portal_home_form extends cs_rubric_form {
          $radio_values[1]['value'] = 20;
          $radio_values[2]['text'] = 50;
          $radio_values[2]['value'] = 50;
-         $radio_values[3]['text'] = getMessage('COMMON_PAGE_ENTRIES_ALL');
+         $radio_values[3]['text'] = $this->_translator->getMessage('COMMON_PAGE_ENTRIES_ALL');
          $radio_values[3]['value'] = 'all';
-         $this->_form->addRadioGroup('number',getMessage('CONFIGURATION_NUMBER'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('number',$this->_translator->getMessage('CONFIGURATION_NUMBER'),'',$radio_values,'',true,false);
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
    /** loads the selected and given values to the form

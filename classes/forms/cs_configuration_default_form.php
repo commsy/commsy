@@ -49,7 +49,7 @@ class cs_configuration_default_form extends cs_rubric_form {
    function _initForm () {
 
       // headline
-      $this->setHeadline(getMessage('CONFIGURATION_DEFAULTS'));
+      $this->setHeadline($this->_translator->getMessage('CONFIGURATION_DEFAULTS'));
      $room = $this->_environment->getCurrentContextItem();
 
      if ( isset($this->_item) ) {
@@ -65,59 +65,58 @@ class cs_configuration_default_form extends cs_rubric_form {
     * this methods creates the form with the form definitions
     */
    function _createForm () {
-
      $room = $this->_environment->getCurrentContextItem();
      if ( $room->isProjectRoom() ){
            $radio_values = array();
-        $radio_values[0]['text'] = getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni.gif" alt="'.getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-        '</td><td style="border:0px;">'.getMessage('ROOM_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni.gif" alt="'.$this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+        '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[0]['value'] = 'uni';
-        $radio_values[1]['text'] = getMessage('COMMON_SCHOOL_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school.gif" alt="'.getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school.gif" alt="'.$this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[1]['value'] = 'school';
-        $radio_values[2]['text'] = getMessage('ROOM_TYPE_BUSINESS').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business.gif" alt="'.getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[2]['text'] = $this->_translator->getMessage('ROOM_TYPE_BUSINESS').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business.gif" alt="'.$this->_translator->getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[2]['value'] = 'project';
         $this->_form->addRadioGroup('context','','',$radio_values,'',false,true);
         unset($radio_values);
      } elseif ( $room->isGroupRoom() ) {
            $radio_values = array();
-        $radio_values[0]['text'] = getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni.gif" alt="'.getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-        '</td><td style="border:0px;">'.getMessage('ROOM_GR_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni.gif" alt="'.$this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+        '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_GR_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[0]['value'] = 'uni';
-        $radio_values[1]['text'] = getMessage('COMMON_SCHOOL_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school.gif" alt="'.getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_GR_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school.gif" alt="'.$this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_GR_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[1]['value'] = 'school';
-        $radio_values[2]['text'] = getMessage('ROOM_TYPE_BUSINESS').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business.gif" alt="'.getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_GR_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[2]['text'] = $this->_translator->getMessage('ROOM_TYPE_BUSINESS').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business.gif" alt="'.$this->_translator->getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_GR_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[2]['value'] = 'project';
         $this->_form->addRadioGroup('context','','',$radio_values,'',false,true);
         unset($radio_values);
      }else{
            $radio_values = array();
-        $radio_values[0]['text'] = getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni_cr.gif"  alt="'.getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-        '</td><td style="border:0px;">'.getMessage('ROOM_CR_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[0]['text'] = $this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_uni_cr.gif"  alt="'.$this->_translator->getMessage('COMMON_UNIVERSITY_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+        '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_CR_UNIVERSITY_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[0]['value'] = 'uni';
-        $radio_values[1]['text'] = getMessage('COMMON_SCHOOL_CONTEXT').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school_cr.gif"  alt="'.getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_CR_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[1]['text'] = $this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_school_cr.gif"  alt="'.$this->_translator->getMessage('COMMON_SCHOOL_CONTEXT').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_CR_SCHOOL_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[1]['value'] = 'school';
-        $radio_values[2]['text'] = getMessage('ROOM_TYPE_BUSINESS').BR.
-         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business_cr.gif"  alt="'.getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
-         '</td><td style="border:0px;">'.getMessage('ROOM_CR_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
+        $radio_values[2]['text'] = $this->_translator->getMessage('ROOM_TYPE_BUSINESS').BR.
+         '<table summary="Layout"><tr style="border:0px;"><td style="border:0px;"><img src="images/default_business_cr.gif"  alt="'.$this->_translator->getMessage('ROOM_TYPE_BUSINESS').'" style=" width: 290px; border:1px solid black; vertical-align: middle;"/>'.
+         '</td><td style="border:0px;">'.$this->_translator->getMessage('ROOM_CR_BUSINESS_CONTEXT_DESCRIPTION').'</td></tr></table>';
         $radio_values[2]['value'] = 'project';
         $this->_form->addRadioGroup('context','','',$radio_values,'',false,true);
         unset($radio_values);
      }
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
    }
 
 

@@ -42,7 +42,7 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
     * this methods init the data for the form, for example groups
     */
    function _initForm () {
-      $this->_headline = getMessage('CONFIGURATION_NEWSLETTER_TITLE');
+      $this->_headline = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_TITLE');
       $this->setHeadline($this->_headline);
    }
 
@@ -54,20 +54,20 @@ class cs_configuration_privateroom_newsletter_form extends cs_rubric_form {
       // form fields
 #	  $this->_form->addHidden('iid','');
          $radio_values = array();
-    $radio_values[0]['text'] = getMessage('CONFIGURATION_NEWSLETTER_NONE');
+    $radio_values[0]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NONE');
          $radio_values[0]['value'] = '1';
-         $radio_values[1]['text'] = getMessage('CONFIGURATION_NEWSLETTER_WEEKLY');
+         $radio_values[1]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_WEEKLY');
          $radio_values[1]['value'] = '2';
-         $radio_values[2]['text'] = getMessage('CONFIGURATION_NEWSLETTER_DAILY');
+         $radio_values[2]['text'] = $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_DAILY');
          $radio_values[2]['value'] = '3';
-         $this->_form->addRadioGroup('newsletter',getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
+         $this->_form->addRadioGroup('newsletter',$this->_translator->getMessage('CONFIGURATION_NEWSLETTER'),'',$radio_values,'',true,false);
 
       // 2007-04-11 Warnhinweis dass Nachricht nur in HTML-Format gesendet wirde
       // Warning for Message is sent in HTML format only
-      $this->_form->addText('newsletter_note', getMessage('CONFIGURATION_NEWSLETTER_NOTE_LABEL'), getMessage('CONFIGURATION_NEWSLETTER_NOTE'));
+      $this->_form->addText('newsletter_note', $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NOTE_LABEL'), $this->_translator->getMessage('CONFIGURATION_NEWSLETTER_NOTE'));
 
       // buttons
-      $this->_form->addButtonBar('option',getMessage('PREFERENCES_SAVE_BUTTON'),'');
+      $this->_form->addButtonBar('option',$this->_translator->getMessage('PREFERENCES_SAVE_BUTTON'),'');
 
 
 
