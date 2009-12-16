@@ -164,7 +164,7 @@ class cs_become_member_page extends cs_left_page {
                         $tempMessage = $this->_translator->getMessage('RU');
                         break;
                      default:
-                        // $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR'.' cs_become_member_page(168) ');
+                        // $tempMessage = $this->_translator->getMessage('COMMON_MESSAGETAG_ERROR'.' cs_become_member_page(168) ');
                         break;
                   }
                   $body .= $this->_translator->getMessage('USER_GET_MAIL_BODY',

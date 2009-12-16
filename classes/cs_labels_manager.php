@@ -119,6 +119,11 @@ class cs_labels_manager extends cs_manager {
   var $_commsy_context = 'uni';
 
   var $_count_links = false;
+  
+  /*
+   * Translation Object
+   */
+  private $_translator = null;
 
   /** constructor: cs_labels_manager
     * the only available constructor, initial values for internal variables
@@ -128,6 +133,7 @@ class cs_labels_manager extends cs_manager {
    function cs_labels_manager ($environment) {
       $this->cs_manager($environment);
       $this->_db_table = 'labels';
+      $this->_translator = $environment->getTranslationObject();
    }
 
   /** reset limits
@@ -1086,8 +1092,8 @@ class cs_labels_manager extends cs_manager {
             //Never delete any group "ALL"
             if (!($rs['type'] == CS_GROUP_TYPE AND $rs['name'] == 'ALL')) {
                $insert_query = 'UPDATE labels SET';
-               $insert_query .= ' name = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-               $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+               $insert_query .= ' name = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+               $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
                $insert_query .= ' modification_date = "'.$current_datetime.'",';
                $insert_query .= ' public = "1"';
                $insert_query .=' WHERE item_id = "'.$rs['item_id'].'"';

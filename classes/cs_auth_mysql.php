@@ -39,11 +39,18 @@ class cs_auth_mysql extends cs_auth_manager {
     * object - containing the auth item of an account
     */
    var $_item = NULL;
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor
      * the only available constructor, initial values for internal variables
      */
    function cs_auth_mysql () {
+      global $environment;
+      $this->_translator = $environment->getTranslationObject();
    }
 
    function setAuthSourceItem ($value) {
@@ -139,6 +146,11 @@ class cs_auth_mysql extends cs_auth_manager {
      *                 false, if authentication not exists -> new user
      */
    function exists($user_id) {
+      if($this->_translator == null) {
+         global $environment;
+         $this->_translator = $environment->getTranslationObject();
+      }
+      
       $exists = false;
       $user_id_old = $user_id;
       $item = '';
@@ -151,9 +163,9 @@ class cs_auth_mysql extends cs_auth_manager {
       if (!empty ($user_id)) {
          $exists = true;
       } else {
-         //$this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_NOT_EXIST',$user_id_old);
+         //$this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_NOT_EXIST',$user_id_old);
          //less specific error message to protect from brute force attacks
-         $this->_error_array[] = getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+         $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
       }
       return $exists;
    }
@@ -178,7 +190,7 @@ class cs_auth_mysql extends cs_auth_manager {
             if ( !empty($user_id_to_check) ) {
                $retour = false;
                if ($user_id_to_check != $user_id) {
-                  $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_EXIST', $user_id_to_check);
+                  $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_EXIST', $user_id_to_check);
                }
             }
          }

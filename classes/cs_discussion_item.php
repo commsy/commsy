@@ -354,6 +354,9 @@ class cs_discussion_item extends cs_item {
       $article_list = $this->getAllArticles(true);
       $article = $article_list->getFirst();
       $article_number = 1;
+      
+
+      
       while ( $article ) {
          $article_number++;
          $arcticle_copy = $article->cloneCopy();

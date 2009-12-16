@@ -80,7 +80,6 @@ class misc_text_converter {
    }
 
    public function cleanDataFromTextArea ( $text ) {
-
       ### hack ###
       # unmotiviertes br ausserhalb des fck texts
       # keine Ahnung wo das her kommt

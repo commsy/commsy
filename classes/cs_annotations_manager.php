@@ -57,6 +57,11 @@ class cs_annotations_manager extends cs_manager {
    * string - containing an order limit for the selectd annotation
    */
   var $_order = NULL;
+  
+  /*
+   * Translator Object
+   */
+  private $_translator = null;
 
   /** constructor: cs_annotation_manager
    * the only available constructor, initial values for internal variables
@@ -64,8 +69,9 @@ class cs_annotations_manager extends cs_manager {
     * @author CommSy Development Group
    */
   function cs_annotations_manager ($environment) {
-     $this->cs_manager($environment);
+    $this->cs_manager($environment);
     $this->_db_table = 'annotations';
+    $this->_translator = $environment->getTranslationObject();
   }
 
   /** reset limits
@@ -441,8 +447,8 @@ class cs_annotations_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE annotations SET';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);

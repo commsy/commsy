@@ -652,7 +652,7 @@ class cs_connection_soap {
                         include_once('classes/cs_mail.php');
                         $mail = new cs_mail();
                         $mail->set_to($user_item->getEmail());
-                        $mail->set_from_name(getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
+                        $mail->set_from_name($translator->getMessage('SYSTEM_MAIL_MESSAGE',$room_item->getTitle()));
                         $server_item = $this->_environment->getServerItem();
                         $default_sender_address = $server_item->getDefaultSenderAddress();
                         if (!empty($default_sender_address)) {

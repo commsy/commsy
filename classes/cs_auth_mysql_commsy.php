@@ -40,6 +40,11 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
     * object - containing the auth item of an account
     */
    var $_item = NULL;
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor
      * the only available constructor, initial values for internal variables
@@ -51,6 +56,9 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
       $this->_is_implemented_array[] = 'deleteAccount';
       $this->_is_implemented_array[] = 'changeUserData';
       $this->_is_implemented_array[] = 'changePassword';
+      
+      global $environment;
+      $this->_translator = $environment->getTranslationObject();
    }
 
    function setContextID($value) {
@@ -240,7 +248,7 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
      * @return boolean true, account is granted in MySQL
      *                 false, account is not granted in MySQL
      */
-   function checkAccount($uid, $password) {
+   function checkAccount($uid, $password) {      
       $retour = false;
       if ($this->exists($uid)) {
          $this->_get($uid);
@@ -249,9 +257,9 @@ class cs_auth_mysql_commsy extends cs_auth_mysql {
             ) {
             $retour = true;
          } else {
-            //$this->_error_array[] = getMessage('AUTH_ERROR_PASSWORD_WRONG',$uid);
+            //$this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_PASSWORD_WRONG',$uid);
             //less specific error message to protect from brute force attacks
-            $this->_error_array[] = getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+            $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
          }
       }
       return $retour;

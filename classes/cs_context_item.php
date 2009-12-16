@@ -67,9 +67,7 @@ class cs_context_item extends cs_item {
 
    var $_rubric_support = array();
 
-   var $_cache_may_enter = array();
-
-   var $_page_impression_array = array();
+   var $_cache_may_enter = array(); 
 
    /** constructor: cs_context_item
     * the only available constructor, initial values for internal variables
@@ -3128,7 +3126,8 @@ class cs_context_item extends cs_item {
 
 
    function getInformationBoxEntryID(){
-      $retour = getMessage('COMMON_INFORMATION_INDEX');
+      $translator = $this->_environment->getTranslationObject();
+      $retour = $translator->getMessage('COMMON_INFORMATION_INDEX');
       if ($this->_issetExtra('INFORMATIONBOXENTRYID')) {
          $retour = $this->_getExtra('INFORMATIONBOXENTRYID');
       }

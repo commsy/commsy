@@ -72,6 +72,11 @@ class cs_tag_manager extends cs_manager {
   var $_object_data = NULL;
 
   var $_cached_sql = array();
+  
+  /*
+   * Translation Object
+   */
+  private $_translator = null;
 
   /** constructor: cs_tag_manager
     * the only available constructor, initial values for internal variables
@@ -81,6 +86,7 @@ class cs_tag_manager extends cs_manager {
   function cs_tag_manager ($environment) {
      $this->cs_manager($environment);
      $this->_db_table = CS_TAG_TYPE;
+     $this->_translator = $environment->getTranslationObject();
   }
 
   /** reset limits
@@ -685,7 +691,7 @@ class cs_tag_manager extends cs_manager {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->_db_table.' SET';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'"';
             $insert_query .= ' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !isset($result2) or !$result2 ) {

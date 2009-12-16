@@ -46,6 +46,11 @@ class cs_todos_manager extends cs_manager {
    var $_group_limit = NULL;
    var $_topic_limit = NULL;
    var $_sort_order = NULL;
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor: cs_todo_manager
     * the only available constructor, initial values for internal variables<br />
@@ -57,6 +62,7 @@ class cs_todos_manager extends cs_manager {
    function cs_todos_manager ($environment) {
       $this->cs_manager($environment);
       $this->_db_table = 'todos';
+      $this->_translator = $environment->getTranslationObject();
    }
 
    /** reset limits
@@ -569,8 +575,8 @@ class cs_todos_manager extends cs_manager {
       if (!empty($result)) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE todos SET';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';

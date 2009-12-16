@@ -81,6 +81,11 @@ class cs_step_manager extends cs_manager {
 
    var $_all_step_list = NULL;
    var $_cached_todo_item_ids = array();
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor: cs_step_manager
     * the only available constructor, initial values for internal variables<br />
@@ -92,6 +97,7 @@ class cs_step_manager extends cs_manager {
    function cs_step_manager ($environment) {
       $this->cs_manager($environment);
       $this->_db_table = CS_STEP_TYPE;
+      $this->_translator = $environment->getTranslationObject();
    }
 
     /** reset limits
@@ -535,9 +541,9 @@ class cs_step_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE step SET';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';
             $result2 = $this->_db_connector->performQuery($insert_query);
             if ( !$result2 ) {

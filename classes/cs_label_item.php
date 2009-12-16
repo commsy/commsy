@@ -93,8 +93,9 @@ class cs_label_item extends cs_item {
     * @author CommSy Development Group
     */
    function _setItemData($data_array) {
+      $translator = $this->_environment->getTranslationObject();
       $this->_data = $data_array;
-      if (!empty($this->_data['name']) and $this->_data['name'] == getMessage('ALL_MEMBERS')) {
+      if (!empty($this->_data['name']) and $this->_data['name'] == $translator->getMessage('ALL_MEMBERS')) {
          $this->_is_system_label = true;
       }
       return $this->isValid();

@@ -71,6 +71,11 @@ class cs_announcement_manager extends cs_manager {
   var $_with_material = false;
 
   var$_group_limit=NULL;
+  
+  /*
+   * Translator Object
+   */
+  private $_translator = null;
 
   /** constructor: cs_announcement_manager
     * the only available constructor, initial values for internal variables
@@ -78,6 +83,7 @@ class cs_announcement_manager extends cs_manager {
   function cs_announcement_manager ($environment) {
      $this->cs_manager($environment);
      $this->_db_table = CS_ANNOUNCEMENT_TYPE;
+     $this->_translator = $environment->getTranslationObject();
   }
 
   /** reset limits
@@ -574,8 +580,8 @@ class cs_announcement_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE '.$this->_db_table.' SET';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';
             $insert_query .=' WHERE item_id = "'.encode(AS_DB,$rs['item_id']).'"';

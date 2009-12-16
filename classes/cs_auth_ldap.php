@@ -89,6 +89,11 @@ class cs_auth_ldap extends cs_auth_manager {
 
    private $_user_dn   = NULL;
    private $_user_data = NULL;
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor: cs_auth_ldap
     * the only available constructor, initial values for internal variables
@@ -97,6 +102,8 @@ class cs_auth_ldap extends cs_auth_manager {
     * @param string baseuser information about baseuser
     */
    function cs_auth_ldap () {
+      global $environment;
+      $this->_translator = $environment->getTranslationObject();
    }
 
    function setAuthSourceItem ($value) {
@@ -207,16 +214,16 @@ class cs_auth_ldap extends cs_auth_manager {
                      $granted = true;
                      $this->_user_dn = $access;
                   } else {
-                     $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+                     $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                   }
                } else {
-                  $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+                  $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
                }
             } else {
-               $this->_error_array[] = getMessage('AUTH_ERROR_LDAP_ROOTUSER');
+               $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_LDAP_ROOTUSER');
             }
          } else {
-            $this->_error_array[] = getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
+            $this->_error_array[] = $this->_translator->getMessage('AUTH_ERROR_ACCOUNT_OR_PASSWORD',$uid);
          }
          @ldap_unbind($connect);
          @ldap_close($connect);

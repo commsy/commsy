@@ -36,6 +36,10 @@ class cs_auth_cas extends cs_auth_manager {
     private $_path = '';
     private $_dberror = '';
 
+    /*
+     * Translation Object
+     */
+    private $_translator = null;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -44,6 +48,8 @@ class cs_auth_cas extends cs_auth_manager {
     * @param string baseuser information about baseuser
     */
     function cs_auth_cas () {
+       global $environment;
+       $this->_translator = $environment->getTranslationObject();
     }
 
    /** set auth source item
@@ -91,7 +97,7 @@ class cs_auth_cas extends cs_auth_manager {
             }
          }
          if ( !isset($retour) or empty($retour) ) {
-            $this->_error_array[] = getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
+            $this->_error_array[] = $this->_translator->getMessage('USER_DOES_NOT_EXIST_OR_PASSWORD_WRONG');
          }
       } else {
          include_once('functions/error_functions.php');

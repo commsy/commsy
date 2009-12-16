@@ -136,7 +136,7 @@ class cs_account_forget_page extends cs_left_page {
             $body .= LF.LF;
             $body .= $translator->getEmailMessage('MAIL_BODY_HELLO',$user_fullname);
             $body .= LF.LF;
-            $body .= getMessage('USER_ACCOUNT_FORGET_MAIL_BODY',$context_item->getTitle(),$account_text);
+            $body .= $this->_translator->getMessage('USER_ACCOUNT_FORGET_MAIL_BODY',$context_item->getTitle(),$account_text);
             $body .= LF.LF;
             if ( empty($contact_moderator) ) {
                $body .= $translator->getMessage('SYSTEM_MAIL_REPLY_INFO').LF;

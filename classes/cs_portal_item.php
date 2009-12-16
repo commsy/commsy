@@ -1212,6 +1212,7 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function getUsageInfoHeaderForRubric($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
        if ( empty($retour) ) {
@@ -1225,7 +1226,7 @@ class cs_portal_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -1246,6 +1247,7 @@ class cs_portal_item extends cs_guide_item {
    }
 
    function getUsageInfoHeaderForRubricForm($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
        if ( empty($retour) ) {
@@ -1259,7 +1261,7 @@ class cs_portal_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -1309,10 +1311,11 @@ class cs_portal_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
+         $translator = $this->_environment->getTranslationObject();
          $mod = $this->_environment->getCurrentModule();
          $fct = $this->_environment->getCurrentFunction();
          if ($mod == 'configuration' and $fct == 'time'){ // no link in message tag
-            $retour = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM');
+            $retour = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_TIME_FORM');
             $temp = 'CONFIGURATION_TIME';
          } else {
             $temp = mb_strtoupper($rubric, 'UTF-8').'_'.mb_strtoupper($funct, 'UTF-8');
@@ -1321,97 +1324,97 @@ class cs_portal_item extends cs_guide_item {
             switch( $temp )
             {
                case 'ACCOUNT_ACTION':        // getestet: eine Kennung bearbeiten
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_ACTION_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_ACTION_FORM');
                   break;
                case 'ACCOUNT_EDIT':          // getestet: eine Kennung bearbeiten
-                  $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
                   break;
                case 'ACCOUNT_STATUS':        // getestet: Benutzer Status ändern (als Root/Moderator)
-                  $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
                   break;
                case 'COMMUNITY_EDIT':        // getestet: Gemeinschaftsraum neu eröffnen
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_COMMUNITY_EDIT_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_COMMUNITY_EDIT_FORM');
                   break;
                case 'CONFIGURATION_AGB':     // getestet: Portal / Einstellungen / Nutzungsvereinbarungen und Textareas mit Extra-Tags
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AGB_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AGB_FORM');
                   break;
                case 'CONFIGURATION_AUTHENTICATION':  // getestet
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTHENTICATION_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTHENTICATION_FORM');
                   break;
                case 'CONFIGURATION_COLOR':   // getestet
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COLOR_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COLOR_FORM');
                   break;
                case 'CONFIGURATION_COMMON':  // getestet: als root irgendeinen Raum anklicken, dann oben rechts "Raum bearbeiten"
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COMMON_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_COMMON_FORM');
                   break;
                case 'CONFIGURATION_DEFAULTS': // getestet
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_DEFAULTS_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_DEFAULTS_FORM');
                   break;
                case 'CONFIGURATION_EXPORT':  // getestet: als root irgendeinen Raum anklicken, dann oben rechts
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_EXPORT_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_EXPORT_FORM');
                   break;
                case 'CONFIGURATION_MAIL':    // getestet und Textareas mit Extra-Tags
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MAIL_FORM');
                   break;
                case 'CONFIGURATION_MOVE':    // getestet und Textareas mit Extra-Tags
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MOVE_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_MOVE_FORM');
                   break;
                case 'CONFIGURATION_NEWS':    // getestet Portal-Ankündigungen bearbeiten und Textareas mit Extra-Tags
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_NEWS_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_NEWS_FORM');
                   break;
                case 'CONFIGURATION_PORTALHOME': // getestet
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALHOME_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PORTALHOME_FORM');
                   break;
                case 'CONFIGURATION_PREFERENCES': // getestet
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PREFERENCES_FORM');
                   break;
                case 'CONFIGURATION_ROOM_OPENING': // getestet Voreinst. f. Räume, z. B. Schule, Uni, Business
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_ROOM_OPENING_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_ROOM_OPENING_FORM');
                   break;
                case 'CONFIGURATION_SERVICE': // getestet Handhabungssupport
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_SERVICE_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_SERVICE_FORM');
                   break;
                case 'CONFIGURATION_WIKI':    // getestet Einstellungen Raum-Wiki
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_WIKI_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_WIKI_FORM');
                   break;
                case 'CONFIGURATION_AUTOACCOUNTS':    // getestet Einstellungen Raum-Wiki
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_AUTOACCOUNTS_FORM');
                   break;
                case 'PROJECT_EDIT':          // getestet: Projektraum neu eröffnen
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_PROJECT_EDIT_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_PROJECT_EDIT_FORM');
                   break;
                case 'MAIL_TO_MODERATOR':      //
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_MAIL_TO_MODERATOR_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_MAIL_TO_MODERATOR_FORM');
                   break;
                case 'MAIL_PROCESS':      //
-                  $tempMessage = getMessage('USAGE_INFO_FORM_COMING_SOON');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
                   break;
                case 'LANGUAGE_UNUSED':      //
-                  $tempMessage      = getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_LANGUAGE_UNUSED_FORM');
                   break;
                case 'CONFIGURATION_PLUGIN':    // getestet Einstellungen Raum-Wiki
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGIN_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGIN_FORM');
                   break;
                case 'ACCOUNT_PASSWORD':    // getestet Einstellungen Raum-Wiki
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_PASSWORD_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_ACCOUNT_PASSWORD_FORM');
                   break;
                case 'CONFIGURATION_HTMLTEXTAREA':    // getestet Einstellungen Raum-Wiki
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
                   break;
                case 'CONFIGURATION_PLUGINS':    // getestet Einstellungen Plugins
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGINS_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_PLUGINS_FORM');
                   break;
                case 'CONFIGURATION_LANGUAGE':
-                  $tempMessage = getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM');
+                  $tempMessage = $translator->getMessage('USAGE_INFO_TEXT_PORTAL_FOR_CONFIGURATION_LANGUAGE_FORM');
                   break;
                default:
-                  $tempMessage = getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
+                  $tempMessage = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_portal_item(".__LINE__.")";
                   break;
             }
             $retour = $tempMessage;
          }
          if ($retour == 'USAGE_INFO_TEXT_PORTAL_FOR_'.$temp.'_FORM' or $retour =='tbd'){
-            $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
+            $retour = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
       }
       return $retour;

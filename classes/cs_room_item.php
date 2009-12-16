@@ -796,6 +796,7 @@ class cs_room_item extends cs_context_item {
    }
 
    function getUsageInfoHeaderForRubric($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
          if ( empty($retour) ) {
@@ -809,7 +810,7 @@ class cs_room_item extends cs_context_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -830,6 +831,7 @@ class cs_room_item extends cs_context_item {
    }
 
    function getUsageInfoHeaderForRubricForm($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
        if ( empty($retour) ) {
@@ -843,7 +845,7 @@ class cs_room_item extends cs_context_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }

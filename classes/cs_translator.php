@@ -1153,7 +1153,7 @@ class cs_translator {
 
       $Datetime = mb_eregi_replace(' ',', ',$Datetime);
       if ($language != 'en' and $oclock) {
-         $Datetime = $Datetime.' '.getMessage('DATES_OCLOCK');
+         $Datetime = $Datetime.' '.$this->getMessage('DATES_OCLOCK');
       }
 
       return $Datetime;

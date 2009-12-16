@@ -90,8 +90,9 @@ class cs_authentication {
    var $_error_array = array();
 
    /**
-   * boolean $_ask_for_root = false;
+   * Translator
    */
+   private $_translator = null;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -100,6 +101,7 @@ class cs_authentication {
     */
    function cs_authentication($environment) {
      $this->_environment = $environment;
+     $this->_translator = $this->_environment->getTranslationObject();
      $this->reset();
    }
 
@@ -946,7 +948,7 @@ class cs_authentication {
                if ( !$context->isClosed() ) {
                   $params = array();
                   $params['cs_modus'] = 'become_member';
-                  $link_to_register = ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index',$params,getMessage('COMMON_REGISTER_HERE'));
+                  $link_to_register = ahref_curl($this->_environment->getCurrentContextID(), 'home', 'index',$params,$this->_translator->getMessage('COMMON_REGISTER_HERE'));
                   unset($params);
                   if ( $context->isProjectRoom() ) {
                      $this->_error_array[] = $translator->getMessage('ROOMS_ACCESS_NOT_GRANTED',$context->getTitle(),$link_to_register);
@@ -956,7 +958,7 @@ class cs_authentication {
                      $this->_error_array[] = $translator->getMessage('GROUPROOM_ACCESS_NOT_GRANTED',$context->getTitle());
                   }
                } else {
-                  $this->_error_array[] = $translator->getMessage('ROOM_IS_CLOSED',$context->getTitle()).' '.getMessage('ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP');
+                  $this->_error_array[] = $translator->getMessage('ROOM_IS_CLOSED',$context->getTitle()).' '.$this->_translator->getMessage('ROOM_IS_CLOSED_APPLY_FOR_MEMBERSHIP');
                }
             }
          } elseif ($this->_environment->getCurrentModule() == 'homepage' and $this->_environment->getCurrentFunction() == 'detail') {

@@ -217,7 +217,7 @@ class cs_connection_soap_ims {
                         $mail->set_to($user_item->getEmail());
                         $mail->set_reply_to_name($contact->getFullname());
                         $mail->set_reply_to_email($contact->getEmail());
-                        $mail->set_subject(getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
+                        $mail->set_subject($translator->getMessage('MAIL_SUBJECT_USER_ACCOUNT_FREE',$portal_item->getTitle()));
                         $link = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'];
                         global $c_single_entry_point;
                         $link = str_replace ( 'soap.php', $c_single_entry_point.'?cid='.$portal_item->getItemId(), $link);

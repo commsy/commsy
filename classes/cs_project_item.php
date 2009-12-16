@@ -1103,7 +1103,7 @@ class cs_project_item extends cs_room_item {
       $grouproom_manager = $this->_environment->getGroupRoomManager();
       $grouproom_manager->setContextLimit($this->getContextID());
       $grouproom_manager->setProjectRoomLimit($this->getItemID());
-      $grouproom_manager->select();
+      $grouproom_manager->select(); 
       return $grouproom_manager->get();
    }
 }

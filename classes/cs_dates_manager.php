@@ -65,6 +65,11 @@ class cs_dates_manager extends cs_manager {
    var $_year_limit = NULL;
    var $_date_mode_limit = 1;
    private $_not_older_than_limit = NULL;
+   
+   /*
+    * Translation Object
+    */
+   private $_translator = null;
 
    /** constructor
     * the only available constructor, initial values for internal variables
@@ -74,6 +79,7 @@ class cs_dates_manager extends cs_manager {
    function cs_dates_manager ($environment) {
       $this->cs_manager($environment);
       $this->_db_table = 'dates';
+      $this->_translator = $environment->getTranslationObject();
    }
 
     /** reset limits
@@ -743,8 +749,8 @@ class cs_dates_manager extends cs_manager {
       if ( !empty($result) ) {
          foreach ( $result as $rs ) {
             $insert_query = 'UPDATE dates SET';
-            $insert_query .= ' title = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
-            $insert_query .= ' description = "'.encode(AS_DB,getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
+            $insert_query .= ' title = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_TITLE')).'",';
+            $insert_query .= ' description = "'.encode(AS_DB,$this->_translator->getMessage('COMMON_AUTOMATIC_DELETE_DESCRIPTION')).'",';
             $insert_query .= ' place = " ",';
             $insert_query .= ' modification_date = "'.$current_datetime.'",';
             $insert_query .= ' public = "1"';

@@ -417,6 +417,7 @@ class cs_wiki_manager extends cs_manager {
                             // CommSy-Gruppen erstellen, zuordnung erfolgt über diese Gruppen.
                             // Die Notification-Listen werden erst angelegt, wenn sich Benutzer
                             // in die Gruppen eintragen.
+//                            $translator = $this->_environment->getTranslationObject();
 //                            $this->updateGroupNotificationFiles();
 //                            $tempDir = getcwd();
 //                            chdir($old_dir);
@@ -427,13 +428,13 @@ class cs_wiki_manager extends cs_manager {
 //                            $group_array = $group_list->to_array();
 //                            $group_existing = false;
 //                            foreach($group_array as $group){
-//                                if($group->getName() == getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
+//                                if($group->getName() == $translator->getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm){
 //                                    $group_existing = true;
 //                                }
 //                            }
 //                            if(!$group_existing){
 //                                $new_group = $group_manager->getNewItem();
-//                                $new_group->setName(getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
+//                                $new_group->setName($translator->getMessage('WIKI_DISCUSSION_GROUP_TITLE') . ' ' . $titleForForm);
 //                                $currentUser = $this->_environment->getCurrentUser();
 //                                $new_group->setCreatorItem($currentUser);
 //                                $new_group->save();
@@ -1388,6 +1389,8 @@ function exportItemToWiki($current_item_id,$rubric){
    global $c_pmwiki_path_url;
    global $c_commsy_domain;
    global $c_commsy_url_path;
+   
+   $translator = $this->_environment->getTranslationObject();
 
    // Verzeichnis fuer Die angehaengten Dateien im Wiki
    $dir_wiki_uploads = $c_pmwiki_absolute_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads';
@@ -1441,7 +1444,7 @@ function exportItemToWiki($current_item_id,$rubric){
        if ($rubric == CS_MATERIAL_TYPE){
           $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.html';
        }elseif($rubric == CS_DISCUSSION_TYPE){
-          $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.html';
+          $html_wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id . '.html';
        }
        $old_dir = getcwd();
        chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/uploads/Main');
@@ -1535,7 +1538,7 @@ function exportItemToWiki($current_item_id,$rubric){
              if ($rubric == CS_MATERIAL_TYPE){
                 $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
              }elseif($rubric == CS_DISCUSSION_TYPE){
-                $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
+                $html_wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
              }
              $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
              $html_wiki_file = $this->encodeUrl($html_wiki_file);
@@ -1584,7 +1587,7 @@ function exportItemToWiki($current_item_id,$rubric){
 
           if ($rubric == CS_MATERIAL_TYPE){
              $sub_item_links = implode('\\\\%0a', $sub_item_link_array);
-             $informations .= '(:cellnr:)\'\'\''.getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
+             $informations .= '(:cellnr:)\'\'\''.$translator->getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
           }elseif ($rubric == CS_DISCUSSION_TYPE){
              $sub_item_links = implode('', $sub_item_link_array);
              $informations .= '(:cellnr:)%0a(:cell:)%0a';
@@ -1619,12 +1622,12 @@ function exportItemToWiki($current_item_id,$rubric){
           $buzzword = $buzzword_list->getNext();
        }
        if (!empty ($buzzword_text)){
-          $buzzword_text = '%0a\\\\%0a'.getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
+          $buzzword_text = '%0a\\\\%0a'.$translator->getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
        }
        if ($item->getItemType() == CS_MATERIAL_TYPE){
           $wiki_file = 'Main.CommSyMaterial' . $current_item_id.'-Comments';
        }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
-          $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
+          $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
        }
        if(file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file)){
           $commentbox_text ='%0a%0a----%0a\\\\%0a'.'(:include Site.FoxCommentBox:)';
@@ -1641,8 +1644,8 @@ function exportItemToWiki($current_item_id,$rubric){
           copy($c_commsy_path_file.'/etc/pmwiki/Main.Material','wiki.d/Main.CommSyMaterial' . $current_item_id);
           $file_contents = file_get_contents('wiki.d/Main.CommSyMaterial' . $current_item_id);
        }elseif($rubric == CS_DISCUSSION_TYPE){
-          copy($c_commsy_path_file.'/etc/pmwiki/Main.'.getMessage('COMMON_DISCUSSION'),'wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id);
-          $file_contents = file_get_contents('wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id);
+          copy($c_commsy_path_file.'/etc/pmwiki/Main.'.$translator->getMessage('COMMON_DISCUSSION'),'wiki.d/Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id);
+          $file_contents = file_get_contents('wiki.d/Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id);
        }
        $file_contents_array = explode("\n", $file_contents);
        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
@@ -1650,14 +1653,14 @@ function exportItemToWiki($current_item_id,$rubric){
                if ($rubric == CS_MATERIAL_TYPE){
                    $file_contents_array[$index] = 'name=Main.CommSyMaterial' . $current_item_id;
                }elseif($rubric == CS_DISCUSSION_TYPE){
-                   $file_contents_array[$index] = 'name=Main.CommSy'.getMessage('COMMON_DISCUSSION') . $current_item_id;
+                   $file_contents_array[$index] = 'name=Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION') . $current_item_id;
                }
            }
            if(stripos($file_contents_array[$index], 'text=') !== false){
               if ($rubric == CS_MATERIAL_TYPE){
                  $title_text = '(:title CommSy-Material "' . $item->getTitle() . '":)';
               }elseif($rubric == CS_DISCUSSION_TYPE){
-                 $title_text = '(:title CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
+                 $title_text = '(:title CommSy-'.$translator->getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
               }
               $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text . '%0a%0a' . $title_text;
            }
@@ -1674,8 +1677,8 @@ function exportItemToWiki($current_item_id,$rubric){
            $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $item->getTitle() . '"';
            file_put_contents('wiki.d/Main.CommSyMaterial' . $current_item_id, $file_contents);
        }elseif($rubric == CS_DISCUSSION_TYPE){
-           $file_contents =  $file_contents . 'title=CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
-           file_put_contents('wiki.d/Main.CommSy'.getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents);
+           $file_contents =  $file_contents . 'title=CommSy-'.$translator->getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
+           file_put_contents('wiki.d/Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents);
        }
 
        chdir($old_dir);
@@ -1742,6 +1745,8 @@ function exportItemToWiki_soap($current_item_id,$rubric){
    global $c_pmwiki_path_url;
    global $c_commsy_domain;
    global $c_commsy_url_path;
+   
+   $translator = $this->_environment->getTranslationObject();
 
    $client = $this->getSoapClient();
    $client->createDir('uploads/Main', $this->_environment->getSessionID());
@@ -1786,7 +1791,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
        if ($rubric == CS_MATERIAL_TYPE){
           $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.html';
        }elseif($rubric == CS_DISCUSSION_TYPE){
-          $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.html';
+          $html_wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id . '.html';
        }
        $old_dir = getcwd();
 
@@ -1868,7 +1873,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
              if ($rubric == CS_MATERIAL_TYPE){
                 $html_wiki_file = 'Main.CommSyMaterial' . $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
              }elseif($rubric == CS_DISCUSSION_TYPE){
-                $html_wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
+                $html_wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id . '.sub_item.' . $sub_item->getItemID() . '.html';
              }
              $html_wiki_file = $this->encodeUmlaute($html_wiki_file);
              $html_wiki_file = $this->encodeUrl($html_wiki_file);
@@ -1904,7 +1909,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
 
           if ($rubric == CS_MATERIAL_TYPE){
              $sub_item_links = implode('\\\\%0a', $sub_item_link_array);
-             $informations .= '(:cellnr:)\'\'\''.getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
+             $informations .= '(:cellnr:)\'\'\''.$translator->getMessage('MATERIAL_SECTIONS').':\'\'\' %0a(:cell:)' . $sub_item_links . ' %0a';
           }elseif ($rubric == CS_DISCUSSION_TYPE){
              $sub_item_links = implode('', $sub_item_link_array);
              $informations .= '(:cellnr:)%0a(:cell:)%0a';
@@ -1939,12 +1944,12 @@ function exportItemToWiki_soap($current_item_id,$rubric){
           $buzzword = $buzzword_list->getNext();
        }
        if (!empty ($buzzword_text)){
-          $buzzword_text = '%0a\\\\%0a'.getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
+          $buzzword_text = '%0a\\\\%0a'.$translator->getMessage('COMMON_BUZZWORDS').': '.$buzzword_text;
        }
        if ($item->getItemType() == CS_MATERIAL_TYPE){
           $wiki_file = 'Main.CommSyMaterial' . $current_item_id.'-Comments';
        }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
-          $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
+          $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').$current_item_id.'-Comments';
        }
        $exists_file = $client->getPageExists($wiki_file, $this->_environment->getSessionID());
        if(!$exists_file){
@@ -1960,7 +1965,7 @@ function exportItemToWiki_soap($current_item_id,$rubric){
        if ($rubric == CS_MATERIAL_TYPE){
           $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.Material');
        }elseif($rubric == CS_DISCUSSION_TYPE){
-          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.'.getMessage('COMMON_DISCUSSION'));
+          $file_contents = file_get_contents($c_commsy_path_file.'/etc/pmwiki/Main.'.$translator->getMessage('COMMON_DISCUSSION'));
        }
        $file_contents_array = explode("\n", $file_contents);
        for ($index = 0; $index < sizeof($file_contents_array); $index++) {
@@ -1968,14 +1973,14 @@ function exportItemToWiki_soap($current_item_id,$rubric){
                if ($rubric == CS_MATERIAL_TYPE){
                    $file_contents_array[$index] = 'name=Main.CommSyMaterial' . $current_item_id;
                }elseif($rubric == CS_DISCUSSION_TYPE){
-                   $file_contents_array[$index] = 'name=Main.CommSy'.getMessage('COMMON_DISCUSSION') . $current_item_id;
+                   $file_contents_array[$index] = 'name=Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION') . $current_item_id;
                }
            }
            if(stripos($file_contents_array[$index], 'text=') !== false){
               if ($rubric == CS_MATERIAL_TYPE){
                  $title_text = '(:title CommSy-Material "' . $item->getTitle() . '":)';
               }elseif($rubric == CS_DISCUSSION_TYPE){
-                 $title_text = '(:title CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
+                 $title_text = '(:title CommSy-'.$translator->getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '":)';
               }
               $file_contents_array[$index] = 'text=' . $informations . $sub_item_descriptions . '%0a%0a----%0a\\\\%0a' . $buzzword_text.'%0a\\\\%0a'. $link. $commentbox_text . '%0a%0a' . $title_text;
            }
@@ -1992,8 +1997,8 @@ function exportItemToWiki_soap($current_item_id,$rubric){
            $file_contents =  $file_contents . "\n" . 'title=CommSy-Material "' . $item->getTitle() . '"';
            $client->createPage('Main.CommSyMaterial' . $current_item_id, $file_contents, $this->_environment->getSessionID());
        }elseif($rubric == CS_DISCUSSION_TYPE){
-           $file_contents =  $file_contents . 'title=CommSy-'.getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
-           $client->createPage('Main.CommSy'.getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents, $this->_environment->getSessionID());
+           $file_contents =  $file_contents . 'title=CommSy-'.$translator->getMessage('COMMON_DISCUSSION').' "' . $item->getTitle() . '"';
+           $client->createPage('Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').'' . $current_item_id, $file_contents, $this->_environment->getSessionID());
        }
 
        $item->setExportToWiki('1');
@@ -2058,6 +2063,8 @@ function removeItemFromWiki_soap($current_item_id,$rubric){
 function updateExportLists($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
+   
+   $translator = $this->_environment->getTranslationObject();
 
    $old_dir = getcwd();
    chdir($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d');
@@ -2075,7 +2082,7 @@ function updateExportLists($rubric){
          if($dir=opendir(getcwd())){
             while($file=readdir($dir)) {
                if (!is_dir($file) && $file != "." && $file != ".." && $file != 'Main.CommSyDiskussionenNavi' && $file != 'Main.CommSyDiskussionen'){
-                  if((stripos($file, 'Main.CommSy'.getMessage('COMMON_DISCUSSION')) !== false)
+                  if((stripos($file, 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION')) !== false)
                       and (stripos($file, '.count') === false)){
                       $exported_discussions[] = $file;
                   }
@@ -2138,6 +2145,8 @@ function updateExportLists($rubric){
 function updateExportLists_soap($rubric){
    global $c_pmwiki_path_file;
    global $c_commsy_path_file;
+   
+   $translator = $this->_environment->getTranslationObject();
 
    $client = $this->getSoapClient();
    if ($rubric == CS_DISCUSSION_TYPE){
@@ -2147,10 +2156,10 @@ function updateExportLists_soap($rubric){
          $client->createPage('Main.CommSyDiskussionenNavi', $file_contents, $this->_environment->getSessionID());      
       }
       $exported_discussions = array();
-      $dicussion_array = $client->getPageNames('Main.CommSy'.getMessage('COMMON_DISCUSSION'));
+      $dicussion_array = $client->getPageNames('Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'));
       foreach($dicussion_array as $discussion_file){
          if($discussion_file != 'Main.CommSyDiskussionenNavi' && $discussion_file != 'Main.CommSyDiskussionen'){
-            if((stripos($discussion_file, 'Main.CommSy'.getMessage('COMMON_DISCUSSION')) !== false)
+            if((stripos($discussion_file, 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION')) !== false)
                 and (stripos($discussion_file, '.count') === false)){
                 $exported_discussions[] = $discussion_file;
             }
@@ -2236,38 +2245,41 @@ function encodeUrlToHtml($html){
 }
 
 function existsItemToWiki($current_item_id){
+   $translator = $this->_environment->getTranslationObject();
    global $c_pmwiki_path_file;
    $manager = $this->_environment->getItemManager();
    $item = $manager->getItem($current_item_id);
    if ($item->getItemType() == CS_MATERIAL_TYPE){
       $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
    }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
-      $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id;
+      $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').$current_item_id;
    }
    return file_exists($c_pmwiki_path_file . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/wiki.d/' . $wiki_file);
 }
 
 function existsItemToWiki_soap($current_item_id){
+   $translator = $this->_environment->getTranslationObject();
    global $c_pmwiki_path_file;
    $manager = $this->_environment->getItemManager();
    $item = $manager->getItem($current_item_id);
    if ($item->getItemType() == CS_MATERIAL_TYPE){
       $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
    }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
-      $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION').$current_item_id;
+      $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION').$current_item_id;
    }
    $client = $this->getSoapClient();
    return $client->getPageExists($wiki_file, $this->_environment->getSessionID());
 }
 
 function getExportToWikiLink($current_item_id){
+   $translator = $this->_environment->getTranslationObject();
    global $c_pmwiki_path_url;
    $manager = $this->_environment->getItemManager();
    $item = $manager->getItem($current_item_id);
    if ($item->getItemType() == CS_MATERIAL_TYPE){
       $wiki_file = 'Main.CommSyMaterial' . $current_item_id;
    }elseif($item->getItemType() == CS_DISCUSSION_TYPE){
-      $wiki_file = 'Main.CommSy'.getMessage('COMMON_DISCUSSION'). $current_item_id;
+      $wiki_file = 'Main.CommSy'.$translator->getMessage('COMMON_DISCUSSION'). $current_item_id;
    }
    return '<a href="' . $c_pmwiki_path_url . '/wikis/' . $this->_environment->getCurrentPortalID() . '/' . $this->_environment->getCurrentContextID() . '/index.php?n=' . $wiki_file . '">' . $wiki_file . '</a>';
 }

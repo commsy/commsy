@@ -70,7 +70,7 @@ class cs_manager {
     * Environment - the environment of the CommSy
     */
    var $_environment = null;
-
+   
    /**
     * id_array for item_ids
     */

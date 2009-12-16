@@ -598,6 +598,7 @@ class cs_server_item extends cs_guide_item {
    }
 
    function getUsageInfoHeaderForRubric($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
        if ( empty($retour) ) {
@@ -611,7 +612,7 @@ class cs_server_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -632,6 +633,7 @@ class cs_server_item extends cs_guide_item {
    }
 
    function getUsageInfoHeaderForRubricForm($rubric){
+      $translator = $this->_environment->getTranslationObject();
       if ($this->_issetExtra('USAGE_INFO_HEADER')) {
          $retour = $this->_getExtra('USAGE_INFO_HEADER');
        if ( empty($retour) ) {
@@ -645,7 +647,7 @@ class cs_server_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
-         $retour = getMessage('USAGE_INFO_HEADER');
+         $retour = $translator->getMessage('USAGE_INFO_HEADER');
       }
       return $retour;
    }
@@ -711,53 +713,54 @@ class cs_server_item extends cs_guide_item {
       if (isset($retour[mb_strtoupper($rubric, 'UTF-8')]) and !empty($retour[mb_strtoupper($rubric, 'UTF-8')])){
          $retour = $retour[mb_strtoupper($rubric, 'UTF-8')];
       } else {
+         $translator = $this->_environment->getTranslationObject();
          $temp = mb_strtoupper($rubric, 'UTF-8') . '_' . mb_strtoupper($funct, 'UTF-8');
          $tempMessage      = "";
          switch( $temp )
          {
             case 'CONFIGURATION_BACKUP':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_BACKUP_FORM');
                break;
             case 'CONFIGURATION_COLOR':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_COLOR_FORM');
                break;
             case 'CONFIGURATION_EXTRA':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_EXTRA_FORM');
                break;
             case 'CONFIGURATION_IMS':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_IMS_FORM');
                break;
             case 'CONFIGURATION_LANGUAGE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_LANGUAGE_FORM');
                break;
             case 'CONFIGURATION_NEWS':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_NEWS_FORM');
                break;
             case 'CONFIGURATION_PREFERENCES':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_PREFERENCES_FORM');
                break;
             case 'CONFIGURATION_SERVICE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SERVICE_FORM');
                break;
             case 'CONFIGURATION_OUTOFSERVICE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_OUTOFSERVICE_FORM');
                break;
             case 'CONFIGURATION_SCRIBD':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_SCRIBD_FORM');
                break;
             case 'CONFIGURATION_UPDATE':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_UPDATE_FORM');
                break;
             case 'CONFIGURATION_HTMLTEXTAREA':
-               $tempMessage      = getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
+               $tempMessage      = $translator->getMessage('USAGE_INFO_TEXT_SERVER_FOR_CONFIGURATION_HTMLTEXTAREA_FORM');
                break;
             default:
-               $tempMessage      = getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item (".__LINE__.")";
+               $tempMessage      = $translator->getMessage('COMMON_MESSAGETAG_ERROR')." cs_server_item (".__LINE__.")";
                break;
          }
          $retour = $tempMessage;
          if ($retour == 'USAGE_INFO_TEXT_SERVER_FOR_'.$temp.'_FORM' or $retour == 'tbd') {
-            $retour = getMessage('USAGE_INFO_FORM_COMING_SOON');
+            $retour = $translator->getMessage('USAGE_INFO_FORM_COMING_SOON');
          }
       }
       return $retour;

@@ -169,12 +169,13 @@ class cs_group_item extends cs_label_item {
          if ( $portal_item->showTime() ) {
             $save_time = true;
          }
-
+         
          $grouproom_item->saveOnlyItem();
 
          // add member of group to the group room
          $current_user_item = $this->_environment->getCurrentUserItem();
          $member_list = $this->getMemberItemList();
+         
          if ( $member_list->isNotEmpty() ) {
             $member_item = $member_list->getFirst();
             while ( $member_item ) {
@@ -200,7 +201,6 @@ class cs_group_item extends cs_label_item {
                $member_item = $member_list->getNext();
             }
          }
-
          // add current user to the group as a member
          if ( !$this->isMember($current_user_item) ) {
             $add_member = true;
