@@ -251,7 +251,7 @@ class cs_rubric_form {
       // for children class:
       // you can fill an error_array with error messages here:
       // $this->_form->setFailure('label','error_type');
-      // $this->_error_array[] = getMessage('ERROR_TEXT');
+      // $this->_error_array[] = $this->_translator->getMessage('ERROR_TEXT');
    }
 
    /** set mark a field with "failure"
@@ -407,7 +407,7 @@ class cs_rubric_form {
                      $user->getItemID() != $link_item->getCreatorID() ) {
                      $link_creator = $link_item->getCreatorItem();
                      $temp_array['text'] .= '<BR><SPACE><SPACE><SPACE><SPACE><SPACE><DISABLED>('.
-                                            getMessage('COMMON_LINK_CREATOR').': '.
+                                            $this->_translator->getMessage('COMMON_LINK_CREATOR').': '.
                                             $link_creator->getFullname().')</DISABLED>';
                   }
                   $item_array[] = $temp_array;
@@ -443,7 +443,7 @@ class cs_rubric_form {
                if ( $user->getItemID() != $link_item->getCreatorID() ) {
                   $link_creator = $link_item->getCreatorItem();
                   $temp_array['text'] .= '<BR><SPACE><SPACE><SPACE><SPACE><SPACE><DISABLED>('.
-                                         getMessage('COMMON_LINK_CREATOR').': '.
+                                         $this->_translator->getMessage('COMMON_LINK_CREATOR').': '.
                                          $link_creator->getFullname().')</DISABLED>';
                }
                $item_array[] = $temp_array;
@@ -521,7 +521,7 @@ class cs_rubric_form {
                $link_creator = $link_item->getCreatorItem();
                //uses tags only used by "_text_as_html_short_coding_format" function...
                $temp_array['text'] .= '<BR><SPACE><SPACE><SPACE><SPACE><SPACE><DISABLED>('.
-                                      getMessage('COMMON_LINK_CREATOR').': '.
+                                      $this->_translator->getMessage('COMMON_LINK_CREATOR').': '.
                                       $link_creator->getFullname().')</DISABLED>';
             }
             $item_array[] = $temp_array;

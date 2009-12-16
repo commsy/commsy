@@ -41,6 +41,11 @@ class cs_form {
         * array - containing strings of error messages
         */
         var $_error_array = array();
+        
+        /*
+         * Translation Object
+         */
+        private $_translator = null;
 
         /** constructor: cs_form
          * the only available constructor
@@ -49,6 +54,9 @@ class cs_form {
          */
         function cs_form() {
            $this->_formElements = new cs_array_list();
+           
+           global $environment;
+           $this->_translator = $environment->getTranslationObject();
         }
 
    function setCurrentColor($color){
@@ -1271,7 +1279,7 @@ class cs_form {
                   $current['failure'] = true;
                   $current['failuretype'] = 'value';
                   if (empty($current['failuretext'])) {
-                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                     $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
                   }
                   $this->_formElements->replaceElement($current);
                   $result = false;
@@ -1298,7 +1306,7 @@ class cs_form {
                   $current['failure'] = true;
                   $current['failuretype'] = 'value';
                   if (empty($current['failuretext'])) {
-                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                     $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
                   }
                   $this->_formElements->replaceElement($current);
                   $result = false;
@@ -1325,7 +1333,7 @@ class cs_form {
                   $current['failure'] = true;
                   $current['failuretype'] = 'value';
                   if (empty($current['failuretext'])) {
-                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                     $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
                   }
                   $this->_formElements->replaceElement($current);
                   $result = false;
@@ -1340,7 +1348,7 @@ class cs_form {
                   $current['failure'] = true;
                   $current['failuretype'] = 'value';
                   if (empty($current['failuretext'])) {
-                     $current['failuretext'] = getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
+                     $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_MANIPULATION', $current['label']);
                   }
                   $this->_formElements->replaceElement($current);
                   $result = false;
@@ -1371,7 +1379,7 @@ class cs_form {
                        $current['failure'] = true;
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
-                          $current['failuretext'] = getMessage('COMMON_ERROR_SELECT', $current['label']);
+                          $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_SELECT', $current['label']);
                        }
                        $this -> _formElements -> replaceElement($current);
                        $result = false;
@@ -1382,7 +1390,7 @@ class cs_form {
                        $current['failure'] = true;
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
-                          $current['failuretext'] = getMessage('COMMON_ERROR_SELECT', $current['label']);
+                          $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_SELECT', $current['label']);
                        }
                        $this -> _formElements -> replaceElement($current);
                        $result = false;
@@ -1393,7 +1401,7 @@ class cs_form {
                        $current['failure'] = true;
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
-                          $current['failuretext'] = getMessage('COMMON_ERROR_SELECT', $current['label']);
+                          $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_SELECT', $current['label']);
                        }
                        $this -> _formElements -> replaceElement($current);
                        $result = false;
@@ -1404,7 +1412,7 @@ class cs_form {
                        $current['failure'] = true;
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
-                          $current['failuretext'] = getMessage('COMMON_ERROR_SELECT', $current['label']);
+                          $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_SELECT', $current['label']);
                        }
                        $this -> _formElements -> replaceElement($current);
                        $result = false;
@@ -1416,7 +1424,7 @@ class cs_form {
                        $current['failure'] = true;
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
-                          $current['failuretext'] = getMessage('COMMON_ERROR_FIELD',$current['label']);
+                          $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$current['label']);
                        }
                        $current['failure_element'][] = 0;
                        $current['failure_element'][] = 1;
@@ -1427,7 +1435,7 @@ class cs_form {
                           $current['failure'] = true;
                           $current['failuretype'] = 'mandatory';
                           if (empty($current['failuretext'])) {
-                             $current['failuretext'] = getMessage('COMMON_ERROR_FIELD',$current['label']);
+                             $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$current['label']);
                           }
                           $current['failure_element'][] = 0;
                           $this -> _formElements -> replaceElement($current);
@@ -1437,7 +1445,7 @@ class cs_form {
                           $current['failure'] = true;
                           $current['failuretype'] = 'mandatory';
                           if (empty($current['failuretext'])) {
-                             $current['failuretext'] = getMessage('COMMON_ERROR_FIELD',$current['label']);
+                             $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$current['label']);
                           }
                           $current['failure_element'][] = 1;
                           $this -> _formElements -> replaceElement($current);
@@ -1453,7 +1461,7 @@ class cs_form {
                        $current['failuretype'] = 'mandatory';
                        if (empty($current['failuretext'])) {
                           if ( isset($current['label']) ){
-                             $current['failuretext'] = getMessage('COMMON_ERROR_FIELD',$current['label']);
+                             $current['failuretext'] = $this->_translator->getMessage('COMMON_ERROR_FIELD',$current['label']);
                           }
                        }
                        $this -> _formElements -> replaceElement($current);
