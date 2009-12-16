@@ -284,13 +284,7 @@ class cs_date_form extends cs_rubric_form {
       $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,$this->_translator->getMessage('DATES_TIME_DAY_START'),$this->_translator->getMessage('DATES_START_DAY'),$this->_translator->getMessage('DATES_START_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
       $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,$this->_translator->getMessage('DATES_TIME_DAY_END'),$this->_translator->getMessage('DATES_END_DAY'),$this->_translator->getMessage('DATES_END_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
       $this->_form->addTextfield('place','',$this->_translator->getMessage('DATES_PLACE'),$this->_translator->getMessage('DATES_PLACE_DESC'),100,50);
-      $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
-      $this->_form->addTitlefield('title','',$this->_translator->getMessage('COMMON_TITLE'),$this->_translator->getMessage('DATES_TITLE_DESC'),200,45,true);
-      $this->_form->addDateTimeField('start_date_time','','dayStart','timeStart',13,13,$this->_translator->getMessage('DATES_TIME_DAY_START'),$this->_translator->getMessage('DATES_START_DAY'),$this->_translator->getMessage('DATES_START_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_START_DESC'),TRUE,FALSE,100,100);
-      $this->_form->addDateTimeField('end_date_time','','dayEnd','timeEnd',13,13,$this->_translator->getMessage('DATES_TIME_DAY_END'),$this->_translator->getMessage('DATES_END_DAY'),$this->_translator->getMessage('DATES_END_TIME'),$this->_translator->getMessage('DATES_TIME_DAY_END_DESC'),FALSE,FALSE,100,100);
-      $this->_form->addTextfield('place','',$this->_translator->getMessage('DATES_PLACE'),$this->_translator->getMessage('DATES_PLACE_DESC'),100,50);
 
-      $this->_form->addTextArea('description','',$this->_translator->getMessage('DATES_DESCRIPTION'),'','',10);
       $radio_values = array();
       $radio_values[0]['text'] = '<img src="images/spacer.gif" style="background-color:#999999; border:1px solid #cccccc;"/>';
       $radio_values[0]['value'] = '#999999';
@@ -376,7 +370,7 @@ class cs_date_form extends cs_rubric_form {
       #$this->_form->addTextfield('colour','',$this->_translator->getMessage('DATES_COLOUR'),$this->_translator->getMessage('DATES_COLOUR_DESC'),'',10,false,'','','','left','','',false,'',10,true,true);
       #$this->_form->combine();
       #pr('--->'.$this->_color.'<---');
-      $this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
+      #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);
           
       #$this->_form->addText('colorpicker',$this->_translator->getMessage('DATES_COLOUR'),'<br/><br/><INPUT class="color" value="' . $this->_color . '" name="colorpicker">',$this->_translator->getMessage('DATES_COLOUR_DESC'),false,'','','left','','',true,false);  
       
